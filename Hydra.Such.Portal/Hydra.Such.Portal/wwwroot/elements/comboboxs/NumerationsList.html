@@ -1,0 +1,53 @@
+﻿<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+
+<dom-module id="cb-numerations">
+    <template >
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            :host {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+        </style>
+
+        <iron-ajax 
+                   url="/PopulateDropdowns/GetNumerations" 
+                   last-response="{{response}}" 
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"
+                   ></iron-ajax>
+
+        <vaadin-combo-box items="[[response]]" item-value-path="id" item-label-path="value" value="{{indexvalue}}">
+            <template>
+                <paper-icon-item>
+                    <paper-item-body two-line>
+                        <div>[[item.value]]</div>
+                    </paper-item-body>
+                </paper-icon-item>
+            </template>
+        </vaadin-combo-box>
+
+</template>
+
+    <script>
+        class CBNumerationsView extends Polymer.Element {
+            static get is() { return 'cb-numerations' }
+            static get properties() {
+                return {
+                    indexvalue: {
+                        type: Number,
+                        notify: true,
+                        reflectToAttribute: true
+                    }
+                }
+            }
+            
+        }
+
+        customElements.define(CBNumerationsView.is, CBNumerationsView);
+    </script>
+</dom-module>

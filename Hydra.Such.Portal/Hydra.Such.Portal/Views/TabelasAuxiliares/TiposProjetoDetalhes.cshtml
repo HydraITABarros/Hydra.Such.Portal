@@ -1,0 +1,148 @@
+﻿
+@{
+    ViewData["Title"] = "TiposProjetoDetalhes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<h1 class="title">Tipos de Projeto</h1>
+
+<x-project-type></x-project-type>
+
+<dom-module id="x-project-type">
+    <template>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="~/css/main.css" />
+        
+        <style>
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            input {
+                font: inherit;
+            }
+            paper-input {
+                max-width: 200px !important;
+            }
+        </style>
+
+        @*POPULATE GRID*@
+        <iron-ajax url="/TabelasAuxiliares/GetProjectTypeData"
+                   last-response="{{result}}"
+                   method="post"
+                   auto
+                   on-response="_updateResponse"
+                   handle-as="json"
+                   id="ajax_create"
+                   content-type="application/json"></iron-ajax>
+
+        <div class="row marginSpace">
+            <div class="col-lg-2">
+                <paper-input type="text" value="" id="piDescription" name="piDescription" required label="Descrição"> </paper-input>
+            </div>
+            <div class="col-lg-2">
+                <paper-button raised id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Novo</paper-button>
+            </div>
+        </div>
+        <vaadin-grid id="gridprojecttype" aria-label="ProfileModelsTabel" items="[[result]]" class="editGrid">
+            <vaadin-grid-column>
+                <template class="header">
+                    <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="code" />
+                </template>
+                <template>
+                    <paper-input type="text" name="code" required maxlength="20" value="{{item.code}}" disabled> </paper-input>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" />
+                </template>
+                <template>
+                    <paper-input type="text" name="description" required maxlength="20" value="{{item.description}}"> </paper-input>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column with="10%">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button> </center>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+        
+        <div class="marginSpace">
+            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+        </div>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-project-type',
+                openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+                _createAccessProfile: function () {
+                    if (this.$.piDescription.value == "" || this.$.piDescription.value == null) {
+                        this.openToast('É obrigatório preencher a Descrição.');
+                    } else {
+                        this.result.unshift({
+                            description: this.$.piDescription.value
+                        });
+                        this.$.gridprojecttype.clearCache();
+                    }
+                },
+                _update: function () {
+                    debugger;;
+                    this.$.ajax_create.url = "/TabelasAuxiliares/UpdateProjectType";
+                    this.$.ajax_create.body = JSON.stringify(this.result);
+                    this.$.ajax_create.generateRequest();
+                    this.$.ajax_create.url = "/TabelasAuxiliares/GetProjectTypeData";
+                    this.$.gridprojecttype.clearCache();
+                },
+                _delete: function (e) {
+                    var index = this.result.indexOf(e.model.item);
+                    this.result.splice(index, 1);
+
+                    this.$.gridprojecttype.clearCache();
+                },
+                _cancel: function () {
+                    this.$.ajax_create.url = "/TabelasAuxiliares/GetProjectTypeData";
+                    this.$.ajax_create.generateRequest();
+
+                    this.$.gridprojecttype.clearCache();
+                },
+                _updateResponse: function (e)
+                {
+                    var self = this;
+                    if (this.$.ajax_create.url != "/TabelasAuxiliares/GetProjectTypeData")
+                    {
+                        if (e.detail.status === 200) {
+                            this.openToast("Tabela atualizada.");
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        }
+                    }                    
+                }
+            });
+        });
+    </script>
+</dom-module>

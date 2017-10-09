@@ -1,0 +1,261 @@
+﻿
+@{
+    ViewData["Title"] = "ConfiguracaoNumericoes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
+<link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<h1 class="title">Configuração de Numerações</h1>
+
+<x-confignumerations></x-confignumerations>
+<dom-module id="x-confignumerations">
+    <template>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="~/css/main.css" />
+        
+        <style>
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            input {
+                font: inherit;
+            }
+
+            /*.grid {
+                font-size: 13px;
+            }
+
+                .grid input {
+                    border: none;
+                    padding-left: 5px;
+                }*/
+
+            paper-input {
+                max-width: 200px !important;
+            }
+        </style>
+
+
+        <iron-form id="formGeral">
+            <form>
+
+                <h2 class="separator">Novo Registo</h2>
+                <table class="table inlineForm">
+                    <tr>
+                        <td width="21%"><paper-input id="piDescription" type="text" name="description" required label="Descrição" maxlength="20"></paper-input></td>
+                        <td width="8%"><paper-checkbox id="pcAuto">Auto</paper-checkbox><br /><paper-checkbox id="pcManual">Manual</paper-checkbox></td>
+                        <td width="21%"><paper-input id="piPrefix" type="text" name="prefix" required label="Prefixo" maxlength="10"></paper-input></td>
+                        <td width="21%"><paper-input id="piDigitNumber" type="number" name="digitNumber" required label="Nº Dígitos Incrementar"></paper-input></td>
+                        <td width="21%"><paper-input id="piIncrementNumber" type="number" name="incrementNumber" required label="Quantidade Incrementar"></paper-input></td>
+                        <td width="8%"><paper-button class="btnSave" raised on-tap="_add">Novo</paper-button></td>
+                    </tr>
+                </table>
+
+                @*<h2 class="separator">Novo Registo (2)</h2>
+                <div id="inlineForm" style="margin-bottom: 20px; width:auto;">
+                    <input type="text" name="description" required maxlength="20" placeholder="Descrição" />
+                    <paper-checkbox>Auto</paper-checkbox>
+                    <paper-checkbox>Manual</paper-checkbox>
+                    <input type="text" name="prefix" required value="{{item.prefix}}" placeholder="Prefixo" />
+                    <input type="number" name="digitNumber" required placeholder="Nº Dígitos Incrementar" />
+                    <input type="number" name="incrementNumber" required placeholder="Quantidade Incrementar"/>
+
+                    <paper-button raised id="addNew" class="btn-success" on-tap="_add">Adicionar &nbsp;<i class="fa fa-plus" aria-hidden="true"></i>
+                    </paper-button>
+                </div>*@
+
+            </form>
+        </iron-form>
+
+        <h2 class="separator">Numerações Ativas</h2>
+
+        <iron-ajax url="/Administracao/GetListConfigNumerations"
+                   last-response="{{result}}"
+                   id="ajax_update"
+                   auto
+                   method="post"
+                   on-response="_updateResponse"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <vaadin-grid id="numerationsTable" aria-label="Tabela Numerações" items="[[result]]" class="editGrid">
+
+            <vaadin-grid-column width="20%">
+                <template class="header">
+                    Descrição
+                </template>
+                <template>
+                    <input type="text" name="description" required maxlength="20" value="{{item.description}}" />
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="6%">
+                <template class="header">
+                    Auto
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.auto}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="6%">
+                <template class="header">
+                    Manual
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.manual}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="16%">
+                <template class="header">
+                    Prefixo
+                </template>
+                <template>
+                    <input type="text" name="prefix" on-input="_storeFirst" required value="{{item.prefix}}" maxlength="10" />
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="12%">
+                <template class="header">
+                    Nº Incrementar
+                </template>
+                <template>
+                    <input type="number" name="digitNumber" required value="{{item.totalDigitIncrement}}" />
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="12%">
+                <template class="header">
+                    Qt. Incrementar
+                </template>
+                <template>
+                    <input type="number" name="incrementNumber" required value="{{ item.incrementQuantity }}" />
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="18%">
+                <template class="header">
+                    Último Nº Usado
+                </template>
+                <template>
+                    <input type="text" name="lastUsedNumber" required disabled value="{{item.lastNumerationUsed}}" />
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%">
+                <template class="header">
+                </template>
+                <template>
+                        <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <div class="marginSpace">
+            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+        </div>
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+    </template>
+
+    <script>
+
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-confignumerations',
+                //properties: {
+                //    flag: {
+                //        type: Number,
+                //        value: 0                    
+                //    }                    
+                //},
+
+                openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _add() {
+                    if (this.$.piDescription.value != "" &&
+                        this.$.piPrefix.value != "" &&
+                        isNaN(this.$.piDigitNumber.value) == false &&
+                        isNaN(this.$.piIncrementNumber.value) == false
+                    ) {
+                        this.result.unshift({
+
+                            description: this.$.piDescription.value,
+                            auto: this.$.pcAuto.checked,
+                            manual: this.$.pcManual.checked,
+                            prefix: this.$.piPrefix.value,
+                            totalDigitIncrement: parseInt(this.$.piDigitNumber.value),
+                            incrementQuantity: parseInt(this.$.piIncrementNumber.value)
+
+                        });
+                        this.$.numerationsTable.clearCache();
+                    }
+                    else {
+                        alert("Tem de preencher todos os campos.");
+                    }
+
+                },
+
+                _update: function () {
+                    this.$.ajax_update.url = "/Administracao/UpdateNumerationConfigs";
+                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.generateRequest();                    
+
+                    //this.$.flag = 1;
+
+                    this.$.numerationsTable.clearCache();
+                    this.$.ajax_update.url = "/Administracao/GetListConfigNumerations";
+
+                },
+
+                _delete: function (e) {
+                    var index = this.result.indexOf(e.model.item);
+                    this.result.splice(index, 1);
+
+                    this.$.numerationsTable.clearCache();
+                },
+
+                _cancel: function () {
+                    this.$.ajax_update.url = "/Administracao/GetListConfigNumerations";
+                    this.$.ajax_update.generateRequest();                    
+
+                    this.$.numerationsTable.clearCache();
+                },
+
+                _updateResponse: function (e)
+                {
+                    var self = this;
+                    if (this.$.ajax_update.url != "/Administracao/GetListConfigNumerations")
+                    {
+                        if (e.detail.status === 200) {
+                            this.openToast("Numerações atualizadas.");
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao atualizar as numerações.");
+                        }
+                    }                    
+                }
+            });
+        });
+    </script>
+</dom-module>

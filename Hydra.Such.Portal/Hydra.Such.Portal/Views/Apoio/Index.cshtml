@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewData["Title"] = "Apoio - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="/elements/submenu/subMenuItemView.html">
+
+<ul class="list-unstyled">
+    <x-submenu link="@Url.Action("Viaturas", "Apoio")" image="vehicle1.png" title="Projetos"></x-submenu>
+    <x-submenu link="@Url.Action("ImportacaoCustos", "Apoio")" image="cost1.png" title="Importação de Custos"></x-submenu>
+    <x-submenu link="@Url.Action("TabelasAuxiliares", "Apoio")" image="auxiliary1.png" title="Tabelas Auxiliares"></x-submenu>
+</ul>
+
+

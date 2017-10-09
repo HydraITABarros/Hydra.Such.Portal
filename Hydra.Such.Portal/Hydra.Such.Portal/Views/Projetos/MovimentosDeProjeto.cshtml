@@ -1,0 +1,200 @@
+﻿
+@{
+    ViewData["Title"] = "MovimentosDeProjeto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
+<link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+
+<h1 class="title">Movimentos do projeto @ViewBag.ProjectNo</h1>
+
+<x-jobledgerentry></x-jobledgerentry>
+<dom-module id="x-jobledgerentry">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        @*POPULATE GRID*@
+        <iron-ajax url="/Projetos/GetJobLedgerEntries"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
+
+        <vaadin-grid aria-label="JobLedgerEntriesTable" items="[[result]]" class="grid" multi-sort="true">
+            <vaadin-grid-column width="10%">
+                <template class="header">
+                    <vaadin-grid-sorter path="EntryNo">Nº Movimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="EntryNo" />
+                </template>
+                <template>
+                    {{item.entryNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column >
+                <template class="header">
+                    <vaadin-grid-sorter path="JobNo">Nº Projeto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="JobNo" />
+                </template>
+                <template>
+                    {{item.jobNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column >
+                <template class="header">
+                    <vaadin-grid-sorter path="PostingDate">Data Registo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="PostingDate" />
+                </template>
+                <template>
+                    {{item.postingDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column >
+                <template class="header">
+                    <vaadin-grid-sorter path="DocumentDate">Data Documento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="DocumentDate" />
+                </template>
+                <template>
+                    {{item.documentDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column >
+                <template class="header">
+                    <vaadin-grid-sorter path="Type">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="Type" />
+                </template>
+                <template>
+                    {{item.type}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column >
+                <template class="header">
+                    <vaadin-grid-sorter path="No">Nº</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="No" />
+                </template>
+                <template>
+                    {{item.no}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column >
+                <template class="header">
+                    <vaadin-grid-sorter path="Description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="Description" />
+                </template>
+                <template>
+                    {{item.description}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column >
+                <template class="header">
+                    <vaadin-grid-sorter path="Quantity">Quantidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="Quantity" />
+                </template>
+                <template>
+                    {{item.quantity }}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column >
+                <template class="header">
+                    <vaadin-grid-sorter path="UnitOfMeasureCode">Unidade de Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="UnitOfMeasureCode" />
+                </template>
+                <template>
+                    {{item.unitOfMeasureCode}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column >
+                <template class="header">
+                    <vaadin-grid-sorter path="UnitCost">Custo Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="UnitCost" />
+                </template>
+                <template>
+                    {{item.unitCost}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column >
+                <template class="header">
+                    <vaadin-grid-sorter path="TotalCost">Custo Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="TotalCost" />
+                </template>
+                <template>
+                    {{item.totalCost}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column >
+                <template class="header">
+                    <vaadin-grid-sorter path="UnitPrice">Preço Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="UnitPrice" />
+                </template>
+                <template>
+                    {{item.unitPrice}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column >
+                <template class="header">
+                    <vaadin-grid-sorter path="TotalPrice">Preço total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="TotalPrice" />
+                </template>
+                <template>
+                    {{item.totalPrice}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column >
+                <template class="header">
+                    <vaadin-grid-sorter path="LineAmount ">Valor Linha</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="LineAmount" />
+                </template>
+                <template>
+                    {{item.lineAmount}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column >
+                <template class="header">
+                    <vaadin-grid-sorter path="LocationCode">Cód. Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="LocationCode" />
+                </template>
+                <template>
+                    {{item.locationCode}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-jobledgerentry',
+                properties: {
+                    _filterActive: {
+                        type: Boolean,
+                        value:true
+                    }
+                },
+                ready: function (item) {
+
+                    this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
+                    this.$.grid_databound_ajax.generateRequest();
+                }
+            });
+        });
+    </script>
+
+</dom-module>
+
+
+

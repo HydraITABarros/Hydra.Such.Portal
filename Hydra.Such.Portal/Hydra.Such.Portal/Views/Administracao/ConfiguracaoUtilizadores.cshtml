@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewData["Title"] = "Configuração Utilizadores - Administração - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
+<link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+
+<h1 class="title">Perfis Modelo</h1>
+
+<x-users></x-users>
+<dom-module id="x-users">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        @*POPULATE GRID*@
+        <iron-ajax url="/Administracao/GetListUsers"
+                   last-response="{{result}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound"
+                   content-type="application/json"></iron-ajax>
+
+
+        <div class="marginSpace">
+            <paper-button class="btnSave" raised on-tap="_create">Criar Novo</paper-button>
+        </div>
+        <vaadin-grid aria-label="UsersTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="10%">
+                <template class="header">
+                    <vaadin-grid-sorter path="id">ID</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="id" />
+                </template>
+                <template>
+                    {{item.idUtilizador}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="nome">Nome</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nome" />
+                </template>
+                <template>
+                    {{item.nome}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="ativo">Ativo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="ativo" value="[[_filterActive]]" >
+                        <paper-checkbox checked="{{_filterActive}}"></paper-checkbox>
+                    </vaadin-grid-filter>
+                </template>
+                <template>
+                    <center><paper-checkbox checked="{{item.ativo}}" disabled></paper-checkbox></center>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="administrador">Administrador</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <center><paper-checkbox checked="{{item.administrador}}" disabled></paper-checkbox></center>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-users',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _filterActive: {
+                        type: Boolean,
+                        value:true
+                    }
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Administracao/ConfiguracaoUtilizadoresDetalhes/" + item.idUtilizador;
+                    }
+                },
+                _create: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Administracao/ConfiguracaoUtilizadoresDetalhes/0";
+                    }
+                }
+            });
+        });
+    </script>
+
+</dom-module>
+
+
+

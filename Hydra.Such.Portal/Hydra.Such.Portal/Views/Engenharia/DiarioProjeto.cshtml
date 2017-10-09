@@ -1,0 +1,560 @@
+﻿
+@{
+    ViewData["Title"] = "DiarioProjeto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-material-theme/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
+<link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
+<link rel="import" href="~/elements/comboboxs/ProjectList.html" />
+
+<h1 class="title">Diário de Projeto</h1>
+
+<x-projdiary></x-projdiary>
+<dom-module id="x-projdiary">
+    <template>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="~/css/main.css" />
+
+        <style>
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            input {
+                font: inherit;
+            }
+
+            .editGrid paper-input {
+                max-width: 200px !important;
+                font-size: 13px !important;
+            }
+
+            .editGrid vaadin-combo-box {
+                max-width: 200px !important;
+                font-size: 13px !important;
+            }
+        </style>
+
+        <iron-form id="formGeral">
+            <form>
+                <h2 class="separator">Novo Registo</h2>
+                <table class="table inlineForm">
+                    <tr>
+                        <td width="">
+                            @*<paper-input id="piProjectNo" type="text" name="piProjectNo" char-counter required label="Nº Projeto" maxlength="20" value="{{projectNo}}"></paper-input>*@
+                            <cb-projectlist id="nProjectList"></cb-projectlist>
+                        </td>
+                        <td width=""><vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{date}}"></vaadin-date-picker></td>
+                        <td width=""><cb-movetype id="nMoveType"></cb-movetype></td>
+                        <td width=""><cb-projecttype id="nProjectType"></cb-projecttype></td>
+                        <td width=""><paper-input id="piCode" type="text" name="piCode" char-counter required label="Código" maxlength="20" value="{{code}}"></paper-input></td>
+                        <td width=""><paper-input id="piDescription" type="text" name="piDescription" required label="Descrição" disabled value="{{description}}"></paper-input></td>
+                    </tr>
+                    <tr>
+                        <td width=""><paper-input id="piQuantity" type="number" name="piQuantity" required label="Quantidade" value="{{quantity}}"></paper-input></td>
+                        <td width=""><paper-input id="piCodeMeasurementUnit" type="text" name="piMeasurementUnit" required label="Cód. Unidade Medida" disabled value="{{codeMeasurementUnit}}"></paper-input></td>
+                        <td width=""><paper-input id="piCodeLocation" type="text" char-counter name="piCodeLocation" required label="Cód. Localização" maxlength="20" value="{{codeLocation}}"></paper-input></td>
+                        <td width=""><paper-input id="piCodeRegion" type="text" char-counter name="piCodeRegion" required label="Cód. Região" maxlength="20" value="{{codeRegion}}"></paper-input></td>
+                        <td width=""><paper-input id="piFuncArea" type="text" char-counter name="piFuncArea" required label="Cód. Área Funcional" maxlength="20" value="{{codeFuncArea}}"></paper-input></td>
+                        <td width=""><paper-input id="piCodeResponsabilityCenter" type="text" char-counter name="piCodeResponsabilityCenter" required label="Cód. Centro Responsabilidade" maxlength="20" value="{{codeResponsabilityCenter}}"></paper-input></td>
+                    </tr>
+                    <tr>
+                        <td width=""><paper-input class="alignRight" type="number" label="Custo Unitário" required id="piUnitCost" name="piUnitCost" value="{{unitCost}}"><div slot="suffix">€</div></paper-input></td>
+                        <td width=""><paper-input class="alignRight" type="number" label="Custo Total  " required id="piTotalCost" name="piTotalCost" value="{{totalCost}}"><div slot="suffix">€</div></paper-input></td>
+                        <td width=""><paper-input class="alignRight" type="number" label="Preço Unitário  " required id="piUnitPrice" name="piUnitPrice" value="{{unitPrice}}"><div slot="suffix">€</div></paper-input></td>
+                        <td width=""><paper-input class="alignRight" type="number" label="Preço Total  " required id="piTotalPrice" name="piTotalPrice" value="{{totalPrice}}"><div slot="suffix">€</div></paper-input></td>
+                        <td width=""><paper-checkbox id="pcInvoice" value="{{billable}}">Faturável</paper-checkbox></td>
+                        <td width=""><paper-input id="piInvoiceClientNo" type="text" name="piInvoiceClientNo" required label="Fatura a Nº Cliente" maxlength="20" value="{{invoiceClientNo}}"></paper-input></td>
+                    </tr>
+                </table>
+                <paper-button class="btnSave" raised on-tap="_add">Novo</paper-button>
+            </form>
+        </iron-form>
+
+        <h2 class="separator">Movimentos do Utilizador X</h2>
+
+        <iron-ajax url="/Engenharia/GetAllProjectDiary"
+                   last-response="{{result}}"
+                   id="ajax_update"
+                   auto
+                   method="post"
+                   on-response="_updateResponse"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Engenharia/GetRelatedProjectInfo"
+                   last-response="{{related}}"
+                   id="ajax_related"
+                   method="post"
+                   on-response="_updateRelatedResponse"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result]]" class="editGrid">
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    Nº Projeto
+                </template>
+                <template>
+                    @*<paper-input type="text" name="projectNo" required maxlength="20" value="{{item.projectNo}}">*@
+                    <cb-projectlist id="nProjectList" indexvalue="{{item.projectNo}}"></cb-projectlist>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="130px">
+                <template class="header">
+                    Data
+                </template>
+                <template>
+                    @*<input type="date" id="projectDate" value="{{item.date}}"/>*@
+                    <input type="text" name="date" value="{{item.date}}" />
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    Tipo Movimento
+                </template>
+                <template>
+                    <cb-movetype name="movementType" indexvalue="{{item.movementType}}"></cb-movetype>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    Tipo
+                </template>
+                <template>
+                    <cb-projecttype name="type" indexvalue="{{item.type}}">
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    Código
+                </template>
+                <template>
+                    <paper-input name="code" type="text" required value="{{item.code}}">
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    Descrição
+                </template>
+                <template>
+                    <paper-input name="description" type="text" required value="{{item.description}}" disabled></paper-input>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    Quantidade
+                </template>
+                <template>
+                    <paper-input type="number" name="quantity" required value="{{item.quantity}}"></paper-input>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    Cód. Unidade Medida
+                </template>
+                <template>
+                    <paper-input type="text" name="measurementUnitCode" required maxlength="20" value="{{item.measurementUnitCode}}"></paper-input>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    Cód. Localização
+                </template>
+                <template>
+                    <paper-input type="text" name="locationCode" required maxlength="20" value="{{item.locationCode}}"></paper-input>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    Cód. Região
+                </template>
+                <template>
+                    <paper-input type="text" name="regionCode" required maxlength="20" value="{{item.regionCode}}"></paper-input>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    Cód. Área Funcional
+                </template>
+                <template>
+                    <paper-input type="text" name="functionalAreaCode" required maxlength="20" value="{{item.functionalAreaCode}}"></paper-input>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    Cód. Centro Responsabilidade
+                </template>
+                <template>
+                    <paper-input type="text" name="responsabilityCenterCode" required maxlength="20" value="{{item.responsabilityCenterCode}}"></paper-input>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    Custo Unitário
+                </template>
+                <template>
+                    <paper-input class="alignRight" type="number" required name="unitCost" value="{{item.unitCost}}"><div slot="suffix">€</div></paper-input>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    Custo Total
+                </template>
+                <template>
+                    <paper-input class="alignRight" type="number" required name="totalCost" value="{{item.totalCost}}"><div slot="suffix">€</div></paper-input>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    Preço Unitário
+                </template>
+                <template>
+                    <paper-input class="alignRight" type="number" required name="unitPrice" value="{{item.unitPrice}}"><div slot="suffix">€</div></paper-input>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    Preço Total
+                </template>
+                <template>
+                    <paper-input class="alignRight" type="number" required name="totalPrice" value="{{item.totalPrice}}"><div slot="suffix">€</div></paper-input>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="75px">
+                <template class="header">
+                    Faturável
+                </template>
+                <template>
+                    <paper-checkbox name="billable" checked="{{item.billable}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    Fatura a Nº Cliente
+                </template>
+                <template>
+                    <paper-input type="text" name="invoiceToClientNo" required maxlength="20" value="{{item.invoiceToClientNo}}"></paper-input>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px">
+                <template class="header">
+                </template>
+                <template>
+                    <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+        <div class="marginSpace">
+            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+        </div>
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-projdiary',
+                properties: {
+                    projectNo: {
+                        type: String,
+                        notifiy: true,
+                        value: ""
+                    },
+                    date: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    //moveTypeValue: {
+                    //    type: Number,
+                    //    notify: true,
+                    //    value: ""
+                    //},
+                    //typeValue: {
+                    //    type: Number,
+                    //    notify: true,
+                    //    value: ""
+                    //},
+                    code: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    description: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    quantity: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    codeMeasurementUnit: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    codeLocation: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    codeRegion: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    codeFuncArea: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    codeResponsabilityCenter: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    unitCost: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    totalCost: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    unitPrice: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    totalPrice: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    billable: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    invoiceClientNo: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+
+                },
+
+                openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _add() {
+
+                    if (true)
+                    //(this.$.piProjectNo.value != "" &&
+                    //this.$.dpDate.value != "" &&
+                    //this.ownerDocument.activeElement.$.nMoveType.indexvalue != "" &&
+                    //this.ownerDocument.activeElement.$.nProjectType.indexvalue != "" &&
+                    //this.$.piCode.value != "" &&
+                    //this.$.piDescription.value != "" &&
+                    //this.$.piQuantity.value != "" &&
+                    //this.$.piCodeMeasurementUnit.value != "" &&
+                    //this.$.piCodeLocation.value != "" &&
+                    //this.$.piCodeRegion.value != "" &&
+                    //this.$.piFuncArea.value != "" &&
+                    //this.$.piCodeResponsabilityCenter.value != "" &&
+                    //isNaN(this.$.piUnitCost.value) == false &&
+                    //isNaN(this.$.piTotalCost.value) == false &&
+                    //isNaN(this.$.piUnitPrice.value) == false &&
+                    //isNaN(this.$.piTotalPrice.value) == false &&
+                    //this.$.piInvoiceClientNo.value != "") {
+                    {
+                        var thisLine = {
+                            projectNo: this.ownerDocument.activeElement.$.nProjectList.indexvalue,
+                            date: this.date,
+                            movementType: this.ownerDocument.activeElement.$.nMoveType.indexvalue,
+                            type: this.ownerDocument.activeElement.$.nProjectType.indexvalue,
+                            code: this.code,
+                            description: this.description,
+                            quantity: this.quantity,
+                            measurementUnitCode: this.codeMeasurementUnit,
+                            locationCode: this.codeLocation,
+                            //projectContabGroup: x.GrupoContabProjeto, // ???
+                            regionCode: this.codeRegion,
+                            functionalAreaCode: this.codeFuncArea,
+                            responsabilityCenterCode: this.codeResponsabilityCenter,
+                            //user = "", //set logged user
+                            unitCost: this.unitCost,
+                            totalCost: this.totalCost,
+                            unitPrice: this.unitPrice,
+                            totalPrice: this.totalPrice,
+                            billable: this.billable,
+                            invoiceToClientNo: this.invoiceClientNo
+                        };
+
+                        if (this.result == null) {
+                            this.result = thisLine;
+                        }
+                        else {
+                            this.result.push(thisLine);
+                        }
+
+                        this.$.projectDiaryProject.clearCache();
+                    }
+                    else {
+                        alert("Tem de preencher todos os campos.");
+
+                        this.result.unshift({
+
+                            projectNo: this.$.piProjectNo.value,
+                            date: this.$.dpDate.value,
+                            movementType: parseInt(this.$.nMoveType.value),
+                            type: parseInt(this.$.nProjectType.value),
+                            code: this.$.piCode.value,
+                            description: this.$.piDescription.value,
+                            quantity: this.$.piQuantity.value,
+                            measurementUnitCode: this.$.piCodeMeasurementUnit.value,
+                            locationCode: this.$.piCodeLocation.value,
+                            //projectContabGroup: x.GrupoContabProjeto, // ???
+                            regionCode: this.$.piCodeRegion.value,
+                            functionalAreaCode: this.$.piFuncArea.value,
+                            responsabilityCenterCode: this.$.piCodeResponsabilityCenter.value,
+                            //user = "", //set logged user
+                            unitCost: this.$.piUnitCost.value,
+                            totalCost: this.$.piTotalCost.value,
+                            unitPrice: this.$.piUnitPrice.value,
+                            totalPrice: this.$.piTotalPrice.value,
+                            billable: this.$.pcInvoice.checked,
+                            invoiceToClientNo: this.$.piInvoiceClientNo.value
+                        });
+
+                        this.$.projectDiaryProject.clearCache();
+                    }
+                },
+
+                _update: function () {
+                    this.$.ajax_update.url = "/Engenharia/UpdateProjectDiary";
+                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.generateRequest();
+
+                    this.$.ajax_update.url = "/Engenharia/GetAllProjectDiary";
+                    this.$.projectDiaryProject.clearCache();
+                },
+
+                _delete: function (e) {
+                    var index = this.result.indexOf(e.model.item);
+                    this.result.splice(index, 1);
+
+                    this.$.projectDiaryProject.clearCache();
+                },
+
+                _cancel: function () {
+                    this.$.ajax_update.url = "/Engenharia/GetAllProjectDiary";
+                    this.$.ajax_update.generateRequest();
+                    this.$.projectDiaryProject.clearCache();
+                },
+
+                _updateResponse: function (e) {
+                    var self = this;
+                    if (this.$.ajax_update.url != "/Engenharia/UpdateProjectDiary") {
+                        if (e.detail.status === 200) {
+                            this.openToast("Diário de Projeto atualizado.");
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao atualizar as o Diário de Projeto.");
+                        }
+                    }
+                },
+
+                _valueChange: function (e) {
+                    debugger;;
+                    if (e.value) {
+                        this.$.ajax_related.body = JSON.stringify(e.value);
+                        let request = this.$.ajax_related.generateRequest();
+
+                        request.completes.then(function (req) {
+                            if (req != null)
+                            {
+                                this.$.piDescription = req.Description;
+                                this.$.piCodeRegion = req.RegionCode;
+                                this.$.piFuncArea = req.FuncAreaCode;
+                                this.$.piCodeResponsabilityCenter = req.ResponsabilityCenter;
+                            }
+
+                        }), function (rejected) {
+
+                            this.$.piDescription = "";
+                            this.$.piCodeRegion = "";
+                            this.$.piFuncArea = "";
+                            this.$.piCodeResponsabilityCenter = "";
+                        }
+                    }
+                    else {
+                        this.$.piDescription = "";
+                        this.$.piCodeRegion = "";
+                        this.$.piFuncArea = "";
+                        this.$.piCodeResponsabilityCenter = "";
+                    }
+                },
+
+                _updateRelatedResponse: function (related)
+                {
+                    debugger;;
+                    if (related != null)
+                    {
+                        this.$.piDescription = related.Description;
+                        this.$.piCodeRegion = related.RegionCode;
+                        this.$.piFuncArea = related.FuncAreaCode;
+                        this.$.piCodeResponsabilityCenter = related.ResponsabilityCenter;
+                    }
+
+                }
+            });
+        });
+    </script>
+</dom-module>

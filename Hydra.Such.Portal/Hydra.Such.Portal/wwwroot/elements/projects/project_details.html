@@ -1,0 +1,406 @@
+﻿
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-material-theme/vaadin-date-picker.html">
+
+
+
+
+
+
+<dom-module id="x-projectdetails">
+    <template>
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <style>
+            vaadin-combo-box {
+                padding: 1px 0 !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: -14px;
+                width: 100%;
+                padding-top: 0px;
+            }
+            .break_clear{ 
+                margin-top: 15px;
+            }
+        </style>
+
+
+        <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/PopulateDropdowns/GetProjectStatus" last-response="{{LProjectStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectCategories" last-response="{{LProjectCategories}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectTypes" last-response="{{LProjectTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <!-- PROJECT CRUDS -->
+        <iron-ajax url="/Projetos/GetProjectDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <!-- PROJECT Valitador -->
+        <iron-ajax url="/Projetos/ValidateNumeration"
+                   last-response="{{validateResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_validator_ajax"
+                   on-response="_responseValidatorProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <!-- Address databound -->
+        <iron-ajax url="/Projetos/GetAddressData"
+                   last-response="{{addressData}}"
+                   method="post"
+                   handle-as="json"
+                   id="address_ajax"
+                   on-response="_addressResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+
+        <template is="dom-if" if="{{ !_isCreate }}">
+            <div class="row">
+                <div class="col-lg-12">
+                    <paper-button raised id="btnProjectMovements" class="" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
+                    <paper-button raised id="btnProjectDiary" class=""><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
+                </div>
+            </div>
+        </template>
+        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+            <paper-tab>Geral</paper-tab>
+            <paper-tab>Registo</paper-tab>
+            <paper-tab>Faturação</paper-tab>
+            <paper-tab>Envio</paper-tab>
+            <paper-tab>Detalhe</paper-tab>
+            <paper-tab>AEC</paper-tab>
+        </paper-tabs>
+        <iron-pages selected="{{selected}}">
+            <!--Geral-->
+            <div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.projectNo}}" disabled="{{ !_isCreate }}" id="ProjectNo" name="ProjectNo" ed required label="Nº Projeto"> </paper-input>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-date-picker label="Data" id="Date" name="Date" value="{{data.date}}"></vaadin-date-picker>
+                    </div>
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.projectResponsible}}" id="projectResponsible" name="projectResponsible" required label="Responsável Projeto"> </paper-input>
+
+                    </div>
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.contractNo}}" id="ContractNo" name="ContractNo" required label="Nº Contrato"> </paper-input>
+
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.description}}" id="Description" name="Description" required label="Descrição"> </paper-input>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LProjectStatus]]" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.serviceObjectCode}}" id="serviceObjectCode" name="serviceObjectCode" required label="Cód. Objeto Serviço"> </paper-input>
+
+                    </div>
+                    <div class="col-lg-3">
+
+                        <vaadin-combo-box items="[[LProjectTypes]]" item-value-path="id" item-label-path="value" value="{{data.projectTypeCode}}" label="Cód. Tipo Projeto">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.clientNo}}" id="ClientNo" name="ClientNo" required label="Nº Cliente"> </paper-input>
+                    </div>
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.projectLeader}}" id="ProjectLeader" name="ProjectLeader" required label="Chefe Projeto"> </paper-input>
+
+                    </div>
+                    <div class="col-lg-3">
+                        <center>
+                            <paper-checkbox checked="{{data.billable}}">Faturável</paper-checkbox>
+                        </center>
+
+                    </div>
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.ourProposal}}" id="OurProposal" name="OurProposal" required label="Nossa Proposta"> </paper-input>
+
+                    </div>
+                </div>
+            </div>
+
+            <!--Registo-->
+            <div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.regionCode}}" id="RegionCode" name="RegionCode" required label="Código Região"> </paper-input>
+                    </div>
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.responsabilityCenterCode}}" id="ResponsabilityCenterCode" name="ResponsabilityCenterCode" required label="Código Centro Responsabilidade"> </paper-input>
+
+                    </div>
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.groupContabProjectType}}" id="GroupContabProjectType" name="GroupContabProjectType" required label="Tipo Grupo Contab. Projeto"> </paper-input>
+                    </div>
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.groupContabOMProjectType}}" id="GroupContabOMProjectType" name="GroupContabOMProjectType" required label="Tipo Grupo Contab. OM Projeto"> </paper-input>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.functionalAreaCode}}" id="FunctionalAreaCode" name="FunctionalAreaCode" required label="Código Área Funcional"> </paper-input>
+                    </div>
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.accountWorkGroup}}" id="AccountWorkGroup" name="AccountWorkGroup" required label="Grupo Contab. Obra"> </paper-input>
+
+                    </div>
+                </div>
+            </div>
+
+            <!--Faturação-->
+            <div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.commitmentCode}}" id="CommitmentCode" name="CommitmentCode" required label="Nº Compromisso"> </paper-input>
+                    </div>
+                </div>
+            </div>
+
+            <!--Envio-->
+            <div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.shippingAddressCode}}" id="ShippingAddressCode" name="ShippingAddressCode" required label="Cód. Endereço Envio" on-value-changed="_getAddressByCode"> </paper-input>
+                    </div>
+                    <div class="col-lg-3">
+                        <paper-input type="text" bind-value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" required label="Envio-a Endereço">asdasdas</paper-input>
+
+                    </div>
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" required label="Envio-a Localidade"> </paper-input>
+                    </div>
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.shippingContact}}" id="ShippingContact" name="ShippingContact" required label="Envio-a Contato"> </paper-input>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.shippingName}}" id="ShippingName" name="ShippingName" required label="Envio-a Nome"> </paper-input>
+                    </div>
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.shippingPostalCode}}" id="ShippingPostalCode" name="ShippingPostalCode" required label="Envio-a Cód. Postal"> </paper-input>
+
+                    </div>
+                </div>
+            </div>
+
+            <!--Detalhe-->
+            <div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.clientRequest}}" id="ClientRequest" name="ClientRequest" required label="Pedido do Cliente"> </paper-input>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-date-picker label="RequestDate" id="RequestDate" name="Date" value="{{data.requestDate}}"></vaadin-date-picker>
+                    </div>
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.detailedDescription}}" id="DetailedDescription" name="DetailedDescription" required label="Descrição Detalhada"> </paper-input>
+                    </div>
+                </div>
+            </div>
+
+            <!--AEC-->
+            <div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LProjectCategories]]" item-value-path="id" item-label-path="value" value="{{data.projectCategory}}" label="Categoria Projeto">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <paper-input type="text" value="{{data.budgetContractNo}}" id="BudgetContractNo" name="BudgetContractNo" required label="Nº Contrato Orçamento"> </paper-input>
+                    </div>
+                    <div class="col-lg-3">
+                        <center>
+                            <br />
+                            <paper-checkbox checked="{{data.internalProject}}">Projeto Interno</paper-checkbox>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </iron-pages>
+
+        <div class="marginSpace">
+            <template is="dom-if" if="{{ _isCreate }}">
+                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </template>
+            <template is="dom-if" if="{{ !_isCreate }}">
+                <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </template>
+        </div>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-projectdetails',
+                properties: {
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _projectid: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: false
+                    }
+                },
+                ready: function () {
+                    //GET PROJECT DATA
+                    this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this._projectid });
+                    this.$.page_databound_ajax.generateRequest();
+
+                    if (this._projectid == "") {
+                        this._isCreate = true;
+                        //this.data.area = this._areaid;
+                    }
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+                _executeRequest: function (url, data) {
+                    this.$.page_databound_ajax.url = url;
+                    this.$.page_databound_ajax.body = JSON.stringify(data);
+                    this.$.page_databound_ajax.generateRequest();
+                },
+                _validateData: function() {
+                    if (false) {
+                        this._openToast(validate);
+                        return false;
+                    }
+                    return true;
+                },
+                _create: function () {
+                    debugger;;
+                    if (this._validateData()) {
+                        if (this._isCreate) {
+                            this.$.page_validator_ajax.body = JSON.stringify(this.data);
+                            this.$.page_validator_ajax.generateRequest();
+                        } else {
+                            this._executeRequest("/Projetos/CreateProject", this.data)
+                        }
+                    }
+                },
+                _update: function () {
+                    if (this._validateData()) {
+                        debugger;;
+                        this._executeRequest("/Projetos/UpdateProject", this.data)
+                    }
+                },
+                _responseProcessor: function (data) {
+                    var self = this;
+
+                    //Set AreaId
+                    if (this.data.projectNo == "") {
+                        this.data.area = this._areaid;
+                    } 
+
+                    if (data.detail.status === 200) {
+                        if (data.detail.url.indexOf("GetProject") !== -1) {
+                            if (this.data.ProjectNo == "") {
+                                this._isCreate = true;
+                            }
+                        } else if (data.detail.url.indexOf("Create") !== -1) {
+                            this._openToast("Projeto criado com sucesso!");
+                            this._isCreate = false;
+                        }
+                    }
+                },
+                _responseValidatorProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        debugger;;
+                        if (this.validateResponse == "") {
+                            this._executeRequest("/Projetos/CreateProject", this.data)
+                        } else {
+                            this._openToast(data);
+                        }
+                    }
+                },
+
+
+                _getAddressByCode: function (e) {
+                    debugger;;
+                    this.$.address_ajax.body = JSON.stringify(e.detail.value);
+                    this.$.address_ajax.generateRequest();
+                },
+                _addressResponseProcessor: function (e) {
+                    var self = this;
+                    if (this.addressData != null) {
+                        //Fill Data
+                        this.$.ShippingName.value = this.addressData.name;
+                        this.$.ShippingAddress.value = this.addressData.address;
+                        this.$.ShippingPostalCode.value = this.addressData.zipCode;
+                        this.$.ShippingLocality.value = this.addressData.city;
+                        this.$.ShippingContact.value = this.addressData.contact;
+                    } 
+                },
+            });
+        });
+    </script>
+
+</dom-module>
+
+
