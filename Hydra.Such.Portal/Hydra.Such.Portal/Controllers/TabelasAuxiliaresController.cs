@@ -197,6 +197,53 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        //Create/Update/Delete 
+        [HttpPost]
+        public JsonResult UpdateTiposGrupoContabProjetoOM([FromBody] List<ContabGroupTypesOMProjectViewModel> data)
+        {
+            //Get All
+            List<TiposGrupoContabOmProjeto> previousList = DBCountabGroupTypesOM.GetAll();
+            previousList.RemoveAll(x => data.Any(u => u.Code == x.Código));
+            previousList.ForEach(x => DBCountabGroupTypesOM.DeleteAllFromProfile(x.Código));
+
+            data.ForEach(x =>
+            {
+                TiposGrupoContabOmProjeto CN = new TiposGrupoContabOmProjeto()
+                {
+                    Código = x.Code,
+                    Tipo = x.Type,
+                    Descrição = x.Description,
+                    ManutCorretiva = x.CorrectiveMaintenance,
+                    ManutPreventiva = x.PreventiveMaintenance,
+                    TipoRazãoFalha = x.FailType,
+                    IndicadorTempoResposta = x.ResponseTimeIndicator,
+                    IndicadorTempoImobilização = x.StopTimeIndicator,
+                    IndicadorTempoEfetivoReparação = x.RepairEffectiveTimeIndicator,
+                    IndicadorTempoFechoObras = x.ClosingWorksTimeIndicator,
+                    IndicadorTempoFaturação = x.BillingTimeIndicator,
+                    IndicadorTempoOcupColaboradores = x.EmployeesOccupationTimeIndicator,
+                    IndicadorValorCustoVenda = x.CostSaleValueIndicator,
+                    IndicTaxaCumprimentoCat = x.CATComplianceRateIndicator,
+                    IndicadorTaxaCoberturaCat = x.CATCoverageRateIndicator,
+                    IndicTaxaCumprRotinasMp = x.MPRoutineFulfillmentRateIndicator,
+                    IndicIncidênciasAvarias = x.BreakoutIncidentsIndicator,
+                    IndicadorOrdensEmCurso = x.OrdernInProgressIndicator
+                };
+
+                if (x.Code > 0)
+                {
+                    CN.Código = x.Code;
+                    DBCountabGroupTypesOM.Update(CN);
+                }
+                else
+                {
+                    DBCountabGroupTypesOM.Create(CN);
+                }
+            });
+
+            return Json(data);
+        }
         #endregion TiposGrupoContabOMProjeto
     }
 }
