@@ -6,11 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.Logic.Project;
+using Microsoft.Extensions.Options;
+using Hydra.Such.Data.ViewModel.ProjectView;
 
 namespace Hydra.Such.Portal.Controllers
 {
     public class PopulateDropdownsController : Controller
     {
+        private readonly NAVConfigurations _config;
+
+        public PopulateDropdownsController(IOptions<NAVConfigurations> appSettings)
+        {
+            _config = appSettings.Value;
+        }
+
         [HttpPost]
         public JsonResult GetNumerations()
         {
@@ -77,79 +86,25 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetRegionCode()
         {
-            List<DDMessage> Region = new List<DDMessage>(){
-                new DDMessage()
-                {
-                    id = 1,
-                    value = "Minho"
-                },
+            List<NAVDimValueViewModel> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1);
 
-                new DDMessage()
-                {
-                    id = 2,
-                    value = "Douro Litoral"
-                },
-
-                new DDMessage()
-                {
-                    id = 3,
-                    value = "Algarve"
-                },
-            };
-
-            return Json(Region);
+            return Json(result);
         }
+
 
         [HttpPost]
         public JsonResult GetFunctionalAreaCode()
         {
-            List<DDMessage> FunctionalArea = new List<DDMessage>(){
-                new DDMessage()
-                {
-                    id = 1,
-                    value = "Area 1"
-                },
 
-                new DDMessage()
-                {
-                    id = 2,
-                    value = "Area 2"
-                },
-
-                new DDMessage()
-                {
-                    id = 3,
-                    value = "Area 3"
-                },
-            };
-
-            return Json(FunctionalArea);
+            List<NAVDimValueViewModel> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2);
+            return Json(result);
         }
 
         [HttpPost]
         public JsonResult GetResponsabilityCenterCode()
         {
-            List<DDMessage> ResponsabilityCenter = new List<DDMessage>(){
-                new DDMessage()
-                {
-                    id = 1,
-                    value = "Responsabilidade 1"
-                },
-
-                new DDMessage()
-                {
-                    id = 2,
-                    value = "Responsabilidade 2"
-                },
-
-                new DDMessage()
-                {
-                    id = 3,
-                    value = "Responsabilidade 3"
-                },
-            };
-
-            return Json(ResponsabilityCenter);
+            List<NAVDimValueViewModel> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3);
+            return Json(result);
         }
 
 
