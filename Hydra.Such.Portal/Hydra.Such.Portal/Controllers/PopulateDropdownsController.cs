@@ -210,6 +210,31 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+        [HttpPost]
+        public JsonResult GetAreaCode()
+        {
+            List<DDMessageString> Area = new List<DDMessageString>(){
+                new DDMessageString()
+                {
+                    id = "1",
+                    value = "Code 1"
+                },
+
+                new DDMessageString()
+                {
+                    id = "2",
+                    value = "Code 2"
+                },
+
+                new DDMessageString()
+                {
+                    id = "3",
+                    value = "Code 3"
+                },
+            };
+
+            return Json(Area);
+        }
     }
 
     public class DDMessage
