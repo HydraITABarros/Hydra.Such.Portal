@@ -75,7 +75,6 @@ namespace Hydra.Such.Portal.Controllers
                 ID = x.Código,
                 Description = x.Descrição,
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
-
                 Region = x.CódigoRegião,
                 ResponsabilityCenter = x.CódigoCentroResponsabilidade
             }).ToList();

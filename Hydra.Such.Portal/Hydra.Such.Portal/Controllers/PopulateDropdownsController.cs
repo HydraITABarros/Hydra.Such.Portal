@@ -165,8 +165,22 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
-    }
 
+        [HttpPost]
+        public JsonResult GetContabGroupTypesOM_Type()
+        {
+            List<EnumData> result = EnumerablesFixed.ContabGroupTypesOM_Type;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContabGroupTypesOM_FailType()
+        {
+            List<EnumData> result = EnumerablesFixed.ContabGroupTypesOM_FailType;
+            return Json(result);
+        }
+    }
+    
     public class DDMessage
     {
         public int id { get; set; }
