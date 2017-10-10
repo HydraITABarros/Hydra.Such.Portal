@@ -39,6 +39,22 @@
             paper-input {
                 max-width: 450px !important;
             }
+            vaadin-grid#gridserviceobjects vaadin-grid-filter {
+                margin: 0 auto;
+            }
+
+            vaadin-grid#gridserviceobjects vaadin-grid-sorter {
+                margin: 0 auto;
+            }
+
+            vaadin-grid#gridserviceobjects paper-checkbox {
+                text-align: center;
+            }
+
+            --vaadin-grid-header-cell: {
+                font-size: 12px;
+            }
+
         </style>
         @*POPULATE GRID*@
         <iron-ajax url="/TabelasAuxiliares/GetServiceObjectsData"
@@ -109,7 +125,7 @@
             </vaadin-grid-column>
             <vaadin-grid-column>
                 <template class="header">
-                    Bloqueado
+                    <p class="alignCenter">Bloqueado</p>
                     <vaadin-grid-filter path="blocked" value="[[_filterActive]]" >
                         <paper-checkbox checked="{{_filterActive}}"></paper-checkbox>
                     </vaadin-grid-filter>
