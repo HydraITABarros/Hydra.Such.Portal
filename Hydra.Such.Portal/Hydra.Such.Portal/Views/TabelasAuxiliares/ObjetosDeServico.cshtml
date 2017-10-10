@@ -57,7 +57,7 @@
                    id="ajax_update"
                    content-type="application/json"></iron-ajax>
         @*COMBO*@
-        <iron-ajax url="/PopulateDropdowns/GetAreaCode"
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
                    last-response="{{AreaCodeData}}"
                    auto
                    method="post"
@@ -72,11 +72,11 @@
                         <td width="20%"><paper-input id="piDescription" type="text" name="description" required label="Descrição" maxlength="20"></paper-input></td>
                         <td width="10%"><paper-checkbox id="pcBlocked">Bloqueado</paper-checkbox></td>
                         <td width="20%">  
-                            <vaadin-combo-box items="[[AreaCodeData]]" item-value-path="id" item-label-path="value" value="{{ddAreaCode}}" label="Código Área">
+                            <vaadin-combo-box items="[[AreaCodeData]]" item-value-path="code" item-label-path="name" value="{{ddAreaCode}}" label="Código Área">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
+                                            <div>[[item.name]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
                                 </template>
@@ -119,14 +119,15 @@
             </vaadin-grid-column>
             <vaadin-grid-column>
                 <template class="header">
-                    Código da Àrea
+                    <vaadin-grid-sorter path="areaCode">Código da Àrea</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="areaCode" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[AreaCodeData]]" item-value-path="id" item-label-path="value" value="{{item.areaCode}}">
+                    <vaadin-combo-box items="[[AreaCodeData]]" item-value-path="code" item-label-path="name" value="{{item.areaCode}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
+                                    <div>[[item.name]]</div>
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
