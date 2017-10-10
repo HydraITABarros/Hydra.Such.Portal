@@ -54,7 +54,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 LineNo = x.NºLinha,
                 ProjectNo = x.NºProjeto,
-                Date = x.Data,
+                Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
                 MovementType = x.TipoMovimento,
                 Type = x.Tipo,
                 Code = x.Código,
@@ -62,7 +62,7 @@ namespace Hydra.Such.Portal.Controllers
                 Quantity = x.Quantidade,
                 MeasurementUnitCode = x.CódUnidadeMedida,
                 LocationCode = x.CódLocalização,
-                ProjectContabGroup = x.GrupoContabProjeto, // ???
+                ProjectContabGroup = x.GrupoContabProjeto,
                 RegionCode = x.CódigoRegião,
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
                 ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
@@ -82,8 +82,16 @@ namespace Hydra.Such.Portal.Controllers
         {
             // Get All
             List<DiárioDeProjeto> previousList = DBProjectDiary.GetAll();
-            previousList.RemoveAll(x => !dp.Any(u => u.LineNo == x.NºLinha));
-            previousList.ForEach(x => DBProjectDiary.Delete(x));
+            //previousList.RemoveAll(x => !dp.Any(u => u.LineNo == x.NºLinha));
+            //previousList.ForEach(x => DBProjectDiary.Delete(x));
+
+            foreach (DiárioDeProjeto line in previousList)
+            {
+                if (!dp.Any( x => x.LineNo == line.NºLinha))
+                {
+                    DBProjectDiary.Delete(line);
+                }
+            }
 
             //Update or Create
             dp.ForEach(x =>
@@ -92,7 +100,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     NºLinha = x.LineNo,
                     NºProjeto = x.ProjectNo,
-                    Data = x.Date,
+                    Data = x.Date == "" || x.Date == String.Empty ? (DateTime?)null : DateTime.Parse(x.Date),
                     TipoMovimento = x.MovementType,
                     Tipo = x.Type,
                     Código = x.Code,
@@ -113,17 +121,12 @@ namespace Hydra.Such.Portal.Controllers
                     FaturaANºCliente = x.InvoiceToClientNo
                 };
 
-                Hydra.Such.Data.NAV.WSProjectDiaryLine newLine = new Data.NAV.WSProjectDiaryLine();
-
                 if (x.LineNo > 0)
                 {
-                    //newLine.CreateLine(x, 1);
                     DBProjectDiary.Update(newdp);
                 }
                 else
                 {
-                    //Create Line NAV
-                    //newLine.CreateLine(x, 0);
                     DBProjectDiary.Create(newdp);
                 }
             });
@@ -157,8 +160,55 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult RegisterDiaryLines([FromBody]  List<ProjectDiaryViewModel> dp)
+        {
+            dp.ForEach(x =>
+            {
+                DiárioDeProjeto newdp = new DiárioDeProjeto()
+                {
+                    NºLinha = x.LineNo,
+                    NºProjeto = x.ProjectNo,
+                    Data = DateTime.Parse(x.Date),
+                    TipoMovimento = x.MovementType,
+                    Tipo = x.Type,
+                    Código = x.Code,
+                    Descrição = x.Description,
+                    Quantidade = x.Quantity,
+                    CódUnidadeMedida = x.MeasurementUnitCode,
+                    CódLocalização = x.LocationCode,
+                    GrupoContabProjeto = x.ProjectContabGroup,
+                    CódigoRegião = x.RegionCode,
+                    CódigoÁreaFuncional = x.FunctionalAreaCode,
+                    CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
+                    Utilizador = "", // set user
+                    CustoUnitário = x.UnitCost,
+                    CustoTotal = x.TotalCost,
+                    PreçoUnitário = x.UnitPrice,
+                    PreçoTotal = x.TotalPrice,
+                    Faturável = x.Billable,
+                    FaturaANºCliente = x.InvoiceToClientNo
+                };
 
-        
+                Hydra.Such.Data.NAV.WSProjectDiaryLine newLine = new Data.NAV.WSProjectDiaryLine();
+
+                if (x.LineNo > 0)
+                {
+                    newLine.CreateLine(x, 1);
+                }
+                else
+                {
+                    //Create Line NAV
+                    newLine.CreateLine(x, 0);
+                }
+            });
+
+            return Json(dp);
+        }
+
+
+
+
         public class ProjectInfo
         {
             public string ProjectNo { get; set; }

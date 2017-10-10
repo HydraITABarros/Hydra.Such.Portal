@@ -132,7 +132,6 @@ ul.nav li:hover {
     }
 /* Custom General Classes */
 
-
 /* Main Menu */
 .item {
     padding: 15px !important;
@@ -353,7 +352,6 @@ ul.nav li:hover {
     padding: 5px;
     /*margin: 0 5px;*/
 }
-
     .subMenu button {
         border: none;
         margin: 0 5px;
@@ -370,6 +368,28 @@ ul.nav li:hover {
             color: white;
             cursor: pointer;
         }
+
+.tablinks {
+    text-transform: none;
+    border: none;
+    margin: 0 5px;
+    padding: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    background-color: transparent;
+    color: black;
+}
+
+    .tablinks:hover {
+        color: white;
+        cursor: pointer;
+    }
+    .tablinks:focus {
+        text-transform: none;
+        font-weight: normal;
+    }
 
 .subMenuImage1 {
     width: 150px;

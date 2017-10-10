@@ -26,6 +26,9 @@
 <link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectList.html" />
 
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+
 <h1 class="title">Diário de Projeto</h1>
 
 <x-projdiary></x-projdiary>
@@ -55,39 +58,62 @@
             }
         </style>
 
+        <div class="subMenu">
+            @*<button class="tablinks" onclick="_registerDiary()"><i class="fa fa-check-square" aria-hidden="true"></i> Registar Linhas de Diário</button>*@
+            <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-check-square" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
+        </div>
+
+        <iron-ajax url="/PopulateDropdowns/GetProjectList"
+                   last-response="{{response}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
         <iron-form id="formGeral">
             <form>
                 <h2 class="separator">Novo Registo</h2>
                 <table class="table inlineForm">
                     <tr>
                         <td width="">
-                            @*<paper-input id="piProjectNo" type="text" name="piProjectNo" char-counter required label="Nº Projeto" maxlength="20" value="{{projectNo}}"></paper-input>*@
-                            <cb-projectlist id="nProjectList"></cb-projectlist>
+                            @*<cb-projectlist id="nProjectList"></cb-projectlist>*@
+                            <vaadin-combo-box id="projectList" name="projectList" items="[[response]]" on-value-changed="_valueChange" item-value-path="id" item-label-path="value" label="Nº Projeto" value="{{indexvalue}}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
                         </td>
                         <td width=""><vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{date}}"></vaadin-date-picker></td>
                         <td width=""><cb-movetype id="nMoveType"></cb-movetype></td>
                         <td width=""><cb-projecttype id="nProjectType"></cb-projecttype></td>
-                        <td width=""><paper-input id="piCode" type="text" name="piCode" char-counter required label="Código" maxlength="20" value="{{code}}"></paper-input></td>
+                        <td width=""><paper-input id="piCode" type="text" name="piCode" label="Código" maxlength="20" value="{{code}}"></paper-input></td>
+                    </tr>
+                    <tr>
                         <td width=""><paper-input id="piDescription" type="text" name="piDescription" required label="Descrição" disabled value="{{description}}"></paper-input></td>
-                    </tr>
-                    <tr>
+                        <td width=""><paper-input id="piContabGroup" type="number" name="piContabGroup" disabled label="Grupo Contab." value="{{projectContabGroup}}"></paper-input></td>
                         <td width=""><paper-input id="piQuantity" type="number" name="piQuantity" required label="Quantidade" value="{{quantity}}"></paper-input></td>
-                        <td width=""><paper-input id="piCodeMeasurementUnit" type="text" name="piMeasurementUnit" required label="Cód. Unidade Medida" disabled value="{{codeMeasurementUnit}}"></paper-input></td>
-                        <td width=""><paper-input id="piCodeLocation" type="text" char-counter name="piCodeLocation" required label="Cód. Localização" maxlength="20" value="{{codeLocation}}"></paper-input></td>
-                        <td width=""><paper-input id="piCodeRegion" type="text" char-counter name="piCodeRegion" required label="Cód. Região" maxlength="20" value="{{codeRegion}}"></paper-input></td>
-                        <td width=""><paper-input id="piFuncArea" type="text" char-counter name="piFuncArea" required label="Cód. Área Funcional" maxlength="20" value="{{codeFuncArea}}"></paper-input></td>
-                        <td width=""><paper-input id="piCodeResponsabilityCenter" type="text" char-counter name="piCodeResponsabilityCenter" required label="Cód. Centro Responsabilidade" maxlength="20" value="{{codeResponsabilityCenter}}"></paper-input></td>
+                        <td width=""><paper-input id="piCodeMeasurementUnit" type="text" name="piMeasurementUnit" required label="Cód. Unidade Medida" value="{{codeMeasurementUnit}}"></paper-input></td>
+                        <td width=""><paper-input id="piCodeLocation" type="text" name="piCodeLocation" required label="Cód. Localização" maxlength="20" value="{{codeLocation}}"></paper-input></td>
                     </tr>
                     <tr>
+                        <td width=""><paper-input id="piCodeRegion" type="text" name="piCodeRegion" disabled label="Cód. Região" maxlength="20" value="{{codeRegion}}"></paper-input></td>
+                        <td width=""><paper-input id="piFuncArea" type="text" name="piFuncArea" disabled label="Cód. Área Funcional" maxlength="20" value="{{codeFuncArea}}"></paper-input></td>
+                        <td width=""><paper-input id="piCodeResponsabilityCenter" type="text" disabled name="piCodeResponsabilityCenter" label="Cód. Centro Responsabilidade" maxlength="20" value="{{codeResponsabilityCenter}}"></paper-input></td>
                         <td width=""><paper-input class="alignRight" type="number" label="Custo Unitário" required id="piUnitCost" name="piUnitCost" value="{{unitCost}}"><div slot="suffix">€</div></paper-input></td>
                         <td width=""><paper-input class="alignRight" type="number" label="Custo Total  " required id="piTotalCost" name="piTotalCost" value="{{totalCost}}"><div slot="suffix">€</div></paper-input></td>
+                    </tr>
+                    <tr>
                         <td width=""><paper-input class="alignRight" type="number" label="Preço Unitário  " required id="piUnitPrice" name="piUnitPrice" value="{{unitPrice}}"><div slot="suffix">€</div></paper-input></td>
                         <td width=""><paper-input class="alignRight" type="number" label="Preço Total  " required id="piTotalPrice" name="piTotalPrice" value="{{totalPrice}}"><div slot="suffix">€</div></paper-input></td>
-                        <td width=""><paper-checkbox id="pcInvoice" value="{{billable}}">Faturável</paper-checkbox></td>
+                        <td width=""><paper-checkbox id="pcInvoice" checked="{{billable}}">Faturável</paper-checkbox></td>
                         <td width=""><paper-input id="piInvoiceClientNo" type="text" name="piInvoiceClientNo" required label="Fatura a Nº Cliente" maxlength="20" value="{{invoiceClientNo}}"></paper-input></td>
+                        <td><paper-button class="btnSave" raised on-tap="_add">Novo</paper-button></td>
                     </tr>
                 </table>
-                <paper-button class="btnSave" raised on-tap="_add">Novo</paper-button>
             </form>
         </iron-form>
 
@@ -95,8 +121,15 @@
 
         <iron-ajax url="/Engenharia/GetAllProjectDiary"
                    last-response="{{result}}"
-                   id="ajax_update"
+                   id="ajax_getall"
                    auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Engenharia/UpdateProjectDiary"
+                   last-response="{{result}}"
+                   id="ajax_update"
                    method="post"
                    on-response="_updateResponse"
                    handle-as="json"
@@ -110,30 +143,40 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Engenharia/RegisterDiaryLines"
+                   last-response="{{data}}"
+                   id="ajax_register"
+                   method="post"
+                   on-response="_updateRegisterResponse"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
         <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result]]" class="editGrid">
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    Nº Projeto
+                    <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projectNo"></vaadin-grid-filter>
                 </template>
                 <template>
-                    @*<paper-input type="text" name="projectNo" required maxlength="20" value="{{item.projectNo}}">*@
-                    <cb-projectlist id="nProjectList" indexvalue="{{item.projectNo}}"></cb-projectlist>
+                    <cb-projectlist id="nProjectList" indexvalue="{{item.projectNo}}" disabledvalue="true"></cb-projectlist>
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="130px">
+            <vaadin-grid-column width="160px">
                 <template class="header">
-                    Data
+                    <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="date"></vaadin-grid-filter>
                 </template>
                 <template>
-                    @*<input type="date" id="projectDate" value="{{item.date}}"/>*@
-                    <input type="text" name="date" value="{{item.date}}" />
+                    @*<input type="date" id="dpDate" name="dpDate" value="{{item.date}}"/>*@
+                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{item.date}}"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    Tipo Movimento
+                    <vaadin-grid-sorter path="movementType">Tipo Movimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="movementType"></vaadin-grid-filter>
                 </template>
                 <template>
                     <cb-movetype name="movementType" indexvalue="{{item.movementType}}"></cb-movetype>
@@ -142,7 +185,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    Tipo
+                    <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="type"></vaadin-grid-filter>
                 </template>
                 <template>
                     <cb-projecttype name="type" indexvalue="{{item.type}}">
@@ -151,7 +195,8 @@
 
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    Código
+                    <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="code"></vaadin-grid-filter>
                 </template>
                 <template>
                     <paper-input name="code" type="text" required value="{{item.code}}">
@@ -160,7 +205,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    Descrição
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description"></vaadin-grid-filter>
                 </template>
                 <template>
                     <paper-input name="description" type="text" required value="{{item.description}}" disabled></paper-input>
@@ -169,7 +215,18 @@
 
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    Quantidade
+                    <vaadin-grid-sorter path="projectContabGroup">Grupo Contab.</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projectContabGroup"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <paper-input type="number" name="contabGroup" disabled value="{{item.projectContabGroup}}"></paper-input>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantity"></vaadin-grid-filter>                    
                 </template>
                 <template>
                     <paper-input type="number" name="quantity" required value="{{item.quantity}}"></paper-input>
@@ -178,7 +235,8 @@
 
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    Cód. Unidade Medida
+                    <vaadin-grid-sorter path="measurementUnitCode">Cód. Unidade Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="measurementUnitCode"></vaadin-grid-filter>                    
                 </template>
                 <template>
                     <paper-input type="text" name="measurementUnitCode" required maxlength="20" value="{{item.measurementUnitCode}}"></paper-input>
@@ -187,7 +245,8 @@
 
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    Cód. Localização
+                    <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="locationCode"></vaadin-grid-filter>                    
                 </template>
                 <template>
                     <paper-input type="text" name="locationCode" required maxlength="20" value="{{item.locationCode}}"></paper-input>
@@ -196,34 +255,38 @@
 
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    Cód. Região
+                    <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regionCode"></vaadin-grid-filter>                    
                 </template>
                 <template>
-                    <paper-input type="text" name="regionCode" required maxlength="20" value="{{item.regionCode}}"></paper-input>
+                    <paper-input type="text" name="regionCode" disabled value="{{item.regionCode}}"></paper-input>
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    Cód. Área Funcional
+                    <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="functionalAreaCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-input type="text" name="functionalAreaCode" required maxlength="20" value="{{item.functionalAreaCode}}"></paper-input>
+                    <paper-input type="text" name="functionalAreaCode" disabled value="{{item.functionalAreaCode}}"></paper-input>
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    Cód. Centro Responsabilidade
+                    <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsabilityCenterCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-input type="text" name="responsabilityCenterCode" required maxlength="20" value="{{item.responsabilityCenterCode}}"></paper-input>
+                    <paper-input type="text" name="responsabilityCenterCode" disabled value="{{item.responsabilityCenterCode}}"></paper-input>
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    Custo Unitário
+                    <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitCost"></vaadin-grid-filter>
                 </template>
                 <template>
                     <paper-input class="alignRight" type="number" required name="unitCost" value="{{item.unitCost}}"><div slot="suffix">€</div></paper-input>
@@ -232,7 +295,8 @@
 
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    Custo Total
+                    <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="totalCost"></vaadin-grid-filter>
                 </template>
                 <template>
                     <paper-input class="alignRight" type="number" required name="totalCost" value="{{item.totalCost}}"><div slot="suffix">€</div></paper-input>
@@ -241,6 +305,8 @@
 
             <vaadin-grid-column width="110px">
                 <template class="header">
+                    <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitPrice"></vaadin-grid-filter>
                     Preço Unitário
                 </template>
                 <template>
@@ -250,7 +316,8 @@
 
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    Preço Total
+                    <vaadin-grid-sorter path="totalPrice">Preço Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="totalPrice"></vaadin-grid-filter>
                 </template>
                 <template>
                     <paper-input class="alignRight" type="number" required name="totalPrice" value="{{item.totalPrice}}"><div slot="suffix">€</div></paper-input>
@@ -259,7 +326,9 @@
 
             <vaadin-grid-column width="75px">
                 <template class="header">
-                    Faturável
+                    <vaadin-grid-filter path="billable" value="[[_filterActive]]">
+                        <paper-checkbox checked="{{_filterActive}}"> Faturável</paper-checkbox>
+                    </vaadin-grid-filter>
                 </template>
                 <template>
                     <paper-checkbox name="billable" checked="{{item.billable}}"></paper-checkbox>
@@ -268,7 +337,8 @@
 
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    Fatura a Nº Cliente
+                    <vaadin-grid-sorter path="invoiceToClientNo">Fatura a Nº Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="invoiceToClientNo"></vaadin-grid-filter>                    
                 </template>
                 <template>
                     <paper-input type="text" name="invoiceToClientNo" required maxlength="20" value="{{item.invoiceToClientNo}}"></paper-input>
@@ -325,6 +395,11 @@
                         notify: true,
                         value: ""
                     },
+                    projectContabGroup: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
                     quantity: {
                         type: Number,
                         notify: true,
@@ -378,14 +453,17 @@
                     billable: {
                         type: Boolean,
                         notify: true,
-                        value: false
+                        value: true
                     },
                     invoiceClientNo: {
                         type: String,
                         notify: true,
                         value: ""
                     },
-
+                    _filterActive: {
+                        type: Boolean,
+                        value: true
+                    }
                 },
 
                 openToast: function (message) {
@@ -415,7 +493,7 @@
                     //this.$.piInvoiceClientNo.value != "") {
                     {
                         var thisLine = {
-                            projectNo: this.ownerDocument.activeElement.$.nProjectList.indexvalue,
+                            projectNo: this.indexvalue,
                             date: this.date,
                             movementType: this.ownerDocument.activeElement.$.nMoveType.indexvalue,
                             type: this.ownerDocument.activeElement.$.nProjectType.indexvalue,
@@ -424,11 +502,11 @@
                             quantity: this.quantity,
                             measurementUnitCode: this.codeMeasurementUnit,
                             locationCode: this.codeLocation,
-                            //projectContabGroup: x.GrupoContabProjeto, // ???
+                            projectContabGroup: this.projectContabGroup,
                             regionCode: this.codeRegion,
                             functionalAreaCode: this.codeFuncArea,
                             responsabilityCenterCode: this.codeResponsabilityCenter,
-                            //user = "", //set logged user
+                            user: "", //set logged user
                             unitCost: this.unitCost,
                             totalCost: this.totalCost,
                             unitPrice: this.unitPrice,
@@ -451,7 +529,7 @@
 
                         this.result.unshift({
 
-                            projectNo: this.$.piProjectNo.value,
+                            projectNo: this.$.projectList.value,
                             date: this.$.dpDate.value,
                             movementType: parseInt(this.$.nMoveType.value),
                             type: parseInt(this.$.nProjectType.value),
@@ -460,11 +538,11 @@
                             quantity: this.$.piQuantity.value,
                             measurementUnitCode: this.$.piCodeMeasurementUnit.value,
                             locationCode: this.$.piCodeLocation.value,
-                            //projectContabGroup: x.GrupoContabProjeto, // ???
+                            projectContabGroup: this.$.piContabGroup.value,
                             regionCode: this.$.piCodeRegion.value,
                             functionalAreaCode: this.$.piFuncArea.value,
                             responsabilityCenterCode: this.$.piCodeResponsabilityCenter.value,
-                            //user = "", //set logged user
+                            user: "", //set logged user
                             unitCost: this.$.piUnitCost.value,
                             totalCost: this.$.piTotalCost.value,
                             unitPrice: this.$.piUnitPrice.value,
@@ -478,12 +556,12 @@
                 },
 
                 _update: function () {
-                    this.$.ajax_update.url = "/Engenharia/UpdateProjectDiary";
+                    //this.$.ajax_update.url = "/Engenharia/UpdateProjectDiary";
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
 
-                    this.$.ajax_update.url = "/Engenharia/GetAllProjectDiary";
-                    this.$.projectDiaryProject.clearCache();
+                    //this.$.ajax_update.url = "/Engenharia/GetAllProjectDiary";
+                    //this.$.projectDiaryProject.clearCache();
                 },
 
                 _delete: function (e) {
@@ -494,66 +572,73 @@
                 },
 
                 _cancel: function () {
-                    this.$.ajax_update.url = "/Engenharia/GetAllProjectDiary";
-                    this.$.ajax_update.generateRequest();
+                    //this.$.ajax_getall.url = "/Engenharia/GetAllProjectDiary";
+                    this.$.ajax_getall.generateRequest();
                     this.$.projectDiaryProject.clearCache();
                 },
 
                 _updateResponse: function (e) {
                     var self = this;
-                    if (this.$.ajax_update.url != "/Engenharia/UpdateProjectDiary") {
-                        if (e.detail.status === 200) {
-                            this.openToast("Diário de Projeto atualizado.");
-                        }
-                        else {
-                            this.openToast("Occorreu um erro ao atualizar as o Diário de Projeto.");
-                        }
+                    //if (this.$.ajax_update.url == "/Engenharia/UpdateProjectDiary") {
+                    if (e.detail.status === 200) {
+
+                        this.$.ajax_getall.generateRequest();
+                        this.$.projectDiaryProject.clearCache();
+
+                        this.openToast("Diário de Projeto atualizado.");
                     }
+                    else {
+                        this.openToast("Occorreu um erro ao atualizar as o Diário de Projeto.");
+                    }
+                    //}
                 },
 
                 _valueChange: function (e) {
-                    debugger;;
-                    if (e.value) {
-                        this.$.ajax_related.body = JSON.stringify(e.value);
-                        let request = this.$.ajax_related.generateRequest();
-
-                        request.completes.then(function (req) {
-                            if (req != null)
-                            {
-                                this.$.piDescription = req.Description;
-                                this.$.piCodeRegion = req.RegionCode;
-                                this.$.piFuncArea = req.FuncAreaCode;
-                                this.$.piCodeResponsabilityCenter = req.ResponsabilityCenter;
-                            }
-
-                        }), function (rejected) {
-
-                            this.$.piDescription = "";
-                            this.$.piCodeRegion = "";
-                            this.$.piFuncArea = "";
-                            this.$.piCodeResponsabilityCenter = "";
-                        }
+                    if (e.detail.value) {
+                        this.$.ajax_related.body = JSON.stringify(e.detail.value);
+                        this.$.ajax_related.generateRequest();
                     }
                     else {
-                        this.$.piDescription = "";
-                        this.$.piCodeRegion = "";
-                        this.$.piFuncArea = "";
-                        this.$.piCodeResponsabilityCenter = "";
+                        //this.$.piDescription = "";
+                        //this.$.piCodeRegion = "";
+                        //this.$.piFuncArea = "";
+                        //this.$.piCodeResponsabilityCenter = "";
                     }
                 },
 
-                _updateRelatedResponse: function (related)
-                {
-                    debugger;;
-                    if (related != null)
-                    {
-                        this.$.piDescription = related.Description;
-                        this.$.piCodeRegion = related.RegionCode;
-                        this.$.piFuncArea = related.FuncAreaCode;
-                        this.$.piCodeResponsabilityCenter = related.ResponsabilityCenter;
+                _updateRelatedResponse: function (related) {
+                    if (related != null) {
+                        this.$.piDescription.value = related.detail.__data.response.description;
+                        this.$.piCodeRegion.value = related.detail.__data.response.regionCode;
+                        this.$.piFuncArea.value = related.detail.__data.response.funcAreaCode;
+                        this.$.piContabGroup.value = related.detail.__data.response.contabGroup;
+                        this.$.piCodeResponsabilityCenter.value = related.detail.__data.response.responsabilityCenter;
                     }
 
-                }
+                },
+
+                _registerDiary: function () {
+                    debugger;;
+
+                    _update();
+
+                    //this.$.ajax_register.body = JSON.stringify(this.result);
+                    //this.$.ajax_register.generateRequest();
+
+                },
+
+                _updateRegisterResponse: function (e) {
+                    var self = this;
+                    if (this.$.ajax_update.url == "/Engenharia/RegisterDiaryLines") {
+                        if (e.detail.status === 200) {
+                            this.openToast("Linhas do Diário registadas com sucesso no NAV.");
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao registar as linhas do Diário.");
+                        }
+                    }
+                },
+
             });
         });
     </script>
