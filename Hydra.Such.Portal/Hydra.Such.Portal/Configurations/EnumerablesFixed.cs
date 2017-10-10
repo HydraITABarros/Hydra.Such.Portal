@@ -230,8 +230,64 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 3,
                 Value = "Comum"
             }};
-    }
 
+
+        public static readonly List<EnumData> ContabGroupTypesOM_Type = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Estado Operacional"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Disponibilidade do Sistema"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Tipo de Ordem"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Efeito"
+            },
+            new EnumData()
+            {
+                Id = 5,
+                Value = "Razão Falha"
+            },
+            new EnumData()
+            {
+                Id = 6,
+                Value = "Motivo Ordem Pendente"
+            },
+            new EnumData()
+            {
+                Id = 7,
+                Value = "Tipo Plano"
+            }
+        };
+
+        public static readonly List<EnumData> ContabGroupTypesOM_FailType = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Todos"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Solicitação"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Nota de Avaria"
+            }
+        };
+    }
     public class EnumData
     {
         public int Id { get; set; }
