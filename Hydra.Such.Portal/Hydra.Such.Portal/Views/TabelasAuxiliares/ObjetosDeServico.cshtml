@@ -35,8 +35,9 @@
             input {
                 font: inherit;
             }
+
             paper-input {
-                max-width: 200px !important;
+                max-width: 450px !important;
             }
         </style>
         @*POPULATE GRID*@
@@ -72,7 +73,7 @@
                         <td width="20%"><paper-input id="piDescription" type="text" name="description" required label="Descrição" maxlength="20"></paper-input></td>
                         <td width="10%"><paper-checkbox id="pcBlocked">Bloqueado</paper-checkbox></td>
                         <td width="20%">  
-                            <vaadin-combo-box items="[[AreaCodeData]]" item-value-path="code" item-label-path="name" value="{{ddAreaCode}}" label="Código Área">
+                            <vaadin-combo-box items="[[AreaCodeData]]" item-value-path="code" item-label-path="name" value="{{ddAreaCode}}" label="Área">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -108,7 +109,7 @@
             </vaadin-grid-column>
             <vaadin-grid-column>
                 <template class="header">
-                    <vaadin-grid-sorter path="blocked">Bloqueado</vaadin-grid-sorter>
+                    Bloqueado
                     <vaadin-grid-filter path="blocked" value="[[_filterActive]]" >
                         <paper-checkbox checked="{{_filterActive}}"></paper-checkbox>
                     </vaadin-grid-filter>
@@ -119,7 +120,7 @@
             </vaadin-grid-column>
             <vaadin-grid-column>
                 <template class="header">
-                    <vaadin-grid-sorter path="areaCode">Código da Àrea</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="areaCode">Área</vaadin-grid-sorter>
                     <vaadin-grid-filter path="areaCode" />
                 </template>
                 <template>
