@@ -4,16 +4,21 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@*Themes*@
 <link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="~/lib/vaadin-material-theme/vaadin-date-picker.html" />
+@*Themes*@
+
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
-<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html" />
-<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+
 <link rel="import" href="~/lib/paper-input/paper-input.html" />
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
@@ -25,9 +30,6 @@
 <link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectList.html" />
-
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
 
 <h1 class="title">Diário de Projeto</h1>
 
@@ -56,10 +58,21 @@
                 max-width: 200px !important;
                 font-size: 13px !important;
             }
+
+            vaadin-grid#projectDiaryProject vaadin-grid-filter {
+                margin: 0 auto;
+            }
+
+            vaadin-grid#projectDiaryProject paper-checkbox {
+                    text-align: center;
+            }
+
+            --vaadin-grid-header-cell: {
+                font-size: 12px;
+            }
         </style>
 
         <div class="subMenu">
-            @*<button class="tablinks" onclick="_registerDiary()"><i class="fa fa-check-square" aria-hidden="true"></i> Registar Linhas de Diário</button>*@
             <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-check-square" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
         </div>
 
@@ -169,7 +182,7 @@
                 </template>
                 <template>
                     @*<input type="date" id="dpDate" name="dpDate" value="{{item.date}}"/>*@
-                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{item.date}}"></vaadin-date-picker>
+                    <vaadin-date-picker id="dpDate" name="dpDate" value="{{item.date}}"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
 
@@ -226,7 +239,7 @@
             <vaadin-grid-column width="110px">
                 <template class="header">
                     <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="quantity"></vaadin-grid-filter>                    
+                    <vaadin-grid-filter path="quantity"></vaadin-grid-filter>
                 </template>
                 <template>
                     <paper-input type="number" name="quantity" required value="{{item.quantity}}"></paper-input>
@@ -236,7 +249,7 @@
             <vaadin-grid-column width="110px">
                 <template class="header">
                     <vaadin-grid-sorter path="measurementUnitCode">Cód. Unidade Medida</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="measurementUnitCode"></vaadin-grid-filter>                    
+                    <vaadin-grid-filter path="measurementUnitCode"></vaadin-grid-filter>
                 </template>
                 <template>
                     <paper-input type="text" name="measurementUnitCode" required maxlength="20" value="{{item.measurementUnitCode}}"></paper-input>
@@ -246,7 +259,7 @@
             <vaadin-grid-column width="110px">
                 <template class="header">
                     <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="locationCode"></vaadin-grid-filter>                    
+                    <vaadin-grid-filter path="locationCode"></vaadin-grid-filter>
                 </template>
                 <template>
                     <paper-input type="text" name="locationCode" required maxlength="20" value="{{item.locationCode}}"></paper-input>
@@ -256,7 +269,7 @@
             <vaadin-grid-column width="110px">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="regionCode"></vaadin-grid-filter>                    
+                    <vaadin-grid-filter path="regionCode"></vaadin-grid-filter>
                 </template>
                 <template>
                     <paper-input type="text" name="regionCode" disabled value="{{item.regionCode}}"></paper-input>
@@ -307,7 +320,6 @@
                 <template class="header">
                     <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="unitPrice"></vaadin-grid-filter>
-                    Preço Unitário
                 </template>
                 <template>
                     <paper-input class="alignRight" type="number" required name="unitPrice" value="{{item.unitPrice}}"><div slot="suffix">€</div></paper-input>
@@ -326,8 +338,9 @@
 
             <vaadin-grid-column width="75px">
                 <template class="header">
+                    Faturável
                     <vaadin-grid-filter path="billable" value="[[_filterActive]]">
-                        <paper-checkbox checked="{{_filterActive}}"> Faturável</paper-checkbox>
+                        <paper-checkbox checked="{{_filterActive}}"></paper-checkbox>
                     </vaadin-grid-filter>
                 </template>
                 <template>
@@ -338,7 +351,7 @@
             <vaadin-grid-column width="110px">
                 <template class="header">
                     <vaadin-grid-sorter path="invoiceToClientNo">Fatura a Nº Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="invoiceToClientNo"></vaadin-grid-filter>                    
+                    <vaadin-grid-filter path="invoiceToClientNo"></vaadin-grid-filter>
                 </template>
                 <template>
                     <paper-input type="text" name="invoiceToClientNo" required maxlength="20" value="{{item.invoiceToClientNo}}"></paper-input>
