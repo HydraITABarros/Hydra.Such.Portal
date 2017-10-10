@@ -75,10 +75,11 @@ namespace Hydra.Such.Portal.Controllers
                 ID = x.Código,
                 Description = x.Descrição,
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
+
                 Region = x.CódigoRegião,
                 ResponsabilityCenter = x.CódigoCentroResponsabilidade
             }).ToList();
-            
+
             return Json(result);
         }
 
@@ -165,8 +166,38 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region TiposGrupoContabOMProjeto
-            
 
+        public IActionResult TiposGrupoContabOMProjeto()
+        {
+            return View();
+        }
+
+        public JsonResult GetTiposGrupoContabOMProjeto([FromBody] ContabGroupTypesOMProjectViewModel data)
+        {
+            List<ContabGroupTypesOMProjectViewModel> result = DBCountabGroupTypesOM.GetAll().Select(x => new ContabGroupTypesOMProjectViewModel()
+            {
+                Code = x.Código,
+                Type = x.Tipo,
+                Description = x.Descrição,
+                CorrectiveMaintenance = x.ManutCorretiva,
+                PreventiveMaintenance = x.ManutPreventiva,
+                FailType = x.TipoRazãoFalha,
+                ResponseTimeIndicator = x.IndicadorTempoResposta,
+                StopTimeIndicator = x.IndicadorTempoImobilização,
+                RepairEffectiveTimeIndicator = x.IndicadorTempoEfetivoReparação,
+                ClosingWorksTimeIndicator = x.IndicadorTempoFechoObras,
+                BillingTimeIndicator = x.IndicadorTempoFaturação,
+                EmployeesOccupationTimeIndicator = x.IndicadorTempoOcupColaboradores,
+                CostSaleValueIndicator = x.IndicadorValorCustoVenda,
+                CATComplianceRateIndicator = x.IndicTaxaCumprimentoCat,
+                CATCoverageRateIndicator = x.IndicadorTaxaCoberturaCat,
+                MPRoutineFulfillmentRateIndicator = x.IndicTaxaCumprRotinasMp,
+                BreakoutIncidentsIndicator = x.IndicIncidênciasAvarias,
+                OrdernInProgressIndicator = x.IndicadorOrdensEmCurso
+            }).ToList();
+
+            return Json(result);
+        }
         #endregion TiposGrupoContabOMProjeto
     }
 }
