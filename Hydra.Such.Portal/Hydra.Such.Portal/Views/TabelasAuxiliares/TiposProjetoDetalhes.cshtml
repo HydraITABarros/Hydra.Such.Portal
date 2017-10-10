@@ -42,9 +42,15 @@
                    last-response="{{result}}"
                    method="post"
                    auto
-                   on-response="_updateResponse"
                    handle-as="json"
                    id="ajax_create"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/TabelasAuxiliares/GetProjectTypeData"
+                   last-response="{{result}}"
+                   method="post"
+                   on-response="_updateResponse"
+                   handle-as="json"
+                   id="ajax_update"
                    content-type="application/json"></iron-ajax>
 
         <div class="row marginSpace">
@@ -52,7 +58,7 @@
                 <paper-input type="text" value="" id="piDescription" name="piDescription" required label="Descrição"> </paper-input>
             </div>
             <div class="col-lg-2">
-                <paper-button raised id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Novo</paper-button>
+                <paper-button raised id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button>
             </div>
         </div>
         <vaadin-grid id="gridprojecttype" aria-label="ProfileModelsTabel" items="[[result]]" class="editGrid">
@@ -110,12 +116,9 @@
                     }
                 },
                 _update: function () {
-                    debugger;;
-                    this.$.ajax_create.url = "/TabelasAuxiliares/UpdateProjectType";
-                    this.$.ajax_create.body = JSON.stringify(this.result);
-                    this.$.ajax_create.generateRequest();
-                    this.$.ajax_create.url = "/TabelasAuxiliares/GetProjectTypeData";
-                    this.$.gridprojecttype.clearCache();
+                    this.$.ajax_update.url = "/TabelasAuxiliares/UpdateProjectType";
+                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.generateRequest();
                 },
                 _delete: function (e) {
                     var index = this.result.indexOf(e.model.item);
@@ -132,10 +135,12 @@
                 _updateResponse: function (e)
                 {
                     var self = this;
-                    if (this.$.ajax_create.url != "/TabelasAuxiliares/GetProjectTypeData")
+                    if (this.$.ajax_update.url != "/TabelasAuxiliares/GetProjectTypeData")
                     {
                         if (e.detail.status === 200) {
                             this.openToast("Tabela atualizada.");
+                            this.$.ajax_create.url = "/TabelasAuxiliares/GetProjectTypeData";
+                            this.$.ajax_create.generateRequest();
                         }
                         else {
                             this.openToast("Occorreu um erro ao atualizar a Tabela.");
