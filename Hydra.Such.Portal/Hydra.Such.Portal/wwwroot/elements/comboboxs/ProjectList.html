@@ -20,7 +20,7 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        <vaadin-combo-box id="projectList" items="[[response]]" value-changed="_valueChange" item-value-path="id" item-label-path="value" label="Nº Projeto" value="{{indexvalue}}">
+        <vaadin-combo-box id="projectList" items="[[response]]"  on-value-changed="_valueChange" item-value-path="id" item-label-path="value" label="Nº Projeto" disabled="{{disabledvalue}}" value="{{indexvalue}}">
             <template>
                 <paper-icon-item>
                     <paper-item-body two-line>
@@ -39,6 +39,11 @@
                 return {
                     indexvalue: {
                         type: Number,
+                        notify: true,
+                        reflectToAttribute: true
+                    },
+                    disabledvalue: {
+                        type: Boolean,
                         notify: true,
                         reflectToAttribute: true
                     }
