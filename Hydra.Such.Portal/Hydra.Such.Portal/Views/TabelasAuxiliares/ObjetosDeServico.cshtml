@@ -17,6 +17,8 @@
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+
 <h1 class="title">Objetos De Serviço</h1>
 <x-service-objects></x-service-objects>
 <dom-module id="x-service-objects">
@@ -33,19 +35,52 @@
             input {
                 font: inherit;
             }
+
             paper-input {
-                max-width: 200px !important;
+                max-width: 450px !important;
             }
+            vaadin-grid#gridserviceobjects vaadin-grid-filter {
+                margin: 0 auto;
+            }
+
+            vaadin-grid#gridserviceobjects vaadin-grid-sorter {
+                margin: 0 auto;
+            }
+
+            vaadin-grid#gridserviceobjects paper-checkbox {
+                text-align: center;
+            }
+
+            --vaadin-grid-header-cell: {
+                font-size: 12px;
+            }
+
         </style>
         @*POPULATE GRID*@
         <iron-ajax url="/TabelasAuxiliares/GetServiceObjectsData"
                    last-response="{{result}}"
                    method="post"
                    auto
+                   handle-as="json"
+                   id="ajax_create"
+                   content-type="application/json"></iron-ajax>
+        
+        @*POPULATE GRID*@
+        <iron-ajax url="/TabelasAuxiliares/GetServiceObjectsData"
+                   last-response="{{result}}"
+                   method="post"
                    on-response="_updateResponse"
                    handle-as="json"
                    id="ajax_update"
                    content-type="application/json"></iron-ajax>
+        @*COMBO*@
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
+                   last-response="{{AreaCodeData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
         <iron-form id="formGeral">
             <form>
                 <h2 class="separator">Novo Registo</h2>
@@ -53,19 +88,155 @@
                     <tr>
                         <td width="20%"><paper-input id="piDescription" type="text" name="description" required label="Descrição" maxlength="20"></paper-input></td>
                         <td width="10%"><paper-checkbox id="pcBlocked">Bloqueado</paper-checkbox></td>
-                        <td width="20%"><paper-input id="piDescription" type="text" name="description" required label="Descrição"></paper-input></td>
-                        <td ><paper-button raised id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Novo</paper-button></td>
+                        <td width="20%">  
+                            <vaadin-combo-box items="[[AreaCodeData]]" item-value-path="code" item-label-path="name" value="{{ddAreaCode}}" label="Código Área">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.name]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </td>
+                        <td ><paper-button raised id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button></td>
                     </tr>
                 </table>
             </form>
         </iron-form>
+        <vaadin-grid id="gridserviceobjects" aria-label="ProfileModelsTabel" items="[[result]]" class="editGrid">
+            <vaadin-grid-column>
+                <template class="header">
+                    <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="code" />
+                </template>
+                <template>
+                    <paper-input type="text" name="code" required maxlength="20" value="{{item.code}}" disabled> </paper-input>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" />
+                </template>
+                <template>
+                    <paper-input type="text" name="description" required maxlength="20" value="{{item.description}}"> </paper-input>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">
+                    <p class="alignCenter">Bloqueado</p>
+                    <vaadin-grid-filter path="blocked" value="[[_filterActive]]" >
+                        <paper-checkbox checked="{{_filterActive}}"></paper-checkbox>
+                    </vaadin-grid-filter>
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.blocked}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">
+                    <vaadin-grid-sorter path="areaCode">Código Área</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="areaCode" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[AreaCodeData]]" item-value-path="code" item-label-path="name" value="{{item.areaCode}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.name]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column with="10%">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button> </center>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+        <div class="marginSpace">
+            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+        </div>
+        
+
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady',
             function() {
                 Polymer({
-                    is: 'x-service-objects'
+                    is: 'x-service-objects',
+                    properties: {
+                        ddAreaCode: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _filterActive: {
+                            type: Boolean,
+                            value:true
+                        }
+                    },
+                    ready: function () {
+                        this.$.ajax_create.generateRequest();
+                    },
+                    openToast: function (message) {
+                        this.$.ToastMessage.text = message;
+                        this.$.ToastMessage.open();
+                    },
+                    _createAccessProfile: function () {
+                      
+                        if (this.$.piDescription.value == "" || this.$.piDescription.value == null) {
+                            this.openToast('É obrigatório preencher a Descrição.');
+                        } else {
+                            this.result.unshift({
+                                description: this.$.piDescription.value,
+                                blocked: this.$.pcBlocked.checked,
+                                areaCode: this.ddAreaCode
+
+                            });
+                           this.$.gridserviceobjects.clearCache();
+                        }
+                    },
+                    _update: function () {
+                        debugger;
+                        this.$.ajax_update.url = "/TabelasAuxiliares/UpdateServiceObjects";
+                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.generateRequest();
+                        this.$.gridserviceobjects.clearCache();
+                    },
+                    _delete: function (e) {
+                        var index = this.result.indexOf(e.model.item);
+                        this.result.splice(index, 1);
+
+                        this.$.gridserviceobjects.clearCache();
+                    },
+                    _cancel: function () {
+                        this.$.ajax_create.url = "/TabelasAuxiliares/GetServiceObjectsData";
+                        this.$.ajax_create.generateRequest();
+
+                        this.$.gridserviceobjects.clearCache();
+                    },
+                    _updateResponse: function (e) {
+                        var self = this;
+                        if (this.$.ajax_update.url != "/TabelasAuxiliares/GetServiceObjectsData") {
+                            if (e.detail.status === 200) {
+                                this.openToast("Tabela atualizada.");
+                                this.$.ajax_create.url = "/TabelasAuxiliares/GetServiceObjectsData";
+                                this.$.ajax_create.generateRequest();
+                            }
+                            else {
+                                this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                            }
+                        }
+                    }
                 });
             });
     </script>

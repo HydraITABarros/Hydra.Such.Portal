@@ -16,7 +16,7 @@ namespace Hydra.Such.Data.NAV
             {
                 //ws.Line_No = transactionID;
                 Document_No = dp.ProjectNo,
-                Document_Date = dp.Date.Value,
+                Document_Date = Convert.ToDateTime(dp.Date),
                 //ws.Ledger_Entry_Type = dp.MovementType;
                 //Type = x.Type,
                 //TypeCode = dp.Code;

@@ -8,7 +8,7 @@ namespace Hydra.Such.Data.ViewModel
     {
         public int LineNo { get; set; }
         public string ProjectNo { get; set; }
-        public DateTime? Date { get; set; }
+        public string Date { get; set; }
         public int? MovementType { get; set; }
         //public string DocumentNo { get; set; }
         public int? Type { get; set; }
