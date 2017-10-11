@@ -176,28 +176,39 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProjectType()
         {
-            List<DDMessage> ResponsabilityCenter = new List<DDMessage>(){
-                new DDMessage()
-                {
-                    id = 1,
-                    value = "Recurso"
-                },
-
-                new DDMessage()
-                {
-                    id = 2,
-                    value = "Produto"
-                },
-
-                new DDMessage()
-                {
-                    id = 3,
-                    value = "Conta CG"
-                },
-            };
+            List<DDMessage> ResponsabilityCenter = DBProjectTypes.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
 
             return Json(ResponsabilityCenter);
         }
+
+        [HttpPost]
+        public JsonResult GetServiceObjects()
+        {
+            List<DDMessage> ResponsabilityCenter = DBServiceObjects.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(ResponsabilityCenter);
+        }
+
+        [HttpPost]
+        public JsonResult GetServiceObjectsByAreaId(string AreaCode)
+        {
+            List<DDMessage> ResponsabilityCenter = DBServiceObjects.GetAll().Where(x => x.CódÁrea == AreaCode).Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(ResponsabilityCenter);
+        }
+
 
         [HttpPost]
         public JsonResult GetProjectList()
@@ -210,6 +221,32 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetCountabGroupTypes()
+        {
+            List<DDMessage> result = DBCountabGroupTypes.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetCountabGroupTypesOM()
+        {
+            List<DDMessage> result = DBCountabGroupTypesOM.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+
+
     }
 
     public class DDMessage
