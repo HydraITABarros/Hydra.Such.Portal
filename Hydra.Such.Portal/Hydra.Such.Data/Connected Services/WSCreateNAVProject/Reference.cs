@@ -12,51 +12,51 @@ namespace WSCreateNAVProject
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", ConfigurationName="WSCreateNAVProject.WSJobJournalLine_Port")]
-    internal interface WSJobJournalLine_Port
+    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", ConfigurationName="WSCreateNAVProject.WSJob_Port")]
+    public interface WSJob_Port
     {
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjobjournalline:Read", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjob:Read", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSCreateNAVProject.Read_Result> ReadAsync(WSCreateNAVProject.Read request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjobjournalline:ReadByRecId", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjob:ReadByRecId", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSCreateNAVProject.ReadByRecId_Result> ReadByRecIdAsync(WSCreateNAVProject.ReadByRecId request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjobjournalline:ReadMultiple", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjob:ReadMultiple", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSCreateNAVProject.ReadMultiple_Result> ReadMultipleAsync(WSCreateNAVProject.ReadMultiple request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjobjournalline:IsUpdated", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjob:IsUpdated", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSCreateNAVProject.IsUpdated_Result> IsUpdatedAsync(WSCreateNAVProject.IsUpdated request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjobjournalline:GetRecIdFromKey", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjob:GetRecIdFromKey", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSCreateNAVProject.GetRecIdFromKey_Result> GetRecIdFromKeyAsync(WSCreateNAVProject.GetRecIdFromKey request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjobjournalline:Create", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjob:Create", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSCreateNAVProject.Create_Result> CreateAsync(WSCreateNAVProject.Create request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjobjournalline:CreateMultiple", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjob:CreateMultiple", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSCreateNAVProject.CreateMultiple_Result> CreateMultipleAsync(WSCreateNAVProject.CreateMultiple request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjobjournalline:Update", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjob:Update", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSCreateNAVProject.Update_Result> UpdateAsync(WSCreateNAVProject.Update request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjobjournalline:UpdateMultiple", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjob:UpdateMultiple", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSCreateNAVProject.UpdateMultiple_Result> UpdateMultipleAsync(WSCreateNAVProject.UpdateMultiple request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjobjournalline:Delete", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjob:Delete", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSCreateNAVProject.Delete_Result> DeleteAsync(WSCreateNAVProject.Delete request);
     }
@@ -64,45 +64,25 @@ namespace WSCreateNAVProject
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline")]
-    public partial class WSJobJournalLine
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob")]
+    public partial class WSJob
     {
         
         private string keyField;
-        
-        private int line_NoField;
-        
-        private bool line_NoFieldSpecified;
-        
-        private string job_NoField;
-        
-        private System.DateTime document_DateField;
-        
-        private bool document_DateFieldSpecified;
-        
-        private Ledger_Entry_Type ledger_Entry_TypeField;
-        
-        private bool ledger_Entry_TypeFieldSpecified;
-        
-        private string document_NoField;
-        
-        private Type typeField;
-        
-        private bool typeFieldSpecified;
         
         private string noField;
         
         private string description100Field;
         
-        private decimal quantityField;
+        private string bill_to_Customer_NoField;
         
-        private bool quantityFieldSpecified;
+        private System.DateTime creation_DateField;
         
-        private string unit_of_Measure_CodeField;
+        private bool creation_DateFieldSpecified;
         
-        private string location_CodeField;
+        private Status statusField;
         
-        private string posting_GroupField;
+        private bool statusFieldSpecified;
         
         private string regionCode20Field;
         
@@ -110,33 +90,11 @@ namespace WSCreateNAVProject
         
         private string responsabilityCenterCode20Field;
         
-        private decimal unit_CostField;
+        private string job_Posting_GroupField;
         
-        private bool unit_CostFieldSpecified;
+        private string project_ManagerField;
         
-        private decimal total_CostField;
-        
-        private bool total_CostFieldSpecified;
-        
-        private decimal unit_PriceField;
-        
-        private bool unit_PriceFieldSpecified;
-        
-        private decimal total_PriceField;
-        
-        private bool total_PriceFieldSpecified;
-        
-        private bool chargeableField;
-        
-        private bool chargeableFieldSpecified;
-        
-        private string external_Document_NoField;
-        
-        private string time_Sheet_NoField;
-        
-        private int portal_Transaction_NoField;
-        
-        private bool portal_Transaction_NoFieldSpecified;
+        private string person_ResponsibleField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
@@ -154,146 +112,6 @@ namespace WSCreateNAVProject
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=1)]
-        public int Line_No
-        {
-            get
-            {
-                return this.line_NoField;
-            }
-            set
-            {
-                this.line_NoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Line_NoSpecified
-        {
-            get
-            {
-                return this.line_NoFieldSpecified;
-            }
-            set
-            {
-                this.line_NoFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
-        public string Job_No
-        {
-            get
-            {
-                return this.job_NoField;
-            }
-            set
-            {
-                this.job_NoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=3)]
-        public System.DateTime Document_Date
-        {
-            get
-            {
-                return this.document_DateField;
-            }
-            set
-            {
-                this.document_DateField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Document_DateSpecified
-        {
-            get
-            {
-                return this.document_DateFieldSpecified;
-            }
-            set
-            {
-                this.document_DateFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
-        public Ledger_Entry_Type Ledger_Entry_Type
-        {
-            get
-            {
-                return this.ledger_Entry_TypeField;
-            }
-            set
-            {
-                this.ledger_Entry_TypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Ledger_Entry_TypeSpecified
-        {
-            get
-            {
-                return this.ledger_Entry_TypeFieldSpecified;
-            }
-            set
-            {
-                this.ledger_Entry_TypeFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
-        public string Document_No
-        {
-            get
-            {
-                return this.document_NoField;
-            }
-            set
-            {
-                this.document_NoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
-        public Type Type
-        {
-            get
-            {
-                return this.typeField;
-            }
-            set
-            {
-                this.typeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool TypeSpecified
-        {
-            get
-            {
-                return this.typeFieldSpecified;
-            }
-            set
-            {
-                this.typeFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
         public string No
         {
             get
@@ -307,7 +125,7 @@ namespace WSCreateNAVProject
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
         public string Description100
         {
             get
@@ -321,77 +139,77 @@ namespace WSCreateNAVProject
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
-        public decimal Quantity
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public string Bill_to_Customer_No
         {
             get
             {
-                return this.quantityField;
+                return this.bill_to_Customer_NoField;
             }
             set
             {
-                this.quantityField = value;
+                this.bill_to_Customer_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=4)]
+        public System.DateTime Creation_Date
+        {
+            get
+            {
+                return this.creation_DateField;
+            }
+            set
+            {
+                this.creation_DateField = value;
             }
         }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool QuantitySpecified
+        public bool Creation_DateSpecified
         {
             get
             {
-                return this.quantityFieldSpecified;
+                return this.creation_DateFieldSpecified;
             }
             set
             {
-                this.quantityFieldSpecified = value;
+                this.creation_DateFieldSpecified = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
-        public string Unit_of_Measure_Code
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public Status Status
         {
             get
             {
-                return this.unit_of_Measure_CodeField;
+                return this.statusField;
             }
             set
             {
-                this.unit_of_Measure_CodeField = value;
+                this.statusField = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
-        public string Location_Code
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool StatusSpecified
         {
             get
             {
-                return this.location_CodeField;
+                return this.statusFieldSpecified;
             }
             set
             {
-                this.location_CodeField = value;
+                this.statusFieldSpecified = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
-        public string Posting_Group
-        {
-            get
-            {
-                return this.posting_GroupField;
-            }
-            set
-            {
-                this.posting_GroupField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
         public string RegionCode20
         {
             get
@@ -405,7 +223,7 @@ namespace WSCreateNAVProject
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
         public string FunctionAreaCode20
         {
             get
@@ -419,7 +237,7 @@ namespace WSCreateNAVProject
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
         public string ResponsabilityCenterCode20
         {
             get
@@ -433,251 +251,81 @@ namespace WSCreateNAVProject
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
-        public decimal Unit_Cost
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        public string Job_Posting_Group
         {
             get
             {
-                return this.unit_CostField;
+                return this.job_Posting_GroupField;
             }
             set
             {
-                this.unit_CostField = value;
+                this.job_Posting_GroupField = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Unit_CostSpecified
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        public string Project_Manager
         {
             get
             {
-                return this.unit_CostFieldSpecified;
+                return this.project_ManagerField;
             }
             set
             {
-                this.unit_CostFieldSpecified = value;
+                this.project_ManagerField = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
-        public decimal Total_Cost
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        public string Person_Responsible
         {
             get
             {
-                return this.total_CostField;
+                return this.person_ResponsibleField;
             }
             set
             {
-                this.total_CostField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Total_CostSpecified
-        {
-            get
-            {
-                return this.total_CostFieldSpecified;
-            }
-            set
-            {
-                this.total_CostFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
-        public decimal Unit_Price
-        {
-            get
-            {
-                return this.unit_PriceField;
-            }
-            set
-            {
-                this.unit_PriceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Unit_PriceSpecified
-        {
-            get
-            {
-                return this.unit_PriceFieldSpecified;
-            }
-            set
-            {
-                this.unit_PriceFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
-        public decimal Total_Price
-        {
-            get
-            {
-                return this.total_PriceField;
-            }
-            set
-            {
-                this.total_PriceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Total_PriceSpecified
-        {
-            get
-            {
-                return this.total_PriceFieldSpecified;
-            }
-            set
-            {
-                this.total_PriceFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
-        public bool Chargeable
-        {
-            get
-            {
-                return this.chargeableField;
-            }
-            set
-            {
-                this.chargeableField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool ChargeableSpecified
-        {
-            get
-            {
-                return this.chargeableFieldSpecified;
-            }
-            set
-            {
-                this.chargeableFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
-        public string External_Document_No
-        {
-            get
-            {
-                return this.external_Document_NoField;
-            }
-            set
-            {
-                this.external_Document_NoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
-        public string Time_Sheet_No
-        {
-            get
-            {
-                return this.time_Sheet_NoField;
-            }
-            set
-            {
-                this.time_Sheet_NoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
-        public int Portal_Transaction_No
-        {
-            get
-            {
-                return this.portal_Transaction_NoField;
-            }
-            set
-            {
-                this.portal_Transaction_NoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Portal_Transaction_NoSpecified
-        {
-            get
-            {
-                return this.portal_Transaction_NoFieldSpecified;
-            }
-            set
-            {
-                this.portal_Transaction_NoFieldSpecified = value;
+                this.person_ResponsibleField = value;
             }
         }
     }
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline")]
-    public enum Ledger_Entry_Type
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob")]
+    public enum Status
     {
         
         /// <remarks/>
-        _blank_,
+        Planning,
         
         /// <remarks/>
-        Resource,
+        Quote,
         
         /// <remarks/>
-        Item,
+        Open,
         
         /// <remarks/>
-        G_L_Account,
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline")]
-    public enum Type
-    {
-        
-        /// <remarks/>
-        Resource,
-        
-        /// <remarks/>
-        Item,
-        
-        /// <remarks/>
-        G_L_Account,
+        Completed,
     }
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline")]
-    public partial class WSJobJournalLine_Filter
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob")]
+    public partial class WSJob_Filter
     {
         
-        private WSJobJournalLine_Fields fieldField;
+        private WSJob_Fields fieldField;
         
         private string criteriaField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public WSJobJournalLine_Fields Field
+        public WSJob_Fields Field
         {
             get
             {
@@ -706,27 +354,9 @@ namespace WSCreateNAVProject
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline")]
-    public enum WSJobJournalLine_Fields
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob")]
+    public enum WSJob_Fields
     {
-        
-        /// <remarks/>
-        Line_No,
-        
-        /// <remarks/>
-        Job_No,
-        
-        /// <remarks/>
-        Document_Date,
-        
-        /// <remarks/>
-        Ledger_Entry_Type,
-        
-        /// <remarks/>
-        Document_No,
-        
-        /// <remarks/>
-        Type,
         
         /// <remarks/>
         No,
@@ -735,16 +365,13 @@ namespace WSCreateNAVProject
         Description100,
         
         /// <remarks/>
-        Quantity,
+        Bill_to_Customer_No,
         
         /// <remarks/>
-        Unit_of_Measure_Code,
+        Creation_Date,
         
         /// <remarks/>
-        Location_Code,
-        
-        /// <remarks/>
-        Posting_Group,
+        Status,
         
         /// <remarks/>
         RegionCode20,
@@ -756,78 +383,63 @@ namespace WSCreateNAVProject
         ResponsabilityCenterCode20,
         
         /// <remarks/>
-        Unit_Cost,
+        Job_Posting_Group,
         
         /// <remarks/>
-        Total_Cost,
+        Project_Manager,
         
         /// <remarks/>
-        Unit_Price,
-        
-        /// <remarks/>
-        Total_Price,
-        
-        /// <remarks/>
-        Chargeable,
-        
-        /// <remarks/>
-        External_Document_No,
-        
-        /// <remarks/>
-        Time_Sheet_No,
-        
-        /// <remarks/>
-        Portal_Transaction_No,
+        Person_Responsible,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Read", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Read
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Read", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class Read
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
-        public int Line_No;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
+        public string No;
         
         public Read()
         {
         }
         
-        public Read(int Line_No)
+        public Read(string No)
         {
-            this.Line_No = Line_No;
+            this.No = No;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Read_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Read_Result
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Read_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class Read_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
-        public WSCreateNAVProject.WSJobJournalLine WSJobJournalLine;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
+        public WSCreateNAVProject.WSJob WSJob;
         
         public Read_Result()
         {
         }
         
-        public Read_Result(WSCreateNAVProject.WSJobJournalLine WSJobJournalLine)
+        public Read_Result(WSCreateNAVProject.WSJob WSJob)
         {
-            this.WSJobJournalLine = WSJobJournalLine;
+            this.WSJob = WSJob;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class ReadByRecId
+    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class ReadByRecId
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
         public string recId;
         
         public ReadByRecId()
@@ -843,45 +455,45 @@ namespace WSCreateNAVProject
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class ReadByRecId_Result
+    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class ReadByRecId_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
-        public WSCreateNAVProject.WSJobJournalLine WSJobJournalLine;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
+        public WSCreateNAVProject.WSJob WSJob;
         
         public ReadByRecId_Result()
         {
         }
         
-        public ReadByRecId_Result(WSCreateNAVProject.WSJobJournalLine WSJobJournalLine)
+        public ReadByRecId_Result(WSCreateNAVProject.WSJob WSJob)
         {
-            this.WSJobJournalLine = WSJobJournalLine;
+            this.WSJob = WSJob;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class ReadMultiple
+    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class ReadMultiple
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute("filter")]
-        public WSCreateNAVProject.WSJobJournalLine_Filter[] filter;
+        public WSCreateNAVProject.WSJob_Filter[] filter;
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=1)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=1)]
         public string bookmarkKey;
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=2)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=2)]
         public int setSize;
         
         public ReadMultiple()
         {
         }
         
-        public ReadMultiple(WSCreateNAVProject.WSJobJournalLine_Filter[] filter, string bookmarkKey, int setSize)
+        public ReadMultiple(WSCreateNAVProject.WSJob_Filter[] filter, string bookmarkKey, int setSize)
         {
             this.filter = filter;
             this.bookmarkKey = bookmarkKey;
@@ -892,19 +504,19 @@ namespace WSCreateNAVProject
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class ReadMultiple_Result
+    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class ReadMultiple_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="ReadMultiple_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="ReadMultiple_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSCreateNAVProject.WSJobJournalLine[] ReadMultiple_Result1;
+        public WSCreateNAVProject.WSJob[] ReadMultiple_Result1;
         
         public ReadMultiple_Result()
         {
         }
         
-        public ReadMultiple_Result(WSCreateNAVProject.WSJobJournalLine[] ReadMultiple_Result1)
+        public ReadMultiple_Result(WSCreateNAVProject.WSJob[] ReadMultiple_Result1)
         {
             this.ReadMultiple_Result1 = ReadMultiple_Result1;
         }
@@ -913,11 +525,11 @@ namespace WSCreateNAVProject
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class IsUpdated
+    [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class IsUpdated
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
         public string Key;
         
         public IsUpdated()
@@ -933,11 +545,11 @@ namespace WSCreateNAVProject
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class IsUpdated_Result
+    [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class IsUpdated_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="IsUpdated_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="IsUpdated_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
         public bool IsUpdated_Result1;
         
         public IsUpdated_Result()
@@ -953,11 +565,11 @@ namespace WSCreateNAVProject
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class GetRecIdFromKey
+    [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class GetRecIdFromKey
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
         public string Key;
         
         public GetRecIdFromKey()
@@ -973,11 +585,11 @@ namespace WSCreateNAVProject
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class GetRecIdFromKey_Result
+    [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class GetRecIdFromKey_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetRecIdFromKey_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetRecIdFromKey_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
         public string GetRecIdFromKey_Result1;
         
         public GetRecIdFromKey_Result()
@@ -992,168 +604,168 @@ namespace WSCreateNAVProject
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Create
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class Create
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
-        public WSCreateNAVProject.WSJobJournalLine WSJobJournalLine;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
+        public WSCreateNAVProject.WSJob WSJob;
         
         public Create()
         {
         }
         
-        public Create(WSCreateNAVProject.WSJobJournalLine WSJobJournalLine)
+        public Create(WSCreateNAVProject.WSJob WSJob)
         {
-            this.WSJobJournalLine = WSJobJournalLine;
+            this.WSJob = WSJob;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Create_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Create_Result
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Create_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class Create_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
-        public WSCreateNAVProject.WSJobJournalLine WSJobJournalLine;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
+        public WSCreateNAVProject.WSJob WSJob;
         
         public Create_Result()
         {
         }
         
-        public Create_Result(WSCreateNAVProject.WSJobJournalLine WSJobJournalLine)
+        public Create_Result(WSCreateNAVProject.WSJob WSJob)
         {
-            this.WSJobJournalLine = WSJobJournalLine;
+            this.WSJob = WSJob;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class CreateMultiple
+    [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class CreateMultiple
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSCreateNAVProject.WSJobJournalLine[] WSJobJournalLine_List;
+        public WSCreateNAVProject.WSJob[] WSJob_List;
         
         public CreateMultiple()
         {
         }
         
-        public CreateMultiple(WSCreateNAVProject.WSJobJournalLine[] WSJobJournalLine_List)
+        public CreateMultiple(WSCreateNAVProject.WSJob[] WSJob_List)
         {
-            this.WSJobJournalLine_List = WSJobJournalLine_List;
+            this.WSJob_List = WSJob_List;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class CreateMultiple_Result
+    [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class CreateMultiple_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSCreateNAVProject.WSJobJournalLine[] WSJobJournalLine_List;
+        public WSCreateNAVProject.WSJob[] WSJob_List;
         
         public CreateMultiple_Result()
         {
         }
         
-        public CreateMultiple_Result(WSCreateNAVProject.WSJobJournalLine[] WSJobJournalLine_List)
+        public CreateMultiple_Result(WSCreateNAVProject.WSJob[] WSJob_List)
         {
-            this.WSJobJournalLine_List = WSJobJournalLine_List;
+            this.WSJob_List = WSJob_List;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Update", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Update
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Update", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class Update
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
-        public WSCreateNAVProject.WSJobJournalLine WSJobJournalLine;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
+        public WSCreateNAVProject.WSJob WSJob;
         
         public Update()
         {
         }
         
-        public Update(WSCreateNAVProject.WSJobJournalLine WSJobJournalLine)
+        public Update(WSCreateNAVProject.WSJob WSJob)
         {
-            this.WSJobJournalLine = WSJobJournalLine;
+            this.WSJob = WSJob;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Update_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Update_Result
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Update_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class Update_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
-        public WSCreateNAVProject.WSJobJournalLine WSJobJournalLine;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
+        public WSCreateNAVProject.WSJob WSJob;
         
         public Update_Result()
         {
         }
         
-        public Update_Result(WSCreateNAVProject.WSJobJournalLine WSJobJournalLine)
+        public Update_Result(WSCreateNAVProject.WSJob WSJob)
         {
-            this.WSJobJournalLine = WSJobJournalLine;
+            this.WSJob = WSJob;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class UpdateMultiple
+    [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class UpdateMultiple
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSCreateNAVProject.WSJobJournalLine[] WSJobJournalLine_List;
+        public WSCreateNAVProject.WSJob[] WSJob_List;
         
         public UpdateMultiple()
         {
         }
         
-        public UpdateMultiple(WSCreateNAVProject.WSJobJournalLine[] WSJobJournalLine_List)
+        public UpdateMultiple(WSCreateNAVProject.WSJob[] WSJob_List)
         {
-            this.WSJobJournalLine_List = WSJobJournalLine_List;
+            this.WSJob_List = WSJob_List;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class UpdateMultiple_Result
+    [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class UpdateMultiple_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSCreateNAVProject.WSJobJournalLine[] WSJobJournalLine_List;
+        public WSCreateNAVProject.WSJob[] WSJob_List;
         
         public UpdateMultiple_Result()
         {
         }
         
-        public UpdateMultiple_Result(WSCreateNAVProject.WSJobJournalLine[] WSJobJournalLine_List)
+        public UpdateMultiple_Result(WSCreateNAVProject.WSJob[] WSJob_List)
         {
-            this.WSJobJournalLine_List = WSJobJournalLine_List;
+            this.WSJob_List = WSJob_List;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Delete
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class Delete
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
         public string Key;
         
         public Delete()
@@ -1169,11 +781,11 @@ namespace WSCreateNAVProject
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Delete_Result
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjob", IsWrapped=true)]
+    public partial class Delete_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="Delete_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="Delete_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsjob", Order=0)]
         public bool Delete_Result1;
         
         public Delete_Result()
@@ -1187,13 +799,13 @@ namespace WSCreateNAVProject
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    internal interface WSJobJournalLine_PortChannel : WSCreateNAVProject.WSJobJournalLine_Port, System.ServiceModel.IClientChannel
+    public interface WSJob_PortChannel : WSCreateNAVProject.WSJob_Port, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    internal partial class WSJobJournalLine_PortClient : System.ServiceModel.ClientBase<WSCreateNAVProject.WSJobJournalLine_Port>, WSCreateNAVProject.WSJobJournalLine_Port
+    public partial class WSJob_PortClient : System.ServiceModel.ClientBase<WSCreateNAVProject.WSJob_Port>, WSCreateNAVProject.WSJob_Port
     {
         
     /// <summary>
@@ -1203,54 +815,54 @@ namespace WSCreateNAVProject
     /// <param name="clientCredentials">The client credentials</param>
     static partial void ConfigureEndpoint(System.ServiceModel.Description.ServiceEndpoint serviceEndpoint, System.ServiceModel.Description.ClientCredentials clientCredentials);
         
-        public WSJobJournalLine_PortClient() : 
-                base(WSJobJournalLine_PortClient.GetDefaultBinding(), WSJobJournalLine_PortClient.GetDefaultEndpointAddress())
+        public WSJob_PortClient() : 
+                base(WSJob_PortClient.GetDefaultBinding(), WSJob_PortClient.GetDefaultEndpointAddress())
         {
-            this.Endpoint.Name = EndpointConfiguration.WSJobJournalLine_Port.ToString();
+            this.Endpoint.Name = EndpointConfiguration.WSJob_Port.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
-        public WSJobJournalLine_PortClient(EndpointConfiguration endpointConfiguration) : 
-                base(WSJobJournalLine_PortClient.GetBindingForEndpoint(endpointConfiguration), WSJobJournalLine_PortClient.GetEndpointAddress(endpointConfiguration))
-        {
-            this.Endpoint.Name = endpointConfiguration.ToString();
-            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
-        }
-        
-        public WSJobJournalLine_PortClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
-                base(WSJobJournalLine_PortClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
+        public WSJob_PortClient(EndpointConfiguration endpointConfiguration) : 
+                base(WSJob_PortClient.GetBindingForEndpoint(endpointConfiguration), WSJob_PortClient.GetEndpointAddress(endpointConfiguration))
         {
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
-        public WSJobJournalLine_PortClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(WSJobJournalLine_PortClient.GetBindingForEndpoint(endpointConfiguration), remoteAddress)
+        public WSJob_PortClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
+                base(WSJob_PortClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
         {
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
-        public WSJobJournalLine_PortClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public WSJob_PortClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(WSJob_PortClient.GetBindingForEndpoint(endpointConfiguration), remoteAddress)
+        {
+            this.Endpoint.Name = endpointConfiguration.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public WSJob_PortClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(binding, remoteAddress)
         {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSCreateNAVProject.Read_Result> WSCreateNAVProject.WSJobJournalLine_Port.ReadAsync(WSCreateNAVProject.Read request)
+        System.Threading.Tasks.Task<WSCreateNAVProject.Read_Result> WSCreateNAVProject.WSJob_Port.ReadAsync(WSCreateNAVProject.Read request)
         {
             return base.Channel.ReadAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSCreateNAVProject.Read_Result> ReadAsync(int Line_No)
+        public System.Threading.Tasks.Task<WSCreateNAVProject.Read_Result> ReadAsync(string No)
         {
             WSCreateNAVProject.Read inValue = new WSCreateNAVProject.Read();
-            inValue.Line_No = Line_No;
-            return ((WSCreateNAVProject.WSJobJournalLine_Port)(this)).ReadAsync(inValue);
+            inValue.No = No;
+            return ((WSCreateNAVProject.WSJob_Port)(this)).ReadAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSCreateNAVProject.ReadByRecId_Result> WSCreateNAVProject.WSJobJournalLine_Port.ReadByRecIdAsync(WSCreateNAVProject.ReadByRecId request)
+        System.Threading.Tasks.Task<WSCreateNAVProject.ReadByRecId_Result> WSCreateNAVProject.WSJob_Port.ReadByRecIdAsync(WSCreateNAVProject.ReadByRecId request)
         {
             return base.Channel.ReadByRecIdAsync(request);
         }
@@ -1259,26 +871,26 @@ namespace WSCreateNAVProject
         {
             WSCreateNAVProject.ReadByRecId inValue = new WSCreateNAVProject.ReadByRecId();
             inValue.recId = recId;
-            return ((WSCreateNAVProject.WSJobJournalLine_Port)(this)).ReadByRecIdAsync(inValue);
+            return ((WSCreateNAVProject.WSJob_Port)(this)).ReadByRecIdAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSCreateNAVProject.ReadMultiple_Result> WSCreateNAVProject.WSJobJournalLine_Port.ReadMultipleAsync(WSCreateNAVProject.ReadMultiple request)
+        System.Threading.Tasks.Task<WSCreateNAVProject.ReadMultiple_Result> WSCreateNAVProject.WSJob_Port.ReadMultipleAsync(WSCreateNAVProject.ReadMultiple request)
         {
             return base.Channel.ReadMultipleAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSCreateNAVProject.ReadMultiple_Result> ReadMultipleAsync(WSCreateNAVProject.WSJobJournalLine_Filter[] filter, string bookmarkKey, int setSize)
+        public System.Threading.Tasks.Task<WSCreateNAVProject.ReadMultiple_Result> ReadMultipleAsync(WSCreateNAVProject.WSJob_Filter[] filter, string bookmarkKey, int setSize)
         {
             WSCreateNAVProject.ReadMultiple inValue = new WSCreateNAVProject.ReadMultiple();
             inValue.filter = filter;
             inValue.bookmarkKey = bookmarkKey;
             inValue.setSize = setSize;
-            return ((WSCreateNAVProject.WSJobJournalLine_Port)(this)).ReadMultipleAsync(inValue);
+            return ((WSCreateNAVProject.WSJob_Port)(this)).ReadMultipleAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSCreateNAVProject.IsUpdated_Result> WSCreateNAVProject.WSJobJournalLine_Port.IsUpdatedAsync(WSCreateNAVProject.IsUpdated request)
+        System.Threading.Tasks.Task<WSCreateNAVProject.IsUpdated_Result> WSCreateNAVProject.WSJob_Port.IsUpdatedAsync(WSCreateNAVProject.IsUpdated request)
         {
             return base.Channel.IsUpdatedAsync(request);
         }
@@ -1287,11 +899,11 @@ namespace WSCreateNAVProject
         {
             WSCreateNAVProject.IsUpdated inValue = new WSCreateNAVProject.IsUpdated();
             inValue.Key = Key;
-            return ((WSCreateNAVProject.WSJobJournalLine_Port)(this)).IsUpdatedAsync(inValue);
+            return ((WSCreateNAVProject.WSJob_Port)(this)).IsUpdatedAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSCreateNAVProject.GetRecIdFromKey_Result> WSCreateNAVProject.WSJobJournalLine_Port.GetRecIdFromKeyAsync(WSCreateNAVProject.GetRecIdFromKey request)
+        System.Threading.Tasks.Task<WSCreateNAVProject.GetRecIdFromKey_Result> WSCreateNAVProject.WSJob_Port.GetRecIdFromKeyAsync(WSCreateNAVProject.GetRecIdFromKey request)
         {
             return base.Channel.GetRecIdFromKeyAsync(request);
         }
@@ -1300,7 +912,7 @@ namespace WSCreateNAVProject
         {
             WSCreateNAVProject.GetRecIdFromKey inValue = new WSCreateNAVProject.GetRecIdFromKey();
             inValue.Key = Key;
-            return ((WSCreateNAVProject.WSJobJournalLine_Port)(this)).GetRecIdFromKeyAsync(inValue);
+            return ((WSCreateNAVProject.WSJob_Port)(this)).GetRecIdFromKeyAsync(inValue);
         }
         
         public System.Threading.Tasks.Task<WSCreateNAVProject.Create_Result> CreateAsync(WSCreateNAVProject.Create request)
@@ -1324,7 +936,7 @@ namespace WSCreateNAVProject
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSCreateNAVProject.Delete_Result> WSCreateNAVProject.WSJobJournalLine_Port.DeleteAsync(WSCreateNAVProject.Delete request)
+        System.Threading.Tasks.Task<WSCreateNAVProject.Delete_Result> WSCreateNAVProject.WSJob_Port.DeleteAsync(WSCreateNAVProject.Delete request)
         {
             return base.Channel.DeleteAsync(request);
         }
@@ -1333,7 +945,7 @@ namespace WSCreateNAVProject
         {
             WSCreateNAVProject.Delete inValue = new WSCreateNAVProject.Delete();
             inValue.Key = Key;
-            return ((WSCreateNAVProject.WSJobJournalLine_Port)(this)).DeleteAsync(inValue);
+            return ((WSCreateNAVProject.WSJob_Port)(this)).DeleteAsync(inValue);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()
@@ -1348,7 +960,7 @@ namespace WSCreateNAVProject
         
         private static System.ServiceModel.Channels.Binding GetBindingForEndpoint(EndpointConfiguration endpointConfiguration)
         {
-            if ((endpointConfiguration == EndpointConfiguration.WSJobJournalLine_Port))
+            if ((endpointConfiguration == EndpointConfiguration.WSJob_Port))
             {
                 System.ServiceModel.BasicHttpBinding result = new System.ServiceModel.BasicHttpBinding();
                 result.MaxBufferSize = int.MaxValue;
@@ -1362,28 +974,27 @@ namespace WSCreateNAVProject
         
         private static System.ServiceModel.EndpointAddress GetEndpointAddress(EndpointConfiguration endpointConfiguration)
         {
-            if ((endpointConfiguration == EndpointConfiguration.WSJobJournalLine_Port))
+            if ((endpointConfiguration == EndpointConfiguration.WSJob_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:7047/DynamicsNAV100/WS/CRONUS Portugal Ltd./Page/WSJobJournalL" +
-                        "ine");
+                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:7047/DynamicsNAV100/WS/CRONUS Portugal Ltd./Page/WSJob");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }
         
         private static System.ServiceModel.Channels.Binding GetDefaultBinding()
         {
-            return WSJobJournalLine_PortClient.GetBindingForEndpoint(EndpointConfiguration.WSJobJournalLine_Port);
+            return WSJob_PortClient.GetBindingForEndpoint(EndpointConfiguration.WSJob_Port);
         }
         
         private static System.ServiceModel.EndpointAddress GetDefaultEndpointAddress()
         {
-            return WSJobJournalLine_PortClient.GetEndpointAddress(EndpointConfiguration.WSJobJournalLine_Port);
+            return WSJob_PortClient.GetEndpointAddress(EndpointConfiguration.WSJob_Port);
         }
         
         public enum EndpointConfiguration
         {
             
-            WSJobJournalLine_Port,
+            WSJob_Port,
         }
     }
 }

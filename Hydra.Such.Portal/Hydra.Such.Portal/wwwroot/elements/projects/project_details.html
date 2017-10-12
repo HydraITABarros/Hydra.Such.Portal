@@ -45,7 +45,14 @@
         <iron-ajax url="/PopulateDropdowns/GetProjectStatus" last-response="{{LProjectStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectCategories" last-response="{{LProjectCategories}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectTypes" last-response="{{LProjectTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetServiceObjects" last-response="{{LProjectServiceObjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetCountabGroupTypes" last-response="{{LProjectCountabGroupTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetCountabGroupTypesOM" last-response="{{LProjectCountabGroupTypesOM}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        
         <!-- PROJECT CRUDS -->
         <iron-ajax url="/Projetos/GetProjectDetails"
                    last-response="{{data}}"
@@ -72,7 +79,6 @@
                    id="address_ajax"
                    on-response="_addressResponseProcessor"
                    content-type="application/json"></iron-ajax>
-
 
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="row">
@@ -102,11 +108,9 @@
                     </div>
                     <div class="col-lg-3">
                         <paper-input type="text" value="{{data.projectResponsible}}" id="projectResponsible" name="projectResponsible" required label="Responsável Projeto"> </paper-input>
-
                     </div>
                     <div class="col-lg-3">
                         <paper-input type="text" value="{{data.contractNo}}" id="ContractNo" name="ContractNo" required label="Nº Contrato"> </paper-input>
-
                     </div>
                 </div>
                 <div class="row break_clear">
@@ -125,11 +129,18 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.serviceObjectCode}}" id="serviceObjectCode" name="serviceObjectCode" required label="Cód. Objeto Serviço"> </paper-input>
+                        <vaadin-combo-box items="[[LProjectServiceObjects]]" item-value-path="id" item-label-path="value" value="{{data.serviceObjectCode}}" label="Cód. Objeto Serviço">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
 
                     </div>
                     <div class="col-lg-3">
-
                         <vaadin-combo-box items="[[LProjectTypes]]" item-value-path="id" item-label-path="value" value="{{data.projectTypeCode}}" label="Cód. Tipo Projeto">
                             <template>
                                 <paper-icon-item>
@@ -153,11 +164,9 @@
                         <center>
                             <paper-checkbox checked="{{data.billable}}">Faturável</paper-checkbox>
                         </center>
-
                     </div>
                     <div class="col-lg-3">
                         <paper-input type="text" value="{{data.ourProposal}}" id="OurProposal" name="OurProposal" required label="Nossa Proposta"> </paper-input>
-
                     </div>
                 </div>
             </div>
@@ -166,26 +175,65 @@
             <div>
                 <div class="row">
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.regionCode}}" id="RegionCode" name="RegionCode" required label="Código Região"> </paper-input>
+                        <vaadin-combo-box items="[[LProjectRegionCodes]]" item-value-path="id" item-label-path="value" value="{{data.regionCode}}" label="Cód. Região">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.responsabilityCenterCode}}" id="ResponsabilityCenterCode" name="ResponsabilityCenterCode" required label="Código Centro Responsabilidade"> </paper-input>
+                        <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LProjectCountabGroupTypes]]" item-value-path="id" item-label-path="value" value="{{data.groupContabProjectType}}" label="Tipo Grupo Contab. Projeto">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LProjectCountabGroupTypesOM]]" item-value-path="id" item-label-path="value" value="{{data.groupContabOMProjectType}}" label="Tipo Grupo Contab. OM Projeto">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
 
-                    </div>
-                    <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.groupContabProjectType}}" id="GroupContabProjectType" name="GroupContabProjectType" required label="Tipo Grupo Contab. Projeto"> </paper-input>
-                    </div>
-                    <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.groupContabOMProjectType}}" id="GroupContabOMProjectType" name="GroupContabOMProjectType" required label="Tipo Grupo Contab. OM Projeto"> </paper-input>
                     </div>
                 </div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.functionalAreaCode}}" id="FunctionalAreaCode" name="FunctionalAreaCode" required label="Código Área Funcional"> </paper-input>
+                        <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
                         <paper-input type="text" value="{{data.accountWorkGroup}}" id="AccountWorkGroup" name="AccountWorkGroup" required label="Grupo Contab. Obra"> </paper-input>
-
                     </div>
                 </div>
             </div>
@@ -222,7 +270,6 @@
                     </div>
                     <div class="col-lg-3">
                         <paper-input type="text" value="{{data.shippingPostalCode}}" id="ShippingPostalCode" name="ShippingPostalCode" required label="Envio-a Cód. Postal"> </paper-input>
-
                     </div>
                 </div>
             </div>
@@ -313,18 +360,13 @@
 
                     if (this._projectid == "") {
                         this._isCreate = true;
-                        //this.data.area = this._areaid;
+                        this.data.area = this._areaid;
                     }
                 },
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
-                },
-                _executeRequest: function (url, data) {
-                    this.$.page_databound_ajax.url = url;
-                    this.$.page_databound_ajax.body = JSON.stringify(data);
-                    this.$.page_databound_ajax.generateRequest();
-                },
+                },          
                 _validateData: function() {
                     if (false) {
                         this._openToast(validate);
@@ -332,8 +374,9 @@
                     }
                     return true;
                 },
+
+                //CRUDS
                 _create: function () {
-                    debugger;;
                     if (this._validateData()) {
                         if (this._isCreate) {
                             this.$.page_validator_ajax.body = JSON.stringify(this.data);
@@ -349,6 +392,8 @@
                         this._executeRequest("/Projetos/UpdateProject", this.data)
                     }
                 },
+
+                //Responses Processors
                 _responseProcessor: function (data) {
                     var self = this;
 
@@ -363,11 +408,21 @@
                                 this._isCreate = true;
                             }
                         } else if (data.detail.url.indexOf("Create") !== -1) {
-                            this._openToast("Projeto criado com sucesso!");
-                            this._isCreate = false;
+                            this._createResponseProcessor();
                         }
+                    } else {
+                        this._openToast("Ocorreu um erro ao criar o projeto.")
                     }
                 },
+                _createResponseProcessor: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._isCreate = false;
+                        this._openToast("Projeto criado com sucesso.");
+                    } else {
+                        this._openToast(this.data.eMessage);
+                    }
+                },
+
                 _responseValidatorProcessor: function (data) {
                     var self = this;
                     if (data.detail.status === 200) {
@@ -381,6 +436,7 @@
                 },
 
 
+                //Address Functions
                 _getAddressByCode: function (e) {
                     debugger;;
                     this.$.address_ajax.body = JSON.stringify(e.detail.value);
@@ -397,6 +453,15 @@
                         this.$.ShippingContact.value = this.addressData.contact;
                     } 
                 },
+
+
+                //Helpers
+                _executeRequest: function (url, data) {
+                    this.$.page_databound_ajax.url = url;
+                    this.$.page_databound_ajax.body = JSON.stringify(data);
+                    this.$.page_databound_ajax.generateRequest();
+                }
+                
             });
         });
     </script>

@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Hydra.Such.Data.Logic.Projects
+namespace Hydra.Such.Data.Logic.Project
 {
-    public class CountabGroupTypes
+    public class DBCountabGroupTypes
     {
         public static TiposGrupoContabProjeto GetById(int Codigo)
         {

@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Hydra.Such.Portal.Configurations;
+using Hydra.Such.Data.NAV;
+using Hydra.Such.Portal.Extensions;
 
 namespace Hydra.Such.Portal
 {
@@ -32,15 +34,17 @@ namespace Hydra.Such.Portal
         {
             services.AddMvc();
 
-            services.AddAuthentication("MyCookieAuthenticationScheme")
-                .AddCookie(options => {
-                    options.AccessDeniedPath = "/Account/Forbidden/";
-                    options.LoginPath = "/Account/Unauthorized/";
-                });
+            services.AddAuthentication()
+            .AddAzureAd(options => Configuration.Bind("AzureAd", options))
+            .AddCookie();
 
             // ABARROS -> ADD NAV CONFIGURATIONS TO THE SERVICE
-            var appSettings = Configuration.GetSection("NAVConfigurations");
-            services.Configure<NAVConfigurations>(appSettings);
+            var NAVConfigurations = Configuration.GetSection("NAVConfigurations");
+            services.Configure<NAVConfigurations>(NAVConfigurations);
+
+            // ABARROS -> ADD NAV WS CONFIGURATIONS TO THE SERVICE
+            var NAVWSConfigurations = Configuration.GetSection("NAVWSConfigurations");
+            services.Configure<NAVWSConfigurations>(NAVWSConfigurations);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +62,7 @@ namespace Hydra.Such.Portal
 
             app.UseStaticFiles();
             
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

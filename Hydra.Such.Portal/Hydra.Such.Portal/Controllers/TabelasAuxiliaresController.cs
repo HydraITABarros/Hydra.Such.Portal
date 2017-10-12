@@ -7,10 +7,11 @@ using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using Microsoft.AspNetCore.Mvc;
-using Hydra.Such.Data.Logic.Projects;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hydra.Such.Portal.Controllers
 {
+    [Authorize]
     public class TabelasAuxiliaresController : Controller
     {
         public IActionResult Index()
@@ -71,7 +72,7 @@ namespace Hydra.Such.Portal.Controllers
         //POPULATE GRID ContabGroupTypes
         public JsonResult GetTiposGrupoContabProjeto([FromBody] ContabGroupTypesProjectView data)
         {
-            List<ContabGroupTypesProjectView> result = CountabGroupTypes.GetAll().Select(x=> new ContabGroupTypesProjectView() {
+            List<ContabGroupTypesProjectView> result = DBCountabGroupTypes.GetAll().Select(x=> new ContabGroupTypesProjectView() {
                 ID = x.Código,
                 Description = x.Descrição,
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
@@ -87,9 +88,9 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UpdateTiposGrupoContabProjeto([FromBody] List<ContabGroupTypesProjectView> data)
         {
             //Get All
-            List<TiposGrupoContabProjeto> previousList = CountabGroupTypes.GetAll();
+            List<TiposGrupoContabProjeto> previousList = DBCountabGroupTypes.GetAll();
             previousList.RemoveAll(x => data.Any(u => u.ID == x.Código));
-            previousList.ForEach(x => CountabGroupTypes.DeleteAllFromProfile(x.Código));
+            previousList.ForEach(x => DBCountabGroupTypes.DeleteAllFromProfile(x.Código));
 
             data.ForEach(x =>
             {
@@ -104,11 +105,11 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.ID > 0)
                 {
                     CN.Código = x.ID;
-                    CountabGroupTypes.Update(CN);
+                    DBCountabGroupTypes.Update(CN);
                 }
                 else
                 {
-                    CountabGroupTypes.Create(CN);
+                    DBCountabGroupTypes.Create(CN);
                 }
             });
 

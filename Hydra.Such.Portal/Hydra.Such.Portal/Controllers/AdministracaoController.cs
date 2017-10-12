@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Database;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hydra.Such.Portal.Controllers
 {
+    [Authorize]
     public class AdministracaoController : Controller
     {
         public IActionResult Index()
