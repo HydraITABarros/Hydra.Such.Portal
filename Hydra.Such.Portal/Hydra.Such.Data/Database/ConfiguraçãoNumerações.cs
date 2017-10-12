@@ -20,6 +20,10 @@ namespace Hydra.Such.Data.Database
         public int? NºDígitosIncrementar { get; set; }
         public int? QuantidadeIncrementar { get; set; }
         public string ÚltimoNºUsado { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public ICollection<Configuração> ConfiguraçãoNumeraçãoContratosNavigation { get; set; }
         public ICollection<Configuração> ConfiguraçãoNumeraçãoFolhasDeHorasNavigation { get; set; }

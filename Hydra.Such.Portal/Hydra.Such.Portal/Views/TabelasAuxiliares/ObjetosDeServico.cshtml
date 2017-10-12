@@ -65,7 +65,7 @@
                    id="ajax_create"
                    content-type="application/json"></iron-ajax>
         
-        @*POPULATE GRID*@
+        @*POPULATE GRID Update*@
         <iron-ajax url="/TabelasAuxiliares/GetServiceObjectsData"
                    last-response="{{result}}"
                    method="post"
@@ -104,7 +104,7 @@
                 </table>
             </form>
         </iron-form>
-        <vaadin-grid id="gridserviceobjects" aria-label="ProfileModelsTabel" items="[[result]]" class="editGrid">
+        <vaadin-grid id="gridserviceobjects" aria-label="ProfileModelsTabel" items="[[result]]" class="grid">
             <vaadin-grid-column>
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
@@ -137,7 +137,6 @@
             <vaadin-grid-column>
                 <template class="header">
                     <vaadin-grid-sorter path="areaCode">Código Área</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="areaCode" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[AreaCodeData]]" item-value-path="code" item-label-path="name" value="{{item.areaCode}}">

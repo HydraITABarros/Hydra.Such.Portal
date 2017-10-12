@@ -35,6 +35,7 @@
             paper-input {
                 max-width: 200px !important;
             }
+
         </style>
 
         @*POPULATE GRID*@
@@ -61,7 +62,7 @@
                 <paper-button raised id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button>
             </div>
         </div>
-        <vaadin-grid id="gridprojecttype" aria-label="ProfileModelsTabel" items="[[result]]" class="editGrid">
+        <vaadin-grid id="gridprojecttype" aria-label="ProfileModelsTabel" items="[[result]]" class="grid">
             <vaadin-grid-column>
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>

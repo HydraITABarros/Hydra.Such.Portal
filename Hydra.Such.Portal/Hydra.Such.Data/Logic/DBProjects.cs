@@ -57,7 +57,6 @@ namespace Hydra.Such.Data.Logic
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }

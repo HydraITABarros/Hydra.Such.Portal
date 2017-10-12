@@ -48,6 +48,10 @@ namespace Hydra.Such.Data.Database
         public decimal? Sal { get; set; }
         public decimal? QuantidadePrato { get; set; }
         public string Preparação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public FichasTécnicasPratos CódigoNavigation { get; set; }
         public FichasTécnicasPratos NºPratoNavigation { get; set; }

@@ -16,6 +16,10 @@ namespace Hydra.Such.Data.Database
         public bool? Aprovado { get; set; }
         public string UtilizadorAprovação { get; set; }
         public DateTime? DataHoraAprovação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public GruposAprovação GrupoAprovadorNavigation { get; set; }
     }

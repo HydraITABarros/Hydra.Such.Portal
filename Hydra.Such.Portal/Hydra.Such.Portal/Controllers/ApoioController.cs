@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Hydra.Such.Data.Logic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hydra.Such.Portal.Controllers
 {
+    [Authorize]
     public class ApoioController : Controller
     {
         public IActionResult Index()

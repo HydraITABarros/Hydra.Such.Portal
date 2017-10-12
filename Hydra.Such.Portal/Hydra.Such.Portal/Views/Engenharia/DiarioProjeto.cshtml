@@ -70,7 +70,7 @@
             }
 
             vaadin-grid#projectDiaryProject paper-checkbox {
-                    text-align: center;
+                text-align: center;
             }
 
             --vaadin-grid-header-cell: {
@@ -82,12 +82,65 @@
             <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-check-square" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
         </div>
 
+        @*Populate Dropdown*@
         <iron-ajax url="/PopulateDropdowns/GetProjectList"
                    last-response="{{response}}"
                    auto
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetCGAccountCode"
+                   last-response="{{CGAccount}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   params='{"accountNo": "no1"}'
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetMeasureUnits"
+                   last-response="{{MeasureUnit}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetLocations"
+                   last-response="{{Locations}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode"
+                   last-response="{{RegionData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
+                   last-response="{{FunctionalAreaCodeData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode"
+                   last-response="{{ResponsabilityCenterData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContabGroup"
+                   last-response="{{ContabGroupData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        @*Populate Dropdown*@
 
         <iron-form id="formGeral">
             <form>
@@ -109,19 +162,90 @@
                         <td width=""><vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{date}}"></vaadin-date-picker></td>
                         <td width=""><cb-movetype id="nMoveType"></cb-movetype></td>
                         <td width=""><cb-projecttype id="nProjectType"></cb-projecttype></td>
-                        <td width=""><paper-input id="piCode" type="text" name="piCode" label="Código" maxlength="20" value="{{code}}"></paper-input></td>
+                        <td width="">
+                            <vaadin-combo-box id="piCode" name="piCode" items="[[CGAccount]]" item-value-path="code" item-label-path="name" label="Código" value="">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.name]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </td>
                     </tr>
                     <tr>
                         <td width=""><paper-input id="piDescription" type="text" name="piDescription" required label="Descrição" disabled value="{{description}}"></paper-input></td>
-                        <td width=""><paper-input id="piContabGroup" type="number" name="piContabGroup" disabled label="Grupo Contab." value="{{projectContabGroup}}"></paper-input></td>
+                        <td width="">
+                            <vaadin-combo-box id="piContabGroup" name="piContabGroup" items="[[ContabGroupData]]" item-value-path="code" value="{{codeProjectContabGroup}}" item-label-path="code" label="Grupo Contab">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>                                            
+                                            <div>[[item.code]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                            @*<paper-input id="piContabGroup" type="number" name="piContabGroup" disabled label="Grupo Contab." value="{{projectContabGroup}}"></paper-input>*@
+                        </td>
                         <td width=""><paper-input id="piQuantity" type="number" name="piQuantity" required label="Quantidade" value="{{quantity}}"></paper-input></td>
-                        <td width=""><paper-input id="piCodeMeasurementUnit" type="text" name="piMeasurementUnit" required label="Cód. Unidade Medida" value="{{codeMeasurementUnit}}"></paper-input></td>
-                        <td width=""><paper-input id="piCodeLocation" type="text" name="piCodeLocation" required label="Cód. Localização" maxlength="20" value="{{codeLocation}}"></paper-input></td>
+                        <td width="">
+                            <vaadin-combo-box id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[MeasureUnit]]" item-value-path="code" value="{{codeMeasurementUnit}}" item-label-path="description" label="Cód. Unidade Medida">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.description]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </td>
+                        <td width="">
+                            <vaadin-combo-box id="piCodeLocation" name="piCodeLocation" items="[[Locations]]" item-value-path="code" value="{{codeLocation}}" item-label-path="name" label="Cód. Localização">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.name]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </td>
                     </tr>
                     <tr>
-                        <td width=""><paper-input id="piCodeRegion" type="text" name="piCodeRegion" disabled label="Cód. Região" maxlength="20" value="{{codeRegion}}"></paper-input></td>
-                        <td width=""><paper-input id="piFuncArea" type="text" name="piFuncArea" disabled label="Cód. Área Funcional" maxlength="20" value="{{codeFuncArea}}"></paper-input></td>
-                        <td width=""><paper-input id="piCodeResponsabilityCenter" type="text" disabled name="piCodeResponsabilityCenter" label="Cód. Centro Responsabilidade" maxlength="20" value="{{codeResponsabilityCenter}}"></paper-input></td>
+                        <td width="">
+                            <vaadin-combo-box id="piCodeRegion" name="piCodeRegion" items="[[RegionData]]" item-value-path="code" item-label-path="name" value="{{codeRegion}}" label="Cód. Região">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.name]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </td>
+                        <td width="">
+                            <vaadin-combo-box id="piFuncArea" name="piFuncArea" items="[[FunctionalAreaCodeData]]" item-value-path="code" value="{{codeFuncArea}}" item-label-path="name" label="Cód. Área Funcional">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.name]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </td>
+                        <td width="">
+                            <vaadin-combo-box id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" items="[[ResponsabilityCenterData]]" value="{{codeResponsabilityCenter}}" item-value-path="code" item-label-path="name" label="Cód. Centro Responsabilidade">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.name]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </td>
                         <td width=""><paper-input class="alignRight" type="number" label="Custo Unitário" required id="piUnitCost" name="piUnitCost" value="{{unitCost}}"><div slot="suffix">€</div></paper-input></td>
                         <td width=""><paper-input class="alignRight" type="number" label="Custo Total  " required id="piTotalCost" name="piTotalCost" value="{{totalCost}}"><div slot="suffix">€</div></paper-input></td>
                     </tr>
@@ -218,7 +342,15 @@
                     <vaadin-grid-filter path="code"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-input name="code" type="text" required value="{{item.code}}">
+                    <vaadin-combo-box items="[[CGAccount]]" item-value-path="code" item-label-path="name" value="{{item.code}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.name]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
 
@@ -238,7 +370,16 @@
                     <vaadin-grid-filter path="projectContabGroup"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-input type="number" name="contabGroup" disabled value="{{item.projectContabGroup}}"></paper-input>
+                    @*<paper-input type="number" name="contabGroup" disabled value="{{item.projectContabGroup}}"></paper-input>*@
+                    <vaadin-combo-box items="[[ContabGroupData]]" item-value-path="code" item-label-path="code" value="{{item.projectContabGroup}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.code]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
 
@@ -258,7 +399,16 @@
                     <vaadin-grid-filter path="measurementUnitCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-input type="text" name="measurementUnitCode" required maxlength="20" value="{{item.measurementUnitCode}}"></paper-input>
+                    @*<paper-input type="text" name="measurementUnitCode" required maxlength="20" value="{{item.measurementUnitCode}}"></paper-input>*@
+                    <vaadin-combo-box items="[[MeasureUnit]]" item-value-path="code" item-label-path="description" value="{{item.measurementUnitCode}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.description]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
 
@@ -268,7 +418,16 @@
                     <vaadin-grid-filter path="locationCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-input type="text" name="locationCode" required maxlength="20" value="{{item.locationCode}}"></paper-input>
+                    @*<paper-input type="text" name="locationCode" required maxlength="20" value="{{item.locationCode}}"></paper-input>*@
+                    <vaadin-combo-box items="[[Locations]]" item-value-path="code" item-label-path="name" value="{{item.locationCode}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.name]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
 
@@ -278,7 +437,16 @@
                     <vaadin-grid-filter path="regionCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-input type="text" name="regionCode" disabled value="{{item.regionCode}}"></paper-input>
+                    @*<paper-input type="text" name="regionCode" disabled value="{{item.regionCode}}"></paper-input>*@
+                    <vaadin-combo-box items="[[RegionData]]" item-value-path="code" item-label-path="name" value="{{item.regionCode}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.name]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
 
@@ -288,7 +456,16 @@
                     <vaadin-grid-filter path="functionalAreaCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-input type="text" name="functionalAreaCode" disabled value="{{item.functionalAreaCode}}"></paper-input>
+                    @*<paper-input type="text" name="functionalAreaCode" disabled value="{{item.functionalAreaCode}}"></paper-input>*@
+                    <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="code" item-label-path="name" value="{{item.functionalAreaCode}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.name]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
 
@@ -298,7 +475,16 @@
                     <vaadin-grid-filter path="responsabilityCenterCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-input type="text" name="responsabilityCenterCode" disabled value="{{item.responsabilityCenterCode}}"></paper-input>
+                    @*<paper-input type="text" name="responsabilityCenterCode" disabled value="{{item.responsabilityCenterCode}}"></paper-input>*@
+                    <vaadin-combo-box items="[[ResponsabilityCenterData]]" item-value-path="code" item-label-path="name" value="{{item.responsabilityCenterCode}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.name]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
 
@@ -414,8 +600,8 @@
                         notify: true,
                         value: ""
                     },
-                    projectContabGroup: {
-                        type: Number,
+                    codeProjectContabGroup: {
+                        type: String,
                         notify: true,
                         value: ""
                     },
@@ -521,7 +707,7 @@
                             quantity: this.quantity,
                             measurementUnitCode: this.codeMeasurementUnit,
                             locationCode: this.codeLocation,
-                            projectContabGroup: this.projectContabGroup,
+                            projectContabGroup: this.codeProjectContabGroup,
                             regionCode: this.codeRegion,
                             functionalAreaCode: this.codeFuncArea,
                             responsabilityCenterCode: this.codeResponsabilityCenter,
@@ -627,22 +813,22 @@
 
                 _updateRelatedResponse: function (related) {
                     if (related != null) {
-                        this.$.piDescription.value = related.detail.__data.response.description;
-                        this.$.piCodeRegion.value = related.detail.__data.response.regionCode;
-                        this.$.piFuncArea.value = related.detail.__data.response.funcAreaCode;
-                        this.$.piContabGroup.value = related.detail.__data.response.contabGroup;
-                        this.$.piCodeResponsabilityCenter.value = related.detail.__data.response.responsabilityCenter;
+                        debugger;;
+                        this.description = this.related.description;
+                        this.codeRegion = this.related.regionCode;
+                        this.codeFuncArea = this.related.funcAreaCode;
+                        this.codeProjectContabGroup = this.related.contabGroup;
+                        this.codeResponsabilityCenter = this.related.responsabilityCenter;
                     }
 
                 },
 
                 _registerDiary: function () {
-                    debugger;;
 
                     _update();
 
-                    //this.$.ajax_register.body = JSON.stringify(this.result);
-                    //this.$.ajax_register.generateRequest();
+                    this.$.ajax_register.body = JSON.stringify(this.result);
+                    this.$.ajax_register.generateRequest();
 
                 },
 

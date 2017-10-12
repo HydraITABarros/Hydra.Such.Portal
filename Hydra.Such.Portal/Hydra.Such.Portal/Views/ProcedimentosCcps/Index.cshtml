@@ -1,0 +1,728 @@
+﻿@model IEnumerable<Hydra.Such.Data.Database.ProcedimentosCcp>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Tipo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Ano)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Referência)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CódigoRegião)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CódigoÁreaFuncional)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CódigoCentroResponsabilidade)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Estado)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataCriação)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Imobilizado)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ComentárioEstado)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Anexos)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataHoraEstado)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UtilizadorEstado)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CondiçõesDePagamento)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NomeProcesso)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.GestorProcesso)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TipoProcedimento)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.InformaçãoTécnica)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FundamentaçãoAquisição)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PreçoBase)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ValorPreçoBase)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Negociação)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CritériosAdjudicação)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Prazo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PreçoMaisBaixo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PropostaEconMaisVantajosa)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PropostaVariante)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AbertoFechadoAoMercado)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PrazoEntrega)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LocaisEntrega)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ObservaçõesAdicionais)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EstimativaPreço)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FornecedoresSugeridos)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FornecedorExclusivo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Interlocutor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DescPreçoMaisBaixo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DescPropostaEconMaisVantajosa)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DescPropostaVariante)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DescAbertoFechadoAoMercado)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DescFornecedorExclusivo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CritérioEscolhaProcedimento)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DescEscolhaProcedimento)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Júri)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ObjetoDoContrato)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PréÁrea)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SubmeterPréÁrea)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ValorDecisãoContratar)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ValorAdjudicaçãoAnteriro)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ValorAdjudicaçãoAtual)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DiferençaEuros)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DiferençaPercent)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.WorkflowFinanceiros)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.WorkflowJurídicos)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.WorkflowFinanceirosConfirm)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.WorkflowJurídicosConfirm)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AutorizaçãoImobCa)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AutorizaçãoAberturaCa)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AutorizaçãoAquisiçãoCa)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RejeiçãoImobCa)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RejeiçãoAberturaCa)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RejeiçãoAquisiçãoCa)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataAutorizaçãoImobCa)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataAutorizaçãoAbertCa)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataAutorizaçãoAquisiCa)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RatificarCaAbertura)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RatificarCaAdjudicação)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CaRatificar)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CaDataRatificaçãoAbert)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CaDataRatificaçãoAdjudic)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NºAta)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataAta)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ComentárioPublicação)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataPublicação)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UtilizadorPublicação)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataSistemaPublicação)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RecolhaComentário)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataRecolha)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UtilizadorRecolha)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataSistemaRecolha)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ComentárioRelatórioPreliminar)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataValidRelatórioPreliminar)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UtilizadorValidRelatórioPreliminar)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataSistemaValidRelatórioPreliminar)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ComentárioAudiênciaPrévia)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataAudiênciaPrévia)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UtilizadorAudiênciaPrévia)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataSistemaAudiênciaPrévia)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ComentárioRelatórioFinal)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataRelatórioFinal)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UtilizadorRelatórioFinal)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataSistemaRelatórioFinal)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ComentárioNotificação)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataNotificação)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.UtilizadorNotificação)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataSistemaNotificação)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PrazoNotificaçãoDias)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PercentExecução)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Arquivado)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataFechoInicial)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataFechoPrevista)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NºDiasProcesso)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NºDiasAtraso)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Tratado)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Fornecedor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Comentário)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CaSuspenso)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CríticoAbertura)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CríticoAdjudicação)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ObjetoDecisão)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RazãoNecessidade)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProtocoloContrato)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AutorizaçãoAdjudicação)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NãoAdjudicaçãoEEncerramento)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NãoAdjudicaçãoESuspensão)
+                </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nº1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NºNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tipo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ano)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Referência)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CódigoRegião)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CódigoÁreaFuncional)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CódigoCentroResponsabilidade)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataCriação)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Imobilizado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ComentárioEstado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Anexos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataHoraEstado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UtilizadorEstado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CondiçõesDePagamento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NomeProcesso)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GestorProcesso)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TipoProcedimento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InformaçãoTécnica)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FundamentaçãoAquisição)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PreçoBase)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ValorPreçoBase)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Negociação)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CritériosAdjudicação)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Prazo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PreçoMaisBaixo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PropostaEconMaisVantajosa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PropostaVariante)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AbertoFechadoAoMercado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrazoEntrega)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LocaisEntrega)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ObservaçõesAdicionais)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstimativaPreço)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FornecedoresSugeridos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FornecedorExclusivo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Interlocutor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DescPreçoMaisBaixo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DescPropostaEconMaisVantajosa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DescPropostaVariante)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DescAbertoFechadoAoMercado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DescFornecedorExclusivo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CritérioEscolhaProcedimento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DescEscolhaProcedimento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Júri)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ObjetoDoContrato)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PréÁrea)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubmeterPréÁrea)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ValorDecisãoContratar)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ValorAdjudicaçãoAnteriro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ValorAdjudicaçãoAtual)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiferençaEuros)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiferençaPercent)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WorkflowFinanceiros)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WorkflowJurídicos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WorkflowFinanceirosConfirm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WorkflowJurídicosConfirm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AutorizaçãoImobCa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AutorizaçãoAberturaCa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AutorizaçãoAquisiçãoCa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RejeiçãoImobCa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RejeiçãoAberturaCa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RejeiçãoAquisiçãoCa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataAutorizaçãoImobCa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataAutorizaçãoAbertCa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataAutorizaçãoAquisiCa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RatificarCaAbertura)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RatificarCaAdjudicação)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CaRatificar)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CaDataRatificaçãoAbert)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CaDataRatificaçãoAdjudic)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NºAta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataAta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ComentárioPublicação)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataPublicação)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UtilizadorPublicação)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataSistemaPublicação)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecolhaComentário)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataRecolha)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UtilizadorRecolha)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataSistemaRecolha)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ComentárioRelatórioPreliminar)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataValidRelatórioPreliminar)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UtilizadorValidRelatórioPreliminar)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataSistemaValidRelatórioPreliminar)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ComentárioAudiênciaPrévia)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataAudiênciaPrévia)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UtilizadorAudiênciaPrévia)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataSistemaAudiênciaPrévia)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ComentárioRelatórioFinal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataRelatórioFinal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UtilizadorRelatórioFinal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataSistemaRelatórioFinal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ComentárioNotificação)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataNotificação)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UtilizadorNotificação)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataSistemaNotificação)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrazoNotificaçãoDias)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PercentExecução)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Arquivado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataFechoInicial)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataFechoPrevista)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NºDiasProcesso)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NºDiasAtraso)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tratado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fornecedor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Comentário)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CaSuspenso)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CríticoAbertura)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CríticoAdjudicação)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ObjetoDecisão)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RazãoNecessidade)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProtocoloContrato)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AutorizaçãoAdjudicação)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NãoAdjudicaçãoEEncerramento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NãoAdjudicaçãoESuspensão)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nº1.NºProcedimento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NºNavigation.NºProcedimento)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Nº">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Nº">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Nº">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

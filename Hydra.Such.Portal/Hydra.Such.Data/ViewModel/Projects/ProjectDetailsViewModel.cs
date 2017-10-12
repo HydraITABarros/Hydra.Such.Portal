@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Projects
 {
-    public class ProjectDetailsViewModel
+    public class ProjectDetailsViewModel : ErrorHandler
     {
         public string ProjectNo { get; set; }
         public int? Area { get; set; }
