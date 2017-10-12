@@ -8,9 +8,11 @@ using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.Logic.Project;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Data.ViewModel.ProjectView;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hydra.Such.Portal.Controllers
 {
+    [Authorize]
     public class PopulateDropdownsController : Controller
     {
         private readonly NAVConfigurations _config;
@@ -104,6 +106,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetResponsabilityCenterCode()
         {
             List<NAVDimValueViewModel> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetNAVContabGroupTypes()
+        {
+
+            List<NAVDimValueViewModel> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2);
             return Json(result);
         }
 

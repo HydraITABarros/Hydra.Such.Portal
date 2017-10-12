@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.NAV;
+using Hydra.Such.Portal.Extensions;
 
 namespace Hydra.Such.Portal
 {
@@ -33,11 +34,9 @@ namespace Hydra.Such.Portal
         {
             services.AddMvc();
 
-            services.AddAuthentication("MyCookieAuthenticationScheme")
-                .AddCookie(options => {
-                    options.AccessDeniedPath = "/Account/Forbidden/";
-                    options.LoginPath = "/Account/Unauthorized/";
-                });
+            services.AddAuthentication()
+            .AddAzureAd(options => Configuration.Bind("AzureAd", options))
+            .AddCookie();
 
             // ABARROS -> ADD NAV CONFIGURATIONS TO THE SERVICE
             var NAVConfigurations = Configuration.GetSection("NAVConfigurations");
@@ -63,6 +62,7 @@ namespace Hydra.Such.Portal
 
             app.UseStaticFiles();
             
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

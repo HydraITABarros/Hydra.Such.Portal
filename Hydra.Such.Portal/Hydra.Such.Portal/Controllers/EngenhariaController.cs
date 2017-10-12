@@ -11,9 +11,11 @@ using System.Globalization;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Database;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hydra.Such.Portal.Controllers
 {
+    [Authorize]
     public class EngenhariaController : Controller
     {
         public IActionResult Index()

@@ -7,9 +7,11 @@ using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hydra.Such.Portal.Controllers
 {
+    [Authorize]
     public class TabelasAuxiliaresController : Controller
     {
         public IActionResult Index()

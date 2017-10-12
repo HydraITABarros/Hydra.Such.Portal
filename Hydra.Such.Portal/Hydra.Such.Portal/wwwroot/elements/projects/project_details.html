@@ -14,11 +14,6 @@
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-material-theme/vaadin-date-picker.html">
 
-
-
-
-
-
 <dom-module id="x-projectdetails">
     <template>
         <!-- STYLES -->
@@ -48,7 +43,11 @@
         <iron-ajax url="/PopulateDropdowns/GetServiceObjects" last-response="{{LProjectServiceObjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCountabGroupTypes" last-response="{{LProjectCountabGroupTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCountabGroupTypesOM" last-response="{{LProjectCountabGroupTypesOM}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        
         <!-- PROJECT CRUDS -->
         <iron-ajax url="/Projetos/GetProjectDetails"
                    last-response="{{data}}"
@@ -75,7 +74,6 @@
                    id="address_ajax"
                    on-response="_addressResponseProcessor"
                    content-type="application/json"></iron-ajax>
-
 
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="row">
@@ -138,7 +136,6 @@
 
                     </div>
                     <div class="col-lg-3">
-
                         <vaadin-combo-box items="[[LProjectTypes]]" item-value-path="id" item-label-path="value" value="{{data.projectTypeCode}}" label="Cód. Tipo Projeto">
                             <template>
                                 <paper-icon-item>
@@ -173,11 +170,26 @@
             <div>
                 <div class="row">
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.regionCode}}" id="RegionCode" name="RegionCode" required label="Código Região"> </paper-input>
+                        <vaadin-combo-box items="[[LProjectRegionCodes]]" item-value-path="id" item-label-path="value" value="{{data.regionCode}}" label="Cód. Região">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.responsabilityCenterCode}}" id="ResponsabilityCenterCode" name="ResponsabilityCenterCode" required label="Código Centro Responsabilidade"> </paper-input>
-
+                        <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectCountabGroupTypes]]" item-value-path="id" item-label-path="value" value="{{data.groupContabProjectType}}" label="Tipo Grupo Contab. Projeto">
@@ -205,7 +217,15 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.functionalAreaCode}}" id="FunctionalAreaCode" name="FunctionalAreaCode" required label="Código Área Funcional"> </paper-input>
+                        <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
                         <paper-input type="text" value="{{data.accountWorkGroup}}" id="AccountWorkGroup" name="AccountWorkGroup" required label="Grupo Contab. Obra"> </paper-input>
