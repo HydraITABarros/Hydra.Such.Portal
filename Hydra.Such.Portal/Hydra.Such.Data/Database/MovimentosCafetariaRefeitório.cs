@@ -19,6 +19,10 @@ namespace Hydra.Such.Data.Database
         public string CódigoCentroResponsabilidade { get; set; }
         public string Utilizador { get; set; }
         public DateTime? DataHoraSistemaRegisto { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public UnidadesProdutivas NºUnidadeProdutivaNavigation { get; set; }
     }

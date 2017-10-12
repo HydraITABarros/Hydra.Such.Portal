@@ -35,6 +35,8 @@ namespace Hydra.Such.Data.Database
         public string IpServidor { get; set; }
         public string UtilizadorModificação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public ICollection<MovimentosTelefones> MovimentosTelefones { get; set; }
     }

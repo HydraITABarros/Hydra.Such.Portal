@@ -24,6 +24,10 @@ namespace Hydra.Such.Data.Database
         public decimal? PreçoDeCusto { get; set; }
         public decimal? PreçoDeVenda { get; set; }
         public decimal? PreçoTotal { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public CatálogoManutenção CódigoTipoOmNavigation { get; set; }
         public FolhasDeHoras NºFolhaDeHorasNavigation { get; set; }

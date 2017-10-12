@@ -13,6 +13,10 @@ namespace Hydra.Such.Data.Database
         public int CódigoMarca { get; set; }
         public int CódigoModelo { get; set; }
         public string Descrição { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public ICollection<Viaturas> Viaturas { get; set; }
     }

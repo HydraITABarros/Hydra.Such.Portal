@@ -11,6 +11,10 @@ namespace Hydra.Such.Data.Database
         public TimeSpan? Hora1ªSaída { get; set; }
         public TimeSpan? Hora2ªEntrada { get; set; }
         public TimeSpan? Hora2ªSaída { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public FolhasDeHoras NºFolhaDeHorasNavigation { get; set; }
     }

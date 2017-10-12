@@ -43,6 +43,10 @@ namespace Hydra.Such.Data.Database
         public bool? RequisiçãoNutrição { get; set; }
         public DateTime? DataReceçãoEsperada { get; set; }
         public bool? RequisiçãoModelo { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public Projetos NºProjetoNavigation { get; set; }
         public UnidadesProdutivas NºUnidadeProdutivaNavigation { get; set; }

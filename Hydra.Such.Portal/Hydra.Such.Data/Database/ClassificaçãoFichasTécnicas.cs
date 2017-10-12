@@ -16,6 +16,10 @@ namespace Hydra.Such.Data.Database
         public int? Tipo { get; set; }
         public int? Grupo { get; set; }
         public string Descrição { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public ClassificaçãoFichasTécnicas GrupoNavigation { get; set; }
         public ICollection<FichasTécnicasPratos> FichasTécnicasPratosClassFt1Navigation { get; set; }

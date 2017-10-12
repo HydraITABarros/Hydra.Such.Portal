@@ -27,6 +27,10 @@ namespace Hydra.Such.Data.Database
         public string Sanção { get; set; }
         public bool? Reincidência { get; set; }
         public int? NºInstrutor { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public Instrutores NºInstrutorNavigation { get; set; }
     }
