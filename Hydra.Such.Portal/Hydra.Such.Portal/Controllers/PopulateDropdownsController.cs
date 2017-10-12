@@ -9,6 +9,7 @@ using Hydra.Such.Data.Logic.Project;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using Microsoft.AspNetCore.Authorization;
+using Hydra.Such.Data.ViewModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
