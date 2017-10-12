@@ -97,7 +97,7 @@
                 </table>
             </form>
         </iron-form>
-        <vaadin-grid id="gridMealTypes" aria-label="ProfileModelsTabel" items="[[result]]" class="grid">
+        <vaadin-grid id="gridMealTypes" aria-label="ProfileModelsTabel" items="[[result]]" class="editGrid" multi-sort="true">
             <vaadin-grid-column>
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
@@ -176,11 +176,17 @@
                         if (this.$.piDescription.value == "" || this.$.piDescription.value == null) {
                             this.openToast('É obrigatório preencher a Descrição.');
                         } else {
-                            this.result.unshift({
+                            debugger;;
+                            var thisLine = {
                                 description: this.$.piDescription.value,
                                 grupoContabProduto: this.ddgroupcontprod
-
-                            });
+                            };
+                            if (this.result == null) {
+                                this.result = thisLine;
+                            }
+                            else {
+                                this.result.push(thisLine);
+                            } 
                             this.$.gridMealTypes.clearCache();
                         }
                     },
