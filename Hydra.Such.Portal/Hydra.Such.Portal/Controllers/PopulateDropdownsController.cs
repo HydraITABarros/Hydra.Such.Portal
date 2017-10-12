@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.Logic.Project;
+using Hydra.Such.Data.ViewModel;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Data.ViewModel.ProjectView;
 
@@ -80,6 +81,13 @@ namespace Hydra.Such.Portal.Controllers
                 value = x.Descrição
             }).ToList();
 
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetGroupContProduct()
+        {
+            List<NAVGroupContProductViewModel> result = DBNAV2017GruposContabProduto.GetGruposContabProduto(_config.NAVDatabaseName, _config.NAVCompanyName);
             return Json(result);
         }
 
