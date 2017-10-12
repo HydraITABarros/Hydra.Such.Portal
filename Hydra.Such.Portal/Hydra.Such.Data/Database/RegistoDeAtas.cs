@@ -9,10 +9,10 @@ namespace Hydra.Such.Data.Database
         public string NºAta { get; set; }
         public DateTime? DataDaAta { get; set; }
         public string Observações { get; set; }
-        public DateTime? DataHoraModificação { get; set; }
-        public string UtilizadorModificação { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public string UtilizadorCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
 
         public ProcedimentosCcp ProcedimentosCcp { get; set; }
     }

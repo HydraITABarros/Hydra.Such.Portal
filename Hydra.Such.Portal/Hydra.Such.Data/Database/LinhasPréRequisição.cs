@@ -17,10 +17,10 @@ namespace Hydra.Such.Data.Database
         public string CódigoÁreaFuncional { get; set; }
         public string CódigoCentroResponsabilidade { get; set; }
         public string NºProjeto { get; set; }
-        public DateTime? DataHoraModificação { get; set; }
-        public string UtilizadorModificação { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public string UtilizadorCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
 
         public Projetos NºProjetoNavigation { get; set; }
         public PréRequisição NºPréRequisiçãoNavigation { get; set; }

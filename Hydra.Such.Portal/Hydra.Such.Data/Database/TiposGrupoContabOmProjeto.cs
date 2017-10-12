@@ -28,10 +28,10 @@ namespace Hydra.Such.Data.Database
         public bool? IndicTaxaCumprRotinasMp { get; set; }
         public bool? IndicIncidênciasAvarias { get; set; }
         public bool? IndicadorOrdensEmCurso { get; set; }
-        public DateTime? DataHoraModificação { get; set; }
-        public string UtilizadorModificação { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public string UtilizadorCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
 
         public ICollection<Projetos> Projetos { get; set; }
     }

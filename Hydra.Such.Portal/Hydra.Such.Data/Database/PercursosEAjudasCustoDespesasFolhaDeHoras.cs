@@ -19,10 +19,10 @@ namespace Hydra.Such.Data.Database
         public decimal? PreçoUnitário { get; set; }
         public string Justificação { get; set; }
         public string RúbricaSalarial { get; set; }
-        public DateTime? DataHoraModificação { get; set; }
-        public string UtilizadorModificação { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public string UtilizadorCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
 
         public FolhasDeHoras NºFolhaDeHorasNavigation { get; set; }
     }

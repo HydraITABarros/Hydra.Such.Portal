@@ -14,10 +14,10 @@ namespace Hydra.Such.Data.Database
         public string Recurso { get; set; }
         public string Descrição { get; set; }
         public decimal? Valor { get; set; }
-        public DateTime? DataHoraModificação { get; set; }
-        public string UtilizadorModificação { get; set; }
         public DateTime? DataHoraCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorCriação { get; set; }
+        public string UtilizadorModificação { get; set; }
 
         public Viaturas MatrículaNavigation { get; set; }
     }
