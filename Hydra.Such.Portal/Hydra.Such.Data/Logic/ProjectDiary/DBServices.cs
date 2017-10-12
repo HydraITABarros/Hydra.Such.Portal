@@ -2,18 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
-namespace Hydra.Such.Data.Logic.Project
+namespace Hydra.Such.Data.Logic.ProjectDiary
 {
-    public class DBCountabGroupTypes
+    public class DBServices
     {
-        public static TiposGrupoContabProjeto GetById(int Codigo)
+        public static Serviços GetById(int Codigo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.TiposGrupoContabProjeto.Where(x => x.Código == Codigo).FirstOrDefault();
+                    return ctx.Serviços.Where(x => x.Código == Codigo).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -23,13 +24,13 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static List<TiposGrupoContabProjeto> GetAll()
+        public static List<Serviços> GetAll()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.TiposGrupoContabProjeto.ToList();
+                    return ctx.Serviços.ToList();
                 }
             }
             catch (Exception ex)
@@ -39,13 +40,13 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static TiposGrupoContabProjeto Create(TiposGrupoContabProjeto ObjectToCreate)
+        public static Serviços Create(Serviços ObjectToCreate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.TiposGrupoContabProjeto.Add(ObjectToCreate);
+                    ctx.Serviços.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
@@ -58,13 +59,13 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static TiposGrupoContabProjeto Update(TiposGrupoContabProjeto ObjectToUpdate)
+        public static Serviços Update(Serviços ObjectToUpdate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.TiposGrupoContabProjeto.Update(ObjectToUpdate);
+                    ctx.Serviços.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
 
@@ -77,14 +78,14 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static bool DeleteAllFromProfile(int ProfileId)
+        public static bool Delete(int ProfileId)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<TiposGrupoContabProjeto> ProfileAccessesToDelete = ctx.TiposGrupoContabProjeto.Where(x => x.Código == ProfileId).ToList();
-                    ctx.TiposGrupoContabProjeto.RemoveRange(ProfileAccessesToDelete);
+                    List<Serviços> ProfileAccessesToDelete = ctx.Serviços.Where(x => x.Código == ProfileId).ToList();
+                    ctx.Serviços.RemoveRange(ProfileAccessesToDelete);
                     ctx.SaveChanges();
                 }
 

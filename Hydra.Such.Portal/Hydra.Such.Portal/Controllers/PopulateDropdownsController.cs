@@ -8,6 +8,9 @@ using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.Logic.Project;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Data.ViewModel.ProjectView;
+using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic.ProjectDiary;
+using Hydra.Such.Data.ViewModel.ProjectDiary;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -177,6 +180,24 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetContabGroupTypesOM_FailType()
         {
             List<EnumData> result = EnumerablesFixed.ContabGroupTypesOM_FailType;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllClients()
+        {
+            List<NAVClientsViewModel> result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetServices()
+        {
+            List<DDMessage> result = DBServices.GetAll().Select(x => new DDMessage() {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+
             return Json(result);
         }
     }

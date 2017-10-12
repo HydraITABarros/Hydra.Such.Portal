@@ -2,18 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
-namespace Hydra.Such.Data.Logic.Project
+namespace Hydra.Such.Data.Logic.ProjectDiary
 {
-    public class DBCountabGroupTypes
+    public class DBClientServices
     {
-        public static TiposGrupoContabProjeto GetById(int Codigo)
+        public static ServiçosCliente GetByServiceCode(int Codigo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.TiposGrupoContabProjeto.Where(x => x.Código == Codigo).FirstOrDefault();
+                    return ctx.ServiçosCliente.Where(x => x.CódServiço == Codigo).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -23,13 +24,29 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static List<TiposGrupoContabProjeto> GetAll()
+        public static ServiçosCliente GetByClientNumber(string NCliente)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.TiposGrupoContabProjeto.ToList();
+                    return ctx.ServiçosCliente.Where(x => x.NºCliente == NCliente).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        public static List<ServiçosCliente> GetAll()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ServiçosCliente.ToList();
                 }
             }
             catch (Exception ex)
@@ -39,13 +56,13 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static TiposGrupoContabProjeto Create(TiposGrupoContabProjeto ObjectToCreate)
+        public static ServiçosCliente Create(ServiçosCliente ObjectToCreate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.TiposGrupoContabProjeto.Add(ObjectToCreate);
+                    ctx.ServiçosCliente.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
@@ -58,13 +75,13 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static TiposGrupoContabProjeto Update(TiposGrupoContabProjeto ObjectToUpdate)
+        public static ServiçosCliente Update(ServiçosCliente ObjectToUpdate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.TiposGrupoContabProjeto.Update(ObjectToUpdate);
+                    ctx.ServiçosCliente.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
 
@@ -77,14 +94,14 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static bool DeleteAllFromProfile(int ProfileId)
+        public static bool Delete(int ServCode, string ClientCode)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<TiposGrupoContabProjeto> ProfileAccessesToDelete = ctx.TiposGrupoContabProjeto.Where(x => x.Código == ProfileId).ToList();
-                    ctx.TiposGrupoContabProjeto.RemoveRange(ProfileAccessesToDelete);
+                    List<ServiçosCliente> ProfileAccessesToDelete = ctx.ServiçosCliente.Where(x => x.CódServiço == ServCode && x.NºCliente == ClientCode).ToList();
+                    ctx.ServiçosCliente.RemoveRange(ProfileAccessesToDelete);
                     ctx.SaveChanges();
                 }
 

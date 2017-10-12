@@ -1,5 +1,6 @@
-﻿@{
-    ViewData["Title"] = "TiposGrupoContabProjeto";
+﻿
+@{
+    ViewData["Title"] = "ServicosCliente";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -9,22 +10,23 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-input/paper-input.html" />
+<link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
-<h1 class="title">Tipos Grupos Contabilísticos</h1>
+<h1 class="title">Serviços Cliente</h1>
 
-<x-contab-group-types></x-contab-group-types>
+<x-client-services></x-client-services>
 
-<dom-module id="x-contab-group-types">
+<dom-module id="x-client-services">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
-
-
 
         <custom-style>
             <style is="custom-style">
@@ -43,7 +45,7 @@
         </custom-style>
 
         @*POPULATE GRID*@
-        <iron-ajax url="/TabelasAuxiliares/GetTiposGrupoContabProjeto"
+        <iron-ajax url="/TabelasAuxiliares/GetClientServices"
                    last-response="{{result}}"
                    method="post"
                    auto
@@ -53,41 +55,31 @@
                    content-type="application/json">
         </iron-ajax>
 
-        @*CRUD NEW PROFILEMODEL*@
-        <iron-ajax url="/PopulateDropdowns/GetRegionCode"
-                   last-response="{{RegionData}}"
+        @*CRUD - Populate Combos*@
+        <iron-ajax url="/PopulateDropdowns/GetAllClients"
+                   last-response="{{Clients}}"
                    auto
                    method="post"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
-                   last-response="{{FunctionalAreaCodeData}}"
+        <iron-ajax url="/PopulateDropdowns/GetServices"
+                   last-response="{{Services}}"
                    auto
                    method="post"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode"
-                   last-response="{{ResponsabilityCenterData}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
+
         <div class="row">
-            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6">
+            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                 <h2 class="separator">Geral</h2>
             </div>
         </div>
 
         <div class="row">
-            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6">
-                <paper-input type="text" name="description" required label="Descrição" value="{{ddDescription}}" char-counter maxlength="50"></paper-input>
-            </div>
-
-            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6">
-                <vaadin-combo-box items="[[RegionData]]" item-value-path="code" item-label-path="name" value="{{ddRegion}}" label="Código Região">
+            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                <vaadin-combo-box items="[[Clients]]" item-value-path="no_" item-label-path="name" value="{{ddClients}}" label="Cliente">
                     <template>
                         <paper-icon-item>
                             <paper-item-body two-line>
@@ -97,60 +89,36 @@
                     </template>
                 </vaadin-combo-box>
             </div>
-
-            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6">
-                <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="code" item-label-path="name" value="{{ddFunctionalArea}}" label="Código Area Funcional">
+            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                <vaadin-combo-box items="[[Services]]" item-value-path="id" item-label-path="value" value="{{ddServices}}" label="Serviço">
                     <template>
                         <paper-icon-item>
                             <paper-item-body two-line>
-                                <div>[[item.name]]</div>
+                                <div>[[item.value]]</div>
                             </paper-item-body>
                         </paper-icon-item>
                     </template>
                 </vaadin-combo-box>
             </div>
-            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6">
-                <vaadin-combo-box items="[[ResponsabilityCenterData]]" item-value-path="code" item-label-path="name" value="{{ddResponsabilityCenter}}" label="Código Centro Responsabilidade">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.name]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
+            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                <br />
+                <paper-checkbox checked="{{chkServiceGroup}}">Grupo Serviços</paper-checkbox>
             </div>
-            <div class="col-lg-1 col-md-2 col-sm-4 col-xs-6">
-                <paper-button class="btnSave" raised on-tap="_createContabGroupType">Criar</paper-button>
+            <div class="col-lg-1 col-md-2 col-sm-4 col-xs-12">
+                <br />
+                <paper-button class="btnSave" raised on-tap="_createClientService">Criar</paper-button>
             </div>
         </div>
+
         <br />
-        <vaadin-grid id="gridContabGroupTypes" aria-label="gridContabGroupTypesTable" items="[[result]]" class="editGrid" multi-sort="true">
-            <vaadin-grid-column width="15%">
+        <vaadin-grid id="gridClientServices" aria-label="gridClientServices" items="[[result]]" class="editGrid" multi-sort="true">
+            <vaadin-grid-column width="25%">
                 <template class="header">
-                    <vaadin-grid-sorter path="id">Código</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="id" />
+                    <vaadin-grid-sorter path="ClientNumber">Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="ClientNumber" />
                 </template>
                 <template>
-                    {{item.id}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
-                <template class="header">
-                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="description" />
-                </template>
-                <template>
-                    <paper-input type="text" name="description" required maxlength="20" value="{{item.description}}" />
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
-                <template class="header">
-                    <vaadin-grid-sorter path="region">Código Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="region"/>
-                </template>
-                <template>
-                    <vaadin-combo-box items="[[RegionData]]" item-value-path="code" item-label-path="name" value="{{item.region}}">
+                    <vaadin-combo-box items="[[Clients]]" item-value-path="no_" item-label-path="name" value="{{item.clientNumber}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -161,41 +129,32 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="25%">
                 <template class="header">
-                    <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="functionalAreaCode" />
+                    <vaadin-grid-sorter path="ServiceCode">Serviço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="ServiceCode" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="code" item-label-path="name" value="{{item.functionalAreaCode}}">
+                    <vaadin-combo-box items="[[Services]]" item-value-path="id" item-label-path="value" value="{{item.serviceCode}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
-                                    <div>[[item.name]]</div>
+                                    <div>[[item.value]]</div>
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="25%">
                 <template class="header">
-                    <vaadin-grid-sorter path="responsabilityCenter">Código Centro Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="responsabilityCenter" />
+                    <vaadin-grid-sorter path="ServiceGroup">Grupo Serviços</vaadin-grid-sorter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[ResponsabilityCenterData]]" item-value-path="code" item-label-path="name" value="{{item.responsabilityCenter}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.name]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                    <paper-checkbox checked="{{item.serviceGroup}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="25%">
                 <template class="header">
                 </template>
                 <template>
@@ -205,7 +164,6 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
         <div class="marginSpace">
             <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
             <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
@@ -213,33 +171,25 @@
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
 
-
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-contab-group-types',
+                is: 'x-client-services',
                 properties: {
-                    ddRegion: {
+                    ddClients: {
                         type: Number,
                         notify: true,
                         value: ""
                     },
 
-                    ddFunctionalArea: {
-                        type: String,
+                    ddServices: {
+                        type: Number,
                         notify: true,
                         value: ""
                     },
-
-                    ddResponsabilityCenter: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    }
                 },
                 ready: function () {
                     //this.$.page_databound_ajax.generateRequest();
-
                 },
                 openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -248,11 +198,11 @@
 
                 _update: function () {
                     //if (this.data.description !== '' && this.data.description != null) {
-                    this.$.page_databound_ajax.url = "/TabelasAuxiliares/UpdateTiposGrupoContabProjeto";
+                    this.$.page_databound_ajax.url = "/TabelasAuxiliares/UpdateClientServices";
                     this.$.page_databound_ajax.body = JSON.stringify(this.result);
                     //this.$.page_databound_ajax.generateRequest();
                     //this.$.page_databound_ajax.url = "/TabelasAuxiliares/GetTiposGrupoContabProjeto";
-                    this.$.gridContabGroupTypes.clearCache();
+                    this.$.gridClientServices.clearCache();
                     //} else {
                     //this.openToast('É obrigatório preencher o campo Descrição.');
                     //}
@@ -260,11 +210,11 @@
 
                 _updateResponse: function (e) {
                     var self = this;
-                    if (this.$.page_databound_ajax.url != "/TabelasAuxiliares/GetTiposGrupoContabProjeto") {
+                    if (this.$.page_databound_ajax.url != "/TabelasAuxiliares/GetClientServices") {
                         if (e.detail.status === 200) {
 
                             this.openToast('Atualizado com sucesso!');
-                            this.$.page_databound_ajax.url = "/TabelasAuxiliares/GetTiposGrupoContabProjeto";
+                            this.$.page_databound_ajax.url = "/TabelasAuxiliares/GetClientServices";
                             this.$.page_databound_ajax.generateRequest();
 
                         }
@@ -277,22 +227,21 @@
                 _cancel: function () {
                     //this.$.page_databound_ajax.url = "/TabelasAuxiliares/GetTiposGrupoContabProjeto";
                     this.$.page_databound_ajax.generateRequest();
-                    this.$.gridContabGroupTypes.clearCache();
+                    this.$.gridClientServices.clearCache();
                 },
-                _createContabGroupType: function () {
-                    this.result.unshift({
 
-                        description: this.ddDescription,
-                        region: this.ddRegion,
-                        functionalAreaCode: this.ddFunctionalArea,
-                        responsabilityCenter: this.ddResponsabilityCenter
+                _createContabGroupTypeOM: function () {
+                    this.result.unshift({
+                        clientNumber: this.ddClients,
+                        serviceCode: this.ddServices,
+                        serviceGroup: this.chkServiceGroup
                     });
-                    this.$.gridContabGroupTypes.clearCache();
+                    this.$.gridClientServices.clearCache();
                 },
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
-                    this.$.gridContabGroupTypes.clearCache();
+                    this.$.gridClientServices.clearCache();
                 }
 
             });
