@@ -45,6 +45,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToCreate.DataHoraCriação = DateTime.Now;
                     ctx.TiposGrupoContabOmProjeto.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }

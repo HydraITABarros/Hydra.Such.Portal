@@ -32,6 +32,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToCreate.DataHoraCriação = DateTime.Now;
                     ctx.TipoDeProjeto.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
@@ -51,6 +52,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToUpdate.DataHoraModificação = DateTime.Now;
                     ctx.TipoDeProjeto.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
