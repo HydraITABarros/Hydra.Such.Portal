@@ -198,7 +198,7 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Código,
                 value = x.Descrição
             }).ToList();
-
+            
             return Json(ResponsabilityCenter);
         }
 

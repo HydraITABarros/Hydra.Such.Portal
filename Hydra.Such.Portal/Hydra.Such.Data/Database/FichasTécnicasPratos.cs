@@ -38,10 +38,10 @@ namespace Hydra.Such.Data.Database
         public string ClassFt8 { get; set; }
         public string CódigoCentroResponsabilidade { get; set; }
         public string Observações { get; set; }
-        public DateTime? DataHoraModificação { get; set; }
-        public string UtilizadorModificação { get; set; }
         public DateTime? DataHoraCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorCriação { get; set; }
+        public string UtilizadorModificação { get; set; }
 
         public ClassificaçãoFichasTécnicas ClassFt1Navigation { get; set; }
         public ClassificaçãoFichasTécnicas ClassFt2Navigation { get; set; }

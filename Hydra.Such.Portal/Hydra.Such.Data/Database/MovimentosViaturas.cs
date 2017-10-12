@@ -29,10 +29,10 @@ namespace Hydra.Such.Data.Database
         public string NomePostoCombustível { get; set; }
         public decimal? Nd { get; set; }
         public bool? Corrigido { get; set; }
-        public DateTime? DataHoraModificação { get; set; }
-        public string UtilizadorModificação { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public string UtilizadorCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
 
         public Viaturas MatrículaNavigation { get; set; }
     }

@@ -14,10 +14,10 @@ namespace Hydra.Such.Data.Database
         public bool? Suplente { get; set; }
         public string Email { get; set; }
         public bool? EnviarEmail { get; set; }
-        public DateTime? DataHoraModificação { get; set; }
-        public string UtilizadorModificação { get; set; }
         public DateTime? DataHoraCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorCriação { get; set; }
+        public string UtilizadorModificação { get; set; }
 
         public ProcedimentosCcp NºProcedimentoNavigation { get; set; }
     }
