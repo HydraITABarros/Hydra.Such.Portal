@@ -23,7 +23,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpGet]
-        public IActionResult SignOut()
+        public IActionResult EndSession()
         {
             var callbackUrl = Url.Action(nameof(SignedOut), "Account", values: null, protocol: Request.Scheme);
             return SignOut(
