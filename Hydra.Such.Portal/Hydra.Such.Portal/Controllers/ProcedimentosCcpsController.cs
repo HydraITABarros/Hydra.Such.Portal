@@ -24,10 +24,10 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         // GET: ProcedimentosCcps
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var suchDBContext = _context.ProcedimentosCcp.Include(p => p.Nº1).Include(p => p.NºNavigation);
-            return View(await suchDBContext.ToListAsync());
+            return View(suchDBContext.ToListAsync());
         }
 
         // GET: ProcedimentosCcps/Details/5
