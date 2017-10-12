@@ -47,6 +47,10 @@ namespace Hydra.Such.Data.Database
         public string NºFuncionário { get; set; }
         public decimal? QuantidadeDevolvida { get; set; }
         public DateTime? DataConsumo { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
         public LinhasRequisição Nº { get; set; }

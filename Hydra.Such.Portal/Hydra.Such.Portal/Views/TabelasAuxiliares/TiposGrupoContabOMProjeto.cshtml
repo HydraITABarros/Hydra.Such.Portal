@@ -82,7 +82,7 @@
                 <paper-input type="text" name="description" required label="Descrição" value="{{ddDescription}}" char-counter maxlength="50"></paper-input>
             </div>
 
-            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-2">
+            <div class="col-lg-3 col-md-2 col-sm-4 col-xs-2">
                 <vaadin-combo-box items="[[CGTOM_Type]]" item-value-path="id" item-label-path="value" value="{{ddCGTOM_Type}}" label="Tipo">
                     <template>
                         <paper-icon-item>
@@ -101,7 +101,7 @@
                 <br />
                 <paper-checkbox checked="{{chkPreventiveMaintenance}}">Manut. Preventiva</paper-checkbox>
             </div>
-            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+            <div class="col-lg-3 col-md-2 col-sm-4 col-xs-12">
                 <vaadin-combo-box items="[[CGTOM_FailType]]" item-value-path="id" item-label-path="value" value="{{ddCGTOM_FailType}}" label="Tipo Razão Falha">
                     <template>
                         <paper-icon-item>
@@ -112,12 +112,12 @@
                     </template>
                 </vaadin-combo-box>
             </div>
+        </div>
+        <div class="row">
             <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                 <br />
                 <paper-checkbox checked="{{chkResponseTimeIndicator}}">Ind. Tempo Resposta</paper-checkbox>
             </div>
-        </div>
-        <div class="row">
             <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                 <br />
                 <paper-checkbox checked="{{chkStopTimeIndicator}}">Ind. Tempo Imobilização</paper-checkbox>
@@ -130,7 +130,243 @@
                 <br />
                 <paper-checkbox checked="{{chkClosingWorksTimeIndicator}}">Ind. Tempo Fecho Obras</paper-checkbox>
             </div>
+            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                <br />
+                <paper-checkbox checked="{{chkBillingTimeIndicator}}">Ind. Tempo Faturação</paper-checkbox>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                <br />
+                <paper-checkbox checked="{{chkEmployeesOccupationTimeIndicator}}">Ind. Tempo Ocup. Colaboradores</paper-checkbox>
+            </div>
         </div>
+        <div class="row">
+            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                <br />
+                <paper-checkbox checked="{{chkCostSaleValueIndicator}}">Ind. Valor Custo/Venda</paper-checkbox>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                <br />
+                <paper-checkbox checked="{{chkCATComplianceRateIndicator}}">Ind. Taxa Cumprimento CAT</paper-checkbox>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                <br />
+                <paper-checkbox checked="{{chkCATCoverageRateIndicator}}">Ind. Taxa Cobertura CAT</paper-checkbox>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                <br />
+                <paper-checkbox checked="{{chkMPRoutineFulfillmentRateIndicator}}">Ind. Taxa Cumpr. Rotinas MP</paper-checkbox>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                <br />
+                <paper-checkbox checked="{{chkBreakoutIncidentsIndicator}}">Ind. Incidências Avarias</paper-checkbox>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                <br />
+                <paper-checkbox checked="{{chkOrdernInProgressIndicator}}">Ind. Ordens em Curso</paper-checkbox>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-1 col-md-2 col-sm-4 col-xs-12 pull-right">
+                <br />
+                <paper-button class="btnSave" raised on-tap="_createContabGroupTypeOM">Criar</paper-button>
+            </div>
+        </div>
+
+        <br />
+        <vaadin-grid id="gridContabGroupTypesOM" aria-label="gridContabGroupTypesTableOM" items="[[result]]" class="editGrid" multi-sort="true">
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="code" />
+                </template>
+                <template>
+                    {{item.code}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="type" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[CGTOM_Type]]" item-value-path="id" item-label-path="value" value="{{item.type}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" />
+                </template>
+                <template>
+                    <paper-input type="text" name="description" required maxlength="20" value="{{item.description}}" />
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="CorrectiveMaintenance">Manut. Corretiva</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.correctiveMaintenance}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="PreventiveMaintenance">Manut. Preventiva</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.preventiveMaintenance}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="failType">Tipo Razão Falha</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="failType" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[CGTOM_FailType]]" item-value-path="id" item-label-path="value" value="{{item.failType}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="ResponseTimeIndicator">Ind. Tempo Resposta</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.responseTimeIndicator}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="StopTimeIndicator">Ind. Tempo Imobilização</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <paper-checkbox checked="{{itemsStopTimeIndicator}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="RepairEffectiveTimeIndicator">Ind. Tempo Efetivo Reparação</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.repairEffectiveTimeIndicator}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="ClosingWorksTimeIndicator">Ind. Tempo Fecho Obras</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.closingWorksTimeIndicator}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="BillingTimeIndicator">Ind. Tempo Faturação</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.billingTimeIndicator}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="EmployeesOccupationTimeIndicator">Ind. Tempo Ocup. Colaboradores</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.employeesOccupationTimeIndicator}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="CostSaleValueIndicator">Ind. Valor Custo/Venda</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.costSaleValueIndicator}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="CATComplianceRateIndicator">Ind. Taxa Cumprimento CAT</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.catComplianceRateIndicator}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="CATCoverageRateIndicator">Ind. Taxa Cobertura CAT</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.catCoverageRateIndicator}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="MPRoutineFulfillmentRateIndicator">Ind. Taxa Cumpr. Rotinas</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.mpRoutineFulfillmentRateIndicator}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="BreakoutIncidentsIndicator">Ind. Incidencias Avarias</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.breakoutIncidentsIndicator}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="OrdernInProgressIndicator">Ind. Ordens em Curso</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <paper-checkbox checked="{{item.ordernInProgressIndicator}}"></paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile">Eliminar</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <div class="marginSpace">
+            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+        </div>
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
 
     <script>
@@ -138,27 +374,20 @@
             Polymer({
                 is: 'x-contab-group-types-om',
                 properties: {
-                    ddRegion: {
+                    ddCGTOM_Type: {
                         type: Number,
                         notify: true,
                         value: ""
                     },
 
-                    ddFunctionalArea: {
-                        type: String,
+                    ddCGTOM_FailType: {
+                        type: Number,
                         notify: true,
                         value: ""
                     },
-
-                    ddResponsabilityCenter: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    }
                 },
                 ready: function () {
                     //this.$.page_databound_ajax.generateRequest();
-
                 },
                 openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -167,11 +396,11 @@
 
                 _update: function () {
                     //if (this.data.description !== '' && this.data.description != null) {
-                    this.$.page_databound_ajax.url = "/TabelasAuxiliares/UpdateTiposGrupoContabProjeto";
+                    this.$.page_databound_ajax.url = "/TabelasAuxiliares/UpdateTiposGrupoContabProjetoOM";
                     this.$.page_databound_ajax.body = JSON.stringify(this.result);
                     //this.$.page_databound_ajax.generateRequest();
                     //this.$.page_databound_ajax.url = "/TabelasAuxiliares/GetTiposGrupoContabProjeto";
-                    this.$.gridContabGroupTypes.clearCache();
+                    this.$.gridContabGroupTypesOM.clearCache();
                     //} else {
                     //this.openToast('É obrigatório preencher o campo Descrição.');
                     //}
@@ -179,11 +408,11 @@
 
                 _updateResponse: function (e) {
                     var self = this;
-                    if (this.$.page_databound_ajax.url != "/TabelasAuxiliares/GetTiposGrupoContabProjeto") {
+                    if (this.$.page_databound_ajax.url != "/TabelasAuxiliares/GetTiposGrupoContabOMProjeto") {
                         if (e.detail.status === 200) {
 
                             this.openToast('Atualizado com sucesso!');
-                            this.$.page_databound_ajax.url = "/TabelasAuxiliares/GetTiposGrupoContabProjeto";
+                            this.$.page_databound_ajax.url = "/TabelasAuxiliares/GetTiposGrupoContabOMProjeto";
                             this.$.page_databound_ajax.generateRequest();
 
                         }
@@ -196,22 +425,35 @@
                 _cancel: function () {
                     //this.$.page_databound_ajax.url = "/TabelasAuxiliares/GetTiposGrupoContabProjeto";
                     this.$.page_databound_ajax.generateRequest();
-                    this.$.gridContabGroupTypes.clearCache();
+                    this.$.gridContabGroupTypesOM.clearCache();
                 },
-                _createContabGroupType: function () {
-                    this.result.unshift({
 
+                _createContabGroupTypeOM: function () {
+                    this.result.unshift({
                         description: this.ddDescription,
-                        region: this.ddRegion,
-                        functionalAreaCode: this.ddFunctionalArea,
-                        responsabilityCenter: this.ddResponsabilityCenter
+                        type: this.ddCGTOM_Type,
+                        CorrectiveMaintenance: this.chkCorrectiveMaintenance,
+                        PreventiveMaintenance: this.chkPreventiveMaintenance,
+                        FailType: this.ddCGTOM_FailType,
+                        ResponseTimeIndicator: this.chkResponseTimeIndicator,
+                        StopTimeIndicator: this.chkStopTimeIndicator,
+                        RepairEffectiveTimeIndicator: this.chkRepairEffectiveTimeIndicator,
+                        ClosingWorksTimeIndicator: this.chkClosingWorksTimeIndicator,
+                        BillingTimeIndicator: this.chkBillingTimeIndicator,
+                        EmployeesOccupationTimeIndicator: this.chkEmployeesOccupationTimeIndicator,
+                        CostSaleValueIndicator: this.chkCostSaleValueIndicator,
+                        catComplianceRateIndicator: this.chkCATComplianceRateIndicator,
+                        catCoverageRateIndicator: this.chkCATCoverageRateIndicator,
+                        mpRoutineFulfillmentRateIndicator: this.chkMPRoutineFulfillmentRateIndicator,
+                        BreakoutIncidentsIndicator: this.chkBreakoutIncidentsIndicator,
+                        OrdernInProgressIndicator: this.chkOrdernInProgressIndicator
                     });
-                    this.$.gridContabGroupTypes.clearCache();
+                    this.$.gridContabGroupTypesOM.clearCache();
                 },
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
-                    this.$.gridContabGroupTypes.clearCache();
+                    this.$.gridContabGroupTypesOM.clearCache();
                 }
 
             });

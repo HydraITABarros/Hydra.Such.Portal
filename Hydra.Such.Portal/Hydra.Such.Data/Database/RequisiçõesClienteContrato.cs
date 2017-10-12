@@ -16,5 +16,9 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataÚltimaFatura { get; set; }
         public string NºFatura { get; set; }
         public decimal? ValorFatura { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
     }
 }

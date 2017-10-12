@@ -8,10 +8,11 @@ using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using Microsoft.AspNetCore.Mvc;
-using Hydra.Such.Data.Logic.Projects;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hydra.Such.Portal.Controllers
 {
+    [Authorize]
     public class TabelasAuxiliaresController : Controller
     {
         public IActionResult Index()
@@ -72,7 +73,7 @@ namespace Hydra.Such.Portal.Controllers
         //POPULATE GRID ContabGroupTypes
         public JsonResult GetTiposGrupoContabProjeto([FromBody] ContabGroupTypesProjectView data)
         {
-            List<ContabGroupTypesProjectView> result = CountabGroupTypes.GetAll().Select(x=> new ContabGroupTypesProjectView() {
+            List<ContabGroupTypesProjectView> result = DBCountabGroupTypes.GetAll().Select(x=> new ContabGroupTypesProjectView() {
                 ID = x.Código,
                 Description = x.Descrição,
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
@@ -88,9 +89,9 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UpdateTiposGrupoContabProjeto([FromBody] List<ContabGroupTypesProjectView> data)
         {
             //Get All
-            List<TiposGrupoContabProjeto> previousList = CountabGroupTypes.GetAll();
+            List<TiposGrupoContabProjeto> previousList = DBCountabGroupTypes.GetAll();
             previousList.RemoveAll(x => data.Any(u => u.ID == x.Código));
-            previousList.ForEach(x => CountabGroupTypes.DeleteAllFromProfile(x.Código));
+            previousList.ForEach(x => DBCountabGroupTypes.DeleteAllFromProfile(x.Código));
 
             data.ForEach(x =>
             {
@@ -105,11 +106,11 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.ID > 0)
                 {
                     CN.Código = x.ID;
-                    CountabGroupTypes.Update(CN);
+                    DBCountabGroupTypes.Update(CN);
                 }
                 else
                 {
-                    CountabGroupTypes.Create(CN);
+                    DBCountabGroupTypes.Create(CN);
                 }
             });
 
@@ -197,6 +198,53 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
 
             return Json(result);
+        }
+
+        //Create/Update/Delete 
+        [HttpPost]
+        public JsonResult UpdateTiposGrupoContabProjetoOM([FromBody] List<ContabGroupTypesOMProjectViewModel> data)
+        {
+            //Get All
+            List<TiposGrupoContabOmProjeto> previousList = DBCountabGroupTypesOM.GetAll();
+            previousList.RemoveAll(x => data.Any(u => u.Code == x.Código));
+            previousList.ForEach(x => DBCountabGroupTypesOM.DeleteAllFromProfile(x.Código));
+
+            data.ForEach(x =>
+            {
+                TiposGrupoContabOmProjeto CN = new TiposGrupoContabOmProjeto()
+                {
+                    Código = x.Code,
+                    Tipo = x.Type,
+                    Descrição = x.Description,
+                    ManutCorretiva = x.CorrectiveMaintenance,
+                    ManutPreventiva = x.PreventiveMaintenance,
+                    TipoRazãoFalha = x.FailType,
+                    IndicadorTempoResposta = x.ResponseTimeIndicator,
+                    IndicadorTempoImobilização = x.StopTimeIndicator,
+                    IndicadorTempoEfetivoReparação = x.RepairEffectiveTimeIndicator,
+                    IndicadorTempoFechoObras = x.ClosingWorksTimeIndicator,
+                    IndicadorTempoFaturação = x.BillingTimeIndicator,
+                    IndicadorTempoOcupColaboradores = x.EmployeesOccupationTimeIndicator,
+                    IndicadorValorCustoVenda = x.CostSaleValueIndicator,
+                    IndicTaxaCumprimentoCat = x.CATComplianceRateIndicator,
+                    IndicadorTaxaCoberturaCat = x.CATCoverageRateIndicator,
+                    IndicTaxaCumprRotinasMp = x.MPRoutineFulfillmentRateIndicator,
+                    IndicIncidênciasAvarias = x.BreakoutIncidentsIndicator,
+                    IndicadorOrdensEmCurso = x.OrdernInProgressIndicator
+                };
+
+                if (x.Code > 0)
+                {
+                    CN.Código = x.Code;
+                    DBCountabGroupTypesOM.Update(CN);
+                }
+                else
+                {
+                    DBCountabGroupTypesOM.Create(CN);
+                }
+            });
+
+            return Json(data);
         }
         #endregion TiposGrupoContabOMProjeto
 

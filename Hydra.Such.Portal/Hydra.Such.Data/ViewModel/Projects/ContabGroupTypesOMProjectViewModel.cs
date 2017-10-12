@@ -6,7 +6,7 @@ namespace Hydra.Such.Data.ViewModel.ProjectView
 {
     public class ContabGroupTypesOMProjectViewModel
     {
-        public int? Code { get; set; }
+        public int Code { get; set; }
         public int? Type { get; set; }
         public string Description { get; set; }
         public bool? CorrectiveMaintenance { get; set; }

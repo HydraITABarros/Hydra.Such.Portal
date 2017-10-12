@@ -17,6 +17,10 @@ namespace Hydra.Such.Data.Database
         public string NºFornecedor { get; set; }
         public int? TipoRefeição { get; set; }
         public bool? TabelaPreçosFornecedor { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public UnidadesProdutivas NºUnidadeProdutivaNavigation { get; set; }
         public TiposRefeição TipoRefeiçãoNavigation { get; set; }

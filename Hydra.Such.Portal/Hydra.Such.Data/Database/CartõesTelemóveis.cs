@@ -35,6 +35,8 @@ namespace Hydra.Such.Data.Database
         public bool? EquipamentoNãoDevolvido { get; set; }
         public string UtilizadorModificação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public BarramentosDeVoz BarramentoDeVozNavigation { get; set; }
         public Tarifários TarifárioDeDadosNavigation { get; set; }

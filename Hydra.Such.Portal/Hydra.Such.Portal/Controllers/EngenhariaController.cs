@@ -11,9 +11,11 @@ using System.Globalization;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Database;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hydra.Such.Portal.Controllers
 {
+    [Authorize]
     public class EngenhariaController : Controller
     {
         public IActionResult Index()
@@ -145,7 +147,7 @@ namespace Hydra.Such.Portal.Controllers
                 ProjectInfo pi = new ProjectInfo
                 {
                     //ProjectNo = proj.NºProjeto,
-                    ContabGroup = proj.TipoGrupoContabProjeto,
+                    ContabGroup = proj.GrupoContabObra,
                     Description = proj.Descrição,
                     RegionCode = proj.CódigoRegião,
                     FuncAreaCode = proj.CódigoÁreaFuncional,
@@ -212,7 +214,7 @@ namespace Hydra.Such.Portal.Controllers
         public class ProjectInfo
         {
             public string ProjectNo { get; set; }
-            public int? ContabGroup { get; set; }
+            public string ContabGroup { get; set; }
             public string Description { get; set; }
             public string RegionCode { get; set; }
             public string FuncAreaCode { get; set; }

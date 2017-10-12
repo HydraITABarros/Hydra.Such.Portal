@@ -59,6 +59,10 @@ namespace Hydra.Such.Data.Database
         public bool? ProjetoInterno { get; set; }
         public string ChefeProjeto { get; set; }
         public string ResponsávelProjeto { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public TipoDeProjeto CódTipoProjetoNavigation { get; set; }
         public TiposGrupoContabOmProjeto TipoGrupoContabOmProjetoNavigation { get; set; }

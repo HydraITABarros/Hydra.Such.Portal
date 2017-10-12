@@ -22,6 +22,10 @@ namespace Hydra.Such.Data.Database
         public string TextoEmail { get; set; }
         public string EmailDestinatário { get; set; }
         public string UtilizadorEmail { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
 
         public ProcedimentosCcp NºProcedimentoNavigation { get; set; }
     }
