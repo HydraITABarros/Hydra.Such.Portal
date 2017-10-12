@@ -8,6 +8,7 @@ using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.Logic.Project;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Data.ViewModel.ProjectView;
+using Hydra.Such.Data.ViewModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -83,6 +84,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        //STORE PROCEDURES
         [HttpPost]
         public JsonResult GetRegionCode()
         {
@@ -90,7 +92,6 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
-
 
         [HttpPost]
         public JsonResult GetFunctionalAreaCode()
@@ -107,6 +108,34 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetCGAccountCode (string accountNo)
+        {
+            List<NAVCGAccountViewModel> result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, accountNo);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetMeasureUnits()
+        {
+            List<NAVMeasureUnitViewModel> result = DBNAV2017MeasureUnit.GetAllMeasureUnit(_config.NAVDatabaseName, _config.NAVCompanyName);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetLocations()
+        {
+            List<NAVLocationsViewModel> result = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContabGroup()
+        {
+            List<NAVContabGroupViewModel> result = DBNAV2017ProjectContabGroup.GetAllProjectContabGroup(_config.NAVDatabaseName, _config.NAVCompanyName);
+            return Json(result);
+        }
+        //STORE PROCEDURES
 
         [HttpPost]
         public JsonResult GetMoveType()
