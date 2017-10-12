@@ -8,6 +8,8 @@ using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using Microsoft.AspNetCore.Mvc;
+using Hydra.Such.Data.Logic.ProjectDiary;
+using Hydra.Such.Data.ViewModel.ProjectDiary;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Hydra.Such.Portal.Controllers
@@ -338,6 +340,98 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
+        #endregion
+
+        #region Serviço
+        public IActionResult Servicos()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetServices()
+        {
+            List<ProjectTypesModelView> result = DBServices.GetAll().Select(x => new ProjectTypesModelView()
+            {
+                Code = x.Código,
+                Description = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateServices([FromBody] List<ProjectTypesModelView> data)
+        {
+            List<Serviços> results = DBServices.GetAll();
+            results.RemoveAll(x => data.Any(u => u.Code == x.Código));
+            results.ForEach(x => DBServices.Delete(x.Código));
+            data.ForEach(x =>
+            {
+                Serviços tpval = new Serviços()
+                {
+                    Descrição = x.Description
+                };
+                if (x.Code > 0)
+                {
+                    tpval.Código = x.Code;
+                    DBServices.Update(tpval);
+                }
+                else
+                {
+                    DBServices.Create(tpval);
+                }
+            });
+            return Json(data);
+        }
+        #endregion
+
+        #region ServiçosCliente
+        public IActionResult ServicosCliente()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetClientServices()
+        {
+            List<ClientServicesViewModel> result = DBClientServices.GetAll().Select(x => new ClientServicesViewModel()
+            {
+                ClientNumber = x.NºCliente,
+                ServiceCode = x.CódServiço,
+                ServiceGroup = x.GrupoServiços
+            }).ToList();
+            return Json(result);
+        }
+        
+        [HttpPost]
+        public JsonResult UpdateClientServices([FromBody] List<ClientServicesViewModel> data)
+        {
+            List<ServiçosCliente> results = DBClientServices.GetAll();
+            results.RemoveAll(x => data.Any(u => u.ClientNumber == x.NºCliente && u.ServiceCode == x.CódServiço));
+            results.ForEach(x => DBClientServices.Delete(x.CódServiço, x.NºCliente));
+            data.ForEach(x =>
+            {
+                ServiçosCliente tpval = new ServiçosCliente()
+                {
+                    GrupoServiços = x.ServiceGroup
+                };
+
+                results.ForEach(y =>
+                {
+                    if (x.ServiceCode == y.CódServiço && x.ClientNumber == y.NºCliente && x.ServiceGroup != y.GrupoServiços)
+                    {
+                        DBClientServices.Update(tpval);
+                    }
+                    else
+                    {
+                        tpval.CódServiço = x.ServiceCode;
+                        tpval.NºCliente = x.ClientNumber;
+                        DBClientServices.Create(tpval);
+                    }
+                });
+            });
+            return Json(data);
+        }
         #endregion
     }
 }

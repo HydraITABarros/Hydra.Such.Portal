@@ -48,6 +48,7 @@ namespace Hydra.Such.Data.Logic
                 using (var ctx = new SuchDBContext())
                 {
                     //Add Profile User
+                    ObjectToCreate.DataHoraCriação = DateTime.Now;
                     ctx.PerfisUtilizador.Add(ObjectToCreate);
 
                     //Add ProfileAccesses to UserAccesses
@@ -71,7 +72,9 @@ namespace Hydra.Such.Data.Logic
                             Inserção = pa.Inserção,
                             Modificação = pa.Modificação,
                             Eliminação = pa.Eliminação,
-                        };
+                            DataHoraCriação = DateTime.Now,
+                            UtilizadorCriação = pa.UtilizadorCriação
+                    };
 
                         ctx.AcessosUtilizador.Add(AU);
                         ctx.SaveChanges();
@@ -94,6 +97,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToUpdate.DataHoraModificação = DateTime.Now;
                     ctx.PerfisUtilizador.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }

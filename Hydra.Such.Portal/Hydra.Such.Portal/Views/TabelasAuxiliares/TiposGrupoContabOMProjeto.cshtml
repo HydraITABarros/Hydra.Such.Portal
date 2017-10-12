@@ -71,18 +71,18 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-                <div class="row">
-                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
-                        <h2 class="separator">Geral</h2>
-                    </div>
-                </div>
+
+        <div class="row">
+            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                <h2 class="separator">Geral</h2>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                 <paper-input type="text" name="description" required label="Descrição" value="{{ddDescription}}" char-counter maxlength="50"></paper-input>
             </div>
-
-            <div class="col-lg-3 col-md-2 col-sm-4 col-xs-2">
+            <div class="col-lg-3 col-md-2 col-sm-4 col-xs-12">
                 <vaadin-combo-box items="[[CGTOM_Type]]" item-value-path="id" item-label-path="value" value="{{ddCGTOM_Type}}" label="Tipo">
                     <template>
                         <paper-icon-item>
@@ -242,7 +242,6 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="ResponseTimeIndicator">Ind. Tempo Resposta</vaadin-grid-sorter>
@@ -251,16 +250,14 @@
                     <paper-checkbox checked="{{item.responseTimeIndicator}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="StopTimeIndicator">Ind. Tempo Imobilização</vaadin-grid-sorter>
                 </template>
                 <template>
-                    <paper-checkbox checked="{{itemsStopTimeIndicator}}"></paper-checkbox>
+                    <paper-checkbox checked="{{item.StopTimeIndicator}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="RepairEffectiveTimeIndicator">Ind. Tempo Efetivo Reparação</vaadin-grid-sorter>
@@ -269,7 +266,6 @@
                     <paper-checkbox checked="{{item.repairEffectiveTimeIndicator}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="ClosingWorksTimeIndicator">Ind. Tempo Fecho Obras</vaadin-grid-sorter>
@@ -278,7 +274,6 @@
                     <paper-checkbox checked="{{item.closingWorksTimeIndicator}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="BillingTimeIndicator">Ind. Tempo Faturação</vaadin-grid-sorter>
@@ -287,7 +282,6 @@
                     <paper-checkbox checked="{{item.billingTimeIndicator}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="EmployeesOccupationTimeIndicator">Ind. Tempo Ocup. Colaboradores</vaadin-grid-sorter>
@@ -296,7 +290,6 @@
                     <paper-checkbox checked="{{item.employeesOccupationTimeIndicator}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="CostSaleValueIndicator">Ind. Valor Custo/Venda</vaadin-grid-sorter>
@@ -305,7 +298,6 @@
                     <paper-checkbox checked="{{item.costSaleValueIndicator}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="CATComplianceRateIndicator">Ind. Taxa Cumprimento CAT</vaadin-grid-sorter>
@@ -314,7 +306,6 @@
                     <paper-checkbox checked="{{item.catComplianceRateIndicator}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="CATCoverageRateIndicator">Ind. Taxa Cobertura CAT</vaadin-grid-sorter>
@@ -323,7 +314,6 @@
                     <paper-checkbox checked="{{item.catCoverageRateIndicator}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="MPRoutineFulfillmentRateIndicator">Ind. Taxa Cumpr. Rotinas</vaadin-grid-sorter>
@@ -332,7 +322,6 @@
                     <paper-checkbox checked="{{item.mpRoutineFulfillmentRateIndicator}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="BreakoutIncidentsIndicator">Ind. Incidencias Avarias</vaadin-grid-sorter>
@@ -341,7 +330,6 @@
                     <paper-checkbox checked="{{item.breakoutIncidentsIndicator}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="OrdernInProgressIndicator">Ind. Ordens em Curso</vaadin-grid-sorter>
@@ -350,7 +338,6 @@
                     <paper-checkbox checked="{{item.ordernInProgressIndicator}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="10%">
                 <template class="header">
                 </template>

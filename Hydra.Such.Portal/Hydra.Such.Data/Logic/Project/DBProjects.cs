@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace Hydra.Such.Data.Logic
+namespace Hydra.Such.Data.Logic.Project
 {
     public static class DBProjects
     {
@@ -49,6 +49,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToCreate.DataHoraCriação = DateTime.Now;
                     ctx.Projetos.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
@@ -67,6 +68,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToUpdate.DataHoraModificação = DateTime.Now;
                     ctx.Projetos.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }

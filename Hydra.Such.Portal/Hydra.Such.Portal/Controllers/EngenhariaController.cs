@@ -120,7 +120,8 @@ namespace Hydra.Such.Portal.Controllers
                     PreçoUnitário = x.UnitPrice,
                     PreçoTotal = x.TotalPrice,
                     Faturável = x.Billable,
-                    FaturaANºCliente = x.InvoiceToClientNo
+                    FaturaANºCliente = x.InvoiceToClientNo,
+                    UtilizadorCriação = User.Identity.Name
                 };
 
                 if (x.LineNo > 0)

@@ -48,6 +48,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToCreate.DataHoraCriação = DateTime.Now;
                     ctx.ConfiguraçãoNumerações.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
@@ -74,6 +75,7 @@ namespace Hydra.Such.Data.Logic
                         ObjectToUpdate.ÚltimoNºUsado = "";
                     }
 
+                    ObjectToUpdate.DataHoraModificação = DateTime.Now;
                     ctx.ConfiguraçãoNumerações.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }

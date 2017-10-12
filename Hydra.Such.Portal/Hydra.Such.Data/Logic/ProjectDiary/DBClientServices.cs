@@ -4,18 +4,49 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Hydra.Such.Data.Logic
+namespace Hydra.Such.Data.Logic.ProjectDiary
 {
-    public static class DBAccessProfiles
+    public class DBClientServices
     {
-        #region CRUD
-        public static AcessosPerfil GetById(int IdPerfil, int Área, int Funcionalidade)
+        public static ServiçosCliente GetByServiceCode(int Codigo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.AcessosPerfil.Where(x => x.IdPerfil == IdPerfil && x.Área == Área && x.Funcionalidade == Funcionalidade).FirstOrDefault();
+                    return ctx.ServiçosCliente.Where(x => x.CódServiço == Codigo).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        public static ServiçosCliente GetByClientNumber(string NCliente)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ServiçosCliente.Where(x => x.NºCliente == NCliente).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return null;
+            }
+        }
+
+        public static List<ServiçosCliente> GetAll()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ServiçosCliente.ToList();
                 }
             }
             catch (Exception ex)
@@ -25,30 +56,13 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static List<AcessosPerfil> GetAll()
+        public static ServiçosCliente Create(ServiçosCliente ObjectToCreate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.AcessosPerfil.ToList();
-                }
-            }
-            catch (Exception ex)
-            {
-
-                return null;
-            }
-        }
-
-        public static AcessosPerfil Create(AcessosPerfil ObjectToCreate)
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    ObjectToCreate.DataHoraCriação = DateTime.Now;
-                    ctx.AcessosPerfil.Add(ObjectToCreate);
+                    ctx.ServiçosCliente.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
@@ -61,14 +75,13 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static AcessosPerfil Update(AcessosPerfil ObjectToUpdate)
+        public static ServiçosCliente Update(ServiçosCliente ObjectToUpdate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ObjectToUpdate.DataHoraModificação = DateTime.Now;
-                    ctx.AcessosPerfil.Update(ObjectToUpdate);
+                    ctx.ServiçosCliente.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
 
@@ -81,14 +94,14 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static bool DeleteAllFromProfile(int ProfileId)
+        public static bool Delete(int ServCode, string ClientCode)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<AcessosPerfil> ProfileAccessesToDelete = ctx.AcessosPerfil.Where(x => x.IdPerfil == ProfileId).ToList();
-                    ctx.AcessosPerfil.RemoveRange(ProfileAccessesToDelete);
+                    List<ServiçosCliente> ProfileAccessesToDelete = ctx.ServiçosCliente.Where(x => x.CódServiço == ServCode && x.NºCliente == ClientCode).ToList();
+                    ctx.ServiçosCliente.RemoveRange(ProfileAccessesToDelete);
                     ctx.SaveChanges();
                 }
 
@@ -98,23 +111,6 @@ namespace Hydra.Such.Data.Logic
             {
 
                 return false;
-            }
-        }
-        #endregion
-
-        public static List<AcessosPerfil> GetByProfileModelId(int ProfileModelId)
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    return ctx.AcessosPerfil.Where(x => x.IdPerfil == ProfileModelId).ToList();
-                }
-            }
-            catch (Exception ex)
-            {
-
-                return null;
             }
         }
     }

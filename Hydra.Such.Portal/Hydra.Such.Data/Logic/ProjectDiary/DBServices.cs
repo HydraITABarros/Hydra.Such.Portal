@@ -1,39 +1,52 @@
-﻿using System;
+﻿using Hydra.Such.Data.Database;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Hydra.Such.Data.Database;
-using Hydra.Such.Data.ViewModel.ProjectView;
 
-namespace Hydra.Such.Data.Logic.Project
+namespace Hydra.Such.Data.Logic.ProjectDiary
 {
-   public class DBProjectTypes
+    public class DBServices
     {
-        #region CRUD
-
-        public static List<TipoDeProjeto> GetAll()
+        public static Serviços GetById(int Codigo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.TipoDeProjeto.ToList();
+                    return ctx.Serviços.Where(x => x.Código == Codigo).FirstOrDefault();
                 }
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 return null;
             }
         }
 
-        public static TipoDeProjeto Create(TipoDeProjeto ObjectToCreate)
+        public static List<Serviços> GetAll()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ObjectToCreate.DataHoraCriação = DateTime.Now;
-                    ctx.TipoDeProjeto.Add(ObjectToCreate);
+                    return ctx.Serviços.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static Serviços Create(Serviços ObjectToCreate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.Serviços.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
@@ -46,14 +59,13 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static TipoDeProjeto Update(TipoDeProjeto ObjectToUpdate)
+        public static Serviços Update(Serviços ObjectToUpdate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ObjectToUpdate.DataHoraModificação = DateTime.Now;
-                    ctx.TipoDeProjeto.Update(ObjectToUpdate);
+                    ctx.Serviços.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
 
@@ -66,29 +78,14 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static TipoDeProjeto GetById(int id)
+        public static bool Delete(int ProfileId)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.TipoDeProjeto.FirstOrDefault(x => x.Código == id);
-                }
-            }
-            catch (Exception ex)
-            {
-
-                return null;
-            }
-        }
-
-        public static bool Delete(TipoDeProjeto ObjectToDelete)
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    ctx.TipoDeProjeto.Remove(ObjectToDelete);
+                    List<Serviços> ProfileAccessesToDelete = ctx.Serviços.Where(x => x.Código == ProfileId).ToList();
+                    ctx.Serviços.RemoveRange(ProfileAccessesToDelete);
                     ctx.SaveChanges();
                 }
 
@@ -100,6 +97,5 @@ namespace Hydra.Such.Data.Logic.Project
                 return false;
             }
         }
-        #endregion
     }
 }
