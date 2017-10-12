@@ -14,10 +14,12 @@ using Hydra.Such.Data.NAV;
 using System.Net.Http;
 using System.Net;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Hydra.Such.Portal.Controllers
 {
+    [Authorize]
     public class ProjetosController : Controller
     {
         private readonly NAVConfigurations _config;
@@ -48,6 +50,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
         #endregion
+
 
         #region Details
         public IActionResult Detalhes(String id)
@@ -109,8 +112,6 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(false);
         }
-
-
         
         [HttpPost]
         public JsonResult ValidateNumeration([FromBody] ProjectDetailsViewModel data)
