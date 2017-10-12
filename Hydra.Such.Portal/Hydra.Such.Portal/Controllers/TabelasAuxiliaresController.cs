@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using Microsoft.AspNetCore.Mvc;
+using Hydra.Such.Data.Logic.ProjectDiary;
+using Hydra.Such.Data.ViewModel.ProjectDiary;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Hydra.Such.Portal.Controllers
@@ -246,5 +249,189 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
         #endregion TiposGrupoContabOMProjeto
+
+        #region TiposRefeicao
+        public IActionResult TiposRefeicao()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetMealTypesData()
+        {
+            List<MealTypesViewModel> result = DBMealTypes.GetAll().Select(x => new MealTypesViewModel()
+            {
+                Code = x.Código,
+                Description = x.Descrição,
+                GrupoContabProduto = x.GrupoContabProduto
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateMealTypes([FromBody] List<MealTypesViewModel> data)
+        {
+            List<TiposRefeição> results = DBMealTypes.GetAll();
+            results.RemoveAll(x => data.Any(u => u.Code == x.Código));
+            results.ForEach(x => DBMealTypes.Delete(x));
+            data.ForEach(x =>
+            {
+                TiposRefeição OS = new TiposRefeição()
+                {
+                    Descrição = x.Description,
+                    GrupoContabProduto = x.GrupoContabProduto
+                };
+                if (x.Code > 0)
+                {
+                    OS.Código = x.Code;
+                    DBMealTypes.Update(OS);
+                }
+                else
+                {
+                    DBMealTypes.Create(OS);
+                }
+            });
+            return Json(data);
+        }
+
+
+        #endregion
+
+        #region DestinosFinaisResiduos
+        public IActionResult DestinosFinaisResiduos()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetFinalWasteDestinationsData()
+        {
+            List<FinalWasteDestinationsViewModel> result = DBFinalWasteDestinations.GetAll().Select(x => new FinalWasteDestinationsViewModel()
+            {
+                Code = x.Código,
+                Description = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateFinalWasteDestinations ([FromBody] List<FinalWasteDestinationsViewModel> data)
+        {
+            List<DestinosFinaisResíduos> results = DBFinalWasteDestinations.GetAll();
+            results.RemoveAll(x => data.Any(u => u.Code == x.Código));
+            results.ForEach(x => DBFinalWasteDestinations.Delete(x));
+            data.ForEach(x =>
+            {
+                DestinosFinaisResíduos OS = new DestinosFinaisResíduos()
+                {
+                    Descrição = x.Description
+                };
+                if (x.Code > 0)
+                {
+                    OS.Código = x.Code;
+                    DBFinalWasteDestinations.Update(OS);
+                }
+                else
+                {
+                    DBFinalWasteDestinations.Create(OS);
+                }
+            });
+            return Json(data);
+        }
+
+
+        #endregion
+
+        #region Serviço
+        public IActionResult Servicos()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetServices()
+        {
+            List<ProjectTypesModelView> result = DBServices.GetAll().Select(x => new ProjectTypesModelView()
+            {
+                Code = x.Código,
+                Description = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateServices([FromBody] List<ProjectTypesModelView> data)
+        {
+            List<Serviços> results = DBServices.GetAll();
+            results.RemoveAll(x => data.Any(u => u.Code == x.Código));
+            results.ForEach(x => DBServices.Delete(x.Código));
+            data.ForEach(x =>
+            {
+                Serviços tpval = new Serviços()
+                {
+                    Descrição = x.Description
+                };
+                if (x.Code > 0)
+                {
+                    tpval.Código = x.Code;
+                    DBServices.Update(tpval);
+                }
+                else
+                {
+                    DBServices.Create(tpval);
+                }
+            });
+            return Json(data);
+        }
+        #endregion
+
+        #region ServiçosCliente
+        public IActionResult ServicosCliente()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetClientServices()
+        {
+            List<ClientServicesViewModel> result = DBClientServices.GetAll().Select(x => new ClientServicesViewModel()
+            {
+                ClientNumber = x.NºCliente,
+                ServiceCode = x.CódServiço,
+                ServiceGroup = x.GrupoServiços
+            }).ToList();
+            return Json(result);
+        }
+        
+        [HttpPost]
+        public JsonResult UpdateClientServices([FromBody] List<ClientServicesViewModel> data)
+        {
+            List<ServiçosCliente> results = DBClientServices.GetAll();
+            results.RemoveAll(x => data.Any(u => u.ClientNumber == x.NºCliente && u.ServiceCode == x.CódServiço));
+            results.ForEach(x => DBClientServices.Delete(x.CódServiço, x.NºCliente));
+            data.ForEach(x =>
+            {
+                ServiçosCliente tpval = new ServiçosCliente()
+                {
+                    GrupoServiços = x.ServiceGroup
+                };
+
+                results.ForEach(y =>
+                {
+                    if (x.ServiceCode == y.CódServiço && x.ClientNumber == y.NºCliente && x.ServiceGroup != y.GrupoServiços)
+                    {
+                        DBClientServices.Update(tpval);
+                    }
+                    else
+                    {
+                        tpval.CódServiço = x.ServiceCode;
+                        tpval.NºCliente = x.ClientNumber;
+                        DBClientServices.Create(tpval);
+                    }
+                });
+            });
+            return Json(data);
+        }
+        #endregion
     }
 }
