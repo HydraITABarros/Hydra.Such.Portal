@@ -30,6 +30,10 @@ namespace Hydra.Such.Data.Database
         public int? CódServiçoCliente { get; set; }
         public int? GrupoFatura { get; set; }
         public bool? CriaContrato { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
 
         public Contratos Contratos { get; set; }
     }

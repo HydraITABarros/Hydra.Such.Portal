@@ -17,6 +17,9 @@ namespace Hydra.Such.Data.Database
         public string NºFaturaNav { get; set; }
         public string UtilizadorModificação { get; set; }
         public DateTime? DataHoraModificaçao { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
 
         public CartõesTelemóveis NúmeroTelemóvelNavigation { get; set; }
     }

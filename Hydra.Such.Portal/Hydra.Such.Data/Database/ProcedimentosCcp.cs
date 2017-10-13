@@ -129,6 +129,10 @@ namespace Hydra.Such.Data.Database
         public bool? AutorizaçãoAdjudicação { get; set; }
         public bool? NãoAdjudicaçãoEEncerramento { get; set; }
         public bool? NãoAdjudicaçãoESuspensão { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
 
         public TemposPaCcp Nº1 { get; set; }
         public RegistoDeAtas NºNavigation { get; set; }

@@ -16,6 +16,7 @@ using System.Net;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 
+
 namespace Hydra.Such.Portal.Controllers
 {
     [Authorize]
@@ -194,13 +195,14 @@ namespace Hydra.Such.Portal.Controllers
                         NºContratoOrçamento = data.BudgetContractNo,
                         ProjetoInterno = data.InternalProject,
                         ChefeProjeto = data.ProjectLeader,
-                        ResponsávelProjeto = data.ProjectResponsible
+                        ResponsávelProjeto = data.ProjectResponsible,
+                        UtilizadorCriação = User.Identity.Name
                     };
 
                     //Create Project On Database
                     cProject = DBProjects.Create(cProject);
 
-                    if (true)
+                    if (cProject == null)
                     {
                         data.eReasonCode = 3;
                         data.eMessage = "Ocorreu um erro ao criar o projeto no portal.";
@@ -279,8 +281,9 @@ namespace Hydra.Such.Portal.Controllers
                     NºContratoOrçamento = data.BudgetContractNo,
                     ProjetoInterno = data.InternalProject,
                     ChefeProjeto = data.ProjectLeader,
-                    ResponsávelProjeto = data.ProjectResponsible
-                };
+                    ResponsávelProjeto = data.ProjectResponsible,
+                    UtilizadorModificação = User.Identity.Name
+            };
 
                 DBProjects.Update(cProject);
                 return Json(data);

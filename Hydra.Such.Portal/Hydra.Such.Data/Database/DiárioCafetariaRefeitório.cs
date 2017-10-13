@@ -20,6 +20,10 @@ namespace Hydra.Such.Data.Database
         public int? TipoRefeição { get; set; }
         public int? TipoMovimento { get; set; }
         public string Utilizador { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorCriação { get; set; }
+        public string UtilizadorModificação { get; set; }
 
         public Projetos NºProjetoNavigation { get; set; }
         public UnidadesProdutivas NºUnidadeProdutivaNavigation { get; set; }

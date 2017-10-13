@@ -20,6 +20,10 @@ namespace Hydra.Such.Data.Database
         public string NºProjeto { get; set; }
         public string NºRequisição { get; set; }
         public int? NºLinhaRequisição { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
 
         public LinhasRequisição Nº { get; set; }
         public ProcedimentosCcp NºProcedimentoNavigation { get; set; }

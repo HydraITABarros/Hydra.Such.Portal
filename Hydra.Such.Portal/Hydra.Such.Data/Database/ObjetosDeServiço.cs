@@ -14,6 +14,10 @@ namespace Hydra.Such.Data.Database
         public string Descrição { get; set; }
         public bool? Bloqueado { get; set; }
         public string CódÁrea { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
 
         public ICollection<Contratos> Contratos { get; set; }
     }

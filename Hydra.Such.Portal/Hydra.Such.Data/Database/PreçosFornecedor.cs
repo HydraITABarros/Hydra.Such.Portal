@@ -31,5 +31,9 @@ namespace Hydra.Such.Data.Database
         public bool? SextaFeira { get; set; }
         public string Marca { get; set; }
         public int? TipoPreço { get; set; }
+        public DateTime? DataHoraCriação { get; set; }
+        public string UtilizadorCriação { get; set; }
+        public DateTime? DataHoraModificação { get; set; }
+        public string UtilizadorModificação { get; set; }
     }
 }

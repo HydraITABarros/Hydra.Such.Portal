@@ -85,7 +85,8 @@ namespace Hydra.Such.Portal.Controllers
                 IdUtilizador = data.IdUser,
                 Nome = data.Name,
                 Administrador = data.Administrator,
-                Ativo = data.Active
+                Ativo = data.Active,
+                UtilizadorCriação = User.Identity.Name
             });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -101,7 +102,8 @@ namespace Hydra.Such.Portal.Controllers
                     Inserção = x.Create,
                     Leitura = x.Read,
                     Modificação = x.Update,
-                    Eliminação = x.Delete
+                    Eliminação = x.Delete,
+                    UtilizadorCriação = User.Identity.Name
                 });
             });
 
@@ -111,7 +113,8 @@ namespace Hydra.Such.Portal.Controllers
                 DBUserProfiles.Create(new PerfisUtilizador()
                 {
                     IdUtilizador = ObjectCreated.IdUtilizador,
-                    IdPerfil = x.Id
+                    IdPerfil = x.Id,
+                    UtilizadorCriação = User.Identity.Name
                 });
             });
             return Json(data);
@@ -139,7 +142,8 @@ namespace Hydra.Such.Portal.Controllers
                     Inserção = x.Create,
                     Leitura = x.Read,
                     Modificação = x.Update,
-                    Eliminação = x.Delete
+                    Eliminação = x.Delete,
+                    UtilizadorCriação = User.Identity.Name
                 });
             });
 
@@ -150,7 +154,8 @@ namespace Hydra.Such.Portal.Controllers
                 DBUserProfiles.Create(new PerfisUtilizador()
                 {
                     IdUtilizador = UCObject.IdUtilizador,
-                    IdPerfil = x.Id
+                    IdPerfil = x.Id,
+                    UtilizadorCriação = User.Identity.Name
                 });
             });
             return Json(data);
@@ -232,7 +237,8 @@ namespace Hydra.Such.Portal.Controllers
         {
             PerfisModelo ObjectCreated = DBProfileModels.Create(new PerfisModelo()
             {
-                Descrição = data.Description
+                Descrição = data.Description,
+                UtilizadorCriação = User.Identity.Name
             });
             data.Id = ObjectCreated.Id;
 
@@ -247,7 +253,8 @@ namespace Hydra.Such.Portal.Controllers
                     Inserção = x.Create,
                     Leitura = x.Read,
                     Modificação = x.Update,
-                    Eliminação = x.Delete
+                    Eliminação = x.Delete,
+                    UtilizadorCriação = User.Identity.Name
                 });
             });
             return Json(data);
@@ -259,7 +266,7 @@ namespace Hydra.Such.Portal.Controllers
             //Atualizar o elemento os acessos
             PerfisModelo PMObj = DBProfileModels.GetById(data.Id);
             PMObj.Descrição = data.Description;
-
+            PMObj.UtilizadorModificação = User.Identity.Name;
             DBProfileModels.Update(PMObj);
 
             //Atualizar os acessos
@@ -274,7 +281,8 @@ namespace Hydra.Such.Portal.Controllers
                     Inserção = x.Create,
                     Leitura = x.Read,
                     Modificação = x.Update,
-                    Eliminação = x.Delete
+                    Eliminação = x.Delete,
+                    UtilizadorCriação = User.Identity.Name
                 });
             });
             return Json(data);
@@ -331,6 +339,7 @@ namespace Hydra.Such.Portal.Controllers
             configObj.NumeraçãoProjetos = data.ProjectNumeration;
             configObj.NumeraçãoContratos = data.ContractNumeration;
             configObj.NumeraçãoFolhasDeHoras = data.TimeSheetNumeration;
+            configObj.UtilizadorModificação = User.Identity.Name;
 
             DBConfigurations.Update(configObj);
 
@@ -395,10 +404,12 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.Id > 0)
                 {
                     CN.Id = x.Id;
+                    CN.UtilizadorModificação = User.Identity.Name;
                     DBNumerationConfigurations.Update(CN);
                 }
                 else
                 {
+                    CN.UtilizadorCriação = User.Identity.Name;
                     DBNumerationConfigurations.Create(CN);
                 }
             });

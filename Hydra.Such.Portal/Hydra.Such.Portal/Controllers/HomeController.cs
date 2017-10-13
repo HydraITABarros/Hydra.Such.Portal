@@ -26,7 +26,6 @@ namespace Hydra.Such.Portal.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            
             return View();
         }
 

@@ -34,8 +34,21 @@ namespace Hydra.Such.Portal
         {
             services.AddMvc();
 
-            services.AddAuthentication()
-            .AddAzureAd(options => Configuration.Bind("AzureAd", options))
+            services.AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                sharedOptions.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            })
+            .AddOpenIdConnect(option =>
+            {
+                option.ClientId = Configuration["AzureAD:ClientId"];
+                option.Authority = String.Format(Configuration["AzureAd:AadInstance"], Configuration["AzureAd:Tenant"]);
+                option.SignedOutRedirectUri = Configuration["AzureAd:PostLogoutRedirectUri"];
+                option.Events = new OpenIdConnectEvents
+                {
+                    OnRemoteFailure = OnAuthenticationFailed,
+                };
+            })
             .AddCookie();
 
             // ABARROS -> ADD NAV CONFIGURATIONS TO THE SERVICE
@@ -72,7 +85,13 @@ namespace Hydra.Such.Portal
             });
         }
 
-
+        // Handle sign-in errors differently than generic errors.
+        private Task OnAuthenticationFailed(RemoteFailureContext context)
+        {
+            context.HandleResponse();
+            context.Response.Redirect("/Error/Login?message=" + context.Failure.Message);
+            return Task.FromResult(0);
+        }
 
     }
 }
