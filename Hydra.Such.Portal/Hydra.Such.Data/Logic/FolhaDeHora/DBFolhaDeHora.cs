@@ -4,9 +4,9 @@ using System.Text;
 using System.Linq;
 using Hydra.Such.Data.Database;
 
-namespace Hydra.Such.Data.Logic.FolhasHoras
+namespace Hydra.Such.Data.Logic.FolhaDeHora
 {
-    public class DBFolhasDeHoras
+    public class DBFolhaDeHora
     {
         #region CRUD
 
