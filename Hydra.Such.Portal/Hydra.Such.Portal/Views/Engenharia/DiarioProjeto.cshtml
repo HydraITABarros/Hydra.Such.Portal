@@ -214,7 +214,7 @@
                     </tr>
                     <tr>
                         <td width="">
-                            <vaadin-combo-box id="piCodeRegion" name="piCodeRegion" items="[[RegionData]]" item-value-path="code" item-label-path="name" value="{{codeRegion}}" label="Cód. Região">
+                            <vaadin-combo-box id="piCodeRegion" name="piCodeRegion" items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{codeRegion}}" label="Cód. Região">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -225,7 +225,7 @@
                             </vaadin-combo-box>
                         </td>
                         <td width="">
-                            <vaadin-combo-box id="piFuncArea" name="piFuncArea" items="[[FunctionalAreaCodeData]]" item-value-path="code" value="{{codeFuncArea}}" item-label-path="name" label="Cód. Área Funcional">
+                            <vaadin-combo-box id="piFuncArea" name="piFuncArea" items="[[FunctionalAreaCodeData]]" item-value-path="id" value="{{codeFuncArea}}" item-label-path="value" label="Cód. Área Funcional">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -236,7 +236,7 @@
                             </vaadin-combo-box>
                         </td>
                         <td width="">
-                            <vaadin-combo-box id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" items="[[ResponsabilityCenterData]]" value="{{codeResponsabilityCenter}}" item-value-path="code" item-label-path="name" label="Cód. Centro Responsabilidade">
+                            <vaadin-combo-box id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" items="[[ResponsabilityCenterData]]" value="{{codeResponsabilityCenter}}" item-value-path="id" item-label-path="value" label="Cód. Centro Responsabilidade">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>

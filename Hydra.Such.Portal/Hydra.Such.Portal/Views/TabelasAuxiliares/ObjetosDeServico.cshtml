@@ -89,7 +89,7 @@
                         <td width="20%"><paper-input id="piDescription" type="text" name="description" required label="Descrição" maxlength="20"></paper-input></td>
                         <td width="10%"><paper-checkbox id="pcBlocked">Bloqueado</paper-checkbox></td>
                         <td width="20%">  
-                            <vaadin-combo-box items="[[AreaCodeData]]" item-value-path="code" item-label-path="name" value="{{ddAreaCode}}" label="Código Área">
+                            <vaadin-combo-box items="[[AreaCodeData]]" item-value-path="id" item-label-path="value" value="{{ddAreaCode}}" label="Código Área">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>

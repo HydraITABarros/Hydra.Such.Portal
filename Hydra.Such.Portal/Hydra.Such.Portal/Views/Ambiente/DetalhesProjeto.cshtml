@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewData["Title"] = "Detalhes Projeto - Ambiente - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (ViewBag.ProjectNo == "")
+{
+    <h2>Criar novo projeto</h2>
+}
+else
+{
+    <h2>Projeto @ViewBag.ProjectNo</h2>
+}
+
+
+<link rel="import" href="/elements/projects/project_details.html">
+
+<x-projectdetails _projectid="@ViewBag.ProjectNo" _areaid="2"></x-projectdetails>
+
