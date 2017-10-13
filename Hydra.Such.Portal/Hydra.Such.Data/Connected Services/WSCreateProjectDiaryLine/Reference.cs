@@ -13,7 +13,7 @@ namespace WSCreateProjectDiaryLine
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", ConfigurationName="WSCreateProjectDiaryLine.WSJobJournalLine_Port")]
-    internal interface WSJobJournalLine_Port
+    public interface WSJobJournalLine_Port
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsjobjournalline:Read", ReplyAction="*")]
@@ -80,9 +80,9 @@ namespace WSCreateProjectDiaryLine
         
         private bool document_DateFieldSpecified;
         
-        private Ledger_Entry_Type ledger_Entry_TypeField;
+        private Entry_Type entry_TypeField;
         
-        private bool ledger_Entry_TypeFieldSpecified;
+        private bool entry_TypeFieldSpecified;
         
         private string document_NoField;
         
@@ -224,29 +224,29 @@ namespace WSCreateProjectDiaryLine
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=4)]
-        public Ledger_Entry_Type Ledger_Entry_Type
+        public Entry_Type Entry_Type
         {
             get
             {
-                return this.ledger_Entry_TypeField;
+                return this.entry_TypeField;
             }
             set
             {
-                this.ledger_Entry_TypeField = value;
+                this.entry_TypeField = value;
             }
         }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Ledger_Entry_TypeSpecified
+        public bool Entry_TypeSpecified
         {
             get
             {
-                return this.ledger_Entry_TypeFieldSpecified;
+                return this.entry_TypeFieldSpecified;
             }
             set
             {
-                this.ledger_Entry_TypeFieldSpecified = value;
+                this.entry_TypeFieldSpecified = value;
             }
         }
         
@@ -632,20 +632,14 @@ namespace WSCreateProjectDiaryLine
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline")]
-    public enum Ledger_Entry_Type
+    public enum Entry_Type
     {
         
         /// <remarks/>
-        _blank_,
+        Usage,
         
         /// <remarks/>
-        Resource,
-        
-        /// <remarks/>
-        Item,
-        
-        /// <remarks/>
-        G_L_Account,
+        Sale,
     }
     
     /// <remarks/>
@@ -720,7 +714,7 @@ namespace WSCreateProjectDiaryLine
         Document_Date,
         
         /// <remarks/>
-        Ledger_Entry_Type,
+        Entry_Type,
         
         /// <remarks/>
         Document_No,
@@ -784,7 +778,7 @@ namespace WSCreateProjectDiaryLine
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Read", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Read
+    public partial class Read
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -804,7 +798,7 @@ namespace WSCreateProjectDiaryLine
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Read_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Read_Result
+    public partial class Read_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -824,7 +818,7 @@ namespace WSCreateProjectDiaryLine
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class ReadByRecId
+    public partial class ReadByRecId
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -844,7 +838,7 @@ namespace WSCreateProjectDiaryLine
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class ReadByRecId_Result
+    public partial class ReadByRecId_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -864,7 +858,7 @@ namespace WSCreateProjectDiaryLine
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class ReadMultiple
+    public partial class ReadMultiple
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -893,7 +887,7 @@ namespace WSCreateProjectDiaryLine
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class ReadMultiple_Result
+    public partial class ReadMultiple_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="ReadMultiple_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -914,7 +908,7 @@ namespace WSCreateProjectDiaryLine
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class IsUpdated
+    public partial class IsUpdated
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -934,7 +928,7 @@ namespace WSCreateProjectDiaryLine
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class IsUpdated_Result
+    public partial class IsUpdated_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="IsUpdated_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -954,7 +948,7 @@ namespace WSCreateProjectDiaryLine
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class GetRecIdFromKey
+    public partial class GetRecIdFromKey
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -974,7 +968,7 @@ namespace WSCreateProjectDiaryLine
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class GetRecIdFromKey_Result
+    public partial class GetRecIdFromKey_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetRecIdFromKey_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -993,7 +987,7 @@ namespace WSCreateProjectDiaryLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Create
+    public partial class Create
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -1012,7 +1006,7 @@ namespace WSCreateProjectDiaryLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Create_Result
+    public partial class Create_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -1031,7 +1025,7 @@ namespace WSCreateProjectDiaryLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class CreateMultiple
+    public partial class CreateMultiple
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -1051,7 +1045,7 @@ namespace WSCreateProjectDiaryLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class CreateMultiple_Result
+    public partial class CreateMultiple_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -1071,7 +1065,7 @@ namespace WSCreateProjectDiaryLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Update", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Update
+    public partial class Update
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -1090,7 +1084,7 @@ namespace WSCreateProjectDiaryLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Update_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Update_Result
+    public partial class Update_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -1109,7 +1103,7 @@ namespace WSCreateProjectDiaryLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class UpdateMultiple
+    public partial class UpdateMultiple
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -1129,7 +1123,7 @@ namespace WSCreateProjectDiaryLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class UpdateMultiple_Result
+    public partial class UpdateMultiple_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -1150,7 +1144,7 @@ namespace WSCreateProjectDiaryLine
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Delete
+    public partial class Delete
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -1170,7 +1164,7 @@ namespace WSCreateProjectDiaryLine
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", IsWrapped=true)]
-    internal partial class Delete_Result
+    public partial class Delete_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="Delete_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsjobjournalline", Order=0)]
@@ -1187,13 +1181,13 @@ namespace WSCreateProjectDiaryLine
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    internal interface WSJobJournalLine_PortChannel : WSCreateProjectDiaryLine.WSJobJournalLine_Port, System.ServiceModel.IClientChannel
+    public interface WSJobJournalLine_PortChannel : WSCreateProjectDiaryLine.WSJobJournalLine_Port, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    internal partial class WSJobJournalLine_PortClient : System.ServiceModel.ClientBase<WSCreateProjectDiaryLine.WSJobJournalLine_Port>, WSCreateProjectDiaryLine.WSJobJournalLine_Port
+    public partial class WSJobJournalLine_PortClient : System.ServiceModel.ClientBase<WSCreateProjectDiaryLine.WSJobJournalLine_Port>, WSCreateProjectDiaryLine.WSJobJournalLine_Port
     {
         
     /// <summary>

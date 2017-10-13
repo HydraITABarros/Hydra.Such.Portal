@@ -231,7 +231,6 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Comum"
             }};
 
-
         public static readonly List<EnumData> ContabGroupTypesOM_Type = new List<EnumData>(){
             new EnumData()
             {
@@ -287,7 +286,42 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Nota de Avaria"
             }
         };
+
+        public static readonly List<EnumData> ProjectDiaryMovements = new List<EnumData>()
+        {
+             new EnumData()
+            {
+                Id = 1,
+                Value = "Consumo"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Venda"
+            }
+        };
+
+        public static readonly List<EnumData> ProjectDiaryTypes = new List<EnumData>()
+        {
+             new EnumData()
+            {
+                Id = 1,
+                Value = "Recurso"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Produto"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Conta CG"
+            }
+        };
     }
+
+
     public class EnumData
     {
         public int Id { get; set; }

@@ -20,7 +20,7 @@ namespace Hydra.Such.Data.Database
                     foreach (SqlParameter item in parameters)
                     {
                         command.Parameters.Add(item.ParameterName, System.Data.SqlDbType.NVarChar);
-                        command.Parameters[item.ParameterName].Value = item.Value;
+                        command.Parameters[item.ParameterName].Value = item.Value == null ? "" : item.Value;
                     }
 
                     using (var dataReader = command.ExecuteReader())
