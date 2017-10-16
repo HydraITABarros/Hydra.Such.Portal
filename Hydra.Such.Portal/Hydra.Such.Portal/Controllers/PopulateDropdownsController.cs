@@ -106,7 +106,7 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.ProjectDiaryTypes;
             return Json(result);
         }
-        #endregion
+        //#endregion
 
         #region Store Procedures
         [HttpPost]
@@ -195,7 +195,7 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #endregion
-        #endregion
+        //#endregion
 
         public JsonResult GetProjectType()
         {
