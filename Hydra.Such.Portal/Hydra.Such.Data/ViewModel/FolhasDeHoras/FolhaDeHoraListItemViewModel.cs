@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.FolhasDeHoras
 {
-    public class FolhaDeHoraDetailsViewModel : ErrorHandler
+    public class FolhaDeHoraListItemViewModel
     {
         public string FolhaDeHorasNo { get; set; }
         public int? Area { get; set; }
@@ -17,6 +17,7 @@ namespace Hydra.Such.Data.ViewModel.FolhasDeHoras
         public bool? DisplacementOutsideCity { get; set; }
         public string Validators { get; set; }
         public int? Status { get; set; }
+        public string StatusDescription { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? DateTimeCreation { get; set; }
         public DateTime? DateTimeLastState { get; set; }

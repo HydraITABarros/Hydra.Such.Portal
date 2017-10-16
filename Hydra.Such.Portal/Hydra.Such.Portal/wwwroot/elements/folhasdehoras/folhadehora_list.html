@@ -63,13 +63,164 @@
                     {{item.folhadehoraNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px">
+
+            <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="date" />
+                    <vaadin-grid-sorter path="Area">Cód. Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="Area" />
                 </template>
                 <template>
-                    {{item.dateText}}
+                    {{item.Area}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="ProjectNo">Nº Projecto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="ProjectNo" />
+                </template>
+                <template>
+                    {{item.ProjectNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="EmployeeNo">Nº Empregado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="EmployeeNo" />
+                </template>
+                <template>
+                    {{item.EmployeeNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="DateDepartureTime">Data Hora de Partida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="DateDepartureTime" />
+                </template>
+                <template>
+                    {{item.DateDepartureTime}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="DateTimeArrival">Data Hora de Chegada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="DateTimeArrival" />
+                </template>
+                <template>
+                    {{item.DateTimeArrival}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="TypeDeslocation">Tipo de Deslocação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="TypeDeslocation" />
+                </template>
+                <template>
+                    {{item.TypeDeslocation}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="CodeTypeKms">Código do Tipo de Kms</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="CodeTypeKms" />
+                </template>
+                <template>
+                    {{item.CodeTypeKms}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="DisplacementOutsideCity">Deslocação Fora do Concelho</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="DisplacementOutsideCity" />
+                </template>
+                <template>
+                    {{item.DisplacementOutsideCity}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="Validators">Validadores</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="Validators" />
+                </template>
+                <template>
+                    {{item.Validators}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="Status">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="Status" />
+                </template>
+                <template>
+                    {{item.Status}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="CreatedBy">Criado Por</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="CreatedBy" />
+                </template>
+                <template>
+                    {{item.CreatedBy}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="DateTimeCreation">Data Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="DateTimeCreation" />
+                </template>
+                <template>
+                    {{item.DateTimeCreation}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="DateTimeLastState">Data Último Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="DateTimeLastState" />
+                </template>
+                <template>
+                    {{item.DateTimeLastState}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="UserCreation">Utilizador Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="UserCreation" />
+                </template>
+                <template>
+                    {{item.UserCreation}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="DateTimeModification">Data Modificação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="DateTimeModification" />
+                </template>
+                <template>
+                    {{item.DateTimeLastState}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="UserModification">Utilizador Modificação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="UserModification" />
+                </template>
+                <template>
+                    {{item.UserModification}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
