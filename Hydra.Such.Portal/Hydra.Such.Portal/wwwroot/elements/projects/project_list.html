@@ -181,13 +181,14 @@
                     }
                 },
                 _rowSelected: function (item) {
+                    debugger;;
                     if (item != null) {
-                        window.location.href = "/Projetos/Detalhes/"+item.id;
+                        window.location.href = "DetalhesProjeto/" + item.projectNo;
                     }
                 },
                 _create: function (item) {
                     if (item != null) {
-                        window.location.href = "/Projetos/Detalhes/0";
+                        window.location.href = "DetalhesProjeto/";
                     }
                 },
                 ready: function () {
