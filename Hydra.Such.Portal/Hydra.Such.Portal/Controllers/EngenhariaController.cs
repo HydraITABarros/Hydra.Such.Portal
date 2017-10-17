@@ -56,7 +56,7 @@ namespace Hydra.Such.Portal.Controllers
             return View();
         }
 
-        /* Diario de Projeto */
+        #region DiárioDeProjetos
         [HttpPost]
         public JsonResult GetAllProjectDiary()
         {
@@ -128,15 +128,19 @@ namespace Hydra.Such.Portal.Controllers
                     PreçoUnitário = x.UnitPrice,
                     PreçoTotal = x.TotalPrice,
                     Faturável = x.Billable,
-                    FaturaANºCliente = x.InvoiceToClientNo,
+                    //FaturaANºCliente = x.InvoiceToClientNo
                 };
 
                 if (x.LineNo > 0)
                 {
+                    newdp.DataHoraModificação = DateTime.Now;
+                    newdp.UtilizadorModificação = User.Identity.Name;
                     DBProjectDiary.Update(newdp);
                 }
                 else
                 {
+                    newdp.DataHoraCriação = DateTime.Now;
+                    newdp.UtilizadorCriação = User.Identity.Name;
                     DBProjectDiary.Create(newdp);
                 }
             });
@@ -172,51 +176,29 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult RegisterDiaryLines([FromBody]  List<ProjectDiaryViewModel> dp)
         {
+            Guid transactID = Guid.NewGuid();
+
             //Create Lines in NAV
-            Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, _configws);
-            TCreateNavDiaryLine.Wait();
+            //Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
+            //TCreateNavDiaryLine.Wait();
 
-            List<int> NAVLines = TCreateNavDiaryLine.Result.WSJobJournalLine_List.Select(x => x.Line_No).ToList();
-
-            //Register Lines in NAV
-            //Task<WSCreateProjectDiaryLine.UpdateMultiple_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegisterNavDiaryLines(NAVLines, _configws);
+            ////Register Lines in NAV
+            //Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
             //TRegisterNavDiaryLine.Wait();
 
-            // SET INTEGRATED IN DB
-            dp.ForEach(x =>
-            {
-                DiárioDeProjeto newdp = new DiárioDeProjeto()
-                {
-                    NºLinha = x.LineNo,
-                    NºProjeto = x.ProjectNo,
-                    Data = x.Date == "" || x.Date == String.Empty ? (DateTime?)null : DateTime.Parse(x.Date),
-                    TipoMovimento = x.MovementType,
-                    Tipo = x.Type,
-                    Código = x.Code,
-                    Descrição = x.Description,
-                    Quantidade = x.Quantity,
-                    CódUnidadeMedida = x.MeasurementUnitCode,
-                    CódLocalização = x.LocationCode,
-                    GrupoContabProjeto = x.ProjectContabGroup,
-                    CódigoRegião = x.RegionCode,
-                    CódigoÁreaFuncional = x.FunctionalAreaCode,
-                    CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
-                    Utilizador = User.Identity.Name,
-                    CustoUnitário = x.UnitCost,
-                    CustoTotal = x.TotalCost,
-                    PreçoUnitário = x.UnitPrice,
-                    PreçoTotal = x.TotalPrice,
-                    Faturável = x.Billable,
-                    FaturaANºCliente = x.InvoiceToClientNo,                    
-                };
+            //SET INTEGRATED IN DB
+            //dp.ForEach(x =>
+            //{
+            //    DiárioDeProjeto newdp = new DiárioDeProjeto()
+            //    {
+            //        //Bit = true
+            //    };
 
-            DBProjectDiary.Update(newdp);
-            });
+            //    DBProjectDiary.Update(newdp);
+            //});
 
             return Json(dp);
         }
-
-
 
 
         public class ProjectInfo
@@ -228,5 +210,6 @@ namespace Hydra.Such.Portal.Controllers
             public string FuncAreaCode { get; set; }
             public string ResponsabilityCenter { get; set; }
         }
+        #endregion
     }
 }

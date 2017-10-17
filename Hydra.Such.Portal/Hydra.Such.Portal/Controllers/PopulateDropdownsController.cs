@@ -163,6 +163,34 @@ namespace Hydra.Such.Portal.Controllers
 
         #region TypeOptions
         [HttpPost]
+        public JsonResult Alpha()
+        {
+            List<List<DDMessageString>> result = new List<List<DDMessageString>>();
+
+            List<DDMessageString> resources = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+            List<DDMessageString> products = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+            List<DDMessageString> accounts = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+
+            result.Add(resources);
+            result.Add(products);
+            result.Add(accounts);
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetCGAccountCode(string accountNo)
         {
             List<NAVCGAccountViewModel> result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, accountNo);
@@ -215,7 +243,7 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Código,
                 value = x.Descrição
             }).ToList();
-            
+
             return Json(ResponsabilityCenter);
         }
 
@@ -294,7 +322,8 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetServices()
         {
-            List<DDMessage> result = DBServices.GetAll().Select(x => new DDMessage() {
+            List<DDMessage> result = DBServices.GetAll().Select(x => new DDMessage()
+            {
                 id = x.Código,
                 value = x.Descrição
             }).ToList();
@@ -302,7 +331,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
     }
-    
+
     public class DDMessage
     {
         public int id { get; set; }
