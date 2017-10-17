@@ -92,6 +92,30 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult GetFolhaDeHoraStatus()
+        {
+            List<EnumData> result = EnumerablesFixed.FolhaDeHoraStatus;
+            return Json(result);
+        }
+
+        public JsonResult GetFolhaDeHoraTypeDeslocation()
+        {
+            List<EnumData> result = EnumerablesFixed.FolhaDeHoraTypeDeslocation;
+            return Json(result);
+        }
+
+        public JsonResult GetFolhaDeHoraCodeTypeKms()
+        {
+            List<EnumData> result = EnumerablesFixed.FolhaDeHoraCodeTypeKms;
+            return Json(result);
+        }
+
+        public JsonResult GetFolhaDeHoraDisplacementOutsideCity()
+        {
+            List<EnumData> result = EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity;
+            return Json(result);
+        }
+
         //STORE PROCEDURES
         [HttpPost]
         public JsonResult GetProjectDiaryMovements()
