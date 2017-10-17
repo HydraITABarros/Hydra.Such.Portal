@@ -115,6 +115,43 @@
                    content-type="application/json"></iron-ajax>
         @*CODE OPTIONS*@
 
+        @*Temp*@
+        <iron-ajax url="/PopulateDropdowns/GetCGAccountCode"
+                   id="ajax_account_options"
+                   last-response="{{accountCode}}"
+                   method="post"
+                   handle-as="json"
+                   auto
+                   params='{}'
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResourcesCode"
+                   id="ajax_resource_options"
+                   last-response="{{resourceCode}}"
+                   method="post"
+                   handle-as="json"
+                   auto
+                   params='{}'
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsCode"
+                   id="ajax_products_options"
+                   last-response="{{productCode}}"
+                   method="post"
+                   auto
+                   handle-as="json"
+                   params='{}'
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/Alpha"
+                   id="ajax_products_options"
+                   last-response="{{allofit}}"
+                   method="post"
+                   auto
+                   handle-as="json"
+                   params='{}'
+                   content-type="application/json"></iron-ajax>
+        @*Temp*@
+
+
         <iron-ajax url="/PopulateDropdowns/GetMeasureUnits"
                    last-response="{{MeasureUnit}}"
                    auto
@@ -289,7 +326,7 @@
                         <td width=""><paper-input class="alignRight" type="number" label="Preço Unitário  " required id="piUnitPrice" name="piUnitPrice" value="{{unitPrice}}"><div slot="suffix">€</div></paper-input></td>
                         <td width=""><paper-input class="alignRight" type="number" label="Preço Total  " required id="piTotalPrice" name="piTotalPrice" value="{{totalPrice}}"><div slot="suffix">€</div></paper-input></td>
                         <td width=""><paper-checkbox id="pcInvoice" checked="{{billable}}">Faturável</paper-checkbox></td>
-                        <td width=""><paper-input id="piInvoiceClientNo" type="text" name="piInvoiceClientNo" required label="Fatura a Nº Cliente" maxlength="20" value="{{invoiceClientNo}}"></paper-input></td>
+                        @*<td width=""><paper-input id="piInvoiceClientNo" type="text" name="piInvoiceClientNo" required label="Fatura a Nº Cliente" maxlength="20" value="{{invoiceClientNo}}"></paper-input></td>*@
                         <td><paper-button class="btnSave" raised on-tap="_add">Criar</paper-button></td>
                     </tr>
                 </table>
@@ -330,7 +367,7 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result]]" class="editGrid" >
+        <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result]]" class="editGrid">
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
@@ -385,7 +422,7 @@
                     @*<vaadin-grid-filter path="type"></vaadin-grid-filter>*@
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[response3]]" on-change="_selectItem" on-value-changed="_projectTypeChange" item-value-path="id" item-label-path="value" value="{{item.projectType}}">
+                    <vaadin-combo-box id="type[[index]]" items="[[response3]]" on-value-changed="_lineProjectTypeChange" item-value-path="id" item-label-path="value" value="{{item.type}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -397,17 +434,17 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="110px" resizable>
+            <vaadin-grid-column width="200px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[codeOptions]]" item-value-path="code" item-label-path="name" value="{{item.code}}">
+                    <vaadin-combo-box id="code[[index]]" items="[[allofit.0]]" item-value-path="id" item-label-path="value" value="{{item.code}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
-                                    <div>[[item.name]]</div>
+                                    <div>[[item.value]]</div>
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
@@ -425,7 +462,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="projectContabGroup">Grupo Contab.</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectContabGroup"></vaadin-grid-filter>
@@ -601,23 +638,23 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="130px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="invoiceToClientNo">Fatura a Nº Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="invoiceToClientNo"></vaadin-grid-filter>
-                </template>
-                <template>
-                    <paper-input type="text" name="invoiceToClientNo" required maxlength="20" value="{{item.invoiceToClientNo}}"></paper-input>
-                </template>
-            </vaadin-grid-column>
+            @*<vaadin-grid-column width="130px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="invoiceToClientNo">Fatura a Nº Cliente</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="invoiceToClientNo"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        <paper-input type="text" name="invoiceToClientNo" required maxlength="20" value="{{item.invoiceToClientNo}}"></paper-input>
+                    </template>
+                </vaadin-grid-column>
 
-            <vaadin-grid-column width="100px" resizable>
-                <template class="header">
-                </template>
-                <template>
-                    <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
-                </template>
-            </vaadin-grid-column>
+                <vaadin-grid-column width="100px" resizable>
+                    <template class="header">
+                    </template>
+                    <template>
+                        <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
+                    </template>
+                </vaadin-grid-column>*@
         </vaadin-grid>
         <div class="marginSpace">
             <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
@@ -729,7 +766,7 @@
                     _filterActive: {
                         type: Boolean,
                         value: true
-                    }
+                    },
                 },
 
                 openToast: function (message) {
@@ -740,7 +777,7 @@
                 _add() {
 
                     if (true)
-                        //Validações
+                    //Validações
                     {
                         this.result.unshift({
                             projectNo: this.projectNumber,
@@ -841,21 +878,89 @@
                     }
                 },
 
-                _codeChange: function (e)
-                {
-                    if (e.detail.value != null)
-                    {
+                _codeChange: function (e) {
+
+                    if (e.detail.value != null && e.detail.value != "") {
                         var index = this.codeOptions.findIndex(i => i.code === e.detail.value);
                         this.code = this.codeOptions[index].code;
                         this.description = this.codeOptions[index].name;
                         this.codeMeasurementUnit = this.codeOptions[index].measureUnit;
                     }
-                    else {
-                        this.description = "";
-                        this.codeMeasurementUnit = "";
-                    }
-
                 },
+
+                //_lineProjectTypeChange: function (e) {
+                //    if (e.target.id != null && e.target.id != "") {
+                //        if (e.target.id != "type")
+                //        {
+                //            var code = e.target.id.slice(4);
+                //        }
+                //        var codecombo = this.$$("#code" + code);
+
+                //        switch (e.target.value) {
+                //            case 1:
+                //                codecombo.items = this.allofit[0];
+                //                break;
+                //            case 2:
+                //                codecombo.items = this.allofit[1];
+                //                break;
+                //            case 3:
+                //                codecombo.items = this.allofit[2];
+                //            default:
+                //                break;
+                //        }
+                //    }
+                //},
+
+                _lineChange: function (e) {
+                    debugger;;
+                    if (e.target.id != null && e.target.id != "")
+                    {
+                        if (e.target.id != "code") {
+                            var code = e.target.id.slice(4);
+                        }
+
+                        var typcode = this.$$("#type" + code);
+                        var codecombo = this.$$(e.target.id);
+
+                        switch (typcode.value) {
+                            case 1:
+                                codecombo.items = this.allofit[0];
+                                break;
+                            case 2:
+                                codecombo.items = this.allofit[1];
+                                break;
+                            case 3:
+                                codecombo.items = this.allofit[2];
+                            default:
+                                break;
+                        }
+                    }
+                },
+
+                //_selectItem: function (e) {
+                //    debugger;;
+
+                //    if (e.target.id != null) {
+                //        //get id line
+                //        var code = e.target.id.slice(4);
+                //        var codecombo = this.$$("#code" + code);
+
+                //        switch (e.target.value) {
+                //            case 1:
+                //                codecombo.items = this.resourceCode;
+                //                break;
+                //            case 2:
+                //                codecombo.items = this.productCode;
+                //                break;
+                //            case 3:
+                //                codecombo.items = this.accountCode;
+                //            default:
+                //                codecombo.items = null;
+                //                break;
+                //        }
+                //        //codecombo.value = e.model.item["code"];
+                //    }
+                //},
 
                 _updateRelatedResponse: function (related) {
                     if (related != null) {
@@ -866,18 +971,6 @@
                     }
 
                 },
-
-                //_updateMeasureUnit: function (codeOptions) {
-                //    debugger;;
-                //    if (this.$.ajax_update.url != "/PopulateDropdowns/GetCGAccountCode") {
-                //        if (codeOptions != null) {
-                //            this.codeMeasurementUnit = this.codeOptions.measurementUnitCode;
-                //        }
-                //        else {
-                //            this.codeMeasurementUnit = "";
-                //        }
-                //    }
-                //},
 
                 _updateRegisterResponse: function (e) {
                     var self = this;

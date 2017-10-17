@@ -435,12 +435,16 @@
                         BreakoutIncidentsIndicator: this.chkBreakoutIncidentsIndicator,
                         OrdernInProgressIndicator: this.chkOrdernInProgressIndicator
                     });
+                    this.$.page_databound_ajax.url = "/TabelasAuxiliares/UpdateTiposGrupoContabProjetoOM";
+                    this.$.page_databound_ajax.body = JSON.stringify(this.result);
                     this.$.gridContabGroupTypesOM.clearCache();
                 },
 
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
+                    this.$.page_databound_ajax.url = "/TabelasAuxiliares/UpdateTiposGrupoContabProjetoOM";
+                    this.$.page_databound_ajax.body = JSON.stringify(this.result);
                     this.$.gridContabGroupTypesOM.clearCache();
                 }
 

@@ -92,9 +92,31 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        #region Project Diary
+        public JsonResult GetFolhaDeHoraStatus()
+        {
+            List<EnumData> result = EnumerablesFixed.FolhaDeHoraStatus;
+            return Json(result);
+        }
 
-        #region Static DropDowns
+        public JsonResult GetFolhaDeHoraTypeDeslocation()
+        {
+            List<EnumData> result = EnumerablesFixed.FolhaDeHoraTypeDeslocation;
+            return Json(result);
+        }
+
+        public JsonResult GetFolhaDeHoraCodeTypeKms()
+        {
+            List<EnumData> result = EnumerablesFixed.FolhaDeHoraCodeTypeKms;
+            return Json(result);
+        }
+
+        public JsonResult GetFolhaDeHoraDisplacementOutsideCity()
+        {
+            List<EnumData> result = EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity;
+            return Json(result);
+        }
+
+        //STORE PROCEDURES
         [HttpPost]
         public JsonResult GetProjectDiaryMovements()
         {
@@ -108,7 +130,7 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.ProjectDiaryTypes;
             return Json(result);
         }
-        #endregion
+        //#endregion
 
         #region Store Procedures
         [HttpPost]
@@ -175,6 +197,34 @@ namespace Hydra.Such.Portal.Controllers
 
         #region TypeOptions
         [HttpPost]
+        public JsonResult Alpha()
+        {
+            List<List<DDMessageString>> result = new List<List<DDMessageString>>();
+
+            List<DDMessageString> resources = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+            List<DDMessageString> products = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+            List<DDMessageString> accounts = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+
+            result.Add(resources);
+            result.Add(products);
+            result.Add(accounts);
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetCGAccountCode(string accountNo)
         {
             List<NAVCGAccountViewModel> result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, accountNo);
@@ -197,7 +247,7 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #endregion
-        #endregion
+        //#endregion
 
         public JsonResult GetProjectType()
         {
@@ -227,7 +277,7 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Código,
                 value = x.Descrição
             }).ToList();
-            
+
             return Json(ResponsabilityCenter);
         }
 
@@ -306,7 +356,8 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetServices()
         {
-            List<DDMessage> result = DBServices.GetAll().Select(x => new DDMessage() {
+            List<DDMessage> result = DBServices.GetAll().Select(x => new DDMessage()
+            {
                 id = x.Código,
                 value = x.Descrição
             }).ToList();
@@ -326,7 +377,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
     }
-    
+
     public class DDMessage
     {
         public int id { get; set; }

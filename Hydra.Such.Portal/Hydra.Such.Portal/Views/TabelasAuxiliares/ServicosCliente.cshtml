@@ -10,8 +10,6 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
-<link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-input/paper-input.html" />
 <link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
@@ -51,7 +49,32 @@
                    auto
                    handle-as="json"
                    id="page_databound_ajax"
-                   on-response="_updateResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        @*CRUD*@
+        <iron-ajax url="/TabelasAuxiliares/CreateClientServices"
+                   last-response="{{exist}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_create_ajax"
+                   on-response="_CreateResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/TabelasAuxiliares/DeleteClientServices"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_delete_ajax"
+                   on-response="_DeleteResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/TabelasAuxiliares/UpdateClientServices"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_update_ajax"
+                   on-response="_UpdateResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -76,10 +99,9 @@
                 <h2 class="separator">Geral</h2>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
-                <vaadin-combo-box items="[[Clients]]" item-value-path="no_" item-label-path="name" value="{{ddClients}}" label="Cliente">
+            <div class="col-lg-4 col-md-2 col-sm-4 col-xs-12">
+                <vaadin-combo-box id="cboClients" items="[[Clients]]" item-value-path="no_" item-label-path="name" value="{{ddClients}}" label="Cliente">
                     <template>
                         <paper-icon-item>
                             <paper-item-body two-line>
@@ -89,8 +111,8 @@
                     </template>
                 </vaadin-combo-box>
             </div>
-            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
-                <vaadin-combo-box items="[[Services]]" item-value-path="id" item-label-path="value" value="{{ddServices}}" label="Serviço">
+            <div class="col-lg-3 col-md-2 col-sm-4 col-xs-12">
+                <vaadin-combo-box id="cboServices" items="[[Services]]" item-value-path="id" item-label-path="value" value="{{ddServices}}" label="Serviço">
                     <template>
                         <paper-icon-item>
                             <paper-item-body two-line>
@@ -102,23 +124,22 @@
             </div>
             <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
                 <br />
-                <paper-checkbox checked="{{chkServiceGroup}}">Grupo Serviços</paper-checkbox>
+                <paper-checkbox id="chkServiceGroup" checked="{{chkServiceGroup}}">Grupo Serviços</paper-checkbox>
             </div>
             <div class="col-lg-1 col-md-2 col-sm-4 col-xs-12">
                 <br />
                 <paper-button class="btnSave" raised on-tap="_createClientService">Criar</paper-button>
             </div>
         </div>
-
         <br />
         <vaadin-grid id="gridClientServices" aria-label="gridClientServices" items="[[result]]" class="editGrid" multi-sort="true">
-            <vaadin-grid-column width="25%">
+            <vaadin-grid-column width="40%">
                 <template class="header">
                     <vaadin-grid-sorter path="ClientNumber">Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="ClientNumber" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[Clients]]" item-value-path="no_" item-label-path="name" value="{{item.clientNumber}}">
+                    <vaadin-combo-box items="[[Clients]]" item-value-path="no_" item-label-path="name" value="{{item.clientNumber}}" disabled>
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -129,13 +150,13 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="25%">
+            <vaadin-grid-column width="30%">
                 <template class="header">
                     <vaadin-grid-sorter path="ServiceCode">Serviço</vaadin-grid-sorter>
                     <vaadin-grid-filter path="ServiceCode" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[Services]]" item-value-path="id" item-label-path="value" value="{{item.serviceCode}}">
+                    <vaadin-combo-box items="[[Services]]" item-value-path="id" item-label-path="value" value="{{item.serviceCode}}" disabled>
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -146,7 +167,7 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="25%">
+            <vaadin-grid-column width="10%">
                 <template class="header">
                     <vaadin-grid-sorter path="ServiceGroup">Grupo Serviços</vaadin-grid-sorter>
                 </template>
@@ -154,7 +175,7 @@
                     <paper-checkbox checked="{{item.serviceGroup}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="25%">
+            <vaadin-grid-column width="10%">
                 <template class="header">
                 </template>
                 <template>
@@ -168,6 +189,7 @@
             <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
             <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
         </div>
+        <paper-toast id="ToastError" style="background-color:red" duration="4000" text="Este Serviço Cliente já existe." horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
 
@@ -188,59 +210,95 @@
                         value: ""
                     },
                 },
-                ready: function () {
-                    //this.$.page_databound_ajax.generateRequest();
-                },
+
                 openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
 
                 _update: function () {
-                    //if (this.data.description !== '' && this.data.description != null) {
-                    this.$.page_databound_ajax.url = "/TabelasAuxiliares/UpdateClientServices";
-                    this.$.page_databound_ajax.body = JSON.stringify(this.result);
-                    //this.$.page_databound_ajax.generateRequest();
-                    //this.$.page_databound_ajax.url = "/TabelasAuxiliares/GetTiposGrupoContabProjeto";
+                    
+                    this.$.page_update_ajax.body = JSON.stringify(this.result);
+                    this.$.page_update_ajax.generateRequest();
                     this.$.gridClientServices.clearCache();
-                    //} else {
-                    //this.openToast('É obrigatório preencher o campo Descrição.');
-                    //}
                 },
-
-                _updateResponse: function (e) {
+                
+                _CreateResponse: function (e) {
                     var self = this;
-                    if (this.$.page_databound_ajax.url != "/TabelasAuxiliares/GetClientServices") {
-                        if (e.detail.status === 200) {
-
-                            this.openToast('Atualizado com sucesso!');
-                            this.$.page_databound_ajax.url = "/TabelasAuxiliares/GetClientServices";
+                    debugger;
+                    if (this.exist === false) {
+                            this.openToast('Criado com sucesso');
                             this.$.page_databound_ajax.generateRequest();
-
-                        }
-                        else {
-                            this.openToast('Ocorreu um erro ao atualizar o perfil modelo.');
-                        }
                     }
+                    else if (this.exist === true) {
 
+                        this.$.ToastError.open();
+                        this.$.page_databound_ajax.generateRequest();
+                    } else {
+                        this.openToast('Ocorreu um erro ao Criar o Serviço Cliente.');
+
+                    }
                 },
+
+                _UpdateResponse: function (e) {
+                    var self = this;
+                    debugger;
+                    if (e.detail.status === 200) {
+                        this.openToast('Atualizado com sucesso');
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this.openToast('Ocorreu um erro ao atualizar o Serviço Cliente.');
+                    }
+                },
+
+                _DeleteResponse: function (e) {
+                    var self = this;
+                    debugger;
+                    if (e.detail.status === 200) {
+                        this.openToast('Eliminado com sucesso');
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this.openToast('Ocorreu um erro ao atualizar o Serviço Cliente.');
+                    }
+                },
+
                 _cancel: function () {
-                    //this.$.page_databound_ajax.url = "/TabelasAuxiliares/GetTiposGrupoContabProjeto";
                     this.$.page_databound_ajax.generateRequest();
                     this.$.gridClientServices.clearCache();
                 },
 
                 _createClientService: function () {
-                    this.result.unshift({
-                        clientNumber: this.ddClients,
-                        serviceCode: this.ddServices,
-                        serviceGroup: this.chkServiceGroup
-                    });
+
+                    if (this.result == null)
+                    {
+                        this.result.unshift({
+                            ClientNumber: this.ddClients,
+                            ServiceCode: this.ddServices,
+                            ServiceGroup: this.chkServiceGroup
+                        });
+                    }
+                    else
+                    {
+                        this.result.unshift({
+                            ClientNumber: this.ddClients,
+                            ServiceCode: this.ddServices,
+                            ServiceGroup: this.chkServiceGroup
+                        });
+                    }
+                   
+                    debugger;
+                    this.$.page_create_ajax.body = JSON.stringify(this.result);
+                    this.$.page_create_ajax.generateRequest();
                     this.$.gridClientServices.clearCache();
                 },
+
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
+                    this.$.page_delete_ajax.body = JSON.stringify(this.result);
+                    this.$.page_delete_ajax.generateRequest();
                     this.$.gridClientServices.clearCache();
                 }
 
