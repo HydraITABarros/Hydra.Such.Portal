@@ -8,12 +8,14 @@ using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel;
 using Microsoft.Extensions.Options;
+using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.ProjectDiary;
 using Hydra.Such.Data.ViewModel.ProjectDiary;
 using Microsoft.AspNetCore.Authorization;
 using Hydra.Such.Data.ViewModel;
+using Hydra.Such.Data.Logic.Contracts;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -90,7 +92,47 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult GetFolhaDeHoraStatus()
+        {
+            List<EnumData> result = EnumerablesFixed.FolhaDeHoraStatus;
+            return Json(result);
+        }
+
+        public JsonResult GetFolhaDeHoraTypeDeslocation()
+        {
+            List<EnumData> result = EnumerablesFixed.FolhaDeHoraTypeDeslocation;
+            return Json(result);
+        }
+
+        public JsonResult GetFolhaDeHoraCodeTypeKms()
+        {
+            List<EnumData> result = EnumerablesFixed.FolhaDeHoraCodeTypeKms;
+            return Json(result);
+        }
+
+        public JsonResult GetFolhaDeHoraDisplacementOutsideCity()
+        {
+            List<EnumData> result = EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity;
+            return Json(result);
+        }
+
         //STORE PROCEDURES
+        [HttpPost]
+        public JsonResult GetProjectDiaryMovements()
+        {
+            List<EnumData> result = EnumerablesFixed.ProjectDiaryMovements;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProjectDiaryTypes()
+        {
+            List<EnumData> result = EnumerablesFixed.ProjectDiaryTypes;
+            return Json(result);
+        }
+        //#endregion
+
+        #region Store Procedures
         [HttpPost]
         public JsonResult GetGroupContProduct()
         {
@@ -101,7 +143,10 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetRegionCode()
         {
-            List<NAVDimValueViewModel> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1);
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Select(x => new DDMessageString() {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
 
             return Json(result);
         }
@@ -110,21 +155,22 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetFunctionalAreaCode()
         {
 
-            List<NAVDimValueViewModel> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2);
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
             return Json(result);
         }
 
         [HttpPost]
         public JsonResult GetResponsabilityCenterCode()
         {
-            List<NAVDimValueViewModel> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3);
-            return Json(result);
-        }
-
-        [HttpPost]
-        public JsonResult GetCGAccountCode (string accountNo)
-        {
-            List<NAVCGAccountViewModel> result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, accountNo);
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
             return Json(result);
         }
 
@@ -148,37 +194,33 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVContabGroupViewModel> result = DBNAV2017ProjectContabGroup.GetAllProjectContabGroup(_config.NAVDatabaseName, _config.NAVCompanyName);
             return Json(result);
         }
-        //STORE PROCEDURES
-        [HttpPost]
-        public JsonResult GetNAVContabGroupTypes()
-        {
 
-            List<NAVDimValueViewModel> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2);
+        #region TypeOptions
+        [HttpPost]
+        public JsonResult GetCGAccountCode(string accountNo)
+        {
+            List<NAVCGAccountViewModel> result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, accountNo);
             return Json(result);
         }
 
-
         [HttpPost]
-        public JsonResult GetMoveType()
+        public JsonResult GetProductsCode(string productNo)
         {
-            List<DDMessage> ResponsabilityCenter = new List<DDMessage>(){
-                new DDMessage()
-                {
-                    id = 1,
-                    value = "Consumo"
-                },
-
-                new DDMessage()
-                {
-                    id = 2,
-                    value = "Venda"
-                },
-            };
-
-            return Json(ResponsabilityCenter);
+            List<NAVProductsViewModel> result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, productNo);
+            return Json(result);
         }
 
         [HttpPost]
+        public JsonResult GetResourcesCode(string resourceNo, string filterArea, int resourceType, string contabGroup)
+        {
+            List<NAVResourcesViewModel> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, resourceNo, filterArea, resourceType, contabGroup);
+            return Json(result);
+        }
+        #endregion
+
+        #endregion
+        //#endregion
+
         public JsonResult GetProjectType()
         {
             List<DDMessage> ResponsabilityCenter = DBProjectTypes.GetAll().Select(x => new DDMessage()
@@ -189,6 +231,15 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(ResponsabilityCenter);
         }
+
+        [HttpPost]
+        public JsonResult GetNAVContabGroupTypes()
+        {
+
+            List<NAVDimValueViewModel> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2);
+            return Json(result);
+        }
+
 
         [HttpPost]
         public JsonResult GetServiceObjects()
@@ -280,6 +331,18 @@ namespace Hydra.Such.Portal.Controllers
             List<DDMessage> result = DBServices.GetAll().Select(x => new DDMessage() {
                 id = x.Código,
                 value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractsByArea(int areaId)
+        {
+            List<DDMessageString> result = DBContracts.GetAll().Where(x => x.Área == areaId).Select(x => new DDMessageString()
+            {
+                id = x.NºContrato,
+                value = x.NºContrato
             }).ToList();
 
             return Json(result);

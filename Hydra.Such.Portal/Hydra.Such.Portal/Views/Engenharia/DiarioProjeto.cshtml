@@ -90,13 +90,30 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetCGAccountCode"
-                   last-response="{{CGAccount}}"
+        <iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements"
+                   last-response="{{response2}}"
                    auto
                    method="post"
                    handle-as="json"
-                   params='{"accountNo": "no1"}'
                    content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetProjectDiaryTypes"
+                   last-response="{{response3}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        @*CODE OPTIONS*@
+        <iron-ajax url="/PopulateDropdowns/GetCGAccountCode"
+                   id="ajax_code_options"
+                   last-response="{{codeOptions}}"
+                   method="post"
+                   on-response="_updateMeasureUnit"
+                   handle-as="json"
+                   params='{}'
+                   content-type="application/json"></iron-ajax>
+        @*CODE OPTIONS*@
 
         <iron-ajax url="/PopulateDropdowns/GetMeasureUnits"
                    last-response="{{MeasureUnit}}"
@@ -111,7 +128,6 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-
         <iron-ajax url="/PopulateDropdowns/GetRegionCode"
                    last-response="{{RegionData}}"
                    auto
@@ -148,8 +164,7 @@
                 <table class="table inlineForm">
                     <tr>
                         <td width="">
-                            @*<cb-projectlist id="nProjectList"></cb-projectlist>*@
-                            <vaadin-combo-box id="projectList" name="projectList" items="[[response]]" on-value-changed="_valueChange" item-value-path="id" item-label-path="value" label="Nº Projeto" value="{{indexvalue}}">
+                            <vaadin-combo-box id="projectList" name="projectList" items="[[response]]" on-value-changed="_projectChange" item-value-path="id" item-label-path="value" label="Nº Projeto" value="{{projectNumber}}">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -160,14 +175,35 @@
                             </vaadin-combo-box>
                         </td>
                         <td width=""><vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{date}}"></vaadin-date-picker></td>
-                        <td width=""><cb-movetype id="nMoveType"></cb-movetype></td>
-                        <td width=""><cb-projecttype id="nProjectType"></cb-projecttype></td>
                         <td width="">
-                            <vaadin-combo-box id="piCode" name="piCode" items="[[CGAccount]]" item-value-path="code" item-label-path="name" label="Código" value="">
+                            <vaadin-combo-box id="projectMovementList" name="projectMovementList" items="[[response2]]" item-value-path="id" item-label-path="value" label="Tipo Movimento" value="{{projectMovementNumber}}">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
-                                            <div>[[item.name]]</div>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </td>
+                        <td width="">
+                            <vaadin-combo-box id="projectTypeList" name="projectTypeList" items="[[response3]]" on-value-changed="_projectTypeChange" item-value-path="id" item-label-path="value" label="Tipo" value="{{projectTypeNumber}}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </td>
+                        <td width="">
+                            <vaadin-combo-box id="piCode" name="piCode" items="[[codeOptions]]" item-value-path="code" on-value-changed="_codeChange" item-label-path="code" label="Código" value="{{codeNumber}}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.code]]</div>
+                                            <div secundary>[[item.name]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
                                 </template>
@@ -175,12 +211,12 @@
                         </td>
                     </tr>
                     <tr>
-                        <td width=""><paper-input id="piDescription" type="text" name="piDescription" required label="Descrição" disabled value="{{description}}"></paper-input></td>
+                        <td width=""><paper-input id="piDescription" type="text" name="piDescription" required label="Descrição" value="{{description}}"></paper-input></td>
                         <td width="">
                             <vaadin-combo-box id="piContabGroup" name="piContabGroup" items="[[ContabGroupData]]" item-value-path="code" value="{{codeProjectContabGroup}}" item-label-path="code" label="Grupo Contab">
                                 <template>
                                     <paper-icon-item>
-                                        <paper-item-body two-line>                                            
+                                        <paper-item-body two-line>
                                             <div>[[item.code]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
@@ -214,7 +250,7 @@
                     </tr>
                     <tr>
                         <td width="">
-                            <vaadin-combo-box id="piCodeRegion" name="piCodeRegion" items="[[RegionData]]" item-value-path="code" item-label-path="name" value="{{codeRegion}}" label="Cód. Região">
+                            <vaadin-combo-box id="piCodeRegion" name="piCodeRegion" items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{codeRegion}}" label="Cód. Região">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -225,7 +261,7 @@
                             </vaadin-combo-box>
                         </td>
                         <td width="">
-                            <vaadin-combo-box id="piFuncArea" name="piFuncArea" items="[[FunctionalAreaCodeData]]" item-value-path="code" value="{{codeFuncArea}}" item-label-path="name" label="Cód. Área Funcional">
+                            <vaadin-combo-box id="piFuncArea" name="piFuncArea" items="[[FunctionalAreaCodeData]]" item-value-path="id" value="{{codeFuncArea}}" item-label-path="value" label="Cód. Área Funcional">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -236,7 +272,7 @@
                             </vaadin-combo-box>
                         </td>
                         <td width="">
-                            <vaadin-combo-box id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" items="[[ResponsabilityCenterData]]" value="{{codeResponsabilityCenter}}" item-value-path="code" item-label-path="name" label="Cód. Centro Responsabilidade">
+                            <vaadin-combo-box id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" items="[[ResponsabilityCenterData]]" value="{{codeResponsabilityCenter}}" item-value-path="id" item-label-path="value" label="Cód. Centro Responsabilidade">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -254,7 +290,7 @@
                         <td width=""><paper-input class="alignRight" type="number" label="Preço Total  " required id="piTotalPrice" name="piTotalPrice" value="{{totalPrice}}"><div slot="suffix">€</div></paper-input></td>
                         <td width=""><paper-checkbox id="pcInvoice" checked="{{billable}}">Faturável</paper-checkbox></td>
                         <td width=""><paper-input id="piInvoiceClientNo" type="text" name="piInvoiceClientNo" required label="Fatura a Nº Cliente" maxlength="20" value="{{invoiceClientNo}}"></paper-input></td>
-                        <td><paper-button class="btnSave" raised on-tap="_add">Novo</paper-button></td>
+                        <td><paper-button class="btnSave" raised on-tap="_add">Criar</paper-button></td>
                     </tr>
                 </table>
             </form>
@@ -294,14 +330,22 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result]]" class="editGrid">
+        <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result]]" class="editGrid" >
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectNo"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <cb-projectlist id="nProjectList" indexvalue="{{item.projectNo}}" disabledvalue="true"></cb-projectlist>
+                    <vaadin-combo-box items="[[response]]" on-value-changed="_projectChange" item-value-path="id" item-label-path="value" disabled value="{{item.projectNo}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
 
@@ -322,7 +366,16 @@
                     @*<vaadin-grid-filter path="movementType"></vaadin-grid-filter>*@
                 </template>
                 <template>
-                    <cb-movetype name="movementType" indexvalue="{{item.movementType}}"></cb-movetype>
+                    @*<cb-movetype name="movementType" indexvalue="{{item.movementType}}"></cb-movetype>*@
+                    <vaadin-combo-box items="[[response2]]" item-value-path="id" item-label-path="value" label="Tipo" value="{{item.movementType}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
 
@@ -332,7 +385,15 @@
                     @*<vaadin-grid-filter path="type"></vaadin-grid-filter>*@
                 </template>
                 <template>
-                    <cb-projecttype name="type" indexvalue="{{item.type}}">
+                    <vaadin-combo-box items="[[response3]]" on-change="_selectItem" on-value-changed="_projectTypeChange" item-value-path="id" item-label-path="value" value="{{item.projectType}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
 
@@ -342,7 +403,7 @@
                     <vaadin-grid-filter path="code"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[CGAccount]]" item-value-path="code" item-label-path="name" value="{{item.code}}">
+                    <vaadin-combo-box items="[[codeOptions]]" item-value-path="code" item-label-path="name" value="{{item.code}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -580,16 +641,16 @@
                         notify: true,
                         value: ""
                     },
-                    //_movementTypeFilter: {
-                    //    type: Number,
-                    //    notify: true,
-                    //    value: ""
-                    //},
-                    //_typeFilter: {
-                    //    type: Number,
-                    //    notify: true,
-                    //    value: ""
-                    //},
+                    movementType: {
+                        type: String,
+                        notifiy: true,
+                        value: ""
+                    },
+                    type: {
+                        type: String,
+                        notifiy: true,
+                        value: ""
+                    },
                     code: {
                         type: String,
                         notify: true,
@@ -679,30 +740,14 @@
                 _add() {
 
                     if (true)
-                    //(this.$.piProjectNo.value != "" &&
-                    //this.$.dpDate.value != "" &&
-                    //this.ownerDocument.activeElement.$.nMoveType.indexvalue != "" &&
-                    //this.ownerDocument.activeElement.$.nProjectType.indexvalue != "" &&
-                    //this.$.piCode.value != "" &&
-                    //this.$.piDescription.value != "" &&
-                    //this.$.piQuantity.value != "" &&
-                    //this.$.piCodeMeasurementUnit.value != "" &&
-                    //this.$.piCodeLocation.value != "" &&
-                    //this.$.piCodeRegion.value != "" &&
-                    //this.$.piFuncArea.value != "" &&
-                    //this.$.piCodeResponsabilityCenter.value != "" &&
-                    //isNaN(this.$.piUnitCost.value) == false &&
-                    //isNaN(this.$.piTotalCost.value) == false &&
-                    //isNaN(this.$.piUnitPrice.value) == false &&
-                    //isNaN(this.$.piTotalPrice.value) == false &&
-                    //this.$.piInvoiceClientNo.value != "") {
+                        //Validações
                     {
-                        var thisLine = {
-                            projectNo: this.indexvalue,
+                        this.result.unshift({
+                            projectNo: this.projectNumber,
                             date: this.date,
-                            movementType: this.ownerDocument.activeElement.$.nMoveType.indexvalue,
-                            type: this.ownerDocument.activeElement.$.nProjectType.indexvalue,
-                            code: this.code,
+                            movementType: this.projectMovementNumber,
+                            type: this.projectTypeNumber,
+                            code: this.codeNumber,
                             description: this.description,
                             quantity: this.quantity,
                             measurementUnitCode: this.codeMeasurementUnit,
@@ -718,73 +763,39 @@
                             totalPrice: this.totalPrice,
                             billable: this.billable,
                             invoiceToClientNo: this.invoiceClientNo
-                        };
+                        });
 
-                        if (this.result == null) {
-                            this.result = thisLine;
-                        }
-                        else {
-                            this.result.push(thisLine);
-                        }
-
+                        // Save to DB
+                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.generateRequest();
                         this.$.projectDiaryProject.clearCache();
                     }
                     else {
                         alert("Tem de preencher todos os campos.");
-
-                        this.result.unshift({
-
-                            projectNo: this.$.projectList.value,
-                            date: this.$.dpDate.value,
-                            movementType: parseInt(this.$.nMoveType.value),
-                            type: parseInt(this.$.nProjectType.value),
-                            code: this.$.piCode.value,
-                            description: this.$.piDescription.value,
-                            quantity: this.$.piQuantity.value,
-                            measurementUnitCode: this.$.piCodeMeasurementUnit.value,
-                            locationCode: this.$.piCodeLocation.value,
-                            projectContabGroup: this.$.piContabGroup.value,
-                            regionCode: this.$.piCodeRegion.value,
-                            functionalAreaCode: this.$.piFuncArea.value,
-                            responsabilityCenterCode: this.$.piCodeResponsabilityCenter.value,
-                            user: "", //set logged user
-                            unitCost: this.$.piUnitCost.value,
-                            totalCost: this.$.piTotalCost.value,
-                            unitPrice: this.$.piUnitPrice.value,
-                            totalPrice: this.$.piTotalPrice.value,
-                            billable: this.$.pcInvoice.checked,
-                            invoiceToClientNo: this.$.piInvoiceClientNo.value
-                        });
-
-                        this.$.projectDiaryProject.clearCache();
                     }
                 },
 
                 _update: function () {
-                    //this.$.ajax_update.url = "/Engenharia/UpdateProjectDiary";
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
-
-                    //this.$.ajax_update.url = "/Engenharia/GetAllProjectDiary";
-                    //this.$.projectDiaryProject.clearCache();
                 },
 
                 _delete: function (e) {
                     var index = this.result.indexOf(e.model.item);
                     this.result.splice(index, 1);
-
+                    // Save to DB
+                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.generateRequest();
                     this.$.projectDiaryProject.clearCache();
                 },
 
                 _cancel: function () {
-                    //this.$.ajax_getall.url = "/Engenharia/GetAllProjectDiary";
                     this.$.ajax_getall.generateRequest();
                     this.$.projectDiaryProject.clearCache();
                 },
 
                 _updateResponse: function (e) {
                     var self = this;
-                    //if (this.$.ajax_update.url == "/Engenharia/UpdateProjectDiary") {
                     if (e.detail.status === 200) {
 
                         this.$.ajax_getall.generateRequest();
@@ -795,26 +806,59 @@
                     else {
                         this.openToast("Occorreu um erro ao atualizar as o Diário de Projeto.");
                     }
-                    //}
                 },
 
-                _valueChange: function (e) {
+                _projectChange: function (e) {
                     if (e.detail.value) {
                         this.$.ajax_related.body = JSON.stringify(e.detail.value);
                         this.$.ajax_related.generateRequest();
                     }
                     else {
-                        //this.$.piDescription = "";
-                        //this.$.piCodeRegion = "";
-                        //this.$.piFuncArea = "";
-                        //this.$.piCodeResponsabilityCenter = "";
+                        this.$.piDescription = "";
+                        this.$.piCodeRegion = "";
+                        this.$.piFuncArea = "";
+                        this.$.piCodeResponsabilityCenter = "";
                     }
+                },
+
+                _projectTypeChange: function (e) {
+                    var type = e.detail.value;
+                    if (type == "1") {
+                        this.$.ajax_code_options.url = "/PopulateDropdowns/GetResourcesCode";
+                        this.$.ajax_code_options.generateRequest();
+                    }
+                    else if (type == "2") {
+                        this.$.ajax_code_options.url = "/PopulateDropdowns/GetProductsCode";
+                        this.$.ajax_code_options.generateRequest();
+                    }
+                    else if (type == "3") {
+                        this.$.ajax_code_options.url = "/PopulateDropdowns/GetCGAccountCode";
+                        this.$.ajax_code_options.generateRequest();
+                    }
+                    else {
+                        this.description = "";
+                        this.codeMeasurementUnit = "";
+                    }
+                },
+
+                _codeChange: function (e)
+                {
+                    if (e.detail.value != null)
+                    {
+                        var index = this.codeOptions.findIndex(i => i.code === e.detail.value);
+                        this.code = this.codeOptions[index].code;
+                        this.description = this.codeOptions[index].name;
+                        this.codeMeasurementUnit = this.codeOptions[index].measureUnit;
+                    }
+                    else {
+                        this.description = "";
+                        this.codeMeasurementUnit = "";
+                    }
+
                 },
 
                 _updateRelatedResponse: function (related) {
                     if (related != null) {
-                        debugger;;
-                        this.description = this.related.description;
                         this.codeRegion = this.related.regionCode;
                         this.codeFuncArea = this.related.funcAreaCode;
                         this.codeProjectContabGroup = this.related.contabGroup;
@@ -823,14 +867,17 @@
 
                 },
 
-                _registerDiary: function () {
-
-                    _update();
-
-                    this.$.ajax_register.body = JSON.stringify(this.result);
-                    this.$.ajax_register.generateRequest();
-
-                },
+                //_updateMeasureUnit: function (codeOptions) {
+                //    debugger;;
+                //    if (this.$.ajax_update.url != "/PopulateDropdowns/GetCGAccountCode") {
+                //        if (codeOptions != null) {
+                //            this.codeMeasurementUnit = this.codeOptions.measurementUnitCode;
+                //        }
+                //        else {
+                //            this.codeMeasurementUnit = "";
+                //        }
+                //    }
+                //},
 
                 _updateRegisterResponse: function (e) {
                     var self = this;
@@ -841,9 +888,16 @@
                         else {
                             this.openToast("Occorreu um erro ao registar as linhas do Diário.");
                         }
+                        this.$.ajax_update.url == "/Engenharia/RegisterDiaryLines";
                     }
                 },
 
+                _registerDiary: function () {
+                    //SEND TO NAV
+                    this.$.ajax_register.body = JSON.stringify(this.result);
+                    this.$.ajax_register.generateRequest();
+
+                },
             });
         });
     </script>

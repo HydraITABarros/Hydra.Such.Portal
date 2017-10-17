@@ -1,6 +1,6 @@
 ﻿<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
-<dom-module id="cb-movetype">
+<dom-module id="cb-folhadehoratype">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/css/main.css" />
@@ -12,14 +12,14 @@
             }
         </style>
 
-        <iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements"
+        <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraType"
                    last-response="{{response}}"
                    auto
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        <vaadin-combo-box items="[[response]]" item-value-path="id" item-label-path="value" label="Tipo Movimento" value="{{indexvalue}}">
+        <vaadin-combo-box items="[[response]]" item-value-path="id" item-label-path="value" label="Tipo" value="{{indexvalue}}">
             <template>
                 <paper-icon-item>
                     <paper-item-body two-line>
@@ -32,8 +32,8 @@
     </template>
 
     <script>
-        class CBMoveTypeView extends Polymer.Element {
-            static get is() { return 'cb-movetype' }
+        class CBFolhaDeHoraTypeView extends Polymer.Element {
+            static get is() { return 'cb-folhadehoratype' }
             static get properties() {
                 return {
                     indexvalue: {
@@ -46,6 +46,6 @@
 
         }
 
-        customElements.define(CBMoveTypeView.is, CBMoveTypeView);
+        customElements.define(CBFolhaDeHoraTypeView.is, CBFolhaDeHoraTypeView);
     </script>
 </dom-module>
