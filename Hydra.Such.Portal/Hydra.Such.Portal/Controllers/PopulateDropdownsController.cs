@@ -13,7 +13,6 @@ using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.ProjectDiary;
 using Hydra.Such.Data.ViewModel.ProjectDiary;
 using Microsoft.AspNetCore.Authorization;
-using Hydra.Such.Data.ViewModel;
 
 namespace Hydra.Such.Portal.Controllers
 {

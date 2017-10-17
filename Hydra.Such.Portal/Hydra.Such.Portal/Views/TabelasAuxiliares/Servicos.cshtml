@@ -156,11 +156,15 @@
                     this.result.unshift({
                         description: this.ddDescription
                     });
+                    this.$.page_databound_ajax.url = "/TabelasAuxiliares/UpdateServices";
+                    this.$.page_databound_ajax.body = JSON.stringify(this.result);
                     this.$.gridServices.clearCache();
                 },
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
+                    this.$.page_databound_ajax.url = "/TabelasAuxiliares/UpdateServices";
+                    this.$.page_databound_ajax.body = JSON.stringify(this.result);
                     this.$.gridServices.clearCache();
                 }
 
