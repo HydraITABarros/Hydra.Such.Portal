@@ -22,15 +22,16 @@
 <h1 class="title">Objetos De Serviço</h1>
 <x-service-objects></x-service-objects>
 <dom-module id="x-service-objects">
-    <template>
+    <template is="dom-module">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css"/>
         <link rel="stylesheet" href="~/css/main.css"/>
 
         <style>
-            input[readonly] {
-                border: 2px solid transparent;
-            }
+            
+             input[readonly] {
+                 border: 2px solid transparent;
+             }
 
             input {
                 font: inherit;
@@ -54,7 +55,8 @@
             --vaadin-grid-header-cell: {
                 font-size: 12px;
             }
-
+           
+         
         </style>
         @*POPULATE GRID*@
         <iron-ajax url="/TabelasAuxiliares/GetServiceObjectsData"
@@ -66,7 +68,7 @@
                    content-type="application/json"></iron-ajax>
         
         @*POPULATE GRID Update*@
-        <iron-ajax url="/TabelasAuxiliares/GetServiceObjectsData"
+        <iron-ajax url="/TabelasAuxiliares/UpdateServiceObjects"
                    last-response="{{result}}"
                    method="post"
                    on-response="_updateResponse"
@@ -89,13 +91,28 @@
                         <td width="20%"><paper-input id="piDescription" type="text" name="description" required label="Descrição" maxlength="20"></paper-input></td>
                         <td width="10%"><paper-checkbox id="pcBlocked">Bloqueado</paper-checkbox></td>
                         <td width="20%">  
-                            <vaadin-combo-box items="[[AreaCodeData]]" item-value-path="code" item-label-path="name" value="{{ddAreaCode}}" label="Código Área">
+                            <vaadin-combo-box style="--vaadin-combo-box-overlay-padding: 200" items="[[AreaCodeData]]" class="assimsim" item-value-path="code" item-label-path="name" value="{{ddAreaCode}}" label="Código Área">
                                 <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.name]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
+                                    <style>
+                                        .tbCombo {
+                                            text-align: left;
+                                            width: 100%;
+                                        }
+                                        .tb1 {
+                                            font-size: 10px;
+                                            width: 40% !important;
+                                        }
+                                        .tb2 {
+                                            width: 60% !important;
+                                        }
+                                    </style>
+                                        <table class="tbCombo" >
+                                            <tr>
+                                                <td class="tb1">[[item.code]]</td>
+                                                <td class="tb2"> <b>[[item.name]]</b></td>
+                                            </tr>
+                                        </table>
+                                   
                                 </template>
                             </vaadin-combo-box>
                         </td>
@@ -143,7 +160,7 @@
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
-                                    <div>[[item.name]]</div>
+                                    <div>[[item.code]] || [[item.name]]</div>
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
@@ -195,18 +212,23 @@
                         if (this.$.piDescription.value == "" || this.$.piDescription.value == null) {
                             this.openToast('É obrigatório preencher a Descrição.');
                         } else {
-                            this.result.unshift({
+                            var thisLine = {
                                 description: this.$.piDescription.value,
                                 blocked: this.$.pcBlocked.checked,
                                 areaCode: this.ddAreaCode
-
-                            });
+                            };
+                            if (this.result == null) {
+                                this.result = thisLine;
+                            }
+                            else {
+                                this.result.push(thisLine);
+                            }
+                            this.$.ajax_update.body = JSON.stringify(this.result);
+                            this.$.ajax_update.generateRequest();
                            this.$.gridserviceobjects.clearCache();
                         }
                     },
                     _update: function () {
-                        debugger;
-                        this.$.ajax_update.url = "/TabelasAuxiliares/UpdateServiceObjects";
                         this.$.ajax_update.body = JSON.stringify(this.result);
                         this.$.ajax_update.generateRequest();
                         this.$.gridserviceobjects.clearCache();
@@ -214,27 +236,24 @@
                     _delete: function (e) {
                         var index = this.result.indexOf(e.model.item);
                         this.result.splice(index, 1);
-
+                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.generateRequest();
                         this.$.gridserviceobjects.clearCache();
                     },
                     _cancel: function () {
-                        this.$.ajax_create.url = "/TabelasAuxiliares/GetServiceObjectsData";
                         this.$.ajax_create.generateRequest();
-
                         this.$.gridserviceobjects.clearCache();
                     },
                     _updateResponse: function (e) {
                         var self = this;
-                        if (this.$.ajax_update.url != "/TabelasAuxiliares/GetServiceObjectsData") {
                             if (e.detail.status === 200) {
                                 this.openToast("Tabela atualizada.");
-                                this.$.ajax_create.url = "/TabelasAuxiliares/GetServiceObjectsData";
                                 this.$.ajax_create.generateRequest();
+                                this.$.gridserviceobjects.clearCache();
                             }
                             else {
                                 this.openToast("Occorreu um erro ao atualizar a Tabela.");
                             }
-                        }
                     }
                 });
             });

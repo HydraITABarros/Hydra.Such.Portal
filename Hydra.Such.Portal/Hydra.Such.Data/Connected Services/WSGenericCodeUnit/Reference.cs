@@ -13,7 +13,7 @@ namespace WSGenericCodeUnit
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", ConfigurationName="WSGenericCodeUnit.WsGeneric_Port")]
-    internal interface WsGeneric_Port
+    public interface WsGeneric_Port
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WsGeneric:FxPostJobJrnlLines", ReplyAction="*")]
@@ -30,17 +30,17 @@ namespace WSGenericCodeUnit
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="FxPostJobJrnlLines", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
-    internal partial class FxPostJobJrnlLines
+    public partial class FxPostJobJrnlLines
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
-        public int pTransactionNo;
+        public string pTransactionNo;
         
         public FxPostJobJrnlLines()
         {
         }
         
-        public FxPostJobJrnlLines(int pTransactionNo)
+        public FxPostJobJrnlLines(string pTransactionNo)
         {
             this.pTransactionNo = pTransactionNo;
         }
@@ -50,7 +50,7 @@ namespace WSGenericCodeUnit
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="FxPostJobJrnlLines_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
-    internal partial class FxPostJobJrnlLines_Result
+    public partial class FxPostJobJrnlLines_Result
     {
         
         public FxPostJobJrnlLines_Result()
@@ -62,7 +62,7 @@ namespace WSGenericCodeUnit
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="FxPostInvoice", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
-    internal partial class FxPostInvoice
+    public partial class FxPostInvoice
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
@@ -82,7 +82,7 @@ namespace WSGenericCodeUnit
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="FxPostInvoice_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
-    internal partial class FxPostInvoice_Result
+    public partial class FxPostInvoice_Result
     {
         
         public FxPostInvoice_Result()
@@ -94,7 +94,7 @@ namespace WSGenericCodeUnit
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="FxPostPurchOrderReceiptLines", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
-    internal partial class FxPostPurchOrderReceiptLines
+    public partial class FxPostPurchOrderReceiptLines
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
@@ -114,7 +114,7 @@ namespace WSGenericCodeUnit
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="FxPostPurchOrderReceiptLines_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
-    internal partial class FxPostPurchOrderReceiptLines_Result
+    public partial class FxPostPurchOrderReceiptLines_Result
     {
         
         public FxPostPurchOrderReceiptLines_Result()
@@ -123,13 +123,13 @@ namespace WSGenericCodeUnit
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    internal interface WsGeneric_PortChannel : WSGenericCodeUnit.WsGeneric_Port, System.ServiceModel.IClientChannel
+    public interface WsGeneric_PortChannel : WSGenericCodeUnit.WsGeneric_Port, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    internal partial class WsGeneric_PortClient : System.ServiceModel.ClientBase<WSGenericCodeUnit.WsGeneric_Port>, WSGenericCodeUnit.WsGeneric_Port
+    public partial class WsGeneric_PortClient : System.ServiceModel.ClientBase<WSGenericCodeUnit.WsGeneric_Port>, WSGenericCodeUnit.WsGeneric_Port
     {
         
     /// <summary>
@@ -178,7 +178,7 @@ namespace WSGenericCodeUnit
             return base.Channel.FxPostJobJrnlLinesAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> FxPostJobJrnlLinesAsync(int pTransactionNo)
+        public System.Threading.Tasks.Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> FxPostJobJrnlLinesAsync(string pTransactionNo)
         {
             WSGenericCodeUnit.FxPostJobJrnlLines inValue = new WSGenericCodeUnit.FxPostJobJrnlLines();
             inValue.pTransactionNo = pTransactionNo;
