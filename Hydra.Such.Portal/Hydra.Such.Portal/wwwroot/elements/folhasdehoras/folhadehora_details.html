@@ -39,11 +39,11 @@
 
         <!-- DROPDOWNS POPULATE -->
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LFolhaDeHoraFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraStatus" last-response="{{LFolhaDeHoraFStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraStatus" last-response="{{LFolhaDeHoraStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraTypeDeslocation" last-response="{{LFolhaDeHoraTypeDeslocation}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraCodeTypeKms" last-response="{{LFolhaDeHoraCodeTypeKms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{LFolhaDeHoraProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraDisplacementOutsideCity" last-response="{{LFolhaDeHoraGetFolhaDeHoraDisplacementOutsideCity}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraDisplacementOutsideCity" last-response="{{LFolhaDeHoraDisplacementOutsideCity}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <!-- PROJECT CRUDS -->
         <iron-ajax url="/FolhaDeHoras/GetFolhaDeHoraDetails"
@@ -230,11 +230,15 @@
 
                 //CRUDS
                 _create: function () {
+                    debugger;;
                     if (this._validateData()) {
+                        debugger;;
                         if (this._isCreate) {
+                            debugger;;
                             this.$.page_validator_ajax.body = JSON.stringify(this.data);
                             this.$.page_validator_ajax.generateRequest();
                         } else {
+                            debugger;;
                             this._executeRequest("/FolhasDeHoras/CreateFolhaDeHora", this.data)
                         }
                     }
