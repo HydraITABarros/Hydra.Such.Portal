@@ -15,10 +15,18 @@ namespace Hydra.Such.Portal.Controllers
             return View();
         }
 
+        #region Projetos
         public IActionResult Projetos()
         {
             return View();
         }
+
+        public IActionResult DetalhesProjeto(string id)
+        {
+            ViewBag.ProjectNo = id == null ? "" : id;
+            return View();
+        }
+        #endregion
 
         public IActionResult Contratos()
         {

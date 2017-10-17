@@ -33,10 +33,10 @@ namespace Hydra.Such.Portal.Controllers
 
 
         #region Home
-        public IActionResult Index()
-        {
-            return View();
-        }
+        //public IActionResult Index()
+        //{
+        //    return View();
+        //}
 
         [HttpPost]
         public JsonResult GetListProjectsByArea([FromBody] int id)

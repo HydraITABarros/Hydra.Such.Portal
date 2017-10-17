@@ -1,37 +1,54 @@
-﻿using System;
+﻿using Hydra.Such.Data.Database;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using Hydra.Such.Data.Database;
+using System.Text;
 
-namespace Hydra.Such.Data.Logic.FolhaDeHora
+namespace Hydra.Such.Data.Logic.Contracts
 {
-    public class DBFolhaDeHora
+    public static class DBContracts
     {
         #region CRUD
-
-        public static List<FolhasDeHoras> GetAll()
+        public static Contratos GetById(string ContractNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.FolhasDeHoras.ToList();
+                    return ctx.Contratos.Where(x => x.NºContrato == ContractNo).FirstOrDefault();
                 }
             }
             catch (Exception ex)
             {
+
                 return null;
             }
         }
 
-        public static FolhasDeHoras Create(FolhasDeHoras ObjectToCreate)
+        public static List<Contratos> GetAll()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.FolhasDeHoras.Add(ObjectToCreate);
+                    return ctx.Contratos.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static Contratos Create(Contratos ObjectToCreate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ObjectToCreate.DataHoraCriação = DateTime.Now;
+                    ctx.Contratos.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
@@ -39,46 +56,30 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
             catch (Exception ex)
             {
+
                 return null;
             }
         }
 
-        public static FolhasDeHoras Update(FolhasDeHoras ObjectToCreate)
+        public static Contratos Update(Contratos ObjectToUpdate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.FolhasDeHoras.Update(ObjectToCreate);
+                    ObjectToUpdate.DataHoraModificação = DateTime.Now;
+                    ctx.Contratos.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
 
-                return ObjectToCreate;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        public static bool Delete(FolhasDeHoras ObjectToCreate)
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    ctx.FolhasDeHoras.Remove(ObjectToCreate);
-                    ctx.SaveChanges();
-                }
-
-                return true;
+                return ObjectToUpdate;
             }
             catch (Exception ex)
             {
-                return false;
+
+                return null;
             }
         }
-
         #endregion
     }
 }

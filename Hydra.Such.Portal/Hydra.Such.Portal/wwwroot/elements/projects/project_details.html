@@ -51,6 +51,7 @@
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContractsByArea" last-response="{{LProjectContracts}}" method="post" handle-as="json" content-type="application/json" id="contracts_ajax"></iron-ajax>
 
         
         <!-- PROJECT CRUDS -->
@@ -110,7 +111,15 @@
                         <paper-input type="text" value="{{data.projectResponsible}}" id="projectResponsible" name="projectResponsible" required label="Responsável Projeto"> </paper-input>
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.contractNo}}" id="ContractNo" name="ContractNo" required label="Nº Contrato"> </paper-input>
+                        <vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.contractNo}}" label="Nº Contrato">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
                     </div>
                 </div>
                 <div class="row break_clear">
@@ -358,9 +367,13 @@
                     this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this._projectid });
                     this.$.page_databound_ajax.generateRequest();
 
+
+                    this.$.contracts_ajax.body = JSON.stringify({ "areaId": this._areaid });
+                    this.$.contracts_ajax.generateRequest();
+
                     if (this._projectid == "") {
                         this._isCreate = true;
-                        this.data.area = this._areaid;
+                        //this.data.area = this._areaid;
                     }
                 },
                 _openToast: function (message) {
@@ -378,17 +391,12 @@
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
-                        if (this._isCreate) {
-                            this.$.page_validator_ajax.body = JSON.stringify(this.data);
-                            this.$.page_validator_ajax.generateRequest();
-                        } else {
-                            this._executeRequest("/Projetos/CreateProject", this.data)
-                        }
+                        this.$.page_validator_ajax.body = JSON.stringify(this.data);
+                        this.$.page_validator_ajax.generateRequest();
                     }
                 },
                 _update: function () {
                     if (this._validateData()) {
-                        debugger;;
                         this._executeRequest("/Projetos/UpdateProject", this.data)
                     }
                 },

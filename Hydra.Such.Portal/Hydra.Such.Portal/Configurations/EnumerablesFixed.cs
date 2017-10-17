@@ -231,6 +231,40 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Comum"
             }};
 
+
+        public static readonly List<EnumData> ProjectDiaryMovements = new List<EnumData>()
+        {
+             new EnumData()
+            {
+                Id = 1,
+                Value = "Consumo"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Venda"
+            }
+        };
+
+        public static readonly List<EnumData> ProjectDiaryTypes = new List<EnumData>()
+        {
+             new EnumData()
+            {
+                Id = 1,
+                Value = "Recurso"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Produto"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Conta CG"
+            }
+        };
+
         public static readonly List<EnumData> ContabGroupTypesOM_Type = new List<EnumData>(){
             new EnumData()
             {
@@ -287,41 +321,102 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
-        public static readonly List<EnumData> ProjectDiaryMovements = new List<EnumData>()
+        public static readonly List<EnumData> FolhaDeHoraStatus = new List<EnumData>()
         {
-             new EnumData()
+            new EnumData()
+            {
+                Id = 0,
+                Value = "Criado"
+            },
+            new EnumData()
             {
                 Id = 1,
-                Value = "Consumo"
+                Value = "Registado"
             },
             new EnumData()
             {
                 Id = 2,
-                Value = "Venda"
-            }
-        };
-
-        public static readonly List<EnumData> ProjectDiaryTypes = new List<EnumData>()
-        {
-             new EnumData()
-            {
-                Id = 1,
-                Value = "Recurso"
-            },
-            new EnumData()
-            {
-                Id = 2,
-                Value = "Produto"
+                Value = "Validado"
             },
             new EnumData()
             {
                 Id = 3,
-                Value = "Conta CG"
+                Value = "Invalidado"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Validado RH"
+            },
+            new EnumData()
+            {
+                Id = 5,
+                Value = "Validado S/RH"
+            }
+        };
+
+        public static readonly List<EnumData> FolhaDeHoraTypeDeslocation = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 0,
+                Value = ""
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Viatura SUCH"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Viatura Própria"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Outros Meios Transporte"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Sem Deslocação"
+            }
+        };
+
+        public static readonly List<EnumData> FolhaDeHoraCodeTypeKms = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 0,
+                Value = "Kilometros"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Kilometros (Coimbra)"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Kilometros (Porto)"
+            }
+        };
+
+        public static readonly List<EnumData> FolhaDeHoraDisplacementOutsideCity = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 0,
+                Value = "Não"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Sim"
             }
         };
     }
-
-
     public class EnumData
     {
         public int Id { get; set; }

@@ -97,7 +97,7 @@
                 </table>
             </form>
         </iron-form>
-        <vaadin-grid id="gridMealTypes" aria-label="ProfileModelsTabel" items="[[result]]" class="editGrid" multi-sort="true">
+        <vaadin-grid id="gridMealTypes" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column>
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
@@ -118,10 +118,7 @@
             </vaadin-grid-column>
             <vaadin-grid-column  filter-by="item.grupoContabProduto">
                 <template class="header">
-                    
-             
                     <vaadin-grid-sorter path="grupoContabProduto">Grupos Contab. Produto</vaadin-grid-sorter>
-                    
                 </template>
                 <template>
                     <vaadin-combo-box items="[[GroupContProductData]]" item-value-path="code" item-label-path="description" value="{{item.grupoContabProduto}}">
@@ -160,11 +157,9 @@
                             type: String,
                             notify: true,
                             value: ""
-                        },
-                       
+                        }
                     },
                     ready: function () {
-
                         this.$.ajax_GetAll.generateRequest();
                     },
                     openToast: function (message) {
@@ -176,7 +171,6 @@
                         if (this.$.piDescription.value == "" || this.$.piDescription.value == null) {
                             this.openToast('É obrigatório preencher a Descrição.');
                         } else {
-                            debugger;;
                             var thisLine = {
                                 description: this.$.piDescription.value,
                                 grupoContabProduto: this.ddgroupcontprod
@@ -187,6 +181,8 @@
                             else {
                                 this.result.push(thisLine);
                             } 
+                            this.$.ajax_update.body = JSON.stringify(this.result);
+                            this.$.ajax_update.generateRequest();
                             this.$.gridMealTypes.clearCache();
                         }
                     },
@@ -198,7 +194,8 @@
                     _delete: function (e) {
                         var index = this.result.indexOf(e.model.item);
                         this.result.splice(index, 1);
-
+                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.generateRequest();
                         this.$.gridMealTypes.clearCache();
                     },
                     _cancel: function () {
