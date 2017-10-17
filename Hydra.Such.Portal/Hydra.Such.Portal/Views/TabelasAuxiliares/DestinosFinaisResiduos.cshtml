@@ -129,9 +129,17 @@
                         if (this.$.piDescription.value == "" || this.$.piDescription.value == null) {
                             this.openToast('É obrigatório preencher a Descrição.');
                         } else {
-                            this.result.unshift({
+                            var thisLine = {
                                 description: this.$.piDescription.value
-                            });
+                            };
+                            if (this.result == null) {
+                                this.result = thisLine;
+                            }
+                            else {
+                                this.result.push(thisLine);
+                            } 
+                            this.$.ajax_update.body = JSON.stringify(this.result);
+                            this.$.ajax_update.generateRequest();
                             this.$.gridFinalWasteDestinations.clearCache();
                         }
                     },
@@ -143,7 +151,8 @@
                     _delete: function (e) {
                         var index = this.result.indexOf(e.model.item);
                         this.result.splice(index, 1);
-
+                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.generateRequest();
                         this.$.gridFinalWasteDestinations.clearCache();
                     },
                     _cancel: function () {

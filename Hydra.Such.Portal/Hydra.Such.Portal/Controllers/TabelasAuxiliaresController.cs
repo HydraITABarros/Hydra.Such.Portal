@@ -54,10 +54,14 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.Code > 0)
                 {
                     tpval.Código = x.Code;
+                    tpval.DataHoraModificação = DateTime.Now;
+                    tpval.UtilizadorModificação = User.Identity.Name;
                     DBProjectTypes.Update(tpval);
                 }
                 else
                 {
+                    tpval.DataHoraCriação = DateTime.Now;
+                    tpval.UtilizadorCriação = User.Identity.Name;
                     DBProjectTypes.Create(tpval);
                 }
             });
@@ -157,10 +161,15 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.Code > 0)
                 {
                     OS.Código = x.Code;
+                    OS.DataHoraModificação = DateTime.Now;
+                    OS.UtilizadorModificação = User.Identity.Name;
                     DBServiceObjects.Update(OS);
                 }
                 else
                 {
+
+                    OS.DataHoraCriação = DateTime.Now;
+                    OS.UtilizadorCriação = User.Identity.Name;
                     DBServiceObjects.Create(OS);
                 }
             });
@@ -276,19 +285,23 @@ namespace Hydra.Such.Portal.Controllers
             results.ForEach(x => DBMealTypes.Delete(x));
             data.ForEach(x =>
             {
-                TiposRefeição OS = new TiposRefeição()
+                TiposRefeição TR = new TiposRefeição()
                 {
                     Descrição = x.Description,
                     GrupoContabProduto = x.GrupoContabProduto
                 };
                 if (x.Code > 0)
                 {
-                    OS.Código = x.Code;
-                    DBMealTypes.Update(OS);
+                    TR.Código = x.Code;
+                    TR.DataHoraModificação = DateTime.Now;
+                    TR.UtilizadorModificação = User.Identity.Name;
+                    DBMealTypes.Update(TR);
                 }
                 else
                 {
-                    DBMealTypes.Create(OS);
+                    TR.DataHoraCriação = DateTime.Now;
+                    TR.UtilizadorCriação = User.Identity.Name;
+                    DBMealTypes.Create(TR);
                 }
             });
             return Json(data);
@@ -322,18 +335,22 @@ namespace Hydra.Such.Portal.Controllers
             results.ForEach(x => DBFinalWasteDestinations.Delete(x));
             data.ForEach(x =>
             {
-                DestinosFinaisResíduos OS = new DestinosFinaisResíduos()
+                DestinosFinaisResíduos DFR = new DestinosFinaisResíduos()
                 {
                     Descrição = x.Description
                 };
                 if (x.Code > 0)
                 {
-                    OS.Código = x.Code;
-                    DBFinalWasteDestinations.Update(OS);
+                    DFR.Código = x.Code;
+                    DFR.DataHoraModificação = DateTime.Now;
+                    DFR.UtilizadorModificação = User.Identity.Name;
+                    DBFinalWasteDestinations.Update(DFR);
                 }
                 else
                 {
-                    DBFinalWasteDestinations.Create(OS);
+                    DFR.DataHoraCriação = DateTime.Now;
+                    DFR.UtilizadorCriação = User.Identity.Name;
+                    DBFinalWasteDestinations.Create(DFR);
                 }
             });
             return Json(data);
