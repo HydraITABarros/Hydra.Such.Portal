@@ -119,24 +119,34 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.FolhasDeHoras.Where(x => x.Área == AreaId - 1).Select(x => new FolhaDeHoraListItemViewModel()
+                    //return ctx.FolhasDeHoras.Where(x => x.Área == AreaId - 1).Select(x => new FolhaDeHoraListItemViewModel()
+                    return ctx.FolhasDeHoras.Select(x => new FolhaDeHoraListItemViewModel()
                     {
                         FolhaDeHorasNo = x.NºFolhaDeHoras,
                         Area = x.Área,
+                        AreaText = x.Área.ToString(),
                         ProjectNo = x.NºProjeto,
                         EmployeeNo = x.NºEmpregado,
                         DateDepartureTime = x.DataHoraPartida,
+                        DateDepartureTimeText = x.DataHoraPartida.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
                         DateTimeArrival = x.DataHoraChegada,
+                        DateTimeArrivalText = x.DataHoraChegada.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
                         TypeDeslocation = x.TipoDeslocação,
+                        TypeDeslocationText = x.TipoDeslocação.ToString(),
                         CodeTypeKms = x.CódigoTipoKmS,
                         DisplacementOutsideCity = x.DeslocaçãoForaConcelho,
+                        DisplacementOutsideCityText = x.DeslocaçãoForaConcelho.ToString(),
                         Validators = x.Validadores,
                         Status = x.Estado,
+                        StatusText = x.Estado.ToString(),
                         CreatedBy = x.CriadoPor,
                         DateTimeCreation = x.DataHoraCriação,
+                        DateTimeCreationText = x.DataHoraCriação.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
                         DateTimeLastState = x.DataHoraÚltimoEstado,
+                        DateTimeLastStateText = x.DataHoraÚltimoEstado.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
                         UserCreation = x.UtilizadorCriação,
                         DateTimeModification = x.DataHoraModificação,
+                        DateTimeModificationText = x.DataHoraModificação.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
                         UserModification = x.UtilizadorModificação
                     }).ToList(); ;
                 }

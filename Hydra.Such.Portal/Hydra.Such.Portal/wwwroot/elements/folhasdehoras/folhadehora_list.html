@@ -56,11 +56,11 @@
         <vaadin-grid aria-label="FolhasDeHorasGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="folhadehoraNo">Nº Folha de Horas</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="folhadehoraNo" />
+                    <vaadin-grid-sorter path="FolhaDeHorasNo">Nº Folha de Horas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="FolhaDeHorasNo" />
                 </template>
                 <template>
-                    {{item.folhadehoraNo}}
+                    {{item.folhaDeHorasNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -70,7 +70,7 @@
                     <vaadin-grid-filter path="Area" />
                 </template>
                 <template>
-                    {{item.Area}}
+                    {{item.areaText}}
                 </template>
             </vaadin-grid-column>
 
@@ -80,7 +80,7 @@
                     <vaadin-grid-filter path="ProjectNo" />
                 </template>
                 <template>
-                    {{item.ProjectNo}}
+                    {{item.projectNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -90,7 +90,7 @@
                     <vaadin-grid-filter path="EmployeeNo" />
                 </template>
                 <template>
-                    {{item.EmployeeNo}}
+                    {{item.employeeNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -100,7 +100,7 @@
                     <vaadin-grid-filter path="DateDepartureTime" />
                 </template>
                 <template>
-                    {{item.DateDepartureTime}}
+                    {{item.dateDepartureTimeText}}
                 </template>
             </vaadin-grid-column>
 
@@ -110,7 +110,7 @@
                     <vaadin-grid-filter path="DateTimeArrival" />
                 </template>
                 <template>
-                    {{item.DateTimeArrival}}
+                    {{item.dateTimeArrivalText}}
                 </template>
             </vaadin-grid-column>
 
@@ -120,7 +120,7 @@
                     <vaadin-grid-filter path="TypeDeslocation" />
                 </template>
                 <template>
-                    {{item.TypeDeslocation}}
+                    {{item.typeDeslocationText}}
                 </template>
             </vaadin-grid-column>
 
@@ -130,7 +130,7 @@
                     <vaadin-grid-filter path="CodeTypeKms" />
                 </template>
                 <template>
-                    {{item.CodeTypeKms}}
+                    {{item.codeTypeKms}}
                 </template>
             </vaadin-grid-column>
 
@@ -140,7 +140,7 @@
                     <vaadin-grid-filter path="DisplacementOutsideCity" />
                 </template>
                 <template>
-                    {{item.DisplacementOutsideCity}}
+                    {{item.displacementOutsideCityText}}
                 </template>
             </vaadin-grid-column>
 
@@ -150,7 +150,7 @@
                     <vaadin-grid-filter path="Validators" />
                 </template>
                 <template>
-                    {{item.Validators}}
+                    {{item.validators}}
                 </template>
             </vaadin-grid-column>
 
@@ -160,7 +160,7 @@
                     <vaadin-grid-filter path="Status" />
                 </template>
                 <template>
-                    {{item.Status}}
+                    {{item.statusText}}
                 </template>
             </vaadin-grid-column>
 
@@ -170,7 +170,7 @@
                     <vaadin-grid-filter path="CreatedBy" />
                 </template>
                 <template>
-                    {{item.CreatedBy}}
+                    {{item.createdBy}}
                 </template>
             </vaadin-grid-column>
 
@@ -180,7 +180,7 @@
                     <vaadin-grid-filter path="DateTimeCreation" />
                 </template>
                 <template>
-                    {{item.DateTimeCreation}}
+                    {{item.dateTimeCreationText}}
                 </template>
             </vaadin-grid-column>
 
@@ -190,7 +190,7 @@
                     <vaadin-grid-filter path="DateTimeLastState" />
                 </template>
                 <template>
-                    {{item.DateTimeLastState}}
+                    {{item.dateTimeLastStateText}}
                 </template>
             </vaadin-grid-column>
 
@@ -200,7 +200,7 @@
                     <vaadin-grid-filter path="UserCreation" />
                 </template>
                 <template>
-                    {{item.UserCreation}}
+                    {{item.userCreation}}
                 </template>
             </vaadin-grid-column>
 
@@ -210,7 +210,7 @@
                     <vaadin-grid-filter path="DateTimeModification" />
                 </template>
                 <template>
-                    {{item.DateTimeLastState}}
+                    {{item.dateTimeModificationText}}
                 </template>
             </vaadin-grid-column>
 
@@ -220,7 +220,7 @@
                     <vaadin-grid-filter path="UserModification" />
                 </template>
                 <template>
-                    {{item.UserModification}}
+                    {{item.userModification}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>

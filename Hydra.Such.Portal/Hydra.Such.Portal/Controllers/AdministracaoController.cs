@@ -333,13 +333,24 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
         public JsonResult UpdateConfigurations([FromBody] ConfigurationsViewModel data)
-
         {
             Configuração configObj = DBConfigurations.GetById(data.Id);
+
+
+            if (configObj == null)
+            {
+                configObj.DataHoraCriação = DateTime.Now;
+                configObj.UtilizadorCriação = User.Identity.Name;
+            }
+
             configObj.NumeraçãoProjetos = data.ProjectNumeration;
             configObj.NumeraçãoContratos = data.ContractNumeration;
             configObj.NumeraçãoFolhasDeHoras = data.TimeSheetNumeration;
             configObj.UtilizadorModificação = User.Identity.Name;
+            //configObj.UtilizadorCriação = User.Identity.Name;
+            //configObj.DataHoraCriação = DateTime.Now;
+            configObj.UtilizadorModificação = User.Identity.Name;
+            configObj.DataHoraModificação = DateTime.Now;
 
             DBConfigurations.Update(configObj);
 
@@ -367,7 +378,7 @@ namespace Hydra.Such.Portal.Controllers
                 Description = x.Descrição,
                 TotalDigitIncrement = x.NºDígitosIncrementar,
                 IncrementQuantity = x.NºDígitosIncrementar,
-                LastNumerationUsed = x.ÚltimoNºUsado
+                LastNumerationUsed = x.ÚltimoNºUsado                
             }).ToList();
             return Json(result);
         }
@@ -405,16 +416,16 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     CN.Id = x.Id;
                     CN.UtilizadorModificação = User.Identity.Name;
+                    CN.DataHoraModificação = DateTime.Now;
                     DBNumerationConfigurations.Update(CN);
                 }
                 else
                 {
                     CN.UtilizadorCriação = User.Identity.Name;
+                    CN.DataHoraCriação = DateTime.Now;
                     DBNumerationConfigurations.Create(CN);
                 }
-            });
-
-            
+            });            
 
             return Json(data);
         }

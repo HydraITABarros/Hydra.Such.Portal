@@ -54,10 +54,14 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.Code > 0)
                 {
                     tpval.Código = x.Code;
+                    tpval.DataHoraModificação = DateTime.Now;
+                    tpval.UtilizadorModificação = User.Identity.Name;
                     DBProjectTypes.Update(tpval);
                 }
                 else
                 {
+                    tpval.DataHoraCriação = DateTime.Now;
+                    tpval.UtilizadorCriação = User.Identity.Name;
                     DBProjectTypes.Create(tpval);
                 }
             });
@@ -107,11 +111,15 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (x.ID > 0)
                 {
+                    CN.DataHoraModificação = DateTime.Now;
+                    CN.UtilizadorModificação = User.Identity.Name;
                     CN.Código = x.ID;
                     DBCountabGroupTypes.Update(CN);
                 }
                 else
                 {
+                    CN.UtilizadorCriação = User.Identity.Name;
+                    CN.DataHoraCriação = DateTime.Now;
                     DBCountabGroupTypes.Create(CN);
                 }
             });
@@ -157,10 +165,15 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.Code > 0)
                 {
                     OS.Código = x.Code;
+                    OS.DataHoraModificação = DateTime.Now;
+                    OS.UtilizadorModificação = User.Identity.Name;
                     DBServiceObjects.Update(OS);
                 }
                 else
                 {
+
+                    OS.DataHoraCriação = DateTime.Now;
+                    OS.UtilizadorCriação = User.Identity.Name;
                     DBServiceObjects.Create(OS);
                 }
             });
@@ -237,11 +250,15 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (x.Code > 0)
                 {
+                    CN.DataHoraModificação = DateTime.Now;
+                    CN.UtilizadorModificação = User.Identity.Name;
                     CN.Código = x.Code;
                     DBCountabGroupTypesOM.Update(CN);
                 }
                 else
                 {
+                    CN.UtilizadorCriação = User.Identity.Name;
+                    CN.DataHoraCriação = DateTime.Now;
                     DBCountabGroupTypesOM.Create(CN);
                 }
             });
@@ -276,19 +293,23 @@ namespace Hydra.Such.Portal.Controllers
             results.ForEach(x => DBMealTypes.Delete(x));
             data.ForEach(x =>
             {
-                TiposRefeição OS = new TiposRefeição()
+                TiposRefeição TR = new TiposRefeição()
                 {
                     Descrição = x.Description,
                     GrupoContabProduto = x.GrupoContabProduto
                 };
                 if (x.Code > 0)
                 {
-                    OS.Código = x.Code;
-                    DBMealTypes.Update(OS);
+                    TR.Código = x.Code;
+                    TR.DataHoraModificação = DateTime.Now;
+                    TR.UtilizadorModificação = User.Identity.Name;
+                    DBMealTypes.Update(TR);
                 }
                 else
                 {
-                    DBMealTypes.Create(OS);
+                    TR.DataHoraCriação = DateTime.Now;
+                    TR.UtilizadorCriação = User.Identity.Name;
+                    DBMealTypes.Create(TR);
                 }
             });
             return Json(data);
@@ -322,18 +343,22 @@ namespace Hydra.Such.Portal.Controllers
             results.ForEach(x => DBFinalWasteDestinations.Delete(x));
             data.ForEach(x =>
             {
-                DestinosFinaisResíduos OS = new DestinosFinaisResíduos()
+                DestinosFinaisResíduos DFR = new DestinosFinaisResíduos()
                 {
                     Descrição = x.Description
                 };
                 if (x.Code > 0)
                 {
-                    OS.Código = x.Code;
-                    DBFinalWasteDestinations.Update(OS);
+                    DFR.Código = x.Code;
+                    DFR.DataHoraModificação = DateTime.Now;
+                    DFR.UtilizadorModificação = User.Identity.Name;
+                    DBFinalWasteDestinations.Update(DFR);
                 }
                 else
                 {
-                    DBFinalWasteDestinations.Create(OS);
+                    DFR.DataHoraCriação = DateTime.Now;
+                    DFR.UtilizadorCriação = User.Identity.Name;
+                    DBFinalWasteDestinations.Create(DFR);
                 }
             });
             return Json(data);
@@ -373,11 +398,15 @@ namespace Hydra.Such.Portal.Controllers
                 };
                 if (x.Code > 0)
                 {
+                    tpval.DataHoraModificação = DateTime.Now;
+                    tpval.UtilizadorModificação = User.Identity.Name;
                     tpval.Código = x.Code;
                     DBServices.Update(tpval);
                 }
                 else
                 {
+                    tpval.UtilizadorCriação = User.Identity.Name;
+                    tpval.DataHoraCriação = DateTime.Now;
                     DBServices.Create(tpval);
                 }
             });
@@ -400,37 +429,108 @@ namespace Hydra.Such.Portal.Controllers
                 ServiceCode = x.CódServiço,
                 ServiceGroup = x.GrupoServiços
             }).ToList();
+
             return Json(result);
         }
         
         [HttpPost]
         public JsonResult UpdateClientServices([FromBody] List<ClientServicesViewModel> data)
         {
-            List<ServiçosCliente> results = DBClientServices.GetAll();
-            results.RemoveAll(x => data.Any(u => u.ClientNumber == x.NºCliente && u.ServiceCode == x.CódServiço));
-            results.ForEach(x => DBClientServices.Delete(x.CódServiço, x.NºCliente));
-            data.ForEach(x =>
+            foreach (var dt in data)
             {
-                ServiçosCliente tpval = new ServiçosCliente()
+                int param = 2;
+                bool exist = CheckIfExist(dt.ClientNumber, dt.ServiceCode, dt.ServiceGroup, param);
+                if (exist == false)
                 {
-                    GrupoServiços = x.ServiceGroup
-                };
+                    ServiçosCliente tpval = new ServiçosCliente();
+                    tpval.UtilizadorModificação = User.Identity.Name;
+                    tpval.DataHoraModificação = DateTime.Now;
+                    tpval.GrupoServiços = dt.ServiceGroup;
+                    tpval.CódServiço = dt.ServiceCode;
+                    tpval.NºCliente = dt.ClientNumber;
 
-                results.ForEach(y =>
-                {
-                    if (x.ServiceCode == y.CódServiço && x.ClientNumber == y.NºCliente && x.ServiceGroup != y.GrupoServiços)
-                    {
-                        DBClientServices.Update(tpval);
-                    }
-                    else
-                    {
-                        tpval.CódServiço = x.ServiceCode;
-                        tpval.NºCliente = x.ClientNumber;
-                        DBClientServices.Create(tpval);
-                    }
-                });
-            });
+                    DBClientServices.Update(tpval);
+                }
+            }
             return Json(data);
+        }
+        
+        [HttpPost]
+        public JsonResult CreateClientServices([FromBody] List<ClientServicesViewModel> data)
+        {
+            foreach (var dt in data)
+            {
+                int param = 1;
+                bool exist = CheckIfExist(dt.ClientNumber, dt.ServiceCode, dt.ServiceGroup, param);
+                if (exist == false)
+                {
+                    ServiçosCliente tpval = new ServiçosCliente();
+                    tpval.UtilizadorCriação = User.Identity.Name;
+                    tpval.DataHoraCriação = DateTime.Now;
+                    tpval.GrupoServiços = dt.ServiceGroup;
+                    tpval.CódServiço = dt.ServiceCode;
+                    tpval.NºCliente = dt.ClientNumber;
+                    
+                    DBClientServices.Create(tpval);
+                    return Json(exist);
+                }
+                else
+                {
+                    return Json(exist);
+                }
+            }
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteClientServices([FromBody] List<ClientServicesViewModel> data)
+        {
+            try
+            {
+                List<ServiçosCliente> results = DBClientServices.GetAll();
+                results.RemoveAll(x => data.Any(u => u.ClientNumber == x.NºCliente && u.ServiceCode == x.CódServiço));
+                results.ForEach(x => DBClientServices.Delete(x.CódServiço, x.NºCliente));
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        
+        public bool CheckIfExist(string ClientNumber, int ServiceCode, bool? ServiceGroup, int param)
+        {
+            List<ClientServicesViewModel> result = DBClientServices.GetAll().Select(x => new ClientServicesViewModel()
+            {
+                ClientNumber = x.NºCliente,
+                ServiceCode = x.CódServiço,
+                ServiceGroup = x.GrupoServiços
+            }).ToList();
+
+            bool exists = false;
+            if(param == 1)
+            {
+                foreach (var res in result)
+                {
+                    if (res.ClientNumber == ClientNumber && res.ServiceCode == ServiceCode)
+                    {
+                        exists = true;
+                    }
+                }
+            }
+           
+            if(param == 2)
+            {
+                foreach (var res in result)
+                {
+                    if (res.ClientNumber == ClientNumber && res.ServiceCode == ServiceCode && res.ServiceGroup == ServiceGroup)
+                    {
+                        exists = true;
+                    }
+                }
+            }
+            return exists;
         }
         #endregion
     }
