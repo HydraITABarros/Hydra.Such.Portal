@@ -11,11 +11,28 @@ using Hydra.Such.Portal.Configurations;
 using System.Net.Http;
 using System.Net;
 using Newtonsoft.Json;
+using Hydra.Such.Data.ViewModel.CCP;
+using Hydra.Such.Data.Logic.CCP;
 
 namespace Hydra.Such.Portal.Controllers
 {
     public class ProcedimentosCcpsController : Controller
     {
+        private readonly NAVConfigurations _config;
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetAllProcedimentos()
+        {
+            List<ProcedimentoCCPView> result = DBProcedimentosCCP.GetAllProcedimentosByViewToList();
+
+
+            return Json(result);
+        }
+        /* zpgm. 
         private readonly SuchDBContext _context;
 
         public ProcedimentosCcpsController(SuchDBContext context)
@@ -166,5 +183,6 @@ namespace Hydra.Such.Portal.Controllers
         {
             return _context.ProcedimentosCcp.Any(e => e.Nº == id);
         }
+        */
     }
 }
