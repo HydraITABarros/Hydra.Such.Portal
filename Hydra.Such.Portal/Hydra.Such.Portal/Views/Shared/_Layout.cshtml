@@ -63,6 +63,7 @@
                             <li>@Html.ActionLink("Contratos", "Contratos", "Nutricao")</li>
                             <li>@Html.ActionLink("Requisições", "Requisicoes", "Nutricao")</li>
                             <li>@Html.ActionLink("Fichas Técnicas de Pratos", "FichasTecnicasPratos", "Nutricao")</li>
+                            <li>@Html.ActionLink("Diário de Projeto", "DiarioProjeto", "Projetos")</li>
                             <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Nutricao")</li>
                         </ul>
 
@@ -91,7 +92,17 @@
                         </li>
                         <ul class="sub-menu collapse" id="PO">
                             <li>@Html.ActionLink("Projetos", "Projetos", "PO")</li>
+                            <li>@Html.ActionLink("Diário de Projeto", "DiarioProjeto", "Projetos")</li>
                             <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "PO")</li>
+                        </ul>
+
+                        <li data-toggle="collapse" data-target="#NovasAreas" class="collapsed active">
+                            <a href="#"> Novas Áreas <span class="arrow"></span></a>
+                        </li>
+                        <ul class="sub-menu collapse" id="NovasAreas">
+                            <li>@Html.ActionLink("Projetos", "Projetos", "NovasAreas")</li>
+                            <li>@Html.ActionLink("Diário de Projeto", "DiarioProjeto", "Projetos")</li>
+                            <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "NovasAreas")</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#Internacionalizacoes" class="collapsed active">
@@ -100,6 +111,7 @@
                         <ul class="sub-menu collapse" id="Internacionalizacoes">
                             <li>@Html.ActionLink("Projetos", "Projetos", "Internacionalizacoes")</li>
                             <li>@Html.ActionLink("Contratos", "Contratos", "Internacionalizacoes")</li>
+                            <li>@Html.ActionLink("Diário de Projeto", "DiarioProjeto", "Projetos")</li>
                             <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Internacionalizacoes")</li>
                         </ul>
 

@@ -108,7 +108,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Projetos.Where(x => x.Área == AreaId-1).ToList();
+                    return ctx.Projetos.Where(x => x.Área == AreaId-1 && x.Estado != 3).ToList();
                 }
             }
             catch (Exception ex)

@@ -10,13 +10,13 @@ namespace Hydra.Such.Data.Logic.Project
     {
         #region CRUD
 
-        public static List<DiárioDeProjeto> GetAll()
+        public static List<DiárioDeProjeto> GetAll(string user)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioDeProjeto.ToList();
+                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true).ToList();
                 }
             }
             catch (Exception ex)

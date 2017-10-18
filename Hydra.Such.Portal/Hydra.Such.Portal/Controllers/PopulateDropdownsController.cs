@@ -136,7 +136,11 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetGroupContProduct()
         {
-            List<NAVGroupContProductViewModel> result = DBNAV2017GruposContabProduto.GetGruposContabProduto(_config.NAVDatabaseName, _config.NAVCompanyName);
+            List<DDMessageString> result = DBNAV2017GruposContabProduto.GetGruposContabProduto(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
             return Json(result);
         }
 
@@ -177,21 +181,33 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetMeasureUnits()
         {
-            List<NAVMeasureUnitViewModel> result = DBNAV2017MeasureUnit.GetAllMeasureUnit(_config.NAVDatabaseName, _config.NAVCompanyName);
+            List<DDMessageString> result = DBNAV2017MeasureUnit.GetAllMeasureUnit(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
             return Json(result);
         }
 
         [HttpPost]
         public JsonResult GetLocations()
         {
-            List<NAVLocationsViewModel> result = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName);
+            List<DDMessageString> result = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Select( x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
             return Json(result);
         }
 
         [HttpPost]
         public JsonResult GetContabGroup()
         {
-            List<NAVContabGroupViewModel> result = DBNAV2017ProjectContabGroup.GetAllProjectContabGroup(_config.NAVDatabaseName, _config.NAVCompanyName);
+            List<DDMessageString> result = DBNAV2017ProjectContabGroup.GetAllProjectContabGroup(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Code
+            }).ToList();
             return Json(result);
         }
 
@@ -227,21 +243,31 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetCGAccountCode(string accountNo)
         {
-            List<NAVCGAccountViewModel> result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, accountNo);
-            return Json(result);
+            List<DDMessageString> result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList(); return Json(result);
         }
 
         [HttpPost]
         public JsonResult GetProductsCode(string productNo)
         {
-            List<NAVProductsViewModel> result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, productNo);
-            return Json(result);
+            List<DDMessageString> result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList(); return Json(result);
         }
 
         [HttpPost]
         public JsonResult GetResourcesCode(string resourceNo, string filterArea, int resourceType, string contabGroup)
         {
-            List<NAVResourcesViewModel> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, resourceNo, filterArea, resourceType, contabGroup);
+            List<DDMessageString> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
             return Json(result);
         }
         #endregion
