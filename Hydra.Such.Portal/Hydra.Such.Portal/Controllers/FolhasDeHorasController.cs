@@ -111,7 +111,7 @@ namespace Hydra.Such.Portal.Controllers
                     //Get FolhaDeHora Numeration
                     Configuração Configs = DBConfigurations.GetById(1);
                     int FolhaDeHoraNumerationConfigurationId = Configs.NumeraçãoFolhasDeHoras.Value;
-                    data.FolhaDeHorasNo = DBNumerationConfigurations.GetNextNumeration(FolhaDeHoraNumerationConfigurationId);
+                    data.FolhaDeHorasNo = DBNumerationConfigurations.GetNextNumeration(FolhaDeHoraNumerationConfigurationId, data.FolhaDeHorasNo == "");
 
                     FolhasDeHoras cFolhaDeHora = new FolhasDeHoras()
                     {
