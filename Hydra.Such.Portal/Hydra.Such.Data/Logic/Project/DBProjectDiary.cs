@@ -84,5 +84,20 @@ namespace Hydra.Such.Data.Logic.Project
         }
 
         #endregion
+
+        public static List<DiárioDeProjeto> GetByProjectNo(string ProjectNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.DiárioDeProjeto.Where(x => x.NºProjeto == ProjectNo).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

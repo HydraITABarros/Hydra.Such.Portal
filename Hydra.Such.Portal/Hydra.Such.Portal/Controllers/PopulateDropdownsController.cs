@@ -141,6 +141,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetGroupContProject()
+        {
+            List<DDMessageString> result = DBNAV2017CountabGroupProjects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x,
+                value = x
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetRegionCode()
         {
             List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Select(x => new DDMessageString() {
@@ -194,6 +205,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVContabGroupViewModel> result = DBNAV2017ProjectContabGroup.GetAllProjectContabGroup(_config.NAVDatabaseName, _config.NAVCompanyName);
             return Json(result);
         }
+        #endregion
 
         #region TypeOptions
         [HttpPost]
@@ -245,9 +257,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
         #endregion
-
-        #endregion
-        //#endregion
+        
 
         public JsonResult GetProjectType()
         {
@@ -265,6 +275,18 @@ namespace Hydra.Such.Portal.Controllers
         {
 
             List<NAVDimValueViewModel> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2);
+            return Json(result);
+        }
+
+
+        [HttpPost]
+        public JsonResult GetNAVShippingAddresses()
+        {
+
+            List<DDMessageString> result = DBNAV2017ShippingAddresses.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString() {
+                id = X.Code,
+                value = X.Name
+            }).ToList();
             return Json(result);
         }
 

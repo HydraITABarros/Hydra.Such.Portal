@@ -19,6 +19,7 @@
 
 
 
+
 <dom-module id="x-projectdetails">
     <template>
         <!-- STYLES -->
@@ -52,6 +53,8 @@
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractsByArea" last-response="{{LProjectContracts}}" method="post" handle-as="json" content-type="application/json" id="contracts_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetGroupContProject" last-response="{{LProjectGroupContab}}" method="post" handle-as="json" content-type="application/json" id="contracts_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddresses" last-response="{{LProjectShippingAddresses}}" method="post" handle-as="json" content-type="application/json" id="contracts_ajax"></iron-ajax>
 
         
         <!-- PROJECT CRUDS -->
@@ -61,6 +64,14 @@
                    handle-as="json"
                    id="page_databound_ajax"
                    on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Projetos/DeleteProject"
+                   last-response="{{deletedData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_project"
+                   on-response="_responseDeleteProcessor"
                    content-type="application/json"></iron-ajax>
 
         <!-- PROJECT Valitador -->
@@ -84,8 +95,8 @@
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="row">
                 <div class="col-lg-12">
-                    <paper-button raised id="btnProjectMovements" class="" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
-                    <paper-button raised id="btnProjectDiary" class=""><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
+                    <paper-button raised id="btnProjectMovements" class="" onclick="_OpenProjectMovements()" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
+                    <paper-button raised id="btnProjectDiary" class="" onclick="_OpenProjectDiary()" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
                 </div>
             </div>
         </template>
@@ -242,7 +253,15 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.accountWorkGroup}}" id="AccountWorkGroup" name="AccountWorkGroup" required label="Grupo Contab. Obra"> </paper-input>
+                        <vaadin-combo-box items="[[LProjectGroupContab]]" item-value-path="id" item-label-path="value" value="{{data.accountWorkGroup}}" label="Grupo Contab. Obra">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
                     </div>
                 </div>
             </div>
@@ -260,7 +279,17 @@
             <div>
                 <div class="row">
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.shippingAddressCode}}" id="ShippingAddressCode" name="ShippingAddressCode" required label="Cód. Endereço Envio" on-value-changed="_getAddressByCode"> </paper-input>
+                        
+                        <vaadin-combo-box items="[[LProjectShippingAddresses]]" item-value-path="id" item-label-path="value" value="{{data.shippingAddressCode}}" label="Cód. Endereço Envio" on-value-changed="_getAddressByCode">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                        
                     </div>
                     <div class="col-lg-3">
                         <paper-input type="text" bind-value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" required label="Envio-a Endereço">asdasdas</paper-input>
@@ -331,7 +360,7 @@
             </template>
             <template is="dom-if" if="{{ !_isCreate }}">
                 <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
             </template>
         </div>
 
@@ -400,6 +429,27 @@
                         this._executeRequest("/Projetos/UpdateProject", this.data)
                     }
                 },
+                _delete: function () {
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o projeto " + this.data.projectNo + "?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                this.$.ajax_delete_project.body = JSON.stringify(this.data);
+                                this.$.ajax_delete_project.generateRequest();
+                            }
+                        }
+                    });
+                },
 
                 //Responses Processors
                 _responseProcessor: function (data) {
@@ -430,7 +480,6 @@
                         this._openToast(this.data.eMessage);
                     }
                 },
-
                 _responseValidatorProcessor: function (data) {
                     var self = this;
                     if (data.detail.status === 200) {
@@ -442,11 +491,21 @@
                         }
                     }
                 },
-
+                _responseDeleteProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        debugger;;
+                        if (this.deletedData == "1") {
+                            this._openToast("Não é possivel eliminar o projeto pois este já possui movimentos.");
+                        } else {
+                            this._openToast("Projeto eliminado com sucesso");
+                            window.location.replace("/");
+                        }
+                    }
+                },
 
                 //Address Functions
                 _getAddressByCode: function (e) {
-                    debugger;;
                     this.$.address_ajax.body = JSON.stringify(e.detail.value);
                     this.$.address_ajax.generateRequest();
                 },
@@ -468,6 +527,14 @@
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
+                },
+
+                //BUTTONS
+                _OpenProjectMovements: function (url, data) {
+                    window.location.replace("/Projetos/MovimentosDeProjeto/" + this.data.projectNo);
+                },
+                _OpenProjectDiary: function (url, data) {
+                    window.location.replace("/Projetos/DiarioDeProjetos/" + this.data.projectNo);
                 }
                 
             });

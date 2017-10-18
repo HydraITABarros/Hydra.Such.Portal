@@ -32,9 +32,9 @@ namespace Hydra.Such.Tester
 
         public static void NumerationTest()
         {
-            string numeration = DBNumerationConfigurations.GetNextNumeration(1);
-            string numeration2 = DBNumerationConfigurations.GetNextNumeration(2);
-            string numeration3 = DBNumerationConfigurations.GetNextNumeration(3);
+            string numeration = DBNumerationConfigurations.GetNextNumeration(1,true);
+            string numeration2 = DBNumerationConfigurations.GetNextNumeration(2, true);
+            string numeration3 = DBNumerationConfigurations.GetNextNumeration(3, true);
             
             //Console.WriteLine(numeration);
             //Console.WriteLine(numeration2);
