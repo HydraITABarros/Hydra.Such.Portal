@@ -416,6 +416,23 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Sim"
             }
         };
+
+        // zpgm.<
+        public static readonly List<EnumData> ProcedimentosCcpTypes = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Procedimento Aquisição"
+            },
+
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Procedimento Simplificado"
+            }
+        };
+        // zpgm.>
     }
     public class EnumData
     {
