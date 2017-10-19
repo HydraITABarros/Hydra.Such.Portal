@@ -80,6 +80,21 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
+
+        public static Contratos GetActiveContractById(string ContractNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Contratos.Where(x => x.NºContrato == ContractNo && x.Arquivado == false).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         #endregion
     }
 }
