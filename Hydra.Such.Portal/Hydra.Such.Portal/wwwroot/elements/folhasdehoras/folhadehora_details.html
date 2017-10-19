@@ -38,15 +38,15 @@
         </style>
 
         <!-- DROPDOWNS POPULATE -->
-        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LFolhaDeHoraFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LFolhaDeHoraFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraStatus" last-response="{{LFolhaDeHoraStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraTypeDeslocation" last-response="{{LFolhaDeHoraTypeDeslocation}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraCodeTypeKms" last-response="{{LFolhaDeHoraCodeTypeKms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{LFolhaDeHoraProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraDisplacementOutsideCity" last-response="{{LFolhaDeHoraDisplacementOutsideCity}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <!-- PROJECT CRUDS -->
-        <iron-ajax url="/FolhaDeHoras/GetFolhaDeHoraDetails"
+        <!-- FOLHADEHORA CRUDS -->
+        <iron-ajax url="/FolhasDeHoras/GetFolhaDeHoraDetails"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
@@ -55,13 +55,23 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!-- FOLHADEHORA Valitador -->
+        <iron-ajax url="/FolhasDeHoras/ValidateNumeration"
+                   last-response="{{validateResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_validator_ajax"
+                   on-response="_responseValidatorProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div>
             <div class="row">
                 <div class="col-lg-3">
-                    <paper-input type="text" value="{{data.FolhaDeHorasNo}}" disabled="{{ !_isCreate }}" id="FolhaDeHorasNo" name="FolhaDeHorasNo" ed required label="Nº Folha de Hora"> </paper-input>
+                    <paper-input type="text" value="{{data.folhaDeHorasNo}}" disabled="true" id="folhaDeHorasNo" name="folhaDeHorasNo" ed required label="Nº Folha de Hora"> </paper-input>
                 </div>
                 <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LFolhaDeHoraFunctionalAreaCodes]]" item-value-path="id" item-label-path="value" value="{{data.Area}}" label="Cód. Área">
+                    <vaadin-combo-box items="[[LFolhaDeHoraFunctionalAreaCodes]]" item-value-path="id" item-label-path="value" value="{{data.area}}" label="Cód. Área">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -72,53 +82,7 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LFolhaDeHoraProjectNo]]" item-value-path="id" item-label-path="value" value="{{data.ProjectNo}}" label="Nº Projecto">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-            </div>
-            <div class="row break_clear">
-                <div class="col-lg-3">
-                    <paper-input type="text" value="{{data.EmployeeNo}}" id="EmployeeNo" name="EmployeeNo" required label="Nº Empregado"> </paper-input>
-                </div>
-                <div class="col-lg-3">
-                    <vaadin-date-picker label="DateDepartureTime" id="DateDepartureTime" name="Date" value="{{data.DateDepartureTime}}"></vaadin-date-picker>
-                </div>
-                <div class="col-lg-3">
-                    <vaadin-date-picker label="DateTimeArrival" id="DateTimeArrival" name="Date" value="{{data.DateTimeArrival}}"></vaadin-date-picker>
-                </div>
-            </div>
-            <div class="row break_clear">
-                <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" item-value-path="id" item-label-path="value" value="{{data.TypeDeslocation}}" label="Tipo Deslocação">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-                <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" item-value-path="id" item-label-path="value" value="{{data.CodeTypeKms}}" label="Cód. Tipo Kms">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-                <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LFolhaDeHoraDisplacementOutsideCity]]" item-value-path="id" item-label-path="value" value="{{data.DisplacementOutsideCity}}" label="Deslocação Fora Concelho">
+                    <vaadin-combo-box items="[[LFolhaDeHoraProjectNo]]" item-value-path="id" item-label-path="value" value="{{data.projectNo}}" label="Nº Projecto">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -131,10 +95,18 @@
             </div>
             <div class="row break_clear">
                 <div class="col-lg-3">
-                    <paper-input type="text" value="{{data.Validators}}" id="Validators" name="Validators" required label="Nº Validador"> </paper-input>
+                    <paper-input type="text" value="{{data.employeeNo}}" id="employeeNo" name="employeeNo" required label="Nº Empregado"> </paper-input>
                 </div>
                 <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LFolhaDeHoraStatus]]" item-value-path="id" item-label-path="value" value="{{data.Status}}" label="Estado">
+                    <vaadin-date-picker label="Data da Partida" id="DateDepartureTimeText" name="DateDepartureTimeText" value="{{data.dateDepartureTimeText}}"></vaadin-date-picker>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-date-picker label="Data de Regresso" id="DateTimeArrivalText" name="DateTimeArrivalText" value="{{data.dateTimeArrivalText}}"></vaadin-date-picker>
+                </div>
+            </div>
+            <div class="row break_clear">
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" item-value-path="id" item-label-path="value" value="{{data.typeDeslocation}}" label="Tipo Deslocação">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -145,26 +117,64 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-3">
-                    <paper-input type="text" value="{{data.CreatedBy}}" id="CreatedBy" name="CreatedBy" required label="Nº Criador"> </paper-input>
+                    <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" item-value-path="id" item-label-path="value" value="{{data.codeTypeKmsInt}}" label="Cód. Tipo Kms">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[LFolhaDeHoraDisplacementOutsideCity]]" item-value-path="id" item-label-path="value" value="{{data.displacementOutsideCityInt}}" label="Deslocação Fora Concelho">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
             </div>
             <div class="row break_clear">
                 <div class="col-lg-3">
-                    <vaadin-date-picker label="DateTimeCreation" id="DateTimeCreation" name="Date" value="{{data.DateTimeCreation}}"></vaadin-date-picker>
+                    <paper-input type="text" value="{{data.validators}}" id="validators" name="validators" required label="Nº Validador"> </paper-input>
                 </div>
                 <div class="col-lg-3">
-                    <vaadin-date-picker label="DateTimeLastState" id="DateTimeLastState" name="Date" value="{{data.DateTimeLastState}}"></vaadin-date-picker>
+                    <vaadin-combo-box items="[[LFolhaDeHoraStatus]]" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
                 <div class="col-lg-3">
-                    <paper-input type="text" value="{{data.UserCreation}}" id="UserCreation" name="UserCreation" required label="Nº Criador"> </paper-input>
+                    <paper-input type="text" value="{{data.createdBy}}" id="createdBy" name="createdBy" required label="Nº Criador"> </paper-input>
                 </div>
             </div>
             <div class="row break_clear">
                 <div class="col-lg-3">
-                    <vaadin-date-picker label="DateTimeModification" id="DateTimeModification" name="Date" value="{{data.DateTimeModification}}"></vaadin-date-picker>
+                    <vaadin-date-picker label="Data de Criação" id="DateTimeCreationText" name="DateTimeCreationText" value="{{data.dateTimeCreationText}}"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-3">
-                    <paper-input type="text" value="{{data.UserModification}}" id="UserModification" name="UserModification" required label="Nº Uti. Alterou"> </paper-input>
+                    <vaadin-date-picker label="Data do Últ. Estado" id="DateTimeLastStateText" name="DateTimeLastStateText" value="{{data.dateTimeLastStateText}}"></vaadin-date-picker>
+                </div>
+                <div class="col-lg-3">
+                    <paper-input type="text" value="{{data.userCreation}}" id="userCreation" name="userCreation" required label="Nº Criador"> </paper-input>
+                </div>
+            </div>
+            <div class="row break_clear">
+                <div class="col-lg-3">
+                    <vaadin-date-picker label="Data da Últ. Modificação" id="DateTimeModificationText" name="DateTimeModificationText" value="{{data.dateTimeModificationText}}"></vaadin-date-picker>
+                </div>
+                <div class="col-lg-3">
+                    <paper-input type="text" value="{{data.userModification}}" id="userModification" name="userModification" required label="Nº Uti. Alterou"> </paper-input>
                 </div>
             </div>
         </div>
@@ -184,6 +194,7 @@
 
     <script>
         document.addEventListener('WebComponentsReady', function () {
+            //debugger;;
             Polymer({
                 is: 'x-folhadehoradetails',
                 properties: {
@@ -206,21 +217,27 @@
                         value: false
                     }
                 },
+
                 ready: function () {
+                    //debugger;;
                     //GET FOLHADEHORA DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "FolhaDeHorasNo": this._folhadehoraid });
                     this.$.page_databound_ajax.generateRequest();
 
                     if (this._folhadehoraid == "") {
                         this._isCreate = true;
-                        this.data.area = this._areaid;
+                        //this.data.area = this._areaid;
                     }
                 },
+
                 _openToast: function (message) {
+                    //debugger;;
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
+
                 _validateData: function () {
+                    //debugger;;
                     if (false) {
                         this._openToast(validate);
                         return false;
@@ -230,57 +247,60 @@
 
                 //CRUDS
                 _create: function () {
-                    debugger;;
+                    //debugger;;
+
                     if (this._validateData()) {
-                        debugger;;
-                        if (this._isCreate) {
-                            debugger;;
-                            this.$.page_validator_ajax.body = JSON.stringify(this.data);
-                            this.$.page_validator_ajax.generateRequest();
-                        } else {
-                            debugger;;
-                            this._executeRequest("/FolhasDeHoras/CreateFolhaDeHora", this.data)
-                        }
+                        this._executeRequest("/FolhasDeHoras/CreateFolhaDeHora", this.data)
                     }
+
+                    //if (this._validateData()) {
+                    //    this.$.page_validator_ajax.body = JSON.stringify(this.data);
+                    //    this.$.page_validator_ajax.generateRequest();
+                    //}
                 },
+
                 _update: function () {
+                    //debugger;;
                     if (this._validateData()) {
-                        debugger;;
                         this._executeRequest("/FolhasDeHoras/UpdateFolhaDeHora", this.data)
                     }
                 },
 
                 //Responses Processors
                 _responseProcessor: function (data) {
+                    //debugger;;
                     var self = this;
 
                     //Set AreaId
-                    if (this.data.FolhaDeHorasNo == "") {
+                    if (this.data.folhaDeHoraNo == "") {
                         this.data.area = this._areaid;
                     }
 
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetFolhaDeHora") !== -1) {
-                            if (this.data.FolhaDeHorasNo == "") {
+                            if (this.data.FolhaDeHoraNo == "") {
                                 this._isCreate = true;
                             }
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             this._createResponseProcessor();
                         }
                     } else {
-                        this._openToast("Ocorreu um erro ao criar a Folha de Horas.")
+                        this._openToast("Ocorreu um erro ao criar a Folha de Hora.")
                     }
                 },
+
                 _createResponseProcessor: function () {
+                    //debugger;;
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
-                        this._openToast("A Folha de Horas criada com sucesso.");
+                        this._openToast("Folha de Hora criado com sucesso.");
                     } else {
                         this._openToast(this.data.eMessage);
                     }
                 },
 
                 _responseValidatorProcessor: function (data) {
+                    //debugger;;
                     var self = this;
                     if (data.detail.status === 200) {
                         debugger;;
@@ -292,28 +312,9 @@
                     }
                 },
 
-
-                //Address Functions
-                _getAddressByCode: function (e) {
-                    debugger;;
-                    this.$.address_ajax.body = JSON.stringify(e.detail.value);
-                    this.$.address_ajax.generateRequest();
-                },
-                _addressResponseProcessor: function (e) {
-                    var self = this;
-                    if (this.addressData != null) {
-                        //Fill Data
-                        this.$.ShippingName.value = this.addressData.name;
-                        this.$.ShippingAddress.value = this.addressData.address;
-                        this.$.ShippingPostalCode.value = this.addressData.zipCode;
-                        this.$.ShippingLocality.value = this.addressData.city;
-                        this.$.ShippingContact.value = this.addressData.contact;
-                    }
-                },
-
-
                 //Helpers
                 _executeRequest: function (url, data) {
+                    //debugger;;
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
@@ -322,5 +323,6 @@
             });
         });
     </script>
+
 
 </dom-module>
