@@ -79,13 +79,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static bool Delete(FolhasDeHoras ObjectToDelete)
+        public static bool Delete(string FolhaDeHoraNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.FolhasDeHoras.RemoveRange(ctx.FolhasDeHoras.Where(x => x.NºFolhaDeHoras == ObjectToDelete.NºFolhaDeHoras));
+                    ctx.FolhasDeHoras.RemoveRange(ctx.FolhasDeHoras.Where(x => x.NºFolhaDeHoras == FolhaDeHoraNo));
                     ctx.SaveChanges();
                 }
 

@@ -110,7 +110,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             //Get FolhaDeHora Numeration
             //3 = Numeração Folhas de Horas
-            Configuração Cfg = DBConfigurations.GetById(3);
+            Configuração Cfg = DBConfigurations.GetById(1);
             int FolhaDeHoraNumerationConfigurationId = Cfg.NumeraçãoFolhasDeHoras.Value;
 
             ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(FolhaDeHoraNumerationConfigurationId);
@@ -143,12 +143,12 @@ namespace Hydra.Such.Portal.Controllers
                     //3 = Numeração Folhas de Horas
                     Configuração Configs = DBConfigurations.GetById(1);
                     int FolhaDeHoraNumerationConfigurationId = Configs.NumeraçãoFolhasDeHoras.Value;
-                    data.FolhaDeHorasNo = DBNumerationConfigurations.GetNextNumeration(FolhaDeHoraNumerationConfigurationId, data.FolhaDeHorasNo == "");
+                    data.FolhaDeHorasNo = DBNumerationConfigurations.GetNextNumeration(FolhaDeHoraNumerationConfigurationId, true);
 
                     FolhasDeHoras cFolhaDeHora = new FolhasDeHoras()
                     {
                         NºFolhaDeHoras = data.FolhaDeHorasNo,
-                        Área = data.Area,
+                        Área = Convert.ToInt16(data.AreaText),
                         NºProjeto = data.ProjectNo,
                         NºEmpregado = data.EmployeeNo,
                         DataHoraPartida = DateTime.Parse(data.DateDepartureTimeText),
@@ -221,6 +221,24 @@ namespace Hydra.Such.Portal.Controllers
 
                 DBFolhasDeHoras.Update(cFolhaDeHora);
                 return Json(data);
+            }
+            return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteFolhaDeHoras([FromBody] FolhaDeHoraDetailsViewModel data)
+        {
+
+            if (data != null)
+            {
+                ErrorHandler result = new ErrorHandler();
+                DBFolhasDeHoras.Delete(data.FolhaDeHorasNo);
+                result = new ErrorHandler()
+                {
+                    eReasonCode = 0,
+                    eMessage = "Folha de Horas removida com sucesso."
+                };
+                return Json(result);
             }
             return Json(false);
         }
