@@ -287,11 +287,15 @@
                         functionalAreaCode: this.ddFunctionalArea,
                         responsabilityCenter: this.ddResponsabilityCenter
                     });
+                    this.$.page_databound_ajax.url = "/TabelasAuxiliares/UpdateTiposGrupoContabProjeto";
+                    this.$.page_databound_ajax.body = JSON.stringify(this.result);
                     this.$.gridContabGroupTypes.clearCache();
                 },
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
+                    this.$.page_databound_ajax.url = "/TabelasAuxiliares/UpdateTiposGrupoContabProjeto";
+                    this.$.page_databound_ajax.body = JSON.stringify(this.result);
                     this.$.gridContabGroupTypes.clearCache();
                 }
 

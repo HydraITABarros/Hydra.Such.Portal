@@ -136,7 +136,22 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetGroupContProduct()
         {
-            List<NAVGroupContProductViewModel> result = DBNAV2017GruposContabProduto.GetGruposContabProduto(_config.NAVDatabaseName, _config.NAVCompanyName);
+            List<DDMessageString> result = DBNAV2017GruposContabProduto.GetGruposContabProduto(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetGroupContProject()
+        {
+            List<DDMessageString> result = DBNAV2017CountabGroupProjects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x,
+                value = x
+            }).ToList();
             return Json(result);
         }
 
@@ -177,49 +192,109 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetMeasureUnits()
         {
-            List<NAVMeasureUnitViewModel> result = DBNAV2017MeasureUnit.GetAllMeasureUnit(_config.NAVDatabaseName, _config.NAVCompanyName);
+            List<DDMessageString> result = DBNAV2017MeasureUnit.GetAllMeasureUnit(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
             return Json(result);
         }
 
         [HttpPost]
         public JsonResult GetLocations()
         {
-            List<NAVLocationsViewModel> result = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName);
+            List<DDMessageString> result = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Select( x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
             return Json(result);
         }
 
         [HttpPost]
         public JsonResult GetContabGroup()
         {
-            List<NAVContabGroupViewModel> result = DBNAV2017ProjectContabGroup.GetAllProjectContabGroup(_config.NAVDatabaseName, _config.NAVCompanyName);
+            List<DDMessageString> result = DBNAV2017ProjectContabGroup.GetAllProjectContabGroup(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Code
+            }).ToList();
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetEmployees()
+        {
+            List<DDMessageString> result = DBNAV2009Employees.GetAll("",_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.No,
+                value = x.Name
+            }).ToList();
+            return Json(result);
+        }
+        #endregion
+
         #region TypeOptions
+        [HttpPost]
+        public JsonResult Alpha()
+        {
+            List<List<DDMessageString>> result = new List<List<DDMessageString>>();
+
+            List<DDMessageString> resources = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+            List<DDMessageString> products = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+            List<DDMessageString> accounts = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+
+            result.Add(resources);
+            result.Add(products);
+            result.Add(accounts);
+
+            return Json(result);
+        }
+
         [HttpPost]
         public JsonResult GetCGAccountCode(string accountNo)
         {
-            List<NAVCGAccountViewModel> result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, accountNo);
-            return Json(result);
+            List<DDMessageString> result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList(); return Json(result);
         }
 
         [HttpPost]
         public JsonResult GetProductsCode(string productNo)
         {
-            List<NAVProductsViewModel> result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, productNo);
-            return Json(result);
+            List<DDMessageString> result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList(); return Json(result);
         }
 
         [HttpPost]
         public JsonResult GetResourcesCode(string resourceNo, string filterArea, int resourceType, string contabGroup)
         {
-            List<NAVResourcesViewModel> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, resourceNo, filterArea, resourceType, contabGroup);
+            List<DDMessageString> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
             return Json(result);
         }
         #endregion
-
-        #endregion
-        //#endregion
+        
 
         public JsonResult GetProjectType()
         {
@@ -242,6 +317,18 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpPost]
+        public JsonResult GetNAVShippingAddresses()
+        {
+
+            List<DDMessageString> result = DBNAV2017ShippingAddresses.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString() {
+                id = X.Code,
+                value = X.Name
+            }).ToList();
+            return Json(result);
+        }
+
+
+        [HttpPost]
         public JsonResult GetServiceObjects()
         {
             List<DDMessage> ResponsabilityCenter = DBServiceObjects.GetAll().Select(x => new DDMessage()
@@ -249,7 +336,7 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Código,
                 value = x.Descrição
             }).ToList();
-            
+
             return Json(ResponsabilityCenter);
         }
 
@@ -321,14 +408,19 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAllClients()
         {
-            List<NAVClientsViewModel> result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+            List<DDMessageString> result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.No_,
+                value = x.Name
+            }).ToList();
             return Json(result);
         }
 
         [HttpPost]
         public JsonResult GetServices()
         {
-            List<DDMessage> result = DBServices.GetAll().Select(x => new DDMessage() {
+            List<DDMessage> result = DBServices.GetAll().Select(x => new DDMessage()
+            {
                 id = x.Código,
                 value = x.Descrição
             }).ToList();
@@ -348,7 +440,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
     }
-    
+
     public class DDMessage
     {
         public int id { get; set; }

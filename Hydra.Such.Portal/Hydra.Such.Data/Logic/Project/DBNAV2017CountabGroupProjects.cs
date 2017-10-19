@@ -9,7 +9,7 @@ namespace Hydra.Such.Data.Logic.Project
 {
     public static class DBNAV2017CountabGroupProjects
     {
-        public static List<String> GetAll(string NAVDatabaseName, string NAVCompanyName, int NAVDimType)
+        public static List<String> GetAll(string NAVDatabaseName, string NAVCompanyName)
         {
             try
             {

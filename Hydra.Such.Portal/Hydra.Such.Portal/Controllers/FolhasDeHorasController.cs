@@ -55,13 +55,14 @@ namespace Hydra.Such.Portal.Controllers
         #region Details
         public IActionResult Detalhes(String id)
         {
+            ViewBag.FolhaDeHorasNo = id == null ? "" : id;
             return View();
         }
 
         [HttpPost]
         public JsonResult GetFolhaDeHoraDetails([FromBody] FolhaDeHoraDetailsViewModel data)
         {
-
+            
             if (data != null)
             {
                 FolhasDeHoras cFolhaDeHora = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
@@ -72,20 +73,27 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         FolhaDeHorasNo = cFolhaDeHora.NºFolhaDeHoras,
                         Area = cFolhaDeHora.Área,
+                        AreaText = cFolhaDeHora.Área.Value.ToString(),
                         ProjectNo = cFolhaDeHora.NºProjeto,
                         EmployeeNo = cFolhaDeHora.NºEmpregado,
                         DateDepartureTime = cFolhaDeHora.DataHoraPartida,
+                        DateDepartureTimeText = cFolhaDeHora.DataHoraPartida.Value.ToString("yyyy-MM-dd"),
                         DateTimeArrival = cFolhaDeHora.DataHoraChegada,
+                        DateTimeArrivalText = cFolhaDeHora.DataHoraChegada.Value.ToString("yyyy-MM-dd"),
                         TypeDeslocation = cFolhaDeHora.TipoDeslocação,
                         CodeTypeKms = cFolhaDeHora.CódigoTipoKmS,
-                        DisplacementOutsideCity = cFolhaDeHora.DeslocaçãoForaConcelho,
+                        CodeTypeKmsInt = Convert.ToInt16(cFolhaDeHora.CódigoTipoKmS),
+                        DisplacementOutsideCityInt = Convert.ToInt16(cFolhaDeHora.DeslocaçãoForaConcelho),
                         Validators = cFolhaDeHora.Validadores,
                         Status = cFolhaDeHora.Estado,
                         CreatedBy = cFolhaDeHora.CriadoPor,
                         DateTimeCreation = cFolhaDeHora.DataHoraCriação,
+                        DateTimeCreationText = cFolhaDeHora.DataHoraCriação.Value.ToString("yyyy-MM-dd"),
                         DateTimeLastState = cFolhaDeHora.DataHoraÚltimoEstado,
+                        DateTimeLastStateText = cFolhaDeHora.DataHoraÚltimoEstado.Value.ToString("yyyy-MM-dd"),
                         UserCreation = cFolhaDeHora.UtilizadorCriação,
                         DateTimeModification = cFolhaDeHora.DataHoraModificação,
+                        DateTimeModificationText = cFolhaDeHora.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
                         UserModification = cFolhaDeHora.UtilizadorModificação
                     };
 
@@ -95,6 +103,29 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(new FolhaDeHoraDetailsViewModel());
             }
             return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult ValidateNumeration([FromBody] FolhaDeHoraDetailsViewModel data)
+        {
+            //Get FolhaDeHora Numeration
+            //3 = Numeração Folhas de Horas
+            Configuração Cfg = DBConfigurations.GetById(3);
+            int FolhaDeHoraNumerationConfigurationId = Cfg.NumeraçãoFolhasDeHoras.Value;
+
+            ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(FolhaDeHoraNumerationConfigurationId);
+
+            //Validate if FolhaDeHorasNo is valid
+            if (data.FolhaDeHorasNo != "" && !CfgNumeration.Manual.Value)
+            {
+                return Json("A numeração configurada para folha de horas não permite inserção manual.");
+            }
+            else if (data.FolhaDeHorasNo == "" && !CfgNumeration.Automático.Value)
+            {
+                return Json("É obrigatório inserir o Nº de Folha de Horas.");
+            }
+
+            return Json("");
         }
 
         //eReason = 1 -> Sucess
@@ -109,9 +140,10 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null)
                 {
                     //Get FolhaDeHora Numeration
+                    //3 = Numeração Folhas de Horas
                     Configuração Configs = DBConfigurations.GetById(1);
                     int FolhaDeHoraNumerationConfigurationId = Configs.NumeraçãoFolhasDeHoras.Value;
-                    data.FolhaDeHorasNo = DBNumerationConfigurations.GetNextNumeration(FolhaDeHoraNumerationConfigurationId);
+                    data.FolhaDeHorasNo = DBNumerationConfigurations.GetNextNumeration(FolhaDeHoraNumerationConfigurationId, data.FolhaDeHorasNo == "");
 
                     FolhasDeHoras cFolhaDeHora = new FolhasDeHoras()
                     {
@@ -119,19 +151,19 @@ namespace Hydra.Such.Portal.Controllers
                         Área = data.Area,
                         NºProjeto = data.ProjectNo,
                         NºEmpregado = data.EmployeeNo,
-                        DataHoraPartida = data.DateDepartureTime,
-                        DataHoraChegada = data.DateTimeArrival,
+                        DataHoraPartida = DateTime.Parse(data.DateDepartureTimeText),
+                        DataHoraChegada = DateTime.Parse(data.DateTimeArrivalText),
                         TipoDeslocação = data.TypeDeslocation,
-                        CódigoTipoKmS = data.CodeTypeKms,
-                        DeslocaçãoForaConcelho = data.DisplacementOutsideCity,
+                        CódigoTipoKmS = Convert.ToString(data.CodeTypeKmsInt),
+                        DeslocaçãoForaConcelho = Convert.ToBoolean(data.DisplacementOutsideCityInt),
                         Validadores = data.Validators,
                         Estado = data.Status,
-                        CriadoPor = data.CreatedBy,
-                        DataHoraCriação = data.DateTimeCreation,
-                        DataHoraÚltimoEstado = data.DateTimeLastState,
-                        UtilizadorCriação = data.UserCreation,
-                        DataHoraModificação = data.DateTimeModification,
-                        UtilizadorModificação = data.UserModification
+                        CriadoPor = User.Identity.Name,
+                        DataHoraCriação = DateTime.Now,
+                        DataHoraÚltimoEstado = DateTime.Now,
+                        UtilizadorCriação = User.Identity.Name,
+                        DataHoraModificação = DateTime.Now,
+                        UtilizadorModificação = User.Identity.Name
                     };
 
                     //Create FolhaDeHora On Database
@@ -172,25 +204,34 @@ namespace Hydra.Such.Portal.Controllers
                     Área = data.Area,
                     NºProjeto = data.ProjectNo,
                     NºEmpregado = data.EmployeeNo,
-                    DataHoraPartida = data.DateDepartureTime,
-                    DataHoraChegada = data.DateTimeArrival,
+                    DataHoraPartida = DateTime.Parse(data.DateDepartureTimeText),
+                    DataHoraChegada = DateTime.Parse(data.DateTimeArrivalText),
                     TipoDeslocação = data.TypeDeslocation,
-                    CódigoTipoKmS = data.CodeTypeKms,
-                    DeslocaçãoForaConcelho = data.DisplacementOutsideCity,
+                    CódigoTipoKmS = Convert.ToString(data.CodeTypeKmsInt),
+                    DeslocaçãoForaConcelho = Convert.ToBoolean(data.DisplacementOutsideCityInt),
                     Validadores = data.Validators,
                     Estado = data.Status,
                     CriadoPor = data.CreatedBy,
-                    DataHoraCriação = data.DateTimeCreation,
-                    DataHoraÚltimoEstado = data.DateTimeLastState,
-                    UtilizadorCriação = data.UserCreation,
-                    DataHoraModificação = data.DateTimeModification,
-                    UtilizadorModificação = data.UserModification
+                    DataHoraCriação = Convert.ToDateTime(data.DateTimeCreationText),
+                    DataHoraÚltimoEstado = System.DateTime.Now,
+                    UtilizadorCriação = User.Identity.Name,
+                    DataHoraModificação = System.DateTime.Now,
+                    UtilizadorModificação = User.Identity.Name
                 };
 
                 DBFolhasDeHoras.Update(cFolhaDeHora);
                 return Json(data);
             }
             return Json(false);
+        }
+        #endregion
+
+        #region Job Ledger Entry
+
+        public IActionResult MovimentosDeFolhaDeHora(String FolhaDeHoraNo)
+        {
+            ViewBag.FolhaDeHoraNo = FolhaDeHoraNo;
+            return View();
         }
 
         #endregion

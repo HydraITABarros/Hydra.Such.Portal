@@ -1,11 +1,11 @@
 ﻿using Hydra.Such.Data.Database;
-using Hydra.Such.Data.ViewModel.ProjectDiary;
+using Hydra.Such.Data.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 
-namespace Hydra.Such.Data.Logic.ProjectDiary
+namespace Hydra.Such.Data.Logic
 {
     public class DBNAV2017Clients
     {
@@ -45,6 +45,35 @@ namespace Hydra.Such.Data.Logic.ProjectDiary
             {
 
                 return null;
+            }
+        }
+
+        public static string GetClientNameByNo(string NoClient, string NAVDatabaseName, string NAVCompanyName)
+        {
+            try
+            {
+                string result = "";
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@NoCliente", NoClient)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017Clientes @DBName, @CompanyName, @NoCliente", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result = (string)temp.Name;
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return "";
             }
         }
     }

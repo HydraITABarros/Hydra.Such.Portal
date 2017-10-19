@@ -111,7 +111,7 @@ namespace Hydra.Such.Data.Logic
 
 
      
-        public static string GetNextNumeration(int id)
+        public static string GetNextNumeration(int id, bool isAuto)
         {
             try
             {
@@ -119,29 +119,35 @@ namespace Hydra.Such.Data.Logic
                 using (var ctx = new SuchDBContext())
                 {
                     ConfNumeration = ctx.ConfiguraçãoNumerações.Where(x => x.Id == id).FirstOrDefault();
-                    
-                    string NextNumeration = ConfNumeration.Prefixo;
 
-                    //Check if is first numeration
-                    if (ConfNumeration.ÚltimoNºUsado != null && ConfNumeration.ÚltimoNºUsado != "")
+                    if (ConfNumeration.Automático == isAuto)
                     {
-                        int LastUsedNumber = int.Parse(ConfNumeration.ÚltimoNºUsado.Replace(ConfNumeration.Prefixo, ""));
+                        string NextNumeration = ConfNumeration.Prefixo;
 
-                        LastUsedNumber += ConfNumeration.QuantidadeIncrementar.Value;
+                        //Check if is first numeration
+                        if (ConfNumeration.ÚltimoNºUsado != null && ConfNumeration.ÚltimoNºUsado != "")
+                        {
+                            int LastUsedNumber = int.Parse(ConfNumeration.ÚltimoNºUsado.Replace(ConfNumeration.Prefixo, ""));
 
-                        NextNumeration += LastUsedNumber.ToString().PadLeft(ConfNumeration.NºDígitosIncrementar.Value, '0');
+                            LastUsedNumber += ConfNumeration.QuantidadeIncrementar.Value;
+
+                            NextNumeration += LastUsedNumber.ToString().PadLeft(ConfNumeration.NºDígitosIncrementar.Value, '0');
+                        }
+                        else
+                        {
+                            NextNumeration += "1".PadLeft(ConfNumeration.NºDígitosIncrementar.Value, '0');
+                        }
+
+                        ConfNumeration.ÚltimoNºUsado = NextNumeration;
+                        ctx.ConfiguraçãoNumerações.Update(ConfNumeration);
+                        ctx.SaveChanges();
+
+                        return NextNumeration;
                     }
                     else
                     {
-                        NextNumeration += "1".PadLeft(ConfNumeration.NºDígitosIncrementar.Value, '0');
+                        return null;
                     }
-
-                    ConfNumeration.ÚltimoNºUsado = NextNumeration;
-                    ctx.ConfiguraçãoNumerações.Update(ConfNumeration);
-                    ctx.SaveChanges();
-
-                    return NextNumeration;
-                       
                 }
             }
             catch (Exception ex)

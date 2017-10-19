@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hydra.Such.Data.ViewModel.ProjectDiary
+namespace Hydra.Such.Data.ViewModel
 {
     public class NAVClientsViewModel
     {

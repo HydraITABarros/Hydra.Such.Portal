@@ -21,13 +21,13 @@ namespace Hydra.Such.Data.NAV
 
         }
 
-        public static async Task<WSCreateProjectDiaryLine.CreateMultiple_Result> CreateNavDiaryLines(List<ProjectDiaryViewModel> DiaryLines, NAVWSConfigurations WSConfigurations)
+        public static async Task<WSCreateProjectDiaryLine.CreateMultiple_Result> CreateNavDiaryLines(List<ProjectDiaryViewModel> DiaryLines, Guid TransactID, NAVWSConfigurations WSConfigurations)
         {
             WSCreateProjectDiaryLine.CreateMultiple NAVCreate = new WSCreateProjectDiaryLine.CreateMultiple()
-            {
+            {                
                 WSJobJournalLine_List = DiaryLines.Select(y => new WSCreateProjectDiaryLine.WSJobJournalLine()
                 {
-                    Job_No = y.ProjectNo,
+                    Job_No = y.ProjectNo,                  
                     Document_DateSpecified = true,
                     Document_Date = DateTime.Parse(y.Date),
                     Entry_TypeSpecified = true,
@@ -50,28 +50,47 @@ namespace Hydra.Such.Data.NAV
                     Total_Cost = Convert.ToDecimal(y.TotalCost),
                     Unit_PriceSpecified = true,
                     Unit_Price = Convert.ToDecimal(y.UnitPrice),
-                    Total_PriceSpecified = true,           
+                    Total_PriceSpecified = true,
                     Total_Price = Convert.ToDecimal(y.TotalPrice),
-                    // Portal_Transaction_No = 
+                    Portal_Transaction_No = TransactID.ToString()
                 }).ToArray()
             };
 
             //Configure NAV Client
-            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_Job_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_JobJournalLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
             WSCreateProjectDiaryLine.WSJobJournalLine_PortClient WS_Client = new WSCreateProjectDiaryLine.WSJobJournalLine_PortClient(navWSBinding, WS_URL);
             WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
-
+            
             try
             {
                 WSCreateProjectDiaryLine.CreateMultiple_Result result = await WS_Client.CreateMultipleAsync(NAVCreate);
-                
                 return result;
             }
             catch (Exception ex)
             {
                 return null;
-            }            
+            }
+        }
+
+        public static async Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> RegsiterNavDiaryLines(Guid TransactID, NAVWSConfigurations WSConfigurations)
+        {
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_Generic_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSGenericCodeUnit.WsGeneric_PortClient WS_Client = new WSGenericCodeUnit.WsGeneric_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSGenericCodeUnit.FxPostJobJrnlLines_Result result = await WS_Client.FxPostJobJrnlLinesAsync(TransactID.ToString());
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         private static WSCreateProjectDiaryLine.Entry_Type getMoveType(int moveType)
