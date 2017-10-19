@@ -205,6 +205,17 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVContabGroupViewModel> result = DBNAV2017ProjectContabGroup.GetAllProjectContabGroup(_config.NAVDatabaseName, _config.NAVCompanyName);
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetEmployees()
+        {
+            List<DDMessageString> result = DBNAV2009Employees.GetAll("",_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.No,
+                value = x.Name
+            }).ToList();
+            return Json(result);
+        }
         #endregion
 
         #region TypeOptions
@@ -371,7 +382,11 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAllClients()
         {
-            List<NAVClientsViewModel> result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+            List<DDMessageString> result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.No_,
+                value = x.Name
+            }).ToList();
             return Json(result);
         }
 

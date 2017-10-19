@@ -52,9 +52,11 @@
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetContractsByArea" last-response="{{LProjectContracts}}" method="post" handle-as="json" content-type="application/json" id="contracts_ajax"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetGroupContProject" last-response="{{LProjectGroupContab}}" method="post" handle-as="json" content-type="application/json" id="contracts_ajax"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddresses" last-response="{{LProjectShippingAddresses}}" method="post" handle-as="json" content-type="application/json" id="contracts_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContractsByArea" last-response="{{LProjectContracts}}" auto method="post" handle-as="json" content-type="application/json" id="contracts_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetGroupContProject" last-response="{{LProjectGroupContab}}" auto method="post" handle-as="json" content-type="application/json" id="groupcontab_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddresses" last-response="{{LProjectShippingAddresses}}" auto method="post" handle-as="json" content-type="application/json" id="shippinhAddress_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{LProjectEmployees}}" auto method="post" handle-as="json" content-type="application/json" id="employees_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllClients" last-response="{{LProjectClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
 
         
         <!-- PROJECT CRUDS -->
@@ -119,7 +121,15 @@
                         <vaadin-date-picker label="Data" id="Date" name="Date" value="{{data.date}}"></vaadin-date-picker>
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.projectResponsible}}" id="projectResponsible" name="projectResponsible" required label="Responsável Projeto"> </paper-input>
+                        <vaadin-combo-box items="[[LProjectEmployees]]" item-value-path="id" item-label-path="value" value="{{data.projectResponsible}}" label="Responsável Projeto">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.contractNo}}" label="Nº Contrato">
@@ -158,7 +168,6 @@
                                 </paper-icon-item>
                             </template>
                         </vaadin-combo-box>
-
                     </div>
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectTypes]]" item-value-path="id" item-label-path="value" value="{{data.projectTypeCode}}" label="Cód. Tipo Projeto">
@@ -174,10 +183,26 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.clientNo}}" id="ClientNo" name="ClientNo" required label="Nº Cliente"> </paper-input>
+                        <vaadin-combo-box items="[[LProjectClients]]" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Cliente">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.projectLeader}}" id="ProjectLeader" name="ProjectLeader" required label="Chefe Projeto"> </paper-input>
+                        <vaadin-combo-box items="[[LProjectEmployees]]" item-value-path="id" item-label-path="value" value="{{data.projectLeader}}" label="Chefe Projeto">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
 
                     </div>
                     <div class="col-lg-3">
@@ -193,7 +218,7 @@
 
             <!--Registo-->
             <div>
-                <div class="row">
+                <div class="row break_clear">
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectRegionCodes]]" item-value-path="id" item-label-path="value" value="{{data.regionCode}}" label="Cód. Região">
                             <template>
@@ -240,6 +265,7 @@
 
                     </div>
                 </div>
+                <br />
                 <div class="row break_clear">
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional">
@@ -292,8 +318,7 @@
                         
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" bind-value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" required label="Envio-a Endereço">asdasdas</paper-input>
-
+                        <paper-input type="text" value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" required label="Envio-a Endereço"></paper-input>
                     </div>
                     <div class="col-lg-3">
                         <paper-input type="text" value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" required label="Envio-a Localidade"> </paper-input>
@@ -319,7 +344,7 @@
                         <paper-input type="text" value="{{data.clientRequest}}" id="ClientRequest" name="ClientRequest" required label="Pedido do Cliente"> </paper-input>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-date-picker label="RequestDate" id="RequestDate" name="Date" value="{{data.requestDate}}"></vaadin-date-picker>
+                        <vaadin-date-picker label="Data Pedido" id="RequestDate" name="Date" value="{{data.requestDate}}"></vaadin-date-picker>
                     </div>
                     <div class="col-lg-3">
                         <paper-input type="text" value="{{data.detailedDescription}}" id="DetailedDescription" name="DetailedDescription" required label="Descrição Detalhada"> </paper-input>
@@ -360,7 +385,7 @@
             </template>
             <template is="dom-if" if="{{ !_isCreate }}">
                 <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
             </template>
         </div>
 
@@ -430,6 +455,8 @@
                     }
                 },
                 _delete: function () {
+                    var Project = this.data;
+                    var ajax_request = this.$.ajax_delete_project;
                     bootbox.confirm({
                         message: "Tem a certeza que pretende remover o projeto " + this.data.projectNo + "?",
                         buttons: {
@@ -444,8 +471,8 @@
                         },
                         callback: function (result) {
                             if (result) {
-                                this.$.ajax_delete_project.body = JSON.stringify(this.data);
-                                this.$.ajax_delete_project.generateRequest();
+                                ajax_request.body = JSON.stringify(Project);
+                                ajax_request.generateRequest();
                             }
                         }
                     });
@@ -467,6 +494,8 @@
                             }
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             this._createResponseProcessor();
+                        } else if (data.detail.url.indexOf("Update") !== -1) {
+                            this._openToast("Projeto atualizado com sucesso.")
                         }
                     } else {
                         this._openToast("Ocorreu um erro ao criar o projeto.")
@@ -494,12 +523,14 @@
                 _responseDeleteProcessor: function (data) {
                     var self = this;
                     if (data.detail.status === 200) {
-                        debugger;;
-                        if (this.deletedData == "1") {
+                        if (this.deletedData.eReasonCode == 1) {
                             this._openToast("Não é possivel eliminar o projeto pois este já possui movimentos.");
                         } else {
-                            this._openToast("Projeto eliminado com sucesso");
-                            window.location.replace("/");
+                            this._openToast(this.deletedData.eMessage);
+                            setTimeout(
+                                function () {
+                                    window.location.replace("/");
+                                }, 2500);
                         }
                     }
                 },

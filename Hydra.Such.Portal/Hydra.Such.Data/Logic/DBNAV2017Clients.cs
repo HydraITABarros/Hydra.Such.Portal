@@ -1,11 +1,11 @@
 ﻿using Hydra.Such.Data.Database;
-using Hydra.Such.Data.ViewModel.ProjectDiary;
+using Hydra.Such.Data.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 
-namespace Hydra.Such.Data.Logic.ProjectDiary
+namespace Hydra.Such.Data.Logic
 {
     public class DBNAV2017Clients
     {

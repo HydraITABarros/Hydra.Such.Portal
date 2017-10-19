@@ -101,11 +101,11 @@
         </div>
         <div class="row">
             <div class="col-lg-4 col-md-2 col-sm-4 col-xs-12">
-                <vaadin-combo-box id="cboClients" items="[[Clients]]" item-value-path="no_" item-label-path="name" value="{{ddClients}}" label="Cliente">
+                <vaadin-combo-box id="cboClients" items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{ddClients}}" label="Cliente">
                     <template>
                         <paper-icon-item>
                             <paper-item-body two-line>
-                                <div>[[item.name]]</div>
+                                <div>[[item.value]]</div>
                             </paper-item-body>
                         </paper-icon-item>
                     </template>
