@@ -51,6 +51,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorCriação { get; set; }
         public string UtilizadorModificação { get; set; }
+        public bool? Registado { get; set; }
 
         public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
         public LinhasRequisição Nº { get; set; }

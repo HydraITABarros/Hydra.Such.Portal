@@ -46,7 +46,9 @@
                    handle-as="json"
                    id="ajax_create"
                    content-type="application/json"></iron-ajax>
-        <iron-ajax url="/TabelasAuxiliares/GetProjectTypeData"
+
+        @*POPULATE GRID Update*@
+        <iron-ajax url="/TabelasAuxiliares/UpdateProjectType"
                    last-response="{{result}}"
                    method="post"
                    on-response="_updateResponse"
@@ -102,6 +104,9 @@
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-project-type',
+                ready: function () {
+                    this.$.ajax_create.generateRequest();
+                },
                 openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
@@ -110,43 +115,46 @@
                     if (this.$.piDescription.value == "" || this.$.piDescription.value == null) {
                         this.openToast('É obrigatório preencher a Descrição.');
                     } else {
-                        this.result.unshift({
+                        var thisLine = {
                             description: this.$.piDescription.value
-                        });
+                        };
+                        if (this.result == null) {
+                            this.result = thisLine;
+                        }
+                        else {
+                            this.result.push(thisLine);
+                        } 
+                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.generateRequest();
                         this.$.gridprojecttype.clearCache();
                     }
                 },
                 _update: function () {
-                    this.$.ajax_update.url = "/TabelasAuxiliares/UpdateProjectType";
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
+                    this.$.gridprojecttype.clearCache();
                 },
                 _delete: function (e) {
                     var index = this.result.indexOf(e.model.item);
                     this.result.splice(index, 1);
-
+                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.generateRequest();
                     this.$.gridprojecttype.clearCache();
                 },
                 _cancel: function () {
-                    this.$.ajax_create.url = "/TabelasAuxiliares/GetProjectTypeData";
                     this.$.ajax_create.generateRequest();
-
                     this.$.gridprojecttype.clearCache();
                 },
                 _updateResponse: function (e)
                 {
                     var self = this;
-                    if (this.$.ajax_update.url != "/TabelasAuxiliares/GetProjectTypeData")
-                    {
-                        if (e.detail.status === 200) {
+                    if (e.detail.status === 200) {
+                        this.$.ajax_create.generateRequest();
                             this.openToast("Tabela atualizada.");
-                            this.$.ajax_create.url = "/TabelasAuxiliares/GetProjectTypeData";
-                            this.$.ajax_create.generateRequest();
                         }
                         else {
                             this.openToast("Occorreu um erro ao atualizar a Tabela.");
-                        }
-                    }                    
+                        }                 
                 }
             });
         });

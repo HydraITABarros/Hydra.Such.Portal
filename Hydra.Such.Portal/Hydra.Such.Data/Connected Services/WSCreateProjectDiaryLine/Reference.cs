@@ -134,9 +134,7 @@ namespace WSCreateProjectDiaryLine
         
         private string time_Sheet_NoField;
         
-        private int portal_Transaction_NoField;
-        
-        private bool portal_Transaction_NoFieldSpecified;
+        private string portal_Transaction_NoField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
@@ -602,7 +600,7 @@ namespace WSCreateProjectDiaryLine
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=23)]
-        public int Portal_Transaction_No
+        public string Portal_Transaction_No
         {
             get
             {
@@ -611,20 +609,6 @@ namespace WSCreateProjectDiaryLine
             set
             {
                 this.portal_Transaction_NoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Portal_Transaction_NoSpecified
-        {
-            get
-            {
-                return this.portal_Transaction_NoFieldSpecified;
-            }
-            set
-            {
-                this.portal_Transaction_NoFieldSpecified = value;
             }
         }
     }

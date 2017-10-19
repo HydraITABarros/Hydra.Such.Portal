@@ -80,6 +80,7 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-check-square" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
+            <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
         </div>
 
         @*Populate Dropdown*@
@@ -115,6 +116,43 @@
                    content-type="application/json"></iron-ajax>
         @*CODE OPTIONS*@
 
+        @*Temp*@
+        <iron-ajax url="/PopulateDropdowns/GetCGAccountCode"
+                   id="ajax_account_options"
+                   last-response="{{accountCode}}"
+                   method="post"
+                   handle-as="json"
+                   auto
+                   params='{}'
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResourcesCode"
+                   id="ajax_resource_options"
+                   last-response="{{resourceCode}}"
+                   method="post"
+                   handle-as="json"
+                   auto
+                   params='{}'
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsCode"
+                   id="ajax_products_options"
+                   last-response="{{productCode}}"
+                   method="post"
+                   auto
+                   handle-as="json"
+                   params='{}'
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/Alpha"
+                   id="ajax_products_options"
+                   last-response="{{allofit}}"
+                   method="post"
+                   auto
+                   handle-as="json"
+                   params='{}'
+                   content-type="application/json"></iron-ajax>
+        @*Temp*@
+
+
         <iron-ajax url="/PopulateDropdowns/GetMeasureUnits"
                    last-response="{{MeasureUnit}}"
                    auto
@@ -128,6 +166,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetRegionCode"
                    last-response="{{RegionData}}"
                    auto
@@ -164,7 +203,7 @@
                 <table class="table inlineForm">
                     <tr>
                         <td width="">
-                            <vaadin-combo-box id="projectList" name="projectList" items="[[response]]" on-value-changed="_projectChange" item-value-path="id" item-label-path="value" label="Nº Projeto" value="{{projectNumber}}">
+                            <vaadin-combo-box id="projectList" name="projectList" items="[[response]]" on-value-changed="_projectChange" item-value-path="id" item-label-path="value" label="Nº Projeto" disabled="{{disabledProjectNo}}" value="{{projectNumber}}">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -198,12 +237,12 @@
                             </vaadin-combo-box>
                         </td>
                         <td width="">
-                            <vaadin-combo-box id="piCode" name="piCode" items="[[codeOptions]]" item-value-path="code" on-value-changed="_codeChange" item-label-path="code" label="Código" value="{{codeNumber}}">
+                            <vaadin-combo-box id="piCode" name="piCode" items="[[codeOptions]]" item-value-path="id" on-value-changed="_codeChange" item-label-path="value" label="Código" value="{{codeNumber}}">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
-                                            <div>[[item.code]]</div>
-                                            <div secundary>[[item.name]]</div>
+                                            <div>[[item.id]]</div>
+                                            <div secundary>[[item.value]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
                                 </template>
@@ -213,11 +252,11 @@
                     <tr>
                         <td width=""><paper-input id="piDescription" type="text" name="piDescription" required label="Descrição" value="{{description}}"></paper-input></td>
                         <td width="">
-                            <vaadin-combo-box id="piContabGroup" name="piContabGroup" items="[[ContabGroupData]]" item-value-path="code" value="{{codeProjectContabGroup}}" item-label-path="code" label="Grupo Contab">
+                            <vaadin-combo-box id="piContabGroup" name="piContabGroup" items="[[ContabGroupData]]" item-value-path="id" value="{{codeProjectContabGroup}}" item-label-path="value" label="Grupo Contab">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
-                                            <div>[[item.code]]</div>
+                                            <div>[[item.id]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
                                 </template>
@@ -226,22 +265,22 @@
                         </td>
                         <td width=""><paper-input id="piQuantity" type="number" name="piQuantity" required label="Quantidade" value="{{quantity}}"></paper-input></td>
                         <td width="">
-                            <vaadin-combo-box id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[MeasureUnit]]" item-value-path="code" value="{{codeMeasurementUnit}}" item-label-path="description" label="Cód. Unidade Medida">
+                            <vaadin-combo-box id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[MeasureUnit]]" item-value-path="id" value="{{codeMeasurementUnit}}" item-label-path="value" label="Cód. Unidade Medida">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
-                                            <div>[[item.description]]</div>
+                                            <div>[[item.value]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
                                 </template>
                             </vaadin-combo-box>
                         </td>
                         <td width="">
-                            <vaadin-combo-box id="piCodeLocation" name="piCodeLocation" items="[[Locations]]" item-value-path="code" value="{{codeLocation}}" item-label-path="name" label="Cód. Localização">
+                            <vaadin-combo-box id="piCodeLocation" name="piCodeLocation" items="[[Locations]]" item-value-path="id" value="{{codeLocation}}" item-label-path="value" label="Cód. Localização">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
-                                            <div>[[item.name]]</div>
+                                            <div>[[item.value]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
                                 </template>
@@ -254,7 +293,7 @@
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
-                                            <div>[[item.name]]</div>
+                                            <div>[[item.value]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
                                 </template>
@@ -265,7 +304,7 @@
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
-                                            <div>[[item.name]]</div>
+                                            <div>[[item.value]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
                                 </template>
@@ -276,7 +315,7 @@
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
-                                            <div>[[item.name]]</div>
+                                            <div>[[item.value]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
                                 </template>
@@ -289,7 +328,7 @@
                         <td width=""><paper-input class="alignRight" type="number" label="Preço Unitário  " required id="piUnitPrice" name="piUnitPrice" value="{{unitPrice}}"><div slot="suffix">€</div></paper-input></td>
                         <td width=""><paper-input class="alignRight" type="number" label="Preço Total  " required id="piTotalPrice" name="piTotalPrice" value="{{totalPrice}}"><div slot="suffix">€</div></paper-input></td>
                         <td width=""><paper-checkbox id="pcInvoice" checked="{{billable}}">Faturável</paper-checkbox></td>
-                        <td width=""><paper-input id="piInvoiceClientNo" type="text" name="piInvoiceClientNo" required label="Fatura a Nº Cliente" maxlength="20" value="{{invoiceClientNo}}"></paper-input></td>
+                        @*<td width=""><paper-input id="piInvoiceClientNo" type="text" name="piInvoiceClientNo" required label="Fatura a Nº Cliente" maxlength="20" value="{{invoiceClientNo}}"></paper-input></td>*@
                         <td><paper-button class="btnSave" raised on-tap="_add">Criar</paper-button></td>
                     </tr>
                 </table>
@@ -298,7 +337,7 @@
 
         <h2 class="separator">Movimentos do Utilizador X</h2>
 
-        <iron-ajax url="/Engenharia/GetAllProjectDiary"
+        <iron-ajax url="/Projetos/GetAllProjectDiary"
                    last-response="{{result}}"
                    id="ajax_getall"
                    auto
@@ -306,7 +345,7 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Engenharia/UpdateProjectDiary"
+        <iron-ajax url="/Projetos/UpdateProjectDiary"
                    last-response="{{result}}"
                    id="ajax_update"
                    method="post"
@@ -314,7 +353,7 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Engenharia/GetRelatedProjectInfo"
+        <iron-ajax url="/Projetos/GetRelatedProjectInfo"
                    last-response="{{related}}"
                    id="ajax_related"
                    method="post"
@@ -322,7 +361,7 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Engenharia/RegisterDiaryLines"
+        <iron-ajax url="/Projetos/RegisterDiaryLines"
                    last-response="{{data}}"
                    id="ajax_register"
                    method="post"
@@ -330,7 +369,24 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result]]" class="editGrid" >
+        <iron-ajax url="/Projetos/RegisterDiaryLines"
+                   last-response="{{data}}"
+                   id="ajax_register"
+                   method="post"
+                   on-response="_updateRegisterResponse"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Projetos/GetMovements"
+                   last-response="{{movementLines}}"
+                   id="ajax_movementLines"
+                   method="post"
+                   handle-as="json"
+                   loading="{{isloading}}"
+                   on-response="_movementLinesResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result]]" class="editGrid">
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
@@ -385,7 +441,7 @@
                     @*<vaadin-grid-filter path="type"></vaadin-grid-filter>*@
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[response3]]" on-change="_selectItem" on-value-changed="_projectTypeChange" item-value-path="id" item-label-path="value" value="{{item.projectType}}">
+                    <vaadin-combo-box id="type[[index]]" items="[[response3]]" on-value-changed="_lineProjectTypeChange" item-value-path="id" item-label-path="value" value="{{item.type}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -397,17 +453,17 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="110px" resizable>
+            <vaadin-grid-column width="200px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[codeOptions]]" item-value-path="code" item-label-path="name" value="{{item.code}}">
+                    <vaadin-combo-box id="code[[index]]" items="[[allofit.0]]" item-value-path="id" item-label-path="value" value="{{item.code}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
-                                    <div>[[item.name]]</div>
+                                    <div>[[item.value]]</div>
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
@@ -425,7 +481,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable>
+            <vaadin-grid-column width="200px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="projectContabGroup">Grupo Contab.</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectContabGroup"></vaadin-grid-filter>
@@ -444,7 +500,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="quantity"></vaadin-grid-filter>
@@ -454,7 +510,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="measurementUnitCode">Cód. Unidade Medida</vaadin-grid-sorter>
                     <vaadin-grid-filter path="measurementUnitCode"></vaadin-grid-filter>
@@ -473,7 +529,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
                     <vaadin-grid-filter path="locationCode"></vaadin-grid-filter>
@@ -492,18 +548,18 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="regionCode"></vaadin-grid-filter>
                 </template>
                 <template>
                     @*<paper-input type="text" name="regionCode" disabled value="{{item.regionCode}}"></paper-input>*@
-                    <vaadin-combo-box items="[[RegionData]]" item-value-path="code" item-label-path="name" value="{{item.regionCode}}">
+                    <vaadin-combo-box items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{item.regionCode}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
-                                    <div>[[item.name]]</div>
+                                    <div>[[item.value]]</div>
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
@@ -511,18 +567,18 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="functionalAreaCode"></vaadin-grid-filter>
                 </template>
                 <template>
                     @*<paper-input type="text" name="functionalAreaCode" disabled value="{{item.functionalAreaCode}}"></paper-input>*@
-                    <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="code" item-label-path="name" value="{{item.functionalAreaCode}}">
+                    <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" value="{{item.functionalAreaCode}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
-                                    <div>[[item.name]]</div>
+                                    <div>[[item.value]]</div>
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
@@ -530,18 +586,18 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="responsabilityCenterCode"></vaadin-grid-filter>
                 </template>
                 <template>
                     @*<paper-input type="text" name="responsabilityCenterCode" disabled value="{{item.responsabilityCenterCode}}"></paper-input>*@
-                    <vaadin-combo-box items="[[ResponsabilityCenterData]]" item-value-path="code" item-label-path="name" value="{{item.responsabilityCenterCode}}">
+                    <vaadin-combo-box items="[[ResponsabilityCenterData]]" item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
-                                    <div>[[item.name]]</div>
+                                    <div>[[item.value]]</div>
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
@@ -549,7 +605,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="unitCost"></vaadin-grid-filter>
@@ -559,7 +615,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
                     <vaadin-grid-filter path="totalCost"></vaadin-grid-filter>
@@ -569,7 +625,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="unitPrice"></vaadin-grid-filter>
@@ -579,7 +635,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="totalPrice">Preço Total</vaadin-grid-sorter>
                     <vaadin-grid-filter path="totalPrice"></vaadin-grid-filter>
@@ -601,15 +657,15 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="130px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="invoiceToClientNo">Fatura a Nº Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="invoiceToClientNo"></vaadin-grid-filter>
-                </template>
-                <template>
-                    <paper-input type="text" name="invoiceToClientNo" required maxlength="20" value="{{item.invoiceToClientNo}}"></paper-input>
-                </template>
-            </vaadin-grid-column>
+            @*<vaadin-grid-column width="130px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="invoiceToClientNo">Fatura a Nº Cliente</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="invoiceToClientNo"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        <paper-input type="text" name="invoiceToClientNo" required maxlength="20" value="{{item.invoiceToClientNo}}"></paper-input>
+                    </template>
+                </vaadin-grid-column>*@
 
             <vaadin-grid-column width="100px" resizable>
                 <template class="header">
@@ -635,6 +691,11 @@
                         type: String,
                         notifiy: true,
                         value: ""
+                    },
+                    disabledProjectNo: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
                     },
                     date: {
                         type: String,
@@ -729,6 +790,15 @@
                     _filterActive: {
                         type: Boolean,
                         value: true
+                    },
+                },
+
+                ready: function ()
+                {
+                    if ("@ViewBag.ProjectNo" != "")
+                    {
+                        this.$.projectList.value = "@ViewBag.ProjectNo";
+                        this.disabledProjectNo = true;
                     }
                 },
 
@@ -740,7 +810,7 @@
                 _add() {
 
                     if (true)
-                        //Validações
+                    //Validações
                     {
                         this.result.unshift({
                             projectNo: this.projectNumber,
@@ -810,7 +880,7 @@
 
                 _projectChange: function (e) {
                     if (e.detail.value) {
-                        this.$.ajax_related.body = JSON.stringify(e.detail.value);
+                        this.$.ajax_related.body = JSON.stringify(this.projectNumber);
                         this.$.ajax_related.generateRequest();
                     }
                     else {
@@ -841,21 +911,87 @@
                     }
                 },
 
-                _codeChange: function (e)
-                {
-                    if (e.detail.value != null)
-                    {
+                _codeChange: function (e) {
+
+                    if (e.detail.value != null && e.detail.value != "") {
                         var index = this.codeOptions.findIndex(i => i.code === e.detail.value);
                         this.code = this.codeOptions[index].code;
                         this.description = this.codeOptions[index].name;
                         this.codeMeasurementUnit = this.codeOptions[index].measureUnit;
                     }
-                    else {
-                        this.description = "";
-                        this.codeMeasurementUnit = "";
-                    }
-
                 },
+
+                //_lineProjectTypeChange: function (e) {
+                //    if (e.target.id != null && e.target.id != "") {
+                //        if (e.target.id != "type")
+                //        {
+                //            var code = e.target.id.slice(4);
+                //        }
+                //        var codecombo = this.$$("#code" + code);
+
+                //        switch (e.target.value) {
+                //            case 1:
+                //                codecombo.items = this.allofit[0];
+                //                break;
+                //            case 2:
+                //                codecombo.items = this.allofit[1];
+                //                break;
+                //            case 3:
+                //                codecombo.items = this.allofit[2];
+                //            default:
+                //                break;
+                //        }
+                //    }
+                //},
+
+                _lineChange: function (e) {
+                    if (e.target.id != null && e.target.id != "") {
+                        if (e.target.id != "code") {
+                            var code = e.target.id.slice(4);
+                        }
+
+                        var typcode = this.$$("#type" + code);
+                        var codecombo = this.$$(e.target.id);
+
+                        switch (typcode.value) {
+                            case 1:
+                                codecombo.items = this.allofit[0];
+                                break;
+                            case 2:
+                                codecombo.items = this.allofit[1];
+                                break;
+                            case 3:
+                                codecombo.items = this.allofit[2];
+                            default:
+                                break;
+                        }
+                    }
+                },
+
+                //_selectItem: function (e) {
+                //    debugger;;
+
+                //    if (e.target.id != null) {
+                //        //get id line
+                //        var code = e.target.id.slice(4);
+                //        var codecombo = this.$$("#code" + code);
+
+                //        switch (e.target.value) {
+                //            case 1:
+                //                codecombo.items = this.resourceCode;
+                //                break;
+                //            case 2:
+                //                codecombo.items = this.productCode;
+                //                break;
+                //            case 3:
+                //                codecombo.items = this.accountCode;
+                //            default:
+                //                codecombo.items = null;
+                //                break;
+                //        }
+                //        //codecombo.value = e.model.item["code"];
+                //    }
+                //},
 
                 _updateRelatedResponse: function (related) {
                     if (related != null) {
@@ -867,37 +1003,74 @@
 
                 },
 
-                //_updateMeasureUnit: function (codeOptions) {
-                //    debugger;;
-                //    if (this.$.ajax_update.url != "/PopulateDropdowns/GetCGAccountCode") {
-                //        if (codeOptions != null) {
-                //            this.codeMeasurementUnit = this.codeOptions.measurementUnitCode;
-                //        }
-                //        else {
-                //            this.codeMeasurementUnit = "";
-                //        }
-                //    }
-                //},
-
                 _updateRegisterResponse: function (e) {
                     var self = this;
-                    if (this.$.ajax_update.url == "/Engenharia/RegisterDiaryLines") {
+                    if (this.$.ajax_update.url == "/Projetos/RegisterDiaryLines") {
                         if (e.detail.status === 200) {
-                            this.openToast("Linhas do Diário registadas com sucesso no NAV.");
+                            this.openToast("Linhas do Diário registadas com sucesso.");
                         }
                         else {
                             this.openToast("Occorreu um erro ao registar as linhas do Diário.");
                         }
-                        this.$.ajax_update.url == "/Engenharia/RegisterDiaryLines";
+                        this.$.ajax_update.url == "/Projetos/RegisterDiaryLines";
                     }
                 },
 
                 _registerDiary: function () {
-                    //SEND TO NAV
                     this.$.ajax_register.body = JSON.stringify(this.result);
                     this.$.ajax_register.generateRequest();
+                    this.$.projectDiaryProject.clearCache();
+                },
+
+                _getMovements: function () {
+                    //Request
+                    debugger;;
+                    if (this.$.projectList.value != null && this.$.projectList.value != "")
+                    {
+                        this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
+                        this.$.ajax_movementLines.generateRequest();
+                        //Update List
+                    }
+                    else
+                    {
+                        this.openToast("Precisa de selecionar um projeto.");
+                    }
 
                 },
+
+                _movementLinesResponse: function () {
+                    debugger;;
+                    if (this.movementLines != null)
+                    {
+                        this.movementLines.forEach(function (e) {
+
+                            this.result.unshift({
+                                projectNo: e.projectNumber,
+                                date: e.date,
+                                movementType: e.projectMovementNumber,
+                                type: e.projectTypeNumber,
+                                code: e.codeNumber,
+                                description: e.description,
+                                quantity: 0,
+                                measurementUnitCode: e.codeMeasurementUnit,
+                                locationCode: e.codeLocation,
+                                projectContabGroup: e.codeProjectContabGroup,
+                                regionCode: e.codeRegion,
+                                functionalAreaCode: e.codeFuncArea,
+                                responsabilityCenterCode: e.codeResponsabilityCenter,
+                                unitCost: e.unitCost,
+                                totalCost: e.totalCost,
+                                unitPrice: e.unitPrice,
+                                totalPrice: e.totalPrice,
+                                billable: e.billable,
+                                invoiceToClientNo: e.invoiceClientNo
+                            });
+                        });
+                        this.$.projectDiaryProject.clearCache();
+                        this.openToast("Movimentos adicionados com sucesso.");
+
+                    }
+                }
             });
         });
     </script>

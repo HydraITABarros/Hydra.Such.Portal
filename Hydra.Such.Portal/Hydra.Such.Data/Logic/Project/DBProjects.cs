@@ -82,13 +82,13 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static bool Delete(Projetos ProjectToDelete)
+        public static bool Delete(string ProjectNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.Projetos.RemoveRange(ctx.Projetos.Where(x => x.NºProjeto == ProjectToDelete.NºProjeto));
+                    ctx.Projetos.RemoveRange(ctx.Projetos.Where(x => x.NºProjeto == ProjectNo));
                     ctx.SaveChanges();
                 }
 
@@ -108,7 +108,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Projetos.Where(x => x.Área == AreaId-1).ToList();
+                    return ctx.Projetos.Where(x => x.Área == AreaId-1 && x.Estado != 3).ToList();
                 }
             }
             catch (Exception ex)
