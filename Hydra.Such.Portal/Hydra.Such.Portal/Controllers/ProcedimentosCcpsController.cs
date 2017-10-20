@@ -48,6 +48,14 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetProcedimentosByProcedimentoType([FromBody] int id)
+        {
+            List<ProcedimentoCCPView> result = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoTypeToList(id);               
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetProcedimentoDetails([FromBody] ProcedimentoCCPView data)
         {
             try
@@ -80,168 +88,29 @@ namespace Hydra.Such.Portal.Controllers
                 if(data != null)
                 {
                     Configuração config = DBConfigurations.GetById(1);
-                    //int NumSerieProcedimentos = config.n
+                    // get the Procedimento CCP number
+
+                    ProcedimentosCcp procedimento = DBProcedimentosCCP.CreateProcedimento(data);
+
+                    if (procedimento == null)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Ocorreu um erro ao criar o Procedimento";
+                    }
+                    else
+                    {
+                        // must update last numeration used 
+                    }
                 }
 
             }
             catch (Exception e)
             {
-                return null;
+                data.eReasonCode = 4;
+                data.eMessage = "Ocorreu um erro ao criar o Procedimento";
             }
 
-            return Json(false);
+            return Json(data);
         }
-        /* zpgm. 
-        private readonly SuchDBContext _context;
-
-        public ProcedimentosCcpsController(SuchDBContext context)
-        {
-            _context = context;
-        }
-
-        // GET: ProcedimentosCcps
-        public IActionResult Index()
-        {
-            var suchDBContext = _context.ProcedimentosCcp.Include(p => p.Nº1).Include(p => p.NºNavigation);
-            return View(suchDBContext.ToListAsync());
-        }
-
-        // GET: ProcedimentosCcps/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var procedimentosCcp = await _context.ProcedimentosCcp
-                .Include(p => p.Nº1)
-                .Include(p => p.NºNavigation)
-                .SingleOrDefaultAsync(m => m.Nº == id);
-            if (procedimentosCcp == null)
-            {
-                return NotFound();
-            }
-
-            return View(procedimentosCcp);
-        }
-
-        // GET: ProcedimentosCcps/Create
-        public IActionResult Create()
-        {
-            ViewData["Nº"] = new SelectList(_context.TemposPaCcp, "NºProcedimento", "NºProcedimento");
-            ViewData["Nº"] = new SelectList(_context.RegistoDeAtas, "NºProcedimento", "NºProcedimento");
-            return View();
-        }
-
-        // POST: ProcedimentosCcps/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nº,Tipo,Ano,Referência,CódigoRegião,CódigoÁreaFuncional,CódigoCentroResponsabilidade,Estado,DataCriação,Imobilizado,ComentárioEstado,Anexos,DataHoraEstado,UtilizadorEstado,CondiçõesDePagamento,NomeProcesso,GestorProcesso,TipoProcedimento,InformaçãoTécnica,FundamentaçãoAquisição,PreçoBase,ValorPreçoBase,Negociação,CritériosAdjudicação,Prazo,PreçoMaisBaixo,PropostaEconMaisVantajosa,PropostaVariante,AbertoFechadoAoMercado,PrazoEntrega,LocaisEntrega,ObservaçõesAdicionais,EstimativaPreço,FornecedoresSugeridos,FornecedorExclusivo,Interlocutor,DescPreçoMaisBaixo,DescPropostaEconMaisVantajosa,DescPropostaVariante,DescAbertoFechadoAoMercado,DescFornecedorExclusivo,CritérioEscolhaProcedimento,DescEscolhaProcedimento,Júri,ObjetoDoContrato,PréÁrea,SubmeterPréÁrea,ValorDecisãoContratar,ValorAdjudicaçãoAnteriro,ValorAdjudicaçãoAtual,DiferençaEuros,DiferençaPercent,WorkflowFinanceiros,WorkflowJurídicos,WorkflowFinanceirosConfirm,WorkflowJurídicosConfirm,AutorizaçãoImobCa,AutorizaçãoAberturaCa,AutorizaçãoAquisiçãoCa,RejeiçãoImobCa,RejeiçãoAberturaCa,RejeiçãoAquisiçãoCa,DataAutorizaçãoImobCa,DataAutorizaçãoAbertCa,DataAutorizaçãoAquisiCa,RatificarCaAbertura,RatificarCaAdjudicação,CaRatificar,CaDataRatificaçãoAbert,CaDataRatificaçãoAdjudic,NºAta,DataAta,ComentárioPublicação,DataPublicação,UtilizadorPublicação,DataSistemaPublicação,RecolhaComentário,DataRecolha,UtilizadorRecolha,DataSistemaRecolha,ComentárioRelatórioPreliminar,DataValidRelatórioPreliminar,UtilizadorValidRelatórioPreliminar,DataSistemaValidRelatórioPreliminar,ComentárioAudiênciaPrévia,DataAudiênciaPrévia,UtilizadorAudiênciaPrévia,DataSistemaAudiênciaPrévia,ComentárioRelatórioFinal,DataRelatórioFinal,UtilizadorRelatórioFinal,DataSistemaRelatórioFinal,ComentárioNotificação,DataNotificação,UtilizadorNotificação,DataSistemaNotificação,PrazoNotificaçãoDias,PercentExecução,Arquivado,DataFechoInicial,DataFechoPrevista,NºDiasProcesso,NºDiasAtraso,Tratado,Fornecedor,Comentário,CaSuspenso,CríticoAbertura,CríticoAdjudicação,ObjetoDecisão,RazãoNecessidade,ProtocoloContrato,AutorizaçãoAdjudicação,NãoAdjudicaçãoEEncerramento,NãoAdjudicaçãoESuspensão")] ProcedimentosCcp procedimentosCcp)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(procedimentosCcp);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["Nº"] = new SelectList(_context.TemposPaCcp, "NºProcedimento", "NºProcedimento", procedimentosCcp.Nº);
-            ViewData["Nº"] = new SelectList(_context.RegistoDeAtas, "NºProcedimento", "NºProcedimento", procedimentosCcp.Nº);
-            return View(procedimentosCcp);
-        }
-
-        // GET: ProcedimentosCcps/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var procedimentosCcp = await _context.ProcedimentosCcp.SingleOrDefaultAsync(m => m.Nº == id);
-            if (procedimentosCcp == null)
-            {
-                return NotFound();
-            }
-            ViewData["Nº"] = new SelectList(_context.TemposPaCcp, "NºProcedimento", "NºProcedimento", procedimentosCcp.Nº);
-            ViewData["Nº"] = new SelectList(_context.RegistoDeAtas, "NºProcedimento", "NºProcedimento", procedimentosCcp.Nº);
-            return View(procedimentosCcp);
-        }
-
-        // POST: ProcedimentosCcps/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Nº,Tipo,Ano,Referência,CódigoRegião,CódigoÁreaFuncional,CódigoCentroResponsabilidade,Estado,DataCriação,Imobilizado,ComentárioEstado,Anexos,DataHoraEstado,UtilizadorEstado,CondiçõesDePagamento,NomeProcesso,GestorProcesso,TipoProcedimento,InformaçãoTécnica,FundamentaçãoAquisição,PreçoBase,ValorPreçoBase,Negociação,CritériosAdjudicação,Prazo,PreçoMaisBaixo,PropostaEconMaisVantajosa,PropostaVariante,AbertoFechadoAoMercado,PrazoEntrega,LocaisEntrega,ObservaçõesAdicionais,EstimativaPreço,FornecedoresSugeridos,FornecedorExclusivo,Interlocutor,DescPreçoMaisBaixo,DescPropostaEconMaisVantajosa,DescPropostaVariante,DescAbertoFechadoAoMercado,DescFornecedorExclusivo,CritérioEscolhaProcedimento,DescEscolhaProcedimento,Júri,ObjetoDoContrato,PréÁrea,SubmeterPréÁrea,ValorDecisãoContratar,ValorAdjudicaçãoAnteriro,ValorAdjudicaçãoAtual,DiferençaEuros,DiferençaPercent,WorkflowFinanceiros,WorkflowJurídicos,WorkflowFinanceirosConfirm,WorkflowJurídicosConfirm,AutorizaçãoImobCa,AutorizaçãoAberturaCa,AutorizaçãoAquisiçãoCa,RejeiçãoImobCa,RejeiçãoAberturaCa,RejeiçãoAquisiçãoCa,DataAutorizaçãoImobCa,DataAutorizaçãoAbertCa,DataAutorizaçãoAquisiCa,RatificarCaAbertura,RatificarCaAdjudicação,CaRatificar,CaDataRatificaçãoAbert,CaDataRatificaçãoAdjudic,NºAta,DataAta,ComentárioPublicação,DataPublicação,UtilizadorPublicação,DataSistemaPublicação,RecolhaComentário,DataRecolha,UtilizadorRecolha,DataSistemaRecolha,ComentárioRelatórioPreliminar,DataValidRelatórioPreliminar,UtilizadorValidRelatórioPreliminar,DataSistemaValidRelatórioPreliminar,ComentárioAudiênciaPrévia,DataAudiênciaPrévia,UtilizadorAudiênciaPrévia,DataSistemaAudiênciaPrévia,ComentárioRelatórioFinal,DataRelatórioFinal,UtilizadorRelatórioFinal,DataSistemaRelatórioFinal,ComentárioNotificação,DataNotificação,UtilizadorNotificação,DataSistemaNotificação,PrazoNotificaçãoDias,PercentExecução,Arquivado,DataFechoInicial,DataFechoPrevista,NºDiasProcesso,NºDiasAtraso,Tratado,Fornecedor,Comentário,CaSuspenso,CríticoAbertura,CríticoAdjudicação,ObjetoDecisão,RazãoNecessidade,ProtocoloContrato,AutorizaçãoAdjudicação,NãoAdjudicaçãoEEncerramento,NãoAdjudicaçãoESuspensão")] ProcedimentosCcp procedimentosCcp)
-        {
-            if (id != procedimentosCcp.Nº)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(procedimentosCcp);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProcedimentosCcpExists(procedimentosCcp.Nº))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["Nº"] = new SelectList(_context.TemposPaCcp, "NºProcedimento", "NºProcedimento", procedimentosCcp.Nº);
-            ViewData["Nº"] = new SelectList(_context.RegistoDeAtas, "NºProcedimento", "NºProcedimento", procedimentosCcp.Nº);
-            return View(procedimentosCcp);
-        }
-
-        // GET: ProcedimentosCcps/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var procedimentosCcp = await _context.ProcedimentosCcp
-                .Include(p => p.Nº1)
-                .Include(p => p.NºNavigation)
-                .SingleOrDefaultAsync(m => m.Nº == id);
-            if (procedimentosCcp == null)
-            {
-                return NotFound();
-            }
-
-            return View(procedimentosCcp);
-        }
-
-        // POST: ProcedimentosCcps/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            var procedimentosCcp = await _context.ProcedimentosCcp.SingleOrDefaultAsync(m => m.Nº == id);
-            _context.ProcedimentosCcp.Remove(procedimentosCcp);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProcedimentosCcpExists(string id)
-        {
-            return _context.ProcedimentosCcp.Any(e => e.Nº == id);
-        }
-        */
     }
 }

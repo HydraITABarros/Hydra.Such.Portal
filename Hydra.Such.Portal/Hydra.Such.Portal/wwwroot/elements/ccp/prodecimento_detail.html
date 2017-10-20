@@ -37,6 +37,11 @@
             }
         </style>
 
+        <!-- Dropdowns populate-->
+        <iron-ajax url="/PopulateDropdowns/GetPocedimentosCcpProcedimentoType" last-response="{{LProcedimentoType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpType" last-response="{{LType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpStates" last-response="{{LProcedimentoState}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/ProcedimentosCcps/GetProcedimentoDetails"
                    last-response="{{data}}"
                    method="post"
@@ -49,11 +54,29 @@
         <div>
             <div class="row">
                 <div class="col-lg-3">
-                    <paper-input type="text" value="{{data.no}}" disabled="true" id="no" name="no" label="Nº Procedimento"> </paper-input>
+                    <vaadin-combo-box items="[[LType]]" item-value-path="id" item-label-path="value" required value="{{data.tipo}}" label="Tipo">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
             </div>
             <div class="row">
-                <paper-input type="text" value="{{data.tipo}}" disabled="false" id="tipo" name="tipo" label="Tipo Procedimento"> </paper-input>
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[LProcedimentoType]]" item-value-path="id" item-label-path="value" required value="{{data.tipoProcedimento}}" label="Tipo Procedimento">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
             </div>
         </div>
 
