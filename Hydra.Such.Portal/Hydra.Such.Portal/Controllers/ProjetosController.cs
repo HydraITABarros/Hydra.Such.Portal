@@ -312,5 +312,44 @@ namespace Hydra.Such.Portal.Controllers
 
         #endregion
 
+        #region InvoiceAutorization
+        public IActionResult AutorizacaoFaturacao(String id)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetAutorizacaoFaturacao([FromBody] ProjectDiaryViewModel data)
+        {
+            List<ProjectDiaryViewModel> result = DBProjectDiary.GetAll().Select(x => new ProjectDiaryViewModel()
+            {
+                LineNo = x.NºLinha,
+                ProjectNo = x.NºProjeto,
+                Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                MovementType = x.TipoMovimento,
+                Type = x.Tipo,
+                Code = x.Código,
+                Description = x.Descrição,
+                Quantity = x.Quantidade,
+                MeasurementUnitCode = x.CódUnidadeMedida,
+                LocationCode = x.CódLocalização,
+                ProjectContabGroup = x.GrupoContabProjeto,
+                RegionCode = x.CódigoRegião,
+                FunctionalAreaCode = x.CódigoÁreaFuncional,
+                ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
+                User = x.Utilizador,
+                UnitCost = x.CustoUnitário,
+                TotalCost = x.CustoTotal,
+                UnitPrice = x.PreçoUnitário,
+                TotalPrice = x.PreçoTotal,
+                Billable = x.Faturável,
+                InvoiceToClientNo = x.FaturaANºCliente,
+                CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso
+            }).ToList();
+
+            return Json(result);
+        }
+        #endregion InvoiceAutorization
+
     }
 }

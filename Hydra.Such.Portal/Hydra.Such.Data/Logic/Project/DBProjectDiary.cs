@@ -25,6 +25,22 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
+        public static List<DiárioDeProjeto> GetNonInvoiced()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.DiárioDeProjeto.Where(x => x.Faturável == true && x.FaturaçãoAutorizada == false).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
         public static DiárioDeProjeto Create(DiárioDeProjeto ObjectToCreate)
         {
             try

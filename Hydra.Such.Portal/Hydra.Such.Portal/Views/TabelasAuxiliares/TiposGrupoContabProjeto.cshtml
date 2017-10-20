@@ -91,7 +91,7 @@
                     <template>
                         <paper-icon-item>
                             <paper-item-body two-line>
-                                <div>[[item.name]]</div>
+                                <div>[[item.value]]</div>
                             </paper-item-body>
                         </paper-icon-item>
                     </template>
@@ -103,7 +103,7 @@
                     <template>
                         <paper-icon-item>
                             <paper-item-body two-line>
-                                <div>[[item.name]]</div>
+                                <div>[[item.value]]</div>
                             </paper-item-body>
                         </paper-icon-item>
                     </template>
@@ -114,7 +114,7 @@
                     <template>
                         <paper-icon-item>
                             <paper-item-body two-line>
-                                <div>[[item.name]]</div>
+                                <div>[[item.value]]</div>
                             </paper-item-body>
                         </paper-icon-item>
                     </template>
@@ -150,11 +150,11 @@
                     <vaadin-grid-filter path="region"/>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[RegionData]]" item-value-path="code" item-label-path="name" value="{{item.region}}">
+                    <vaadin-combo-box items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{item.region}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
-                                    <div>[[item.name]]</div>
+                                    <div>[[item.value]]</div>
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
@@ -167,11 +167,11 @@
                     <vaadin-grid-filter path="functionalAreaCode" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="code" item-label-path="name" value="{{item.functionalAreaCode}}">
+                    <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" value="{{item.functionalAreaCode}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
-                                    <div>[[item.name]]</div>
+                                    <div>[[item.value]]</div>
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
@@ -184,11 +184,11 @@
                     <vaadin-grid-filter path="responsabilityCenter" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[ResponsabilityCenterData]]" item-value-path="code" item-label-path="name" value="{{item.responsabilityCenter}}">
+                    <vaadin-combo-box items="[[ResponsabilityCenterData]]" item-value-path="id" item-label-path="value" value="{{item.responsabilityCenter}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
-                                    <div>[[item.name]]</div>
+                                    <div>[[item.value]]</div>
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
