@@ -13,6 +13,8 @@
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-material-theme/vaadin-date-picker.html">
 
+<h1>Detalhes Procedimento</h1>
+
 <dom-module id="x-procedimentodetails">
     <template>
         <!-- STYLES -->
@@ -35,154 +37,209 @@
             }
         </style>
 
-        <!-- -->
         <iron-ajax url="/ProcedimentosCcps/GetProcedimentoDetails"
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
-                   id="grid_databound_ajax"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
                    content-type="application/json">
         </iron-ajax>
-        <template is="dom-if" if="{{ !_isCreate }}">
-            <div class="row">
-                <div class="col-lg-12">
-                    <paper-button raised id="btnActas" class=""><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Registo de Actas</paper-button>
-                    <paper-button raised id="btnTempos" class=""><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Tempos</paper-button>
-                </div>
-            </div>
-        </template>
-        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
-            <paper-tab>Geral xxx</paper-tab>
-            <paper-tab>Registo xxx</paper-tab>
-            <paper-tab>Faturação xxx</paper-tab>
-            <paper-tab>Envio xxx</paper-tab>
-            <paper-tab>Detalhe xxx</paper-tab>
-            <paper-tab>AEC xxx</paper-tab>
-        </paper-tabs>
-        <!--Geral-->
+
         <div>
             <div class="row">
                 <div class="col-lg-3">
-                    <paper-input type="text" value="{{data.no}}" disabled="{{ !_isCreate }}" id="No" name="No" ed required label="Nº Procedimento"> </paper-input>
-                </div>              
+                    <paper-input type="text" value="{{data.no}}" disabled="true" id="no" name="no" label="Nº Procedimento"> </paper-input>
+                </div>
+            </div>
+            <div class="row">
+                <paper-input type="text" value="{{data.tipo}}" disabled="false" id="tipo" name="tipo" label="Tipo Procedimento"> </paper-input>
             </div>
         </div>
-        <script>
-            document.addEventListener('WebComponentsReady', function () {
-                debugger;
-                Polymer({
-                    is: 'x-procedimentodetails',
-                    properties: {
-                        _areaid: {
-                            type: Number,
-                            notify: true,
-                            value: 0
-                        },
-                        _procedimentoid: {
-                            type: String,
-                            notify: true,
-                            value: ""
-                        },
-                        selected: {
-                            type: Number,
-                            value: 0
-                        },
-                        _isCreate: {
-                            type: Boolean,
-                            value: false
-                        }
-                    },
 
-                    ready: function () {
-                        //GET PROJECT DATA
-                        this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
-                        this.$.page_databound_ajax.generateRequest();
-
-
-                        //this.$.contracts_ajax.body = JSON.stringify({ "areaId": this._areaid });
-                        //this.$.contracts_ajax.generateRequest();
-
-                        if (this._procedimentoid == "") {
-                            this._isCreate = true;
-                            //this.data.area = this._areaid;
-                        }
-                    },
-                    _openToast: function (message) {
-                        this.$.ToastMessage.text = message;
-                        this.$.ToastMessage.open();
-                    },
-                    _validateData: function () {
-                        if (false) {
-                            this._openToast(validate);
-                            return false;
-                        }
-                        return true;
-                    },
-
-                    //CRUDS
-                    _create: function () {
-                        if (this._validateData()) {
-                            this.$.page_validator_ajax.body = JSON.stringify(this.data);
-                            this.$.page_validator_ajax.generateRequest();
-                        }
-                    },
-                    _update: function () {
-                        if (this._validateData()) {
-                            this._executeRequest("/Projetos/UpdateProject", this.data)
-                        }
-                    },
-
-                    //Responses Processors
-                    _responseProcessor: function (data) {
-                        //var self = this;
-
-                        ////Set AreaId
-                        //if (this.data.projectNo == "") {
-                        //    this.data.area = this._areaid;
-                        //}
-
-                        //if (data.detail.status === 200) {
-                        //    if (data.detail.url.indexOf("GetProject") !== -1) {
-                        //        if (this.data.ProjectNo == "") {
-                        //            this._isCreate = true;
-                        //        }
-                        //    } else if (data.detail.url.indexOf("Create") !== -1) {
-                        //        this._createResponseProcessor();
-                        //    }
-                        //} else {
-                        //    this._openToast("Ocorreu um erro ao criar o projeto.")
-                        //}
-                    },
-                    _createResponseProcessor: function () {
-                        //if (this.data.eReasonCode == 1) {
-                        //    this._isCreate = false;
-                        //    this._openToast("Projeto criado com sucesso.");
-                        //} else {
-                        //    this._openToast(this.data.eMessage);
-                        //}
-                    },
-
-                    _responseValidatorProcessor: function (data) {
-                        //var self = this;
-                        //if (data.detail.status === 200) {
-                        //    debugger;;
-                        //    if (this.validateResponse == "") {
-                        //        this._executeRequest("/Projetos/CreateProject", this.data)
-                        //    } else {
-                        //        this._openToast(data);
-                        //    }
-                        //}
-                    },
-
-                    //Helpers
-                    _executeRequest: function (url, data) {
-                        this.$.page_databound_ajax.url = url;
-                        this.$.page_databound_ajax.body = JSON.stringify(data);
-                        this.$.page_databound_ajax.generateRequest();
-                    }
-
-                });
-            });
-        </script>
+        <!-- Save and Create Buttons -->
+        <div class="marginSpace">
+            <template is="dom-if" if="{{ _isCreate }}">
+                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </template>
+            <template is="dom-if" if="{{ !_isCreate }}">
+                <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </template>
+        </div>
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            debugger;;
+            Polymer({
+                is: 'x-procedimentodetails',
+                properties: {
+                    //_areaid: {
+                    //    type: Number,
+                    //    notify: true,
+                    //    value: 0
+                    //},
+                    _procedimentoid: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: false
+                    }
+                },
+
+                ready: function () {
+                    debugger;;
+
+                    this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
+                    this.$.page_databound_ajax.generateRequest();
+
+                    if (this._procedimentoid == "") {
+                        this._isCreate = true;
+                        //this.data.area = this._areaid;
+                    }
+                },
+
+                _openToast: function (message) {
+                    debugger;;
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _validateData: function () {
+                    debugger;;
+                    if (false) {
+                        this._openToast(validate);
+                        return false;
+                    }
+                    return true;
+                },
+
+                //CRUDS
+                _create: function () {
+                    //debugger;;
+
+                    //if (this._validateData()) {
+                    //    this._executeRequest("/FolhasDeHoras/CreateFolhaDeHora", this.data)
+                    //}
+
+                    if (this._validateData()) {
+                        this.$.page_validator_ajax.body = JSON.stringify(this.data);
+                        this.$.page_validator_ajax.generateRequest();
+                    }
+                },
+
+                _update: function () {
+                    //debugger;;
+                    if (this._validateData()) {
+                        //this._executeRequest("/FolhasDeHoras/UpdateFolhaDeHora", this.data)
+                    }
+                },
+
+                _delete: function () {
+                    //debugger;;
+                    //var FolhaDeHora = this.data;
+                    //var ajax_request = this.$.ajax_delete_folhadehora;
+                    //bootbox.confirm({
+                    //    message: "Tem a certeza que pretende remover a Folha de Horas " + this.data.folhaDeHorasNo + "?",
+                    //    buttons: {
+                    //        confirm: {
+                    //            label: 'Sim',
+                    //            className: 'btn-success'
+                    //        },
+                    //        cancel: {
+                    //            label: 'Não',
+                    //            className: 'btn-danger'
+                    //        }
+                    //    },
+                    //    callback: function (result) {
+                    //        if (result) {
+                    //            ajax_request.body = JSON.stringify(FolhaDeHora);
+                    //            ajax_request.generateRequest();
+                    //        }
+                    //    }
+                    //});
+                },
+
+                //Responses Processors
+                _responseProcessor: function (data) {
+                    //debugger;;
+                    var self = this;
+
+                    //Set AreaId
+                    //if (this.data.folhaDeHorasNo == "") {
+                    //    this.data.area = this._areaid;
+                    //}
+
+                    //if (data.detail.status === 200) {
+                    //    if (data.detail.url.indexOf("GetFolhaDeHora") !== -1) {
+                    //        if (this.data.FolhaDeHorasNo == "") {
+                    //            this._isCreate = true;
+                    //        }
+                    //    } else if (data.detail.url.indexOf("Create") !== -1) {
+                    //        this._createResponseProcessor();
+                    //    } else if (data.detail.url.indexOf("Update") !== -1) {
+                    //        this._openToast("Folha de Horas atualizada com sucesso.")
+                    //    }
+                    //} else {
+                    //    this._openToast("Ocorreu um erro ao criar a Folha de Hora.")
+                    //}
+                },
+
+                _createResponseProcessor: function () {
+                    //debugger;;
+                    //if (this.data.eReasonCode == 1) {
+                    //    this._isCreate = false;
+                    //    this._openToast("Folha de Hora criado com sucesso.");
+                    //} else {
+                    //    this._openToast(this.data.eMessage);
+                    //}
+                },
+
+                _responseValidatorProcessor: function (data) {
+                    //debugger;;
+                    var self = this;
+                    //if (data.detail.status === 200) {
+                    //    if (this.validateResponse == "") {
+                    //        this._executeRequest("/FolhasDeHoras/CreateFolhaDeHora", this.data)
+                    //    } else {
+                    //        this._openToast(data);
+                    //    }
+                    //}
+                },
+
+                _responseDeleteProcessor: function (data) {
+                    //debugger;;
+                    var self = this;
+                    //if (data.detail.status === 200) {
+                    //    if (this.deletedData.eReasonCode == 1) {
+                    //        this._openToast("Não é possivel eliminar a Folha de Horas pois este já possui movimentos.");
+                    //    } else {
+                    //        this._openToast(this.deletedData.eMessage);
+                    //        setTimeout(
+                    //            function () {
+                    //                window.location.replace("/");
+                    //            }, 2500);
+                    //    }
+                    //}
+                },
+
+                //Helpers
+                _executeRequest: function (url, data) {
+                    //debugger;;
+                    this.$.page_databound_ajax.url = url;
+                    this.$.page_databound_ajax.body = JSON.stringify(data);
+                    this.$.page_databound_ajax.generateRequest();
+                }
+            });
+        });
+    </script>
 </dom-module>

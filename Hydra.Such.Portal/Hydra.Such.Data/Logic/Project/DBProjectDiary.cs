@@ -16,7 +16,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true).ToList();
+                        return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true).ToList();
                 }
             }
             catch (Exception ex)
@@ -85,13 +85,13 @@ namespace Hydra.Such.Data.Logic.Project
 
         #endregion
 
-        public static List<DiárioDeProjeto> GetByProjectNo(string ProjectNo)
+        public static List<DiárioDeProjeto> GetByProjectNo(string ProjectNo, string user)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioDeProjeto.Where(x => x.NºProjeto == ProjectNo).ToList();
+                    return ctx.DiárioDeProjeto.Where(x => x.NºProjeto == ProjectNo && x.Utilizador == user).ToList();
                 }
             }
             catch (Exception ex)
@@ -99,5 +99,21 @@ namespace Hydra.Such.Data.Logic.Project
                 return null;
             }
         }
+
+        public static List<DiárioDeProjeto> GetRegisteredDiary(string ProjectNo, string user)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.DiárioDeProjeto.Where(x => x.NºProjeto == ProjectNo && x.Utilizador == user && x.Registado == true).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
     }
 }
