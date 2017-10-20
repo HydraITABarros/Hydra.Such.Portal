@@ -96,49 +96,51 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+        
+        
+        <iron-form id="formGeral">
+            <form>
+                <h2 class="separator">Novo Registo</h2>
+                <table class="table inlineForm">
+                    <tr>
+                        <td width="20%"> <vaadin-combo-box id="cboClients" items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{ddClients}}" label="Cliente">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box></td>
+                        <td width="20%">
+                            <vaadin-combo-box id="cboServices" items="[[Services]]" item-value-path="id" item-label-path="value" value="{{ddServices}}" label="Serviço">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </td>
+                        <td width="15%">
+                            <vaadin-checkbox id="chkServiceGroup" checked="{{chkServiceGroup}}"> Grupo Serviços </vaadin-checkbox>
+                        </td>
+                        <td >
+                            <paper-button class="btnSave" raised on-tap="_createClientService">Criar</paper-button>
+                        </td>
+                        
+                    </tr>
+                </table>
+            </form>
+        </iron-form>
+        
 
-        <div class="row">
-            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
-                <h2 class="separator">Geral</h2>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-4 col-md-2 col-sm-4 col-xs-12">
-                <vaadin-combo-box id="cboClients" items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{ddClients}}" label="Cliente">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-lg-3 col-md-2 col-sm-4 col-xs-12">
-                <vaadin-combo-box id="cboServices" items="[[Services]]" item-value-path="id" item-label-path="value" value="{{ddServices}}" label="Serviço">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
-                <vaadin-checkbox id="chkServiceGroup" checked="{{chkServiceGroup}}"> Grupo Serviços </vaadin-checkbox>
-            </div>
-            <div class="col-lg-1 col-md-2 col-sm-4 col-xs-12">
-                <br />
-                <paper-button class="btnSave" raised on-tap="_createClientService">Criar</paper-button>
-            </div>
-        </div>
-        <br />
-        <vaadin-grid id="gridClientServices" aria-label="gridClientServices" items="[[result]]" class="editGrid" multi-sort="true">
-            <vaadin-grid-column width="40%">
+     
+        <vaadin-grid id="gridClientServices" aria-label="gridClientServices" items="[[result]]" class="grid" multi-sort="true">
+            <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="ClientNumber">Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="ClientNumber" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{item.clientNumber}}" disabled>
@@ -152,10 +154,9 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="30%">
+            <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="ServiceCode">Serviço</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="ServiceCode" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[Services]]" item-value-path="id" item-label-path="value" value="{{item.serviceCode}}" disabled>
@@ -169,15 +170,20 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="ServiceGroup">Grupo Serviços</vaadin-grid-sorter>
+                    <p class="alignCenter">
+                    <vaadin-grid-filter path="serviceGroup" value="[[_filterActive]]">
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>
+                    Grupo Serviços
+                </p>
                 </template>
                 <template>
                     <paper-checkbox checked="{{item.serviceGroup}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="10%" resizable>
                 <template class="header">
                 </template>
                 <template>
@@ -211,6 +217,10 @@
                         notify: true,
                         value: ""
                     },
+                    _filterActive: {
+                        type: Boolean,
+                        value: true
+                    }
                 },
 
                 openToast: function (message) {
