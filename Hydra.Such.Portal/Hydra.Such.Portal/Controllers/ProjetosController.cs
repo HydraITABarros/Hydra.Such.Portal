@@ -217,8 +217,8 @@ namespace Hydra.Such.Portal.Controllers
                             if (!TCreateNavProj.IsCompletedSuccessfully)
                             {
                                 //Delete Created Project on Database
-                                DBProjects.Delete(cProject);
-
+                                DBProjects.Delete(cProject.NºProjeto);
+                            
                                 data.eReasonCode = 3;
                                 data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
                             }
@@ -309,7 +309,26 @@ namespace Hydra.Such.Portal.Controllers
             {
                 List<DiárioDeProjeto> Movements = DBProjectDiary.GetByProjectNo(data.ProjectNo, User.Identity.Name);
                 Movements.RemoveAll(x => !x.Registado.Value);
-                return Json(data);
+
+                ErrorHandler result = new ErrorHandler();
+                if (Movements.Count() > 0)
+                {
+                    result = new ErrorHandler()
+                    {
+                        eReasonCode = 1,
+                        eMessage = "Já existem movimentos de projeto."
+                    };
+                }
+                else
+                {
+                    DBProjects.Delete(data.ProjectNo);
+                    result = new ErrorHandler()
+                    {
+                        eReasonCode = 0,
+                        eMessage = "Projeto removido com sucesso."
+                    };
+                }
+                return Json(result);
             }
             return Json(false);
         }
@@ -524,7 +543,6 @@ namespace Hydra.Such.Portal.Controllers
             //contract lines by contract id and version
 
         }
-
 
         public class ProjectInfo
         {

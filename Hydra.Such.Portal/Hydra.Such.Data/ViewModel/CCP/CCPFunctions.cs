@@ -1,4 +1,10 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel.CCP;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Web;
 
 namespace Hydra.Such.Data.ViewModel.CCP
 {
@@ -290,7 +296,113 @@ namespace Hydra.Such.Data.ViewModel.CCP
             });
         }
 
-        
+        public static TemposPACCPView CastTemposPaCcpToTemposCCPView(TemposPaCcp temp)
+        {
+            return (new TemposPACCPView()
+            {
+                NumProcedimento = temp.NºProcedimento,
+                Estado0 = temp.Estado0,
+                Estado1 = temp.Estado1,
+                Estado2 = temp.Estado2,
+                Estado3 = temp.Estado3,
+                Estado4 = temp.Estado4,
+                Estado5 = temp.Estado5,
+                Estado6 = temp.Estado6,
+                Estado7 = temp.Estado7,
+                Estado8 = temp.Estado8,
+                Estado9 = temp.Estado9,
+                Estado10 = temp.Estado10,
+                Estado11 = temp.Estado11,
+                Estado12 = temp.Estado12,
+                Estado13 = temp.Estado13,
+                Estado14 = temp.Estado14,
+                Estado15 = temp.Estado15,
+                Estado16 = temp.Estado16,
+                Estado17 = temp.Estado17,
+                Estado18 = temp.Estado18,
+                Estado19 = temp.Estado19,
+                Estado20 = temp.Estado20,
+                Estado0Tg = temp.Estado0Tg,
+                Estado1Tg = temp.Estado1Tg,
+                Estado2Tg = temp.Estado2Tg,
+                Estado3Tg = temp.Estado3Tg,
+                Estado4Tg = temp.Estado4Tg,
+                Estado5Tg = temp.Estado5Tg,
+                Estado6Tg = temp.Estado6Tg,
+                Estado7Tg = temp.Estado7Tg,
+                Estado8Tg = temp.Estado8Tg,
+                Estado9Tg = temp.Estado9Tg,
+                Estado10Tg = temp.Estado10Tg,
+                Estado11Tg = temp.Estado11Tg,
+                Estado12Tg = temp.Estado12Tg,
+                Estado13Tg = temp.Estado13Tg,
+                Estado14Tg = temp.Estado14Tg,
+                Estado15Tg = temp.Estado15Tg,
+                Estado16Tg = temp.Estado16Tg,
+                Estado17Tg = temp.Estado17Tg,
+                Estado18Tg = temp.Estado18Tg,
+                Estado19Tg = temp.Estado19Tg,
+                Estado20Tg = temp.Estado20Tg,
+                DataHoraCriacao = temp.DataHoraCriação,
+                UtilizadorCriacao = temp.UtilizadorCriação,
+                DataHoraModificacao = temp.DataHoraModificação,
+                UtilizadorModificacao = temp.UtilizadorModificação
+            });
+        }
+
+        public static TemposPaCcp CastTemposCCPViewToTemposPaCcp(TemposPACCPView temp_view)
+        {
+            return (new TemposPaCcp()
+            {
+                NºProcedimento = temp_view.NumProcedimento,
+                Estado0 = temp_view.Estado0,
+                Estado1 = temp_view.Estado1,
+                Estado2 = temp_view.Estado2,
+                Estado3 = temp_view.Estado3,
+                Estado4 = temp_view.Estado4,
+                Estado5 = temp_view.Estado5,
+                Estado6 = temp_view.Estado6,
+                Estado7 = temp_view.Estado7,
+                Estado8 = temp_view.Estado8,
+                Estado9 = temp_view.Estado9,
+                Estado10 = temp_view.Estado10,
+                Estado11 = temp_view.Estado11,
+                Estado12 = temp_view.Estado12,
+                Estado13 = temp_view.Estado13,
+                Estado14 = temp_view.Estado14,
+                Estado15 = temp_view.Estado15,
+                Estado16 = temp_view.Estado16,
+                Estado17 = temp_view.Estado17,
+                Estado18 = temp_view.Estado18,
+                Estado19 = temp_view.Estado19,
+                Estado20 = temp_view.Estado20,
+                Estado0Tg = temp_view.Estado0Tg,
+                Estado1Tg = temp_view.Estado1Tg,
+                Estado2Tg = temp_view.Estado2Tg,
+                Estado3Tg = temp_view.Estado3Tg,
+                Estado4Tg = temp_view.Estado4Tg,
+                Estado5Tg = temp_view.Estado5Tg,
+                Estado6Tg = temp_view.Estado6Tg,
+                Estado7Tg = temp_view.Estado7Tg,
+                Estado8Tg = temp_view.Estado8Tg,
+                Estado9Tg = temp_view.Estado9Tg,
+                Estado10Tg = temp_view.Estado10Tg,
+                Estado11Tg = temp_view.Estado11Tg,
+                Estado12Tg = temp_view.Estado12Tg,
+                Estado13Tg = temp_view.Estado13Tg,
+                Estado14Tg = temp_view.Estado14Tg,
+                Estado15Tg = temp_view.Estado15Tg,
+                Estado16Tg = temp_view.Estado16Tg,
+                Estado17Tg = temp_view.Estado17Tg,
+                Estado18Tg = temp_view.Estado18Tg,
+                Estado19Tg = temp_view.Estado19Tg,
+                Estado20Tg = temp_view.Estado20Tg,
+                DataHoraCriação = temp_view.DataHoraCriacao,
+                UtilizadorCriação = temp_view.UtilizadorCriacao,
+                DataHoraModificação = temp_view.DataHoraModificacao,
+                UtilizadorModificação = temp_view.UtilizadorModificacao
+            });
+        }
         #endregion
     }
 }

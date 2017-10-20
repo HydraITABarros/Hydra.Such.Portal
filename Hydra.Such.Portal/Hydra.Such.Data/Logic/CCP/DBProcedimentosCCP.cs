@@ -61,6 +61,29 @@ namespace Hydra.Such.Data.Logic.CCP
                 proc.DataHoraCriação = DateTime.Now;
                 // inserir o utilizador da criação
                 //proc.UtilizadorCriação = User.Identity.Name;
+                proc.Nº1 = new TemposPaCcp()
+                {
+                    NºProcedimento = proc.Nº,
+                    Estado0 = 1,
+                    DataHoraCriação = proc.DataHoraCriação,
+                    UtilizadorCriação =  proc.UtilizadorCriação
+                };
+
+                proc.NºNavigation = new RegistoDeAtas()
+                {
+                    // preencher o nº de acta
+                    // NºAta
+                    NºProcedimento = proc.Nº,
+                    DataHoraCriação = proc.DataHoraCriação,
+                    UtilizadorCriação = proc.UtilizadorCriação
+                };
+
+                context.Add(proc.Nº1);
+                context.SaveChanges();
+
+                context.Add(proc.NºNavigation);
+                context.SaveChanges();
+                
                 context.Add(proc);
                 context.SaveChanges();
                 return proc;

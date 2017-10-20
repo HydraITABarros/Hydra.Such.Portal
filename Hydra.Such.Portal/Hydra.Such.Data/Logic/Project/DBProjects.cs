@@ -82,13 +82,13 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static bool Delete(Projetos ProjectToDelete)
+        public static bool Delete(string ProjectNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.Projetos.RemoveRange(ctx.Projetos.Where(x => x.NºProjeto == ProjectToDelete.NºProjeto));
+                    ctx.Projetos.RemoveRange(ctx.Projetos.Where(x => x.NºProjeto == ProjectNo));
                     ctx.SaveChanges();
                 }
 
