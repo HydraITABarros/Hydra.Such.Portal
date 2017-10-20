@@ -22,7 +22,7 @@
     WCT._config.environmentScripts.push('webcomponentsjs/webcomponents-lite.js');
 
     WCT.loadSuites([
-      'vaadin-combo-box-properties.html',
+      'vaadin-combo-box.html',
       'toggling-dropdown.html',
       'overlay-position.html',
       'selecting-items.html',
@@ -35,15 +35,9 @@
       'data-binding.html',
       'late-upgrade.html',
       'vaadin-combo-box-light.html',
-      'item-template.html'
-    ].reduce(function(suites, suite) {
-      // Browser supports Shadow DOM
-      if (document.head.createShadowRoot || document.head.attachShadow) {
-        return suites.concat([suite, suite + '?wc-shadydom=true&dom=shadow']);
-      } else {
-        return suites.concat([suite]);
-      }
-    }, []));
+      'item-template.html',
+      'vaadin-combo-box-dropdown.html'
+    ]);
   </script>
 </body>
 
