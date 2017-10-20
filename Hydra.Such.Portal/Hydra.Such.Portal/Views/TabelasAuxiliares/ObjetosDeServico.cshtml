@@ -3,67 +3,56 @@
     ViewData["Title"] = "ObjetosDeServico";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+@*grid*@
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
-<link rel="import" href="~/lib/iron-form/iron-form.html" />
-<link rel="import" href="~/lib/paper-input/paper-input.html" />
-<link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
-<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-grid.html">
+@*checkbox*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+@*textfield*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+@*combobox*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html" />
+@*toast*@
+<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
+@*layout*@
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
-<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
-<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-grid.html">
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
-<h1 class="title">Objetos De Serviço</h1>
-<x-service-objects></x-service-objects>
-<dom-module id="x-service-objects">
-    <template>
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="~/css/main.css" />
-        
-        <style>
-            
-            input[readonly] {
-                border: 2px solid transparent;
-            }
+@*mixin*@
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+@*button*@
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+@*ironform*@
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+@*paperinput*@
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
 
-            input {
-                font: inherit;
-            }
+    <h1 class="title">Objetos De Serviço</h1>
+    <x-service-objects></x-service-objects>
+    <dom-module id="x-service-objects">
+        <template>
+            <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+            <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+            <link rel="stylesheet" href="~/css/main.css" />
 
-            paper-input {
-                max-width: 450px !important;
-            }
-            vaadin-grid#gridserviceobjects vaadin-grid-filter {
-                margin: 0 auto;
-            }
-
-            vaadin-grid#gridserviceobjects vaadin-grid-sorter {
-                margin: 0 auto;
-            }
-
-            vaadin-grid#gridserviceobjects paper-checkbox {
-                text-align: center;
-            }
-
-            --vaadin-grid-header-cell: {
-                font-size: 12px;
-            }
-           
-         
-        </style>
-        @*POPULATE GRID*@
+            <style>
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+                input {
+                    font: inherit;
+                }
+                --vaadin-grid-header-cell: {
+                    font-size: 12px;
+                }
+            </style>
+            @*POPULATE GRID*@
         <iron-ajax url="/TabelasAuxiliares/GetServiceObjectsData"
                    last-response="{{result}}"
                    method="post"
@@ -71,7 +60,7 @@
                    handle-as="json"
                    id="ajax_create"
                    content-type="application/json"></iron-ajax>
-        
+
         @*POPULATE GRID Update*@
         <iron-ajax url="/TabelasAuxiliares/UpdateServiceObjects"
                    last-response="{{result}}"
@@ -95,7 +84,7 @@
                     <tr>
                         <td width="20%"><vaadin-text-field id="piDescription" label="Descrição"></vaadin-text-field></td>
                         <td width="10%"><vaadin-checkbox id="pcBlocked"> Bloqueado </vaadin-checkbox></td>
-                        <td width="20%">  
+                        <td width="20%">
                             <vaadin-combo-box items="[[AreaCodeData]]" item-value-path="id" item-label-path="value" value="{{ddAreaCode}}" label="Código Área">
                                 <template>
                                     <table>
@@ -107,40 +96,44 @@
                                 </template>
                             </vaadin-combo-box>
                         </td>
-                        <td ><paper-button  id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button></td>
+                        <td><paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button></td>
                     </tr>
                 </table>
             </form>
         </iron-form>
         <vaadin-grid id="gridserviceobjects" aria-label="ProfileModelsTabel" items="[[result]]" class="grid">
-            <vaadin-grid-column>
+            <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code" />
                 </template>
                 <template>
-                    <vaadin-text-field id="piDescription"value="{{item.code}}" disabled ></vaadin-text-field></template>
+                    <vaadin-text-field id="piDescription" value="{{item.code}}" disabled></vaadin-text-field>
+                </template>
             </vaadin-grid-column>
-            <vaadin-grid-column>
+            <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.description}}"></vaadin-text-field></template>
+                    <vaadin-text-field value="{{item.description}}"></vaadin-text-field>
+                </template>
             </vaadin-grid-column>
-            <vaadin-grid-column>
+            <vaadin-grid-column resizable>
                 <template class="header">
-                    <p class="alignCenter">Bloqueado</p>
-                    <vaadin-grid-filter path="blocked" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
+                    <p class="alignCenter">
+                        <vaadin-grid-filter path="blocked" value="[[_filterActive]]">
+                            <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                        </vaadin-grid-filter>
+                        Bloqueado
+                    </p>
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.blocked}}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column>
+            <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="areaCode">Código Área</vaadin-grid-sorter>
                 </template>
@@ -175,78 +168,79 @@
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
-<script>
-    document.addEventListener('WebComponentsReady',
-        function() {
-            Polymer({
-                is: 'x-service-objects',
-                properties: {
-                    ddAreaCode: {
-                        type: String,
-                        notify: true,
-                        value: ""
+
+    <script>
+        document.addEventListener('WebComponentsReady',
+            function () {
+                Polymer({
+                    is: 'x-service-objects',
+                    properties: {
+                        ddAreaCode: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _filterActive: {
+                            type: Boolean,
+                            value: true
+                        }
                     },
-                    _filterActive: {
-                        type: Boolean,
-                        value:true
-                    }
-                },
-                ready: function () {
-                    this.$.ajax_create.generateRequest();
-                },
-                openToast: function (message) {
-                    this.$.ToastMessage.text = message;
-                    this.$.ToastMessage.open();
-                },
-                _createAccessProfile: function () {
-                      
-                    if (this.$.piDescription.value == "" || this.$.piDescription.value == null) {
-                        this.openToast('É obrigatório preencher a Descrição.');
-                    } else {
-                        var thisLine = {
-                            description: this.$.piDescription.value,
-                            blocked: this.$.pcBlocked.checked,
-                            areaCode: this.ddAreaCode
-                        };
-                        if (this.result == null) {
-                            this.result = thisLine;
+                    ready: function () {
+                        this.$.ajax_create.generateRequest();
+                    },
+                    openToast: function (message) {
+                        this.$.ToastMessage.text = message;
+                        this.$.ToastMessage.open();
+                    },
+                    _createAccessProfile: function () {
+
+                        if (this.$.piDescription.value == "" || this.$.piDescription.value == null) {
+                            this.openToast('É obrigatório preencher a Descrição.');
+                        } else {
+                            var thisLine = {
+                                description: this.$.piDescription.value,
+                                blocked: this.$.pcBlocked.checked,
+                                areaCode: this.ddAreaCode
+                            };
+                            if (this.result == null) {
+                                this.result = thisLine;
+                            }
+                            else {
+                                this.result.push(thisLine);
+                            }
+                            this.$.ajax_update.body = JSON.stringify(this.result);
+                            this.$.ajax_update.generateRequest();
+                            this.$.gridserviceobjects.clearCache();
                         }
-                        else {
-                            this.result.push(thisLine);
-                        }
+                    },
+                    _update: function () {
                         this.$.ajax_update.body = JSON.stringify(this.result);
                         this.$.ajax_update.generateRequest();
                         this.$.gridserviceobjects.clearCache();
-                    }
-                },
-                _update: function () {
-                    this.$.ajax_update.body = JSON.stringify(this.result);
-                    this.$.ajax_update.generateRequest();
-                    this.$.gridserviceobjects.clearCache();
-                },
-                _delete: function (e) {
-                    var index = this.result.indexOf(e.model.item);
-                    this.result.splice(index, 1);
-                    this.$.ajax_update.body = JSON.stringify(this.result);
-                    this.$.ajax_update.generateRequest();
-                    this.$.gridserviceobjects.clearCache();
-                },
-                _cancel: function () {
-                    this.$.ajax_create.generateRequest();
-                    this.$.gridserviceobjects.clearCache();
-                },
-                _updateResponse: function (e) {
-                    var self = this;
-                    if (e.detail.status === 200) {
-                        this.openToast("Tabela atualizada.");
+                    },
+                    _delete: function (e) {
+                        var index = this.result.indexOf(e.model.item);
+                        this.result.splice(index, 1);
+                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.generateRequest();
+                        this.$.gridserviceobjects.clearCache();
+                    },
+                    _cancel: function () {
                         this.$.ajax_create.generateRequest();
                         this.$.gridserviceobjects.clearCache();
+                    },
+                    _updateResponse: function (e) {
+                        var self = this;
+                        if (e.detail.status === 200) {
+                            this.openToast("Tabela atualizada.");
+                            this.$.ajax_create.generateRequest();
+                            this.$.gridserviceobjects.clearCache();
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        }
                     }
-                    else {
-                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
-                    }
-                }
+                });
             });
-        });
-</script>
+    </script>
 </dom-module>
