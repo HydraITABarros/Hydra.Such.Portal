@@ -343,43 +343,82 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAllProjectDiary()
+        public JsonResult GetAllProjectDiary(string projectNo)
         {
-            List<ProjectDiaryViewModel> dp = DBProjectDiary.GetAll(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
+            if (projectNo == null || projectNo == "")
             {
-                LineNo = x.NºLinha,
-                ProjectNo = x.NºProjeto,
-                Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
-                MovementType = x.TipoMovimento,
-                Type = x.Tipo,
-                Code = x.Código,
-                Description = x.Descrição,
-                Quantity = x.Quantidade,
-                MeasurementUnitCode = x.CódUnidadeMedida,
-                LocationCode = x.CódLocalização,
-                ProjectContabGroup = x.GrupoContabProjeto,
-                RegionCode = x.CódigoRegião,
-                FunctionalAreaCode = x.CódigoÁreaFuncional,
-                ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
-                User = x.Utilizador,
-                UnitCost = x.CustoUnitário,
-                TotalCost = x.CustoTotal,
-                UnitPrice = x.PreçoUnitário,
-                TotalPrice = x.PreçoTotal,
-                Billable = x.Faturável,
-                Registered = x.Registado
-            }).ToList();
-            return Json(dp);
+                List<ProjectDiaryViewModel> dp = DBProjectDiary.GetAll(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
+                {
+                    LineNo = x.NºLinha,
+                    ProjectNo = x.NºProjeto,
+                    Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                    MovementType = x.TipoMovimento,
+                    Type = x.Tipo,
+                    Code = x.Código,
+                    Description = x.Descrição,
+                    Quantity = x.Quantidade,
+                    MeasurementUnitCode = x.CódUnidadeMedida,
+                    LocationCode = x.CódLocalização,
+                    ProjectContabGroup = x.GrupoContabProjeto,
+                    RegionCode = x.CódigoRegião,
+                    FunctionalAreaCode = x.CódigoÁreaFuncional,
+                    ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
+                    User = x.Utilizador,
+                    UnitCost = x.CustoUnitário,
+                    TotalCost = x.CustoTotal,
+                    UnitPrice = x.PreçoUnitário,
+                    TotalPrice = x.PreçoTotal,
+                    Billable = x.Faturável,
+                    Registered = x.Registado
+                }).ToList();
+                return Json(dp);
+            }
+            else
+            {
+                List<ProjectDiaryViewModel> dp = DBProjectDiary.GetByProjectNo(projectNo, User.Identity.Name).Select(x => new ProjectDiaryViewModel()
+                {
+                    LineNo = x.NºLinha,
+                    ProjectNo = x.NºProjeto,
+                    Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                    MovementType = x.TipoMovimento,
+                    Type = x.Tipo,
+                    Code = x.Código,
+                    Description = x.Descrição,
+                    Quantity = x.Quantidade,
+                    MeasurementUnitCode = x.CódUnidadeMedida,
+                    LocationCode = x.CódLocalização,
+                    ProjectContabGroup = x.GrupoContabProjeto,
+                    RegionCode = x.CódigoRegião,
+                    FunctionalAreaCode = x.CódigoÁreaFuncional,
+                    ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
+                    User = x.Utilizador,
+                    UnitCost = x.CustoUnitário,
+                    TotalCost = x.CustoTotal,
+                    UnitPrice = x.PreçoUnitário,
+                    TotalPrice = x.PreçoTotal,
+                    Billable = x.Faturável,
+                    Registered = x.Registado
+                }).ToList();
+                return Json(dp);
+            }
         }
 
         [HttpPost]
-        public JsonResult UpdateProjectDiary([FromBody] List<ProjectDiaryViewModel> dp)
+        public JsonResult UpdateProjectDiary([FromBody] List<ProjectDiaryViewModel> dp, string projectNo)
         {
-            // Get All
-            List<DiárioDeProjeto> previousList = DBProjectDiary.GetAll(User.Identity.Name);
+            List<DiárioDeProjeto> previousList;
+            if (projectNo == null || projectNo == "")
+            {
+                // Get All
+                previousList = DBProjectDiary.GetAll(User.Identity.Name);
+            }
+            else
+            {
+                previousList = DBProjectDiary.GetByProjectNo(projectNo, User.Identity.Name);
+            }
+
             //previousList.RemoveAll(x => !dp.Any(u => u.LineNo == x.NºLinha));
             //previousList.ForEach(x => DBProjectDiary.Delete(x));
-
             foreach (DiárioDeProjeto line in previousList)
             {
                 if (!dp.Any(x => x.LineNo == line.NºLinha))
