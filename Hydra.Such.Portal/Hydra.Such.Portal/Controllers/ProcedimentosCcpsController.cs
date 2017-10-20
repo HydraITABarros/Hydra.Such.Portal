@@ -11,11 +11,87 @@ using Hydra.Such.Portal.Configurations;
 using System.Net.Http;
 using System.Net;
 using Newtonsoft.Json;
+using Hydra.Such.Data.ViewModel.CCP;
+using Hydra.Such.Data.Logic;
+using Hydra.Such.Data.Logic.CCP;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
+
 
 namespace Hydra.Such.Portal.Controllers
 {
+    [Authorize]
     public class ProcedimentosCcpsController : Controller
     {
+        
+
+        #region Views
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult Detalhes(string id)
+        {
+            ViewBag.No = id == null ? "" : id;
+            return View();
+        }
+        #endregion
+
+        [HttpPost]
+        public JsonResult GetAllProcedimentos()
+        {
+            List<ProcedimentoCCPView> result = DBProcedimentosCCP.GetAllProcedimentosByViewToList();
+
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProcedimentoDetails([FromBody] ProcedimentoCCPView data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    ProcedimentosCcp proc = DBProcedimentosCCP.GetProcedimentoById(data.No);
+                    if (proc != null)
+                    {
+                        ProcedimentoCCPView result = CCPFunctions.CastProcCcpToProcCcpView(proc);
+
+                        return Json(result);
+                    }
+
+                    return Json(new ProcedimentoCCPView());
+                }
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
+            
+            return Json(false);
+        }
+
+        public JsonResult CreateProcedimento([FromBody] ProcedimentoCCPView data)
+        {
+            try
+            {
+                if(data != null)
+                {
+                    Configuração config = DBConfigurations.GetById(1);
+                    //int NumSerieProcedimentos = config.n
+                }
+
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
+            return Json(false);
+        }
+        /* zpgm. 
         private readonly SuchDBContext _context;
 
         public ProcedimentosCcpsController(SuchDBContext context)
@@ -166,5 +242,6 @@ namespace Hydra.Such.Portal.Controllers
         {
             return _context.ProcedimentosCcp.Any(e => e.Nº == id);
         }
+        */
     }
 }

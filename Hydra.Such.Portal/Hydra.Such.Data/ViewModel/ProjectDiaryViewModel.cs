@@ -31,6 +31,7 @@ namespace Hydra.Such.Data.ViewModel
         //public string ExternalGuideNo { get; set; }
         public string InvoiceToClientNo { get; set; }
         public string CommitmentNumber { get; set; }
+        //public string InvoiceToClientNo { get; set; }
         //public string RequisitionNo { get; set; }
         //public int? RequisitionLineNo { get; set; }
         //public string Driver { get; set; }
@@ -49,6 +50,7 @@ namespace Hydra.Such.Data.ViewModel
         //public string EmployeeNo { get; set; }
         //public decimal? ReturnedQuantity { get; set; }
         //public DateTime? ConsumptionDate { get; set; }
+        public bool? Registered { get; set; }
 
         //public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
         //public LinhasRequisição Nº { get; set; }

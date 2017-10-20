@@ -1,10 +1,19 @@
 ﻿
 @{
-    ViewData["Title"] = "Detalhes";
+    ViewData["Title"] = "Detalhes Folha de Horas - Engenharia - Such";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Folha de Horas FH0001</h2>
-<link rel="import" href="~/elements/folhasdehoras/folhadehora_details.html">
+@if (ViewBag.FolhaDeHorasNo == "")
+{
+    <h2>Criar nova Folha de Horas</h2>
+}
+else
+{
+    <h2>Folha de Horas @ViewBag.FolhaDeHorasNo</h2>
+}
 
-<x-folhadehoradetails _folhadehoraid="" _areaid="2"></x-folhadehoradetails>
+
+<link rel="import" href="/elements/folhasdehoras/folhadehora_details.html">
+
+<x-folhadehoradetails _folhadehoraid="@ViewBag.FolhaDeHorasNo" _areaid="1"></x-folhadehoradetails>

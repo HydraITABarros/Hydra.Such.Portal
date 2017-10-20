@@ -56,8 +56,8 @@
         <vaadin-grid aria-label="FolhasDeHorasGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="FolhaDeHorasNo">Nº Folha de Horas</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="FolhaDeHorasNo" />
+                    <vaadin-grid-sorter path="folhaDeHorasNo">Nº Folha de Horas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="folhaDeHorasNo" />
                 </template>
                 <template>
                     {{item.folhaDeHorasNo}}
@@ -66,8 +66,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="Area">Cód. Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="Area" />
+                    <vaadin-grid-sorter path="areaText">Cód. Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="areaText" />
                 </template>
                 <template>
                     {{item.areaText}}
@@ -76,8 +76,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="ProjectNo">Nº Projecto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="ProjectNo" />
+                    <vaadin-grid-sorter path="projectNo">Nº Projecto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projectNo" />
                 </template>
                 <template>
                     {{item.projectNo}}
@@ -86,8 +86,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="EmployeeNo">Nº Empregado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="EmployeeNo" />
+                    <vaadin-grid-sorter path="employeeNo">Nº Empregado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="employeeNo" />
                 </template>
                 <template>
                     {{item.employeeNo}}
@@ -96,8 +96,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="DateDepartureTime">Data Hora de Partida</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="DateDepartureTime" />
+                    <vaadin-grid-sorter path="dateDepartureTimeText">Data Hora de Partida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dateDepartureTimeText" />
                 </template>
                 <template>
                     {{item.dateDepartureTimeText}}
@@ -106,8 +106,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="DateTimeArrival">Data Hora de Chegada</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="DateTimeArrival" />
+                    <vaadin-grid-sorter path="dateTimeArrivalText">Data Hora de Chegada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dateTimeArrivalText" />
                 </template>
                 <template>
                     {{item.dateTimeArrivalText}}
@@ -116,8 +116,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="TypeDeslocation">Tipo de Deslocação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="TypeDeslocation" />
+                    <vaadin-grid-sorter path="typeDeslocationText">Tipo de Deslocação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="typeDeslocationText" />
                 </template>
                 <template>
                     {{item.typeDeslocationText}}
@@ -126,8 +126,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="CodeTypeKms">Código do Tipo de Kms</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="CodeTypeKms" />
+                    <vaadin-grid-sorter path="codeTypeKms">Código do Tipo de Kms</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeTypeKms" />
                 </template>
                 <template>
                     {{item.codeTypeKms}}
@@ -136,8 +136,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="DisplacementOutsideCity">Deslocação Fora do Concelho</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="DisplacementOutsideCity" />
+                    <vaadin-grid-sorter path="displacementOutsideCityText">Deslocação Fora do Concelho</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="displacementOutsideCityText" />
                 </template>
                 <template>
                     {{item.displacementOutsideCityText}}
@@ -146,8 +146,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="Validators">Validadores</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="Validators" />
+                    <vaadin-grid-sorter path="validators">Validadores</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="validators" />
                 </template>
                 <template>
                     {{item.validators}}
@@ -156,8 +156,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="Status">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="Status" />
+                    <vaadin-grid-sorter path="statusText">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="statusText" />
                 </template>
                 <template>
                     {{item.statusText}}
@@ -166,8 +166,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="CreatedBy">Criado Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="CreatedBy" />
+                    <vaadin-grid-sorter path="createdBy">Criado Por</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createdBy" />
                 </template>
                 <template>
                     {{item.createdBy}}
@@ -176,8 +176,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="DateTimeCreation">Data Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="DateTimeCreation" />
+                    <vaadin-grid-sorter path="dateTimeCreationText">Data Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dateTimeCreationText" />
                 </template>
                 <template>
                     {{item.dateTimeCreationText}}
@@ -186,8 +186,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="DateTimeLastState">Data Último Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="DateTimeLastState" />
+                    <vaadin-grid-sorter path="dateTimeLastStateText">Data Último Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dateTimeLastStateText" />
                 </template>
                 <template>
                     {{item.dateTimeLastStateText}}
@@ -196,8 +196,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="UserCreation">Utilizador Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="UserCreation" />
+                    <vaadin-grid-sorter path="userCreation">Utilizador Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="userCreation" />
                 </template>
                 <template>
                     {{item.userCreation}}
@@ -206,8 +206,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="DateTimeModification">Data Modificação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="DateTimeModification" />
+                    <vaadin-grid-sorter path="dateTimeModificationText">Data Modificação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dateTimeModificationText" />
                 </template>
                 <template>
                     {{item.dateTimeModificationText}}
@@ -216,8 +216,8 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="UserModification">Utilizador Modificação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="UserModification" />
+                    <vaadin-grid-sorter path="userModification">Utilizador Modificação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="userModification" />
                 </template>
                 <template>
                     {{item.userModification}}
@@ -242,12 +242,12 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "/FolhasDeHoras/Detalhes/" + item.id;
+                        window.location.href = "/FolhasDeHoras/Detalhes/" + item.folhaDeHorasNo;
                     }
                 },
                 _create: function (item) {
                     if (item != null) {
-                        window.location.href = "/FolhasDeHoras/Detalhes/0";
+                        window.location.href = "/FolhasDeHoras/Detalhes/";
                     }
                 },
                 ready: function () {
