@@ -357,6 +357,7 @@ ul.nav li:hover {
     padding: 5px;
     /*margin: 0 5px;*/
 }
+
     .subMenu button {
         border: none;
         margin: 0 5px;
@@ -391,6 +392,7 @@ ul.nav li:hover {
         color: white;
         cursor: pointer;
     }
+
     .tablinks:focus {
         text-transform: none;
         font-weight: normal;
@@ -530,13 +532,20 @@ ul.nav li:hover {
         padding: 10px 0;
     }
 
-.inlineForm td {
-    height: 20px;
-    padding: 5px;
-    margin: 0 15px;
-    vertical-align: middle !important;
-    border: none !important;
+.inlineForm {
+    display: inline-block;
 }
+
+    .inlineForm td {
+        height: 30px;
+        padding: 0px;
+        vertical-align: bottom !important;
+        border: none !important;
+    }
+
+        .inlineForm td > * {
+            margin: 0 7px 3px 7px;
+        }
 /* Forms */
 
 /* Polymer Elements Defautls */

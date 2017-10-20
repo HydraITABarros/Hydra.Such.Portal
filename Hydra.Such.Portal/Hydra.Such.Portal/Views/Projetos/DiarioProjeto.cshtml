@@ -340,8 +340,9 @@
         <iron-ajax url="/Projetos/GetAllProjectDiary"
                    last-response="{{result}}"
                    id="ajax_getall"
-                   auto
                    method="post"
+                   auto
+                   params = '{"projectNo":"@ViewBag.projectNo"}'
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
@@ -350,6 +351,7 @@
                    id="ajax_update"
                    method="post"
                    on-response="_updateResponse"
+                   params = '{"projectNo":"@ViewBag.projectNo"}'
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
@@ -488,11 +490,11 @@
                 </template>
                 <template>
                     @*<paper-input type="number" name="contabGroup" disabled value="{{item.projectContabGroup}}"></paper-input>*@
-                    <vaadin-combo-box items="[[ContabGroupData]]" item-value-path="code" item-label-path="code" value="{{item.projectContabGroup}}">
+                    <vaadin-combo-box items="[[ContabGroupData]]" item-value-path="id" item-label-path="id" value="{{item.projectContabGroup}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
-                                    <div>[[item.code]]</div>
+                                    <div>[[item.id]]</div>
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
@@ -517,11 +519,11 @@
                 </template>
                 <template>
                     @*<paper-input type="text" name="measurementUnitCode" required maxlength="20" value="{{item.measurementUnitCode}}"></paper-input>*@
-                    <vaadin-combo-box items="[[MeasureUnit]]" item-value-path="code" item-label-path="description" value="{{item.measurementUnitCode}}">
+                    <vaadin-combo-box items="[[MeasureUnit]]" item-value-path="id" item-label-path="value" value="{{item.measurementUnitCode}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
-                                    <div>[[item.description]]</div>
+                                    <div>[[item.value]]</div>
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
@@ -536,11 +538,11 @@
                 </template>
                 <template>
                     @*<paper-input type="text" name="locationCode" required maxlength="20" value="{{item.locationCode}}"></paper-input>*@
-                    <vaadin-combo-box items="[[Locations]]" item-value-path="code" item-label-path="name" value="{{item.locationCode}}">
+                    <vaadin-combo-box items="[[Locations]]" item-value-path="id" item-label-path="value" value="{{item.locationCode}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
-                                    <div>[[item.name]]</div>
+                                    <div>[[item.value]]</div>
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
@@ -793,13 +795,20 @@
                     },
                 },
 
-                ready: function ()
-                {
-                    if ("@ViewBag.ProjectNo" != "")
-                    {
+                ready: function () {
+                    if ("@ViewBag.ProjectNo" != "") {
                         this.$.projectList.value = "@ViewBag.ProjectNo";
                         this.disabledProjectNo = true;
+
+                        //Add new fields
+                        //_projectChange();
                     }
+                    //else
+                    //{
+                    //    this.$.ajax_getall.generateRequest();
+                    //    this.$.ajax_getall.body = JSON.stringify("");
+                    //    this.$.projectDiaryProject.clearCache();
+                    //}
                 },
 
                 openToast: function (message) {
@@ -1000,7 +1009,6 @@
                         this.codeProjectContabGroup = this.related.contabGroup;
                         this.codeResponsabilityCenter = this.related.responsabilityCenter;
                     }
-
                 },
 
                 _updateRegisterResponse: function (e) {

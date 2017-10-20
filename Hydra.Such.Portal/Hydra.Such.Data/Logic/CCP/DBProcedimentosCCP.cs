@@ -3,8 +3,6 @@ using Hydra.Such.Data.ViewModel.CCP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Web;
 
 namespace Hydra.Such.Data.Logic.CCP
 {
