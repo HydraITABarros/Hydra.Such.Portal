@@ -342,6 +342,7 @@
                    id="ajax_getall"
                    method="post"
                    auto
+                   params = '{"projectNo":"@ViewBag.projectNo"}'
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
@@ -350,6 +351,7 @@
                    id="ajax_update"
                    method="post"
                    on-response="_updateResponse"
+                   params = '{"projectNo":"@ViewBag.projectNo"}'
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
@@ -793,14 +795,11 @@
                     },
                 },
 
-                ready: function ()
-                {
-                    if ("@ViewBag.ProjectNo" != "")
-                    {
+                ready: function () {
+                    if ("@ViewBag.ProjectNo" != "") {
                         this.$.projectList.value = "@ViewBag.ProjectNo";
                         this.disabledProjectNo = true;
 
-                        debugger;;
                         //Add new fields
                         //_projectChange();
                     }
