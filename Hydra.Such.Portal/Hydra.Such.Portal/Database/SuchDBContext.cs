@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Hydra.Such.Data.Database
+namespace Hydra.Such.Portal.Database
 {
     public partial class SuchDBContext : DbContext
     {
@@ -607,10 +607,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumeraçãoContratos).HasColumnName("Numeração Contratos");
 
                 entity.Property(e => e.NumeraçãoFolhasDeHoras).HasColumnName("Numeração Folhas de Horas");
-
-                entity.Property(e => e.NumeraçãoProcedimentoAquisição).HasColumnName("Numeração Procedimento Aquisição");
-
-                entity.Property(e => e.NumeraçãoProcedimentoSimplificado).HasColumnName("Numeração Procedimento Simplificado");
 
                 entity.Property(e => e.NumeraçãoProjetos).HasColumnName("Numeração Projetos");
 

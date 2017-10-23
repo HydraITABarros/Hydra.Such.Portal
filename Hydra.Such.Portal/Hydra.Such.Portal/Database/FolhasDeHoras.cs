@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Hydra.Such.Data.Database
+namespace Hydra.Such.Portal.Database
 {
     public partial class FolhasDeHoras
     {

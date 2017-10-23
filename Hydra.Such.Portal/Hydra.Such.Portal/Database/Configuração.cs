@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Hydra.Such.Data.Database
+namespace Hydra.Such.Portal.Database
 {
     public partial class Configuração
     {
@@ -13,8 +13,6 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorCriação { get; set; }
         public string UtilizadorModificação { get; set; }
-        public int? NumeraçãoProcedimentoAquisição { get; set; }
-        public int? NumeraçãoProcedimentoSimplificado { get; set; }
 
         public ConfiguraçãoNumerações NumeraçãoContratosNavigation { get; set; }
         public ConfiguraçãoNumerações NumeraçãoFolhasDeHorasNavigation { get; set; }

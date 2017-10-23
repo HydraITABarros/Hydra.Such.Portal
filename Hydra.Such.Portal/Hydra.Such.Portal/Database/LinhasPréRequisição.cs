@@ -1,30 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Hydra.Such.Data.Database
+namespace Hydra.Such.Portal.Database
 {
-    public partial class LinhasFaturaçãoContrato
+    public partial class LinhasPréRequisição
     {
-        public string NºContrato { get; set; }
-        public int GrupoFatura { get; set; }
+        public string NºPréRequisição { get; set; }
         public int NºLinha { get; set; }
-        public string Tipo { get; set; }
+        public int? Tipo { get; set; }
         public string Código { get; set; }
         public string Descrição { get; set; }
-        public decimal? Quantidade { get; set; }
-        public string CódUnidadeMedida { get; set; }
-        public decimal? PreçoUnitário { get; set; }
-        public decimal? ValorVenda { get; set; }
+        public string CódigoLocalização { get; set; }
+        public string CódigoUnidadeMedida { get; set; }
+        public decimal? QuantidadeARequerer { get; set; }
         public string CódigoRegião { get; set; }
         public string CódigoÁreaFuncional { get; set; }
         public string CódigoCentroResponsabilidade { get; set; }
-        public int? TipoRecurso { get; set; }
-        public int? CódigoServiço { get; set; }
+        public string NºProjeto { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
 
-        public Serviços CódigoServiçoNavigation { get; set; }
+        public Projetos NºProjetoNavigation { get; set; }
+        public PréRequisição NºPréRequisiçãoNavigation { get; set; }
     }
 }
