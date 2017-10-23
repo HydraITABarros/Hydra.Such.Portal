@@ -97,8 +97,8 @@
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="row">
                 <div class="col-lg-12">
-                    <paper-button raised id="btnProjectMovements" class="" onclick="_OpenProjectMovements()" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
-                    <paper-button raised id="btnProjectDiary" class="" onclick="_OpenProjectDiary()" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
+                    <paper-button raised id="btnProjectMovements" class="" on-tap="_openProjectMovements" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
+                    <paper-button raised id="btnProjectDiary" class=""  on-tap="_openProjectMovements" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
                 </div>
             </div>
         </template>
@@ -319,6 +319,7 @@
                     </div>
                     <div class="col-lg-3">
                         <paper-input type="text" value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" required label="Envio-a Endereço"></paper-input>
+
                     </div>
                     <div class="col-lg-3">
                         <paper-input type="text" value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" required label="Envio-a Localidade"> </paper-input>
@@ -367,7 +368,15 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.budgetContractNo}}" id="BudgetContractNo" name="BudgetContractNo" required label="Nº Contrato Orçamento"> </paper-input>
+                        <vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.budgetContractNo}}" label="Nº Contrato Orçamento">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
                         <center>
@@ -512,7 +521,6 @@
                 _responseValidatorProcessor: function (data) {
                     var self = this;
                     if (data.detail.status === 200) {
-                        debugger;;
                         if (this.validateResponse == "") {
                             this._executeRequest("/Projetos/CreateProject", this.data)
                         } else {
@@ -561,10 +569,10 @@
                 },
 
                 //BUTTONS
-                _OpenProjectMovements: function (url, data) {
+                _openProjectMovements: function (url, data) {
                     window.location.replace("/Projetos/MovimentosDeProjeto/" + this.data.projectNo);
                 },
-                _OpenProjectDiary: function (url, data) {
+                _openProjectDiary: function (url, data) {
                     window.location.replace("/Projetos/DiarioDeProjetos/" + this.data.projectNo);
                 }
                 
