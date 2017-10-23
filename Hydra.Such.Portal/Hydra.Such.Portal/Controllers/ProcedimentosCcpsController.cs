@@ -31,6 +31,19 @@ namespace Hydra.Such.Portal.Controllers
             return View();
         }
 
+        // zpgm.< view that will return a Pedidos Simplificados list
+        public IActionResult PedidoSimplificado()
+        {
+            return View();
+        }
+        // zpgm.>
+
+        // zpgm.< view that will return a Pedidos de Aquisição list
+        public IActionResult PedidoAquisicao()
+        {
+            return View();
+        }
+        // zpgm.>
         public IActionResult Detalhes(string id)
         {
             ViewBag.No = id == null ? "" : id;
