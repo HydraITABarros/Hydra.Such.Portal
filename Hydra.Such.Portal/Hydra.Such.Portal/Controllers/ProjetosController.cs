@@ -120,7 +120,7 @@ namespace Hydra.Such.Portal.Controllers
             ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
 
             //Validate if ProjectNo is valid
-            if (data.ProjectNo != "" && !CfgNumeration.Manual.Value)
+            if (!(data.ProjectNo == "" || data.ProjectNo == null) && !CfgNumeration.Manual.Value)
             {
                 return Json("A numeração configurada para projetos não permite inserção manual.");
             }
@@ -157,7 +157,7 @@ namespace Hydra.Such.Portal.Controllers
                     //Get Project Numeration
                     Configuração Configs = DBConfigurations.GetById(1);
                     int ProjectNumerationConfigurationId = Configs.NumeraçãoProjetos.Value;
-                    data.ProjectNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, data.ProjectNo == "");
+                    data.ProjectNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ProjectNo == "" || data.ProjectNo == null));
 
                     if (data.ProjectNo != null)
                     {
@@ -652,7 +652,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAutorizacaoFaturacao([FromBody] ProjectDiaryViewModel data)
         {
-            List<ProjectDiaryViewModel> result = DBProjectDiary.GetAll().Select(x => new ProjectDiaryViewModel()
+            List<ProjectDiaryViewModel> result = DBProjectDiary.GetAll(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
             {
                 LineNo = x.NºLinha,
                 ProjectNo = x.NºProjeto,

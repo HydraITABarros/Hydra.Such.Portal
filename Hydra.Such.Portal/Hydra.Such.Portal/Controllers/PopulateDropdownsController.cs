@@ -114,6 +114,69 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetFeeUnits()
+        {
+            List<EnumData> result = EnumerablesFixed.FeeUnits;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetPaymentTerms()
+        {
+            List<DDMessageString> result = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractStatus()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractStatus;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractChangeStatus()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractChangeStatus;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractBillingTypes()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractBillingTypes;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractMaintenanceTypes()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractMaintenanceTypes;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractInvoicePeriods()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractInvoicePeriods;
+            return Json(result);
+        }
+
+
+
+        [HttpPost]
+        public JsonResult GetContractInvoiceGroups()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractInvoiceGroups;
+
+            return Json(result);
+        }
+
         //STORE PROCEDURES
         [HttpPost]
         public JsonResult GetProjectDiaryMovements()
