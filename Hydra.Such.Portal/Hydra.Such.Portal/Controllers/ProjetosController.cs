@@ -218,7 +218,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 //Delete Created Project on Database
                                 DBProjects.Delete(cProject.NºProjeto);
-                            
+                                
                                 data.eReasonCode = 3;
                                 data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
                             }

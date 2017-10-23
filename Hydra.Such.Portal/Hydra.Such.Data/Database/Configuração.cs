@@ -18,6 +18,8 @@ namespace Hydra.Such.Data.Database
 
         public ConfiguraçãoNumerações NumeraçãoContratosNavigation { get; set; }
         public ConfiguraçãoNumerações NumeraçãoFolhasDeHorasNavigation { get; set; }
+        public ConfiguraçãoNumerações NumeraçãoProcedimentoAquisiçãoNavigation { get; set; }
+        public ConfiguraçãoNumerações NumeraçãoProcedimentoSimplificadoNavigation { get; set; }
         public ConfiguraçãoNumerações NumeraçãoProjetosNavigation { get; set; }
     }
 }

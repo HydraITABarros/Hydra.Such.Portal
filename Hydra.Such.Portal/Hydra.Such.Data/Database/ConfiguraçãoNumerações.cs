@@ -9,6 +9,8 @@ namespace Hydra.Such.Data.Database
         {
             ConfiguraçãoNumeraçãoContratosNavigation = new HashSet<Configuração>();
             ConfiguraçãoNumeraçãoFolhasDeHorasNavigation = new HashSet<Configuração>();
+            ConfiguraçãoNumeraçãoProcedimentoAquisiçãoNavigation = new HashSet<Configuração>();
+            ConfiguraçãoNumeraçãoProcedimentoSimplificadoNavigation = new HashSet<Configuração>();
             ConfiguraçãoNumeraçãoProjetosNavigation = new HashSet<Configuração>();
         }
 
@@ -27,6 +29,8 @@ namespace Hydra.Such.Data.Database
 
         public ICollection<Configuração> ConfiguraçãoNumeraçãoContratosNavigation { get; set; }
         public ICollection<Configuração> ConfiguraçãoNumeraçãoFolhasDeHorasNavigation { get; set; }
+        public ICollection<Configuração> ConfiguraçãoNumeraçãoProcedimentoAquisiçãoNavigation { get; set; }
+        public ICollection<Configuração> ConfiguraçãoNumeraçãoProcedimentoSimplificadoNavigation { get; set; }
         public ICollection<Configuração> ConfiguraçãoNumeraçãoProjetosNavigation { get; set; }
     }
 }

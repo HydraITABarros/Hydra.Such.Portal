@@ -17,6 +17,7 @@
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html" />
 
 <h1 class="title">Detalhes Configuração Utilizadores</h1>
 
@@ -44,7 +45,7 @@
 
         <div class="row">
             <div class="col-lg-2">
-                    <paper-input type="text" value="{{data.idUser}}" id="idUser" name="idUser" required label="Id Utilizador" char-counter maxlength="50"> </paper-input>
+                    <vaadin-text-field value="{{data.idUser}}" id="idUser" name="idUser" required label="Id Utilizador" char-counter maxlength="50"> </vaadin-text-field>
             </div>
             <div class="col-lg-2">
                 <paper-input type="text" value="{{data.name}}" id="UserName" name="UserName" required label="Nome" char-counter maxlength="50"> </paper-input>

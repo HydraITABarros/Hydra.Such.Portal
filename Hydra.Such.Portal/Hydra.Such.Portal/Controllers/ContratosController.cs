@@ -234,7 +234,26 @@ namespace Hydra.Such.Portal.Controllers
                             ContratoDB.TaxaAprovisionamento = data.ProvisioningFee;
                             ContratoDB.PeríodoFatura = data.InvocePeriod;
                             ContratoDB.UtilizadorModificação = User.Identity.Name;
+                            ContratoDB = DBContracts.Update(ContratoDB);
 
+
+
+                            //Create/Update Contract Client Requests
+                            List<RequisiçõesClienteContrato> RCC = DBContractClientRequisition.GetByContract(ContratoDB.NºContrato);
+                            List<RequisiçõesClienteContrato> RCCToDelete = RCC.Where(x => !data.ClientRequisitions.Any(y => x.NºRequisiçãoCliente == x.NºRequisiçãoCliente)).ToList();
+
+                            RCC.ForEach(X =>
+                            {
+                                //if (RCCToDelete)
+                                //{
+
+                                //}
+                            });
+
+                            //Delete Contract Client Requests
+                            RCCToDelete.ForEach(x => DBContractClientRequisition.Delete(x));
+
+                            //Update Contract Invoice Texts
                         }
 
 
