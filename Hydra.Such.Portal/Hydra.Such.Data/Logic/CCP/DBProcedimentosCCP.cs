@@ -1,11 +1,8 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel.CCP;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Web;
 
 namespace Hydra.Such.Data.Logic.CCP
 {
@@ -14,11 +11,11 @@ namespace Hydra.Such.Data.Logic.CCP
         private static SuchDBContext context = new SuchDBContext();
 
         #region parse ProcedimentosCcp
-        public static List<ProcedimentosCcp> GetAllProcedimentosByTypeToList(int type)
+        public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoTypeToList(int type)
         {
             try
             {
-                return context.ProcedimentosCcp.Where(p => p.Tipo == type).ToList();
+                return context.ProcedimentosCcp.Where(p => p.TipoProcedimento == type).ToList();
             }
             catch(Exception e)
             {
@@ -119,12 +116,12 @@ namespace Hydra.Such.Data.Logic.CCP
         #endregion
 
         #region parse ProcedimentosCCPView
-        public static List<ProcedimentoCCPView> GetAllProcedimentosViewByTypeToList(int type)
+        public static List<ProcedimentoCCPView> GetAllProcedimentosViewByProcedimentoTypeToList(int type)
         {
-            List <ProcedimentosCcp> ProcList = GetAllProcedimentosByTypeToList(type);
+            List <ProcedimentosCcp> ProcList = GetAllProcedimentosByProcedimentoTypeToList(type);
             List<ProcedimentoCCPView> ProcViewList = new List<ProcedimentoCCPView>();
 
-            if (ProcList.Count == 0)
+            if (ProcList == null)
                 return null;
 
             try
@@ -147,7 +144,7 @@ namespace Hydra.Such.Data.Logic.CCP
             List<ProcedimentosCcp> ProcList = GetAllProcedimentosToList();
             List<ProcedimentoCCPView> ProcViewList = new List<ProcedimentoCCPView>();
 
-            if (ProcList.Count == 0)
+            if (ProcList == null)
                 return null;
 
             try

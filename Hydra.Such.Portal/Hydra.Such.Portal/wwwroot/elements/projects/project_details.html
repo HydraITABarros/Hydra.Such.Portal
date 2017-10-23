@@ -97,8 +97,8 @@
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="row">
                 <div class="col-lg-12">
-                    <paper-button raised id="btnProjectMovements" class="" on-tap="_openProjectMovements" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
-                    <paper-button raised id="btnProjectDiary" class=""  on-tap="_openProjectMovements" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
+                    <paper-button raised id="btnProjectMovements" class="" on-tap="_OpenProjectMovements" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
+                    <paper-button raised id="btnProjectDiary" class="" on-tap="_OpenProjectDiary" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
                 </div>
             </div>
         </template>
@@ -426,6 +426,7 @@
                     }
                 },
                 ready: function () {
+                    //debugger;;
                     //GET PROJECT DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this._projectid });
                     this.$.page_databound_ajax.generateRequest();
@@ -572,8 +573,8 @@
                 _openProjectMovements: function (url, data) {
                     window.location.replace("/Projetos/MovimentosDeProjeto/" + this.data.projectNo);
                 },
-                _openProjectDiary: function (url, data) {
-                    window.location.replace("/Projetos/DiarioDeProjetos/" + this.data.projectNo);
+                _OpenProjectDiary: function (url, data) {
+                    window.location.replace("/Projetos/DiarioProjeto/" + this.data.projectNo);
                 }
                 
             });

@@ -47,15 +47,15 @@
     "vaadin-demo-helpers": "^1.0.0"
   },
   "homepage": "https://github.com/vaadin/vaadin-date-picker",
-  "version": "2.0.5",
-  "_release": "2.0.5",
+  "version": "2.0.6",
+  "_release": "2.0.6",
   "_resolution": {
     "type": "version",
-    "tag": "v2.0.5",
-    "commit": "dbf45281282e9819220059003a394842f0c9f9df"
+    "tag": "v2.0.6",
+    "commit": "7c069dfef96a46237f1fd958d8d1a7798463ab8b"
   },
   "_source": "https://github.com/vaadin/vaadin-date-picker.git",
-  "_target": "^2.0.5",
+  "_target": "^2.0.6",
   "_originalSource": "vaadin/vaadin-date-picker",
   "_direct": true
 }

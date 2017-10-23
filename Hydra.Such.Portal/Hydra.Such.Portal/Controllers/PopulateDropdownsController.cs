@@ -502,6 +502,31 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        // zpgm.<populate dropdowns to use in Procedimentos CCP 
+        [HttpPost]
+        public JsonResult GetPocedimentosCcpProcedimentoType()
+        {
+            List<EnumData> ProcedimentoTypes = EnumerablesFixed.ProcedimentosCcpProcedimentoType;
+
+            return Json(ProcedimentoTypes);
+        }
+
+        [HttpPost]
+        public JsonResult GetProcedimentosCcpType()
+        {
+            List<EnumData> CCPTypes = EnumerablesFixed.ProcedimentosCcpType;
+            return Json(CCPTypes);
+        }
+
+        [HttpPost]
+        public JsonResult GetProcedimentosCcpStates()
+        {
+            List<EnumData> CCPStates = EnumerablesFixed.ProcedimentosCcpStates;
+
+            return Json(CCPStates);
+        }
+        // zpgm.>
     }
 
     public class DDMessage

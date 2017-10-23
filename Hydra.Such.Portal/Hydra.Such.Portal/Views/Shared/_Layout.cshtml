@@ -38,8 +38,8 @@
                         <ul class="sub-menu collapse" id="Engenharia">
                             @*<li>@Html.ActionLink("Contratos", "Contratos", "Engenharia")</li>
                             <li>@Html.ActionLink("Requisições", "Requisicoes", "Engenharia")</li>
-                            <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Engenharia")</li>
-                            <li>@Html.ActionLink("Folha de Horas", "Index", "FolhasDeHoras")</li>*@
+                            <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Engenharia")</li>*@
+                            <li>@Html.ActionLink("Folha de Horas", "Index", "FolhasDeHoras")</li>
                         </ul>
 
 
@@ -58,6 +58,7 @@
                         </li>
                         <ul class="sub-menu collapse" id="Nutricao">
                             <li>@Html.ActionLink("Projetos", "Projetos", "Nutricao")</li>
+                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos")</li>
                             @*<li>@Html.ActionLink("Contratos", "Contratos", "Nutricao")</li>
                             <li>@Html.ActionLink("Requisições", "Requisicoes", "Nutricao")</li>
                             <li>@Html.ActionLink("Fichas Técnicas de Pratos", "FichasTecnicasPratos", "Nutricao")</li>
@@ -88,7 +89,16 @@
                         </li>
                         <ul class="sub-menu collapse" id="PO">
                             <li>@Html.ActionLink("Projetos", "Projetos", "PO")</li>
+                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos")</li>
                             @*<li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "PO")</li>*@
+                        </ul>
+
+                        <li data-toggle="collapse" data-target="#NovasAreas" class="collapsed active">
+                            <a href="#"> Novas Áreas <span class="arrow"></span></a>
+                        </li>
+                        <ul class="sub-menu collapse" id="NovasAreas">
+                            <li>@Html.ActionLink("Projetos", "Projetos", "NovasAreas")</li>
+                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos")</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#Internacionalizacoes" class="collapsed active">
@@ -96,6 +106,7 @@
                         </li>
                         <ul class="sub-menu collapse" id="Internacionalizacoes">
                             <li>@Html.ActionLink("Projetos", "Projetos", "Internacionalizacoes")</li>
+                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos")</li>
                             @*<li>@Html.ActionLink("Contratos", "Contratos", "Internacionalizacoes")</li>
                             <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Internacionalizacoes")</li>*@
                         </ul>
@@ -116,6 +127,9 @@
                             @*<li>@Html.ActionLink("Receção de Mercadorias", "RececaoMercadorias", "Compras")</li>
                             <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras")</li>
                             <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Compras")</li>*@
+                            @* zpgm.< Procedimentos CCP menu *@
+                            <li>@Html.ActionLink("Procedimentos CCP", "Index", "ProcedimentosCcps")</li>
+                            @* zpgm.> *@
                         </ul>
 
                         <li data-toggle="collapse" data-target="#Administracao" class="collapsed active">

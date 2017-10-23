@@ -716,8 +716,8 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
-        // zpgm.<
-        public static readonly List<EnumData> ProcedimentosCcpTypes = new List<EnumData>()
+        // zpgm.< Enumerable types for Procedimentos CCP
+        public static readonly List<EnumData> ProcedimentosCcpProcedimentoType = new List<EnumData>()
         {
             new EnumData()
             {
@@ -729,6 +729,186 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 2,
                 Value = "Procedimento Simplificado"
+            }
+        };
+
+        public static readonly List<EnumData> ProcedimentosCcpType = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 0,
+                Value = ""
+            },
+
+            new EnumData()
+            {
+                Id = 1,
+                Value = "AD"
+            },
+
+            new EnumData()
+            {
+                Id = 2,
+                Value = "CP"
+            },
+
+            new EnumData()
+            {
+                Id = 3,
+                Value = "CLPQ"
+            },
+
+            new EnumData()
+            {
+                Id = 4,
+                Value = "PN"
+            },
+
+            new EnumData()
+            {
+                Id = 5,
+                Value = "PN"
+            },
+
+            new EnumData()
+            {
+                Id = 6,
+                Value = "DC"
+            },
+
+            new EnumData()
+            {
+                Id = 7,
+                Value = "CPI"
+            }
+        };
+
+        public static readonly List<EnumData> ProcedimentosCcpStates = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 0,
+                Value = "Inicial"
+            },
+
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Cabimento"
+            },
+
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Avaliação Imobilizado"
+            },
+
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Autorização CA Imobilizado"
+            },
+
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Fundamento Processual"
+            },
+
+            new EnumData()
+            {
+                Id = 5,
+                Value = "Fundamento Financeiro"
+            },
+
+            new EnumData()
+            {
+                Id = 6,
+                Value = "Fundamento Jurídico"
+            },
+
+            new EnumData()
+            {
+                Id = 7,
+                Value = "Pedido Aberto"
+            },
+
+            new EnumData()
+            {
+                Id = 8,
+                Value = "Autorização em Aberto"
+            },
+
+            new EnumData()
+            {
+                Id = 9,
+                Value = "Publicação Plataforma"
+            },
+
+            new EnumData()
+            {
+                Id = 10,
+                Value = "Recolha Proposta"
+            },
+
+            new EnumData()
+            {
+                Id = 11,
+                Value = "Relatório Preliminar Júri"
+            },
+
+            new EnumData()
+            {
+                Id = 12,
+                Value = "Audição Prévia"
+            },
+
+            new EnumData()
+            {
+                Id = 13,
+                Value = "Relatório Final"
+            },
+
+            new EnumData()
+            {
+                Id = 14,
+                Value = "Avaliação Jurídico Contrato"
+            },
+
+            new EnumData()
+            {
+                Id = 15,
+                Value = "Valor Adjudicado"
+            },
+
+            new EnumData()
+            {
+                Id = 16,
+                Value = "Pedido Adjudicado"
+            },
+
+            new EnumData()
+            {
+                Id = 17,
+                Value = "Autorização Adjudicação"
+            },
+
+            new EnumData()
+            {
+                Id = 18,
+                Value = "Adjudicação Fornecedor"
+            },
+
+            new EnumData()
+            {
+                Id = 19,
+                Value = "Final Processo"
+            },
+
+            new EnumData()
+            {
+                Id = 20,
+                Value = "Fechado"
             }
         };
         // zpgm.>
