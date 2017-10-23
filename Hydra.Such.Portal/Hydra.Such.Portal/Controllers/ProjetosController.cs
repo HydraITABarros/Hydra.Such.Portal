@@ -652,7 +652,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAutorizacaoFaturacao([FromBody] ProjectDiaryViewModel data)
         {
-            List<ProjectDiaryViewModel> result = DBProjectDiary.GetAll().Select(x => new ProjectDiaryViewModel()
+            List<ProjectDiaryViewModel> result = DBProjectDiary.GetAll(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
             {
                 LineNo = x.NºLinha,
                 ProjectNo = x.NºProjeto,
