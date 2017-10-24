@@ -135,8 +135,11 @@ ul.nav li:hover {
         border: none;
         padding-left: 5px;
     }
-/* Custom General Classes */
 
+.alignPoga {
+    margin-top: 40px;
+}
+/* Custom General Classes */
 /* Main Menu */
 .item {
     padding: 15px !important;
@@ -550,11 +553,17 @@ ul.nav li:hover {
 
 /* Polymer Elements Defautls */
 paper-tabs {
+    background-color: #DADADA;
     margin: 15px 0;
+    border-radius: 8px;
+}
+
+paper-tab {
+    /*border: 1px solid black;*/
+    /*border-collapse: collapse;*/
 }
 
 paper-tab.iron-selected, paper-tab:hover {
     background-color: #71BCC1;
-    border: none;
 }
 /* Polymer Elements Defautls */

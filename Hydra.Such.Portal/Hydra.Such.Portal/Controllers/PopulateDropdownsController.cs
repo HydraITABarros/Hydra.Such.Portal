@@ -339,30 +339,33 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetCGAccountCode(string accountNo)
         {
-            List<DDMessageString> result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            List<DDMessageRelated> result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated()
             {
                 id = x.Code,
-                value = x.Name
+                value = x.Name,
+                extra = ""
             }).ToList(); return Json(result);
         }
 
         [HttpPost]
         public JsonResult GetProductsCode(string productNo)
         {
-            List<DDMessageString> result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            List<DDMessageRelated> result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated()
             {
                 id = x.Code,
-                value = x.Name
+                value = x.Name,
+                extra = x.MeasureUnit                
             }).ToList(); return Json(result);
         }
 
         [HttpPost]
         public JsonResult GetResourcesCode(string resourceNo, string filterArea, int resourceType, string contabGroup)
         {
-            List<DDMessageString> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageString()
+            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
             {
                 id = x.Code,
-                value = x.Name
+                value = x.Name,
+                extra = x.MeasureUnit
             }).ToList();
             return Json(result);
         }
@@ -549,5 +552,12 @@ namespace Hydra.Such.Portal.Controllers
     {
         public string id { get; set; }
         public string value { get; set; }
+    }
+
+    public class DDMessageRelated
+    {
+        public string id { get; set; }
+        public string value { get; set; }
+        public string extra { get; set; }
     }
 }
