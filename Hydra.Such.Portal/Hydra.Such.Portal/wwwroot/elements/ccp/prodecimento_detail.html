@@ -139,20 +139,20 @@
 
                 _validateData: function () {
                     debugger;;
-                    if (false) {
-                        this._openToast(validate);
-                        return false;
-                    }
+                    //if (false) {
+                    //    this._openToast(validate);
+                    //    return false;
+                    //}
                     return true;
                 },
 
                 //CRUDS
                 _create: function () {
-                    //debugger;;
+                    debugger;;
 
-                    //if (this._validateData()) {
-                    //    this._executeRequest("/FolhasDeHoras/CreateFolhaDeHora", this.data)
-                    //}
+                    if (this._validateData()) {
+                        this._executeRequest("/ProcedimentosCcps/CreateProcedimento", this.data)
+                    }
 
                     if (this._validateData()) {
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
@@ -161,9 +161,9 @@
                 },
 
                 _update: function () {
-                    //debugger;;
+                    debugger;;
                     if (this._validateData()) {
-                        //this._executeRequest("/FolhasDeHoras/UpdateFolhaDeHora", this.data)
+                        this._executeRequest("/ProcedimentosCcps/CreateProcedimento", this.data)
                     }
                 },
 

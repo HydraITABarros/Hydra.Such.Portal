@@ -128,7 +128,13 @@
                             <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras")</li>
                             <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Compras")</li>*@
                             @* zpgm.< Procedimentos CCP menu *@
-                            <li>@Html.ActionLink("Procedimentos CCP", "Index", "ProcedimentosCcps")</li>
+                            <li data-toggle="collapse" data-target="#Compras" class="collapsed active">
+                                <a href="#"> Procedimentos CCP <span class="arrow"></span></a>
+                                <ul>
+                                    <li>@Html.ActionLink("Pedido Aquisição", "PedidoAquisicao", "ProcedimentosCcps")</li>
+                                    <li>@Html.ActionLink("Pedido Simplificado", "PedidoSimplificado", "ProcedimentosCcps")</li>
+                                </ul>
+                            </li>      
                             @* zpgm.> *@
                         </ul>
 
