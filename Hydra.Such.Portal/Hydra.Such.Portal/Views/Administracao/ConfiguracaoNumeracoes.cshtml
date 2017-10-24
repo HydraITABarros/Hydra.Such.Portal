@@ -44,12 +44,12 @@
         </style>
         <h2 class="separator">Novo Registo</h2>
         <div class="row">
-            <div class="col-lg-2"></div><vaadin-text-field id="piDescription" label="Descrição" maxlength="20"></vaadin-text-field>
-            <div class="col-lg-2"><vaadin-checkbox id="pcAuto"> Auto</vaadin-checkbox><vaadin-checkbox id="pcManual"> Manual</vaadin-checkbox></div>
+            <div class="col-lg-2"><vaadin-text-field id="piDescription" label="Descrição" maxlength="20"></vaadin-text-field></div>
+            <div class="col-lg-2 alignPoga"><vaadin-checkbox id="pcAuto"> Auto</vaadin-checkbox><vaadin-checkbox id="pcManual"> Manual</vaadin-checkbox></div>
             <div class="col-lg-2"><vaadin-text-field id="piPrefix" label="Prefixo" maxlength="10"></vaadin-text-field></div>
-            <div class="col-lg-2"><vaadin-text-field id="piDigitNumber" label="Nº Dígitos Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
-            <div class="col-lg-2"><vaadin-text-field id="piIncrementNumber" label="Quantidade Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
-            <div class="col-lg-2"><paper-button class="btnSave" raised on-tap="_add">Criar</paper-button></div>
+            <div class="col-lg-2"><vaadin-text-field id="piDigitNumber" label="Nº Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
+            <div class="col-lg-2"><vaadin-text-field id="piIncrementNumber" label="Qt. Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
+            <div class="col-lg-2 alignPoga"><paper-button class="btnSave" raised on-tap="_add">Criar</paper-button></div>
         </div>
 
         <h2 class="separator">Numerações Ativas</h2>
