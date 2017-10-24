@@ -42,19 +42,23 @@
                    id="page_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
-        <iron-form id="formGeral">
-            <form>
-                <h2 class="separator">Geral</h2>
-                <table class="table inlineForm">
-                    <tr>
-                        <td width=""><vaadin-text-field id="idUser" name="idUser" label="Id Utilizador" value="{{data.idUser}}"></vaadin-text-field></td>
-                        <td width=""><vaadin-text-field id="UserName" name="UserName" label="Id Utilizador" value="{{data.name}}"></vaadin-text-field></td>
-                        <td width=""><vaadin-checkbox checked="{{data.administrator}}"> Administrador</vaadin-checkbox></td>
-                        <td width=""><vaadin-checkbox checked="{{data.active}}"> Ativo</vaadin-checkbox></td>
-                    </tr>
-                </table>
-            </form>
-        </iron-form>
+
+        <h2 class="separator">Geral</h2>
+        <div class="row">
+            <div class="col-lg-3">
+                <vaadin-text-field id="idUser" name="idUser" label="Id Utilizador" value="{{data.idUser}}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="UserName" name="UserName" label="Id Utilizador" value="{{data.name}}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3 alignPoga">
+                <vaadin-checkbox checked="{{data.administrator}}"> Administrador</vaadin-checkbox>
+
+            </div>
+            <div class="col-lg-3 alignPoga">
+                <vaadin-checkbox checked="{{data.active}}"> Ativo</vaadin-checkbox>
+            </div>
+        </div>
 
         @*CREATE NEW PROFILEMODEL*@
         <iron-ajax url="/Administracao/CreateUserConfig"
@@ -88,24 +92,22 @@
                    content-type="application/json"></iron-ajax>
 
         <h2 class="separator">Perfis Utilizadores</h2>
-        <table class="table inlineForm">
-            <tr>
-                <td>
-                    <vaadin-combo-box items="[[UserProfileModelsData]]" item-value-path="id" item-label-path="value" value="{{ddUserProfile}}" label="Àrea">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </td>
-                <td>
-                    <paper-button class="btnEdit" raised on-tap="_addUserProfile">Associar</paper-button>
-                </td>
-            </tr>
-        </table>
+        <div class="row">
+            <div class="col-lg-3">
+                <vaadin-combo-box items="[[UserProfileModelsData]]" item-value-path="id" item-label-path="value" value="{{ddUserProfile}}" label="Àrea">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-lg-3 alignPoga">
+                <paper-button class="btnEdit" raised on-tap="_addUserProfile">Associar</paper-button>
+            </div>
+        </div>
 
         <vaadin-grid id="gridUserProfiles" aria-label="gridUserProfiles" items="{{ data.userProfiles }}" class="grid">
             <vaadin-grid-column width="20%">
@@ -145,7 +147,7 @@
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
-                </vaadin-combo-box>
+                    </vaadin-combo-box>
                 </td>
                 <td width="20%">
                     <vaadin-combo-box items="[[FeaturesData]]" item-value-path="id" item-label-path="value" value="{{ddFeature}}" label="Funcionalidade">
@@ -267,7 +269,7 @@
             else
             {
                 <paper-button class="btnEdit" raised on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
-                            <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
             }
         </div>
 
