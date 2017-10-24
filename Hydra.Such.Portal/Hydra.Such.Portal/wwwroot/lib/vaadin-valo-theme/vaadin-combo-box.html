@@ -71,17 +71,13 @@
         display: flex;
         align-items: center;
         min-height: var(--valo-size-m);
-        padding: var(--valo-space-xs) var(--valo-space-m) var(--valo-space-xs) calc(var(--valo-space-xs) * 2 /*+ 24px*/);
+        padding: var(--valo-space-xs) var(--valo-space-m) var(--valo-space-xs) calc(var(--valo-space-xs) * 2 + 24px);
         box-sizing: border-box;
         line-height: var(--valo-line-height-s);
         border-radius: var(--valo-border-radius);
         cursor: pointer;
         white-space: nowrap;
         position: relative;
-        /*add size*/
-        text-align: left;
-        font-size: 12px;
-
       }
 
       :host([focused]) {
@@ -98,7 +94,7 @@
         }
       }
 
-      /*:host([selected])::before {
+      :host([selected])::before {
         position: absolute;
         content: "\e902";
         font-family: valo-icons;
@@ -108,7 +104,7 @@
         transform: translateY(-50%);
         left: var(--valo-space-xs);
         color: var(--valo-secondary-text-color);
-      }*/
+      }
     </style>
   </template>
 </dom-module>

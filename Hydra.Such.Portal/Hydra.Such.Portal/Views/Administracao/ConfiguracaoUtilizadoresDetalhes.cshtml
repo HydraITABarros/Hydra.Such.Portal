@@ -10,11 +10,18 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
-<link rel="import" href="~/lib/iron-form/iron-form.html" />
-<link rel="import" href="~/lib/paper-input/paper-input.html" />
-<link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
@@ -35,29 +42,19 @@
                    id="page_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
-
-        <div class="row">
-            <div class="col-lg-12">
-                <h1>Geral</h1>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-2">
-                    <paper-input type="text" value="{{data.idUser}}" id="idUser" name="idUser" required label="Id Utilizador" char-counter maxlength="50"> </paper-input>
-            </div>
-            <div class="col-lg-2">
-                <paper-input type="text" value="{{data.name}}" id="UserName" name="UserName" required label="Nome" char-counter maxlength="50"> </paper-input>
-            </div>
-            <div class="col-lg-2">
-                <br />
-                <center><paper-checkbox checked="{{data.administrator}}">Administrador</paper-checkbox></center>
-            </div>
-            <div class="col-lg-2">
-                <br />
-                <center><paper-checkbox checked="{{data.active}}">Ativo</paper-checkbox></center>
-            </div>
-        </div>
+        <iron-form id="formGeral">
+            <form>
+                <h2 class="separator">Geral</h2>
+                <table class="table inlineForm">
+                    <tr>
+                        <td width=""><vaadin-text-field id="idUser" name="idUser" label="Id Utilizador" value="{{data.idUser}}"></vaadin-text-field></td>
+                        <td width=""><vaadin-text-field id="UserName" name="UserName" label="Id Utilizador" value="{{data.name}}"></vaadin-text-field></td>
+                        <td width=""><vaadin-checkbox checked="{{data.administrator}}"> Administrador</vaadin-checkbox></td>
+                        <td width=""><vaadin-checkbox checked="{{data.active}}"> Ativo</vaadin-checkbox></td>
+                    </tr>
+                </table>
+            </form>
+        </iron-form>
 
         @*CREATE NEW PROFILEMODEL*@
         <iron-ajax url="/Administracao/CreateUserConfig"
@@ -89,31 +86,26 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        <br />
-        <br />
-        <div class="row">
-            <div class="col-lg-12">
-                <h1>Perfis Utilizadores</h1>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col-lg-2">
-                <vaadin-combo-box items="[[UserProfileModelsData]]" item-value-path="id" item-label-path="value" value="{{ddUserProfile}}" label="Àrea">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            
-            <div class="col-lg-1">
-                <paper-button class="btnEdit" raised on-tap="_addUserProfile">Associar</paper-button>
-            </div>
-        </div>
+        <h2 class="separator">Perfis Utilizadores</h2>
+        <table class="table inlineForm">
+            <tr>
+                <td>
+                    <vaadin-combo-box items="[[UserProfileModelsData]]" item-value-path="id" item-label-path="value" value="{{ddUserProfile}}" label="Àrea">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </td>
+                <td>
+                    <paper-button class="btnEdit" raised on-tap="_addUserProfile">Associar</paper-button>
+                </td>
+            </tr>
+        </table>
 
         <vaadin-grid id="gridUserProfiles" aria-label="gridUserProfiles" items="{{ data.userProfiles }}" class="grid">
             <vaadin-grid-column width="20%">
@@ -130,73 +122,52 @@
                             </paper-icon-item>
                         </template>
                     </vaadin-combo-box>
-
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="80%">
                 <template class="header">
                 </template>
                 <template>
-                        <paper-button class="btnRemove"  raised on-tap="_deleteUserProfile">Eliminar</paper-button>
+                    <paper-button class="btnRemove" raised on-tap="_deleteUserProfile">Eliminar</paper-button>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
 
-
-        <br /><br />
-        <div class="row">
-            <div class="col-lg-12">
-                <h1>Acessos Utilizador</h1>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-2">
-                <vaadin-combo-box items="[[AreasData]]" item-value-path="id" item-label-path="value" value="{{ddArea}}" label="Àrea">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
+        <h2 class="separator">Acessos Utilizador</h2>
+        <table class="table inlineForm">
+            <tr>
+                <td width="20$">
+                    <vaadin-combo-box items="[[AreasData]]" item-value-path="id" item-label-path="value" value="{{ddArea}}" label="Àrea">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
                 </vaadin-combo-box>
-            </div>
-            <div class="col-lg-2">
-                <vaadin-combo-box items="[[FeaturesData]]" item-value-path="id" item-label-path="value" value="{{ddFeature}}" label="Funcionalidade">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-lg-2">
-                <br /><br />
-                <center><paper-checkbox checked="{{chkCreate}}">Inserção</paper-checkbox></center>
-            </div>
-            <div class="col-lg-2">
-                <br /><br />
-                <center><paper-checkbox checked="{{chkRead}}">Leitura</paper-checkbox></center>
-            </div>
-            <div class="col-lg-2">
-                <br /><br />
-                <center><paper-checkbox checked="{{chkUpdate}}">Modificação</paper-checkbox></center>
-            </div>
-            <div class="col-lg-1">
-                <br /><br />
-                <center><paper-checkbox checked="{{chkDelete}}">Eliminação</paper-checkbox></center>
-            </div>
-            <div class="col-lg-1">
-                <br />
-                <paper-button class="btnSave" raised on-tap="_createUserAccess">Criar</paper-button>
-            </div>
-        </div>
+                </td>
+                <td width="20%">
+                    <vaadin-combo-box items="[[FeaturesData]]" item-value-path="id" item-label-path="value" value="{{ddFeature}}" label="Funcionalidade">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </td>
+                <td width="12%"><vaadin-checkbox checked="{{chkCreate}}"> Inserção</vaadin-checkbox></td>
+                <td width="12%"><vaadin-checkbox checked="{{chkRead}}"> Leitura</vaadin-checkbox></td>
+                <td width="12%"><vaadin-checkbox checked="{{chkUpdate}}"> Modificação</vaadin-checkbox></td>
+                <td width="12%"><vaadin-checkbox checked="{{chkDelete}}"> Eliminação</vaadin-checkbox></td>
+                <td width="12%"><paper-button class="btnSave" raised on-tap="_createUserAccess">Criar</paper-button></td>
+            </tr>
+        </table>
 
         <vaadin-grid id="gridUserAccesses" aria-label="gridUserAccesses" items="{{ data.userAccesses }}" class="grid">
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="20%">
                 <template class="header">
                     Área
                 </template>
@@ -213,7 +184,7 @@
 
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="20%">
                 <template class="header">
                     Funcionalidade
                 </template>
@@ -229,7 +200,7 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="12%">
                 <template class="header">
                     <center>
                         Inserção
@@ -237,11 +208,11 @@
                 </template>
                 <template>
                     <center>
-                        <paper-checkbox checked="{{item.create}}"></paper-checkbox>
+                        <vaadin-checkbox checked="{{item.create}}"></vaadin-checkbox>
                     </center>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="15%">
+            <vaadin-grid-column width="12%">
                 <template class="header">
                     <center>
                         Leitura
@@ -249,11 +220,11 @@
                 </template>
                 <template>
                     <center>
-                        <paper-checkbox checked="{{item.read}}"></paper-checkbox>
+                        <vaadin-checkbox checked="{{item.read}}"></vaadin-checkbox>
                     </center>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="12%">
                 <template class="header">
                     <center>
                         Modificação
@@ -261,11 +232,11 @@
                 </template>
                 <template>
                     <center>
-                        <paper-checkbox checked="{{item.update}}"></paper-checkbox>
+                        <vaadin-checkbox checked="{{item.update}}"></vaadin-checkbox>
                     </center>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="12%">
                 <template class="header">
                     <center>
                         Eliminação
@@ -273,11 +244,11 @@
                 </template>
                 <template>
                     <center>
-                        <paper-checkbox checked="{{item.delete}}"></paper-checkbox>
+                        <vaadin-checkbox checked="{{item.delete}}"></vaadin-checkbox>
                     </center>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="12%">
                 <template class="header">
                 </template>
                 <template>
@@ -296,7 +267,7 @@
             else
             {
                 <paper-button class="btnEdit" raised on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
-                <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                            <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
             }
         </div>
 
@@ -356,7 +327,7 @@
 
                 //CRUDS Functions
                 _validateData() {
-                    if (this.data.idUser == '' || this.data.idUser == null) { 
+                    if (this.data.idUser == '' || this.data.idUser == null) {
                         return "É obrigatório preencher o Id Utilizador";
                     } else if (this.data.name == '' || this.data.name == null) {
                         return "É obrigatório preencher o Nome";
@@ -466,7 +437,7 @@
 
                     this.$.gridUserAccesses.clearCache();
                 },
-                
+
 
             });
         });
