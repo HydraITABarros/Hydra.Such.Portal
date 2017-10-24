@@ -10,17 +10,30 @@ namespace Hydra.Such.Data.ViewModel.FolhasDeHoras
         public int? Area { get; set; }
         public string AreaText { get; set; }
         public string ProjectNo { get; set; }
+        public DateTime? DateDepartureDate { get; set; }
+        public string DateDepartureDateText { get; set; }
+        public DateTime? DateTimeArrivalDate { get; set; }
+        public string DateTimeArrivalDateText { get; set; }
         public string EmployeeNo { get; set; }
         public DateTime? DateDepartureTime { get; set; }
         public string DateDepartureTimeText { get; set; }
-        public DateTime? DateTimeArrival { get; set; }
-        public string DateTimeArrivalText { get; set; }
-        public int? TypeDeslocation { get; set; }
-        public string TypeDeslocationText { get; set; }
-        public string CodeTypeKms { get; set; }
-        public int? CodeTypeKmsInt { get; set; }
+        public DateTime? DateTimeArrivalTime { get; set; }
+        public string DateTimeArrivalTimeText { get; set; }
+        //public bool? DisplacementPlanned { get; set; }
+        //public int? DisplacementPlannedInt { get; set; }
         public bool? DisplacementOutsideCity { get; set; }
         public int? DisplacementOutsideCityInt { get; set; }
+        public int? TypeDeslocation { get; set; }
+        public string TypeDeslocationText { get; set; }
+        //public string CarRegistration { get; set; }
+        //public bool? Finished { get; set; }
+        public string CodeTypeKms { get; set; }
+        public int? CodeTypeKmsInt { get; set; }
+
+
+
+
+
         public string Validators { get; set; }
         public int? Status { get; set; }
         public string StatusText { get; set; }

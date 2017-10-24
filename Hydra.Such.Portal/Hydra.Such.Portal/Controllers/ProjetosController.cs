@@ -120,7 +120,7 @@ namespace Hydra.Such.Portal.Controllers
             ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
 
             //Validate if ProjectNo is valid
-            if (data.ProjectNo != "" && !CfgNumeration.Manual.Value)
+            if (!(data.ProjectNo == "" || data.ProjectNo == null) && !CfgNumeration.Manual.Value)
             {
                 return Json("A numeração configurada para projetos não permite inserção manual.");
             }
@@ -157,7 +157,7 @@ namespace Hydra.Such.Portal.Controllers
                     //Get Project Numeration
                     Configuração Configs = DBConfigurations.GetById(1);
                     int ProjectNumerationConfigurationId = Configs.NumeraçãoProjetos.Value;
-                    data.ProjectNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, data.ProjectNo == "");
+                    data.ProjectNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ProjectNo == "" || data.ProjectNo == null));
 
                     if (data.ProjectNo != null)
                     {
@@ -218,7 +218,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 //Delete Created Project on Database
                                 DBProjects.Delete(cProject.NºProjeto);
-                            
+                                
                                 data.eReasonCode = 3;
                                 data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
                             }
@@ -642,6 +642,45 @@ namespace Hydra.Such.Portal.Controllers
         //}
 
         #endregion
+
+        #region InvoiceAutorization
+        public IActionResult AutorizacaoFaturacao(String id)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult GetAutorizacaoFaturacao([FromBody] ProjectDiaryViewModel data)
+        {
+            List<ProjectDiaryViewModel> result = DBProjectDiary.GetAll(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
+            {
+                LineNo = x.NºLinha,
+                ProjectNo = x.NºProjeto,
+                Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                MovementType = x.TipoMovimento,
+                Type = x.Tipo,
+                Code = x.Código,
+                Description = x.Descrição,
+                Quantity = x.Quantidade,
+                MeasurementUnitCode = x.CódUnidadeMedida,
+                LocationCode = x.CódLocalização,
+                ProjectContabGroup = x.GrupoContabProjeto,
+                RegionCode = x.CódigoRegião,
+                FunctionalAreaCode = x.CódigoÁreaFuncional,
+                ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
+                User = x.Utilizador,
+                UnitCost = x.CustoUnitário,
+                TotalCost = x.CustoTotal,
+                UnitPrice = x.PreçoUnitário,
+                TotalPrice = x.PreçoTotal,
+                Billable = x.Faturável,
+                InvoiceToClientNo = x.FaturaANºCliente,
+                CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso
+            }).ToList();
+
+            return Json(result);
+        }
+        #endregion InvoiceAutorization
 
     }
 }

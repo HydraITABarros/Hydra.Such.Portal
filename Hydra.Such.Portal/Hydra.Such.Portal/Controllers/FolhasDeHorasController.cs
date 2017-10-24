@@ -47,6 +47,7 @@ namespace Hydra.Such.Portal.Controllers
                 x.TypeDeslocationText = EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == x.TypeDeslocation).FirstOrDefault().Value;
                 if (x.DisplacementOutsideCity.Value) x.DisplacementOutsideCityText = "Sim"; else x.DisplacementOutsideCityText = "Não";
                 x.StatusText = EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == x.Status).FirstOrDefault().Value;
+                x.Validators = DBUserConfigurations.GetById(x.Validators).Nome;
             });
             return Json(result);
         }
@@ -62,7 +63,6 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetFolhaDeHoraDetails([FromBody] FolhaDeHoraDetailsViewModel data)
         {
-            
             if (data != null)
             {
                 FolhasDeHoras cFolhaDeHora = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
@@ -78,8 +78,8 @@ namespace Hydra.Such.Portal.Controllers
                         EmployeeNo = cFolhaDeHora.NºEmpregado,
                         DateDepartureTime = cFolhaDeHora.DataHoraPartida,
                         DateDepartureTimeText = cFolhaDeHora.DataHoraPartida.Value.ToString("yyyy-MM-dd"),
-                        DateTimeArrival = cFolhaDeHora.DataHoraChegada,
-                        DateTimeArrivalText = cFolhaDeHora.DataHoraChegada.Value.ToString("yyyy-MM-dd"),
+                        //DateTimeArrival = cFolhaDeHora.DataHoraChegada,
+                        //DateTimeArrivalText = cFolhaDeHora.DataHoraChegada.Value.ToString("yyyy-MM-dd"),
                         TypeDeslocation = cFolhaDeHora.TipoDeslocação,
                         CodeTypeKms = cFolhaDeHora.CódigoTipoKmS,
                         CodeTypeKmsInt = Convert.ToInt16(cFolhaDeHora.CódigoTipoKmS),
@@ -109,7 +109,6 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult ValidateNumeration([FromBody] FolhaDeHoraDetailsViewModel data)
         {
             //Get FolhaDeHora Numeration
-            //3 = Numeração Folhas de Horas
             Configuração Cfg = DBConfigurations.GetById(1);
             int FolhaDeHoraNumerationConfigurationId = Cfg.NumeraçãoFolhasDeHoras.Value;
 
@@ -152,7 +151,7 @@ namespace Hydra.Such.Portal.Controllers
                         NºProjeto = data.ProjectNo,
                         NºEmpregado = data.EmployeeNo,
                         DataHoraPartida = DateTime.Parse(data.DateDepartureTimeText),
-                        DataHoraChegada = DateTime.Parse(data.DateTimeArrivalText),
+                        //DataHoraChegada = DateTime.Parse(data.DateTimeArrivalText),
                         TipoDeslocação = data.TypeDeslocation,
                         CódigoTipoKmS = Convert.ToString(data.CodeTypeKmsInt),
                         DeslocaçãoForaConcelho = Convert.ToBoolean(data.DisplacementOutsideCityInt),
@@ -205,7 +204,7 @@ namespace Hydra.Such.Portal.Controllers
                     NºProjeto = data.ProjectNo,
                     NºEmpregado = data.EmployeeNo,
                     DataHoraPartida = DateTime.Parse(data.DateDepartureTimeText),
-                    DataHoraChegada = DateTime.Parse(data.DateTimeArrivalText),
+                    //DataHoraChegada = DateTime.Parse(data.DateTimeArrivalText),
                     TipoDeslocação = data.TypeDeslocation,
                     CódigoTipoKmS = Convert.ToString(data.CodeTypeKmsInt),
                     DeslocaçãoForaConcelho = Convert.ToBoolean(data.DisplacementOutsideCityInt),

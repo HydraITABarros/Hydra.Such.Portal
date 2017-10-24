@@ -118,6 +118,22 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
+        public static Projetos GetAllByProjectNumber(string ProjectNumber)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Projetos.Where(x => x.NºProjeto == ProjectNumber).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<ProjectListItemViewModel> GetAllByAreaToList(int AreaId)
         {
             try

@@ -22,8 +22,6 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataPróximaFatura { get; set; }
         public DateTime? DataDeRegisto { get; set; }
         public int? Estado { get; set; }
-        public string Utilizador { get; set; }
-        public DateTime? DataModificação { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorCriação { get; set; }

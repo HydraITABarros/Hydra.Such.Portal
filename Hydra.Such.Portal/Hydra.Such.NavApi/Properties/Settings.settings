@@ -1,9 +1,0 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Hydra.Such.NavApi.Properties" GeneratedClassName="Settings">
-  <Profiles />
-  <Settings>
-    <Setting Name="Hydra_Such_NavApi_WSCreateProject_WSJob_Service" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://10.101.1.13:7047/DynamicsNAV100/WS/CRONUS%20Portugal%20Ltd./Page/WSJob</Value>
-    </Setting>
-  </Settings>
-</SettingsFile>
