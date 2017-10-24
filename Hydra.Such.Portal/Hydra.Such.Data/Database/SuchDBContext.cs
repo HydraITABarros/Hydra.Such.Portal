@@ -632,6 +632,16 @@ namespace Hydra.Such.Data.Database
                     .HasForeignKey(d => d.NumeraçãoFolhasDeHoras)
                     .HasConstraintName("FK_Configuração_Configuração Numerações2");
 
+                entity.HasOne(d => d.NumeraçãoProcedimentoAquisiçãoNavigation)
+                    .WithMany(p => p.ConfiguraçãoNumeraçãoProcedimentoAquisiçãoNavigation)
+                    .HasForeignKey(d => d.NumeraçãoProcedimentoAquisição)
+                    .HasConstraintName("FK_Configuração_Configuração Numerações3");
+
+                entity.HasOne(d => d.NumeraçãoProcedimentoSimplificadoNavigation)
+                    .WithMany(p => p.ConfiguraçãoNumeraçãoProcedimentoSimplificadoNavigation)
+                    .HasForeignKey(d => d.NumeraçãoProcedimentoSimplificado)
+                    .HasConstraintName("FK_Configuração_Configuração Numerações4");
+
                 entity.HasOne(d => d.NumeraçãoProjetosNavigation)
                     .WithMany(p => p.ConfiguraçãoNumeraçãoProjetosNavigation)
                     .HasForeignKey(d => d.NumeraçãoProjetos)

@@ -30,8 +30,6 @@ namespace Hydra.Such.Data.ViewModel
         //public string ResidueGuideNo { get; set; }
         //public string ExternalGuideNo { get; set; }
         public string InvoiceToClientNo { get; set; }
-        public string CommitmentNumber { get; set; }
-        //public string InvoiceToClientNo { get; set; }
         //public string RequisitionNo { get; set; }
         //public int? RequisitionLineNo { get; set; }
         //public string Driver { get; set; }

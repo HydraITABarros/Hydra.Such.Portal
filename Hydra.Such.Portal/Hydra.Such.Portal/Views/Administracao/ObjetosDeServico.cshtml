@@ -1,0 +1,250 @@
+﻿
+@{
+    ViewData["Title"] = "ObjetosDeServico";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*grid*@
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
+@*checkbox*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+@*textfield*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+@*combobox*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html" />
+@*toast*@
+<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
+@*layout*@
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+@*mixin*@
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+@*button*@
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+@*ironform*@
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+@*paperinput*@
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
+
+<h1 class="title">Objetos De Serviço</h1>
+<x-service-objects></x-service-objects>
+<dom-module id="x-service-objects">
+<template>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/css/main.css" />
+
+    <style>
+        input[readonly] {
+            border: 2px solid transparent;
+        }
+        input {
+            font: inherit;
+        }
+        --vaadin-grid-header-cell: {
+            font-size: 12px;
+        }
+        paper-input {
+            max-width: 450px !important;
+        }
+    </style>
+    @*POPULATE GRID*@
+    <iron-ajax url="/Administracao/GetServiceObjectsData"
+               last-response="{{result}}"
+               method="post"
+               auto
+               handle-as="json"
+               id="ajax_create"
+               content-type="application/json"></iron-ajax>
+
+    @*POPULATE GRID Update*@
+    <iron-ajax url="/Administracao/UpdateServiceObjects"
+               last-response="{{result}}"
+               method="post"
+               on-response="_updateResponse"
+               handle-as="json"
+               id="ajax_update"
+               content-type="application/json"></iron-ajax>
+    @*COMBO*@
+    <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
+               last-response="{{AreaCodeData}}"
+               auto
+               method="post"
+               handle-as="json"
+               content-type="application/json">
+    </iron-ajax>
+    <iron-form id="formGeral">
+        <form>
+            <h2 class="separator">Novo Registo</h2>
+            <table class="table inlineForm">
+                <tr>
+                    <td width="20%"><vaadin-text-field id="piDescription" label="Descrição"></vaadin-text-field></td>
+                    <td width="10%"><vaadin-checkbox id="pcBlocked"> Bloqueado </vaadin-checkbox></td>
+                    <td width="20%">
+                        <vaadin-combo-box id="cboreaCode" items="[[AreaCodeData]]" item-value-path="id" item-label-path="value" value="{{ddAreaCode}}" label="Código Área">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </td>
+                    <td><paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button></td>
+                </tr>
+            </table>
+        </form>
+    </iron-form>
+    <vaadin-grid id="gridserviceobjects" aria-label="ProfileModelsTabel" items="[[result]]" class="grid">
+        <vaadin-grid-column resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
+                <vaadin-grid-filter path="code" />
+            </template>
+            <template>
+                <vaadin-text-field id="piDescription" value="{{item.code}}" disabled></vaadin-text-field>
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                <vaadin-grid-filter path="description" />
+            </template>
+            <template>
+                <vaadin-text-field value="{{item.description}}"></vaadin-text-field>
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column resizable>
+            <template class="header">
+                <p class="alignCenter">
+                    <vaadin-grid-filter path="blocked" value="[[_filterActive]]">
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>
+                    Bloqueado
+                </p>
+            </template>
+            <template>
+                <vaadin-checkbox checked="{{item.blocked}}"></vaadin-checkbox>
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="areaCode">Código Área</vaadin-grid-sorter>
+            </template>
+            <template>
+                <vaadin-combo-box id="cboreaCode" items="[[AreaCodeData]]" item-value-path="id" item-label-path="value" value="{{item.areaCode}}">
+                    <template>
+                        <table width="200px">
+                            <tr>
+                                <td width="40%">[[item.id]]</td>
+                                <td width="60%"> <b>[[item.value]]</b></td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column with="10%">
+            <template class="header">
+            </template>
+            <template>
+                <center>
+                    <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
+                </center>
+            </template>
+        </vaadin-grid-column>
+    </vaadin-grid>
+    <div class="marginSpace">
+        <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+    </div>
+
+
+    <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+</template>
+
+<script>
+    document.addEventListener('WebComponentsReady',
+        function () {
+            Polymer({
+                is: 'x-service-objects',
+                properties: {
+                    ddAreaCode: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _filterActive: {
+                        type: Boolean,
+                        value: true
+                    }
+                },
+                ready: function () {
+                    this.$.ajax_create.generateRequest();
+                },
+                openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+                _createAccessProfile: function () {
+
+                    if (this.$.piDescription.value == "" || this.$.piDescription.value == null) {
+                        this.openToast('É obrigatório preencher a Descrição.');
+                    } else {
+                        var thisLine = {
+                            description: this.$.piDescription.value,
+                            blocked: this.$.pcBlocked.checked,
+                            areaCode: this.ddAreaCode
+                        };
+                        if (this.result == null) {
+                            this.result = thisLine;
+                        }
+                        else {
+                            this.result.push(thisLine);
+                        }
+                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.generateRequest();
+                        this.$.gridserviceobjects.clearCache();
+                    }
+                },
+                _update: function () {
+                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.generateRequest();
+                    this.$.gridserviceobjects.clearCache();
+                },
+                _delete: function (e) {
+                    var index = this.result.indexOf(e.model.item);
+                    this.result.splice(index, 1);
+                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.generateRequest();
+                    this.$.gridserviceobjects.clearCache();
+                },
+                _cancel: function () {
+                    this.$.ajax_create.generateRequest();
+                    this.$.gridserviceobjects.clearCache();
+                },
+                _updateResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        this.openToast("Tabela atualizada.");
+                        this.$.ajax_create.generateRequest();
+                        this.$.gridserviceobjects.clearCache();
+                    }
+                    else {
+                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                    }
+                }
+            });
+        });
+</script>
+</dom-module>

@@ -8,7 +8,8 @@
     html {
       /* TODO Internal magic number, dependant on the font family, think if this could be computed somehow */
       /* Used in combo-box and date-picker styles as well */
-      ---vaadin-text-field-vertical-align-offset: 34px;
+      /*---vaadin-text-field-vertical-align-offset: 34px;*/
+      /*EL martelada 24/10/2017*/
     }
   </style>
 </custom-style>
@@ -24,12 +25,13 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         -webkit-tap-highlight-color: transparent;
+          width: 100%;
       }
 
       [part="label"] {
         color: var(--valo-contrast-60pct);
         font-weight: 500;
-        font-size: 12px;
+        font-size: var(--valo-font-size-s);
         margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4);
         margin-bottom: var(--valo-space-xs);
         transition: color 0.4s;
@@ -99,8 +101,8 @@
       }
 
       [part="input-field"] {
-        /*margin-top: var(--valo-space-xs);
-        margin-bottom: var(--valo-space-xs);*/
+        margin-top: var(--valo-space-xs);
+        margin-bottom: var(--valo-space-xs);
         border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
         background-color: var(--valo-contrast-5pct);
         padding: 0 calc(var(--valo-size, var(--valo-size-m)) / 6 + var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4);
@@ -108,7 +110,7 @@
         font-weight: 500;
         position: relative;
         will-change: transform;
-        height: 30px;
+        height: var(--valo-size, var(--valo-size-m));
       }
 
       @media (hover: hover) {
