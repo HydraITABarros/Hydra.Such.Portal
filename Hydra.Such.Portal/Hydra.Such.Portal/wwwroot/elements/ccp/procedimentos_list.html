@@ -40,7 +40,7 @@
                 }
             </style>
         </custom-style>
-        <iron-ajax url="/ProcedimentosCcps/GetAllProcedimentos"
+        <iron-ajax url="/ProcedimentosCcps/GetProcedimentosByProcedimentoType"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -52,7 +52,7 @@
             <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
         </div>
         <vaadin-grid aria-label="ProcedimentosGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="120px">
+            <vaadin-grid-column width="50px">
                 <template class="header">
                     <vaadin-grid-sorter path="No">Nº</vaadin-grid-sorter>
                     <vaadin-grid-filter path="No" />
@@ -61,13 +61,22 @@
                     {{item.no}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px">
+            <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="Tipo">Tipo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="Tipo" />
+                    <vaadin-grid-sorter path="nomeProcesso">Nome Processo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeProcesso" />
                 </template>
                 <template>
-                    {{item.tipo}}
+                    {{item.nomeProcesso}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="50px">
+                <template class="header">
+                    <vaadin-grid-sorter path="tipoProcedimento">Tipo Procedimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipoProcedimento" />
+                </template>
+                <template>
+                    {{item.tipoProcedimento}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -82,7 +91,12 @@
                     activeItem: {
                         observer: '_rowSelected'
                     },
-                    _areaid: {
+                    //_areaid: {
+                    //    type: Number,
+                    //    notify: true,
+                    //    value: 0
+                    //},
+                    _procedimentotypeid: {
                         type: Number,
                         notify: true,
                         value: 0
@@ -100,7 +114,10 @@
                     }
                 },
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
+                    //this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
+                    //this.$.grid_databound_ajax.generateRequest();
+
+                    this.$.grid_databound_ajax.body = JSON.stringify(this._procedimentotypeid);
                     this.$.grid_databound_ajax.generateRequest();
                 },
             });

@@ -3,23 +3,25 @@
     ViewData["Title"] = "DestinosFinaisResiduos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+@*grid*@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
+@*mixin*@
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+@*iron-form*@
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
-<link rel="import" href="~/lib/paper-input/paper-input.html" />
-<link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
+@*button*@
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
+@*layout*@
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-grid.html">
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+
 <h1 class="title">Destinos Finais Resíduos</h1>
 <x-final-waste-destinations></x-final-waste-destinations>
 <dom-module id="x-final-waste-destinations">
@@ -38,13 +40,6 @@
 
             paper-input {
                 max-width: 450px !important;
-            }
-            vaadin-grid#gridFinalWasteDestinations vaadin-grid-filter {
-                margin: 0 auto;
-            }
-
-            vaadin-grid#gridFinalWasteDestinations vaadin-grid-sorter {
-                margin: 0 auto;
             }
             --vaadin-grid-header-cell: {
                 font-size: 12px;
@@ -80,8 +75,8 @@
             </form>
         </iron-form>
         <vaadin-grid id="gridFinalWasteDestinations" aria-label="ProfileModelsTabel" items="[[result]]" class="grid">
-            <vaadin-grid-column>
-                <template class="header">
+            <vaadin-grid-column resizable>
+                <template class="header" >
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code" />
                 </template>
@@ -89,8 +84,8 @@
                     <vaadin-text-field value="{{item.code}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column>
-                <template class="header">
+            <vaadin-grid-column resizable>
+                <template class="header" >
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
                 </template>
@@ -98,8 +93,8 @@
                     <vaadin-text-field value="{{item.description}}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column with="10%">
-                <template class="header">
+            <vaadin-grid-column with="10%" resizable>
+                <template class="header" >
                 </template>
                 <template>
                     <center>

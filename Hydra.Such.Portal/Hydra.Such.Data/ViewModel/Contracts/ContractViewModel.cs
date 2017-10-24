@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Contracts
 {
-    public class ContractViewModel
+    public class ContractViewModel : ErrorHandler
     {
         public int ContractType { get; set; }
         public string ContractNo { get; set; }
@@ -14,6 +14,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public int? Status { get; set; }
         public int? ChangeStatus { get; set; }
         public string ClientNo { get; set; }
+        public string ClientName { get; set; }
         public string CodeRegion { get; set; }
         public string CodeFunctionalArea { get; set; }
         public string CodeResponsabilityCenter { get; set; }
@@ -23,10 +24,10 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string ShippingZipCode { get; set; }
         public string ShippingLocality { get; set; }
         public int? InvocePeriod { get; set; }
-        public DateTime? LastInvoiceDate { get; set; }
-        public DateTime? NextInvoiceDate { get; set; }
-        public DateTime? StartData { get; set; }
-        public DateTime? DueDate { get; set; }
+        public string LastInvoiceDate { get; set; }
+        public string NextInvoiceDate { get; set; }
+        public string StartData { get; set; }
+        public string DueDate { get; set; }
         public bool? BatchInvoices { get; set; }
         public string NextBillingPeriod { get; set; }
         public bool? ContractLinesInBilling { get; set; }
@@ -34,8 +35,8 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public int? ProposalType { get; set; }
         public int? BillingType { get; set; }
         public int? MaintenanceContractType { get; set; }
-        public string ClientRequestNo { get; set; }
-        public DateTime? ReceiptDateRequest { get; set; }
+        public string ClientRequisitionNo { get; set; }
+        public string ReceiptDateRequisition { get; set; }
         public string PromiseNo { get; set; }
         public decimal? ProvisioningFee { get; set; }
         public decimal? Mc { get; set; }
@@ -45,12 +46,12 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public bool? VariableAvengeAgrement { get; set; }
         public string Notes { get; set; }
         //public string NºContrato { get; set; }
-        public DateTime? ContractStartDate { get; set; }
-        public DateTime? ContractEndDate { get; set; }
+        public string ContractStartDate { get; set; }
+        public string ContractEndDate { get; set; }
         public string ContractDurationDescription { get; set; }
-        public DateTime? StartDateFirstContract { get; set; }
+        public string StartDateFirstContract { get; set; }
         public string FirstContractReference { get; set; }
-        public DateTime? ContractMaxDuration { get; set; }
+        public string ContractMaxDuration { get; set; }
         public int? TerminationTermNotice { get; set; }
         public int? RenovationConditions { get; set; }
         public string RenovationConditionsAnother { get; set; }
@@ -58,8 +59,8 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string PaymentTermsAnother { get; set; }
         public bool? CustomerSigned { get; set; }
         public bool? Interests { get; set; }
-        public DateTime? SignatureDate { get; set; }
-        public DateTime? CustomerShipmentDate { get; set; }
+        public string SignatureDate { get; set; }
+        public string CustomerShipmentDate { get; set; }
         public int? ProvisionUnit { get; set; }
         public string ContractReference { get; set; }
         public decimal? TotalProposalValue { get; set; }
@@ -67,20 +68,23 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string OportunityNo { get; set; }
         public string ProposalNo { get; set; }
         public string ContactNo { get; set; }
-        public DateTime? DateProposedState { get; set; }
+        public string DateProposedState { get; set; }
         public int? OrderOrigin { get; set; }
         public string OrdOrderSource { get; set; }
         public string InternalNumeration { get; set; }
-        public DateTime? ProposalChangeDate { get; set; }
-        public DateTime? LimitClarificationDate { get; set; }
-        public DateTime? ErrorsOmissionsDate { get; set; }
-        public DateTime? FinalReportDate { get; set; }
-        public DateTime? DocumentationHabilitationDate { get; set; }
+        public string ProposalChangeDate { get; set; }
+        public string LimitClarificationDate { get; set; }
+        public string ErrorsOmissionsDate { get; set; }
+        public string FinalReportDate { get; set; }
+        public string DocumentationHabilitationDate { get; set; }
         public bool? CompulsoryCompulsoryNo { get; set; }
-        public DateTime? CreateDate { get; set; }
-        public DateTime? UpdateDate { get; set; }
+        public string CreateDate { get; set; }
+        public string UpdateDate { get; set; }
         public string CreateUser { get; set; }
         public string UpdateUser { get; set; }
         public bool? Filed { get; set; }
+
+        public List<ContractClientRequisitionViewModel> ClientRequisitions { get; set; }
+        public List<ContractInvoiceTextViewModel> InvoiceTexts { get; set; }
     }
 }

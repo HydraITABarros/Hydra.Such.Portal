@@ -168,6 +168,7 @@
 
     <script>
         document.addEventListener('WebComponentsReady', function () {
+            debugger;;
             Polymer({
                 is: 'x-projectlist',
                 properties: {
@@ -181,7 +182,7 @@
                     }
                 },
                 _rowSelected: function (item) {
-                    //debugger;
+                    debugger; ;
                     if (item != null) {
                         window.location.href = "DetalhesProjeto/" + item.projectNo;
                     }
@@ -192,7 +193,7 @@
                     }
                 },
                 ready: function () {
-                    //debugger;
+                    debugger;;
                     this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
                     this.$.grid_databound_ajax.generateRequest();
                 },

@@ -5,8 +5,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Detalhes</h2>
+@if(ViewBag.No == "")
+{
+    <h2>Criar Procedimento</h2>
+}
+else
+{
+    <h2>Procedimento @ViewBag.No</h2>
+}
 
 <link rel="import" href="~/elements/ccp/prodecimento_detail.html" />
 
-<x-procedimentodetails></x-procedimentodetails>
+<x-procedimentodetails _procedimentoid="@ViewBag.No"></x-procedimentodetails>

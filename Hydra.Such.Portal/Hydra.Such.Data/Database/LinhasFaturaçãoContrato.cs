@@ -20,8 +20,6 @@ namespace Hydra.Such.Data.Database
         public string CódigoCentroResponsabilidade { get; set; }
         public int? TipoRecurso { get; set; }
         public int? CódigoServiço { get; set; }
-        public string Utilizador { get; set; }
-        public DateTime? DataModificação { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
