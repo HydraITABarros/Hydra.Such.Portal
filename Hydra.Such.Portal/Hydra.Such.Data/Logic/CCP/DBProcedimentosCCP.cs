@@ -3,6 +3,9 @@ using Hydra.Such.Data.ViewModel.CCP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hydra.Such.Data.Logic;
+using Hydra.Such.Portal.Configurations;
+
 
 namespace Hydra.Such.Data.Logic.CCP
 {
@@ -56,11 +59,25 @@ namespace Hydra.Such.Data.Logic.CCP
         public static ProcedimentosCcp CreateProcedimento(ProcedimentoCCPView procedimento)
         {
             ProcedimentosCcp proc = CCPFunctions.CastProcCcpViewToProcCcp(procedimento);
+
             try
             {
+                Configuração config = DBConfigurations.GetById(1);
+                int NumeracaoProcedimento = 0;
+
+                if(proc.TipoProcedimento == 1)
+                {
+                    NumeracaoProcedimento = config.NumeraçãoProcedimentoAquisição.Value;
+                }
+                else
+                {
+                    NumeracaoProcedimento = config.NumeraçãoProcedimentoSimplificado.Value;
+                }
+
+                proc.Nº = DBNumerationConfigurations.GetNextNumeration(NumeracaoProcedimento, true);
                 proc.DataHoraCriação = DateTime.Now;
                 // inserir o utilizador da criação
-                //proc.UtilizadorCriação = User.Identity.Name;
+                proc.UtilizadorCriação = User.Identity.Name;
                 proc.Nº1 = new TemposPaCcp()
                 {
                     NºProcedimento = proc.Nº,
@@ -86,6 +103,11 @@ namespace Hydra.Such.Data.Logic.CCP
                 
                 context.Add(proc);
                 context.SaveChanges();
+
+                ConfiguraçãoNumerações ConfigNum = DBNumerationConfigurations.GetById(NumeracaoProcedimento);
+                ConfigNum.ÚltimoNºUsado = proc.Nº;
+                DBNumerationConfigurations.Update(ConfigNum);
+
                 return proc;
             }
             catch(Exception e)
@@ -99,12 +121,12 @@ namespace Hydra.Such.Data.Logic.CCP
         {
             try
             {
-                procedimento.DataHoraCriação = DateTime.Now;
-                // inserir o utilizador da criação
-                //proc.UtilizadorCriação = User.Identity.Name;
-                context.Add(procedimento);
-                context.SaveChanges();
+                ProcedimentoCCPView ProcCCPView = CCPFunctions.CastProcCcpToProcCcpView(procedimento);
+                ProcedimentosCcp Proc =  CreateProcedimento(ProcCCPView);
 
+                procedimento.Nº = Proc.Nº;
+                procedimento.DataHoraCriação = Proc.DataHoraCriação;
+                procedimento.UtilizadorCriação = Proc.UtilizadorCriação;
                 return procedimento;
             }
             catch(Exception e)

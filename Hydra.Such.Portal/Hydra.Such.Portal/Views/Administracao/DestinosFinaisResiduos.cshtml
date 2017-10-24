@@ -11,17 +11,25 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
-@*mixin*@
-<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-@*iron-form*@
-<link rel="import" href="~/lib/iron-form/iron-form.html" />
-@*button*@
-<link rel="import" href="~/lib/paper-button/paper-button.html" />
+@*textfield*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+@*combobox*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html" />
+@*toast*@
+<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
 @*layout*@
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
-<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+@*mixin*@
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+@*button*@
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+@*ironform*@
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+@*paperinput*@
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
 
 <h1 class="title">Destinos Finais Resíduos</h1>
 <x-final-waste-destinations></x-final-waste-destinations>
@@ -64,17 +72,20 @@
                    id="ajax_update"
                    content-type="application/json"></iron-ajax>
       
-        <iron-form id="formGeral">
-            <form>
+      
+        <div class="row">
+            <div class="col-lg-4">
                 <h2 class="separator">Novo Registo</h2>
-                <table class="table inlineForm">
-                    <tr>
-                        <td width="20%"><vaadin-text-field id="piDescription" label="Descrição"></vaadin-text-field></td>
-                        <td><paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button></td>
-                    </tr>
-                </table>
-            </form>
-        </iron-form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2">
+                <vaadin-text-field id="piDescription" label="Descrição"></vaadin-text-field>
+            </div>
+            <div class="col-lg-2">
+                <paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button>
+            </div>
+        </div>
         <vaadin-grid id="gridFinalWasteDestinations" aria-label="ProfileModelsTabel" items="[[result]]" class="grid">
             <vaadin-grid-column resizable>
                 <template class="header" >
