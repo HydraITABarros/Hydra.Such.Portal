@@ -37,6 +37,11 @@
             }
         </style>
 
+        <!-- Dropdowns populate-->
+        <iron-ajax url="/PopulateDropdowns/GetPocedimentosCcpProcedimentoType" last-response="{{LProcedimentoType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpType" last-response="{{LType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpStates" last-response="{{LProcedimentoState}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/ProcedimentosCcps/GetProcedimentoDetails"
                    last-response="{{data}}"
                    method="post"
@@ -49,11 +54,29 @@
         <div>
             <div class="row">
                 <div class="col-lg-3">
-                    <paper-input type="text" value="{{data.no}}" disabled="true" id="no" name="no" label="Nº Procedimento"> </paper-input>
+                    <vaadin-combo-box items="[[LType]]" item-value-path="id" item-label-path="value" required value="{{data.tipo}}" label="Tipo">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
             </div>
             <div class="row">
-                <paper-input type="text" value="{{data.tipo}}" disabled="false" id="tipo" name="tipo" label="Tipo Procedimento"> </paper-input>
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[LProcedimentoType]]" item-value-path="id" item-label-path="value" required value="{{data.tipoProcedimento}}" label="Tipo Procedimento">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
             </div>
         </div>
 
@@ -72,7 +95,6 @@
 
     <script>
         document.addEventListener('WebComponentsReady', function () {
-            debugger;;
             Polymer({
                 is: 'x-procedimentodetails',
                 properties: {
@@ -97,7 +119,6 @@
                 },
 
                 ready: function () {
-                    debugger;;
 
                     this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
                     this.$.page_databound_ajax.generateRequest();
@@ -109,13 +130,11 @@
                 },
 
                 _openToast: function (message) {
-                    debugger;;
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
 
                 _validateData: function () {
-                    debugger;;
                     if (false) {
                         this._openToast(validate);
                         return false;
@@ -125,7 +144,6 @@
 
                 //CRUDS
                 _create: function () {
-                    //debugger;;
 
                     //if (this._validateData()) {
                     //    this._executeRequest("/FolhasDeHoras/CreateFolhaDeHora", this.data)
@@ -138,14 +156,12 @@
                 },
 
                 _update: function () {
-                    //debugger;;
                     if (this._validateData()) {
                         //this._executeRequest("/FolhasDeHoras/UpdateFolhaDeHora", this.data)
                     }
                 },
 
                 _delete: function () {
-                    //debugger;;
                     //var FolhaDeHora = this.data;
                     //var ajax_request = this.$.ajax_delete_folhadehora;
                     //bootbox.confirm({
@@ -171,7 +187,6 @@
 
                 //Responses Processors
                 _responseProcessor: function (data) {
-                    //debugger;;
                     var self = this;
 
                     //Set AreaId
@@ -195,7 +210,6 @@
                 },
 
                 _createResponseProcessor: function () {
-                    //debugger;;
                     //if (this.data.eReasonCode == 1) {
                     //    this._isCreate = false;
                     //    this._openToast("Folha de Hora criado com sucesso.");
@@ -205,7 +219,6 @@
                 },
 
                 _responseValidatorProcessor: function (data) {
-                    //debugger;;
                     var self = this;
                     //if (data.detail.status === 200) {
                     //    if (this.validateResponse == "") {
@@ -217,7 +230,6 @@
                 },
 
                 _responseDeleteProcessor: function (data) {
-                    //debugger;;
                     var self = this;
                     //if (data.detail.status === 200) {
                     //    if (this.deletedData.eReasonCode == 1) {
@@ -234,7 +246,6 @@
 
                 //Helpers
                 _executeRequest: function (url, data) {
-                    //debugger;;
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
