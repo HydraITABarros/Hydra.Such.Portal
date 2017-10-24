@@ -71,10 +71,8 @@
                    handle-as="json"
                    id="ajax_update"
                    content-type="application/json"></iron-ajax>
-      
-      
         <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-2">
                 <h2 class="separator">Novo Registo</h2>
             </div>
         </div>
@@ -82,10 +80,10 @@
             <div class="col-lg-2">
                 <vaadin-text-field id="piDescription" label="Descrição"></vaadin-text-field>
             </div>
-            <div class="col-lg-2">
+            <div class="col-lg-2 alignPoga">
                 <paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button>
             </div>
-        </div>
+        </div><br />
         <vaadin-grid id="gridFinalWasteDestinations" aria-label="ProfileModelsTabel" items="[[result]]" class="grid">
             <vaadin-grid-column resizable>
                 <template class="header" >

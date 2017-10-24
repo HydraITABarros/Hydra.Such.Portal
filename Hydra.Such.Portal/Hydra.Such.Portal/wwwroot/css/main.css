@@ -6,6 +6,10 @@ html, body {
     background-color: whitesmoke !important;
 }
 
+vaadin-combo-box {
+    width: 100%;
+}
+
 a {
     color: inherit !important;
     text-decoration: none !important;
