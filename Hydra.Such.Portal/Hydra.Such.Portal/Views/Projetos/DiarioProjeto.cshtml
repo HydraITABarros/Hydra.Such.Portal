@@ -6,7 +6,7 @@
 
 @*Themes*@
 <link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-<link rel="import" href="~/lib/vaadin-material-theme/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html" />
 @*Themes*@
 
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
@@ -16,7 +16,9 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
 
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
 
 <link rel="import" href="~/lib/paper-input/paper-input.html" />
@@ -30,7 +32,9 @@
 <link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectList.html" />
-
+@*textfield*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
 <h1 class="title">Diário de Projeto</h1>
 
 <x-projdiary></x-projdiary>
@@ -237,7 +241,7 @@
                             </vaadin-combo-box>
                         </td>
                         <td width="">
-                            <vaadin-combo-box id="piCode" name="piCode" items="[[codeOptions]]" item-value-path="id" on-value-changed="_codeChange" item-label-path="value" label="Código" value="{{codeNumber}}">
+                            <vaadin-combo-box id="piCode" name="piCode" items="[[codeOptions]]" item-value-path="id" on-value-changed="_codeChange" item-label-path="id" label="Código" value="{{codeNumber}}">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>

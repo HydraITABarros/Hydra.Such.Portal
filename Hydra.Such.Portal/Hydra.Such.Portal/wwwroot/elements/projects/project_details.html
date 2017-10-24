@@ -417,7 +417,6 @@
                     }
                 },
                 ready: function () {
-                    //debugger;;
                     //GET PROJECT DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this._projectid });
                     this.$.page_databound_ajax.generateRequest();
@@ -513,7 +512,6 @@
                 _responseValidatorProcessor: function (data) {
                     var self = this;
                     if (data.detail.status === 200) {
-                        debugger;;
                         if (this.validateResponse == "") {
                             this._executeRequest("/Projetos/CreateProject", this.data)
                         } else {

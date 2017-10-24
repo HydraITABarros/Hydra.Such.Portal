@@ -3,6 +3,7 @@
     ViewData["Title"] = "DestinosFinaisResiduos";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 @*grid*@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
@@ -52,7 +53,7 @@
 
         </style>
         @*POPULATE GRID*@
-        <iron-ajax url="/TabelasAuxiliares/GetFinalWasteDestinationsData"
+        <iron-ajax url="/Administracao/GetFinalWasteDestinationsData"
                    last-response="{{result}}"
                    method="post"
                    auto
@@ -60,7 +61,7 @@
                    id="ajax_GetAll"
                    content-type="application/json"></iron-ajax>
         @*POPULATE GRID Update*@
-        <iron-ajax url="/TabelasAuxiliares/UpdateFinalWasteDestinations"
+        <iron-ajax url="/Administracao/UpdateFinalWasteDestinations"
                    last-response="{{result}}"
                    method="post"
                    on-response="_updateResponse"
@@ -174,4 +175,5 @@
             });
     </script>
 </dom-module>
+
 
