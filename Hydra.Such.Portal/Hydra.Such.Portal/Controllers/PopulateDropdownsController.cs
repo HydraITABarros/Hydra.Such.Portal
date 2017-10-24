@@ -70,6 +70,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetUtilizadores()
+        {
+            List<DDMessageString> result = DBUserConfigurations.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.IdUtilizador,
+                value = x.Nome
+            }).ToList(); ;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetProjectTypes()
         {
             List<DDMessage> result = DBProjectTypes.GetAll().Select(x => new DDMessage()
@@ -232,6 +243,7 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
             return Json(result);
         }
+
         #endregion
 
         #region TypeOptions

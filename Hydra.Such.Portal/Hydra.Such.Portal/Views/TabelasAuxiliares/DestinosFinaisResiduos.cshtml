@@ -17,8 +17,9 @@
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
-
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
 <h1 class="title">Destinos Finais Resíduos</h1>
 <x-final-waste-destinations></x-final-waste-destinations>
 <dom-module id="x-final-waste-destinations">
@@ -72,8 +73,8 @@
                 <h2 class="separator">Novo Registo</h2>
                 <table class="table inlineForm">
                     <tr>
-                        <td width="20%"><paper-input id="piDescription" type="text" name="description" required label="Descrição" maxlength="20"></paper-input></td>
-                        <td><paper-button raised id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button></td>
+                        <td width="20%"><vaadin-text-field id="piDescription" label="Descrição"></vaadin-text-field></td>
+                        <td><paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button></td>
                     </tr>
                 </table>
             </form>
@@ -85,7 +86,7 @@
                     <vaadin-grid-filter path="code" />
                 </template>
                 <template>
-                    <paper-input type="text" name="code" required maxlength="20" value="{{item.code}}" disabled> </paper-input>
+                    <vaadin-text-field value="{{item.code}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column>
@@ -94,7 +95,7 @@
                     <vaadin-grid-filter path="description" />
                 </template>
                 <template>
-                    <paper-input type="text" name="description" required maxlength="20" value="{{item.description}}"> </paper-input>
+                    <vaadin-text-field value="{{item.description}}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column with="10%">
