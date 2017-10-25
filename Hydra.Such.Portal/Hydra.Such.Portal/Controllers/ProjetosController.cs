@@ -452,8 +452,8 @@ namespace Hydra.Such.Portal.Controllers
                     PreçoUnitário = x.UnitPrice,
                     PreçoTotal = x.TotalPrice,
                     Faturável = x.Billable,
-                    Registado = false
-                    //FaturaANºCliente = x.InvoiceToClientNo
+                    Registado = false,
+                    FaturaANºCliente = x.InvoiceToClientNo
                 };
 
                 if (x.LineNo > 0)
@@ -487,14 +487,15 @@ namespace Hydra.Such.Portal.Controllers
                     ContabGroup = proj.GrupoContabObra,
                     RegionCode = proj.CódigoRegião,
                     FuncAreaCode = proj.CódigoÁreaFuncional,
-                    ResponsabilityCenter = proj.CódigoCentroResponsabilidade
+                    ResponsabilityCenter = proj.CódigoCentroResponsabilidade,
+                    InvoiceClientNo = proj.NºCliente
                 };
 
                 return Json(pi);
             }
             else
             {
-                return Json(null);
+                return null;
             }
         }
 
@@ -591,6 +592,7 @@ namespace Hydra.Such.Portal.Controllers
             public string RegionCode { get; set; }
             public string FuncAreaCode { get; set; }
             public string ResponsabilityCenter { get; set; }
+            public string InvoiceClientNo { get; set; }
         }
         #endregion
 

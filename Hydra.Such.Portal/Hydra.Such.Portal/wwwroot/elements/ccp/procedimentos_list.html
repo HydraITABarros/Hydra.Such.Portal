@@ -84,7 +84,6 @@
 
     <script>
         document.addEventListener('WebComponentsReady', function () {
-            debugger;
             Polymer({
                 is: 'x-procedimentoslist',
                 properties: {
@@ -103,7 +102,6 @@
                     }
                 },
                 _rowSelected: function (item) {
-                    debugger;
                     if (item != null) {
                         window.location.href = "/ProcedimentosCcps/Detalhes/" + item.no;
                     }

@@ -33,7 +33,8 @@ namespace Hydra.Such.Portal.Controllers {
             return View();
         }
 
-        public IActionResult TabelasAuxiliares()
+      
+        public IActionResult Administracao()
         {
             return View();
         }
