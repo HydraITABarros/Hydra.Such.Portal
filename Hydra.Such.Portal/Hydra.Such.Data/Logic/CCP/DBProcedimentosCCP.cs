@@ -3,8 +3,6 @@ using Hydra.Such.Data.ViewModel.CCP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Hydra.Such.Data.Logic;
-using Hydra.Such.Portal.Configurations;
 
 
 namespace Hydra.Such.Data.Logic.CCP
@@ -77,7 +75,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 proc.Nº = DBNumerationConfigurations.GetNextNumeration(NumeracaoProcedimento, true);
                 proc.DataHoraCriação = DateTime.Now;
                 // inserir o utilizador da criação
-                proc.UtilizadorCriação = User.Identity.Name;
+                //proc.UtilizadorCriação = User.Identity.Name;
                 proc.Nº1 = new TemposPaCcp()
                 {
                     NºProcedimento = proc.Nº,

@@ -417,6 +417,26 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(data);
         }
+
+        [HttpPost]
+        public JsonResult GetContractLines([FromBody] ContractViewModel data)
+        {
+
+            if (data != null)
+            {
+                List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContactNo, data.VersionNo);
+
+                List<ContractLineViewModel> result = new List<ContractLineViewModel>();
+
+                if (ContractLines != null)
+                {
+                    ContractLines.ForEach(x => result.Add(DBContractLines.ParseToViewModel(x)));
+                }
+                return Json(result);
+            }
+            return Json(false);
+        }
+
         #endregion
 
 
