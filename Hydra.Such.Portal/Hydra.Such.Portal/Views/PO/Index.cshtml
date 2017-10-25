@@ -4,13 +4,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<h1 class="title">P&O</h1>
 
 <link rel="import" href="/elements/submenu/subMenuItemView.html">
 
 <ul class="list-unstyled">
     <x-submenu link="@Url.Action("Projetos", "PO")" image="projects1.png" title="Projetos"></x-submenu>
     <x-submenu link="@Url.Action("DiarioProjeto", "Projetos")" image="projects1.png" title="Diário Projetos"></x-submenu>
-    @*<x-submenu link="@Url.Action("TabelasAuxiliares", "PO")" image="auxiliary1.png" title="Tabelas Auxiliares"></x-submenu>*@
+    <x-submenu link="@Url.Action("Administracao", "PO")" image="auxiliary1.png" title="Administração"></x-submenu>
 </ul>
 
 

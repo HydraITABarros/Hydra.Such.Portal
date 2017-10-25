@@ -37,8 +37,8 @@
                         </li>
                         <ul class="sub-menu collapse" id="Engenharia">
                             @*<li>@Html.ActionLink("Contratos", "Contratos", "Engenharia")</li>
-                            <li>@Html.ActionLink("Requisições", "Requisicoes", "Engenharia")</li>
-                            <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Engenharia")</li>*@
+                            <li>@Html.ActionLink("Requisições", "Requisicoes", "Engenharia")</li>*@
+                            <li>@Html.ActionLink("Administração", "Administracao", "Engenharia")</li>
                             <li>@Html.ActionLink("Folha de Horas", "Index", "FolhasDeHoras")</li>
                         </ul>
 
@@ -48,8 +48,8 @@
                         </li>
                         <ul class="sub-menu collapse" id="Ambiente">
                             @*<li>@Html.ActionLink("Contratos", "Contratos", "Ambiente")</li>
-                            <li>@Html.ActionLink("Requisições", "Requisicoes", "Ambiente")</li>
-                            <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Ambiente")</li>*@
+                            <li>@Html.ActionLink("Requisições", "Requisicoes", "Ambiente")</li>*@
+                            <li>@Html.ActionLink("Administração", "Administracao", "Ambiente")</li>
                         </ul>
 
 
@@ -60,9 +60,9 @@
                             <li>@Html.ActionLink("Projetos", "Projetos", "Nutricao")</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos")</li>
                             @*<li>@Html.ActionLink("Contratos", "Contratos", "Nutricao")</li>
-                            <li>@Html.ActionLink("Requisições", "Requisicoes", "Nutricao")</li>
-                            <li>@Html.ActionLink("Fichas Técnicas de Pratos", "FichasTecnicasPratos", "Nutricao")</li>
-                            <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Nutricao")</li>*@
+                                <li>@Html.ActionLink("Requisições", "Requisicoes", "Nutricao")</li>
+                                <li>@Html.ActionLink("Fichas Técnicas de Pratos", "FichasTecnicasPratos", "Nutricao")</li>*@
+                                <li>@Html.ActionLink("Administração", "Administracao", "Nutricao")</li>
                         </ul>
 
 
@@ -71,8 +71,8 @@
                         </li>
                         <ul class="sub-menu collapse" id="Vendas">
                             @*<li>@Html.ActionLink("Contratos", "Contratos", "Vendas")</li>
-                            <li>@Html.ActionLink("Requisições", "Requisicoes", "Vendas")</li>
-                            <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Vendas")</li>*@
+                              <li>@Html.ActionLink("Requisições", "Requisicoes", "Vendas")</li>*@
+                                <li>@Html.ActionLink("Administração", "Administracao", "Vendas")</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#Apoio" class="collapsed active">
@@ -80,8 +80,8 @@
                         </li>
                         <ul class="sub-menu collapse" id="Apoio">
                             @*<li>@Html.ActionLink("Viaturas", "Viaturas", "Apoio")</li>
-                            <li>@Html.ActionLink("Importação de Custos", "ImportacaoCustos", "Apoio")</li>
-                            <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Apoio")</li>*@
+                            <li>@Html.ActionLink("Importação de Custos", "ImportacaoCustos", "Apoio")</li>*@
+                            <li>@Html.ActionLink("Administração", "Administracao", "Apoio")</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#PO" class="collapsed active">
@@ -90,7 +90,7 @@
                         <ul class="sub-menu collapse" id="PO">
                             <li>@Html.ActionLink("Projetos", "Projetos", "PO")</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos")</li>
-                            @*<li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "PO")</li>*@
+                            <li>@Html.ActionLink("Administração", "Administracao", "PO")</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#NovasAreas" class="collapsed active">
@@ -99,6 +99,7 @@
                         <ul class="sub-menu collapse" id="NovasAreas">
                             <li>@Html.ActionLink("Projetos", "Projetos", "NovasAreas")</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos")</li>
+                            <li>@Html.ActionLink("Administração", "Administracao", "NovasAreas")</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#Internacionalizacoes" class="collapsed active">
@@ -107,8 +108,8 @@
                         <ul class="sub-menu collapse" id="Internacionalizacoes">
                             <li>@Html.ActionLink("Projetos", "Projetos", "Internacionalizacoes")</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos")</li>
-                            @*<li>@Html.ActionLink("Contratos", "Contratos", "Internacionalizacoes")</li>
-                            <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Internacionalizacoes")</li>*@
+                            @*<li>@Html.ActionLink("Contratos", "Contratos", "Internacionalizacoes")</li>*@
+                           <li>@Html.ActionLink("Administração", "Administracao", "Internacionalizacoes")</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#Juridico" class="collapsed active">
@@ -116,8 +117,8 @@
                         </li>
                         <ul class="sub-menu collapse" id="Juridico">
                             @*<li>@Html.ActionLink("Processos Disciplinares", "ProcessosDisciplinares", "Juridico")</li>
-                            <li>@Html.ActionLink("Processos de Inquérito", "ProcessosInquerito", "Juridico")</li>
-                            <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Juridico")</li>*@
+                            <li>@Html.ActionLink("Processos de Inquérito", "ProcessosInquerito", "Juridico")</li>*@
+                            <li>@Html.ActionLink("Administração", "Administracao", "Juridico")</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#Compras" class="collapsed active">
@@ -128,8 +129,16 @@
                             <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras")</li>
                             <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Compras")</li>*@
                             @* zpgm.< Procedimentos CCP menu *@
-                            <li>@Html.ActionLink("Procedimentos CCP", "Index", "ProcedimentosCcps")</li>
+                            <li data-toggle="collapse" data-target="#Compras" class="collapsed active">
+                                <a href="#"> Procedimentos CCP <span class="arrow"></span></a>
+                                <ul>
+                                    <li>@Html.ActionLink("Pedido Aquisição", "PedidoAquisicao", "ProcedimentosCcps")</li>
+                                    <li>@Html.ActionLink("Pedido Simplificado", "PedidoSimplificado", "ProcedimentosCcps")</li>
+                                </ul>
+                            </li>      
                             @* zpgm.> *@
+                            <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras")</li>
+                            <li>@Html.ActionLink("Administração", "Administracao", "Compras")</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#Administracao" class="collapsed active">

@@ -31,6 +31,19 @@ namespace Hydra.Such.Portal.Controllers
             return View();
         }
 
+        // zpgm.< view that will return a Pedidos Simplificados list
+        public IActionResult PedidoSimplificado()
+        {
+            return View();
+        }
+        // zpgm.>
+
+        // zpgm.< view that will return a Pedidos de Aquisição list
+        public IActionResult PedidoAquisicao()
+        {
+            return View();
+        }
+        // zpgm.>
         public IActionResult Detalhes(string id)
         {
             ViewBag.No = id == null ? "" : id;
@@ -87,19 +100,12 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if(data != null)
                 {
-                    Configuração config = DBConfigurations.GetById(1);
-                    // get the Procedimento CCP number
-
                     ProcedimentosCcp procedimento = DBProcedimentosCCP.CreateProcedimento(data);
-
+                    procedimento.UtilizadorCriação = User.Identity.Name;
                     if (procedimento == null)
                     {
                         data.eReasonCode = 3;
                         data.eMessage = "Ocorreu um erro ao criar o Procedimento";
-                    }
-                    else
-                    {
-                        // must update last numeration used 
                     }
                 }
 

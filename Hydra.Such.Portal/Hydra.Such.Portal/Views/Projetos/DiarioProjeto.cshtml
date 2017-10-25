@@ -5,8 +5,8 @@
 }
 
 @*Themes*@
-<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-<link rel="import" href="~/lib/vaadin-material-theme/vaadin-date-picker.html" />
+@*<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />*@
+@*<link rel="import" href="~/lib/vaadin-material-theme/vaadin-date-picker.html" />*@
 @*Themes*@
 
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
@@ -14,14 +14,21 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html" />
 <link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
 
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
 
-<link rel="import" href="~/lib/paper-input/paper-input.html" />
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
-<link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
@@ -197,152 +204,164 @@
         </iron-ajax>
         @*Populate Dropdown*@
 
-        <iron-form id="formGeral">
-            <form>
-                <h2 class="separator">Novo Registo</h2>
-                <table class="table inlineForm">
-                    <tr>
-                        <td width="">
-                            <vaadin-combo-box id="projectList" name="projectList" items="[[response]]" on-value-changed="_projectChange" item-value-path="id" item-label-path="value" label="Nº Projeto" disabled="{{disabledProjectNo}}" value="{{projectNumber}}">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </td>
-                        <td width=""><vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{date}}"></vaadin-date-picker></td>
-                        <td width="">
-                            <vaadin-combo-box id="projectMovementList" name="projectMovementList" items="[[response2]]" item-value-path="id" item-label-path="value" label="Tipo Movimento" value="{{projectMovementNumber}}">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </td>
-                        <td width="">
-                            <vaadin-combo-box id="projectTypeList" name="projectTypeList" items="[[response3]]" on-value-changed="_projectTypeChange" item-value-path="id" item-label-path="value" label="Tipo" value="{{projectTypeNumber}}">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </td>
-                        <td width="">
-                            <vaadin-combo-box id="piCode" name="piCode" items="[[codeOptions]]" item-value-path="id" on-value-changed="_codeChange" item-label-path="value" label="Código" value="{{codeNumber}}">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.id]]</div>
-                                            <div secundary>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width=""><paper-input id="piDescription" type="text" name="piDescription" required label="Descrição" value="{{description}}"></paper-input></td>
-                        <td width="">
-                            <vaadin-combo-box id="piContabGroup" name="piContabGroup" items="[[ContabGroupData]]" item-value-path="id" value="{{codeProjectContabGroup}}" item-label-path="value" label="Grupo Contab">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.id]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                            @*<paper-input id="piContabGroup" type="number" name="piContabGroup" disabled label="Grupo Contab." value="{{projectContabGroup}}"></paper-input>*@
-                        </td>
-                        <td width=""><paper-input id="piQuantity" type="number" name="piQuantity" required label="Quantidade" value="{{quantity}}"></paper-input></td>
-                        <td width="">
-                            <vaadin-combo-box id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[MeasureUnit]]" item-value-path="id" value="{{codeMeasurementUnit}}" item-label-path="value" label="Cód. Unidade Medida">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </td>
-                        <td width="">
-                            <vaadin-combo-box id="piCodeLocation" name="piCodeLocation" items="[[Locations]]" item-value-path="id" value="{{codeLocation}}" item-label-path="value" label="Cód. Localização">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td width="">
-                            <vaadin-combo-box id="piCodeRegion" name="piCodeRegion" items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{codeRegion}}" label="Cód. Região">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </td>
-                        <td width="">
-                            <vaadin-combo-box id="piFuncArea" name="piFuncArea" items="[[FunctionalAreaCodeData]]" item-value-path="id" value="{{codeFuncArea}}" item-label-path="value" label="Cód. Área Funcional">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </td>
-                        <td width="">
-                            <vaadin-combo-box id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" items="[[ResponsabilityCenterData]]" value="{{codeResponsabilityCenter}}" item-value-path="id" item-label-path="value" label="Cód. Centro Responsabilidade">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </td>
-                        <td width=""><paper-input class="alignRight" type="number" label="Custo Unitário" required id="piUnitCost" name="piUnitCost" value="{{unitCost}}"><div slot="suffix">€</div></paper-input></td>
-                        <td width=""><paper-input class="alignRight" type="number" label="Custo Total  " required id="piTotalCost" name="piTotalCost" value="{{totalCost}}"><div slot="suffix">€</div></paper-input></td>
-                    </tr>
-                    <tr>
-                        <td width=""><paper-input class="alignRight" type="number" label="Preço Unitário  " required id="piUnitPrice" name="piUnitPrice" value="{{unitPrice}}"><div slot="suffix">€</div></paper-input></td>
-                        <td width=""><paper-input class="alignRight" type="number" label="Preço Total  " required id="piTotalPrice" name="piTotalPrice" value="{{totalPrice}}"><div slot="suffix">€</div></paper-input></td>
-                        <td width=""><paper-checkbox id="pcInvoice" checked="{{billable}}">Faturável</paper-checkbox></td>
-                        @*<td width=""><paper-input id="piInvoiceClientNo" type="text" name="piInvoiceClientNo" required label="Fatura a Nº Cliente" maxlength="20" value="{{invoiceClientNo}}"></paper-input></td>*@
-                        <td><paper-button class="btnSave" raised on-tap="_add">Criar</paper-button></td>
-                    </tr>
-                </table>
-            </form>
-        </iron-form>
+        <div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <vaadin-combo-box id="projectList" name="projectList" items="[[response]]" on-value-changed="_projectChange" item-value-path="id" item-label-path="value" label="Nº Projeto" disabled="{{disabledProjectNo}}" value="{{projectNumber}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{date}}"></vaadin-date-picker>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-combo-box id="projectMovementList" name="projectMovementList" items="[[response2]]" item-value-path="id" item-label-path="value" label="Tipo Movimento" value="{{projectMovementNumber}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-combo-box id="projectTypeList" name="projectTypeList" items="[[response3]]" on-value-changed="_projectTypeChange" item-value-path="id" item-label-path="value" label="Tipo" value="{{projectTypeNumber}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-combo-box id="piCode" name="piCode" items="[[codeOptions]]" item-value-path="id" on-value-changed="_codeChange" item-label-path="id" label="Código" value="{{codeNumber}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.id]]</div>
+                                    <div secundary>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piDescription" label="Descrição" disabled value="{{description}}"></vaadin-text-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <vaadin-combo-box id="piContabGroup" name="piContabGroup" items="[[ContabGroupData]]" item-value-path="id" value="{{codeProjectContabGroup}}" item-label-path="value" label="Grupo Contab">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.id]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piQuantity" pattern="[0-9]*" prevent-invalid-input label="Quantidade" value="{{quantity}}"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-combo-box id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[MeasureUnit]]" item-value-path="id" value="{{codeMeasurementUnit}}" item-label-path="value" label="Cód. Unidade Medida">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-combo-box id="piCodeLocation" name="piCodeLocation" items="[[Locations]]" item-value-path="id" value="{{codeLocation}}" item-label-path="value" label="Cód. Localização">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-combo-box id="piCodeRegion" name="piCodeRegion" items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{codeRegion}}" label="Cód. Região">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-combo-box id="piFuncArea" name="piFuncArea" items="[[FunctionalAreaCodeData]]" item-value-path="id" value="{{codeFuncArea}}" item-label-path="value" label="Cód. Área Funcional">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+            </div>
+            <div class="row">
+                    <div class="col-lg-2">
+                        <vaadin-combo-box id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" items="[[ResponsabilityCenterData]]" value="{{codeResponsabilityCenter}}" item-value-path="id" item-label-path="value" label="Cód. Centro Respon.">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-2">
+                        <vaadin-text-field id="piUnitCost" label="Custo Uniário" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                    </div>
+                    <div class="col-lg-2">
+                        <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                    </div>
+                    <div class="col-lg-2">
+                        <vaadin-text-field id="piUnitPrice" label="Preço Uniário" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    </div>
+                    <div class="col-lg-2">
+                        <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    </div>
+                    <div class="col-lg-2 alignPoga">
+                        <vaadin-checkbox id="pcInvoice" checked="{{billable}}"> Faturável</vaadin-checkbox>
+                    </div>
+             </div>
+             <div class="row">
+                    <div class="col-lg-2">
+                        <paper-button class="btnSave" raised on-tap="_add">Criar</paper-button>
+                    </div>
+             </div>
+            <vaadin-text-field id="piInvoiceClientNo" disabled value="{{invoiceClientNo}}" hidden></vaadin-text-field>
+        </div>
 
-        <h2 class="separator">Movimentos do Utilizador X</h2>
+        <h2 class="separator">Linhas de Diário</h2>
 
         <iron-ajax url="/Projetos/GetAllProjectDiary"
                    last-response="{{result}}"
                    id="ajax_getall"
                    method="post"
                    auto
-                   params = '{"projectNo":"@ViewBag.projectNo"}'
+                   params='{"projectNo":"@ViewBag.projectNo"}'
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
@@ -351,7 +370,7 @@
                    id="ajax_update"
                    method="post"
                    on-response="_updateResponse"
-                   params = '{"projectNo":"@ViewBag.projectNo"}'
+                   params='{"projectNo":"@ViewBag.projectNo"}'
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
@@ -389,7 +408,7 @@
                    content-type="application/json"></iron-ajax>
 
         <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result]]" class="editGrid">
-            <vaadin-grid-column width="110px" resizable>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectNo"></vaadin-grid-filter>
@@ -425,7 +444,7 @@
                 </template>
                 <template>
                     @*<cb-movetype name="movementType" indexvalue="{{item.movementType}}"></cb-movetype>*@
-                    <vaadin-combo-box items="[[response2]]" item-value-path="id" item-label-path="value" label="Tipo" value="{{item.movementType}}">
+                    <vaadin-combo-box items="[[response2]]" item-value-path="id" item-label-path="value" value="{{item.movementType}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -461,7 +480,7 @@
                     <vaadin-grid-filter path="code"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box id="code[[index]]" items="[[allofit.0]]" item-value-path="id" item-label-path="value" value="{{item.code}}">
+                    <vaadin-combo-box id="code[[index]]" items="[[allofit.0]]" on-value-changed="_codeChange" item-value-path="id" item-label-path="value" value="{{item.code}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -479,7 +498,7 @@
                     <vaadin-grid-filter path="description"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-input name="description" type="text" required value="{{item.description}}" disabled></paper-input>
+                    <vaadin-text-field id="description" value="{{item.description}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -489,7 +508,6 @@
                     <vaadin-grid-filter path="projectContabGroup"></vaadin-grid-filter>
                 </template>
                 <template>
-                    @*<paper-input type="number" name="contabGroup" disabled value="{{item.projectContabGroup}}"></paper-input>*@
                     <vaadin-combo-box items="[[ContabGroupData]]" item-value-path="id" item-label-path="id" value="{{item.projectContabGroup}}">
                         <template>
                             <paper-icon-item>
@@ -508,7 +526,7 @@
                     <vaadin-grid-filter path="quantity"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-input type="number" name="quantity" required value="{{item.quantity}}"></paper-input>
+                    <vaadin-text-field pattern="[0-9]" value="{{item.quantity}}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -518,7 +536,6 @@
                     <vaadin-grid-filter path="measurementUnitCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    @*<paper-input type="text" name="measurementUnitCode" required maxlength="20" value="{{item.measurementUnitCode}}"></paper-input>*@
                     <vaadin-combo-box items="[[MeasureUnit]]" item-value-path="id" item-label-path="value" value="{{item.measurementUnitCode}}">
                         <template>
                             <paper-icon-item>
@@ -537,7 +554,6 @@
                     <vaadin-grid-filter path="locationCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    @*<paper-input type="text" name="locationCode" required maxlength="20" value="{{item.locationCode}}"></paper-input>*@
                     <vaadin-combo-box items="[[Locations]]" item-value-path="id" item-label-path="value" value="{{item.locationCode}}">
                         <template>
                             <paper-icon-item>
@@ -556,7 +572,6 @@
                     <vaadin-grid-filter path="regionCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    @*<paper-input type="text" name="regionCode" disabled value="{{item.regionCode}}"></paper-input>*@
                     <vaadin-combo-box items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{item.regionCode}}">
                         <template>
                             <paper-icon-item>
@@ -575,7 +590,6 @@
                     <vaadin-grid-filter path="functionalAreaCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    @*<paper-input type="text" name="functionalAreaCode" disabled value="{{item.functionalAreaCode}}"></paper-input>*@
                     <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" value="{{item.functionalAreaCode}}">
                         <template>
                             <paper-icon-item>
@@ -594,7 +608,6 @@
                     <vaadin-grid-filter path="responsabilityCenterCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    @*<paper-input type="text" name="responsabilityCenterCode" disabled value="{{item.responsabilityCenterCode}}"></paper-input>*@
                     <vaadin-combo-box items="[[ResponsabilityCenterData]]" item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
                         <template>
                             <paper-icon-item>
@@ -613,7 +626,7 @@
                     <vaadin-grid-filter path="unitCost"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-input class="alignRight" type="number" required name="unitCost" value="{{item.unitCost}}"><div slot="suffix">€</div></paper-input>
+                    <vaadin-text-field id="piUnitCost" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{item.unitCost}}"><div slot="suffix">€</div></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -623,7 +636,7 @@
                     <vaadin-grid-filter path="totalCost"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-input class="alignRight" type="number" required name="totalCost" value="{{item.totalCost}}"><div slot="suffix">€</div></paper-input>
+                    <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{item.totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -633,7 +646,7 @@
                     <vaadin-grid-filter path="unitPrice"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-input class="alignRight" type="number" required name="unitPrice" value="{{item.unitPrice}}"><div slot="suffix">€</div></paper-input>
+                    <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{item.unitPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -643,7 +656,7 @@
                     <vaadin-grid-filter path="totalPrice"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-input class="alignRight" type="number" required name="totalPrice" value="{{item.totalPrice}}"><div slot="suffix">€</div></paper-input>
+                    <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{item.totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -651,23 +664,22 @@
                 <template class="header">
                     <p class="alignCenter">Faturável</p>
                     <vaadin-grid-filter path="billable" value="[[_filterActive]]">
-                        <paper-checkbox checked="{{_filterActive}}"></paper-checkbox>
+                        <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
                     </vaadin-grid-filter>
                 </template>
                 <template>
-                    <paper-checkbox name="billable" checked="{{item.billable}}"></paper-checkbox>
                 </template>
             </vaadin-grid-column>
 
-            @*<vaadin-grid-column width="130px" resizable>
-                    <template class="header">
+            <vaadin-grid-column hidden>
+                @*<template class="header">
                         <vaadin-grid-sorter path="invoiceToClientNo">Fatura a Nº Cliente</vaadin-grid-sorter>
                         <vaadin-grid-filter path="invoiceToClientNo"></vaadin-grid-filter>
-                    </template>
-                    <template>
-                        <paper-input type="text" name="invoiceToClientNo" required maxlength="20" value="{{item.invoiceToClientNo}}"></paper-input>
-                    </template>
-                </vaadin-grid-column>*@
+                    </template>*@
+                <template>
+                    <vaadin-text-field id="invoiceToClientNo" value="{{item.invoiceToClientNo}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
 
             <vaadin-grid-column width="100px" resizable>
                 <template class="header">
@@ -889,7 +901,7 @@
 
                 _projectChange: function (e) {
                     if (e.detail.value) {
-                        this.$.ajax_related.body = JSON.stringify(this.projectNumber);
+                        this.$.ajax_related.body = JSON.stringify(e.detail.value);
                         this.$.ajax_related.generateRequest();
                     }
                     else {
@@ -921,12 +933,11 @@
                 },
 
                 _codeChange: function (e) {
-
                     if (e.detail.value != null && e.detail.value != "") {
-                        var index = this.codeOptions.findIndex(i => i.code === e.detail.value);
-                        this.code = this.codeOptions[index].code;
-                        this.description = this.codeOptions[index].name;
-                        this.codeMeasurementUnit = this.codeOptions[index].measureUnit;
+                        var index = this.codeOptions.findIndex(i => i.id === e.detail.value);
+                        this.code = this.codeOptions[index].id;
+                        this.description = this.codeOptions[index].value;
+                        this.codeMeasurementUnit = this.codeOptions[index].extra;
                     }
                 },
 
@@ -1004,10 +1015,12 @@
 
                 _updateRelatedResponse: function (related) {
                     if (related != null) {
+                        debugger;;
                         this.codeRegion = this.related.regionCode;
                         this.codeFuncArea = this.related.funcAreaCode;
                         this.codeProjectContabGroup = this.related.contabGroup;
                         this.codeResponsabilityCenter = this.related.responsabilityCenter;
+                        this.invoiceClientNo = this.related.invoiceClientNo;
                     }
                 },
 

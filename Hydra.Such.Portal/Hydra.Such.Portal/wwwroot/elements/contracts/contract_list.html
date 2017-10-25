@@ -48,9 +48,15 @@
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
-        <div class="marginSpace">
-            <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
-        </div>
+        
+
+        <template is="dom-if" if="{{ !_disabledCreate }}">
+            <div class="marginSpace">
+                <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
+            </div>
+        </template>
+
+
         <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px">
                 <template class="header">
@@ -159,6 +165,18 @@
                         type: Number,
                         notify: true,
                         value: 0
+                    },
+                    _archived: {
+                        type: Number,
+                        value: 0
+                    },
+                    _contractno: {
+                        type: String,
+                        value: false
+                    },
+                    _disabledCreate: {
+                        type: Boolean,
+                        value: false
                     }
                 },
                 _rowSelected: function (item) {
@@ -173,7 +191,10 @@
                 },
                 ready: function () {
                     debugger;;
-                    this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
+                    if (this._archived == 1) {
+                        this._disabledCreate = true;
+                    }
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno } );
                     this.$.grid_databound_ajax.generateRequest();
                 },
             });
