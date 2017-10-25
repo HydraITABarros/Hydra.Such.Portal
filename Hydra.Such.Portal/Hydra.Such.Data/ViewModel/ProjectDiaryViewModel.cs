@@ -27,7 +27,6 @@ namespace Hydra.Such.Data.ViewModel
         public decimal? UnitPrice { get; set; }
         public decimal? TotalPrice { get; set; }
         public bool? Billable { get; set; }
-        public string CommitmentNumber { get; set; }
         //public string ResidueGuideNo { get; set; }
         //public string ExternalGuideNo { get; set; }
         public string InvoiceToClientNo { get; set; }
