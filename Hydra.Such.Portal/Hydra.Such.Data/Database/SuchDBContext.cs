@@ -6,6 +6,7 @@ namespace Hydra.Such.Data.Database
 {
     public partial class SuchDBContext : DbContext
     {
+        public virtual DbSet<AcessosDimensões> AcessosDimensões { get; set; }
         public virtual DbSet<AcessosPerfil> AcessosPerfil { get; set; }
         public virtual DbSet<AcessosUtilizador> AcessosUtilizador { get; set; }
         public virtual DbSet<AçõesDeConfeção> AçõesDeConfeção { get; set; }
@@ -98,6 +99,27 @@ namespace Hydra.Such.Data.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<AcessosDimensões>(entity =>
+            {
+                entity.HasKey(e => new { e.IdUtilizador, e.Dimensão, e.ValorDimensão });
+
+                entity.ToTable("Acessos Dimensões");
+
+                entity.Property(e => e.IdUtilizador)
+                    .HasColumnName("Id Utilizador")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ValorDimensão)
+                    .HasColumnName("Valor Dimensão")
+                    .HasMaxLength(20);
+
+                entity.HasOne(d => d.IdUtilizadorNavigation)
+                    .WithMany(p => p.AcessosDimensões)
+                    .HasForeignKey(d => d.IdUtilizador)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Acessos Dimensões_Config. Utilizadores");
+            });
+
             modelBuilder.Entity<AcessosPerfil>(entity =>
             {
                 entity.HasKey(e => new { e.IdPerfil, e.Área, e.Funcionalidade });

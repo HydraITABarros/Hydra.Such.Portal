@@ -168,7 +168,6 @@
 
     <script>
         document.addEventListener('WebComponentsReady', function () {
-            debugger;;
             Polymer({
                 is: 'x-projectlist',
                 properties: {
@@ -193,7 +192,6 @@
                     }
                 },
                 ready: function () {
-                    debugger;;
                     this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
                     this.$.grid_databound_ajax.generateRequest();
                 },
