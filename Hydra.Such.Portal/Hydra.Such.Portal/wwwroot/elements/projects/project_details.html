@@ -400,7 +400,7 @@
             </template>
             <template is="dom-if" if="{{ !_isCreate }}">
                 <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
             </template>
         </div>
 
@@ -432,7 +432,6 @@
                     }
                 },
                 ready: function () {
-                    //debugger;;
                     //GET PROJECT DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this._projectid });
                     this.$.page_databound_ajax.generateRequest();

@@ -99,11 +99,6 @@
             Polymer({
                 is: 'x-procedimentodetails',
                 properties: {
-                    //_areaid: {
-                    //    type: Number,
-                    //    notify: true,
-                    //    value: 0
-                    //},
                     _procedimentoid: {
                         type: String,
                         notify: true,
@@ -148,11 +143,11 @@
 
                 //CRUDS
                 _create: function () {
-                    //debugger;;
+                    debugger;;
 
-                    //if (this._validateData()) {
-                    //    this._executeRequest("/FolhasDeHoras/CreateFolhaDeHora", this.data)
-                    //}
+                    if (this._validateData()) {
+                        this._executeRequest("/ProcedimentosCcps/CreateProcedimento", this.data)
+                    }
 
                     if (this._validateData()) {
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
@@ -161,9 +156,9 @@
                 },
 
                 _update: function () {
-                    //debugger;;
+                    debugger;;
                     if (this._validateData()) {
-                        //this._executeRequest("/FolhasDeHoras/UpdateFolhaDeHora", this.data)
+                        this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data)
                     }
                 },
 

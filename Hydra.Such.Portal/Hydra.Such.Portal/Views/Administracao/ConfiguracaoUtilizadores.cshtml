@@ -4,17 +4,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 <link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
-<link rel="import" href="~/lib/paper-input/paper-input.html" />
-<link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 
 <h1 class="title">Perfis Modelo</h1>
@@ -61,13 +59,13 @@
             <vaadin-grid-column width="30%">
                 <template class="header">
                     <vaadin-grid-sorter path="ativo">Ativo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="ativo" value="[[_filterActive]]" >
-                        <paper-checkbox checked="{{_filterActive}}"></paper-checkbox>
+                    <vaadin-grid-filter path="ativo" value="[[_filterActive]]">
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
                     </vaadin-grid-filter>
                 </template>
                 <template>
                     <center>
-                        <paper-checkbox checked="{{item.ativo}}" disabled></paper-checkbox>
+                        <vaadin-checkbox checked="{{item.ativo}}" disabled></vaadin-checkbox>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -76,7 +74,9 @@
                     <vaadin-grid-sorter path="administrador">Administrador</vaadin-grid-sorter>
                 </template>
                 <template>
-                    <center><paper-checkbox checked="{{item.administrador}}" disabled></paper-checkbox></center>
+                    <center>
+                        <vaadin-checkbox checked="{{item.administrador}}" disabled></vaadin-checkbox>
+                    </center>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>

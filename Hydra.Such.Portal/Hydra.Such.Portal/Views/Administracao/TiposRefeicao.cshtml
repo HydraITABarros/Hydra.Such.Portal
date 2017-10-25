@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "DestinosFinaisResiduos";
+    ViewData["Title"] = "TiposRefeicao";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @*grid*@
@@ -10,21 +10,29 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
-@*mixin*@
-<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-@*iron-form*@
-<link rel="import" href="~/lib/iron-form/iron-form.html" />
-@*button*@
-<link rel="import" href="~/lib/paper-button/paper-button.html" />
+@*textfield*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+@*combobox*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html" />
+@*toast*@
+<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
 @*layout*@
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
-<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+@*mixin*@
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+@*button*@
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+@*ironform*@
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+@*paperinput*@
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
 
-<h1 class="title">Destinos Finais Resíduos</h1>
-<x-final-waste-destinations></x-final-waste-destinations>
-<dom-module id="x-final-waste-destinations">
+<h1 class="title">Tipos Refeição</h1>
+<x-group-cont-product></x-group-cont-product>
+<dom-module id="x-group-cont-product">
     <template>
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -41,13 +49,10 @@
             paper-input {
                 max-width: 450px !important;
             }
-            --vaadin-grid-header-cell: {
-                font-size: 12px;
-            }
 
         </style>
         @*POPULATE GRID*@
-        <iron-ajax url="/TabelasAuxiliares/GetFinalWasteDestinationsData"
+        <iron-ajax url="/Administracao/GetMealTypesData"
                    last-response="{{result}}"
                    method="post"
                    auto
@@ -55,28 +60,48 @@
                    id="ajax_GetAll"
                    content-type="application/json"></iron-ajax>
         @*POPULATE GRID Update*@
-        <iron-ajax url="/TabelasAuxiliares/UpdateFinalWasteDestinations"
+        <iron-ajax url="/Administracao/UpdateMealTypes"
                    last-response="{{result}}"
                    method="post"
                    on-response="_updateResponse"
                    handle-as="json"
                    id="ajax_update"
                    content-type="application/json"></iron-ajax>
-      
+        @*COMBO*@
+        <iron-ajax url="/PopulateDropdowns/GetGroupContProduct"
+                   last-response="{{GroupContProductData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-form id="formGeral">
             <form>
                 <h2 class="separator">Novo Registo</h2>
                 <table class="table inlineForm">
                     <tr>
                         <td width="20%"><vaadin-text-field id="piDescription" label="Descrição"></vaadin-text-field></td>
+                        <td width="20%">
+                            <vaadin-combo-box items="[[GroupContProductData]]" item-value-path="id" item-label-path="value" value="{{ddgroupcontprod}}" label="Grupos Contab. Produto">
+                                <template>
+                                    <table width="220px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </td>
                         <td><paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button></td>
                     </tr>
                 </table>
             </form>
         </iron-form>
-        <vaadin-grid id="gridFinalWasteDestinations" aria-label="ProfileModelsTabel" items="[[result]]" class="grid">
+        <vaadin-grid id="gridMealTypes" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column resizable>
-                <template class="header" >
+                <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code" />
                 </template>
@@ -85,16 +110,33 @@
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable>
-                <template class="header" >
+                <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.description}}"></vaadin-text-field>
+                    <vaadin-text-field  value="{{item.description}}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column with="10%" resizable>
-                <template class="header" >
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="grupoContabProduto">Grupos Contab. Produto</vaadin-grid-sorter>
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[GroupContProductData]]" item-value-path="id" item-label-path="value" value="{{item.grupoContabProduto}}">
+                        <template>
+                            <table width="220px">
+                                <tr>
+                                    <td width="40%">[[item.id]]</td>
+                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column with="10%">
+                <template class="header">
                 </template>
                 <template>
                     <center>
@@ -112,7 +154,14 @@
         document.addEventListener('WebComponentsReady',
             function () {
                 Polymer({
-                    is: 'x-final-waste-destinations',
+                    is: 'x-group-cont-product',
+                    properties: {
+                        ddgroupcontprod: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        }
+                    },
                     ready: function () {
                         this.$.ajax_GetAll.generateRequest();
                     },
@@ -126,7 +175,8 @@
                             this.openToast('É obrigatório preencher a Descrição.');
                         } else {
                             var thisLine = {
-                                description: this.$.piDescription.value
+                                description: this.$.piDescription.value,
+                                grupoContabProduto: this.ddgroupcontprod
                             };
                             if (this.result == null) {
                                 this.result = thisLine;
@@ -136,24 +186,24 @@
                             } 
                             this.$.ajax_update.body = JSON.stringify(this.result);
                             this.$.ajax_update.generateRequest();
-                            this.$.gridFinalWasteDestinations.clearCache();
+                            this.$.gridMealTypes.clearCache();
                         }
                     },
                     _update: function () {
                         this.$.ajax_update.body = JSON.stringify(this.result);
                         this.$.ajax_update.generateRequest();
-                        this.$.gridFinalWasteDestinations.clearCache();
+                        this.$.gridMealTypes.clearCache();
                     },
                     _delete: function (e) {
                         var index = this.result.indexOf(e.model.item);
                         this.result.splice(index, 1);
                         this.$.ajax_update.body = JSON.stringify(this.result);
                         this.$.ajax_update.generateRequest();
-                        this.$.gridFinalWasteDestinations.clearCache();
+                        this.$.gridMealTypes.clearCache();
                     },
                     _cancel: function () {
                         this.$.ajax_GetAll.generateRequest();
-                        this.$.gridFinalWasteDestinations.clearCache();
+                        this.$.gridMealTypes.clearCache();
                     },
                     _updateResponse: function (e) {
                         var self = this;
@@ -169,4 +219,5 @@
             });
     </script>
 </dom-module>
+
 

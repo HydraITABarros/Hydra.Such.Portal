@@ -100,6 +100,25 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return false;
             }
         }
+
+        public static bool DeleteAllFromContract(string contractNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.TextoFaturaContrato.RemoveRange(ctx.TextoFaturaContrato.Where(x => x.NºContrato == contractNo));
+                    ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
         #endregion
 
 

@@ -540,7 +540,6 @@
      * @param {Boolean} strict Also checks that the object is not an array
      */
     var isObject = Highcharts.isObject = function (obj, strict) {
-        //debugger;
         return obj && typeof obj === 'object' && (!strict || !isArray(obj));
     };
 

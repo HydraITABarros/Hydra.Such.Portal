@@ -29,7 +29,8 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
-        public IActionResult TabelasAuxiliares()
+      
+        public IActionResult Administracao()
         {
             return View();
         }
