@@ -2,120 +2,222 @@
 using System.Collections.Generic;
 using System.Text;
 using Hydra.Such.Data.Database;
+using System.Linq;
+using Hydra.Such.Data.ViewModel;
 
 namespace Hydra.Such.Data.Logic
 {
-    class DBUserDimensions
+    public static class DBUserDimensions
     {
+        #region CRUD
+        public static AcessosDimensões GetById(string userId, int dimension, string dimensionValue)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.AcessosDimensões.Where(x => x.IdUtilizador == userId && x.Dimensão == dimension && x.ValorDimensão == dimensionValue).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
 
-        //#region CRUD
-        //public static AcessosDimensões GetById(string IdUtilizador, int Área, int Funcionalidade)
-        //{
-        //    try
-        //    {
-        //        using (var ctx = new SuchDBContext())
-        //        {
-        //            return ctx.AcessosDimensões.Where(x => x.IdUtilizador == IdUtilizador && x. == Área && x.Funcionalidade == Funcionalidade).FirstOrDefault();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
+                return null;
+            }
+        }
 
-        //        return null;
-        //    }
-        //}
+        public static List<AcessosDimensões> GetAll()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.AcessosDimensões.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
 
-        //public static List<AcessosDimensões> GetAll()
-        //{
-        //    try
-        //    {
-        //        using (var ctx = new SuchDBContext())
-        //        {
-        //            return ctx.AcessosDimensões.ToList();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
+                return null;
+            }
+        }
 
-        //        return null;
-        //    }
-        //}
+        public static AcessosDimensões Create(AcessosDimensões item)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.AcessosDimensões.Add(item);
+                    ctx.SaveChanges();
+                }
 
-        //public static AcessosDimensões Create(AcessosDimensões ObjectToCreate)
-        //{
-        //    try
-        //    {
-        //        using (var ctx = new SuchDBContext())
-        //        {
-        //            ObjectToCreate.DataHoraCriação = DateTime.Now;
-        //            ctx.AcessosDimensões.Add(ObjectToCreate);
-        //            ctx.SaveChanges();
-        //        }
+                return item;
+            }
+            catch (Exception ex)
+            {
 
-        //        return ObjectToCreate;
-        //    }
-        //    catch (Exception ex)
-        //    {
+                return null;
+            }
+        }
 
-        //        return null;
-        //    }
-        //}
+        public static List<AcessosDimensões> Create(List<AcessosDimensões> items)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    items.ForEach(x => ctx.AcessosDimensões.Add(x));
+                    ctx.SaveChanges();
+                }
 
-        //public static AcessosDimensões Update(AcessosDimensões ObjectToUpdate)
-        //{
-        //    try
-        //    {
-        //        using (var ctx = new SuchDBContext())
-        //        {
-        //            ObjectToUpdate.DataHoraModificação = DateTime.Now;
-        //            ctx.AcessosDimensões.Update(ObjectToUpdate);
-        //            ctx.SaveChanges();
-        //        }
+                return items;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
-        //        return ObjectToUpdate;
-        //    }
-        //    catch (Exception ex)
-        //    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId">Utilizar nos casos em que o id do utilizador não é definido na camada de interface</param>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public static List<AcessosDimensões> Create(string userId, List<AcessosDimensões> items)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    items.ForEach(x =>
+                        {
+                            x.IdUtilizador = userId;
+                            ctx.AcessosDimensões.Add(x);
+                        });
+                    ctx.SaveChanges();
+                }
 
-        //        return null;
-        //    }
-        //}
+                return items;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
-        //public static bool DeleteAllFromUser(string UserId)
-        //{
-        //    try
-        //    {
-        //        using (var ctx = new SuchDBContext())
-        //        {
-        //            List<AcessosDimensões> UserAccessesToDelete = ctx.AcessosDimensões.Where(x => x.IdUtilizador == UserId).ToList();
-        //            ctx.AcessosDimensões.RemoveRange(UserAccessesToDelete);
-        //            ctx.SaveChanges();
-        //        }
+        public static AcessosDimensões Update(AcessosDimensões item)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.AcessosDimensões.Update(item);
+                    ctx.SaveChanges();
+                }
 
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
+                return item;
+            }
+            catch (Exception ex)
+            {
 
-        //        return false;
-        //    }
-        //}
-        //#endregion
+                return null;
+            }
+        }
 
-        //public static List<AcessosDimensões> GetByUserId(string UserId)
-        //{
-        //    try
-        //    {
-        //        using (var ctx = new SuchDBContext())
-        //        {
-        //            return ctx.AcessosDimensões.Where(x => x.IdUtilizador == UserId).ToList();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
+        public static bool Delete(string userId, int dimension, string dimensionValue)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    AcessosDimensões userDimension = ctx.AcessosDimensões.Where(x => x.IdUtilizador == userId && x.Dimensão == dimension && x.ValorDimensão == dimensionValue).FirstOrDefault();
+                    if (userDimension != null)
+                    {
+                        ctx.AcessosDimensões.Remove(userDimension);
+                        ctx.SaveChanges();
+                        return true;
+                    }
+                }
+            }
+            catch { }
+            return false;
+        }
 
-        //        return null;
-        //    }
-        //}
+        public static bool DeleteAllFromUser(string userId)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    List<AcessosDimensões> userAccessesToDelete = ctx.AcessosDimensões.Where(x => x.IdUtilizador == userId).ToList();
+                    ctx.AcessosDimensões.RemoveRange(userAccessesToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+        #endregion
+
+        public static List<UserDimensionsViewModel> GetByUserId(string userId)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.AcessosDimensões.Where(x => x.IdUtilizador == userId)
+                        .ToList()
+                        .ParseToViewModel();
+                }
+            }
+            catch (Exception ex)
+            {
+                
+            }
+            return new List<UserDimensionsViewModel>();
+        }
+
+        public static UserDimensionsViewModel ParseToViewModel(this AcessosDimensões dimensionAccess)
+        {
+            return new UserDimensionsViewModel()
+            {
+                UserId = dimensionAccess.IdUtilizador,
+                Dimension = dimensionAccess.Dimensão,
+                DimensionValue = dimensionAccess.ValorDimensão
+            };
+        }
+
+        public static List<UserDimensionsViewModel> ParseToViewModel(this List<AcessosDimensões> dimensionAccess)
+        {
+            List<UserDimensionsViewModel> userDimensions = new List<UserDimensionsViewModel>();
+            dimensionAccess.ForEach(x =>
+                userDimensions.Add(x.ParseToViewModel()));
+            return userDimensions;
+        }
+
+        public static AcessosDimensões ParseToDB(this UserDimensionsViewModel userDimension)
+        {
+            return new AcessosDimensões()
+            {
+                IdUtilizador = userDimension.UserId,
+                Dimensão = userDimension.Dimension,
+                ValorDimensão = userDimension.DimensionValue
+            };
+        }
+
+        public static List<AcessosDimensões> ParseToDB(this List<UserDimensionsViewModel> userDimensions)
+        {
+            List<AcessosDimensões> dimensionAccess = new List<AcessosDimensões>();
+            userDimensions.ForEach(x =>
+                dimensionAccess.Add(x.ParseToDB()));
+            return dimensionAccess;
+        }
     }
 }

@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/Hydra.Such.Portal",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:49482/",
       "sslPort": 44321

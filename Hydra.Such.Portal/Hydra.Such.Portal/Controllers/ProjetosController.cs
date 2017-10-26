@@ -48,7 +48,6 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
-
         #region Details
         public IActionResult Detalhes(String id)
         {
@@ -334,7 +333,6 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
-
         #region DiárioDeProjetos
         public IActionResult DiarioProjeto(String id)
         {
@@ -595,7 +593,6 @@ namespace Hydra.Such.Portal.Controllers
             public string InvoiceClientNo { get; set; }
         }
         #endregion
-
 
         #region Job Ledger Entry
         public IActionResult MovimentosDeProjeto(String id)
