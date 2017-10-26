@@ -1,5 +1,8 @@
-﻿using Hydra.Such.Data.ViewModel;
+﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.ServiceModel;
 using System.Threading.Tasks;
@@ -20,7 +23,6 @@ namespace Hydra.Such.Data.NAV
 
         public static async Task<WSCreatePreInvoiceLine.Create_Result> CreatePreInvoiceLine(ProjectDiaryViewModel PreInvoiceLineToCreate, NAVWSConfigurations WSConfigurations, string PKey)
         {
-
             WSCreatePreInvoiceLine.Create NAVCreate = new WSCreatePreInvoiceLine.Create()
             {
                 WsPreInvoiceLine = new WSCreatePreInvoiceLine.WsPreInvoiceLine()
@@ -56,6 +58,46 @@ namespace Hydra.Such.Data.NAV
             catch (Exception ex)
             {
                 return null;
+            }
+        }
+
+        //public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineList(List<LinhasFaturaçãoContrato> LinesList, String HeaderNo, NAVWSConfigurations WSConfigurations)
+        //{
+        //    WSCreatePreInvoiceLine.CreateMultiple NAVCreate = new WSCreatePreInvoiceLine.CreateMultiple()
+        //    {
+                
+        //    };
+
+        //    LinesList.Select(x => new WSCreatePreInvoiceLine.WsPreInvoiceLine()
+        //    {
+        //    }).ToList();
+
+        //    //Configure NAV Client
+        //    EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoiceLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
+        //    WSCreatePreInvoiceLine.WsPreInvoiceLine_PortClient WS_Client = new WSCreatePreInvoiceLine.WsPreInvoiceLine_PortClient(navWSBinding, WS_URL);
+        //    WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+        //    WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+        //    try
+        //    {
+        //        WSCreatePreInvoiceLine.CreateMultiple_Result result = await WS_Client.CreateMultipleAsync(NAVCreate);
+        //        return result;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return null;
+        //    }
+        //}
+
+        private static WSCreatePreInvoiceLine.Type ConvertType (string type)
+        {
+            switch (type)
+            {
+                case "1":
+                    return WSCreatePreInvoiceLine.Type.Item;
+
+                default:
+                    return WSCreatePreInvoiceLine.Type._blank_;
             }
         }
     }

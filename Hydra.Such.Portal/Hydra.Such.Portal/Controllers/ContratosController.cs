@@ -245,7 +245,7 @@ namespace Hydra.Such.Portal.Controllers
                             ContratoDB.DataInício1ºContrato = data.StartDateFirstContract == "" ? null : (DateTime?)DateTime.Parse(data.StartDateFirstContract);
                             ContratoDB.NºRequisiçãoDoCliente = data.ClientRequisitionNo;
                             ContratoDB.NºCompromisso = data.PromiseNo;
-                            ContratoDB.DataInicial = data.StartData == "" ?  null : (DateTime?)DateTime.Parse(data.StartData);
+                            ContratoDB.DataInicial = data.StartData == "" ? null : (DateTime?)DateTime.Parse(data.StartData);
                             ContratoDB.Estado = data.Status - 1;
                             ContratoDB.DataReceçãoRequisição = data.ReceiptDateRequisition == "" ? null : (DateTime?)DateTime.Parse(data.ReceiptDateRequisition);
                             ContratoDB.NºVersão = data.VersionNo;
@@ -268,7 +268,7 @@ namespace Hydra.Such.Portal.Controllers
                             ContratoDB.PeríodoFatura = data.InvocePeriod - 1;
                             ContratoDB.UtilizadorModificação = User.Identity.Name;
                             ContratoDB = DBContracts.Update(ContratoDB);
-                            
+
                             //Create/Update Contract Client Requests
                             List<RequisiçõesClienteContrato> RCC = DBContractClientRequisition.GetByContract(ContratoDB.NºContrato);
                             List<RequisiçõesClienteContrato> RCCToDelete = RCC.Where(x => !data.ClientRequisitions.Any(y => x.NºRequisiçãoCliente == x.NºRequisiçãoCliente && x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo && x.DataInícioCompromisso == DateTime.Parse(y.StartDate))).ToList();
@@ -327,9 +327,10 @@ namespace Hydra.Such.Portal.Controllers
 
                             //Delete Contract Invoice Texts
                             CITToDelete.ForEach(x => DBContractInvoiceText.Delete(x));
+                        }
+                        data.eReasonCode = 1;
+                        data.eMessage = "Contrato atualizado com sucesso.";
                     }
-                    data.eReasonCode = 1;
-                    data.eMessage = "Contrato atualizado com sucesso.";
                 }
             }
             catch (Exception ex)
@@ -501,7 +502,7 @@ namespace Hydra.Such.Portal.Controllers
             foreach (var item in contractList)
             {
                 // Cycle for "Linha Contratos" filtered by "Tipo Contrato", "Nº Contrato", "Versão" = Cycle Item, "Faturavel" = SIM, ordered by "Nº Contrato", "Grupo Fatura"
-                List<LinhasContratos> contractLinesList = DBContractLines.GetAllByNoTypeVersion(item.NºContrato, item.TipoContrato, item.NºVersão);
+                List<LinhasContratos> contractLinesList = DBContractLines.GetAllByNoTypeVersion(item.NºContrato, item.TipoContrato, item.NºVersão, true);
                 contractLinesList.OrderBy(x => x.NºContrato).ThenBy(y => y.GrupoFatura);
 
                 String ContractNoDuplicate = "";
@@ -612,13 +613,27 @@ namespace Hydra.Such.Portal.Controllers
             List<AutorizarFaturaçãoContratos> contractList = DBAuthorizeInvoiceContracts.GetAll();
             List<LinhasFaturaçãoContrato> lineList = DBInvoiceContractLines.GetAll();
 
-            //NAV WsPreInvoice
-            
+            foreach (var item in contractList)
+            {
+                //NAV WsPreInvoice
+                Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws);
+                InvoiceHeader.Wait();
 
-            //WsPreInvoiceLine
+                if (InvoiceHeader.IsCompletedSuccessfully)
+                {
+                    String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
+                    //WsPreInvoiceLine
+                    List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato).ToList();
+                    //Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine
 
-            //WsGeneric.fxPostInvoice
+                    //WsGeneric.fxPostInvoice
+                }
+                else
+                {
+                    return Json(false);
+                }
 
+            }
             return Json(true);
         }
 

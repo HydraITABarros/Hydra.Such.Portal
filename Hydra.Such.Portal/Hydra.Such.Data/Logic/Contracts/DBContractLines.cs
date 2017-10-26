@@ -41,7 +41,22 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
-
+ 
+        public static List<LinhasContratos> GetAllByNoTypeVersion(string contractNo, int type, int version, bool billable)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasContratos.Where(x => x.NºContrato == contractNo && x.Tipo == type && x.NºVersão == version && x.Faturável == billable).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        
         public static LinhasContratos Create(LinhasContratos ObjectToCreate)
         {
             try
@@ -102,10 +117,6 @@ namespace Hydra.Such.Data.Logic.Contracts
         }
         #endregion
 
-
-
-
-
         public static List<LinhasContratos> GetAllByActiveContract(string contractNo, int versionNo)
         {
             try
@@ -121,7 +132,6 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
-
 
         public static bool DeleteAllFromContract(string contractNo)
         {
