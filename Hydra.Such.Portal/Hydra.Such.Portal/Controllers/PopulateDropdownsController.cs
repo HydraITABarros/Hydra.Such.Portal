@@ -6,9 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.Logic.Project;
-using Hydra.Such.Data.ViewModel;
 using Microsoft.Extensions.Options;
-using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.ProjectDiary;
@@ -70,6 +68,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetUtilizadores()
+        {
+            List<DDMessageString> result = DBUserConfigurations.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.IdUtilizador,
+                value = x.Nome
+            }).ToList(); ;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetProjectTypes()
         {
             List<DDMessage> result = DBProjectTypes.GetAll().Select(x => new DDMessage()
@@ -106,7 +115,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetFolhaDeHoraCodeTypeKms()
         {
-            List<EnumData> result = EnumerablesFixed.FolhaDeHoraCodeTypeKms;
+            List<EnumDataString> result = EnumerablesFixed.FolhaDeHoraCodeTypeKms;
             return Json(result);
         }
 
@@ -115,6 +124,87 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity;
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetFeeUnits()
+        {
+            List<EnumData> result = EnumerablesFixed.FeeUnits;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetPaymentTerms()
+        {
+            List<DDMessageString> result = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractStatus()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractStatus;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractChangeStatus()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractChangeStatus;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractBillingTypes()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractBillingTypes;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractMaintenanceTypes()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractMaintenanceTypes;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractInvoicePeriods()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractInvoicePeriods;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractInvoiceGroups()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractInvoiceGroups;
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractLineTypes()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractLineTypes;
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetClientServices([FromBody] string ClientNo)
+        {
+            List<DDMessage> result = DBClientServices.GetAllFromClientWithDescription(ClientNo).Select(x => new DDMessage() {
+                id = x.ServiceCode,
+                value = x.ServiceDescription
+            }).ToList();
+
+            return Json(result);
+        }
+
 
         //STORE PROCEDURES
         [HttpPost]
@@ -232,6 +322,7 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
             return Json(result);
         }
+
         #endregion
 
         #region TypeOptions
@@ -266,30 +357,33 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetCGAccountCode(string accountNo)
         {
-            List<DDMessageString> result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            List<DDMessageRelated> result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated()
             {
                 id = x.Code,
-                value = x.Name
+                value = x.Name,
+                extra = ""
             }).ToList(); return Json(result);
         }
 
         [HttpPost]
         public JsonResult GetProductsCode(string productNo)
         {
-            List<DDMessageString> result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            List<DDMessageRelated> result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated()
             {
                 id = x.Code,
-                value = x.Name
+                value = x.Name,
+                extra = x.MeasureUnit                
             }).ToList(); return Json(result);
         }
 
         [HttpPost]
         public JsonResult GetResourcesCode(string resourceNo, string filterArea, int resourceType, string contabGroup)
         {
-            List<DDMessageString> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageString()
+            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
             {
                 id = x.Code,
-                value = x.Name
+                value = x.Name,
+                extra = x.MeasureUnit
             }).ToList();
             return Json(result);
         }
@@ -439,6 +533,31 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        // zpgm.<populate dropdowns to use in Procedimentos CCP 
+        [HttpPost]
+        public JsonResult GetPocedimentosCcpProcedimentoType()
+        {
+            List<EnumData> ProcedimentoTypes = EnumerablesFixed.ProcedimentosCcpProcedimentoType;
+
+            return Json(ProcedimentoTypes);
+        }
+
+        [HttpPost]
+        public JsonResult GetProcedimentosCcpType()
+        {
+            List<EnumData> CCPTypes = EnumerablesFixed.ProcedimentosCcpType;
+            return Json(CCPTypes);
+        }
+
+        [HttpPost]
+        public JsonResult GetProcedimentosCcpStates()
+        {
+            List<EnumData> CCPStates = EnumerablesFixed.ProcedimentosCcpStates;
+
+            return Json(CCPStates);
+        }
+        // zpgm.>
     }
 
     public class DDMessage
@@ -451,5 +570,12 @@ namespace Hydra.Such.Portal.Controllers
     {
         public string id { get; set; }
         public string value { get; set; }
+    }
+
+    public class DDMessageRelated
+    {
+        public string id { get; set; }
+        public string value { get; set; }
+        public string extra { get; set; }
     }
 }

@@ -4,14 +4,16 @@
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
-<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
-<link rel="import" href="/lib/paper-button/paper-button.html" />
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
-<link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-material-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
 
 <dom-module id="x-folhadehoradetails">
@@ -20,16 +22,20 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
-
         <style>
             vaadin-combo-box {
-                padding: 1px 0 !important;
+                margin-top: 0px !important;
+                width: 100% !important;
             }
 
             vaadin-date-picker {
-                margin-top: -14px;
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
                 width: 100%;
-                padding-top: 0px;
             }
 
             .break_clear {
@@ -44,6 +50,8 @@
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraCodeTypeKms" last-response="{{LFolhaDeHoraCodeTypeKms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{LFolhaDeHoraProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraDisplacementOutsideCity" last-response="{{LFolhaDeHoraDisplacementOutsideCity}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetUtilizadores" last-response="{{LFolhaDeHoraValidators}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{LFolhaDeHoraEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <!-- FOLHADEHORA CRUDS -->
         <iron-ajax url="/FolhasDeHoras/GetFolhaDeHoraDetails"
@@ -74,121 +82,255 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <div>
-            <div class="row">
-                <div class="col-lg-3">
-                    <paper-input type="text" value="{{data.folhaDeHorasNo}}" disabled="true" id="folhaDeHorasNo" name="folhaDeHorasNo" label="Nº Folha de Hora"> </paper-input>
+
+
+
+        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+            <paper-tab>Viagens</paper-tab>
+            <paper-tab>Mão-de-obra</paper-tab>
+            <paper-tab>Presenças</paper-tab>
+            <paper-tab>Detalhe</paper-tab>
+        </paper-tabs>
+        <iron-pages selected="{{selected}}">
+            <!--Viagens-->
+            <div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.folhaDeHorasNo}}" id="folhaDeHorasNo" name="folhaDeHorasNo" disabled="true" label="Nº Folha Horas"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LFolhaDeHoraProjectNo]]" item-value-path="id" item-label-path="value" required value="{{data.projectNo}}" label="Nº Ordem/Projecto">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LFolhaDeHoraEmployees]]" item-value-path="id" item-label-path="value" required value="{{data.employeeNo}}" label="Nº Empregado">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.employeeName}}" disabled="true" id="employeeName" name="employeeName" label="Nome Empregado"> </vaadin-text-field>
+                    </div>
                 </div>
-                <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LFolhaDeHoraFunctionalAreaCodes]]" item-value-path="id" item-label-path="value" required value="{{data.areaText}}" label="Cód. Área">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-date-picker label="Data Inicio" id="dateDepartureText" name="dateDepartureText" required value="{{data.dateDepartureText}}"></vaadin-date-picker>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.timeDepartureText}}" id="timeDepartureText" name="timeDepartureText" required label="Hora Inicio"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-date-picker label="Data Fim" id="dateArrivalText" name="dateArrivalText" required value="{{data.dateArrivalText}}"></vaadin-date-picker>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.timeArrivalText}}" id="timeArrivalText" name="timeArrivalText" required label="Hora Fim"> </vaadin-text-field>
+                    </div>
                 </div>
-                <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LFolhaDeHoraProjectNo]]" item-value-path="id" item-label-path="value" required value="{{data.projectNo}}" label="Nº Projecto">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" item-value-path="id" item-label-path="value" value="{{data.typeDeslocation}}" required label="Tipo Deslocação">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" item-value-path="id" item-label-path="value" required value="{{data.codeTypeKms}}" label="Cód. Tipo Kms">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.carRegistration}}" id="carRegistration" name="carRegistration" required label="Matricula"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-checkbox checked="{{data.displacementOutsideCity}}" required>Desloc. fora do concelho</vaadin-checkbox>
+                    </div>
                 </div>
-                <div class="col-lg-3">
-                    <paper-input type="text" value="{{data.employeeNo}}" id="employeeNo" name="employeeNo" required label="Nº Empregado"> </paper-input>
-                </div>
-            </div>
-            <div class="row break_clear">
-                <div class="col-lg-3">
-                    <vaadin-date-picker label="Data da Partida" id="DateDepartureTimeText" name="DateDepartureTimeText" required value="{{data.dateDepartureTimeText}}"></vaadin-date-picker>
-                </div>
-                <div class="col-lg-3">
-                    <vaadin-date-picker label="Data de Regresso" id="DateTimeArrivalText" name="DateTimeArrivalText" required value="{{data.dateTimeArrivalText}}"></vaadin-date-picker>
-                </div>
-                <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" item-value-path="id" item-label-path="value" required value="{{data.typeDeslocation}}" label="Tipo Deslocação">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-                <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" item-value-path="id" item-label-path="value" required value="{{data.codeTypeKmsInt}}" label="Cód. Tipo Kms">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-            </div>
-            <div class="row break_clear">
-                <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LFolhaDeHoraDisplacementOutsideCity]]" item-value-path="id" item-label-path="value" required value="{{data.displacementOutsideCityInt}}" label="Deslocação Fora Concelho">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-                <div class="col-lg-3">
-                    <paper-input type="text" value="{{data.validators}}" id="validators" name="validators" required label="Nº Validador"> </paper-input>
-                </div>
-                <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LFolhaDeHoraStatus]]" item-value-path="id" item-label-path="value" required value="{{data.status}}" label="Estado">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-                <div class="col-lg-3">
-                    <paper-input type="text" value="{{data.createdBy}}" id="createdBy" name="createdBy" disabled="true" label="Nº Criador"> </paper-input>
-                </div>
-            </div>
-            <div class="row break_clear">
-                <div class="col-lg-3">
-                    <vaadin-date-picker label="Data de Criação" id="DateTimeCreationText" name="DateTimeCreationText" disabled="true" value="{{data.dateTimeCreationText}}"></vaadin-date-picker>
-                </div>
-                <div class="col-lg-3">
-                    <vaadin-date-picker label="Data do Últ. Estado" id="DateTimeLastStateText" name="DateTimeLastStateText" disabled="true" value="{{data.dateTimeLastStateText}}"></vaadin-date-picker>
-                </div>
-                <div class="col-lg-3">
-                    <paper-input type="text" value="{{data.userCreation}}" id="userCreation" name="userCreation" disabled="true" label="Nº Criador"> </paper-input>
-                </div>
-                <div class="col-lg-3">
-                    <vaadin-date-picker label="Data da Últ. Modificação" id="DateTimeModificationText" name="DateTimeModificationText" disabled="true" value="{{data.dateTimeModificationText}}"></vaadin-date-picker>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-checkbox checked="{{data.plannedScrolling}}" disabled="true">Deslocação Planeada</vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-checkbox checked="{{data.finished}}" required>Terminado</vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-3">
+                    </div>
+                    <div class="col-lg-3">
+                    </div>
                 </div>
             </div>
-            <div class="row break_clear">
-                <div class="col-lg-3">
-                    <paper-input type="text" value="{{data.userModification}}" id="userModification" name="userModification" disabled="true" label="Nº Uti. Alterou"> </paper-input>
+
+            <!--Mão-de-obra-->
+            <div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.projectNo}}" id="projectNo" name="projectNo" disabled="true" label="Nº Obra"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.projectDescription}}" disabled="true" id="projectDescription" name="projectDescription" label="Descrição"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.employeeNo}}" id="employeeNo" name="employeeNo" disabled="true" label="Nº Empregado"> </vaadin-text-field>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.employeeName}}" disabled="true" id="employeeName" name="employeeName" label="Nome Empregado"> </vaadin-text-field>
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <!--Presenças-->
+            <div>
+                <div class="row break_clear">
+                    <div class="col-lg-6">
+                        <vaadin-text-field type="text" value="{{data.employeeNo}}" id="employeeNo" name="employeeNo" disabled="true" label="Nº Empregado"> </vaadin-text-field>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <vaadin-text-field type="text" value="{{data.employeeName}}" disabled="true" id="employeeName" name="employeeName" label="Nome Empregado"> </vaadin-text-field>
+                    </div>
+                </div>
+            </div>
+
+
+            <!--Detalhe-->
+            <div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LFolhaDeHoraStatus]]" item-value-path="id" item-label-path="value" disabled="true" value="{{data.status}}" label="Estado">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.createdBy}}" id="userModification" name="userModification" disabled="true" label="Criado por"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.dateCreationText}}" id="userModification" name="userModification" disabled="true" label="Data Criação"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.timeCreationText}}" id="userModification" name="userModification" disabled="true" label="Hora Criação"> </vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.regionCode}}" id="userModification" name="userModification" required label="Código Região"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.areaCode}}" id="userModification" name="userModification" required label="Código Área Funcional"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.cRESPCode}}" id="userModification" name="userModification" required label="Código Centro Respon."> </vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.finishedBy}}" id="userModification" name="userModification" disabled="true" label="Terminado por"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.dateFinishedText}}" id="userModification" name="userModification" disabled="true" label="Data Terminado"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.dateFinishedText}}" id="userModification" name="userModification" disabled="true" label="Hora Terminado"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-checkbox checked="{{data.validated}}" disabled="true">Validado</vaadin-checkbox>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.validators}}" id="userModification" name="userModification" disabled="true" label="Validadores"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.validator}}" id="userModification" name="userModification" disabled="true" label="Validador"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.dateValidationText}}" id="userModification" name="userModification" disabled="true" label="Data Validação"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.timeValidationText}}" id="userModification" name="userModification" disabled="true" label="Hora Validação"> </vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.integratorRH}}" id="userModification" name="userModification" disabled="true" label="Integradores Aj Custo"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.integratorRH}}" id="userModification" name="userModification" disabled="true" label="Integrador Aj. Custo RH"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.dateIntegrationRHText}}" id="userModification" name="userModification" disabled="true" label="Data Integ. Aj. Custo RH"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.timeIntegrationRHText}}" id="userModification" name="userModification" disabled="true" label="Hora Integ. Aj. Custo RH"> </vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.integratorRHKM}}" id="userModification" name="userModification" disabled="true" label="Integradores KMs RH"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.integratorRHKM}}" id="userModification" name="userModification" disabled="true" label="Integrador KMs RH"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.dateIntegrationRHKMText}}" id="userModification" name="userModification" disabled="true" label="Data Integ. KMs RH"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.timeIntegrationRHKMText}}" id="userModification" name="userModification" disabled="true" label="Hora Integ. KMs RH"> </vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.userModification}}" id="userModification" name="userModification" disabled="true" label="Custo Total Ajuda Custo"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.userModification}}" id="userModification" name="userModification" disabled="true" label="Custo Total Horas"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.userModification}}" id="userModification" name="userModification" disabled="true" label="Custo Total KM"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field type="text" value="{{data.userModification}}" id="userModification" name="userModification" disabled="true" label="Nº Total KM"> </vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-12">
+                        <vaadin-text-field type="text" value="{{data.comments}}" id="userModification" name="userModification" required label="Observações"> </vaadin-text-field>
+                    </div>
+                </div>
+            </div>
+        </iron-pages>
 
         <div class="marginSpace">
             <template is="dom-if" if="{{ _isCreate }}">
-                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Nova FH</paper-button>
             </template>
             <template is="dom-if" if="{{ !_isCreate }}">
                 <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
@@ -201,7 +343,6 @@
 
     <script>
         document.addEventListener('WebComponentsReady', function () {
-            //debugger;;
             Polymer({
                 is: 'x-folhadehoradetails',
                 properties: {
@@ -226,7 +367,6 @@
                 },
 
                 ready: function () {
-                    //debugger;;
                     //GET FOLHADEHORA DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "FolhaDeHorasNo": this._folhadehoraid });
                     this.$.page_databound_ajax.generateRequest();
@@ -241,13 +381,11 @@
                 },
 
                 _openToast: function (message) {
-                    //debugger;;
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
 
                 _validateData: function () {
-                    //debugger;;
                     if (false) {
                         this._openToast(validate);
                         return false;
@@ -257,7 +395,6 @@
 
                 //CRUDS
                 _create: function () {
-                    //debugger;;
 
                     //if (this._validateData()) {
                     //    this._executeRequest("/FolhasDeHoras/CreateFolhaDeHora", this.data)
@@ -270,14 +407,12 @@
                 },
 
                 _update: function () {
-                    //debugger;;
                     if (this._validateData()) {
                         this._executeRequest("/FolhasDeHoras/UpdateFolhaDeHora", this.data)
                     }
                 },
 
                 _delete: function () {
-                    //debugger;;
                     var FolhaDeHora = this.data;
                     var ajax_request = this.$.ajax_delete_folhadehora;
                     bootbox.confirm({
@@ -303,7 +438,6 @@
 
                 //Responses Processors
                 _responseProcessor: function (data) {
-                    //debugger;;
                     var self = this;
 
                     //Set AreaId
@@ -327,7 +461,6 @@
                 },
 
                 _createResponseProcessor: function () {
-                    //debugger;;
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
                         this._openToast("Folha de Hora criado com sucesso.");
@@ -337,7 +470,6 @@
                 },
 
                 _responseValidatorProcessor: function (data) {
-                    //debugger;;
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.validateResponse == "") {
@@ -349,7 +481,6 @@
                 },
 
                 _responseDeleteProcessor: function (data) {
-                    //debugger;;
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.deletedData.eReasonCode == 1) {
@@ -366,7 +497,6 @@
 
                 //Helpers
                 _executeRequest: function (url, data) {
-                    //debugger;;
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();

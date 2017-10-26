@@ -5,18 +5,18 @@
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
-<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
-<link rel="import" href="/lib/paper-button/paper-button.html" />
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
-<link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-material-theme/vaadin-date-picker.html">
-
-
-
-
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
 
 
@@ -28,14 +28,20 @@
         <link rel="stylesheet" href="/css/main.css" />
         <style>
             vaadin-combo-box {
-                padding: 1px 0 !important;
+                margin-top: 0px !important;
+                width: 100% !important;
             }
 
             vaadin-date-picker {
-                margin-top: -14px;
-                width: 100%;
-                padding-top: 0px;
+                margin-top: 0px !important;
+                width: 100% !important;
             }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
             .break_clear{ 
                 margin-top: 15px;
             }
@@ -115,7 +121,7 @@
             <div>
                 <div class="row">
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.projectNo}}" disabled="{{ !_isCreate }}" id="ProjectNo" name="ProjectNo" ed required label="Nº Projeto"> </paper-input>
+                        <vaadin-text-field value="{{data.projectNo}}" disabled="{{ !_isCreate }}" id="ProjectNo" name="ProjectNo" ed required label="Nº Projeto"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
                         <vaadin-date-picker label="Data" id="Date" name="Date" value="{{data.date}}"></vaadin-date-picker>
@@ -145,7 +151,7 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.description}}" id="Description" name="Description" required label="Descrição"> </paper-input>
+                        <vaadin-text-field value="{{data.description}}" id="Description" name="Description" required label="Descrição"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectStatus]]" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado">
@@ -207,11 +213,11 @@
                     </div>
                     <div class="col-lg-3">
                         <center>
-                            <paper-checkbox checked="{{data.billable}}">Faturável</paper-checkbox>
+                            <vaadin-checkbox checked="{{data.billable}}">Faturável</vaadin-checkbox>
                         </center>
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.ourProposal}}" id="OurProposal" name="OurProposal" required label="Nossa Proposta"> </paper-input>
+                        <vaadin-text-field value="{{data.ourProposal}}" id="OurProposal" name="OurProposal" required label="Nossa Proposta"> </vaadin-text-field>
                     </div>
                 </div>
             </div>
@@ -296,7 +302,7 @@
             <div>
                 <div class="row">
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.commitmentCode}}" id="CommitmentCode" name="CommitmentCode" required label="Nº Compromisso"> </paper-input>
+                        <vaadin-text-field value="{{data.commitmentCode}}" id="CommitmentCode" name="CommitmentCode" required label="Nº Compromisso"> </vaadin-text-field>
                     </div>
                 </div>
             </div>
@@ -318,21 +324,22 @@
                         
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" required label="Envio-a Endereço"></paper-input>
+                        <vaadin-text-field value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" required label="Envio-a Endereço"></vaadin-text-field>
+
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" required label="Envio-a Localidade"> </paper-input>
+                        <vaadin-text-field value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" required label="Envio-a Localidade"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.shippingContact}}" id="ShippingContact" name="ShippingContact" required label="Envio-a Contato"> </paper-input>
+                        <vaadin-text-field value="{{data.shippingContact}}" id="ShippingContact" name="ShippingContact" required label="Envio-a Contato"> </vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.shippingName}}" id="ShippingName" name="ShippingName" required label="Envio-a Nome"> </paper-input>
+                        <vaadin-text-field value="{{data.shippingName}}" id="ShippingName" name="ShippingName" required label="Envio-a Nome"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.shippingPostalCode}}" id="ShippingPostalCode" name="ShippingPostalCode" required label="Envio-a Cód. Postal"> </paper-input>
+                        <vaadin-text-field value="{{data.shippingPostalCode}}" id="ShippingPostalCode" name="ShippingPostalCode" required label="Envio-a Cód. Postal"> </vaadin-text-field>
                     </div>
                 </div>
             </div>
@@ -341,13 +348,13 @@
             <div>
                 <div class="row">
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.clientRequest}}" id="ClientRequest" name="ClientRequest" required label="Pedido do Cliente"> </paper-input>
+                        <vaadin-text-field value="{{data.clientRequest}}" id="ClientRequest" name="ClientRequest" required label="Pedido do Cliente"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
                         <vaadin-date-picker label="Data Pedido" id="RequestDate" name="Date" value="{{data.requestDate}}"></vaadin-date-picker>
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.detailedDescription}}" id="DetailedDescription" name="DetailedDescription" required label="Descrição Detalhada"> </paper-input>
+                        <vaadin-text-field value="{{data.detailedDescription}}" id="DetailedDescription" name="DetailedDescription" required label="Descrição Detalhada"> </vaadin-text-field>
                     </div>
                 </div>
             </div>
@@ -367,12 +374,20 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <paper-input type="text" value="{{data.budgetContractNo}}" id="BudgetContractNo" name="BudgetContractNo" required label="Nº Contrato Orçamento"> </paper-input>
+                        <vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.budgetContractNo}}" label="Nº Contrato Orçamento">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
                         <center>
                             <br />
-                            <paper-checkbox checked="{{data.internalProject}}">Projeto Interno</paper-checkbox>
+                            <vaadin-checkbox checked="{{data.internalProject}}">Projeto Interno</vaadin-checkbox>
                         </center>
                     </div>
                 </div>
@@ -385,7 +400,7 @@
             </template>
             <template is="dom-if" if="{{ !_isCreate }}">
                 <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
             </template>
         </div>
 
@@ -417,7 +432,6 @@
                     }
                 },
                 ready: function () {
-                    //debugger;;
                     //GET PROJECT DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this._projectid });
                     this.$.page_databound_ajax.generateRequest();
@@ -513,7 +527,6 @@
                 _responseValidatorProcessor: function (data) {
                     var self = this;
                     if (data.detail.status === 200) {
-                        debugger;;
                         if (this.validateResponse == "") {
                             this._executeRequest("/Projetos/CreateProject", this.data)
                         } else {
@@ -562,7 +575,7 @@
                 },
 
                 //BUTTONS
-                _OpenProjectMovements: function (url, data) {
+                _openProjectMovements: function (url, data) {
                     window.location.replace("/Projetos/MovimentosDeProjeto/" + this.data.projectNo);
                 },
                 _OpenProjectDiary: function (url, data) {

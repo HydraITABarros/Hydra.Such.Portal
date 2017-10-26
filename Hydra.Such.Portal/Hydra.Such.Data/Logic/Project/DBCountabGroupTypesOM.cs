@@ -78,14 +78,13 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static bool DeleteAllFromProfile(int ProfileId)
+        public static bool DeleteAllFromProfile(TiposGrupoContabOmProjeto ObjectToDelete)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<TiposGrupoContabOmProjeto> ProfileAccessesToDelete = ctx.TiposGrupoContabOmProjeto.Where(x => x.Código == ProfileId).ToList();
-                    ctx.TiposGrupoContabOmProjeto.RemoveRange(ProfileAccessesToDelete);
+                    ctx.TiposGrupoContabOmProjeto.Remove(ObjectToDelete);
                     ctx.SaveChanges();
                 }
 

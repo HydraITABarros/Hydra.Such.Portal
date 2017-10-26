@@ -120,7 +120,7 @@ namespace Hydra.Such.Portal.Controllers
             ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
 
             //Validate if ProjectNo is valid
-            if (data.ProjectNo != "" && !CfgNumeration.Manual.Value)
+            if (!(data.ProjectNo == "" || data.ProjectNo == null) && !CfgNumeration.Manual.Value)
             {
                 return Json("A numeração configurada para projetos não permite inserção manual.");
             }
@@ -157,7 +157,7 @@ namespace Hydra.Such.Portal.Controllers
                     //Get Project Numeration
                     Configuração Configs = DBConfigurations.GetById(1);
                     int ProjectNumerationConfigurationId = Configs.NumeraçãoProjetos.Value;
-                    data.ProjectNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, data.ProjectNo == "");
+                    data.ProjectNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ProjectNo == "" || data.ProjectNo == null));
 
                     if (data.ProjectNo != null)
                     {
@@ -218,7 +218,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 //Delete Created Project on Database
                                 DBProjects.Delete(cProject.NºProjeto);
-                            
+                                
                                 data.eReasonCode = 3;
                                 data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
                             }
@@ -452,8 +452,8 @@ namespace Hydra.Such.Portal.Controllers
                     PreçoUnitário = x.UnitPrice,
                     PreçoTotal = x.TotalPrice,
                     Faturável = x.Billable,
-                    Registado = false
-                    //FaturaANºCliente = x.InvoiceToClientNo
+                    Registado = false,
+                    FaturaANºCliente = x.InvoiceToClientNo
                 };
 
                 if (x.LineNo > 0)
@@ -487,14 +487,15 @@ namespace Hydra.Such.Portal.Controllers
                     ContabGroup = proj.GrupoContabObra,
                     RegionCode = proj.CódigoRegião,
                     FuncAreaCode = proj.CódigoÁreaFuncional,
-                    ResponsabilityCenter = proj.CódigoCentroResponsabilidade
+                    ResponsabilityCenter = proj.CódigoCentroResponsabilidade,
+                    InvoiceClientNo = proj.NºCliente
                 };
 
                 return Json(pi);
             }
             else
             {
-                return Json(null);
+                return null;
             }
         }
 
@@ -591,6 +592,7 @@ namespace Hydra.Such.Portal.Controllers
             public string RegionCode { get; set; }
             public string FuncAreaCode { get; set; }
             public string ResponsabilityCenter { get; set; }
+            public string InvoiceClientNo { get; set; }
         }
         #endregion
 

@@ -11,11 +11,11 @@ namespace Hydra.Such.Data.Logic.CCP
         private static SuchDBContext context = new SuchDBContext();
 
         #region parse ProcedimentosCcp
-        public static List<ProcedimentosCcp> GetAllProcedimentosByTypeToList(int type)
+        public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoTypeToList(int type)
         {
             try
             {
-                return context.ProcedimentosCcp.Where(p => p.Tipo == type).ToList();
+                return context.ProcedimentosCcp.Where(p => p.TipoProcedimento == type).ToList();
             }
             catch(Exception e)
             {
@@ -56,11 +56,24 @@ namespace Hydra.Such.Data.Logic.CCP
         public static ProcedimentosCcp CreateProcedimento(ProcedimentoCCPView procedimento)
         {
             ProcedimentosCcp proc = CCPFunctions.CastProcCcpViewToProcCcp(procedimento);
+
             try
             {
+                Configuração config = DBConfigurations.GetById(1);
+                int NumeracaoProcedimento = 0;
+
+                if(proc.TipoProcedimento == 1)
+                {
+                    NumeracaoProcedimento = config.NumeraçãoProcedimentoAquisição.Value;
+                }
+                else
+                {
+                    NumeracaoProcedimento = config.NumeraçãoProcedimentoSimplificado.Value;
+                }
+
+                proc.Nº = DBNumerationConfigurations.GetNextNumeration(NumeracaoProcedimento, true);
                 proc.DataHoraCriação = DateTime.Now;
-                // inserir o utilizador da criação
-                //proc.UtilizadorCriação = User.Identity.Name;
+
                 proc.Nº1 = new TemposPaCcp()
                 {
                     NºProcedimento = proc.Nº,
@@ -86,6 +99,11 @@ namespace Hydra.Such.Data.Logic.CCP
                 
                 context.Add(proc);
                 context.SaveChanges();
+
+                ConfiguraçãoNumerações ConfigNum = DBNumerationConfigurations.GetById(NumeracaoProcedimento);
+                ConfigNum.ÚltimoNºUsado = proc.Nº;
+                DBNumerationConfigurations.Update(ConfigNum);
+
                 return proc;
             }
             catch(Exception e)
@@ -93,17 +111,18 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
 
-            return proc;
         }
+
         public static ProcedimentosCcp CreateProcedimento(ProcedimentosCcp procedimento)
         {
             try
             {
-                procedimento.DataHoraCriação = DateTime.Now;
-                // inserir o utilizador da criação
-                //proc.UtilizadorCriação = User.Identity.Name;
-                context.Add(procedimento);
-                context.SaveChanges();
+                ProcedimentoCCPView ProcCCPView = CCPFunctions.CastProcCcpToProcCcpView(procedimento);
+                ProcedimentosCcp Proc =  CreateProcedimento(ProcCCPView);
+
+                procedimento.Nº = Proc.Nº;
+                procedimento.DataHoraCriação = Proc.DataHoraCriação;
+                procedimento.UtilizadorCriação = Proc.UtilizadorCriação;
 
                 return procedimento;
             }
@@ -113,15 +132,34 @@ namespace Hydra.Such.Data.Logic.CCP
             }
             
         }
+
+        public static ProcedimentosCcp UpdateProcedimento(ProcedimentoCCPView procedimento)
+        {
+            try
+            {
+                ProcedimentosCcp proc = CCPFunctions.CastProcCcpViewToProcCcp(procedimento);
+                proc.DataHoraModificação = DateTime.Now;
+
+                context.ProcedimentosCcp.Update(proc);
+                context.SaveChanges();
+
+                return proc;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
+        }
         #endregion
 
         #region parse ProcedimentosCCPView
-        public static List<ProcedimentoCCPView> GetAllProcedimentosViewByTypeToList(int type)
+        public static List<ProcedimentoCCPView> GetAllProcedimentosViewByProcedimentoTypeToList(int type)
         {
-            List <ProcedimentosCcp> ProcList = GetAllProcedimentosByTypeToList(type);
+            List <ProcedimentosCcp> ProcList = GetAllProcedimentosByProcedimentoTypeToList(type);
             List<ProcedimentoCCPView> ProcViewList = new List<ProcedimentoCCPView>();
 
-            if (ProcList.Count == 0)
+            if (ProcList == null)
                 return null;
 
             try
@@ -144,7 +182,7 @@ namespace Hydra.Such.Data.Logic.CCP
             List<ProcedimentosCcp> ProcList = GetAllProcedimentosToList();
             List<ProcedimentoCCPView> ProcViewList = new List<ProcedimentoCCPView>();
 
-            if (ProcList.Count == 0)
+            if (ProcList == null)
                 return null;
 
             try

@@ -5,15 +5,20 @@
 }
 
 <link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html" />
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html" />
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html" />
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html" />
+
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
-<link rel="import" href="~/lib/paper-input/paper-input.html" />
-<link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
@@ -27,7 +32,7 @@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="~/css/main.css" />
-        
+
         <style>
             input[readonly] {
                 border: 2px solid transparent;
@@ -36,52 +41,16 @@
             input {
                 font: inherit;
             }
-
-            /*.grid {
-                font-size: 13px;
-            }
-
-                .grid input {
-                    border: none;
-                    padding-left: 5px;
-                }*/
-
-            paper-input {
-                max-width: 200px !important;
-            }
         </style>
-
-
-        <iron-form id="formGeral">
-            <form>
-
-                <h2 class="separator">Novo Registo</h2>
-                <table class="table inlineForm">
-                    <tr>
-                        <td width="21%"><paper-input id="piDescription" type="text" name="description" required label="Descrição" maxlength="20"></paper-input></td>
-                        <td width="8%"><paper-checkbox id="pcAuto">Auto</paper-checkbox><br /><paper-checkbox id="pcManual">Manual</paper-checkbox></td>
-                        <td width="21%"><paper-input id="piPrefix" type="text" name="prefix" required label="Prefixo" maxlength="10"></paper-input></td>
-                        <td width="21%"><paper-input id="piDigitNumber" type="number" name="digitNumber" required label="Nº Dígitos Incrementar"></paper-input></td>
-                        <td width="21%"><paper-input id="piIncrementNumber" type="number" name="incrementNumber" required label="Quantidade Incrementar"></paper-input></td>
-                        <td width="8%"><paper-button class="btnSave" raised on-tap="_add">Novo</paper-button></td>
-                    </tr>
-                </table>
-
-                @*<h2 class="separator">Novo Registo (2)</h2>
-                <div id="inlineForm" style="margin-bottom: 20px; width:auto;">
-                    <input type="text" name="description" required maxlength="20" placeholder="Descrição" />
-                    <paper-checkbox>Auto</paper-checkbox>
-                    <paper-checkbox>Manual</paper-checkbox>
-                    <input type="text" name="prefix" required value="{{item.prefix}}" placeholder="Prefixo" />
-                    <input type="number" name="digitNumber" required placeholder="Nº Dígitos Incrementar" />
-                    <input type="number" name="incrementNumber" required placeholder="Quantidade Incrementar"/>
-
-                    <paper-button raised id="addNew" class="btn-success" on-tap="_add">Adicionar &nbsp;<i class="fa fa-plus" aria-hidden="true"></i>
-                    </paper-button>
-                </div>*@
-
-            </form>
-        </iron-form>
+        <h2 class="separator">Novo Registo</h2>
+        <div class="row">
+            <div class="col-lg-2"><vaadin-text-field id="piDescription" label="Descrição" maxlength="20"></vaadin-text-field></div>
+            <div class="col-lg-2 alignPoga"><vaadin-checkbox id="pcAuto"> Auto</vaadin-checkbox><vaadin-checkbox id="pcManual"> Manual</vaadin-checkbox></div>
+            <div class="col-lg-2"><vaadin-text-field id="piPrefix" label="Prefixo" maxlength="10"></vaadin-text-field></div>
+            <div class="col-lg-2"><vaadin-text-field id="piDigitNumber" label="Nº Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
+            <div class="col-lg-2"><vaadin-text-field id="piIncrementNumber" label="Qt. Incrementar" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field></div>
+            <div class="col-lg-2 alignPoga"><paper-button class="btnSave" raised on-tap="_add">Criar</paper-button></div>
+        </div>
 
         <h2 class="separator">Numerações Ativas</h2>
 
@@ -101,7 +70,7 @@
                     Descrição
                 </template>
                 <template>
-                    <input type="text" name="description" required maxlength="20" value="{{item.description}}" />
+                    <vaadin-text-field name="description" value="{{item.description}}" maxlength="20"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -110,7 +79,7 @@
                     Auto
                 </template>
                 <template>
-                    <paper-checkbox checked="{{item.auto}}"></paper-checkbox>
+                    <vaadin-checkbox checked="{{item.auto}}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
 
@@ -119,7 +88,7 @@
                     Manual
                 </template>
                 <template>
-                    <paper-checkbox checked="{{item.manual}}"></paper-checkbox>
+                    <vaadin-checkbox checked="{{item.manual}}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
 
@@ -128,7 +97,7 @@
                     Prefixo
                 </template>
                 <template>
-                    <input type="text" name="prefix" on-input="_storeFirst" required value="{{item.prefix}}" maxlength="10" />
+                    <vaadin-text-field name="prefix" value="{{item.prefix}}" maxlength="10"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -137,7 +106,7 @@
                     Nº Incrementar
                 </template>
                 <template>
-                    <input type="number" name="digitNumber" required value="{{item.totalDigitIncrement}}" />
+                    <vaadin-text-field name="digitNumber" value="{{item.totalDigitIncrement}}" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -146,7 +115,7 @@
                     Qt. Incrementar
                 </template>
                 <template>
-                    <input type="number" name="incrementNumber" required value="{{ item.incrementQuantity }}" />
+                    <vaadin-text-field name="incrementNumber" value="{{item.incrementQuantity}}" pattern="[0-9]*" prevent-invalid-input></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -155,7 +124,7 @@
                     Último Nº Usado
                 </template>
                 <template>
-                    <input type="text" name="lastUsedNumber" required disabled value="{{item.lastNumerationUsed}}" />
+                    <vaadin-text-field name="lastUsedNumber" value="{{item.lastNumerationUsed}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -163,7 +132,7 @@
                 <template class="header">
                 </template>
                 <template>
-                        <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
+                    <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -183,8 +152,8 @@
                 //properties: {
                 //    flag: {
                 //        type: Number,
-                //        value: 0                    
-                //    }                    
+                //        value: 0
+                //    }
                 //},
 
                 openToast: function (message) {
@@ -219,7 +188,7 @@
                 _update: function () {
                     this.$.ajax_update.url = "/Administracao/UpdateNumerationConfigs";
                     this.$.ajax_update.body = JSON.stringify(this.result);
-                    this.$.ajax_update.generateRequest();                    
+                    this.$.ajax_update.generateRequest();
 
                     //this.$.flag = 1;
 
@@ -237,23 +206,21 @@
 
                 _cancel: function () {
                     this.$.ajax_update.url = "/Administracao/GetListConfigNumerations";
-                    this.$.ajax_update.generateRequest();                    
+                    this.$.ajax_update.generateRequest();
 
                     this.$.numerationsTable.clearCache();
                 },
 
-                _updateResponse: function (e)
-                {
+                _updateResponse: function (e) {
                     var self = this;
-                    if (this.$.ajax_update.url != "/Administracao/GetListConfigNumerations")
-                    {
+                    if (this.$.ajax_update.url != "/Administracao/GetListConfigNumerations") {
                         if (e.detail.status === 200) {
                             this.openToast("Numerações atualizadas.");
                         }
                         else {
                             this.openToast("Occorreu um erro ao atualizar as numerações.");
                         }
-                    }                    
+                    }
                 }
             });
         });

@@ -181,7 +181,6 @@
                     }
                 },
                 _rowSelected: function (item) {
-                    //debugger;
                     if (item != null) {
                         window.location.href = "DetalhesProjeto/" + item.projectNo;
                     }
@@ -192,7 +191,6 @@
                     }
                 },
                 ready: function () {
-                    //debugger;
                     this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
                     this.$.grid_databound_ajax.generateRequest();
                 },
