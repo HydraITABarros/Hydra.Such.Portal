@@ -7,7 +7,7 @@ using Hydra.Such.Data.ViewModel;
 
 namespace Hydra.Such.Data.Logic
 {
-    public class DBUserDimensions
+    public static class DBUserDimensions
     {
         #region CRUD
         public static AcessosDimensões GetById(string userId, int dimension, string dimensionValue)
@@ -42,17 +42,17 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static AcessosDimensões Create(AcessosDimensões objectToCreate)
+        public static AcessosDimensões Create(AcessosDimensões item)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.AcessosDimensões.Add(objectToCreate);
+                    ctx.AcessosDimensões.Add(item);
                     ctx.SaveChanges();
                 }
 
-                return objectToCreate;
+                return item;
             }
             catch (Exception ex)
             {
@@ -61,17 +61,63 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static AcessosDimensões Update(AcessosDimensões objectToCreate)
+        public static List<AcessosDimensões> Create(List<AcessosDimensões> items)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.AcessosDimensões.Update(objectToCreate);
+                    items.ForEach(x => ctx.AcessosDimensões.Add(x));
                     ctx.SaveChanges();
                 }
 
-                return objectToCreate;
+                return items;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId">Utilizar nos casos em que o id do utilizador não é definido na camada de interface</param>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public static List<AcessosDimensões> Create(string userId, List<AcessosDimensões> items)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    items.ForEach(x =>
+                        {
+                            x.IdUtilizador = userId;
+                            ctx.AcessosDimensões.Add(x);
+                        });
+                    ctx.SaveChanges();
+                }
+
+                return items;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static AcessosDimensões Update(AcessosDimensões item)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.AcessosDimensões.Update(item);
+                    ctx.SaveChanges();
+                }
+
+                return item;
             }
             catch (Exception ex)
             {
@@ -120,40 +166,58 @@ namespace Hydra.Such.Data.Logic
         }
         #endregion
 
-        public static List<AcessosDimensões> GetByUserId(string userId)
+        public static List<UserDimensionsViewModel> GetByUserId(string userId)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.AcessosDimensões.Where(x => x.IdUtilizador == userId).ToList();
+                    return ctx.AcessosDimensões.Where(x => x.IdUtilizador == userId)
+                        .ToList()
+                        .ParseToViewModel();
                 }
             }
             catch (Exception ex)
             {
-
-                return null;
+                
             }
+            return new List<UserDimensionsViewModel>();
         }
 
-        public static UserDimensionsViewModel ParseToViewModel(AcessosDimensões x)
+        public static UserDimensionsViewModel ParseToViewModel(this AcessosDimensões dimensionAccess)
         {
             return new UserDimensionsViewModel()
             {
-                UserId = x.IdUtilizador,
-                Dimension = x.Dimensão,
-                DimensionValue = x.ValorDimensão
+                UserId = dimensionAccess.IdUtilizador,
+                Dimension = dimensionAccess.Dimensão,
+                DimensionValue = dimensionAccess.ValorDimensão
             };
         }
 
-        public static AcessosDimensões ParseToDB(UserDimensionsViewModel x)
+        public static List<UserDimensionsViewModel> ParseToViewModel(this List<AcessosDimensões> dimensionAccess)
+        {
+            List<UserDimensionsViewModel> userDimensions = new List<UserDimensionsViewModel>();
+            dimensionAccess.ForEach(x =>
+                userDimensions.Add(x.ParseToViewModel()));
+            return userDimensions;
+        }
+
+        public static AcessosDimensões ParseToDB(this UserDimensionsViewModel userDimension)
         {
             return new AcessosDimensões()
             {
-                IdUtilizador = x.UserId,
-                Dimensão = x.Dimension,
-                ValorDimensão = x.DimensionValue
+                IdUtilizador = userDimension.UserId,
+                Dimensão = userDimension.Dimension,
+                ValorDimensão = userDimension.DimensionValue
             };
+        }
+
+        public static List<AcessosDimensões> ParseToDB(this List<UserDimensionsViewModel> userDimensions)
+        {
+            List<AcessosDimensões> dimensionAccess = new List<AcessosDimensões>();
+            userDimensions.ForEach(x =>
+                dimensionAccess.Add(x.ParseToDB()));
+            return dimensionAccess;
         }
     }
 }
