@@ -74,6 +74,10 @@ namespace WSCreatePreInvoiceLine
         
         private string document_NoField;
         
+        private Document_Type document_TypeField;
+        
+        private bool document_TypeFieldSpecified;
+        
         private Type typeField;
         
         private bool typeFieldSpecified;
@@ -148,6 +152,14 @@ namespace WSCreatePreInvoiceLine
         
         private bool job_Journal_Line_No_PortalFieldSpecified;
         
+        private string regionCode20Field;
+        
+        private string functionAreaCode20Field;
+        
+        private string responsabilityCenterCode20Field;
+        
+        private string contract_No_PortalField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string Key
@@ -192,6 +204,34 @@ namespace WSCreatePreInvoiceLine
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public Document_Type Document_Type
+        {
+            get
+            {
+                return this.document_TypeField;
+            }
+            set
+            {
+                this.document_TypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Document_TypeSpecified
+        {
+            get
+            {
+                return this.document_TypeFieldSpecified;
+            }
+            set
+            {
+                this.document_TypeFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
         public Type Type
         {
             get
@@ -219,7 +259,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
         public string No
         {
             get
@@ -233,7 +273,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
         public string Location_Code
         {
             get
@@ -247,7 +287,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
         public string Posting_Group
         {
             get
@@ -261,7 +301,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=7)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=8)]
         public System.DateTime Shipment_Date
         {
             get
@@ -289,7 +329,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
         public string Description
         {
             get
@@ -303,7 +343,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
         public string Description_2
         {
             get
@@ -317,7 +357,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
         public string Unit_of_Measure
         {
             get
@@ -331,7 +371,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
         public decimal Quantity
         {
             get
@@ -359,7 +399,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
         public decimal Outstanding_Quantity
         {
             get
@@ -387,7 +427,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
         public decimal Qty_to_Invoice
         {
             get
@@ -415,7 +455,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
         public decimal Qty_to_Ship
         {
             get
@@ -443,7 +483,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
         public decimal Unit_Price
         {
             get
@@ -471,7 +511,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
         public decimal Unit_Cost_LCY
         {
             get
@@ -499,7 +539,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
         public decimal VAT_Percent
         {
             get
@@ -527,7 +567,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
         public decimal Line_Discount_Percent
         {
             get
@@ -555,7 +595,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
         public decimal Line_Discount_Amount
         {
             get
@@ -583,7 +623,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
         public decimal Amount
         {
             get
@@ -611,7 +651,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
         public decimal Amount_Including_VAT
         {
             get
@@ -639,7 +679,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
         public bool Allow_Invoice_Disc
         {
             get
@@ -667,7 +707,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=24)]
         public string Job_No
         {
             get
@@ -681,7 +721,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=24)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=25)]
         public int Job_Journal_Line_No_Portal
         {
             get
@@ -707,6 +747,87 @@ namespace WSCreatePreInvoiceLine
                 this.job_Journal_Line_No_PortalFieldSpecified = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=26)]
+        public string RegionCode20
+        {
+            get
+            {
+                return this.regionCode20Field;
+            }
+            set
+            {
+                this.regionCode20Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=27)]
+        public string FunctionAreaCode20
+        {
+            get
+            {
+                return this.functionAreaCode20Field;
+            }
+            set
+            {
+                this.functionAreaCode20Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=28)]
+        public string ResponsabilityCenterCode20
+        {
+            get
+            {
+                return this.responsabilityCenterCode20Field;
+            }
+            set
+            {
+                this.responsabilityCenterCode20Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=29)]
+        public string Contract_No_Portal
+        {
+            get
+            {
+                return this.contract_No_PortalField;
+            }
+            set
+            {
+                this.contract_No_PortalField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline")]
+    public enum Document_Type
+    {
+        
+        /// <remarks/>
+        Quote,
+        
+        /// <remarks/>
+        Order,
+        
+        /// <remarks/>
+        Invoice,
+        
+        /// <remarks/>
+        Credit_Memo,
+        
+        /// <remarks/>
+        Blanket_Order,
+        
+        /// <remarks/>
+        Return_Order,
     }
     
     /// <remarks/>
@@ -787,6 +908,9 @@ namespace WSCreatePreInvoiceLine
         Document_No,
         
         /// <remarks/>
+        Document_Type,
+        
+        /// <remarks/>
         Type,
         
         /// <remarks/>
@@ -851,6 +975,18 @@ namespace WSCreatePreInvoiceLine
         
         /// <remarks/>
         Job_Journal_Line_No_Portal,
+        
+        /// <remarks/>
+        RegionCode20,
+        
+        /// <remarks/>
+        FunctionAreaCode20,
+        
+        /// <remarks/>
+        ResponsabilityCenterCode20,
+        
+        /// <remarks/>
+        Contract_No_Portal,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -861,14 +997,18 @@ namespace WSCreatePreInvoiceLine
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", Order=0)]
+        public string Document_Type;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", Order=1)]
         public string Document_No;
         
         public Read()
         {
         }
         
-        public Read(string Document_No)
+        public Read(string Document_Type, string Document_No)
         {
+            this.Document_Type = Document_Type;
             this.Document_No = Document_No;
         }
     }
@@ -1315,9 +1455,10 @@ namespace WSCreatePreInvoiceLine
             return base.Channel.ReadAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSCreatePreInvoiceLine.Read_Result> ReadAsync(string Document_No)
+        public System.Threading.Tasks.Task<WSCreatePreInvoiceLine.Read_Result> ReadAsync(string Document_Type, string Document_No)
         {
             WSCreatePreInvoiceLine.Read inValue = new WSCreatePreInvoiceLine.Read();
+            inValue.Document_Type = Document_Type;
             inValue.Document_No = Document_No;
             return ((WSCreatePreInvoiceLine.WsPreInvoiceLine_Port)(this)).ReadAsync(inValue);
         }
@@ -1438,7 +1579,7 @@ namespace WSCreatePreInvoiceLine
             if ((endpointConfiguration == EndpointConfiguration.WsPreInvoiceLine_Port))
             {
                 return new System.ServiceModel.EndpointAddress("http://10.101.1.13:7047/DynamicsNAV100/WS/CRONUS Portugal Ltd./Page/WsPreInvoiceL" +
-                        "ine");
+                        "ine?wsdl");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

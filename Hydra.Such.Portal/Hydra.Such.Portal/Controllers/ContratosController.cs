@@ -242,14 +242,22 @@ namespace Hydra.Such.Portal.Controllers
                             ContratoDB.Descrição = data.Description;
                             ContratoDB.CódigoRegião = data.CodeRegion;
                             ContratoDB.Notas = data.Notes;
-                            ContratoDB.DataInício1ºContrato = data.StartDateFirstContract == "" ? null : (DateTime?)DateTime.Parse(data.StartDateFirstContract);
+                            ContratoDB.DataInício1ºContrato = data.StartDateFirstContract == ""
+                                ? null
+                                : (DateTime?) DateTime.Parse(data.StartDateFirstContract);
                             ContratoDB.NºRequisiçãoDoCliente = data.ClientRequisitionNo;
                             ContratoDB.NºCompromisso = data.PromiseNo;
-                            ContratoDB.DataInicial = data.StartData == "" ? null : (DateTime?)DateTime.Parse(data.StartData);
+                            ContratoDB.DataInicial = data.StartData == ""
+                                ? null
+                                : (DateTime?) DateTime.Parse(data.StartData);
                             ContratoDB.Estado = data.Status - 1;
-                            ContratoDB.DataReceçãoRequisição = data.ReceiptDateRequisition == "" ? null : (DateTime?)DateTime.Parse(data.ReceiptDateRequisition);
+                            ContratoDB.DataReceçãoRequisição = data.ReceiptDateRequisition == ""
+                                ? null
+                                : (DateTime?) DateTime.Parse(data.ReceiptDateRequisition);
                             ContratoDB.NºVersão = data.VersionNo;
-                            ContratoDB.DataExpiração = data.DueDate == "" ? null : (DateTime?)DateTime.Parse(data.DueDate);
+                            ContratoDB.DataExpiração = data.DueDate == ""
+                                ? null
+                                : (DateTime?) DateTime.Parse(data.DueDate);
                             ContratoDB.EstadoAlteração = data.ChangeStatus - 1;
                             ContratoDB.CódEndereçoEnvio = data.CodeShippingAddress;
                             ContratoDB.EnvioAEndereço = data.ShippingAddress;
@@ -270,12 +278,21 @@ namespace Hydra.Such.Portal.Controllers
                             ContratoDB = DBContracts.Update(ContratoDB);
 
                             //Create/Update Contract Client Requests
-                            List<RequisiçõesClienteContrato> RCC = DBContractClientRequisition.GetByContract(ContratoDB.NºContrato);
-                            List<RequisiçõesClienteContrato> RCCToDelete = RCC.Where(x => !data.ClientRequisitions.Any(y => x.NºRequisiçãoCliente == x.NºRequisiçãoCliente && x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo && x.DataInícioCompromisso == DateTime.Parse(y.StartDate))).ToList();
+                            List<RequisiçõesClienteContrato> RCC =
+                                DBContractClientRequisition.GetByContract(ContratoDB.NºContrato);
+                            List<RequisiçõesClienteContrato> RCCToDelete = RCC
+                                .Where(x => !data.ClientRequisitions.Any(
+                                    y => x.NºRequisiçãoCliente == x.NºRequisiçãoCliente &&
+                                         x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo &&
+                                         x.DataInícioCompromisso == DateTime.Parse(y.StartDate))).ToList();
 
                             data.ClientRequisitions.ForEach(y =>
                             {
-                                RequisiçõesClienteContrato RCCO = RCC.Where(x => x.NºRequisiçãoCliente == x.NºRequisiçãoCliente && x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo && x.DataInícioCompromisso == DateTime.Parse(y.StartDate)).FirstOrDefault();
+                                RequisiçõesClienteContrato RCCO =
+                                    RCC.Where(x => x.NºRequisiçãoCliente == x.NºRequisiçãoCliente &&
+                                                   x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo &&
+                                                   x.DataInícioCompromisso == DateTime.Parse(y.StartDate))
+                                        .FirstOrDefault();
                                 if (RCCO != null)
                                 {
                                     RCCO.NºContrato = y.ContractNo;
@@ -304,11 +321,16 @@ namespace Hydra.Such.Portal.Controllers
 
                             //Create/Update Contract Invoice Texts
                             List<TextoFaturaContrato> CIT = DBContractInvoiceText.GetByContract(ContratoDB.NºContrato);
-                            List<TextoFaturaContrato> CITToDelete = CIT.Where(x => !data.InvoiceTexts.Any(y => x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo && x.NºContrato == y.ContractNo)).ToList();
+                            List<TextoFaturaContrato> CITToDelete =
+                                CIT.Where(x => !data.InvoiceTexts.Any(
+                                    y => x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo &&
+                                         x.NºContrato == y.ContractNo)).ToList();
 
                             data.InvoiceTexts.ForEach(y =>
                             {
-                                TextoFaturaContrato CITO = CIT.Where(x => x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo && x.NºContrato == y.ContractNo).FirstOrDefault();
+                                TextoFaturaContrato CITO = CIT
+                                    .Where(x => x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo &&
+                                                x.NºContrato == y.ContractNo).FirstOrDefault();
                                 if (CITO != null)
                                 {
                                     CITO.NºContrato = y.ContractNo;

@@ -6,6 +6,21 @@ using System.Threading.Tasks;
 
 namespace Hydra.Such.Portal.Configurations
 {
+    public class EnumData
+    {
+        public EnumData()
+        { }
+
+        public EnumData(int id, string value)
+        {
+            Id = id;
+            Value = value;
+        }
+
+        public int Id { get; set; }
+        public string Value { get; set; }
+    }
+
     public class EnumerablesFixed
     {
         public static readonly List<EnumData> Areas = new List<EnumData>(){
@@ -931,11 +946,12 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
         // zpgm.>
-    }
-    public class EnumData
-    {
-        public int Id { get; set; }
-        public string Value { get; set; }
+
+        public static readonly List<EnumData> Dimension = new List<EnumData>() {
+            new EnumData(1, "Região"),
+            new EnumData(2, "Área Funcional"),
+            new EnumData(3, "Centro Responsabilidade")
+        };
     }
 
     public class EnumDataString

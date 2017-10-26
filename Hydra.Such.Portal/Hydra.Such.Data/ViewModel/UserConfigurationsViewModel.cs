@@ -12,5 +12,6 @@ namespace Hydra.Such.Data.ViewModel
         public bool Administrator { get; set; }
         public List<UserAccessesViewModel> UserAccesses { get; set; }
         public List<ProfileModelsViewModel> UserProfiles { get; set; }
+        public List<UserDimensionsViewModel> AllowedUserDimensions { get; set; }
     }
 }

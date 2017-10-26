@@ -323,7 +323,7 @@ ul.nav li:hover {
             transition: all 1s ease;
         }
 
-@media (max-width: 1094px) {
+@media (max-width: 1199px) {
     .nav-side-menu {
         position: relative;
         width: 100%;
@@ -352,7 +352,7 @@ ul.nav li:hover {
     }
 }
 
-@media (min-width: 1095px) {
+@media (min-width: 1200px) {
     .nav-side-menu .menu-list .menu-content {
         display: block;
     }
