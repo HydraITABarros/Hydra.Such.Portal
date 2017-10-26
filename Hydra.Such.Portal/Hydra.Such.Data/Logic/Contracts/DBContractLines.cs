@@ -42,6 +42,21 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
+        public static List<LinhasContratos> GetAllByNoTypeVersion(string contractNo, int type, int version, bool billable)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasContratos.Where(x => x.NºContrato == contractNo && x.Tipo == type && x.NºVersão == version && x.Faturável == billable).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static LinhasContratos Create(LinhasContratos ObjectToCreate)
         {
             try
