@@ -61,12 +61,12 @@
                 font-size: 13px !important;
             }
 
-            .editGrid vaadin-combo-box {
+            /*.editGrid vaadin-combo-box {
                 max-width: 200px !important;
                 font-size: 13px !important;
-            }
+            }*/
 
-            vaadin-grid#projectDiaryProject vaadin-grid-sorter {
+            /*vaadin-grid#projectDiaryProject vaadin-grid-sorter {
                 margin: 0 auto;
                 white-space: nowrap;
             }
@@ -82,7 +82,7 @@
 
             --vaadin-grid-header-cell: {
                 font-size: 12px;
-            }
+            }*/
         </style>
 
         <div class="subMenu">
@@ -347,7 +347,7 @@
                     </div>
              </div>
              <div class="row">
-                    <div class="col-lg-2">
+                    <div class="col-lg-2 alignPoga">
                         <paper-button class="btnSave" raised on-tap="_add">Criar</paper-button>
                     </div>
              </div>
@@ -664,13 +664,13 @@
                 <template class="header">
                     <p class="alignCenter">Faturável</p>
                     <vaadin-grid-filter path="billable" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
+                    <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
                     </vaadin-grid-filter>
                 </template>
                 <template>
+                    <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column hidden>
                 @*<template class="header">
                         <vaadin-grid-sorter path="invoiceToClientNo">Fatura a Nº Cliente</vaadin-grid-sorter>
