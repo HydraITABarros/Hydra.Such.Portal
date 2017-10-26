@@ -679,15 +679,16 @@ namespace Hydra.Such.Portal.Controllers
                     TotalPrice = x.PreçoTotal,
                     Billable = x.Faturável,
                     InvoiceToClientNo = x.FaturaANºCliente,
-                    CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso
-
+                    CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
+                    ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
+                    ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
                 }).ToList();
 
                 return Json(result);
             }
             catch (Exception ex)
             {
-                throw;
+                return null;
             }
            
         }

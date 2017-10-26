@@ -20,6 +20,30 @@ namespace Hydra.Such.Data.NAV
 
         public static async Task<WSCreatePreInvoiceLine.Create_Result> CreatePreInvoiceLine(ProjectDiaryViewModel PreInvoiceLineToCreate, NAVWSConfigurations WSConfigurations, string PKey)
         {
+            //Mapping Object
+            WSCreatePreInvoiceLine.Type TypeValue;
+            switch (PreInvoiceLineToCreate.Type)
+            {
+                case 1:
+                    TypeValue = WSCreatePreInvoiceLine.Type.Resource;
+                    break;
+                case 2:
+                    TypeValue = WSCreatePreInvoiceLine.Type.Item;
+                    break;
+                case 3:
+                    TypeValue = WSCreatePreInvoiceLine.Type.G_L_Account;
+                    break;
+                case 4:
+                    TypeValue = WSCreatePreInvoiceLine.Type.Fixed_Asset;
+                    break;
+                case 5:
+                    TypeValue = WSCreatePreInvoiceLine.Type.Charge_Item;
+                    break;
+                default:
+                    TypeValue = WSCreatePreInvoiceLine.Type._blank_;
+                    break;
+
+            }
 
             WSCreatePreInvoiceLine.Create NAVCreate = new WSCreatePreInvoiceLine.Create()
             {
@@ -29,17 +53,16 @@ namespace Hydra.Such.Data.NAV
                     Unit_Cost_LCYSpecified = true,
                     Job_Journal_Line_No_PortalSpecified = true,
                     Document_No = PKey,
-                    Job_Journal_Line_No_Portal = PreInvoiceLineToCreate.LineNo,
+                    Type = TypeValue,
+                    Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
                     Description = PreInvoiceLineToCreate.Description,
                     Quantity = (int)PreInvoiceLineToCreate.Quantity,
                     Unit_of_Measure = PreInvoiceLineToCreate.MeasurementUnitCode,
                     Location_Code = PreInvoiceLineToCreate.LocationCode,
                     Unit_Price = (decimal)PreInvoiceLineToCreate.UnitPrice,
                     Unit_Cost_LCY = (decimal)PreInvoiceLineToCreate.UnitCost,
-                    No = PreInvoiceLineToCreate.Code,
-                    Sell_to_Customer_No = PreInvoiceLineToCreate.InvoiceToClientNo
+                    Sell_to_Customer_No = "10000",
                 }
-                
             };
             
             //Configure NAV Client

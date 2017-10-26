@@ -76,5 +76,33 @@ namespace Hydra.Such.Data.Logic
                 return "";
             }
         }
+            public static string GetClientVATByNo(string NoClient, string NAVDatabaseName, string NAVCompanyName)
+            {
+                try
+                {
+                    string result = "";
+                    using (var ctx = new SuchDBContextExtention())
+                    {
+                        var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@NoCliente", NoClient)
+                    };
+
+                        IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017Clientes @DBName, @CompanyName, @NoCliente", parameters);
+
+                        foreach (dynamic temp in data)
+                        {
+                            result = (string)temp.VATRegistrationNo;
+                        }
+                    }
+
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    return "";
+                }
+            }
     }
 }
