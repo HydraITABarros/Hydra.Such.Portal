@@ -1,7 +1,5 @@
 ﻿using Hydra.Such.Data.ViewModel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.ServiceModel;
 using System.Threading.Tasks;
@@ -20,16 +18,19 @@ namespace Hydra.Such.Data.NAV
             navWSBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows;
         }
 
-        static async Task<WSCreatePreInvoice.CreateMultiple_Result> CreatePreInvoice(List<ProjectDiaryViewModel> PreInvoiceToCreate, NAVWSConfigurations WSConfigurations)
+        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(ProjectDiaryViewModel PreInvoiceToCreate, NAVWSConfigurations WSConfigurations)
         {
-            WSCreatePreInvoice.CreateMultiple NAVCreate = new WSCreatePreInvoice.CreateMultiple()
+            
+
+            WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
             {
-                WSPreInvoice_List = PreInvoiceToCreate.Select(y => new WSCreatePreInvoice.WSPreInvoice()
+                WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
                 {
-                     No = y.ProjectNo,
-                    Sell_to_Customer_No = y.InvoiceToClientNo
-                }).ToArray()
+                    Sell_to_Customer_No = "10000",//PreInvoiceToCreate.InvoiceToClientNo,
+                    VAT_Registration_No = "789456278"
+                }
             };
+
 
             //Configure NAV Client
             EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoice_URL.Replace("Company", WSConfigurations.WS_User_Company));
@@ -39,7 +40,7 @@ namespace Hydra.Such.Data.NAV
 
             try
             {
-                WSCreatePreInvoice.CreateMultiple_Result result = await WS_Client.CreateMultipleAsync(NAVCreate);
+                WSCreatePreInvoice.Create_Result result = await WS_Client.CreateAsync(NAVCreate);
                 return result;
             }
             catch (Exception ex)

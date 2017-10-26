@@ -15,6 +15,7 @@ namespace Hydra.Such.Data.NAV
         public string WS_JobJournalLine_URL { get; set; }
         public string WS_PreBlanketOrder_URL { get; set; }
         public string WS_PreInvoice_URL { get; set; }
+        public string WS_PreInvoiceLine_URL { get; set; }
         public string WS_PrePurchase_URL { get; set; }
     }
 }

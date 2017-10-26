@@ -95,59 +95,57 @@
            handle-as="json"
            content-type="application/json">
 </iron-ajax>
-
-<iron-form id="formGeral">
-    <form>
+<div class="row">
+    <div class="col-lg-2">
         <h2 class="separator">Novo Registo</h2>
-        <table class="table inlineForm">
-            <tr>
-                <td width="15%"><vaadin-text-field id="ddDescription" label="Descrição"></vaadin-text-field></td>
-                <td width="15%"> <vaadin-combo-box items="[[CGTOM_Type]]" item-value-path="id" item-label-path="value" value="{{ddCGTOM_Type}}" label="Tipo">
-                    <template>
-                        <table width="200px">
-                            <tr>
-                                <td width="20%" text-align="left">[[item.id]]</td>
-                                <td width="80%" text-align="left"> <b>[[item.value]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box></td>
-                <td width="15%"><vaadin-checkbox id="chkCorrectiveMaintenance"> Manut. Correctiva </vaadin-checkbox></td>
-                <td width="15%"><vaadin-checkbox id="chkPreventiveMaintenance"> Manut. Preventiva </vaadin-checkbox></td>
-                <td width="15%">
-                    <vaadin-combo-box items="[[CGTOM_FailType]]" item-value-path="id" item-label-path="value" value="{{ddCGTOM_FailType}}" label="Tipo Razão Falha">
-                        <template>
-                            <table width="160px">
-                                <tr>
-                                    <td width="30%" text-align="left">[[item.id]]</td>
-                                    <td width="70%" text-align="left"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
-                </td>
-                <td width="15%"><vaadin-checkbox id="chkResponseTimeIndicator">Ind. Tempo Resposta</vaadin-checkbox></td>
-            </tr>
-            <tr>
-                <td width="15%"><vaadin-checkbox id="chkStopTimeIndicator"> Ind. Tempo Imobilização </vaadin-checkbox> </td>
-                <td width="15%"><vaadin-checkbox id="chkRepairEffectiveTimeIndicator"> Ind. Tempo Efetivo Reparação </vaadin-checkbox> </td>
-                <td width="15%"><vaadin-checkbox id="chkClosingWorksTimeIndicator"> Ind. Tempo Fecho Obras </vaadin-checkbox> </td>
-                <td width="15%"><vaadin-checkbox id="chkBillingTimeIndicator"> Ind. Tempo Faturação </vaadin-checkbox> </td>
-                <td width="15%"><vaadin-checkbox id="chkEmployeesOccupationTimeIndicator">Ind. Tempo Ocup. Colaboradores</vaadin-checkbox> </td>
-                <td width="15%"><vaadin-checkbox id="chkCostSaleValueIndicator">Ind. Valor Custo/Venda</vaadin-checkbox> </td>
-            </tr>
-            <tr>
-                <td width="15%"><vaadin-checkbox id="chkCATCoverageRateIndicator">Ind. Taxa Cobertura CAT</vaadin-checkbox></td>
-                <td width="15%"> <vaadin-checkbox id="chkCATComplianceRateIndicator">Ind. Taxa Cumprimento CAT</vaadin-checkbox></td>
-                <td width="15%"><vaadin-checkbox id="chkMPRoutineFulfillmentRateIndicator">Ind. Taxa Cumpr. Rotinas MP</vaadin-checkbox> </td>
-                <td width="15%"><vaadin-checkbox id="chkBreakoutIncidentsIndicator">Ind. Incidências Avarias</vaadin-checkbox></td>
-                <td width="15%"><vaadin-checkbox id="chkOrdernInProgressIndicator">Ind. Ordens em Curso</vaadin-checkbox></td>
-                <td width="15%"><paper-button class="btnSave" on-tap="_createContabGroupTypeOM">Criar</paper-button></td>
-            </tr>
-
-        </table>
-    </form>
-</iron-form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-2"><vaadin-text-field id="ddDescription" label="Descrição"></vaadin-text-field></div>
+    <div class="col-lg-2">
+        <vaadin-combo-box items="[[CGTOM_Type]]" item-value-path="id" item-label-path="value" value="{{ddCGTOM_Type}}" label="Tipo">
+            <template>
+                <table width="200px">
+                    <tr>
+                        <td width="20%" text-align="left">[[item.id]]</td>
+                        <td width="80%" text-align="left"> <b>[[item.value]]</b></td>
+                    </tr>
+                </table>
+            </template>
+        </vaadin-combo-box>
+    </div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCorrectiveMaintenance"> Manut. Correctiva </vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkPreventiveMaintenance"> Manut. Preventiva </vaadin-checkbox></div>
+    <div class="col-lg-2 ">
+        <vaadin-combo-box items="[[CGTOM_FailType]]" item-value-path="id" item-label-path="value" value="{{ddCGTOM_FailType}}" label="Tipo Razão Falha">
+            <template>
+                <table width="160px">
+                    <tr>
+                        <td width="30%" text-align="left">[[item.id]]</td>
+                        <td width="70%" text-align="left"> <b>[[item.value]]</b></td>
+                    </tr>
+                </table>
+            </template>
+        </vaadin-combo-box>
+    </div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkResponseTimeIndicator">Ind. Tempo Resposta</vaadin-checkbox></div>
+</div>
+<div class="row">
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkStopTimeIndicator"> Ind. Tempo Imobilização </vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkRepairEffectiveTimeIndicator"> Ind. Tempo Efetivo Reparação </vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkClosingWorksTimeIndicator"> Ind. Tempo Fecho Obras </vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkBillingTimeIndicator"> Ind. Tempo Faturação </vaadin-checkbox> </div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkEmployeesOccupationTimeIndicator">Ind. Tempo Ocup. Colaboradores</vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCostSaleValueIndicator">Ind. Valor Custo/Venda</vaadin-checkbox></div>
+</div>
+<div class="row">
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCATCoverageRateIndicator">Ind. Taxa Cobertura CAT</vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCATComplianceRateIndicator">Ind. Taxa Cumprimento CAT</vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkMPRoutineFulfillmentRateIndicator">Ind. Taxa Cumpr. Rotinas MP</vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkBreakoutIncidentsIndicator">Ind. Incidências Avarias</vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkOrdernInProgressIndicator">Ind. Ordens em Curso</vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><paper-button class="btnSave" on-tap="_createContabGroupTypeOM">Criar</paper-button></div>
+</div><br />
 
 <vaadin-grid id="gridContabGroupTypesOM" aria-label="gridContabGroupTypesTableOM" items="[[result]]" class="grid" multi-sort="true">
     <vaadin-grid-column  width="200px" resizable>

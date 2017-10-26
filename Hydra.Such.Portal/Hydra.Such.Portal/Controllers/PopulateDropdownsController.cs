@@ -115,7 +115,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetFolhaDeHoraCodeTypeKms()
         {
-            List<EnumData> result = EnumerablesFixed.FolhaDeHoraCodeTypeKms;
+            List<EnumDataString> result = EnumerablesFixed.FolhaDeHoraCodeTypeKms;
             return Json(result);
         }
 
@@ -178,8 +178,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-
-
         [HttpPost]
         public JsonResult GetContractInvoiceGroups()
         {
@@ -187,6 +185,26 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetContractLineTypes()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractLineTypes;
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetClientServices([FromBody] string ClientNo)
+        {
+            List<DDMessage> result = DBClientServices.GetAllFromClientWithDescription(ClientNo).Select(x => new DDMessage() {
+                id = x.ServiceCode,
+                value = x.ServiceDescription
+            }).ToList();
+
+            return Json(result);
+        }
+
 
         //STORE PROCEDURES
         [HttpPost]

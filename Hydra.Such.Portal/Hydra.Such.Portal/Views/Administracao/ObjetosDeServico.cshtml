@@ -81,30 +81,34 @@
                handle-as="json"
                content-type="application/json">
     </iron-ajax>
-    <iron-form id="formGeral">
-        <form>
+    <div class="row">
+        <div class="col-lg-2">
             <h2 class="separator">Novo Registo</h2>
-            <table class="table inlineForm">
-                <tr>
-                    <td width="20%"><vaadin-text-field id="piDescription" label="Descrição"></vaadin-text-field></td>
-                    <td width="10%"><vaadin-checkbox id="pcBlocked"> Bloqueado </vaadin-checkbox></td>
-                    <td width="20%">
-                        <vaadin-combo-box id="cboreaCode" items="[[AreaCodeData]]" item-value-path="id" item-label-path="value" value="{{ddAreaCode}}" label="Código Área">
-                            <template>
-                                <table width="200px">
-                                    <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </td>
-                    <td><paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button></td>
-                </tr>
-            </table>
-        </form>
-    </iron-form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-2">
+            <vaadin-text-field id="piDescription" label="Descrição"></vaadin-text-field>
+        </div>
+        <div class="col-lg-2 alignPoga">
+            <vaadin-checkbox id="pcBlocked"> Bloqueado </vaadin-checkbox>
+        </div>
+        <div class="col-lg-2">
+            <vaadin-combo-box id="cboreaCode" items="[[AreaCodeData]]" item-value-path="id" item-label-path="value" value="{{ddAreaCode}}" label="Código Área">
+                <template>
+                    <table width="200px">
+                        <tr>
+                            <td width="40%">[[item.id]]</td>
+                            <td width="60%"> <b>[[item.value]]</b></td>
+                        </tr>
+                    </table>
+                </template>
+            </vaadin-combo-box>
+        </div>
+        <div class="col-lg-2 alignPoga">
+            <paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button>
+        </div>
+    </div><br />
     <vaadin-grid id="gridserviceobjects" aria-label="ProfileModelsTabel" items="[[result]]" class="grid">
         <vaadin-grid-column resizable>
             <template class="header">
@@ -126,7 +130,7 @@
         </vaadin-grid-column>
         <vaadin-grid-column resizable>
             <template class="header">
-                <p class="alignCenter">
+                <p >
                     <vaadin-grid-filter path="blocked" value="[[_filterActive]]">
                         <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
                     </vaadin-grid-filter>

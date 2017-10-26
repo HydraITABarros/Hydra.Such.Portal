@@ -10,13 +10,13 @@ namespace Hydra.Such.Data.Logic.Contracts
     public static class DBContracts
     {
         #region CRUD
-        public static Contratos GetById(string ContractNo)
+        public static List<Contratos> GetByNo(string ContractNo, bool Archived)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.NºContrato == ContractNo).FirstOrDefault();
+                    return ctx.Contratos.Where(x => x.NºContrato == ContractNo && x.Arquivado == Archived).ToList();
                 }
             }
             catch (Exception ex)
@@ -94,13 +94,13 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
-        public static bool Delete(Contratos ObjectToCreate)
+        public static bool DeleteByContractNo(string ContractNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.Contratos.Remove(ctx.Contratos.Where(x => x.NºContrato == ObjectToCreate.NºContrato && x.NºVersão == ObjectToCreate.NºVersão).FirstOrDefault());
+                    ctx.Contratos.RemoveRange(ctx.Contratos.Where(x => x.NºContrato == ContractNo));
                     ctx.SaveChanges();
                 }
 

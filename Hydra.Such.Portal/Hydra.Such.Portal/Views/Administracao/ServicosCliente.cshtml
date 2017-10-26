@@ -113,46 +113,43 @@
     </iron-ajax>
         
         
-    <iron-form id="formGeral">
-        <form>
+    <div class="row">
+        <div class="col-lg-2">
             <h2 class="separator">Novo Registo</h2>
-            <table class="table inlineForm">
-                <tr>
-                    <td width="20%"> <vaadin-combo-box id="cboClients" items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{ddClients}}" label="Cliente">
-                        <template>
-                            <table width="280px">
-                                <tr>
-                                    <td width="30%">[[item.id]]</td>
-                                    <td width="70%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box></td>
-                    <td width="20%">
-                        <vaadin-combo-box id="cboServices" items="[[Services]]" item-value-path="id" item-label-path="value" value="{{ddServices}}" label="Serviço">
-                            <template>
-                                <table width="160px">
-                                    <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </td>
-                    <td width="15%">
-                        <vaadin-checkbox id="chkServiceGroup" checked="{{chkServiceGroup}}"> Grupo Serviços </vaadin-checkbox>
-                    </td>
-                    <td >
-                        <paper-button class="btnSave" on-tap="_createClientService">Criar</paper-button>
-                    </td>
-                        
-                </tr>
-            </table>
-        </form>
-    </iron-form>
-        
-
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-2">
+            <vaadin-combo-box id="cboClients" items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{ddClients}}" label="Cliente">
+                <template>
+                    <table width="280px">
+                        <tr>
+                            <td width="30%">[[item.id]]</td>
+                            <td width="70%"> <b>[[item.value]]</b></td>
+                        </tr>
+                    </table>
+                </template>
+            </vaadin-combo-box>
+        </div>
+        <div class="col-lg-2 ">
+            <vaadin-combo-box id="cboServices" items="[[Services]]" item-value-path="id" item-label-path="value" value="{{ddServices}}" label="Serviço">
+                <template>
+                    <table width="160px">
+                        <tr>
+                            <td width="40%">[[item.id]]</td>
+                            <td width="60%"> <b>[[item.value]]</b></td>
+                        </tr>
+                    </table>
+                </template>
+            </vaadin-combo-box>
+        </div>
+        @*<div class="col-lg-2 alignPoga">
+            <vaadin-checkbox id="chkServiceGroup" checked="{{chkServiceGroup}}"> Grupo Serviços </vaadin-checkbox>
+        </div>*@
+        <div class="col-lg-1 alignPoga">
+            <paper-button class="btnSave" on-tap="_createClientService">Criar</paper-button>
+        </div>
+    </div><br />
      
     <vaadin-grid id="gridClientServices" aria-label="gridClientServices" items="[[result]]" class="grid" multi-sort="true">
         <vaadin-grid-column resizable>

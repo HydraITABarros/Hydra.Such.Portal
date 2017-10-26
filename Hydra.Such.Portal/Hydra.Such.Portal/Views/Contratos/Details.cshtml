@@ -6,4 +6,13 @@
 
 <link rel="import" href="~/elements/contracts/contract_details.html">
 
-<x-contractdetails _contractno="@ViewBag.ContractNo" _areaid="1"></x-contractdetails>
+@if (ViewBag.ContractNo == "")
+{
+    <h2>Criar novo contrato</h2>
+}
+else
+{
+    <h2>Contrato @ViewBag.ContractNo</h2>
+}
+
+<x-contractdetails _contractno="@ViewBag.ContractNo" _versionno="@ViewBag.VersionNo" _areaid="1"></x-contractdetails>

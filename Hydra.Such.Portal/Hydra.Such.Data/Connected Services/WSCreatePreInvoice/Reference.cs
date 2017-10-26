@@ -13,7 +13,7 @@ namespace WSCreatePreInvoice
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", ConfigurationName="WSCreatePreInvoice.WSPreInvoice_Port")]
-    internal interface WSPreInvoice_Port
+    public interface WSPreInvoice_Port
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wspreinvoice:Read", ReplyAction="*")]
@@ -1391,7 +1391,7 @@ namespace WSCreatePreInvoice
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Read", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class Read
+    public partial class Read
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1411,7 +1411,7 @@ namespace WSCreatePreInvoice
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Read_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class Read_Result
+    public partial class Read_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1431,7 +1431,7 @@ namespace WSCreatePreInvoice
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class ReadByRecId
+    public partial class ReadByRecId
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1451,7 +1451,7 @@ namespace WSCreatePreInvoice
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class ReadByRecId_Result
+    public partial class ReadByRecId_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1471,7 +1471,7 @@ namespace WSCreatePreInvoice
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class ReadMultiple
+    public partial class ReadMultiple
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1500,7 +1500,7 @@ namespace WSCreatePreInvoice
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class ReadMultiple_Result
+    public partial class ReadMultiple_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="ReadMultiple_Result", Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1521,7 +1521,7 @@ namespace WSCreatePreInvoice
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class IsUpdated
+    public partial class IsUpdated
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1541,7 +1541,7 @@ namespace WSCreatePreInvoice
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class IsUpdated_Result
+    public partial class IsUpdated_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="IsUpdated_Result", Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1561,7 +1561,7 @@ namespace WSCreatePreInvoice
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class GetRecIdFromKey
+    public partial class GetRecIdFromKey
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1581,7 +1581,7 @@ namespace WSCreatePreInvoice
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class GetRecIdFromKey_Result
+    public partial class GetRecIdFromKey_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="GetRecIdFromKey_Result", Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1600,7 +1600,7 @@ namespace WSCreatePreInvoice
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class Create
+    public partial class Create
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1619,7 +1619,7 @@ namespace WSCreatePreInvoice
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class Create_Result
+    public partial class Create_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1638,7 +1638,7 @@ namespace WSCreatePreInvoice
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class CreateMultiple
+    public partial class CreateMultiple
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1658,7 +1658,7 @@ namespace WSCreatePreInvoice
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class CreateMultiple_Result
+    public partial class CreateMultiple_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1678,7 +1678,7 @@ namespace WSCreatePreInvoice
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Update", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class Update
+    public partial class Update
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1697,7 +1697,7 @@ namespace WSCreatePreInvoice
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Update_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class Update_Result
+    public partial class Update_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1716,7 +1716,7 @@ namespace WSCreatePreInvoice
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class UpdateMultiple
+    public partial class UpdateMultiple
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1736,7 +1736,7 @@ namespace WSCreatePreInvoice
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class UpdateMultiple_Result
+    public partial class UpdateMultiple_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1757,7 +1757,7 @@ namespace WSCreatePreInvoice
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class Delete
+    public partial class Delete
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1777,7 +1777,7 @@ namespace WSCreatePreInvoice
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class Delete_Result
+    public partial class Delete_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="Delete_Result", Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1797,7 +1797,7 @@ namespace WSCreatePreInvoice
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_WS_Pre_Invoice_Line", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class Delete_WS_Pre_Invoice_Line
+    public partial class Delete_WS_Pre_Invoice_Line
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1817,7 +1817,7 @@ namespace WSCreatePreInvoice
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_WS_Pre_Invoice_Line_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    internal partial class Delete_WS_Pre_Invoice_Line_Result
+    public partial class Delete_WS_Pre_Invoice_Line_Result
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="Delete_WS_Pre_Invoice_Line_Result", Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
@@ -1834,13 +1834,13 @@ namespace WSCreatePreInvoice
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    internal interface WSPreInvoice_PortChannel : WSCreatePreInvoice.WSPreInvoice_Port, System.ServiceModel.IClientChannel
+    public interface WSPreInvoice_PortChannel : WSCreatePreInvoice.WSPreInvoice_Port, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    internal partial class WSPreInvoice_PortClient : System.ServiceModel.ClientBase<WSCreatePreInvoice.WSPreInvoice_Port>, WSCreatePreInvoice.WSPreInvoice_Port
+    public partial class WSPreInvoice_PortClient : System.ServiceModel.ClientBase<WSCreatePreInvoice.WSPreInvoice_Port>, WSCreatePreInvoice.WSPreInvoice_Port
     {
         
     /// <summary>
