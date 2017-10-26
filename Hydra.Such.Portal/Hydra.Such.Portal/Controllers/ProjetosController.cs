@@ -678,6 +678,7 @@ namespace Hydra.Such.Portal.Controllers
                     Billable = x.Faturável,
                     InvoiceToClientNo = x.FaturaANºCliente,
                     CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso
+
                 }).ToList();
 
                 return Json(result);
