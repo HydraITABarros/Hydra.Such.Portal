@@ -149,8 +149,6 @@ namespace Hydra.Such.Data.Logic.Contracts
         }
         #endregion
 
-
-
         public static List<Contratos> GetAllByAreaIdAndType(int AreaId, int ContractType)
         {
             try
@@ -167,7 +165,20 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
-
+        public static List<Contratos> GetAllFixedAndArquived(bool fixedRate, bool arquived)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Contratos.Where(x => x.ContratoAvençaFixa == fixedRate && x.Arquivado == arquived).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
 
 

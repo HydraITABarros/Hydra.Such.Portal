@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.Logic;
+using Hydra.Such.Data.ViewModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -36,14 +37,19 @@ namespace Hydra.Such.Portal.Controllers
             return View();
         }
 
+        public IActionResult AvencaFixa()
+        {
+            return View();
+        }
+
         public JsonResult GetListContractsByArea([FromBody] int AreaId)
         {
             List<Contratos> AllContracts = DBContracts.GetAllByAreaIdAndType(AreaId, 3);
-            
+
 
             List<ContractViewModel> result = new List<ContractViewModel>();
 
-            AllContracts.ForEach(x => result.Add(DBContracts.ParseToViewModel(x,_config.NAVDatabaseName,_config.NAVCompanyName)));
+            AllContracts.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
             return Json(result);
         }
@@ -159,7 +165,7 @@ namespace Hydra.Such.Portal.Controllers
                                 r.CreateUser = User.Identity.Name;
                                 DBContractInvoiceText.Create(DBContractInvoiceText.ParseToDB(r));
                             });
-                            
+
                             //Update Last Numeration Used
                             ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
                             ConfigNumerations.ÚltimoNºUsado = data.ContractNo;
@@ -321,6 +327,179 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
 
+        #region Avenca Fixa
+
+        public JsonResult GetAllAvencaFixa()
+        {
+            List<AutorizarFaturaçãoContratos> contractList = DBContractInvoices.GetAll();
+            List<FaturacaoContratosViewModel> result = null;
+
+            foreach (var item in contractList)
+            {
+                //Client Name -> NAV
+                String cliName = DBNAV2017Clients.GetClientNameByNo(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato);
+
+                // Valor Fatura
+                List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
+                Decimal sum = contractInvoiceLines.Sum(x => x.ValorVenda).Value;
+
+                result.Add(new FaturacaoContratosViewModel
+                {
+                    ContractNo = item.NºContrato,
+                    Description = item.Descrição,
+                    ClientName = cliName,
+                    InvoiceValue = sum,
+                    NumberOfInvoices = item.NºDeFaturasAEmitir,
+                    InvoiceTotal = item.TotalAFaturar,
+                    ContractValue = item.ValorDoContrato,
+                    ValueToInvoice = item.ValorPorFaturar,
+                    BilledValue = item.ValorFaturado,
+                    RegionCode = item.CódigoRegião,
+                    FunctionalAreaCode = item.CódigoÁreaFuncional,
+                    ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
+                    RegisterDate = item.DataPróximaFatura
+                });
+            }
+
+            return Json(result);
+        }
+
+        public JsonResult GenerateInvoice([FromBody] List<FaturacaoContratosViewModel> data)
+        {
+            DateTime current = DateTime.Now;
+            DateTime lastDay = (new DateTime(current.Year, current.Month, 1)).AddMonths(1).AddDays(-1);
+
+            // Delete All lines From "Autorizar Faturação Contratos" & "Linhas Faturação Contrato"
+            DBAuthorizeInvoiceContracts.DeleteAll();
+            DBInvoiceContractLines.DeleteAll();
+
+            // Cycle for "Contratos" filtered by "Avença Fixa" = SIM && "Arquivado" = NAO
+            List<Contratos> contractList = DBContracts.GetAllFixedAndArquived(true, false);
+            foreach (var item in contractList)
+            {
+                // Cycle for "Linha Contratos" filtered by "Tipo Contrato", "Nº Contrato", "Versão" = Cycle Item, "Faturavel" = SIM, ordered by "Nº Contrato", "Grupo Fatura"
+                List<LinhasContratos> contractLinesList = DBContractLines.GetAllByNoTypeVersion(item.NºContrato, item.TipoContrato, item.NºVersão);
+                contractLinesList.OrderBy(x => x.NºContrato).ThenBy(y => y.GrupoFatura);
+
+                String ContractNoDuplicate = "";
+                int InvoiceGroupDuplicate = -1;
+
+                foreach (var line in contractLinesList)
+                {
+                    if (ContractNoDuplicate != line.NºContrato || InvoiceGroupDuplicate != line.GrupoFatura)
+                    {
+                        ContractNoDuplicate = line.NºContrato;
+                        InvoiceGroupDuplicate = line.GrupoFatura.Value;
+
+                        Decimal contractVal = 0;
+                        if (item.TipoContrato == 1 || item.TipoContrato == 4)
+                        {
+                            int NumMeses = 0;
+
+                            if (item.DataExpiração.Value != null && item.DataExpiração.ToString() != "" && item.DataInicial.Value != null && item.DataInicial.ToString() != "")
+                            {
+                                NumMeses = ((item.DataExpiração.Value.Year - item.DataInicial.Value.Year) * 12) + item.DataExpiração.Value.Month - item.DataInicial.Value.Month;
+                            }
+                            contractVal = Math.Round((NumMeses * contractLinesList.Sum(x => x.PreçoUnitário.Value)), 2);
+                        }
+
+                        List<NAVSalesInvoiceLinesViewModel> salesList = DBNAV2017SalesInvoiceLine.GetSalesInvoiceLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.DataInicial.ToString(), item.DataExpiração.Value.ToString());
+                        Decimal invoicePeriod = salesList.Sum(x => x.Amount);
+
+                        List<NAVSalesCrMemoLinesViewModel> crMemo = DBNAV2017SalesCrMemo.GetSalesCrMemoLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.DataInicial.ToString(), item.DataExpiração.Value.ToString());
+                        Decimal creditPeriod = crMemo.Sum(x => x.Amount);
+
+                        AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
+                        {
+                            NºContrato = item.NºContrato,
+                            GrupoFatura = line.GrupoFatura.Value,
+                            Descrição = item.Descrição,
+                            NºCliente = item.NºCliente,
+                            CódigoRegião = item.CódigoRegião,
+                            CódigoÁreaFuncional = item.CódigoÁreaFuncional,
+                            CódigoCentroResponsabilidade = item.CódigoCentroResponsabilidade,
+                            ValorDoContrato = contractVal,
+                            ValorFaturado = (invoicePeriod - creditPeriod),
+                            ValorPorFaturar = (contractVal - (invoicePeriod - creditPeriod)),
+                            DataPróximaFatura = item.PróximaDataFatura,
+                            DataDeRegisto = lastDay,
+                            Estado = item.Estado,
+                            DataHoraCriação = DateTime.Now,
+                            UtilizadorCriação = User.Identity.Name
+                        };
+                        //Create
+                        DBAuthorizeInvoiceContracts.Create(newInvoiceContract);
+                    }
+
+                    //Create Contract Lines
+                    Decimal lineQuantity = 1;
+                    if (line.Quantidade != 0)
+                    {
+                        lineQuantity = line.Quantidade.Value;
+                    }
+                    switch (item.PeríodoFatura)
+                    {
+                        case 1:
+                            lineQuantity = lineQuantity * 1;
+                            break;
+                        case 2:
+                            lineQuantity = lineQuantity * 2;
+                            break;
+                        case 3:
+                            lineQuantity = lineQuantity * 3;
+                            break;
+                        case 4:
+                            lineQuantity = lineQuantity * 6;
+                            break;
+                        case 5:
+                            lineQuantity = lineQuantity * 12;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    LinhasFaturaçãoContrato newInvoiceLine = new LinhasFaturaçãoContrato
+                    {
+                        NºContrato = line.NºContrato,
+                        GrupoFatura = line.GrupoFatura.Value,
+                        NºLinha = line.NºLinha,
+                        Tipo = line.Tipo.ToString(),
+                        Código = line.Código,
+                        Descrição = line.Descrição,
+                        Quantidade = lineQuantity,
+                        CódUnidadeMedida = line.CódUnidadeMedida,
+                        PreçoUnitário = line.PreçoUnitário,
+                        ValorVenda = (lineQuantity * line.PreçoUnitário),
+                        CódigoRegião = line.CódigoRegião,
+                        CódigoÁreaFuncional = line.CódigoÁreaFuncional,
+                        CódigoCentroResponsabilidade = line.CódigoCentroResponsabilidade,
+                        CódigoServiço = line.CódServiçoCliente,
+                        DataHoraCriação = DateTime.Now,
+                        UtilizadorCriação = User.Identity.Name
+                    };
+                    //Create
+                    DBInvoiceContractLines.Create(newInvoiceLine);
+                }
+            }
+            return Json(true);
+        }
+
+        public JsonResult CountInvoice([FromBody] List<FaturacaoContratosViewModel> data)
+        {
+            List<AutorizarFaturaçãoContratos> contractList = DBAuthorizeInvoiceContracts.GetAll();
+            List<LinhasFaturaçãoContrato> lineList = DBInvoiceContractLines.GetAll();
+
+            //NAV WsPreInvoice
+            
+
+            //WsPreInvoiceLine
+
+            //WsGeneric.fxPostInvoice
+
+            return Json(true);
+        }
+
+        #endregion
 
     }
 }

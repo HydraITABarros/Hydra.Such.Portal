@@ -22,17 +22,14 @@ namespace Hydra.Such.Data.NAV
 
         static async Task<WSCreatePreInvoice.CreateMultiple_Result> CreatePreInvoice(List<ProjectDiaryViewModel> PreInvoiceToCreate, NAVWSConfigurations WSConfigurations)
         {
-
             WSCreatePreInvoice.CreateMultiple NAVCreate = new WSCreatePreInvoice.CreateMultiple()
             {
                 WSPreInvoice_List = PreInvoiceToCreate.Select(y => new WSCreatePreInvoice.WSPreInvoice()
                 {
                      No = y.ProjectNo,
                     Sell_to_Customer_No = y.InvoiceToClientNo
-
                 }).ToArray()
             };
-
 
             //Configure NAV Client
             EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoice_URL.Replace("Company", WSConfigurations.WS_User_Company));
