@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace Hydra.Such.Data.Logic.CCP
 {
     public static class DBProcedimentosCCP
@@ -74,8 +73,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
                 proc.Nº = DBNumerationConfigurations.GetNextNumeration(NumeracaoProcedimento, true);
                 proc.DataHoraCriação = DateTime.Now;
-                // inserir o utilizador da criação
-                //proc.UtilizadorCriação = User.Identity.Name;
+
                 proc.Nº1 = new TemposPaCcp()
                 {
                     NºProcedimento = proc.Nº,
@@ -113,8 +111,8 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
 
-            return proc;
         }
+
         public static ProcedimentosCcp CreateProcedimento(ProcedimentosCcp procedimento)
         {
             try
@@ -125,6 +123,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 procedimento.Nº = Proc.Nº;
                 procedimento.DataHoraCriação = Proc.DataHoraCriação;
                 procedimento.UtilizadorCriação = Proc.UtilizadorCriação;
+
                 return procedimento;
             }
             catch(Exception e)
@@ -132,6 +131,25 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
             
+        }
+
+        public static ProcedimentosCcp UpdateProcedimento(ProcedimentoCCPView procedimento)
+        {
+            try
+            {
+                ProcedimentosCcp proc = CCPFunctions.CastProcCcpViewToProcCcp(procedimento);
+                proc.DataHoraModificação = DateTime.Now;
+
+                context.ProcedimentosCcp.Update(proc);
+                context.SaveChanges();
+
+                return proc;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
         }
         #endregion
 

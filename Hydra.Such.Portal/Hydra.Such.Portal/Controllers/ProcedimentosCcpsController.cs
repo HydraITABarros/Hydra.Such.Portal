@@ -100,8 +100,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if(data != null)
                 {
+                    data.UtilizadorCriacao = User.Identity.Name;
                     ProcedimentosCcp procedimento = DBProcedimentosCCP.CreateProcedimento(data);
-                    procedimento.UtilizadorCriação = User.Identity.Name;
                     if (procedimento == null)
                     {
                         data.eReasonCode = 3;
@@ -114,6 +114,31 @@ namespace Hydra.Such.Portal.Controllers
             {
                 data.eReasonCode = 4;
                 data.eMessage = "Ocorreu um erro ao criar o Procedimento";
+            }
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateProcedimento([FromBody] ProcedimentoCCPView data)
+        {
+            try
+            {
+                if(data != null)
+                {
+                    data.UtilizadorModificacao = User.Identity.Name;
+                    ProcedimentosCcp proc = DBProcedimentosCCP.UpdateProcedimento(data);
+                    if(proc == null)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Ocorreu um erro ao actualizar o procedimento";
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                data.eReasonCode = 4;
+                data.eMessage = "Ocorreu um erro ao actualizar o procedimento";
             }
 
             return Json(data);

@@ -1,16 +1,20 @@
 ﻿
-<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
-<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
-<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
 <dom-module id="x-folhadehoralist">
     <template>
@@ -35,7 +39,7 @@
                         padding-left: 5px;
                     }
 
-                paper-input {
+                vaadin-text-field {
                     max-width: 200px !important;
                 }
             </style>
@@ -66,7 +70,7 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="areaText">Cód. Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="areaText">Código Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="areaText" />
                 </template>
                 <template>
@@ -96,27 +100,47 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dateDepartureTimeText">Data Hora de Partida</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dateDepartureTimeText" />
+                    <vaadin-grid-sorter path="dateDepartureText">Data Inicio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dateDepartureText" />
                 </template>
                 <template>
-                    {{item.dateDepartureTimeText}}
+                    {{item.dateDepartureText}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dateTimeArrivalText">Data Hora de Chegada</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dateTimeArrivalText" />
+                    <vaadin-grid-sorter path="timeDepartureText">Hora Inicio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="timeDepartureText" />
                 </template>
                 <template>
-                    {{item.dateTimeArrivalText}}
+                    {{item.timeDepartureText}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="typeDeslocationText">Tipo de Deslocação</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="dateArrivalText">Data Fim</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dateArrivalText" />
+                </template>
+                <template>
+                    {{item.dateArrivalText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="timeArrivalText">Hora Fim</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="timeArrivalText" />
+                </template>
+                <template>
+                    {{item.timeArrivalText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="typeDeslocationText">Tipo Deslocação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="typeDeslocationText" />
                 </template>
                 <template>
@@ -126,7 +150,7 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="codeTypeKms">Código do Tipo de Kms</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="codeTypeKms">Código Tipo Km</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeTypeKms" />
                 </template>
                 <template>
@@ -136,7 +160,7 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="displacementOutsideCityText">Deslocação Fora do Concelho</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="displacementOutsideCityText">Desloc. fora do concelho</vaadin-grid-sorter>
                     <vaadin-grid-filter path="displacementOutsideCityText" />
                 </template>
                 <template>
@@ -166,7 +190,7 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="createdBy">Criado Por</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="createdBy">Criado por</vaadin-grid-sorter>
                     <vaadin-grid-filter path="createdBy" />
                 </template>
                 <template>
@@ -176,54 +200,323 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dateTimeCreationText">Data Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dateTimeCreationText" />
+                    <vaadin-grid-sorter path="dateCreationText">Data Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dateCreationText" />
                 </template>
                 <template>
-                    {{item.dateTimeCreationText}}
+                    {{item.dateCreationText}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dateTimeLastStateText">Data Último Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dateTimeLastStateText" />
+                    <vaadin-grid-sorter path="timeCreationText">Hora Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="timeCreationText" />
                 </template>
                 <template>
-                    {{item.dateTimeLastStateText}}
+                    {{item.timeCreationText}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="userCreation">Utilizador Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="userCreation" />
+                    <vaadin-grid-sorter path="dateLastStateText">Data Último Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dateLastStateText" />
                 </template>
                 <template>
-                    {{item.userCreation}}
+                    {{item.dateLastStateText}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dateTimeModificationText">Data Modificação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dateTimeModificationText" />
+                    <vaadin-grid-sorter path="timeLastStateText">Hora Último Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="timeLastStateText" />
                 </template>
                 <template>
-                    {{item.dateTimeModificationText}}
+                    {{item.timeLastStateText}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="userModification">Utilizador Modificação</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="dateModificationText">Data Última Alteração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dateModificationText" />
+                </template>
+                <template>
+                    {{item.dateModificationText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="timeModificationText">Hora Última Alteração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="timeModificationText" />
+                </template>
+                <template>
+                    {{item.timeModificationText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="userModification">Utilizador Última Alteração</vaadin-grid-sorter>
                     <vaadin-grid-filter path="userModification" />
                 </template>
                 <template>
                     {{item.userModification}}
                 </template>
             </vaadin-grid-column>
-        </vaadin-grid>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="employeeName">Nome Empregado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="employeeName" />
+                </template>
+                <template>
+                    {{item.employeeName}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="carRegistration">Matrícula</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="carRegistration" />
+                </template>
+                <template>
+                    {{item.carRegistration}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="finishedText">Terminado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="finishedText" />
+                </template>
+                <template>
+                    {{item.finishedText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="finishedBy">Terminado Por</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="finishedBy" />
+                </template>
+                <template>
+                    {{item.finishedBy}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="dateFinishedText">Data Terminado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dateFinishedText" />
+                </template>
+                <template>
+                    {{item.dateFinishedText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="timeFinishedText">Hora Terminado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="timeFinishedText" />
+                </template>
+                <template>
+                    {{item.timeFinishedText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="validatedText">Validado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="validatedText" />
+                </template>
+                <template>
+                    {{item.validatedText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="plannedScrollingText">Deslocação Planeada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="plannedScrollingText" />
+                </template>
+                <template>
+                    {{item.plannedScrollingText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="comments" />
+                </template>
+                <template>
+                    {{item.comments}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsible1">Responsável 1</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsible1" />
+                </template>
+                <template>
+                    {{item.responsible1}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsible2">Responsável 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsible2" />
+                </template>
+                <template>
+                    {{item.responsible2}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsible3">Responsável 3</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsible3" />
+                </template>
+                <template>
+                    {{item.responsible3}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="validatorsRHKM">Integrador KMs RH</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="validatorsRHKM" />
+                </template>
+                <template>
+                    {{item.validatorsRHKM}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regionCode" />
+                </template>
+                <template>
+                    {{item.regionCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="areaCode">Código Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="areaCode" />
+                </template>
+                <template>
+                    {{item.areaCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="cRESPCode">Código Centro Respon.</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="cRESPCode" />
+                </template>
+                <template>
+                    {{item.cRESPCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="validator">Validador</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="validator" />
+                </template>
+                <template>
+                    {{item.validator}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="dateValidationText">Data Validação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dateValidationText" />
+                </template>
+                <template>
+                    {{item.dateValidationText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="timeValidationText">Hora Validação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="timeValidationText" />
+                </template>
+                <template>
+                    {{item.timeValidationText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="integratorRH">Integrador Aj. Custo RH</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="integratorRH" />
+                </template>
+                <template>
+                    {{item.integratorRH}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="dateIntegrationRHText">Data Integração Aj. Custo RH</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dateIntegrationRHText" />
+                </template>
+                <template>
+                    {{item.dateIntegrationRHText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="timeIntegrationRHText">Hora Integração Aj. Custo RH</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="timeIntegrationRHText" />
+                </template>
+                <template>
+                    {{item.timeIntegrationRHText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="integratorRHKM">Integrador KMs RH</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="integratorRHKM" />
+                </template>
+                <template>
+                    {{item.integratorRHKM}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="dateIntegrationRHKMText">Data Integração KMs RH</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dateIntegrationRHKMText" />
+                </template>
+                <template>
+                    {{item.dateIntegrationRHKMText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="timeIntegrationRHKMText">Hora Integração KMs RH</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="timeIntegrationRHKMText" />
+                </template>
+                <template>
+                    {{item.timeIntegrationRHKMText}}
+                </template>
+            </vaadin-grid-column>
     </template>
 
     <script>

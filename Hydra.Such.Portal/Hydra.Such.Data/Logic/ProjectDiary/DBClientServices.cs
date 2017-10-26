@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel.ProjectDiary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,6 +112,27 @@ namespace Hydra.Such.Data.Logic.ProjectDiary
             {
 
                 return false;
+            }
+        }
+
+        public static List<ClientServicesViewModel> GetAllFromClientWithDescription(string ClientNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ServiçosCliente.Where(x => x.NºCliente == ClientNo).Select(x => new ClientServicesViewModel() {
+                        ServiceCode = x.CódServiço,
+                        ServiceDescription = x.CódServiçoNavigation.Descrição,
+                        ServiceGroup = x.GrupoServiços,
+                        ClientNumber = x.NºCliente
+                    }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
             }
         }
     }

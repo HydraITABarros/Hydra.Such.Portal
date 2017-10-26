@@ -460,8 +460,7 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Nenhum"
             }
         };
-
-
+        
         public static readonly List<EnumData> ContractInvoiceGroups = new List<EnumData>(){
             new EnumData()
             {
@@ -564,6 +563,26 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "20"
             }
         };
+
+        public static readonly List<EnumData> ContractLineTypes = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Produto"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Recurso"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Conta CG"
+            }
+        };
+
+
         public static readonly List<EnumData> ContabGroupTypesOM_Type = new List<EnumData>(){
             new EnumData()
             {
@@ -683,21 +702,21 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
-        public static readonly List<EnumData> FolhaDeHoraCodeTypeKms = new List<EnumData>()
+        public static readonly List<EnumDataString> FolhaDeHoraCodeTypeKms = new List<EnumDataString>()
         {
-            new EnumData()
+            new EnumDataString()
             {
-                Id = 0,
+                Id = "KM",
                 Value = "Kilometros"
             },
-            new EnumData()
+            new EnumDataString()
             {
-                Id = 1,
+                Id = "KMC",
                 Value = "Kilometros (Coimbra)"
             },
-            new EnumData()
+            new EnumDataString()
             {
-                Id = 2,
+                Id = "KMP",
                 Value = "Kilometros (Porto)"
             }
         };
@@ -916,6 +935,12 @@ namespace Hydra.Such.Portal.Configurations
     public class EnumData
     {
         public int Id { get; set; }
+        public string Value { get; set; }
+    }
+
+    public class EnumDataString
+    {
+        public string Id { get; set; }
         public string Value { get; set; }
     }
 }
