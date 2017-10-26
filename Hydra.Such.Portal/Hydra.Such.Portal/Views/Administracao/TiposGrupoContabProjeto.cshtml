@@ -93,52 +93,50 @@
                handle-as="json"
                content-type="application/json">
     </iron-ajax>
-    <iron-form id="formGeral">
-        <form>
+    <div class="row">
+        <div class="col-lg-2">
             <h2 class="separator">Novo Registo</h2>
-            <table class="table inlineForm">
-                <tr>
-                    <td width="20%"><vaadin-text-field id="ddDescription" label="Descrição"></vaadin-text-field></td>
-                    <td width="20%">
-                        <vaadin-combo-box items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{ddRegion}}" label="Código Região">
-                            <template>
-                                <table width="180px">
-                                    <tr>
-                                        <td width="20%">[[item.id]]</td>
-                                        <td width="80%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box></td>
-                    <td width="20%">
-                        <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" value="{{ddFunctionalArea}}" label="Código Area Funcional">
-                            <template>
-                                <table width="200px">
-                                    <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </td>
-                    <td width="20%">
-                            <vaadin-combo-box items="[[ResponsabilityCenterData]]" item-value-path="id" item-label-path="value" value="{{ddResponsabilityCenter}}" label="Código Centro Responsabilidade">
-                                <template>
-                                    <table width="160px">
-                                        <tr>
-                                            <td width="40%">[[item.id]]</td>
-                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
-                    </td>
-                    <td><paper-button class="btnSave" on-tap="_createContabGroupType">Criar</paper-button></td>
-                </tr>
-            </table>
-        </form>
-    </iron-form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-2"><vaadin-text-field id="ddDescription" label="Descrição"></vaadin-text-field></div>
+        <div class="col-lg-2"> <vaadin-combo-box items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{ddRegion}}" label="Código Região">
+            <template>
+                <table width="180px">
+                    <tr>
+                        <td width="20%">[[item.id]]</td>
+                        <td width="80%"> <b>[[item.value]]</b></td>
+                    </tr>
+                </table>
+            </template>
+        </vaadin-combo-box>
+        </div>
+        <div class="col-lg-2">  
+            <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" value="{{ddFunctionalArea}}" label="Código Area Funcional">
+                <template>
+                    <table width="200px">
+                        <tr>
+                            <td width="40%">[[item.id]]</td>
+                            <td width="60%"> <b>[[item.value]]</b></td>
+                        </tr>
+                    </table>
+                </template>
+            </vaadin-combo-box>
+        </div>
+        <div class="col-lg-2 ">  
+            <vaadin-combo-box items="[[ResponsabilityCenterData]]" item-value-path="id" item-label-path="value" value="{{ddResponsabilityCenter}}" label="Cód. Centro Respon.">
+                <template>
+                    <table width="160px">
+                        <tr>
+                            <td width="40%">[[item.id]]</td>
+                            <td width="60%"> <b>[[item.value]]</b></td>
+                        </tr>
+                    </table>
+                </template>
+            </vaadin-combo-box>
+        </div>
+        <div class="col-lg-1 alignPoga"><paper-button class="btnSave" on-tap="_createContabGroupType">Criar</paper-button> </div>
+    </div><br />
     <vaadin-grid id="gridContabGroupTypes" aria-label="gridContabGroupTypesTable" items="[[result]]" class="grid" multi-sort="true">
         <vaadin-grid-column width="200px" resizable>
             <template class="header">

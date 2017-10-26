@@ -717,21 +717,21 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
-        public static readonly List<EnumData> FolhaDeHoraCodeTypeKms = new List<EnumData>()
+        public static readonly List<EnumDataString> FolhaDeHoraCodeTypeKms = new List<EnumDataString>()
         {
-            new EnumData()
+            new EnumDataString()
             {
-                Id = 0,
+                Id = "KM",
                 Value = "Kilometros"
             },
-            new EnumData()
+            new EnumDataString()
             {
-                Id = 1,
+                Id = "KMC",
                 Value = "Kilometros (Coimbra)"
             },
-            new EnumData()
+            new EnumDataString()
             {
-                Id = 2,
+                Id = "KMP",
                 Value = "Kilometros (Porto)"
             }
         };
@@ -952,5 +952,11 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData(2, "Área Funcional"),
             new EnumData(3, "Centro Responsabilidade")
         };
+    }
+
+    public class EnumDataString
+    {
+        public string Id { get; set; }
+        public string Value { get; set; }
     }
 }

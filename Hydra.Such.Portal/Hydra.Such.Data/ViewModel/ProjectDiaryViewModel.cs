@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel
 {
-    public class ProjectDiaryViewModel
+    public class ProjectDiaryViewModel : ErrorHandler
     {
         public int LineNo { get; set; }
         public string ProjectNo { get; set; }
@@ -50,7 +50,7 @@ namespace Hydra.Such.Data.ViewModel
         //public decimal? ReturnedQuantity { get; set; }
         //public DateTime? ConsumptionDate { get; set; }
         public bool? Registered { get; set; }
-
+        public string TypeDescription { get; set; }
         //public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
         //public LinhasRequisição Nº { get; set; }
         //public Projetos NºProjetoNavigation { get; set; }

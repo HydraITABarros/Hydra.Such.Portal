@@ -660,6 +660,16 @@
 
         <!-- Contract Lines -->
 
+
+
+
+        <iron-ajax url="/Contratos/GetContractLines"
+                   last-response="{{dataLines}}"
+                   method="post"
+                   handle-as="json"
+                   id="contractLines_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="row">
                 <div class="col-lg-12">
@@ -809,7 +819,7 @@
                             </div>
 
                             <div class="row">
-                                <vaadin-grid aria-label="InvoiceTexts" id="grid_contractLines" items="[[dataLines]]" class="grid" multi-sort="true">
+                                <vaadin-grid aria-label="ContractLines" id="grid_contractlines" name="grid_contractlines" items="[[dataLines]]" class="grid" multi-sort="true">
                                     <vaadin-grid-column>
                                         <template class="header">
                                             <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
@@ -1292,6 +1302,9 @@
                             if (this.data.contractNo != "") {
                                 this.$.serviceclients_ajax.body = JSON.stringify(this.data.clientNo);
                                 this.$.serviceclients_ajax.generateRequest();
+
+                                this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
+                                this.$.contractLines_databound_ajax.generateRequest();
                             }
                         }
                         else if (data.detail.url.indexOf("Create") !== -1) {
@@ -1442,7 +1455,7 @@
                         quantity : this._CLQuantity,
                         billable : this._CLBillable
                     });
-                    this.$.grid_contractLines.clearCache();
+                    this.$.grid_contractlines.clearCache();
                 },
 
             });

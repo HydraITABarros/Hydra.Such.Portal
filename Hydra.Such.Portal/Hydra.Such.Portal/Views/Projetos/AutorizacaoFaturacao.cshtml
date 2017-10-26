@@ -56,6 +56,14 @@
                    id="page_databound_ajax"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/Projetos/CreateInvoiceLines"
+                   last-response="{{lines}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_createlines_ajax"
+                   on-response="_CreateLinesResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
 
         <iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements"
@@ -129,7 +137,7 @@
                     <vaadin-grid-filter path="type" />
                 </template>
                 <template>
-                    <vaadin-combo-box id="type[[index]]" items="[[response3]]" on-value-changed="_lineProjectTypeChange" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled>
+                    <vaadin-combo-box id="type[[index]]" items="[[response3]]" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled>
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -258,7 +266,9 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
+    
 
     <script>
          document.addEventListener('WebComponentsReady', function () {
@@ -289,80 +299,24 @@
                      //this.$.page_databound_ajax.generateRequest();
                  },
                  openToast: function (message) {
+                     debugger;
                      this.$.ToastMessage.text = message;
                      this.$.ToastMessage.open();
                  },
-
-                 _update: function () {
-                     //if (this.data.description !== '' && this.data.description != null) {
-                     this.$.page_databound_ajax.url = "/TabelasAuxiliares/UpdateTiposGrupoContabProjetoOM";
-                     this.$.page_databound_ajax.body = JSON.stringify(this.result);
-                     //this.$.page_databound_ajax.generateRequest();
-                     //this.$.page_databound_ajax.url = "/TabelasAuxiliares/GetTiposGrupoContabProjeto";
-                     this.$.gridContabGroupTypesOM.clearCache();
-                     //} else {
-                     //this.openToast('É obrigatório preencher o campo Descrição.');
-                     //}
-                 },
-
-                 _updateResponse: function (e) {
-                     var self = this;
-                     if (this.$.page_databound_ajax.url != "/TabelasAuxiliares/GetTiposGrupoContabOMProjeto") {
-                         if (e.detail.status === 200) {
-
-                             this.openToast('Atualizado com sucesso!');
-                             this.$.page_databound_ajax.url = "/TabelasAuxiliares/GetTiposGrupoContabOMProjeto";
-                             this.$.page_databound_ajax.generateRequest();
-
-                         }
-                         else {
-                             this.openToast('Ocorreu um erro ao atualizar o perfil modelo.');
-                         }
-                     }
-
-                 },
-                 _cancel: function () {
-                     //this.$.page_databound_ajax.url = "/TabelasAuxiliares/GetTiposGrupoContabProjeto";
-                     this.$.page_databound_ajax.generateRequest();
-                     this.$.gridContabGroupTypesOM.clearCache();
-                 },
-
-                 _createContabGroupTypeOM: function () {
-                     this.result.unshift({
-                         description: this.ddDescription,
-                         type: this.ddCGTOM_Type,
-                         CorrectiveMaintenance: this.chkCorrectiveMaintenance,
-                         PreventiveMaintenance: this.chkPreventiveMaintenance,
-                         FailType: this.ddCGTOM_FailType,
-                         ResponseTimeIndicator: this.chkResponseTimeIndicator,
-                         StopTimeIndicator: this.chkStopTimeIndicator,
-                         RepairEffectiveTimeIndicator: this.chkRepairEffectiveTimeIndicator,
-                         ClosingWorksTimeIndicator: this.chkClosingWorksTimeIndicator,
-                         BillingTimeIndicator: this.chkBillingTimeIndicator,
-                         EmployeesOccupationTimeIndicator: this.chkEmployeesOccupationTimeIndicator,
-                         CostSaleValueIndicator: this.chkCostSaleValueIndicator,
-                         catComplianceRateIndicator: this.chkCATComplianceRateIndicator,
-                         catCoverageRateIndicator: this.chkCATCoverageRateIndicator,
-                         mpRoutineFulfillmentRateIndicator: this.chkMPRoutineFulfillmentRateIndicator,
-                         BreakoutIncidentsIndicator: this.chkBreakoutIncidentsIndicator,
-                         OrdernInProgressIndicator: this.chkOrdernInProgressIndicator
-                     });
-                     this.$.page_databound_ajax.url = "/TabelasAuxiliares/UpdateTiposGrupoContabProjetoOM";
-                     this.$.page_databound_ajax.body = JSON.stringify(this.result);
-                     this.$.gridContabGroupTypesOM.clearCache();
-                 },
-
-                 _deleteAccessProfile: function (data) {
-                     var index = this.result.indexOf(data.model.item);
-                     this.result.splice(index, 1);
-                     this.$.page_databound_ajax.url = "/TabelasAuxiliares/UpdateTiposGrupoContabProjetoOM";
-                     this.$.page_databound_ajax.body = JSON.stringify(this.result);
-                     this.$.gridContabGroupTypesOM.clearCache();
-                 },
-
+                 
                  _confirm: function (selectedItem, selectedItems) {
                      debugger;
-                     console.log(this.selectedItems);
+                     this.$.page_createlines_ajax.body = JSON.stringify(this.selectedItems);
+                     this.$.page_createlines_ajax.generateRequest();
+                     //console.log(this.selectedItems);
+                 },
+
+                 _CreateLinesResponse: function (e) {
+                     debugger;
+                     var message = this.lines.eReasonCode;
+                     switch (message) {
+                         case 4: this.openToast('Error.');
+                     }
                  }
              });
          });

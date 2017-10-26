@@ -115,7 +115,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetFolhaDeHoraCodeTypeKms()
         {
-            List<EnumData> result = EnumerablesFixed.FolhaDeHoraCodeTypeKms;
+            List<EnumDataString> result = EnumerablesFixed.FolhaDeHoraCodeTypeKms;
             return Json(result);
         }
 
