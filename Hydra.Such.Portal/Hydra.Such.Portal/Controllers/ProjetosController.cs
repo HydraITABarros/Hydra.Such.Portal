@@ -652,33 +652,101 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAutorizacaoFaturacao([FromBody] ProjectDiaryViewModel data)
         {
-            List<ProjectDiaryViewModel> result = DBProjectDiary.GetAll().Select(x => new ProjectDiaryViewModel()
+            try
             {
-                LineNo = x.NºLinha,
-                ProjectNo = x.NºProjeto,
-                Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
-                MovementType = x.TipoMovimento,
-                Type = x.Tipo,
-                Code = x.Código,
-                Description = x.Descrição,
-                Quantity = x.Quantidade,
-                MeasurementUnitCode = x.CódUnidadeMedida,
-                LocationCode = x.CódLocalização,
-                ProjectContabGroup = x.GrupoContabProjeto,
-                RegionCode = x.CódigoRegião,
-                FunctionalAreaCode = x.CódigoÁreaFuncional,
-                ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
-                User = x.Utilizador,
-                UnitCost = x.CustoUnitário,
-                TotalCost = x.CustoTotal,
-                UnitPrice = x.PreçoUnitário,
-                TotalPrice = x.PreçoTotal,
-                Billable = x.Faturável,
-                InvoiceToClientNo = x.FaturaANºCliente,
-                CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso
-            }).ToList();
+                List<ProjectDiaryViewModel> result = DBProjectDiary.GetAllTable(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
+                {
+                    LineNo = x.NºLinha,
+                    ProjectNo = x.NºProjeto,
+                    Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                    MovementType = x.TipoMovimento,
+                    Type = x.Tipo,
+                    Code = x.Código,
+                    Description = x.Descrição,
+                    Quantity = x.Quantidade,
+                    MeasurementUnitCode = x.CódUnidadeMedida,
+                    LocationCode = x.CódLocalização,
+                    ProjectContabGroup = x.GrupoContabProjeto,
+                    RegionCode = x.CódigoRegião,
+                    FunctionalAreaCode = x.CódigoÁreaFuncional,
+                    ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
+                    User = x.Utilizador,
+                    UnitCost = x.CustoUnitário,
+                    TotalCost = x.CustoTotal,
+                    UnitPrice = x.PreçoUnitário,
+                    TotalPrice = x.PreçoTotal,
+                    Billable = x.Faturável,
+                    InvoiceToClientNo = x.FaturaANºCliente,
+                    CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso
+                }).ToList();
 
-            return Json(result);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+           
+        }
+
+        [HttpPost]
+        public JsonResult CreateInvoiceLines([FromBody] List<ProjectDiaryViewModel> data)
+        {
+            string num_cliente = "";
+            string PKey = "";
+            try
+            {
+                if (data != null)
+                {
+                    foreach (var lines in data)
+                    {
+                        if (num_cliente != lines.InvoiceToClientNo)
+                        {
+                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(lines, _configws);
+                            TCreatePreInvoice.Wait();
+                            if (!TCreatePreInvoice.IsCompletedSuccessfully)
+                            {
+                                lines.eReasonCode = 3;
+                                lines.eMessage = "Ocorreu um erro ao criar o Cabeçalho da Fatura no NAV.";
+                            }
+                            else
+                            {
+                                num_cliente = lines.InvoiceToClientNo;
+                                PKey = TCreatePreInvoice.Result.WSPreInvoice.No;
+                            }
+                        }
+
+                        Task<WSCreatePreInvoiceLine.Create_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLine(lines, _configws, PKey);
+                        TCreatePreInvoiceLine.Wait();
+                        if (!TCreatePreInvoiceLine.IsCompletedSuccessfully)
+                        {
+                            lines.eReasonCode = 2;
+                            lines.eMessage = "Ocorreu um erro ao criar o Linhas de Fatura no NAV.";
+                        }
+                        else
+                        {
+                            num_cliente = lines.InvoiceToClientNo;
+
+                            //update to Invoiced = true
+                            DiárioDeProjeto upDate = DBProjectDiary.GetByLineNo(lines.LineNo, User.Identity.Name).FirstOrDefault();
+                            upDate.Registado = true;
+                            DBProjectDiary.Update(upDate);
+
+                            lines.eReasonCode = 1;
+                            lines.eMessage = "Linhas de Fatura criadas com sucesso";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ProjectDiaryViewModel dataerror = new ProjectDiaryViewModel();
+
+                dataerror.eReasonCode = 4;
+                dataerror.eMessage = "Ocorreu um erro ao criar Pré Fatura";
+                return Json(dataerror);
+            }
+            return Json(data);
         }
         #endregion InvoiceAutorization
 
