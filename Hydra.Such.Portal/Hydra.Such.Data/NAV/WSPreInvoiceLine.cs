@@ -54,20 +54,25 @@ namespace Hydra.Such.Data.NAV
                 {
                     Unit_PriceSpecified = true,
                     Unit_Cost_LCYSpecified = true,
-                    Job_Journal_Line_No_PortalSpecified = true,
+                    Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
                     Document_No = PKey,
                     Type = TypeValue,
-                    Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
+                    No = PreInvoiceLineToCreate.Code,
                     Description = PreInvoiceLineToCreate.Description,
+                    QuantitySpecified = true,
                     Quantity = (int)PreInvoiceLineToCreate.Quantity,
+                    TypeSpecified = true,
                     Unit_of_Measure = PreInvoiceLineToCreate.MeasurementUnitCode,
                     Location_Code = PreInvoiceLineToCreate.LocationCode,
                     Unit_Price = (decimal)PreInvoiceLineToCreate.UnitPrice,
                     Unit_Cost_LCY = (decimal)PreInvoiceLineToCreate.UnitCost,
-                    Sell_to_Customer_No = "10000",
+                    Job_No = PreInvoiceLineToCreate.ProjectNo,
+                    Job_Journal_Line_No_Portal = PreInvoiceLineToCreate.LineNo,
+                    Job_Journal_Line_No_PortalSpecified = true
+
                 }
             };
-            
+
             //Configure NAV Client
             EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoiceLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
             WSCreatePreInvoiceLine.WsPreInvoiceLine_PortClient WS_Client = new WSCreatePreInvoiceLine.WsPreInvoiceLine_PortClient(navWSBinding, WS_URL);

@@ -101,7 +101,7 @@ namespace Hydra.Such.Portal.Controllers
                 if(data != null)
                 {
                     data.UtilizadorCriacao = User.Identity.Name;
-                    ProcedimentosCcp procedimento = DBProcedimentosCCP.CreateProcedimento(data);
+                    ProcedimentosCcp procedimento = DBProcedimentosCCP.__Create(data);
                     if (procedimento == null)
                     {
                         data.eReasonCode = 3;
@@ -127,7 +127,7 @@ namespace Hydra.Such.Portal.Controllers
                 if(data != null)
                 {
                     data.UtilizadorModificacao = User.Identity.Name;
-                    ProcedimentosCcp proc = DBProcedimentosCCP.UpdateProcedimento(data);
+                    ProcedimentosCcp proc = DBProcedimentosCCP.__Update(data);
                     if(proc == null)
                     {
                         data.eReasonCode = 3;
