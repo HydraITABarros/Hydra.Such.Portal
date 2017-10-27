@@ -188,7 +188,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 CreateDate = x.DataHoraCriação,
                 CreateUser = x.UtilizadorCriação,
                 UpdateDate = x.DataHoraModificação,
-                UpdateUser = x.UtilizadorModificação
+                UpdateUser = x.UtilizadorModificação,
+                Selected = false
             };
         }
 

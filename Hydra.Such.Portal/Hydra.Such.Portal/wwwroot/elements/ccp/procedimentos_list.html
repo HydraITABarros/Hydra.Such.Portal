@@ -90,11 +90,6 @@
                     activeItem: {
                         observer: '_rowSelected'
                     },
-                    //_areaid: {
-                    //    type: Number,
-                    //    notify: true,
-                    //    value: 0
-                    //},
                     _procedimentotypeid: {
                         type: Number,
                         notify: true,
@@ -108,13 +103,10 @@
                 },
                 _create: function (item) {
                     if (item != null) {
-                        window.location.href = "/ProcedimentosCcps/Detalhes/0";
+                        window.location.href = "/ProcedimentosCcps/Detalhes/";
                     }
                 },
                 ready: function () {
-                    //this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
-                    //this.$.grid_databound_ajax.generateRequest();
-
                     this.$.grid_databound_ajax.body = JSON.stringify(this._procedimentotypeid);
                     this.$.grid_databound_ajax.generateRequest();
                 },

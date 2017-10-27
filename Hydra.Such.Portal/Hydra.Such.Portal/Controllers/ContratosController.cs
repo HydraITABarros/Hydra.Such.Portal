@@ -38,6 +38,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             ViewBag.ContractNo = id ?? "";
             ViewBag.VersionNo = version ?? "";
+            ViewBag.UPermissions = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
             return View();
         }
 
@@ -457,19 +458,86 @@ namespace Hydra.Such.Portal.Controllers
 
             if (data != null)
             {
-                List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContactNo, data.VersionNo);
+                List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
 
-                List<ContractLineViewModel> result = new List<ContractLineViewModel>();
+                ContractLineHelperViewModel result = new ContractLineHelperViewModel();
+
+                result.ContractNo = data.ContractNo;
+                result.VersionNo = data.VersionNo;
+                result.Lines = new List<ContractLineViewModel>();
 
                 if (ContractLines != null)
                 {
-                    ContractLines.ForEach(x => result.Add(DBContractLines.ParseToViewModel(x)));
+                    ContractLines.ForEach(x => result.Lines.Add(DBContractLines.ParseToViewModel(x)));
                 }
                 return Json(result);
             }
             return Json(false);
         }
 
+        [HttpPost]
+        public JsonResult UpdateContractLines([FromBody] ContractLineHelperViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                    List<LinhasContratos> CLToDelete = ContractLines.Where(y => !data.Lines.Any(x => x.ContractType == y.TipoContrato && x.ContractNo == y.NºContrato && x.VersionNo == y.NºVersão && x.LineNo == y.NºLinha)).ToList();
+
+                    CLToDelete.ForEach(x => DBContractLines.Delete(x));
+
+                    data.Lines.ForEach(x =>
+                    {
+                        LinhasContratos CLine = ContractLines.Where(y => x.ContractType == y.TipoContrato && x.ContractNo == y.NºContrato && x.VersionNo == y.NºVersão && x.LineNo == y.NºLinha).FirstOrDefault();
+
+                        if (CLine != null)
+                        {
+                            CLine.TipoContrato = x.ContractType;
+                            CLine.NºContrato = x.ContractNo;
+                            CLine.NºVersão = x.VersionNo;
+                            CLine.NºLinha = x.LineNo;
+                            CLine.Tipo = x.Type;
+                            CLine.Código = x.Code;
+                            CLine.Descrição = x.Description;
+                            CLine.Quantidade = x.Quantity;
+                            CLine.CódUnidadeMedida = x.CodeMeasureUnit;
+                            CLine.PreçoUnitário = x.UnitPrice;
+                            CLine.DescontoLinha = x.LineDiscount;
+                            CLine.Faturável = x.Billable;
+                            CLine.CódigoRegião = x.CodeRegion;
+                            CLine.CódigoÁreaFuncional = x.CodeFunctionalArea;
+                            CLine.CódigoCentroResponsabilidade = x.CodeResponsabilityCenter;
+                            CLine.Periodicidade = x.Frequency;
+                            CLine.NºHorasIntervenção = x.InterventionHours;
+                            CLine.NºTécnicos = x.TotalTechinicians;
+                            CLine.TipoProposta = x.ProposalType;
+                            CLine.DataInícioVersão = x.VersionStartDate != null ? DateTime.Parse(x.VersionStartDate) : (DateTime?)null;
+                            CLine.DataFimVersão = x.VersionEndDate != null ? DateTime.Parse(x.VersionEndDate) : (DateTime?)null;
+                            CLine.NºResponsável = x.ResponsibleNo;
+                            CLine.CódServiçoCliente = x.ServiceClientNo;
+                            CLine.GrupoFatura = x.InvoiceGroup;
+                            CLine.CriaContrato = x.CreateContract;
+                            CLine.UtilizadorModificação = User.Identity.Name;
+                            DBContractLines.Update(CLine);
+                        }
+                        else
+                        {
+                            x = DBContractLines.ParseToViewModel(DBContractLines.Create(DBContractLines.ParseToDB(x)));
+                        }
+                    });
+                    
+                    data.eReasonCode = 1;
+                    data.eMessage = "Linhas de contrato atualizadas com sucesso.";
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 2;
+                data.eMessage = "Ocorreu um erro ao atualizar as linhas de contrato.";
+            }
+            return Json(data);
+        }
         #endregion
 
 
@@ -478,12 +546,12 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetAllAvencaFixa()
         {
             List<AutorizarFaturaçãoContratos> contractList = DBContractInvoices.GetAll();
-            List<FaturacaoContratosViewModel> result = null;
+            List<FaturacaoContratosViewModel> result = new List<FaturacaoContratosViewModel>();
 
             foreach (var item in contractList)
             {
                 //Client Name -> NAV
-                String cliName = DBNAV2017Clients.GetClientNameByNo(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato);
+                String cliName = DBNAV2017Clients.GetClientNameByNo(item.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName);
 
                 // Valor Fatura
                 List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
@@ -493,6 +561,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     ContractNo = item.NºContrato,
                     Description = item.Descrição,
+                    ClientNo = item.NºCliente,
                     ClientName = cliName,
                     InvoiceValue = sum,
                     NumberOfInvoices = item.NºDeFaturasAEmitir,
@@ -635,13 +704,43 @@ namespace Hydra.Such.Portal.Controllers
             List<AutorizarFaturaçãoContratos> contractList = DBAuthorizeInvoiceContracts.GetAll();
             List<LinhasFaturaçãoContrato> lineList = DBInvoiceContractLines.GetAll();
 
-            //NAV WsPreInvoice
-            
+            foreach (var item in contractList)
+            {
+                Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws);
+                InvoiceHeader.Wait();
 
-            //WsPreInvoiceLine
+                if (InvoiceHeader.IsCompletedSuccessfully)
+                {
+                    String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
+                    List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato && x.GrupoFatura == item.GrupoFatura).ToList();
+                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
+                    InvoiceLines.Wait();
 
-            //WsGeneric.fxPostInvoice
+                    if (InvoiceLines.IsCompletedSuccessfully)
+                    {
+                        Task<WSGenericCodeUnit.FxPostInvoice_Result> postNAV = WSGeneric.CreatePreInvoiceLineList(InvoiceHeaderNo, _configws);
+                        postNAV.Wait();
 
+                        if (postNAV.IsCompletedSuccessfully)
+                        {
+                            return Json(true);
+                        }
+                        else
+                        {
+                            return Json(false);
+                        }
+                    }
+                    else
+                    {
+                        return Json(false);
+                    }
+                }
+                else
+                {
+                    return Json(false);
+                }
+
+            }
             return Json(true);
         }
 
