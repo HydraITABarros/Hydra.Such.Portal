@@ -20,14 +20,17 @@ namespace Hydra.Such.Data.NAV
 
         public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(ProjectDiaryViewModel PreInvoiceToCreate, NAVWSConfigurations WSConfigurations)
         {
-            
+
 
             WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
                 {
-                    Sell_to_Customer_No = "10000",//PreInvoiceToCreate.InvoiceToClientNo,
-                    VAT_Registration_No = "789456278"
+                    Sell_to_Customer_No = PreInvoiceToCreate.InvoiceToClientNo,
+                    VAT_Registration_No = PreInvoiceToCreate.ClientVATReg,//"789456278",
+                    Document_Date = DateTime.Today,
+                    Document_DateSpecified = true,
+                    
                 }
             };
 

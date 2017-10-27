@@ -719,7 +719,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         Task<WSCreatePreInvoiceLine.Create_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLine(lines, _configws, PKey);
                         TCreatePreInvoiceLine.Wait();
-                        if (!TCreatePreInvoiceLine.IsCompletedSuccessfully)
+                        if (!TCreatePreInvoiceLine.IsCompletedSuccessfully || String.IsNullOrEmpty(TCreatePreInvoiceLine.Result.WsPreInvoiceLine.Key))
                         {
                             lines.eReasonCode = 2;
                             lines.eMessage = "Ocorreu um erro ao criar o Linhas de Fatura no NAV.";
