@@ -424,19 +424,86 @@ namespace Hydra.Such.Portal.Controllers
 
             if (data != null)
             {
-                List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContactNo, data.VersionNo);
+                List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
 
-                List<ContractLineViewModel> result = new List<ContractLineViewModel>();
+                ContractLineHelperViewModel result = new ContractLineHelperViewModel();
+
+                result.ContractNo = data.ContractNo;
+                result.VersionNo = data.VersionNo;
+                result.Lines = new List<ContractLineViewModel>();
 
                 if (ContractLines != null)
                 {
-                    ContractLines.ForEach(x => result.Add(DBContractLines.ParseToViewModel(x)));
+                    ContractLines.ForEach(x => result.Lines.Add(DBContractLines.ParseToViewModel(x)));
                 }
                 return Json(result);
             }
             return Json(false);
         }
 
+        [HttpPost]
+        public JsonResult UpdateContractLines([FromBody] ContractLineHelperViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                    List<LinhasContratos> CLToDelete = ContractLines.Where(y => !data.Lines.Any(x => x.ContractType == y.TipoContrato && x.ContractNo == y.NºContrato && x.VersionNo == y.NºVersão && x.LineNo == y.NºLinha)).ToList();
+
+                    CLToDelete.ForEach(x => DBContractLines.Delete(x));
+
+                    data.Lines.ForEach(x =>
+                    {
+                        LinhasContratos CLine = ContractLines.Where(y => x.ContractType == y.TipoContrato && x.ContractNo == y.NºContrato && x.VersionNo == y.NºVersão && x.LineNo == y.NºLinha).FirstOrDefault();
+
+                        if (CLine != null)
+                        {
+                            CLine.TipoContrato = x.ContractType;
+                            CLine.NºContrato = x.ContractNo;
+                            CLine.NºVersão = x.VersionNo;
+                            CLine.NºLinha = x.LineNo;
+                            CLine.Tipo = x.Type;
+                            CLine.Código = x.Code;
+                            CLine.Descrição = x.Description;
+                            CLine.Quantidade = x.Quantity;
+                            CLine.CódUnidadeMedida = x.CodeMeasureUnit;
+                            CLine.PreçoUnitário = x.UnitPrice;
+                            CLine.DescontoLinha = x.LineDiscount;
+                            CLine.Faturável = x.Billable;
+                            CLine.CódigoRegião = x.CodeRegion;
+                            CLine.CódigoÁreaFuncional = x.CodeFunctionalArea;
+                            CLine.CódigoCentroResponsabilidade = x.CodeResponsabilityCenter;
+                            CLine.Periodicidade = x.Frequency;
+                            CLine.NºHorasIntervenção = x.InterventionHours;
+                            CLine.NºTécnicos = x.TotalTechinicians;
+                            CLine.TipoProposta = x.ProposalType;
+                            CLine.DataInícioVersão = x.VersionStartDate != null ? DateTime.Parse(x.VersionStartDate) : (DateTime?)null;
+                            CLine.DataFimVersão = x.VersionEndDate != null ? DateTime.Parse(x.VersionEndDate) : (DateTime?)null;
+                            CLine.NºResponsável = x.ResponsibleNo;
+                            CLine.CódServiçoCliente = x.ServiceClientNo;
+                            CLine.GrupoFatura = x.InvoiceGroup;
+                            CLine.CriaContrato = x.CreateContract;
+                            CLine.UtilizadorModificação = User.Identity.Name;
+                            DBContractLines.Update(CLine);
+                        }
+                        else
+                        {
+                            x = DBContractLines.ParseToViewModel(DBContractLines.Create(DBContractLines.ParseToDB(x)));
+                        }
+                    });
+                    
+                    data.eReasonCode = 1;
+                    data.eMessage = "Linhas de contrato atualizadas com sucesso.";
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 2;
+                data.eMessage = "Ocorreu um erro ao atualizar as linhas de contrato.";
+            }
+            return Json(data);
+        }
         #endregion
 
 

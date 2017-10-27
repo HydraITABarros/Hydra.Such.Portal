@@ -195,6 +195,26 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetContractLineCodes([FromBody] int ContractLineType)
+        {
+            List<DDMessageRelated> result = new List<DDMessageRelated>();
+            switch (ContractLineType)
+            {
+                case 3:
+                    result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name, extra = x.MeasureUnit }).ToList();
+                    break;
+                case 2:
+                    result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName,"", "", 0, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name, extra = x.MeasureUnit }).ToList();
+                    break;
+                case 1:
+                    result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name }).ToList();
+                    break;
+            }
+            return Json(result);
+        }
+
+
+        [HttpPost]
         public JsonResult GetClientServices([FromBody] string ClientNo)
         {
             List<DDMessage> result = DBClientServices.GetAllFromClientWithDescription(ClientNo).Select(x => new DDMessage() {
@@ -355,7 +375,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetCGAccountCode(string accountNo)
+        public JsonResult GetCGAccountCode()
         {
             List<DDMessageRelated> result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated()
             {
@@ -366,7 +386,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProductsCode(string productNo)
+        public JsonResult GetProductsCode()
         {
             List<DDMessageRelated> result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated()
             {
@@ -377,7 +397,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetResourcesCode(string resourceNo, string filterArea, int resourceType, string contabGroup)
+        public JsonResult GetResourcesCode()
         {
             List<DDMessageRelated> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
             {
