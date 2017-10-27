@@ -67,17 +67,16 @@
                    handle-as="json"
                    id="ajax_update"
                    content-type="application/json"></iron-ajax>
-        <iron-form id="formGeral">
-            <form>
+        <div class="row">
+            <div class="col-lg-2">
                 <h2 class="separator">Novo Registo</h2>
-                <table class="table inlineForm">
-                    <tr>
-                        <td width="20%"><vaadin-text-field id="piDescription" label="Descrição"></vaadin-text-field></td>
-                        <td><paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button></td>
-                    </tr>
-                </table>
-            </form>
-        </iron-form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2"><vaadin-text-field id="piDescription" label="Descrição"></vaadin-text-field></div>
+            <div class="col-lg-1 alignPoga"><paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button> </div>
+        </div><br />
+
         <vaadin-grid id="gridprojecttype" aria-label="ProfileModelsTabel" items="[[result]]" class="grid">
             <vaadin-grid-column resizable>
                 <template class="header">

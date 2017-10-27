@@ -568,6 +568,26 @@ namespace Hydra.Such.Portal.Controllers
             return Json(CCPStates);
         }
         // zpgm.>
+        
+        [HttpPost]
+        public JsonResult GetDimensions()
+        {
+            List<EnumData> dimensions = EnumerablesFixed.Dimension;
+
+            return Json(dimensions);
+        }
+
+        [HttpPost]
+        public JsonResult GetDimensionValues(int dimensionId)
+        {
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, dimensionId)
+                .Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            return Json(result);
+        }
     }
 
     public class DDMessage
