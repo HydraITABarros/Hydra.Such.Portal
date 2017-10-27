@@ -85,33 +85,49 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
-        //public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineList(List<LinhasFaturaçãoContrato> LinesList, String HeaderNo, NAVWSConfigurations WSConfigurations)
-        //{
-        //    WSCreatePreInvoiceLine.CreateMultiple NAVCreate = new WSCreatePreInvoiceLine.CreateMultiple()
-        //    {
-                
-        //    };
+        public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineList(List<LinhasFaturaçãoContrato> LinesList, String HeaderNo, NAVWSConfigurations WSConfigurations)
+        {
+            WSCreatePreInvoiceLine.CreateMultiple NAVCreate = new WSCreatePreInvoiceLine.CreateMultiple()
+            {
 
-        //    LinesList.Select(x => new WSCreatePreInvoiceLine.WsPreInvoiceLine()
-        //    {
-        //    }).ToList();
+            };
 
-        //    //Configure NAV Client
-        //    EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoiceLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
-        //    WSCreatePreInvoiceLine.WsPreInvoiceLine_PortClient WS_Client = new WSCreatePreInvoiceLine.WsPreInvoiceLine_PortClient(navWSBinding, WS_URL);
-        //    WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
-        //    WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+            LinesList.Select(x => new WSCreatePreInvoiceLine.WsPreInvoiceLine()
+            {
+                Document_No = HeaderNo,
+                Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
+                //GrupoFatura
+                Type = ConvertType(x.Tipo),
+                // Codigo
+                Description = x.Descrição,
+                Quantity = x.Quantidade.Value,
+                Unit_of_Measure = x.CódUnidadeMedida,
+                Unit_Price = x.PreçoUnitário.Value,
+                Amount = x.ValorVenda.Value,
+                RegionCode20 = x.CódigoRegião,
+                FunctionAreaCode20 = x.CódigoÁreaFuncional,
+                ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade,               
+                No = x.TipoRecurso.ToString()                
+            }).ToList();
 
-        //    try
-        //    {
-        //        WSCreatePreInvoiceLine.CreateMultiple_Result result = await WS_Client.CreateMultipleAsync(NAVCreate);
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return null;
-        //    }
-        //}
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoiceLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCreatePreInvoiceLine.WsPreInvoiceLine_PortClient WS_Client = new WSCreatePreInvoiceLine.WsPreInvoiceLine_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSCreatePreInvoiceLine.CreateMultiple_Result result = await WS_Client.CreateMultipleAsync(NAVCreate);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
 
         private static WSCreatePreInvoiceLine.Type ConvertType (string type)
         {
@@ -119,7 +135,10 @@ namespace Hydra.Such.Data.NAV
             {
                 case "1":
                     return WSCreatePreInvoiceLine.Type.Item;
-
+                case "2":
+                    return WSCreatePreInvoiceLine.Type.Resource;
+                case "3":
+                    return WSCreatePreInvoiceLine.Type.G_L_Account;
                 default:
                     return WSCreatePreInvoiceLine.Type._blank_;
             }
