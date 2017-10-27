@@ -145,9 +145,9 @@
                 _create: function () {
                     debugger;;
 
-                    if (this._validateData()) {
-                        this._executeRequest("/ProcedimentosCcps/CreateProcedimento", this.data)
-                    }
+                    //if (this._validateData()) {
+                    //    this._executeRequest("/ProcedimentosCcps/CreateProcedimento", this.data)
+                    //}
 
                     if (this._validateData()) {
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
@@ -213,13 +213,13 @@
                 },
 
                 _createResponseProcessor: function () {
-                    //debugger;;
-                    //if (this.data.eReasonCode == 1) {
-                    //    this._isCreate = false;
-                    //    this._openToast("Folha de Hora criado com sucesso.");
-                    //} else {
-                    //    this._openToast(this.data.eMessage);
-                    //}
+                    debugger;;
+                    if (this.data.eReasonCode == 1) {
+                        this._isCreate = false;
+                        this._openToast("Procedimento criado com sucesso.");
+                    } else {
+                        this._openToast(this.data.eMessage);
+                    }
                 },
 
                 _responseValidatorProcessor: function (data) {

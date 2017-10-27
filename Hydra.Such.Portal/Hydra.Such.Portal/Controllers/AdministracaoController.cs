@@ -77,6 +77,8 @@ namespace Hydra.Such.Portal.Controllers
                     Id = x.Id,
                     Description = x.Descrição
                 }).ToList();
+
+                result.AllowedUserDimensions = DBUserDimensions.GetByUserId(data.IdUser).ToList();
             }
 
             return Json(result);
@@ -151,8 +153,7 @@ namespace Hydra.Such.Portal.Controllers
                     UtilizadorCriação = User.Identity.Name
                 });
             });
-
-
+            
             DBUserProfiles.DeleteAllFromUser(data.IdUser);
             data.UserProfiles.ForEach(x =>
             {
@@ -163,6 +164,10 @@ namespace Hydra.Such.Portal.Controllers
                     UtilizadorCriação = User.Identity.Name
                 });
             });
+            //Update AllowedUserDimemsions
+            DBUserDimensions.DeleteAllFromUser(data.IdUser);
+            DBUserDimensions.Create(data.IdUser, data.AllowedUserDimensions.ParseToDB());
+
             return Json(data);
         }
 
@@ -173,6 +178,9 @@ namespace Hydra.Such.Portal.Controllers
 
             //Remover os acessos os acessos
             DBUserAccesses.DeleteAllFromUser(data.IdUser);
+            
+            //Remover os acessos às dimensões
+            DBUserDimensions.DeleteAllFromUser(data.IdUser);
 
             UCObj.Ativo = false;
 

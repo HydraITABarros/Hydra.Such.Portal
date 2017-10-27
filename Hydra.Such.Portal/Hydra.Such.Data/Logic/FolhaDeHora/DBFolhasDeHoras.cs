@@ -127,10 +127,12 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         AreaText = x.Área.ToString(),
                         ProjectNo = x.NºProjeto,
                         EmployeeNo = x.NºEmpregado,
-                        DateDepartureTime = x.DataHoraPartida,
-                        DateDepartureTimeText = x.DataHoraPartida.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        DateTimeDeparture = x.DataHoraPartida,
+                        DateDepartureText = x.DataHoraPartida.Value.ToShortDateString(),
+                        TimeDepartureText = x.DataHoraPartida.Value.ToShortTimeString(),
                         DateTimeArrival = x.DataHoraChegada,
-                        DateTimeArrivalText = x.DataHoraChegada.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        DateArrivalText = x.DataHoraChegada.Value.ToShortDateString(),
+                        TimeArrivalText = x.DataHoraChegada.Value.ToShortTimeString(),
                         TypeDeslocation = x.TipoDeslocação,
                         TypeDeslocationText = x.TipoDeslocação.ToString(),
                         CodeTypeKms = x.CódigoTipoKmS,
@@ -141,13 +143,48 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         StatusText = x.Estado.ToString(),
                         CreatedBy = x.CriadoPor,
                         DateTimeCreation = x.DataHoraCriação,
-                        DateTimeCreationText = x.DataHoraCriação.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        DateCreationText = x.DataHoraCriação.Value.ToShortDateString(),
+                        TimeCreationText = x.DataHoraCriação.Value.ToShortTimeString(),
                         DateTimeLastState = x.DataHoraÚltimoEstado,
-                        DateTimeLastStateText = x.DataHoraÚltimoEstado.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
-                        UserCreation = x.UtilizadorCriação,
+                        DateLastStateText = x.DataHoraÚltimoEstado.Value.ToShortDateString(),
+                        TimeLastStateText = x.DataHoraÚltimoEstado.Value.ToShortTimeString(),
+                        UserCreation = x.CriadoPor,
                         DateTimeModification = x.DataHoraModificação,
-                        DateTimeModificationText = x.DataHoraModificação.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
-                        UserModification = x.UtilizadorModificação
+                        DateModificationText = x.DataHoraModificação.Value.ToShortDateString(),
+                        TimeModificationText = x.DataHoraModificação.Value.ToShortTimeString(),
+                        UserModification = x.UtilizadorModificação,
+                        EmployeeName = x.NomeEmpregado,
+                        CarRegistration = x.Matrícula,
+                        Finished = x.Terminada,
+                        FinishedText = x.Terminada.ToString(),
+                        FinishedBy = x.TerminadoPor,
+                        DateTimeFinished = x.DataHoraTerminado,
+                        DateFinishedText = x.DataHoraTerminado.Value.ToShortDateString(),
+                        TimeFinishedText = x.DataHoraTerminado.Value.ToShortTimeString(),
+                        Validated = x.Validado,
+                        ValidatedText = x.Validado.ToString(),
+                        PlannedScrolling = x.DeslocaçãoPlaneada,
+                        PlannedScrollingText = x.DeslocaçãoPlaneada.ToString(),
+                        Comments = x.Observações,
+                        Responsible1 = x.NºResponsável1,
+                        Responsible2 = x.NºResponsável2,
+                        Responsible3 = x.NºResponsável3,
+                        ValidatorsRHKM = x.ValidadoresRhKm,
+                        RegionCode = x.CódigoRegião,
+                        AreaCode = x.CódigoÁreaFuncional,
+                        CRESPCode = x.CódigoCentroResponsabilidade,
+                        Validator = x.Validador,
+                        DateTimeValidation = x.DataHoraValidação,
+                        DateValidationText = x.DataHoraValidação.Value.ToShortDateString(),
+                        TimeValidationText = x.DataHoraValidação.Value.ToShortTimeString(),
+                        IntegratorRH = x.IntegradorEmRh,
+                        DateTimeIntegrationRH = x.DataIntegraçãoEmRh,
+                        DateIntegrationRHText = x.DataIntegraçãoEmRh.Value.ToShortDateString(),
+                        TimeIntegrationRHText = x.DataIntegraçãoEmRh.Value.ToShortTimeString(),
+                        IntegratorRHKM = x.IntegradorEmRhKm,
+                        DateTimeIntegrationRHKM = x.DataIntegraçãoEmRhKm,
+                        DateIntegrationRHKMText = x.DataIntegraçãoEmRhKm.Value.ToShortDateString(),
+                        TimeIntegrationRHKMText = x.DataIntegraçãoEmRhKm.Value.ToShortTimeString()
                     }).ToList(); ;
                 }
             }
@@ -156,5 +193,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 return null;
             }
         }
+
+        #region PERCURSO
+        #endregion
     }
 }

@@ -91,6 +91,22 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetDimensions"
+                   last-response="{{DimensionData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetDimensionValues"
+                   id="dimensionValue_ajax"
+                   last-response="{{DimensionValueData}}"
+                   auto
+                   method="post"
+                   params='{"dimensionId": ""}'
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
         <h2 class="separator">Perfis Utilizadores</h2>
         <div class="row">
             <div class="col-lg-3">
@@ -134,7 +150,6 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
         <h2 class="separator">Acessos Utilizador</h2>
         <table class="table inlineForm">
             <tr>
@@ -261,6 +276,79 @@
             </vaadin-grid-column>
         </vaadin-grid>
 
+        <h2 class="separator">Acessos Dimensões</h2>
+        <table class="table inlineForm">
+            <tr>
+                <td width="20%">
+                    <vaadin-combo-box items="[[DimensionData]]" item-value-path="id" item-label-path="value" label="Dimensão" value="{{ddDimension}}"
+                        on-value-changed="_onDimensionChanged">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </td>
+                <td width="20%">
+                    <vaadin-combo-box items="[[DimensionValueData]]" item-value-path="id" item-label-path="value" label="Valor Dimensão" value="{{ddDimensionValue}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </td>
+                <td width="60%"><paper-button class="btnSave" raised on-tap="_createUserDimensionAccess">Criar</paper-button></td>
+            </tr>
+        </table>
+        <vaadin-grid id="gridAllowedUserDimensions" aria-label="gridAllowedUserDimensions" items="{{ data.allowedUserDimensions }}" class="grid">
+            <vaadin-grid-column width="20%">
+                <template class="header">
+                    Dimensão
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[DimensionData]]" item-value-path="id" item-label-path="value" value="{{item.dimension}}" on-value-changed="_onDimensionChanged">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="20%">
+                <template class="header">
+                    Valor Dimensão
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[DimensionValueData]]" item-value-path="id" item-label-path="value" value="{{item.dimensionValue}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="60%">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnRemove" raised on-tap="_onDeleteUserDimensionAccess">Eliminar</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
         <div class="marginSpace">
             @if (ViewBag.UserId == "0")
             {
@@ -272,7 +360,6 @@
                 <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
             }
         </div>
-
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
 
@@ -316,11 +403,22 @@
                         type: Boolean,
                         notify: true,
                         value: true
-                    }
-                },
+                    },
+                    ddDimension: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    ddDimensionValue: {
+                        type: Text,
+                        notify: true,
+                        value: ""
+                    },
+               },
                 ready: function () {
                     this.$.page_databound_ajax.body = JSON.stringify({ "IdUser": "@ViewBag.UserId" });
                     this.$.page_databound_ajax.generateRequest();
+
                 },
                 openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -413,7 +511,6 @@
 
                     this.$.gridUserProfiles.clearCache();
                 },
-
                 //User Accesses Functions
                 _createUserAccess: function () {
                     if (this.ddArea == "") {
@@ -439,8 +536,33 @@
 
                     this.$.gridUserAccesses.clearCache();
                 },
+                //User Accesses Functions
+                _createUserDimensionAccess: function () {
+                    if (this.ddDimension == "") {
+                        this.openToast("É obrigatório preencher a dimensão.");
+                    } else if (this.ddFeature == null) {
+                        this.openToast("É obrigatório preencher o valor dimensão.");
+                    } else {
+                        this.data.allowedUserDimensions.unshift({
+                            dimension: this.ddDimension,
+                            dimensionValue: this.ddDimensionValue
+                        });
+                        this.$.gridAllowedUserDimensions.clearCache();
+                    }
+                },
+                _onDimensionChanged: function (e) {
+                    if (e.detail.value != null && e.detail.value != "") {
+                        var dimensionId = e.detail.value; debugger;;
+                        this.$.dimensionValue_ajax.params = { "dimensionId": dimensionId };
+                        this.$.dimensionValue_ajax.generateRequest();
+                    }
+                },
+                _onDeleteUserDimensionAccess: function (e) {
+                    var index = this.data.allowedUserDimensions.indexOf(e.model.item);
+                    this.data.allowedUserDimensions.splice(index, 1);
 
-
+                    this.$.gridAllowedUserDimensions.clearCache();
+                },
             });
         });
     </script>

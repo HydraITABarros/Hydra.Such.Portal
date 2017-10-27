@@ -6,6 +6,21 @@ using System.Threading.Tasks;
 
 namespace Hydra.Such.Portal.Configurations
 {
+    public class EnumData
+    {
+        public EnumData()
+        { }
+
+        public EnumData(int id, string value)
+        {
+            Id = id;
+            Value = value;
+        }
+
+        public int Id { get; set; }
+        public string Value { get; set; }
+    }
+
     public class EnumerablesFixed
     {
         public static readonly List<EnumData> Areas = new List<EnumData>(){
@@ -702,21 +717,21 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
-        public static readonly List<EnumData> FolhaDeHoraCodeTypeKms = new List<EnumData>()
+        public static readonly List<EnumDataString> FolhaDeHoraCodeTypeKms = new List<EnumDataString>()
         {
-            new EnumData()
+            new EnumDataString()
             {
-                Id = 0,
+                Id = "KM",
                 Value = "Kilometros"
             },
-            new EnumData()
+            new EnumDataString()
             {
-                Id = 1,
+                Id = "KMC",
                 Value = "Kilometros (Coimbra)"
             },
-            new EnumData()
+            new EnumDataString()
             {
-                Id = 2,
+                Id = "KMP",
                 Value = "Kilometros (Porto)"
             }
         };
@@ -931,10 +946,17 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
         // zpgm.>
+
+        public static readonly List<EnumData> Dimension = new List<EnumData>() {
+            new EnumData(1, "Região"),
+            new EnumData(2, "Área Funcional"),
+            new EnumData(3, "Centro Responsabilidade")
+        };
     }
-    public class EnumData
+
+    public class EnumDataString
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Value { get; set; }
     }
 }

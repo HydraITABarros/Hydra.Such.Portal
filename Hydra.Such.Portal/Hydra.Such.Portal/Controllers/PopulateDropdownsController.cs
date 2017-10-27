@@ -115,7 +115,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetFolhaDeHoraCodeTypeKms()
         {
-            List<EnumData> result = EnumerablesFixed.FolhaDeHoraCodeTypeKms;
+            List<EnumDataString> result = EnumerablesFixed.FolhaDeHoraCodeTypeKms;
             return Json(result);
         }
 
@@ -343,6 +343,16 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult GetEmployees_FH()
+        {
+            List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
+            {
+                id = x.No,
+                value = x.No + " - " + x.Name,
+                extra = x.Name,
+            }).ToList();
+            return Json(result);
+        }
         #endregion
 
         #region TypeOptions
@@ -578,6 +588,26 @@ namespace Hydra.Such.Portal.Controllers
             return Json(CCPStates);
         }
         // zpgm.>
+        
+        [HttpPost]
+        public JsonResult GetDimensions()
+        {
+            List<EnumData> dimensions = EnumerablesFixed.Dimension;
+
+            return Json(dimensions);
+        }
+
+        [HttpPost]
+        public JsonResult GetDimensionValues(int dimensionId)
+        {
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, dimensionId)
+                .Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            return Json(result);
+        }
     }
 
     public class DDMessage
