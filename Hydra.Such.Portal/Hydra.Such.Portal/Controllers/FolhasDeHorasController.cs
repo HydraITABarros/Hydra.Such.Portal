@@ -343,42 +343,30 @@ namespace Hydra.Such.Portal.Controllers
         #region PERCURSO
 
         [HttpPost]
-        public static List<FolhaDeHoraPercursoListItemViewModel> PercursoGetAllByFolhaHoraNoToList(string FolhaHoraNo)
+        public JsonResult PercursoGetAllByFolhaHoraNoToList([FromBody] string FolhaHoraNo)
         {
             try
             {
-                using (var ctx = new SuchDBContext())
+                List<PercursosEAjudasCustoDespesasFolhaDeHorasListItemViewModel> result = DBPercursosEAjudasCustoDespesasFolhaDeHoras.GetAllByPercursoToList(FolhaHoraNo);
+
+                result.ForEach(x =>
                 {
-                    //return ctx.FolhasDeHoras.Where(x => x.Área == AreaId - 1).Select(x => new FolhaDeHoraListItemViewModel()
-                    //return ctx.PercursosEAjudasCustoDespesasFolhaDeHoras.Select(x => x.NºFolhaDeHoras == FolhaHoraNo).Select(x => new FolhaDeHoraPercursoListItemViewModel()
-                    return ctx.PercursosEAjudasCustoDespesasFolhaDeHoras.Select(x => new FolhaDeHoraPercursoListItemViewModel()
-                    {
-                        FolhaDeHorasNo = x.NºFolhaDeHoras,
-                        CostType = x.TipoCusto,
-                        LineNo = x.NºLinha,
-                        Description = x.Descrição,
-                        Source = x.Origem,
-                        Destiny = x.Destino,
-                        DateTravel = x.DataViagem,
-                        Distance = Convert.ToDecimal(x.Distância),
-                        Amount = Convert.ToDecimal(x.Quantidade),
-                        UnitCost = Convert.ToDecimal(x.CustoUnitário),
-                        TotalCost = Convert.ToDecimal(x.CustoTotal),
-                        UnitPrice = Convert.ToDecimal(x.PreçoUnitário),
-                        Justification = x.Justificação,
-                        Payroll = x.RúbricaSalarial,
-                        DateTimeCreation = x.DataHoraCriação,
-                        UserCreation = x.UtilizadorCriação,
-                        DateTimeModification = x.DataHoraModificação,
-                        UserModification = x.UtilizadorModificação
-                    }).ToList();
-                }
+                    //x.AreaText = EnumerablesFixed.Areas.Where(y => y.Id == x.Area).FirstOrDefault().Value;
+                    //x.TypeDeslocationText = EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == x.TypeDeslocation).FirstOrDefault().Value;
+                    //if (x.DisplacementOutsideCity.Value) x.DisplacementOutsideCityText = "Sim"; else x.DisplacementOutsideCityText = "Não";
+                    //x.StatusText = EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == x.Status).FirstOrDefault().Value;
+                    //x.Validators = DBUserConfigurations.GetById(x.Validators).Nome;
+                });
+
+                return Json(result);
             }
             catch (Exception ex)
             {
                 return null;
             }
         }
+
+
 
         #endregion
     }
