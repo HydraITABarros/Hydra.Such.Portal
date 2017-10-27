@@ -8,11 +8,11 @@ namespace Hydra.Such.Data.Logic.CCP
 {
     public static class DBProcedimentosCCP
     {
-        private static SuchDBContext context = new SuchDBContext();
 
         #region parse ProcedimentosCcp
         public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoTypeToList(int type)
         {
+            SuchDBContext context = new SuchDBContext();
             try
             {
                 return context.ProcedimentosCcp.Where(p => p.TipoProcedimento == type).ToList();
@@ -25,6 +25,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
         public static List<ProcedimentosCcp> GetAllProcedimentosToList()
         {
+            SuchDBContext context = new SuchDBContext();
             try
             {
                 return context.ProcedimentosCcp.ToList();
@@ -53,8 +54,9 @@ namespace Hydra.Such.Data.Logic.CCP
         // zpgm - two overloaded methods to create ProcedimentosCcp: 
         //      the first uses a ProcedimentoCCPView object and returns aProcedimentosCcp object
         //      the second uses a ProcedimentosCcp object and returns an object of the same type
-        public static ProcedimentosCcp CreateProcedimento(ProcedimentoCCPView procedimento)
+        public static ProcedimentosCcp __Create(ProcedimentoCCPView procedimento)
         {
+            SuchDBContext context = new SuchDBContext();
             ProcedimentosCcp proc = CCPFunctions.CastProcCcpViewToProcCcp(procedimento);
 
             try
@@ -113,12 +115,12 @@ namespace Hydra.Such.Data.Logic.CCP
 
         }
 
-        public static ProcedimentosCcp CreateProcedimento(ProcedimentosCcp procedimento)
+        public static ProcedimentosCcp __Create(ProcedimentosCcp procedimento)
         {
             try
             {
                 ProcedimentoCCPView ProcCCPView = CCPFunctions.CastProcCcpToProcCcpView(procedimento);
-                ProcedimentosCcp Proc =  CreateProcedimento(ProcCCPView);
+                ProcedimentosCcp Proc =  __Create(ProcCCPView);
 
                 procedimento.Nº = Proc.Nº;
                 procedimento.DataHoraCriação = Proc.DataHoraCriação;
@@ -133,8 +135,9 @@ namespace Hydra.Such.Data.Logic.CCP
             
         }
 
-        public static ProcedimentosCcp UpdateProcedimento(ProcedimentoCCPView procedimento)
+        public static ProcedimentosCcp __Update(ProcedimentoCCPView procedimento)
         {
+            SuchDBContext context = new SuchDBContext();
             try
             {
                 ProcedimentosCcp proc = CCPFunctions.CastProcCcpViewToProcCcp(procedimento);
