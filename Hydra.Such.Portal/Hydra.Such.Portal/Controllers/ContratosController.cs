@@ -572,7 +572,7 @@ namespace Hydra.Such.Portal.Controllers
                     RegionCode = item.CódigoRegião,
                     FunctionalAreaCode = item.CódigoÁreaFuncional,
                     ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
-                    RegisterDate = item.DataPróximaFatura
+                    RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : ""
                 });
             }
 
@@ -618,11 +618,11 @@ namespace Hydra.Such.Portal.Controllers
                             contractVal = Math.Round((NumMeses * contractLinesList.Sum(x => x.PreçoUnitário.Value)), 2);
                         }
 
-                        List<NAVSalesInvoiceLinesViewModel> salesList = DBNAV2017SalesInvoiceLine.GetSalesInvoiceLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.DataInicial.ToString(), item.DataExpiração.Value.ToString());
-                        Decimal invoicePeriod = salesList.Sum(x => x.Amount);
+                        List<NAVSalesInvoiceLinesViewModel> salesList = DBNAV2017SalesInvoiceLine.GetSalesInvoiceLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.DataInicial.Value, item.DataExpiração.Value);
+                        Decimal invoicePeriod = salesList != null ? salesList.Sum(x => x.Amount) : 0;
 
-                        List<NAVSalesCrMemoLinesViewModel> crMemo = DBNAV2017SalesCrMemo.GetSalesCrMemoLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.DataInicial.ToString(), item.DataExpiração.Value.ToString());
-                        Decimal creditPeriod = crMemo.Sum(x => x.Amount);
+                        List<NAVSalesCrMemoLinesViewModel> crMemo = DBNAV2017SalesCrMemo.GetSalesCrMemoLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.DataInicial.Value, item.DataExpiração.Value);
+                        Decimal creditPeriod = crMemo != null ? crMemo.Sum(x => x.Amount) : 0;
 
                         AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
                         {
