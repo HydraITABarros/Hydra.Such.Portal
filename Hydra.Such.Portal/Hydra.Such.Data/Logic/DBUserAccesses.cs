@@ -119,19 +119,65 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static UserAccessesViewModel GetByUserAreaFunctionality(string UserId, int AreaId, int FeatureId)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ConfigUtilizadores CUser = DBUserConfigurations.GetById(UserId);
+                    if (CUser.Administrador)
+                    {
+                        return new UserAccessesViewModel()
+                        {
+                            IdUser = UserId,
+                            Area = AreaId,
+                            Feature = FeatureId,
+                            Create = true,
+                            Read = true,
+                            Update = true,
+                            Delete = true
+                        };
+                    }
+                    else
+                    {
+                        return ParseToViewModel(ctx.AcessosUtilizador.Where(x => x.IdUtilizador == UserId).Where(x => x.Área == AreaId && x.Funcionalidade == FeatureId).FirstOrDefault());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
 
         public static UserAccessesViewModel ParseToViewModel(AcessosUtilizador x)
         {
-            return new UserAccessesViewModel()
+            if (x == null)
             {
-                IdUser = x.IdUtilizador,
-                Area = x.Área,
-                Feature = x.Funcionalidade,
-                Create = x.Inserção,
-                Read = x.Leitura,
-                Update = x.Modificação,
-                Delete = x.Eliminação
-            };
+                return new UserAccessesViewModel()
+                {
+                    Create = false,
+                    Read = false,
+                    Update = false,
+                    Delete = false
+                };
+            }
+            else
+            {
+                return new UserAccessesViewModel()
+                {
+                    IdUser = x.IdUtilizador,
+                    Area = x.Área,
+                    Feature = x.Funcionalidade,
+                    Create = x.Inserção,
+                    Read = x.Leitura,
+                    Update = x.Modificação,
+                    Delete = x.Eliminação
+                };
+            }
+            
         }
     }
 }
