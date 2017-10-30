@@ -451,7 +451,7 @@ namespace Hydra.Such.Portal.Controllers
                     PreçoTotal = x.TotalPrice,
                     Faturável = x.Billable,
                     Registado = false,
-                    FaturaANºCliente = x.InvoiceToClientNo
+                    FaturaANºCliente = x.InvoiceToClientNo,
                 };
 
                 if (x.LineNo > 0)
@@ -645,6 +645,7 @@ namespace Hydra.Such.Portal.Controllers
         #region InvoiceAutorization
         public IActionResult AutorizacaoFaturacao(String id)
         {
+
             return View();
         }
 
@@ -679,7 +680,7 @@ namespace Hydra.Such.Portal.Controllers
                     CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
                     ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
                     ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
-                }).ToList();
+                }).OrderBy(x => x.ClientName).ToList();
 
                 return Json(result);
             }
@@ -701,40 +702,70 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     foreach (var lines in data)
                     {
-                        if (num_cliente != lines.InvoiceToClientNo)
+                        try
                         {
-                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(lines, _configws);
-                            TCreatePreInvoice.Wait();
-                            if (!TCreatePreInvoice.IsCompletedSuccessfully)
+                            if (num_cliente != lines.InvoiceToClientNo)
                             {
-                                lines.eReasonCode = 3;
-                                lines.eMessage = "Ocorreu um erro ao criar o Cabeçalho da Fatura no NAV.";
+                                try
+                                {
+                                    PKey = "";
+                                    Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(lines, _configws);
+                                    TCreatePreInvoice.Wait();
+                                    if (!TCreatePreInvoice.IsCompletedSuccessfully)
+                                    {
+                                        lines.eReasonCode = 3;
+                                        lines.eMessage = "Ocorreu um erro ao criar o Cabeçalho da Fatura no NAV.";
+                                        num_cliente = lines.InvoiceToClientNo;
+                                        PKey = "";
+                                    }
+                                    else
+                                    {
+                                        num_cliente = lines.InvoiceToClientNo;
+                                        PKey = TCreatePreInvoice.Result.WSPreInvoice.No;
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                    PKey = "";
+                                    num_cliente = lines.InvoiceToClientNo;
+                                    throw;
+                                }
+
+                            }
+                            
+                            if (!String.IsNullOrEmpty(PKey) && PKey != "error")
+                            {
+                                try
+                                {
+                                    Task<WSCreatePreInvoiceLine.Create_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLine(lines, _configws, PKey);
+                                    TCreatePreInvoiceLine.Wait();
+
+                                    if (TCreatePreInvoiceLine.IsCompletedSuccessfully && !String.IsNullOrEmpty(TCreatePreInvoiceLine.Result.WsPreInvoiceLine.Key))
+                                    {
+                                        num_cliente = lines.InvoiceToClientNo;
+
+                                        //update to Invoiced = true
+                                        DiárioDeProjeto upDate = DBProjectDiary.GetByLineNo(lines.LineNo, User.Identity.Name).FirstOrDefault();
+                                        upDate.Faturada = true;
+                                        DBProjectDiary.Update(upDate);
+
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    num_cliente = lines.InvoiceToClientNo;
+                                    PKey = "error";
+                                }
                             }
                             else
                             {
                                 num_cliente = lines.InvoiceToClientNo;
-                                PKey = TCreatePreInvoice.Result.WSPreInvoice.No;
                             }
                         }
-
-                        Task<WSCreatePreInvoiceLine.Create_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLine(lines, _configws, PKey);
-                        TCreatePreInvoiceLine.Wait();
-                        if (!TCreatePreInvoiceLine.IsCompletedSuccessfully || String.IsNullOrEmpty(TCreatePreInvoiceLine.Result.WsPreInvoiceLine.Key))
+                        catch (Exception ex)
                         {
-                            lines.eReasonCode = 2;
-                            lines.eMessage = "Ocorreu um erro ao criar o Linhas de Fatura no NAV.";
-                        }
-                        else
-                        {
+                            PKey = "error";
                             num_cliente = lines.InvoiceToClientNo;
-
-                            //update to Invoiced = true
-                            DiárioDeProjeto upDate = DBProjectDiary.GetByLineNo(lines.LineNo, User.Identity.Name).FirstOrDefault();
-                            upDate.Registado = true;
-                            DBProjectDiary.Update(upDate);
-
-                            lines.eReasonCode = 1;
-                            lines.eMessage = "Linhas de Fatura criadas com sucesso";
                         }
                     }
                 }
@@ -747,7 +778,11 @@ namespace Hydra.Such.Portal.Controllers
                 dataerror.eMessage = "Ocorreu um erro ao criar Pré Fatura";
                 return Json(dataerror);
             }
-            return Json(data);
+
+            ProjectDiaryViewModel message = new ProjectDiaryViewModel();
+            message.eReasonCode = 1;
+            message.eMessage = "Linhas de Fatura criadas com sucesso";
+            return Json(message);
         }
         #endregion InvoiceAutorization
 
