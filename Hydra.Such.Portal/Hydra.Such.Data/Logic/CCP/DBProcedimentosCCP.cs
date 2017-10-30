@@ -154,6 +154,23 @@ namespace Hydra.Such.Data.Logic.CCP
             }
 
         }
+
+        public static bool __Delete(string procedimentoNo)
+        {
+            SuchDBContext context = new SuchDBContext();
+
+            try
+            {
+                context.ProcedimentosCcp.RemoveRange(context.ProcedimentosCcp.Where(p => p.Nº == procedimentoNo));
+                context.SaveChanges();
+
+                return true;
+            }
+            catch(Exception e)
+            {
+                return false;
+            }
+        }
         #endregion
 
         #region parse ProcedimentosCCPView
