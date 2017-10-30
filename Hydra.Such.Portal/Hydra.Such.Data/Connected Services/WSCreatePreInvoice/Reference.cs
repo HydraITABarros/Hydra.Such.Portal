@@ -59,10 +59,6 @@ namespace WSCreatePreInvoice
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wspreinvoice:Delete", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSCreatePreInvoice.Delete_Result> DeleteAsync(WSCreatePreInvoice.Delete request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wspreinvoice:Delete_WS_Pre_Invoice_Line", ReplyAction="*")]
-        [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<WSCreatePreInvoice.Delete_WS_Pre_Invoice_Line_Result> Delete_WS_Pre_Invoice_LineAsync(WSCreatePreInvoice.Delete_WS_Pre_Invoice_Line request);
     }
     
     /// <remarks/>
@@ -138,7 +134,11 @@ namespace WSCreatePreInvoice
         
         private string shipping_No_SeriesField;
         
-        private WS_Pre_Invoice_Line[] wS_Pre_Invoice_LineField;
+        private string regionCode20Field;
+        
+        private string functionAreaCode20Field;
+        
+        private string responsabilityCenterCode20Field;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
@@ -603,660 +603,46 @@ namespace WSCreatePreInvoice
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlArrayAttribute(Order=28)]
-        [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WS_Pre_Invoice_Line[] WS_Pre_Invoice_Line
+        [System.Xml.Serialization.XmlElementAttribute(Order=28)]
+        public string RegionCode20
         {
             get
             {
-                return this.wS_Pre_Invoice_LineField;
+                return this.regionCode20Field;
             }
             set
             {
-                this.wS_Pre_Invoice_LineField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice")]
-    public partial class WS_Pre_Invoice_Line
-    {
-        
-        private string keyField;
-        
-        private string sell_to_Customer_NoField;
-        
-        private string document_NoField;
-        
-        private Type typeField;
-        
-        private bool typeFieldSpecified;
-        
-        private string noField;
-        
-        private string location_CodeField;
-        
-        private string posting_GroupField;
-        
-        private System.DateTime shipment_DateField;
-        
-        private bool shipment_DateFieldSpecified;
-        
-        private string descriptionField;
-        
-        private string description_2Field;
-        
-        private string unit_of_MeasureField;
-        
-        private decimal quantityField;
-        
-        private bool quantityFieldSpecified;
-        
-        private decimal outstanding_QuantityField;
-        
-        private bool outstanding_QuantityFieldSpecified;
-        
-        private decimal qty_to_InvoiceField;
-        
-        private bool qty_to_InvoiceFieldSpecified;
-        
-        private decimal qty_to_ShipField;
-        
-        private bool qty_to_ShipFieldSpecified;
-        
-        private decimal unit_PriceField;
-        
-        private bool unit_PriceFieldSpecified;
-        
-        private decimal unit_Cost_LCYField;
-        
-        private bool unit_Cost_LCYFieldSpecified;
-        
-        private decimal vAT_PercentField;
-        
-        private bool vAT_PercentFieldSpecified;
-        
-        private decimal line_Discount_PercentField;
-        
-        private bool line_Discount_PercentFieldSpecified;
-        
-        private decimal line_Discount_AmountField;
-        
-        private bool line_Discount_AmountFieldSpecified;
-        
-        private decimal amountField;
-        
-        private bool amountFieldSpecified;
-        
-        private decimal amount_Including_VATField;
-        
-        private bool amount_Including_VATFieldSpecified;
-        
-        private bool allow_Invoice_DiscField;
-        
-        private bool allow_Invoice_DiscFieldSpecified;
-        
-        private string job_NoField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public string Key
-        {
-            get
-            {
-                return this.keyField;
-            }
-            set
-            {
-                this.keyField = value;
+                this.regionCode20Field = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
-        public string Sell_to_Customer_No
+        [System.Xml.Serialization.XmlElementAttribute(Order=29)]
+        public string FunctionAreaCode20
         {
             get
             {
-                return this.sell_to_Customer_NoField;
+                return this.functionAreaCode20Field;
             }
             set
             {
-                this.sell_to_Customer_NoField = value;
+                this.functionAreaCode20Field = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
-        public string Document_No
+        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
+        public string ResponsabilityCenterCode20
         {
             get
             {
-                return this.document_NoField;
+                return this.responsabilityCenterCode20Field;
             }
             set
             {
-                this.document_NoField = value;
+                this.responsabilityCenterCode20Field = value;
             }
         }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
-        public Type Type
-        {
-            get
-            {
-                return this.typeField;
-            }
-            set
-            {
-                this.typeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool TypeSpecified
-        {
-            get
-            {
-                return this.typeFieldSpecified;
-            }
-            set
-            {
-                this.typeFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
-        public string No
-        {
-            get
-            {
-                return this.noField;
-            }
-            set
-            {
-                this.noField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
-        public string Location_Code
-        {
-            get
-            {
-                return this.location_CodeField;
-            }
-            set
-            {
-                this.location_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
-        public string Posting_Group
-        {
-            get
-            {
-                return this.posting_GroupField;
-            }
-            set
-            {
-                this.posting_GroupField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=7)]
-        public System.DateTime Shipment_Date
-        {
-            get
-            {
-                return this.shipment_DateField;
-            }
-            set
-            {
-                this.shipment_DateField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Shipment_DateSpecified
-        {
-            get
-            {
-                return this.shipment_DateFieldSpecified;
-            }
-            set
-            {
-                this.shipment_DateFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
-        public string Description
-        {
-            get
-            {
-                return this.descriptionField;
-            }
-            set
-            {
-                this.descriptionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
-        public string Description_2
-        {
-            get
-            {
-                return this.description_2Field;
-            }
-            set
-            {
-                this.description_2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
-        public string Unit_of_Measure
-        {
-            get
-            {
-                return this.unit_of_MeasureField;
-            }
-            set
-            {
-                this.unit_of_MeasureField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
-        public decimal Quantity
-        {
-            get
-            {
-                return this.quantityField;
-            }
-            set
-            {
-                this.quantityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool QuantitySpecified
-        {
-            get
-            {
-                return this.quantityFieldSpecified;
-            }
-            set
-            {
-                this.quantityFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
-        public decimal Outstanding_Quantity
-        {
-            get
-            {
-                return this.outstanding_QuantityField;
-            }
-            set
-            {
-                this.outstanding_QuantityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Outstanding_QuantitySpecified
-        {
-            get
-            {
-                return this.outstanding_QuantityFieldSpecified;
-            }
-            set
-            {
-                this.outstanding_QuantityFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
-        public decimal Qty_to_Invoice
-        {
-            get
-            {
-                return this.qty_to_InvoiceField;
-            }
-            set
-            {
-                this.qty_to_InvoiceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Qty_to_InvoiceSpecified
-        {
-            get
-            {
-                return this.qty_to_InvoiceFieldSpecified;
-            }
-            set
-            {
-                this.qty_to_InvoiceFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
-        public decimal Qty_to_Ship
-        {
-            get
-            {
-                return this.qty_to_ShipField;
-            }
-            set
-            {
-                this.qty_to_ShipField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Qty_to_ShipSpecified
-        {
-            get
-            {
-                return this.qty_to_ShipFieldSpecified;
-            }
-            set
-            {
-                this.qty_to_ShipFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
-        public decimal Unit_Price
-        {
-            get
-            {
-                return this.unit_PriceField;
-            }
-            set
-            {
-                this.unit_PriceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Unit_PriceSpecified
-        {
-            get
-            {
-                return this.unit_PriceFieldSpecified;
-            }
-            set
-            {
-                this.unit_PriceFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
-        public decimal Unit_Cost_LCY
-        {
-            get
-            {
-                return this.unit_Cost_LCYField;
-            }
-            set
-            {
-                this.unit_Cost_LCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Unit_Cost_LCYSpecified
-        {
-            get
-            {
-                return this.unit_Cost_LCYFieldSpecified;
-            }
-            set
-            {
-                this.unit_Cost_LCYFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
-        public decimal VAT_Percent
-        {
-            get
-            {
-                return this.vAT_PercentField;
-            }
-            set
-            {
-                this.vAT_PercentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool VAT_PercentSpecified
-        {
-            get
-            {
-                return this.vAT_PercentFieldSpecified;
-            }
-            set
-            {
-                this.vAT_PercentFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
-        public decimal Line_Discount_Percent
-        {
-            get
-            {
-                return this.line_Discount_PercentField;
-            }
-            set
-            {
-                this.line_Discount_PercentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Line_Discount_PercentSpecified
-        {
-            get
-            {
-                return this.line_Discount_PercentFieldSpecified;
-            }
-            set
-            {
-                this.line_Discount_PercentFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
-        public decimal Line_Discount_Amount
-        {
-            get
-            {
-                return this.line_Discount_AmountField;
-            }
-            set
-            {
-                this.line_Discount_AmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Line_Discount_AmountSpecified
-        {
-            get
-            {
-                return this.line_Discount_AmountFieldSpecified;
-            }
-            set
-            {
-                this.line_Discount_AmountFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
-        public decimal Amount
-        {
-            get
-            {
-                return this.amountField;
-            }
-            set
-            {
-                this.amountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool AmountSpecified
-        {
-            get
-            {
-                return this.amountFieldSpecified;
-            }
-            set
-            {
-                this.amountFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
-        public decimal Amount_Including_VAT
-        {
-            get
-            {
-                return this.amount_Including_VATField;
-            }
-            set
-            {
-                this.amount_Including_VATField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Amount_Including_VATSpecified
-        {
-            get
-            {
-                return this.amount_Including_VATFieldSpecified;
-            }
-            set
-            {
-                this.amount_Including_VATFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
-        public bool Allow_Invoice_Disc
-        {
-            get
-            {
-                return this.allow_Invoice_DiscField;
-            }
-            set
-            {
-                this.allow_Invoice_DiscField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Allow_Invoice_DiscSpecified
-        {
-            get
-            {
-                return this.allow_Invoice_DiscFieldSpecified;
-            }
-            set
-            {
-                this.allow_Invoice_DiscFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
-        public string Job_No
-        {
-            get
-            {
-                return this.job_NoField;
-            }
-            set
-            {
-                this.job_NoField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice")]
-    public enum Type
-    {
-        
-        /// <remarks/>
-        _blank_,
-        
-        /// <remarks/>
-        G_L_Account,
-        
-        /// <remarks/>
-        Item,
-        
-        /// <remarks/>
-        Resource,
-        
-        /// <remarks/>
-        Fixed_Asset,
-        
-        /// <remarks/>
-        Charge_Item,
     }
     
     /// <remarks/>
@@ -1385,6 +771,15 @@ namespace WSCreatePreInvoice
         
         /// <remarks/>
         Shipping_No_Series,
+        
+        /// <remarks/>
+        RegionCode20,
+        
+        /// <remarks/>
+        FunctionAreaCode20,
+        
+        /// <remarks/>
+        ResponsabilityCenterCode20,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -1793,46 +1188,6 @@ namespace WSCreatePreInvoice
         }
     }
     
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_WS_Pre_Invoice_Line", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    public partial class Delete_WS_Pre_Invoice_Line
-    {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
-        public string WS_Pre_Invoice_Line_Key;
-        
-        public Delete_WS_Pre_Invoice_Line()
-        {
-        }
-        
-        public Delete_WS_Pre_Invoice_Line(string WS_Pre_Invoice_Line_Key)
-        {
-            this.WS_Pre_Invoice_Line_Key = WS_Pre_Invoice_Line_Key;
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_WS_Pre_Invoice_Line_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", IsWrapped=true)]
-    public partial class Delete_WS_Pre_Invoice_Line_Result
-    {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="Delete_WS_Pre_Invoice_Line_Result", Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoice", Order=0)]
-        public bool Delete_WS_Pre_Invoice_Line_Result1;
-        
-        public Delete_WS_Pre_Invoice_Line_Result()
-        {
-        }
-        
-        public Delete_WS_Pre_Invoice_Line_Result(bool Delete_WS_Pre_Invoice_Line_Result1)
-        {
-            this.Delete_WS_Pre_Invoice_Line_Result1 = Delete_WS_Pre_Invoice_Line_Result1;
-        }
-    }
-    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     public interface WSPreInvoice_PortChannel : WSCreatePreInvoice.WSPreInvoice_Port, System.ServiceModel.IClientChannel
     {
@@ -1983,19 +1338,6 @@ namespace WSCreatePreInvoice
             return ((WSCreatePreInvoice.WSPreInvoice_Port)(this)).DeleteAsync(inValue);
         }
         
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSCreatePreInvoice.Delete_WS_Pre_Invoice_Line_Result> WSCreatePreInvoice.WSPreInvoice_Port.Delete_WS_Pre_Invoice_LineAsync(WSCreatePreInvoice.Delete_WS_Pre_Invoice_Line request)
-        {
-            return base.Channel.Delete_WS_Pre_Invoice_LineAsync(request);
-        }
-        
-        public System.Threading.Tasks.Task<WSCreatePreInvoice.Delete_WS_Pre_Invoice_Line_Result> Delete_WS_Pre_Invoice_LineAsync(string WS_Pre_Invoice_Line_Key)
-        {
-            WSCreatePreInvoice.Delete_WS_Pre_Invoice_Line inValue = new WSCreatePreInvoice.Delete_WS_Pre_Invoice_Line();
-            inValue.WS_Pre_Invoice_Line_Key = WS_Pre_Invoice_Line_Key;
-            return ((WSCreatePreInvoice.WSPreInvoice_Port)(this)).Delete_WS_Pre_Invoice_LineAsync(inValue);
-        }
-        
         public virtual System.Threading.Tasks.Task OpenAsync()
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
@@ -2024,7 +1366,8 @@ namespace WSCreatePreInvoice
         {
             if ((endpointConfiguration == EndpointConfiguration.WSPreInvoice_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:7047/DynamicsNAV100/WS/CRONUS Portugal Ltd./Page/WSPreInvoice");
+                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:7047/DynamicsNAV100/WS/CRONUS Portugal Ltd./Page/WSPreInvoice?" +
+                        "wsdl");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

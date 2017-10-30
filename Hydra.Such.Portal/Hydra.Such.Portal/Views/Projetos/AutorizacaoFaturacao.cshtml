@@ -105,6 +105,27 @@
                     {{item.projectNo}}
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="invoiceToClientNo">Fatura-a Nº Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="invoiceToClientNo" />
+                </template>
+                <template>
+                    {{item.invoiceToClientNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%">
+                <template class="header">
+                    <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientName" />
+                </template>
+                <template>
+                    {{item.clientName}}
+                </template>
+            </vaadin-grid-column>
+            
             <vaadin-grid-column width="15%">
                 <template class="header">
                     <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>

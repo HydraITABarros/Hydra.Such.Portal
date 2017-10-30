@@ -78,10 +78,10 @@ namespace Hydra.Such.Portal.Controllers
                         ProjectNo = cFolhaDeHora.NºProjeto,
                         EmployeeNo = cFolhaDeHora.NºEmpregado,
                         DateTimeDeparture = cFolhaDeHora.DataHoraPartida,
-                        DateDepartureText = cFolhaDeHora.DataHoraPartida.Value.ToString("yyyy-MM-dd"),
+                        DateDepartureText = cFolhaDeHora.DataHoraPartida == null ? String.Empty : cFolhaDeHora.DataHoraPartida.Value.ToString("yyyy-MM-dd"),
                         TimeDepartureText = cFolhaDeHora.DataHoraPartida.Value.ToShortTimeString(),
                         DateTimeArrival = cFolhaDeHora.DataHoraChegada,
-                        DateArrivalText = cFolhaDeHora.DataHoraChegada.Value.ToString("yyyy-MM-dd"),
+                        DateArrivalText = cFolhaDeHora.DataHoraChegada == null ? String.Empty : cFolhaDeHora.DataHoraChegada.Value.ToString("yyyy-MM-dd"),
                         TimeArrivalText = cFolhaDeHora.DataHoraChegada.Value.ToShortTimeString(),
                         TypeDeslocation = cFolhaDeHora.TipoDeslocação,
                         TypeDeslocationText = cFolhaDeHora.TipoDeslocação.ToString(),
@@ -93,14 +93,14 @@ namespace Hydra.Such.Portal.Controllers
                         StatusText = cFolhaDeHora.Estado.ToString(),
                         CreatedBy = cFolhaDeHora.CriadoPor,
                         DateTimeCreation = cFolhaDeHora.DataHoraCriação,
-                        DateCreationText = cFolhaDeHora.DataHoraCriação.Value.ToString("yyyy-MM-dd"),
+                        DateCreationText = cFolhaDeHora.DataHoraCriação == null ? String.Empty : cFolhaDeHora.DataHoraCriação.Value.ToString("yyyy-MM-dd"),
                         TimeCreationText = cFolhaDeHora.DataHoraCriação.Value.ToShortTimeString(),
                         DateTimeLastState = cFolhaDeHora.DataHoraÚltimoEstado,
-                        DateLastStateText = cFolhaDeHora.DataHoraÚltimoEstado.Value.ToString("yyyy-MM-dd"),
+                        DateLastStateText = cFolhaDeHora.DataHoraÚltimoEstado == null ? String.Empty : cFolhaDeHora.DataHoraÚltimoEstado.Value.ToString("yyyy-MM-dd"),
                         TimeLastStateText = cFolhaDeHora.DataHoraÚltimoEstado.Value.ToShortTimeString(),
                         UserCreation = cFolhaDeHora.CriadoPor,
                         DateTimeModification = cFolhaDeHora.DataHoraModificação,
-                        DateModificationText = cFolhaDeHora.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
+                        DateModificationText = cFolhaDeHora.DataHoraModificação == null ? String.Empty : cFolhaDeHora.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
                         TimeModificationText = cFolhaDeHora.DataHoraModificação.Value.ToShortTimeString(),
                         UserModification = cFolhaDeHora.UtilizadorModificação,
                         EmployeeName = cFolhaDeHora.NomeEmpregado,
@@ -109,7 +109,7 @@ namespace Hydra.Such.Portal.Controllers
                         FinishedText = cFolhaDeHora.Terminada.ToString(),
                         FinishedBy = cFolhaDeHora.TerminadoPor,
                         DateTimeFinished = cFolhaDeHora.DataHoraTerminado,
-                        DateFinishedText = cFolhaDeHora.DataHoraTerminado.Value.ToString("yyyy-MM-dd"),
+                        DateFinishedText = cFolhaDeHora.DataHoraTerminado == null ? String.Empty : cFolhaDeHora.DataHoraTerminado.Value.ToString("yyyy-MM-dd"),
                         TimeFinishedText = cFolhaDeHora.DataHoraTerminado.Value.ToShortTimeString(),
                         Validated = cFolhaDeHora.Validado,
                         ValidatedText = cFolhaDeHora.Validado.ToString(),
@@ -125,15 +125,15 @@ namespace Hydra.Such.Portal.Controllers
                         CRESPCode = cFolhaDeHora.CódigoCentroResponsabilidade,
                         Validator = cFolhaDeHora.Validador,
                         DateTimeValidation = cFolhaDeHora.DataHoraValidação,
-                        DateValidationText = cFolhaDeHora.DataHoraValidação.Value.ToString("yyyy-MM-dd"),
+                        DateValidationText = cFolhaDeHora.DataHoraValidação == null ? String.Empty : cFolhaDeHora.DataHoraValidação.Value.ToString("yyyy-MM-dd"),
                         TimeValidationText = cFolhaDeHora.DataHoraValidação.Value.ToShortTimeString(),
                         IntegratorRH = cFolhaDeHora.IntegradorEmRh,
                         DateTimeIntegrationRH = cFolhaDeHora.DataIntegraçãoEmRh,
-                        DateIntegrationRHText = cFolhaDeHora.DataIntegraçãoEmRh.Value.ToString("yyyy-MM-dd"),
+                        DateIntegrationRHText = cFolhaDeHora.DataIntegraçãoEmRh == null ? String.Empty : cFolhaDeHora.DataIntegraçãoEmRh.Value.ToString("yyyy-MM-dd"),
                         TimeIntegrationRHText = cFolhaDeHora.DataIntegraçãoEmRh.Value.ToShortTimeString(),
                         IntegratorRHKM = cFolhaDeHora.IntegradorEmRhKm,
                         DateTimeIntegrationRHKM = cFolhaDeHora.DataIntegraçãoEmRhKm,
-                        DateIntegrationRHKMText = cFolhaDeHora.DataIntegraçãoEmRhKm.Value.ToString("yyyy-MM-dd"),
+                        DateIntegrationRHKMText = cFolhaDeHora.DataIntegraçãoEmRhKm == null ? String.Empty : cFolhaDeHora.DataIntegraçãoEmRhKm.Value.ToString("yyyy-MM-dd"),
                         TimeIntegrationRHKMText = cFolhaDeHora.DataIntegraçãoEmRhKm.Value.ToShortTimeString()
                     };
 
@@ -337,6 +337,36 @@ namespace Hydra.Such.Portal.Controllers
             ViewBag.FolhaDeHoraNo = FolhaDeHoraNo;
             return View();
         }
+
+        #endregion
+
+        #region PERCURSO
+
+        [HttpPost]
+        public JsonResult PercursoGetAllByFolhaHoraNoToList([FromBody] string FolhaHoraNo)
+        {
+            try
+            {
+                List<PercursosEAjudasCustoDespesasFolhaDeHorasListItemViewModel> result = DBPercursosEAjudasCustoDespesasFolhaDeHoras.GetAllByPercursoToList(FolhaHoraNo);
+
+                result.ForEach(x =>
+                {
+                    //x.AreaText = EnumerablesFixed.Areas.Where(y => y.Id == x.Area).FirstOrDefault().Value;
+                    //x.TypeDeslocationText = EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == x.TypeDeslocation).FirstOrDefault().Value;
+                    //if (x.DisplacementOutsideCity.Value) x.DisplacementOutsideCityText = "Sim"; else x.DisplacementOutsideCityText = "Não";
+                    //x.StatusText = EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == x.Status).FirstOrDefault().Value;
+                    //x.Validators = DBUserConfigurations.GetById(x.Validators).Nome;
+                });
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
 
         #endregion
     }
