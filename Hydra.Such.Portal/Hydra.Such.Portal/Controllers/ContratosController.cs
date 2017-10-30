@@ -38,6 +38,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             ViewBag.ContractNo = id ?? "";
             ViewBag.VersionNo = version ?? "";
+            ViewBag.UPermissions = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
             return View();
         }
 
@@ -545,12 +546,12 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetAllAvencaFixa()
         {
             List<AutorizarFaturaçãoContratos> contractList = DBContractInvoices.GetAll();
-            List<FaturacaoContratosViewModel> result = null;
+            List<FaturacaoContratosViewModel> result = new List<FaturacaoContratosViewModel>();
 
             foreach (var item in contractList)
             {
                 //Client Name -> NAV
-                String cliName = DBNAV2017Clients.GetClientNameByNo(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato);
+                String cliName = DBNAV2017Clients.GetClientNameByNo(item.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName);
 
                 // Valor Fatura
                 List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
@@ -560,6 +561,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     ContractNo = item.NºContrato,
                     Description = item.Descrição,
+                    ClientNo = item.NºCliente,
                     ClientName = cliName,
                     InvoiceValue = sum,
                     NumberOfInvoices = item.NºDeFaturasAEmitir,
@@ -702,13 +704,43 @@ namespace Hydra.Such.Portal.Controllers
             List<AutorizarFaturaçãoContratos> contractList = DBAuthorizeInvoiceContracts.GetAll();
             List<LinhasFaturaçãoContrato> lineList = DBInvoiceContractLines.GetAll();
 
-            //NAV WsPreInvoice
-            
+            foreach (var item in contractList)
+            {
+                Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws);
+                InvoiceHeader.Wait();
 
-            //WsPreInvoiceLine
+                if (InvoiceHeader.IsCompletedSuccessfully)
+                {
+                    String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
+                    List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato && x.GrupoFatura == item.GrupoFatura).ToList();
+                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
+                    InvoiceLines.Wait();
 
-            //WsGeneric.fxPostInvoice
+                    if (InvoiceLines.IsCompletedSuccessfully)
+                    {
+                        Task<WSGenericCodeUnit.FxPostInvoice_Result> postNAV = WSGeneric.CreatePreInvoiceLineList(InvoiceHeaderNo, _configws);
+                        postNAV.Wait();
 
+                        if (postNAV.IsCompletedSuccessfully)
+                        {
+                            return Json(true);
+                        }
+                        else
+                        {
+                            return Json(false);
+                        }
+                    }
+                    else
+                    {
+                        return Json(false);
+                    }
+                }
+                else
+                {
+                    return Json(false);
+                }
+
+            }
             return Json(true);
         }
 

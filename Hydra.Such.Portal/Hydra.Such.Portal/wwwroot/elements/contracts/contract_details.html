@@ -13,7 +13,6 @@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
@@ -680,7 +679,7 @@
                    on-response="_clResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <div class="row">
+        <div class="row" style="display: {{ _showContractLines }};">
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">Linhas</div>
@@ -721,7 +720,7 @@
                                 </vaadin-combo-box>
                             </div>
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periocidade" disabled="{{_elementsDisabled}}"> </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periocidade" disabled="{{_elementsDisabled}}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
                             </div>
                             <div class="col-lg-2">
                                 <vaadin-date-picker label="Data Inicio Versão" id="_CLVersionStartDate" name="_CLVersionStartDate" value="{{_CLVersionStartDate}}" disabled="{{_elementsDisabled}}"></vaadin-date-picker>
@@ -753,7 +752,9 @@
                                 </vaadin-combo-box>
                             </div>
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário" disabled="{{_elementsDisabled}}"> <div slot="suffix">€</div></vaadin-text-field>
+                                <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{_elementsDisabled}}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$">
+                                    
+                                </vaadin-text-field>
                             </div>
                             <div class="col-lg-2">
                                 <vaadin-combo-box items="[[CBFunctionalAreas]]" id="_CLFunctionalArea" name="_CLFunctionalArea" item-value-path="id" item-label-path="value" value="{{_CLFunctionalArea}}" label="Cód. Área Funcional" disabled="{{_elementsDisabled}}">
@@ -767,7 +768,7 @@
                                 </vaadin-combo-box>
                             </div>
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLInterventionHours}}" id="_CLInterventionHours" name="_CLInterventionHours" label="Nº Horas Intervenção" disabled="{{_elementsDisabled}}"> </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLInterventionHours}}" id="_CLInterventionHours" name="_CLInterventionHours" label="Nº Horas Intervenção" disabled="{{_elementsDisabled}}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
                             </div>
                             <div class="col-lg-2">
                                 <vaadin-date-picker label="Data Fim Versão" id="_CLVersionEndDate" name="_CLVersionEndDate" value="{{_CLVersionEndDate}}" disabled="{{_elementsDisabled}}"></vaadin-date-picker>
@@ -790,7 +791,7 @@
                                 <vaadin-text-field value="{{_CLDescription}}" id="_CLDescription" name="_CLDescription" label="Descrição" disabled="{{_elementsDisabled}}"> </vaadin-text-field>
                             </div>
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha" disabled="{{_elementsDisabled}}"> </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{_elementsDisabled}}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
                             </div>
                             <div class="col-lg-2">
                                 <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLResponsabilityCenter" name="_CLResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{_CLResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{_elementsDisabled}}">
@@ -804,7 +805,7 @@
                                 </vaadin-combo-box>
                             </div>
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{_elementsDisabled}}"> </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{_elementsDisabled}}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
                             </div>
                             <div class="col-lg-2">
                                 <vaadin-combo-box items="[[CBEmployees]]" id="_CLResponsible" name="_CLResponsible" item-value-path="id" item-label-path="value" value="{{_CLResponsible}}" label="Responsável" disabled="{{_elementsDisabled}}">
@@ -825,7 +826,7 @@
 
                         <div class="row">
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" label="Quantidade" disabled="{{_elementsDisabled}}"> </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" label="Quantidade" disabled="{{_elementsDisabled}}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
                             </div>
                             <div class="col-lg-2">
                                 <vaadin-checkbox checked="{{_CLBillable}}" disabled="{{_elementsDisabled}}">Fáturavel</vaadin-checkbox>
@@ -896,14 +897,14 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="100px">
+                                <vaadin-grid-column width="120px">
                                     <template class="header">
                                         <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="quantity" />
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.quantity}}" id="_CLGridQuantity" name="_CLGridQuantity" disabled="{{_elementsDisabled}}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.quantity}}" id="_CLGridQuantity" name="_CLGridQuantity" disabled="{{_elementsDisabled}}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
                                         </template>
 
                                         <template is="dom-if" if="{{ !item.selected }}">
@@ -940,7 +941,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{_elementsDisabled}}"> <div slot="suffix">€</div></vaadin-text-field>
+                                            <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{_elementsDisabled}}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> <div slot="suffix">€</div></vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.unitPrice}} €
@@ -954,7 +955,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.lineDiscount}}" id="_CLGridDiscountLine" name="_CLGridDiscountLine" disabled="{{_elementsDisabled}}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.lineDiscount}}" id="_CLGridDiscountLine" name="_CLGridDiscountLine" disabled="{{_elementsDisabled}}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.lineDiscount}}%
@@ -1046,7 +1047,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.frequency}}" id="_CLGridFrequency" name="_CLGridFrequency" disabled="{{_elementsDisabled}}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.frequency}}" id="_CLGridFrequency" name="_CLGridFrequency" disabled="{{_elementsDisabled}}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.frequency}}
@@ -1060,7 +1061,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.interventionHours}}" id="_CLGridInterventionHours" name="_CLGridInterventionHours" disabled="{{_elementsDisabled}}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.interventionHours}}" id="_CLGridInterventionHours" name="_CLGridInterventionHours" disabled="{{_elementsDisabled}}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.interventionHours}}
@@ -1074,7 +1075,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.totalTechinicians}}" id="_CLGridTotalTechnicians" name="_CLGridTotalTechnicians" disabled="{{_elementsDisabled}}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.totalTechinicians}}" id="_CLGridTotalTechnicians" name="_CLGridTotalTechnicians" disabled="{{_elementsDisabled}}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.totalTechinicians}}
@@ -1217,6 +1218,9 @@
             Polymer({
                 is: 'x-contractdetails',
                 properties: {
+                    _permissions: {
+                        type: Object
+                    },
                     _areaid: {
                         type: Number,
                         notify: true,
@@ -1306,6 +1310,11 @@
 
 
                     //CONTRACT LINES
+                    _showContractLines: {
+                        type: String,
+                        notify: true,
+                        value: "none"
+                    },
                     _CLContractLineType: {
                         type: String,
                         value: ""
@@ -1397,6 +1406,7 @@
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
                     this.$.page_databound_ajax.generateRequest();
 
+                    debugger;;
                     if (this._contractno == "") {
                         this._isCreate = true;
                     }
@@ -1483,6 +1493,7 @@
                         this.data.area = this._areaid;
                         this.$.versionNo.value = "1";
                     } else {
+                        this._showContractLines = "";
                         this._CLRegion = this.data.codeRegion;
                         this._CLFunctionalArea = this.data.codeFunctionalArea;
                         this._CLResponsabilityCenter = this.data.codeResponsabilityCenter;
@@ -1618,10 +1629,7 @@
                 _openContractArchive: function () {
                     window.location.href = "../?archived=1&contractno=" + this.data.contractNo;
                 },
-
-
-
-
+                
 
                 //#################################
                 //        CONTRACT LINES
@@ -1681,6 +1689,25 @@
                         //this.CBContractLineCodes[index].id;
                         this._CLDescription = this.CBContractLineCodes[index].value;
                         this._CLMeasureUnit = this.CBContractLineCodes[index].extra;
+                    }
+                },
+
+                _clContractLineTypeGridChange: function (e) {
+                    this.$.contractlinecodesgrid_ajax.body = JSON.stringify(e.detail.value);
+                    this.$.contractlinecodesgrid_ajax.generateRequest();
+
+                    this.dataLines.lines.find(x => x == this._SelectedLine).code = "";
+                    this.dataLines.lines.find(x => x == this._SelectedLine).type = e.detail.value;
+                    this.$.grid_contractlines.clearCache();
+                },
+                _clContractLineCodeGridChange: function (e) {
+                    if (e.detail.value != null && e.detail.value != "") {
+                        var index = this.CBContractLineCodesGrid.findIndex(i => i.id === e.detail.value);
+                        //this.CBContractLineCodes[index].id;
+                        this.dataLines.lines.find(x => x == this._SelectedLine).code = e.detail.value;
+                        this.dataLines.lines.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
+                        this.dataLines.lines.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
+                        this.$.grid_contractlines.clearCache();
                     }
                 },
 
@@ -1787,24 +1814,6 @@
                         }
                     }
                     return "";
-                },
-                _clContractLineTypeGridChange: function (e) {
-                    this.$.contractlinecodesgrid_ajax.body = JSON.stringify(e.detail.value);
-                    this.$.contractlinecodesgrid_ajax.generateRequest();
-
-                    this.dataLines.lines.find(x => x == this._SelectedLine).code = "";
-                    this.dataLines.lines.find(x => x == this._SelectedLine).type = e.detail.value;
-                    this.$.grid_contractlines.clearCache();
-                },
-                _clContractLineCodeGridChange: function (e) {
-                    if (e.detail.value != null && e.detail.value != "") {
-                        var index = this.CBContractLineCodesGrid.findIndex(i => i.id === e.detail.value);
-                        //this.CBContractLineCodes[index].id;
-                        this.dataLines.lines.find(x => x == this._SelectedLine).code = e.detail.value;
-                        this.dataLines.lines.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
-                        this.dataLines.lines.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
-                        this.$.grid_contractlines.clearCache();
-                    }
                 },
             });
         });
