@@ -51,39 +51,39 @@ namespace Hydra.Such.Data.NAV
         }
 
 
-        public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations)
-        {
-            WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
-            {
-                WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
-                {
-                    Sell_to_Customer_No = "10000",//PreInvoiceToCreate.InvoiceToClientNo,
-                    VAT_Registration_No = "789456278",//PreInvoiceToCreate.ClientVATReg,
-                    Document_Date = DateTime.Today,
-                    Document_DateSpecified = true,
+        //public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations)
+        //{
+        //    WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
+        //    {
+        //        WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
+        //        {
+        //            Sell_to_Customer_No = "10000",//PreInvoiceToCreate.InvoiceToClientNo,
+        //            VAT_Registration_No = "789456278",//PreInvoiceToCreate.ClientVATReg,
+        //            Document_Date = DateTime.Today,
+        //            Document_DateSpecified = true,
                     
-                }
-            };
-                    Sell_to_Customer_No = CreateInvoice.NºCliente
-                }
-            };
+        //        }
+        //    };
+        //            Sell_to_Customer_No = CreateInvoice.NºCliente
+        //        }
+        //    };
 
-            // Configure NAV Client
-            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoice_URL.Replace("Company", WSConfigurations.WS_User_Company));
-            WSCreatePreInvoice.WSPreInvoice_PortClient WS_Client = new WSCreatePreInvoice.WSPreInvoice_PortClient(navWSBinding, WS_URL);
-            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
-            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+        //    // Configure NAV Client
+        //    EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoice_URL.Replace("Company", WSConfigurations.WS_User_Company));
+        //    WSCreatePreInvoice.WSPreInvoice_PortClient WS_Client = new WSCreatePreInvoice.WSPreInvoice_PortClient(navWSBinding, WS_URL);
+        //    WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+        //    WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
-            try
-            {
-                WSCreatePreInvoice.Create_Result result = await WS_Client.CreateAsync(NAVCreate);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
+        //    try
+        //    {
+        //        WSCreatePreInvoice.Create_Result result = await WS_Client.CreateAsync(NAVCreate);
+        //        return result;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return null;
+        //    }
+        //}
 
 
         public static async Task<WSCreatePreInvoice.CreateMultiple_Result> CreateMultipleContractInvoice(List<AutorizarFaturaçãoContratos> CreateList, NAVWSConfigurations WSConfigurations)
