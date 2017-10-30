@@ -719,50 +719,50 @@ namespace Hydra.Such.Portal.Controllers
             return Json(true);
         }
 
-        //public JsonResult CountInvoice([FromBody] List<FaturacaoContratosViewModel> data)
-        //{
-        //    List<AutorizarFaturaçãoContratos> contractList = DBAuthorizeInvoiceContracts.GetAll();
-        //    List<LinhasFaturaçãoContrato> lineList = DBInvoiceContractLines.GetAll();
+        public JsonResult CountInvoice([FromBody] List<FaturacaoContratosViewModel> data)
+        {
+            List<AutorizarFaturaçãoContratos> contractList = DBAuthorizeInvoiceContracts.GetAll();
+            List<LinhasFaturaçãoContrato> lineList = DBInvoiceContractLines.GetAll();
 
-        //    foreach (var item in contractList)
-        //    {
-        //        Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws);
-        //        InvoiceHeader.Wait();
+            foreach (var item in contractList)
+            {
+                Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws);
+                InvoiceHeader.Wait();
 
-        //        if (InvoiceHeader.IsCompletedSuccessfully)
-        //        {
-        //            String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
-        //            List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato && x.GrupoFatura == item.GrupoFatura).ToList();
-        //            Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
-        //            InvoiceLines.Wait();
+                if (InvoiceHeader.IsCompletedSuccessfully)
+                {
+                    String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
+                    List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato && x.GrupoFatura == item.GrupoFatura).ToList();
+                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
+                    InvoiceLines.Wait();
 
-        //            if (InvoiceLines.IsCompletedSuccessfully)
-        //            {
-        //                Task<WSGenericCodeUnit.FxPostInvoice_Result> postNAV = WSGeneric.CreatePreInvoiceLineList(InvoiceHeaderNo, _configws);
-        //                postNAV.Wait();
+                    if (InvoiceLines.IsCompletedSuccessfully)
+                    {
+                        Task<WSGenericCodeUnit.FxPostInvoice_Result> postNAV = WSGeneric.CreatePreInvoiceLineList(InvoiceHeaderNo, _configws);
+                        postNAV.Wait();
 
-        //                if (postNAV.IsCompletedSuccessfully)
-        //                {
-        //                    return Json(true);
-        //                }
-        //                else
-        //                {
-        //                    return Json(false);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                return Json(false);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return Json(false);
-        //        }
+                        if (postNAV.IsCompletedSuccessfully)
+                        {
+                            return Json(true);
+                        }
+                        else
+                        {
+                            return Json(false);
+                        }
+                    }
+                    else
+                    {
+                        return Json(false);
+                    }
+                }
+                else
+                {
+                    return Json(false);
+                }
 
-        //    }
-        //    return Json(true);
-        //}
+            }
+            return Json(true);
+        }
 
         #endregion
 
