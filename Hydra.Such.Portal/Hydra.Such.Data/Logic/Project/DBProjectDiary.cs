@@ -31,7 +31,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioDeProjeto.Where(x => /*x.Registado == true &&*/ x.Utilizador == user).ToList();
+                    return ctx.DiárioDeProjeto.Where(x => x.Faturada == false || x.Faturada == null && x.Faturável == true && x.Utilizador == user).ToList();
                 }
             }
             catch (Exception ex)

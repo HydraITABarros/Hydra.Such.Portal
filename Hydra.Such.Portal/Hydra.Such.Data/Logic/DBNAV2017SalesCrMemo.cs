@@ -9,7 +9,7 @@ namespace Hydra.Such.Data.Logic
 {
     public class DBNAV2017SalesCrMemo
     {
-        public static List<NAVSalesCrMemoLinesViewModel> GetSalesCrMemoLines(string NAVDatabaseName, string NAVCompanyName, string NAVContractNo, string InitialDate, string ExpirationDate)
+        public static List<NAVSalesCrMemoLinesViewModel> GetSalesCrMemoLines(string NAVDatabaseName, string NAVCompanyName, string NAVContractNo, DateTime InitialDate, DateTime ExpirationDate)
         {
             try
             {
@@ -20,11 +20,11 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@ContractNoPortal", NAVContractNo),
-                        new SqlParameter("@InitialDate", InitialDate),
-                        new SqlParameter("@ExpirationDate", ExpirationDate)
+                        new SqlParameter("@InitialDate", InitialDate.ToString("yyyy/MM/dd h:mm tt")),
+                        new SqlParameter("@ExpirationDate", ExpirationDate.ToString("yyyy/MM/dd h:mm tt"))
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017LinhaFaturaVendas @DBName, @CompanyName, @ContractNoPortal, ,@InitialDate, @ExpirationDate", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017LinhaFaturaVendas @DBName, @CompanyName, @ContractNoPortal, @InitialDate, @ExpirationDate", parameters);
 
                     foreach (dynamic temp in data)
                     {

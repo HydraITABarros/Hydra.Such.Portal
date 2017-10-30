@@ -101,27 +101,42 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
         public JsonResult GetFolhaDeHoraStatus()
         {
             List<EnumData> result = EnumerablesFixed.FolhaDeHoraStatus;
             return Json(result);
         }
 
+        [HttpPost]
         public JsonResult GetFolhaDeHoraTypeDeslocation()
         {
             List<EnumData> result = EnumerablesFixed.FolhaDeHoraTypeDeslocation;
             return Json(result);
         }
 
+        [HttpPost]
         public JsonResult GetFolhaDeHoraCodeTypeKms()
         {
             List<EnumDataString> result = EnumerablesFixed.FolhaDeHoraCodeTypeKms;
             return Json(result);
         }
 
+        [HttpPost]
         public JsonResult GetFolhaDeHoraDisplacementOutsideCity()
         {
             List<EnumData> result = EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetFolhaDeHoraPercursoOrigemDestino()
+        {
+            List<DDMessageString> result = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Description
+            }).ToList();
             return Json(result);
         }
 

@@ -103,6 +103,17 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!--PERCURSO-->
+        <iron-ajax
+                   url="/FolhasDeHoras/PercursoGetAllByFolhaHoraNoToList"
+                   last-response="{{percurso}}"
+                   id="page_percurso_tabela"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
             <paper-tab>Viagens</paper-tab>
             <paper-tab>Mão-de-obra</paper-tab>
@@ -113,10 +124,10 @@
             <!--Viagens-->
             <div>
                 <div class="row break_clear">
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.folhaDeHorasNo}}" id="folhaDeHorasNo" name="folhaDeHorasNo" label="Nº Folha Horas" disabled="true"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-combo-box items="[[LFolhaDeHoraProjectNo]]" item-value-path="id" item-label-path="value" value="{{data.projectNo}}" label="Nº Ordem/Projecto" required>
                             <template>
                                 <paper-icon-item>
@@ -127,7 +138,7 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-combo-box items="[[codeOptions]]" item-value-path="id" item-label-path="value" value="{{data.employeeNo}}" on-value-changed="_codeChange" label="Nº Empregado" required>
                             <template>
                                 <paper-icon-item>
@@ -138,26 +149,26 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{employeeName}}" id="employeeName" name="employeeName" label="Nome Empregado" disabled="true"> </vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-date-picker label="Data Inicio" id="dateDepartureText" name="dateDepartureText" required value="{{data.dateDepartureText}}"></vaadin-date-picker>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.timeDepartureText}}" id="timeDepartureText" name="timeDepartureText" required pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-date-picker label="Data Fim" id="dateArrivalText" name="dateArrivalText" required value="{{data.dateArrivalText}}"></vaadin-date-picker>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.timeArrivalText}}" id="timeArrivalText" name="timeArrivalText" required pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"> </vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" item-value-path="id" item-label-path="value" value="{{data.typeDeslocation}}" required label="Tipo Deslocação">
                             <template>
                                 <paper-icon-item>
@@ -168,7 +179,7 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" item-value-path="id" item-label-path="value" required value="{{data.codeTypeKms}}" label="Cód. Tipo Kms">
                             <template>
                                 <paper-icon-item>
@@ -179,23 +190,23 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.carRegistration}}" id="carRegistration" name="carRegistration" required pattern="[A-Za-z0-9]{2}-[A-Za-z0-9]{2}-[A-Za-z0-9]{2}" label="Matricula"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3 alignPoga">
+                    <div class="col-sm-3 alignPoga">
                         <vaadin-checkbox checked="{{data.displacementOutsideCity}}" required>Desloc. fora do concelho</vaadin-checkbox>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-lg-3 alignPoga">
+                    <div class="col-sm-3 alignPoga">
                         <vaadin-checkbox checked="{{data.plannedScrolling}}" disabled="true">Deslocação Planeada</vaadin-checkbox>
                     </div>
-                    <div class="col-lg-3 alignPoga">
+                    <div class="col-sm-3 alignPoga">
                         <vaadin-checkbox checked="{{data.finished}}" required>Terminado</vaadin-checkbox>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                     </div>
                 </div>
             </div>
@@ -203,17 +214,17 @@
             <!--Mão-de-obra-->
             <div>
                 <div class="row break_clear">
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.projectNo}}" id="projectNo" name="projectNo" disabled="true" label="Nº Obra"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.projectDescription}}" disabled="true" id="projectDescription" name="projectDescription" label="Descrição"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.employeeNo}}" id="employeeNo" name="employeeNo" disabled="true" label="Nº Empregado"> </vaadin-text-field>
                     </div>
 
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.employeeName}}" disabled="true" id="employeeName" name="employeeName" label="Nome Empregado"> </vaadin-text-field>
                     </div>
                 </div>
@@ -222,11 +233,11 @@
             <!--Presenças-->
             <div>
                 <div class="row break_clear">
-                    <div class="col-lg-6">
+                    <div class="col-sm-6">
                         <vaadin-text-field type="text" value="{{data.employeeNo}}" id="employeeNo" name="employeeNo" disabled="true" label="Nº Empregado"> </vaadin-text-field>
                     </div>
 
-                    <div class="col-lg-6">
+                    <div class="col-sm-6">
                         <vaadin-text-field type="text" value="{{data.employeeName}}" disabled="true" id="employeeName" name="employeeName" label="Nome Empregado"> </vaadin-text-field>
                     </div>
                 </div>
@@ -236,7 +247,7 @@
             <!--Detalhe-->
             <div>
                 <div class="row break_clear">
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-combo-box items="[[LFolhaDeHoraStatus]]" item-value-path="id" item-label-path="value" disabled="true" value="{{data.status}}" label="Estado">
                             <template>
                                 <paper-icon-item>
@@ -247,143 +258,121 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.createdBy}}" id="userModification" name="userModification" disabled="true" label="Criado por"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.dateCreationText}}" id="userModification" name="userModification" disabled="true" label="Data Criação"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.timeCreationText}}" id="userModification" name="userModification" disabled="true" label="Hora Criação"> </vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.regionCode}}" id="userModification" name="userModification" required label="Código Região"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.areaCode}}" id="userModification" name="userModification" required label="Código Área Funcional"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.cRESPCode}}" id="userModification" name="userModification" required label="Código Centro Respon."> </vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.finishedBy}}" id="userModification" name="userModification" disabled="true" label="Terminado por"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.dateFinishedText}}" id="userModification" name="userModification" disabled="true" label="Data Terminado"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.dateFinishedText}}" id="userModification" name="userModification" disabled="true" label="Hora Terminado"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3 alignPoga">
+                    <div class="col-sm-3 alignPoga">
                         <vaadin-checkbox checked="{{data.validated}}" disabled="true">Validado</vaadin-checkbox>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.validators}}" id="userModification" name="userModification" disabled="true" label="Validadores"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.validator}}" id="userModification" name="userModification" disabled="true" label="Validador"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.dateValidationText}}" id="userModification" name="userModification" disabled="true" label="Data Validação"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.timeValidationText}}" id="userModification" name="userModification" disabled="true" label="Hora Validação"> </vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.integratorRH}}" id="userModification" name="userModification" disabled="true" label="Integradores Aj Custo"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.integratorRH}}" id="userModification" name="userModification" disabled="true" label="Integrador Aj. Custo RH"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.dateIntegrationRHText}}" id="userModification" name="userModification" disabled="true" label="Data Integ. Aj. Custo RH"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.timeIntegrationRHText}}" id="userModification" name="userModification" disabled="true" label="Hora Integ. Aj. Custo RH"> </vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.integratorRHKM}}" id="userModification" name="userModification" disabled="true" label="Integradores KMs RH"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.integratorRHKM}}" id="userModification" name="userModification" disabled="true" label="Integrador KMs RH"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.dateIntegrationRHKMText}}" id="userModification" name="userModification" disabled="true" label="Data Integ. KMs RH"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.timeIntegrationRHKMText}}" id="userModification" name="userModification" disabled="true" label="Hora Integ. KMs RH"> </vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.userModification}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total Ajuda Custo"><div slot="suffix">€</div></vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.userModification}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total Horas"><div slot="suffix">€</div></vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.userModification}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total KM"><div slot="suffix">€</div></vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.userModification}}" id="userModification" name="userModification" disabled="true" label="Nº Total KM"> </vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-lg-12">
+                    <div class="col-sm-12">
                         <vaadin-text-field type="text" value="{{data.comments}}" id="userModification" name="userModification" required label="Observações"> </vaadin-text-field>
                     </div>
                 </div>
             </div>
         </iron-pages>
 
-        <div class="marginSpace">
-            <template is="dom-if" if="{{ _isCreate }}">
-                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Nova FH</paper-button>
-            </template>
-            <template is="dom-if" if="{{ !_isCreate }}">
-                <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-            </template>
-        </div>
-
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
-
-        <h4 class="separator" style="text-align:center">PERCURSOS2</h4>
+        <h4 class="separator" style="text-align:center">PERCURSOS</h4>
         <h2 class="separator">Novo Registo</h2>
         <div class="row">
-            <div class="col-lg-2"><vaadin-text-field id="percCodOrigem" label="Código Origem" maxlength="20"></vaadin-text-field></div>
-            <div class="col-lg-2"><vaadin-text-field id="percCodDestino" label="Código Destino" maxlength="20"></vaadin-text-field></div>
-            <div class="col-lg-2"><vaadin-text-field id="percDataDespesa" label="Data Despesa" maxlength="20"></vaadin-text-field></div>
-            <div class="col-lg-2"><vaadin-text-field id="percJustificacao" label="Justificação" maxlength="20"></vaadin-text-field></div>
-            <div class="col-lg-2"><vaadin-text-field id="percDistEfetuada" label="Distância Efectuada" maxlength="20"></vaadin-text-field></div>
-            <div class="col-lg-2"><vaadin-text-field id="percCustoUnitario" label="Custo Unitário" maxlength="20"></vaadin-text-field></div>
-            <div class="col-lg-2 alignPoga"><paper-button class="btnSave" raised on-tap="_add">Criar Percur.</paper-button></div>
+            <div class="col-sm-2"><vaadin-text-field id="percCodOrigem" label="Código Origem" maxlength="20"></vaadin-text-field></div>
+            <div class="col-sm-2"><vaadin-text-field id="percCodDestino" label="Código Destino" maxlength="20"></vaadin-text-field></div>
+            <div class="col-sm-2"><vaadin-text-field id="percDataDespesa" label="Data Despesa" maxlength="20"></vaadin-text-field></div>
+            <div class="col-sm-2"><vaadin-text-field id="percJustificacao" label="Justificação" maxlength="20"></vaadin-text-field></div>
+            <div class="col-sm-2"><vaadin-text-field id="percDistEfetuada" label="Distância Efectuada" maxlength="20"></vaadin-text-field></div>
+            <div class="col-sm-2"><vaadin-text-field id="percCustoUnitario" label="Custo Unitário" maxlength="20"></vaadin-text-field></div>
+            <div class="col-sm-2 alignPoga"><paper-button class="btnSave" raised on-tap="_add">Criar Percur.</paper-button></div>
         </div>
 
         <h2 class="separator">Percursos</h2>
 
-        <iron-ajax url="/FolhasDeHoras/PercursoGetAllByFolhaHoraNoToList"
-                   last-response="{{percurso}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_percurso_ajax"
-                   on-response="_responseProcessor"
-                   content-type="application/json">
-        </iron-ajax>
-
         <vaadin-grid id="percursosTable" aria-label="Tabela Percursos" items="[[percurso]]" class="editGrid">
-
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="9%">
                 <template class="header">
                     Código Origem
                 </template>
@@ -392,7 +381,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="9%">
                 <template class="header">
                     Descrição Origem
                 </template>
@@ -401,7 +390,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="9%">
                 <template class="header">
                     Código Destino
                 </template>
@@ -410,7 +399,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="9%">
                 <template class="header">
                     Descrição Destino
                 </template>
@@ -419,16 +408,16 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="9%">
                 <template class="header">
                     Data Despesa
                 </template>
                 <template>
-                    <vaadin-text-field name="dateTravel" value="{{item.dateTravel}}" maxlength="20"></vaadin-text-field>
+                    <vaadin-text-field name="dateTravel" value="{{item.dateTravelText}}" maxlength="20"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="9%">
                 <template class="header">
                     Justificação
                 </template>
@@ -437,7 +426,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="9%">
                 <template class="header">
                     Distância Efectuada
                 </template>
@@ -446,7 +435,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="9%">
                 <template class="header">
                     Distância Prevista
                 </template>
@@ -455,7 +444,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="9%">
                 <template class="header">
                     Custo Unitário
                 </template>
@@ -464,7 +453,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%">
+            <vaadin-grid-column width="9%">
                 <template class="header">
                     Custo Total
                 </template>
@@ -472,6 +461,32 @@
                     <vaadin-text-field name="totalCost" value="{{item.totalCost}}" maxlength="20"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%">
+                <template class="header">
+                </template>
+                <template>
+                    <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <div class="marginSpace">
+            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar P.</paper-button>
+            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar P</paper-button>
+        </div>
+
+        <div class="marginSpace">
+            <template is="dom-if" if="{{ _isCreate }}">
+                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Nova FH</paper-button>
+            </template>
+            <template is="dom-if" if="{{ !_isCreate }}">
+                <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar FH</paper-button>
+                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar FH</paper-button>
+            </template>
+        </div>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
 
     <script>
@@ -505,13 +520,13 @@
                 },
 
                 ready: function () {
-                    debugger;;
                     //GET FOLHADEHORA DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "FolhaDeHorasNo": this._folhadehoraid });
                     this.$.page_databound_ajax.generateRequest();
 
-                    this.$.page_percurso_ajax.body = JSON.stringify({ "FolhaDeHorasNo": this._folhadehoraid });
-                    this.$.page_percurso_ajax.generateRequest();
+                    //GET PERCURSO TABELA
+                    this.$.page_percurso_tabela.body = JSON.stringify(this._folhadehoraid);
+                    this.$.page_percurso_tabela.generateRequest();
 
                     if (this._folhadehoraid == "") {
                         this._isCreate = true;
@@ -599,6 +614,30 @@
                     }
                 },
 
+                _responsePercurso: function (percurso) {
+                    debugger;;
+                    var self = this;
+
+                    //Set AreaId
+                    //if (this.data.folhaDeHorasNo == "") {
+                    //    this.data.area = this._areaid;
+                    //}
+
+                    if (percurso.detail.status === 200) {
+                        if (percurso.detail.url.indexOf("PercursoGetAllByFolhaHoraNoToList") !== -1) {
+                            if (this.percurso.FolhaDeHorasNo == "") {
+                                this._isCreate = true;
+                            }
+                        } else if (percurso.detail.url.indexOf("Create") !== -1) {
+                            this._createResponseProcessor();
+                        } else if (percurso.detail.url.indexOf("Update") !== -1) {
+                            this._openToast("Percurso atualizada com sucesso.")
+                        }
+                    } else {
+                        this._openToast("Ocorreu um erro ao criar a Percurso.")
+                    }
+                },
+
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
@@ -656,6 +695,7 @@
 
                 //Helpers
                 _executeRequest: function (url, data) {
+                    debugger;;
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
@@ -663,6 +703,4 @@
             });
         });
     </script>
-
-
 </dom-module>
