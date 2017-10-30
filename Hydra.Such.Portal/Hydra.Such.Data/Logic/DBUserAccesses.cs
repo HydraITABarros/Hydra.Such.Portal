@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -116,6 +117,21 @@ namespace Hydra.Such.Data.Logic
 
                 return null;
             }
+        }
+
+
+        public static UserAccessesViewModel ParseToViewModel(AcessosUtilizador x)
+        {
+            return new UserAccessesViewModel()
+            {
+                IdUser = x.IdUtilizador,
+                Area = x.Área,
+                Feature = x.Funcionalidade,
+                Create = x.Inserção,
+                Read = x.Leitura,
+                Update = x.Modificação,
+                Delete = x.Eliminação
+            };
         }
     }
 }
