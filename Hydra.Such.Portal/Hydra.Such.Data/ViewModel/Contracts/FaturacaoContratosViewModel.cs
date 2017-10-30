@@ -22,8 +22,8 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string ResponsabilityCenterCode { get; set; }
         //public DateTime? DataInicial { get; set; }
         //public DateTime? DataDeExpiração { get; set; }
-        public DateTime? NextInvoiceDate { get; set; }
-        public DateTime? RegisterDate { get; set; }
+        public string NextInvoiceDate { get; set; }
+        public string RegisterDate { get; set; }
         public int? Status { get; set; }
         public DateTime? CreationDate { get; set; }
         public DateTime? ModificationDate { get; set; }
