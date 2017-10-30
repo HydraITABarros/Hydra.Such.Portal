@@ -82,6 +82,29 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static bool Delete(AcessosUtilizador item)
+        {
+            return Delete(new List<AcessosUtilizador>() { item });
+        }
+
+        public static bool Delete(List<AcessosUtilizador> items)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.AcessosUtilizador.RemoveRange(items);
+                    ctx.SaveChanges();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
         public static bool DeleteAllFromUser(string UserId)
         {
             try

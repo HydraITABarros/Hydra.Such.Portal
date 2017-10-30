@@ -131,43 +131,103 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UpdateUserConfig([FromBody] UserConfigurationsViewModel data)
         {
             //Update UserConfig
-            ConfigUtilizadores UCObject = DBUserConfigurations.GetById(data.IdUser);
-            UCObject.IdUtilizador = data.IdUser;
-            UCObject.Nome = data.Name;
-            UCObject.Ativo = data.Active;
-            UCObject.Administrador = data.Administrator;
-
-            //Update Accesses
-            DBUserAccesses.DeleteAllFromUser(data.IdUser);
-            data.UserAccesses.ForEach(x =>
+            ConfigUtilizadores userConfig = DBUserConfigurations.GetById(data.IdUser);
+            if (userConfig == null)
             {
-                DBUserAccesses.Create(new AcessosUtilizador()
-                {
-                    IdUtilizador = data.IdUser,
-                    Área = x.Area,
-                    Funcionalidade = x.Feature,
-                    Inserção = x.Create,
-                    Leitura = x.Read,
-                    Modificação = x.Update,
-                    Eliminação = x.Delete,
-                    UtilizadorCriação = User.Identity.Name
-                });
-            });
-            
-            DBUserProfiles.DeleteAllFromUser(data.IdUser);
-            data.UserProfiles.ForEach(x =>
+                data.eReasonCode = 1;
+                data.eMessage = "Não foi possivel obter o utilizador.";
+            }
+            else
             {
-                DBUserProfiles.Create(new PerfisUtilizador()
-                {
-                    IdUtilizador = UCObject.IdUtilizador,
-                    IdPerfil = x.Id,
-                    UtilizadorCriação = User.Identity.Name
-                });
-            });
-            //Update AllowedUserDimemsions
-            DBUserDimensions.DeleteAllFromUser(data.IdUser);
-            DBUserDimensions.Create(data.IdUser, data.AllowedUserDimensions.ParseToDB());
+                userConfig.IdUtilizador = data.IdUser;
+                userConfig.Nome = data.Name;
+                userConfig.Ativo = data.Active;
+                userConfig.Administrador = data.Administrator;
+                userConfig.DataHoraModificação = DateTime.Now;
+                userConfig.UtilizadorModificação = User.Identity.Name;
 
+                ////Update Accesses
+                ////JP.BG
+                ////Get Existing
+                //var userAccesses = DBUserAccesses.GetByUserId(data.IdUser);
+                ////Get items to delete
+                //var userAccessesToDelete = userAccesses
+                //    .Where(x => !data.UserAccesses
+                //        .Any(y => y.IdUser == data.IdUser &&
+                //            y.Area == x.Área &&
+                //            y.Feature == x.Funcionalidade))
+                //    .ToList();
+
+                ////var itemsToUpdate = userAccesses.Except(userAccessesToDelete);
+
+                ////Update existing
+                //data.UserAccesses.ForEach(userAccess =>
+                //    {
+                //        var updatedUA = userAccesses.SingleOrDefault(x => x.IdUtilizador == data.IdUser &&
+                //            x.Área == userAccess.Area &&
+                //            x.Funcionalidade == userAccess.Feature);
+
+                //        if (updatedUA == null)
+                //        {
+                //            //Create
+                //            updatedUA = new AcessosUtilizador()
+                //            {
+                //                IdUtilizador = data.IdUser,
+                //                Área = userAccess.Area,
+                //                Funcionalidade = userAccess.Feature
+                //            };
+                //            updatedUA = DBUserAccesses.Create(updatedUA);
+                //        }
+                //        //Update
+                //        updatedUA.Eliminação = userAccess.Delete.HasValue ? userAccess.Delete.Value : false;
+                //        updatedUA.Inserção = userAccess.Create.HasValue ? userAccess.Create.Value : false;
+                //        updatedUA.Leitura = userAccess.Read.HasValue ? userAccess.Read.Value : false;
+                //        updatedUA.Modificação = userAccess.Update.HasValue ? userAccess.Update.Value : false;
+
+                //        updatedUA.UtilizadorModificação = User.Identity.Name;
+                //        updatedUA.DataHoraModificação = DateTime.Now;
+                        
+                //        DBUserAccesses.Update(updatedUA);
+                //    }
+                //);
+
+                //bool uaSuccessfullyDeleted = DBUserAccesses.Delete(userAccessesToDelete);
+                //if (!uaSuccessfullyDeleted)
+                //{
+                //    data.eMessage = "Ocorreu um erro ao eliminar acessos.";
+                //}
+                ////JP.ED
+
+                DBUserAccesses.DeleteAllFromUser(data.IdUser);
+                data.UserAccesses.ForEach(x =>
+                {
+                    DBUserAccesses.Create(new AcessosUtilizador()
+                    {
+                        IdUtilizador = data.IdUser,
+                        Área = x.Area,
+                        Funcionalidade = x.Feature,
+                        Inserção = x.Create,
+                        Leitura = x.Read,
+                        Modificação = x.Update,
+                        Eliminação = x.Delete,
+                        UtilizadorCriação = User.Identity.Name
+                    });
+                });
+
+                DBUserProfiles.DeleteAllFromUser(data.IdUser);
+                data.UserProfiles.ForEach(x =>
+                {
+                    DBUserProfiles.Create(new PerfisUtilizador()
+                    {
+                        IdUtilizador = userConfig.IdUtilizador,
+                        IdPerfil = x.Id,
+                        UtilizadorCriação = User.Identity.Name
+                    });
+                });
+                //Update AllowedUserDimemsions
+                DBUserDimensions.DeleteAllFromUser(data.IdUser);
+                DBUserDimensions.Create(data.IdUser, data.AllowedUserDimensions.ParseToDB());
+            }
             return Json(data);
         }
 

@@ -552,7 +552,7 @@
                 },
                 _onDimensionChanged: function (e) {
                     if (e.detail.value != null && e.detail.value != "") {
-                        var dimensionId = e.detail.value; debugger;;
+                        var dimensionId = e.detail.value;
                         this.$.dimensionValue_ajax.params = { "dimensionId": dimensionId };
                         this.$.dimensionValue_ajax.generateRequest();
                     }
