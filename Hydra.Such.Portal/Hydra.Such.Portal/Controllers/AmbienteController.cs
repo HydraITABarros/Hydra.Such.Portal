@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Hydra.Such.Data.Logic;
+using Hydra.Such.Data.ViewModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -15,10 +17,39 @@ namespace Hydra.Such.Portal.Controllers
             return View();
         }
 
-        public IActionResult Contratos()
+        #region Contratos
+        public IActionResult Contratos(int? archived, string contractNo)
         {
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 2 && x.Funcionalidade == 2).FirstOrDefault());
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Archived = archived == null ? 0 : 1;
+                ViewBag.ContractNo = contractNo ?? "";
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
+
+        public IActionResult DetalhesContrato(string id, string version)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 2 && x.Funcionalidade == 2).FirstOrDefault());
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ContractNo = id ?? "";
+                ViewBag.VersionNo = version ?? "";
+                ViewBag.UPermissions = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 2 && x.Funcionalidade == 2).FirstOrDefault());
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        #endregion
 
         public IActionResult Requisicoes()
         {

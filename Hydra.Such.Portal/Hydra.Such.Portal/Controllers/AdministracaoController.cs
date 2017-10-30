@@ -64,7 +64,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
                     IdUser = x.IdUtilizador,
-                    Area = x.Área,
+                    Area = x.Área + 1,
                     Feature = x.Funcionalidade,
                     Create = x.Inserção,
                     Read = x.Leitura,
@@ -104,7 +104,7 @@ namespace Hydra.Such.Portal.Controllers
                 DBUserAccesses.Create(new AcessosUtilizador()
                 {
                     IdUtilizador = ObjectCreated.IdUtilizador,
-                    Área = x.Area,
+                    Área = x.Area - 1,
                     Funcionalidade = x.Feature,
                     Inserção = x.Create,
                     Leitura = x.Read,
@@ -144,7 +144,7 @@ namespace Hydra.Such.Portal.Controllers
                 DBUserAccesses.Create(new AcessosUtilizador()
                 {
                     IdUtilizador = data.IdUser,
-                    Área = x.Area,
+                    Área = x.Area - 1,
                     Funcionalidade = x.Feature,
                     Inserção = x.Create,
                     Leitura = x.Read,
