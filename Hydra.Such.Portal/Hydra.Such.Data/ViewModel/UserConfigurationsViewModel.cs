@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel
 {
-    public class UserConfigurationsViewModel
+    public class UserConfigurationsViewModel : ErrorHandler
     {
         public string IdUser { get; set; }
         public string Name { get; set; }

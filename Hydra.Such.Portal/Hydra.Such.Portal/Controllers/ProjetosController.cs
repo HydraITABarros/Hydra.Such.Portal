@@ -156,7 +156,11 @@ namespace Hydra.Such.Portal.Controllers
                     //Get Project Numeration
                     Configuração Configs = DBConfigurations.GetById(1);
                     int ProjectNumerationConfigurationId = Configs.NumeraçãoProjetos.Value;
-                    data.ProjectNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ProjectNo == "" || data.ProjectNo == null));
+
+                    if (data.ProjectNo == "" || data.ProjectNo == null)
+                    {
+                        data.ProjectNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ProjectNo == "" || data.ProjectNo == null));
+                    }
 
                     if (data.ProjectNo != null)
                     {
@@ -168,7 +172,7 @@ namespace Hydra.Such.Portal.Controllers
                             Área = data.Area,
                             Descrição = data.Description,
                             NºCliente = data.ClientNo,
-                            Data = DateTime.Parse(data.Date),
+                            Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null,
                             Estado = data.Status,
                             CódigoRegião = data.RegionCode,
                             CódigoÁreaFuncional = data.FunctionalAreaCode,
@@ -189,7 +193,7 @@ namespace Hydra.Such.Portal.Controllers
                             TipoGrupoContabProjeto = data.GroupContabProjectType,
                             TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
                             PedidoDoCliente = data.ClientRequest,
-                            DataDoPedido = DateTime.Parse(data.RequestDate),
+                            DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null,
                             ValidadeDoPedido = data.RequestValidity,
                             DescriçãoDetalhada = data.DetailedDescription,
                             CategoriaProjeto = data.ProjectCategory,
@@ -212,7 +216,15 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             //Create Project on NAV
                             Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(data, _configws);
-                            TCreateNavProj.Wait();
+                            try
+                            {
+                                TCreateNavProj.Wait();
+                            }
+                            catch (Exception)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                            }
                             if (!TCreateNavProj.IsCompletedSuccessfully)
                             {
                                 //Delete Created Project on Database
