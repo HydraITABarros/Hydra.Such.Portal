@@ -50,7 +50,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
-                ViewBag.UPermissions = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
+                ViewBag.UPermissions = UPerm;
                 return View();
             }
             else

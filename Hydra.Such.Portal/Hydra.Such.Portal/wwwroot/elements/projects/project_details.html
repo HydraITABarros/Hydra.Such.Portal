@@ -121,13 +121,13 @@
             <div>
                 <div class="row">
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.projectNo}}" disabled="{{ !_isCreate }}" id="ProjectNo" name="ProjectNo" ed required label="Nº Projeto"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.projectNo}}" disabled="{{ !_isCreate }}" id="ProjectNo" name="ProjectNo" ed label="Nº Projeto"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-date-picker label="Data" id="Date" name="Date" value="{{data.date}}"></vaadin-date-picker>
+                        <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectEmployees]]" item-value-path="id" item-label-path="value" value="{{data.projectResponsible}}" label="Responsável Projeto">
+                        <vaadin-combo-box items="[[LProjectClients]]" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Cliente" disabled="{{ !_permissions.update }}">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -138,7 +138,45 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.contractNo}}" label="Nº Contrato">
+                        <vaadin-date-picker label="Data" id="Date" name="Date" value="{{data.date}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LProjectStatus]]" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LProjectEmployees]]" item-value-path="id" item-label-path="value" value="{{data.projectLeader}}" label="Chefe Projeto" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LProjectEmployees]]" item-value-path="id" item-label-path="value" value="{{data.projectResponsible}}" label="Responsável Projeto" disabled="{{ !_permissions.update }}"> 
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LProjectServiceObjects]]" item-value-path="id" item-label-path="value" value="{{data.serviceObjectCode}}" label="Cód. Objeto Serviço" disabled="{{ !_permissions.update }}">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -150,11 +188,11 @@
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.description}}" id="Description" name="Description" required label="Descrição"> </vaadin-text-field>
+                    <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{data.billable}}" disabled="{{ !_permissions.update }}">Faturável</vaadin-checkbox>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectStatus]]" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado">
+                        <vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.contractNo}}" label="Nº Contrato" disabled="{{ !_permissions.update }}">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -165,7 +203,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectServiceObjects]]" item-value-path="id" item-label-path="value" value="{{data.serviceObjectCode}}" label="Cód. Objeto Serviço">
+                        <vaadin-combo-box items="[[LProjectTypes]]" item-value-path="id" item-label-path="value" value="{{data.projectTypeCode}}" label="Cód. Tipo Projeto" disabled="{{ !_permissions.update }}">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -176,49 +214,9 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectTypes]]" item-value-path="id" item-label-path="value" value="{{data.projectTypeCode}}" label="Cód. Tipo Projeto">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
+                        <vaadin-text-field value="{{data.ourProposal}}" id="OurProposal" name="OurProposal" label="Nossa Proposta" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectClients]]" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Cliente">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectEmployees]]" item-value-path="id" item-label-path="value" value="{{data.projectLeader}}" label="Chefe Projeto">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
 
-                    </div>
-                    <div class="col-lg-3">
-                        <center>
-                            <vaadin-checkbox checked="{{data.billable}}">Faturável</vaadin-checkbox>
-                        </center>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.ourProposal}}" id="OurProposal" name="OurProposal" required label="Nossa Proposta"> </vaadin-text-field>
-                    </div>
                 </div>
             </div>
 
@@ -226,7 +224,7 @@
             <div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectRegionCodes]]" item-value-path="id" item-label-path="value" value="{{data.regionCode}}" label="Cód. Região">
+                        <vaadin-combo-box items="[[LProjectRegionCodes]]" item-value-path="id" item-label-path="value" value="{{data.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -237,7 +235,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade">
+                        <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -248,7 +246,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectCountabGroupTypes]]" item-value-path="id" item-label-path="value" value="{{data.groupContabProjectType}}" label="Tipo Grupo Contab. Projeto">
+                        <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -259,7 +257,32 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectCountabGroupTypesOM]]" item-value-path="id" item-label-path="value" value="{{data.groupContabOMProjectType}}" label="Tipo Grupo Contab. OM Projeto">
+                        <vaadin-combo-box items="[[LProjectGroupContab]]" item-value-path="id" item-label-path="value" value="{{data.accountWorkGroup}}" label="Grupo Contab. Obra" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                </div>
+                <br />
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LProjectCountabGroupTypes]]" item-value-path="id" item-label-path="value" value="{{data.groupContabProjectType}}" label="Tipo Grupo Contab. Projeto" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LProjectCountabGroupTypesOM]]" item-value-path="id" item-label-path="value" value="{{data.groupContabOMProjectType}}" label="Tipo Grupo Contab. OM Projeto" disabled="{{ !_permissions.update }}">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -269,31 +292,6 @@
                             </template>
                         </vaadin-combo-box>
 
-                    </div>
-                </div>
-                <br />
-                <div class="row break_clear">
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectGroupContab]]" item-value-path="id" item-label-path="value" value="{{data.accountWorkGroup}}" label="Grupo Contab. Obra">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
                     </div>
                 </div>
             </div>
@@ -302,7 +300,7 @@
             <div>
                 <div class="row">
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.commitmentCode}}" id="CommitmentCode" name="CommitmentCode" required label="Nº Compromisso"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.commitmentCode}}" id="CommitmentCode" name="CommitmentCode" label="Nº Compromisso" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
                 </div>
             </div>
@@ -311,8 +309,7 @@
             <div>
                 <div class="row">
                     <div class="col-lg-3">
-                        
-                        <vaadin-combo-box items="[[LProjectShippingAddresses]]" item-value-path="id" item-label-path="value" value="{{data.shippingAddressCode}}" label="Cód. Endereço Envio" on-value-changed="_getAddressByCode">
+                        <vaadin-combo-box items="[[LProjectShippingAddresses]]" item-value-path="id" item-label-path="value" value="{{data.shippingAddressCode}}" label="Cód. Endereço Envio" on-value-changed="_getAddressByCode" disabled="{{ !_permissions.update }}">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -324,22 +321,22 @@
                         
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" required label="Envio-a Endereço"></vaadin-text-field>
+                        <vaadin-text-field value="{{data.shippingName}}" id="ShippingName" name="ShippingName" label="Envio-a Nome" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" label="Envio-a Endereço" disabled="{{ !_permissions.update }}"></vaadin-text-field>
 
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" required label="Envio-a Localidade"> </vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.shippingContact}}" id="ShippingContact" name="ShippingContact" required label="Envio-a Contato"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.shippingPostalCode}}" id="ShippingPostalCode" name="ShippingPostalCode" label="Envio-a Cód. Postal" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.shippingName}}" id="ShippingName" name="ShippingName" required label="Envio-a Nome"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.shippingPostalCode}}" id="ShippingPostalCode" name="ShippingPostalCode" required label="Envio-a Cód. Postal"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.shippingContact}}" id="ShippingContact" name="ShippingContact" label="Envio-a Contato" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
                 </div>
             </div>
@@ -348,13 +345,13 @@
             <div>
                 <div class="row">
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.clientRequest}}" id="ClientRequest" name="ClientRequest" required label="Pedido do Cliente"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.clientRequest}}" id="ClientRequest" name="ClientRequest" label="Pedido do Cliente" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-date-picker label="Data Pedido" id="RequestDate" name="Date" value="{{data.requestDate}}"></vaadin-date-picker>
+                        <vaadin-date-picker label="Data Pedido" id="RequestDate" name="Date" value="{{data.requestDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.detailedDescription}}" id="DetailedDescription" name="DetailedDescription" required label="Descrição Detalhada"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.detailedDescription}}" id="DetailedDescription" name="DetailedDescription" label="Descrição Detalhada" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
                 </div>
             </div>
@@ -363,7 +360,7 @@
             <div>
                 <div class="row">
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectCategories]]" item-value-path="id" item-label-path="value" value="{{data.projectCategory}}" label="Categoria Projeto">
+                        <vaadin-combo-box items="[[LProjectCategories]]" item-value-path="id" item-label-path="value" value="{{data.projectCategory}}" label="Categoria Projeto" disabled="{{ !_permissions.update }}">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -374,7 +371,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.budgetContractNo}}" label="Nº Contrato Orçamento">
+                        <vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.budgetContractNo}}" label="Nº Contrato Orçamento" disabled="{{ !_permissions.update }}">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -384,11 +381,8 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
-                    <div class="col-lg-3">
-                        <center>
-                            <br />
-                            <vaadin-checkbox checked="{{data.internalProject}}">Projeto Interno</vaadin-checkbox>
-                        </center>
+                    <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{data.internalProject}}" disabled="{{ !_permissions.update }}">Projeto Interno</vaadin-checkbox>
                     </div>
                 </div>
             </div>
@@ -399,8 +393,13 @@
                 <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </template>
             <template is="dom-if" if="{{ !_isCreate }}">
-                <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                <template is="dom-if" if="{{ _permissions.update }}">
+                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                </template>
+                <template is="dom-if" if="{{ _permissions.delete }}">
+                    <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+
+                </template>
             </template>
         </div>
 
@@ -412,6 +411,9 @@
             Polymer({
                 is: 'x-projectdetails',
                 properties: {
+                    _permissions: {
+                        type: Array
+                    },
                     _areaid: {
                         type: Number,
                         notify: true,
@@ -530,7 +532,7 @@
                         if (this.validateResponse == "") {
                             this._executeRequest("/Projetos/CreateProject", this.data)
                         } else {
-                            this._openToast(data);
+                            this._openToast(this.validateResponse);
                         }
                     }
                 },

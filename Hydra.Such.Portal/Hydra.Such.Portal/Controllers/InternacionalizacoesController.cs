@@ -20,20 +20,38 @@ namespace Hydra.Such.Portal.Controllers {
         #region Projetos
         public IActionResult Projetos()
         {
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 8, 1);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         public IActionResult DetalhesProjeto(string id)
         {
-            ViewBag.ProjectNo = id == null ? "" : id;
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 8, 1);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id == null ? "" : id;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
         #endregion
 
         #region Contratos
         public IActionResult Contratos(int? archived, string contractNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 9 && x.Funcionalidade == 2).FirstOrDefault());
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 9, 2);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -49,12 +67,12 @@ namespace Hydra.Such.Portal.Controllers {
 
         public IActionResult DetalhesContrato(string id, string version)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 9 && x.Funcionalidade == 2).FirstOrDefault());
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 9, 2);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
-                ViewBag.UPermissions = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 9 && x.Funcionalidade == 2).FirstOrDefault());
+                ViewBag.UPermissions = UPerm;
                 return View();
             }
             else

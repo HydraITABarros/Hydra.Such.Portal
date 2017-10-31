@@ -143,5 +143,32 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(data);
         }
+
+        [HttpPost]
+        public JsonResult DeleteProcedimento([FromBody] ProcedimentoCCPView data)
+        {
+            ErrorHandler result = new ErrorHandler();
+            if(data != null)
+            {
+                if (DBProcedimentosCCP.__Delete(data.No))
+                {
+                    result = new ErrorHandler()
+                    {
+                        eReasonCode = 0,
+                        eMessage = "Procedimento removido com sucesso"
+                    };
+                }
+                else
+                {
+                    result = new ErrorHandler()
+                    {
+                        eReasonCode = 4,
+                        eMessage = "Não foi possível remover o Procedimento"
+                    };
+                }
+                return Json(result);
+            }
+            return Json(false);
+        }
     }
 }

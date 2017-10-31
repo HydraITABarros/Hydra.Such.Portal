@@ -156,7 +156,11 @@ namespace Hydra.Such.Portal.Controllers
                     //Get Project Numeration
                     Configuração Configs = DBConfigurations.GetById(1);
                     int ProjectNumerationConfigurationId = Configs.NumeraçãoProjetos.Value;
-                    data.ProjectNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ProjectNo == "" || data.ProjectNo == null));
+
+                    if (data.ProjectNo == "" || data.ProjectNo == null)
+                    {
+                        data.ProjectNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ProjectNo == "" || data.ProjectNo == null));
+                    }
 
                     if (data.ProjectNo != null)
                     {
@@ -168,7 +172,7 @@ namespace Hydra.Such.Portal.Controllers
                             Área = data.Area,
                             Descrição = data.Description,
                             NºCliente = data.ClientNo,
-                            Data = DateTime.Parse(data.Date),
+                            Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null,
                             Estado = data.Status,
                             CódigoRegião = data.RegionCode,
                             CódigoÁreaFuncional = data.FunctionalAreaCode,
@@ -189,7 +193,7 @@ namespace Hydra.Such.Portal.Controllers
                             TipoGrupoContabProjeto = data.GroupContabProjectType,
                             TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
                             PedidoDoCliente = data.ClientRequest,
-                            DataDoPedido = DateTime.Parse(data.RequestDate),
+                            DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null,
                             ValidadeDoPedido = data.RequestValidity,
                             DescriçãoDetalhada = data.DetailedDescription,
                             CategoriaProjeto = data.ProjectCategory,
@@ -212,7 +216,15 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             //Create Project on NAV
                             Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(data, _configws);
-                            TCreateNavProj.Wait();
+                            try
+                            {
+                                TCreateNavProj.Wait();
+                            }
+                            catch (Exception)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                            }
                             if (!TCreateNavProj.IsCompletedSuccessfully)
                             {
                                 //Delete Created Project on Database
@@ -703,95 +715,134 @@ namespace Hydra.Such.Portal.Controllers
         {
             string num_cliente = "";
             string PKey = "";
+            int lineNo = 1;
+            List<InvoiceMessages> ClientsError = new List<InvoiceMessages>();
             try
             {
                 if (data != null)
                 {
+                    List<ProjectDiaryViewModel> NewList = new List<ProjectDiaryViewModel>();
+                    
                     foreach (var lines in data)
                     {
-                        try
+                        if (num_cliente != lines.InvoiceToClientNo)
                         {
-                            if (num_cliente != lines.InvoiceToClientNo)
+                            if (NewList.Count() > 0)
                             {
-                                try
+                                //update to Invoiced = true
+                                foreach(var lst in NewList)
                                 {
-                                    PKey = "";
-                                    Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(lines, _configws);
-                                    TCreatePreInvoice.Wait();
-                                    if (!TCreatePreInvoice.IsCompletedSuccessfully)
-                                    {
-                                        lines.eReasonCode = 3;
-                                        lines.eMessage = "Ocorreu um erro ao criar o Cabeçalho da Fatura no NAV.";
-                                        num_cliente = lines.InvoiceToClientNo;
-                                        PKey = "";
-                                    }
-                                    else
-                                    {
-                                        num_cliente = lines.InvoiceToClientNo;
-                                        PKey = TCreatePreInvoice.Result.WSPreInvoice.No;
-                                    }
+                                    DiárioDeProjeto upDate = DBProjectDiary.GetByLineNo(lst.LineNo, User.Identity.Name).FirstOrDefault();
+                                    upDate.Faturada = true;
+                                    DBProjectDiary.Update(upDate);
                                 }
-                                catch (Exception)
-                                {
-                                    PKey = "";
-                                    num_cliente = lines.InvoiceToClientNo;
-                                    throw;
-                                }
+                                InvoiceMessages Messages = new InvoiceMessages();
+                                Messages.ClientNo = num_cliente;
+                                Messages.Iserror = false;
 
+                                ClientsError.Add(Messages);
+                                NewList.Clear();
                             }
-                            
-                            if (!String.IsNullOrEmpty(PKey) && PKey != "error")
+
+                            try
                             {
-                                try
+                                PKey = "";
+                                Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(lines, _configws);
+                                TCreatePreInvoice.Wait();
+                                if (TCreatePreInvoice.IsCompletedSuccessfully)
                                 {
-                                    Task<WSCreatePreInvoiceLine.Create_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLine(lines, _configws, PKey);
-                                    TCreatePreInvoiceLine.Wait();
+                                    num_cliente = lines.InvoiceToClientNo;
+                                    PKey = TCreatePreInvoice.Result.WSPreInvoice.No;
+                                }
+                                else
+                                {
+                                    num_cliente = lines.InvoiceToClientNo;
+                                    PKey = "";
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                PKey = "";
+                                num_cliente = lines.InvoiceToClientNo;
+                                throw;
+                            }
+                        }
 
-                                    if (TCreatePreInvoiceLine.IsCompletedSuccessfully && !String.IsNullOrEmpty(TCreatePreInvoiceLine.Result.WsPreInvoiceLine.Key))
+                        if (!String.IsNullOrEmpty(PKey) && PKey != "error")
+                        {
+                            try
+                            {
+                                Task<WSCreatePreInvoiceLine.Create_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLine(lines, _configws, PKey);
+                                TCreatePreInvoiceLine.Wait();
+
+                                if (TCreatePreInvoiceLine.IsCompletedSuccessfully && !String.IsNullOrEmpty(TCreatePreInvoiceLine.Result.WsPreInvoiceLine.Key))
+                                {
+                                    num_cliente = lines.InvoiceToClientNo;
+                                    NewList.Add(lines);
+                                    if(data.Count() == lineNo)
                                     {
-                                        num_cliente = lines.InvoiceToClientNo;
-
                                         //update to Invoiced = true
-                                        DiárioDeProjeto upDate = DBProjectDiary.GetByLineNo(lines.LineNo, User.Identity.Name).FirstOrDefault();
-                                        upDate.Faturada = true;
-                                        DBProjectDiary.Update(upDate);
+                                        foreach (var lst in NewList)
+                                        {
+                                            DiárioDeProjeto upDate = DBProjectDiary.GetByLineNo(lst.LineNo, User.Identity.Name).FirstOrDefault();
+                                            upDate.Faturada = true;
+                                            DBProjectDiary.Update(upDate);
 
+                                            InvoiceMessages Messages = new InvoiceMessages();
+                                            Messages.ClientNo = num_cliente;
+                                            Messages.Iserror = false;
+
+                                            ClientsError.Add(Messages);
+                                        }
                                     }
                                 }
-                                catch (Exception ex)
+                                else
                                 {
+                                    Task<WSCreatePreInvoice.Delete_Result> DeleteHeader = WSPreInvoice.DeletePreInvoiceLineList(PKey, _configws);
                                     num_cliente = lines.InvoiceToClientNo;
                                     PKey = "error";
+
+                                    InvoiceMessages Messages = new InvoiceMessages();
+                                    Messages.ClientNo = num_cliente;
+                                    Messages.Iserror = true;
                                 }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                num_cliente = lines.InvoiceToClientNo;
+                                Task<WSCreatePreInvoice.Delete_Result> DeleteHeader = WSPreInvoice.DeletePreInvoiceLineList(PKey, _configws);
+                                PKey = "error";
+
+                                InvoiceMessages Messages = new InvoiceMessages();
+                                Messages.ClientNo = num_cliente;
+                                Messages.Iserror = true;
                             }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            PKey = "error";
                             num_cliente = lines.InvoiceToClientNo;
                         }
+                        lineNo += 1;
                     }
                 }
             }
             catch (Exception ex)
             {
                 ProjectDiaryViewModel dataerror = new ProjectDiaryViewModel();
-
                 dataerror.eReasonCode = 4;
                 dataerror.eMessage = "Ocorreu um erro ao criar Pré Fatura";
                 return Json(dataerror);
             }
+            //ProjectDiaryViewModel message = new ProjectDiaryViewModel();
+            //message.eReasonCode = 1;
+            //message.eMessage = "Linhas de Fatura criadas com sucesso";
+            return Json(ClientsError);
+        }
 
-            ProjectDiaryViewModel message = new ProjectDiaryViewModel();
-            message.eReasonCode = 1;
-            message.eMessage = "Linhas de Fatura criadas com sucesso";
-            return Json(message);
+        private class InvoiceMessages
+        {
+            public bool Iserror { get; set; }
+            public string ClientNo { get; set; }
         }
         #endregion InvoiceAutorization
-
     }
 }

@@ -85,7 +85,7 @@ namespace Hydra.Such.Data.NAV
             }
             catch (Exception ex)
             {
-                return null;
+                throw;
             }
         }
 
@@ -150,5 +150,6 @@ namespace Hydra.Such.Data.NAV
                     return WSCreatePreInvoiceLine.Type._blank_;
             }
         }
+
     }
 }

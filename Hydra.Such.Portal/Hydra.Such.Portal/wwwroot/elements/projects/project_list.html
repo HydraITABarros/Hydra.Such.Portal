@@ -48,9 +48,12 @@
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
-        <div class="marginSpace">
-            <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
-        </div>
+        <template is="dom-if" if="{{ _permissions.create }}">
+            <div class="marginSpace">
+                <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
+            </div>
+        </template>
+
         <vaadin-grid aria-label="ProjectsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px">
                 <template class="header">
@@ -171,6 +174,9 @@
             Polymer({
                 is: 'x-projectlist',
                 properties: {
+                    _permissions: {
+                        type: Array
+                    },
                     activeItem: {
                         observer: '_rowSelected'
                     },
