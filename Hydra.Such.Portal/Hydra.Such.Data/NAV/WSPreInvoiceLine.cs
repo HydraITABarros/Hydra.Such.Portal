@@ -91,28 +91,28 @@ namespace Hydra.Such.Data.NAV
 
         public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineList(List<LinhasFaturaçãoContrato> LinesList, String HeaderNo, NAVWSConfigurations WSConfigurations)
         {
-            WSCreatePreInvoiceLine.CreateMultiple NAVCreate = new WSCreatePreInvoiceLine.CreateMultiple()
-            {
+            WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
+               x => new WSCreatePreInvoiceLine.WsPreInvoiceLine
+               {
+                   Document_No = HeaderNo,
+                   Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
+                   Document_TypeSpecified = true,
+                   No = x.Código,
+                   Type = ConvertType(x.Tipo),
+                   Description = x.Descrição,
+                   Quantity = x.Quantidade.Value,
+                   QuantitySpecified = true,
+                   Unit_of_Measure = x.CódUnidadeMedida,
+                   Unit_Price = x.PreçoUnitário.Value,
+                   Unit_PriceSpecified = true,
+                   Amount = x.ValorVenda.Value,
+                   AmountSpecified = true,
+                   RegionCode20 = x.CódigoRegião,
+                   FunctionAreaCode20 = x.CódigoÁreaFuncional,
+                   ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade
+               }).ToArray();
 
-            };
-
-            LinesList.Select(x => new WSCreatePreInvoiceLine.WsPreInvoiceLine()
-            {
-                Document_No = HeaderNo,
-                Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
-                //GrupoFatura
-                Type = ConvertType(x.Tipo),
-                // Codigo
-                Description = x.Descrição,
-                Quantity = x.Quantidade.Value,
-                Unit_of_Measure = x.CódUnidadeMedida,
-                Unit_Price = x.PreçoUnitário.Value,
-                Amount = x.ValorVenda.Value,
-                RegionCode20 = x.CódigoRegião,
-                FunctionAreaCode20 = x.CódigoÁreaFuncional,
-                ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade,               
-                No = x.TipoRecurso.ToString()                
-            }).ToList();
+            WSCreatePreInvoiceLine.CreateMultiple NAVCreate = new WSCreatePreInvoiceLine.CreateMultiple(parsedList);
 
             //Configure NAV Client
             EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoiceLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
@@ -130,19 +130,22 @@ namespace Hydra.Such.Data.NAV
                 return null;
             }
         }
-
-
+        
 
         private static WSCreatePreInvoiceLine.Type ConvertType (string type)
         {
             switch (type)
             {
                 case "1":
-                    return WSCreatePreInvoiceLine.Type.Item;
-                case "2":
                     return WSCreatePreInvoiceLine.Type.Resource;
+                case "2":
+                    return WSCreatePreInvoiceLine.Type.Item;
                 case "3":
                     return WSCreatePreInvoiceLine.Type.G_L_Account;
+                case "4":
+                    return WSCreatePreInvoiceLine.Type.Fixed_Asset;
+                case "5":
+                    return WSCreatePreInvoiceLine.Type.Charge_Item;
                 default:
                     return WSCreatePreInvoiceLine.Type._blank_;
             }

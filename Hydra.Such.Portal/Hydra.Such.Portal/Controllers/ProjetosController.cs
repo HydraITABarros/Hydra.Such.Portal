@@ -597,8 +597,15 @@ namespace Hydra.Such.Portal.Controllers
         #region Job Ledger Entry
         public IActionResult MovimentosDeProjeto(String id)
         {
-            ViewBag.ProjectNo = id ?? "";
-            return View();
+            if (id != null)
+            {
+                ViewBag.ProjectNo = id ?? "";
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("PageNotFound", "Error");
+            }
         }
 
         [HttpPost]

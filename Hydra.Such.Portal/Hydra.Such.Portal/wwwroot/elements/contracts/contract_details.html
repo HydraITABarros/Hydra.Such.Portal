@@ -849,8 +849,7 @@
                                         <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="type" />
                                     </template>
-                                    <template>
-                                        
+                                    <template>                                        
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLGridContractLineType" name="_CLGridContractLineType" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineTypeGridChange">
                                                 <template>
