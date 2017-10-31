@@ -57,7 +57,11 @@ namespace Hydra.Such.Data.NAV
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
                 {
-                    Sell_to_Customer_No = CreateInvoice.NºCliente
+                    Sell_to_Customer_No = "10000",//PreInvoiceToCreate.InvoiceToClientNo,
+                    VAT_Registration_No = "789456278",//PreInvoiceToCreate.ClientVATReg,
+                    Document_Date = DateTime.Today,
+                    Document_DateSpecified = true,
+
                 }
             };
 

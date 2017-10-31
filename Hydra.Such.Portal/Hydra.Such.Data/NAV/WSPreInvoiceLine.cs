@@ -55,6 +55,7 @@ namespace Hydra.Such.Data.NAV
                     Unit_PriceSpecified = true,
                     Unit_Cost_LCYSpecified = true,
                     Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
+                    Document_TypeSpecified = true,
                     Document_No = PKey,
                     Type = TypeValue,
                     No = PreInvoiceLineToCreate.Code,
@@ -66,10 +67,8 @@ namespace Hydra.Such.Data.NAV
                     Location_Code = PreInvoiceLineToCreate.LocationCode,
                     Unit_Price = (decimal)PreInvoiceLineToCreate.UnitPrice,
                     Unit_Cost_LCY = (decimal)PreInvoiceLineToCreate.UnitCost,
-                    Job_No = PreInvoiceLineToCreate.ProjectNo,
                     Job_Journal_Line_No_Portal = PreInvoiceLineToCreate.LineNo,
-                    Job_Journal_Line_No_PortalSpecified = true
-
+                    Job_Journal_Line_No_PortalSpecified = true,
                 }
             };
 

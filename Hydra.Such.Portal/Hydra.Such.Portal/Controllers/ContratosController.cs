@@ -29,17 +29,37 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Index(int? archived, string contractNo)
         {
-            ViewBag.Archived = archived == null ? 0 : 1;
-            ViewBag.ContractNo = contractNo ?? "";
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Archived = archived == null ? 0 : 1;
+                ViewBag.ContractNo = contractNo ?? "";
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         public IActionResult Details(string id, string version)
         {
-            ViewBag.ContractNo = id ?? "";
-            ViewBag.VersionNo = version ?? "";
-            ViewBag.UPermissions = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ContractNo = id ?? "";
+                ViewBag.VersionNo = version ?? "";
+                ViewBag.UPermissions = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+
+            
+            
         }
 
         public IActionResult AvencaFixa()
@@ -572,7 +592,7 @@ namespace Hydra.Such.Portal.Controllers
                     RegionCode = item.CódigoRegião,
                     FunctionalAreaCode = item.CódigoÁreaFuncional,
                     ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
-                    RegisterDate = item.DataPróximaFatura
+                    RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : ""
                 });
             }
 
@@ -618,11 +638,11 @@ namespace Hydra.Such.Portal.Controllers
                             contractVal = Math.Round((NumMeses * contractLinesList.Sum(x => x.PreçoUnitário.Value)), 2);
                         }
 
-                        List<NAVSalesInvoiceLinesViewModel> salesList = DBNAV2017SalesInvoiceLine.GetSalesInvoiceLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.DataInicial.ToString(), item.DataExpiração.Value.ToString());
-                        Decimal invoicePeriod = salesList.Sum(x => x.Amount);
+                        List<NAVSalesInvoiceLinesViewModel> salesList = DBNAV2017SalesInvoiceLine.GetSalesInvoiceLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.DataInicial.Value, item.DataExpiração.Value);
+                        Decimal invoicePeriod = salesList != null ? salesList.Sum(x => x.Amount) : 0;
 
-                        List<NAVSalesCrMemoLinesViewModel> crMemo = DBNAV2017SalesCrMemo.GetSalesCrMemoLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.DataInicial.ToString(), item.DataExpiração.Value.ToString());
-                        Decimal creditPeriod = crMemo.Sum(x => x.Amount);
+                        List<NAVSalesCrMemoLinesViewModel> crMemo = DBNAV2017SalesCrMemo.GetSalesCrMemoLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.DataInicial.Value, item.DataExpiração.Value);
+                        Decimal creditPeriod = crMemo != null ? crMemo.Sum(x => x.Amount) : 0;
 
                         AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
                         {

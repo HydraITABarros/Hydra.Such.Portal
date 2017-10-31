@@ -33,6 +33,7 @@ namespace Hydra.Such.Data.ViewModel
         public string ClientName { get; set; }
         public string ClientVATReg { get; set; }
         public string CommitmentNumber { get; set; }
+        public bool Billed { get; set; }
         //public string RequisitionNo { get; set; }
         //public int? RequisitionLineNo { get; set; }
         //public string Driver { get; set; }
