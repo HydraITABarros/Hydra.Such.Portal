@@ -816,7 +816,6 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         lineNo += 1;
                     }
-                    
                 }
             }
             catch (Exception ex)
