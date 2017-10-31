@@ -136,6 +136,8 @@ namespace Hydra.Such.Portal.Controllers
             UCObject.Nome = data.Name;
             UCObject.Ativo = data.Active;
             UCObject.Administrador = data.Administrator;
+            UCObject.UtilizadorModificação = User.Identity.Name;
+            DBUserConfigurations.Update(UCObject);
 
             //Update Accesses
             DBUserAccesses.DeleteAllFromUser(data.IdUser);
@@ -150,7 +152,7 @@ namespace Hydra.Such.Portal.Controllers
                     Leitura = x.Read,
                     Modificação = x.Update,
                     Eliminação = x.Delete,
-                    UtilizadorCriação = User.Identity.Name
+                    UtilizadorCriação = User.Identity.Name,
                 });
             });
             
