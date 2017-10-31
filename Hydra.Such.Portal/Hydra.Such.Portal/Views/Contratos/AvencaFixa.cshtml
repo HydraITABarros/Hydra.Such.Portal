@@ -57,9 +57,9 @@
             }
         </style>
 
-        <iron-ajax url="/Contratos/GetAllAvencaFixa" last-response="{{result}}" id="ajax_getall" method="post" auto handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Contratos/GenerateInvoice" last-response="{{invoiceGen}}" id="ajax_generate" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Contratos/CountInvoice" last-response="{{invoiceCount}}" id="ajax_count" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Contratos/GetAllAvencaFixa" last-response="{{result}}" id="ajax_getall" method="post" auto handle-as="json" content-type="application/json" on-response="_gridListResponse"></iron-ajax>
+        <iron-ajax url="/Contratos/GenerateInvoice" last-response="{{invoiceGen}}" id="ajax_generate" method="post" handle-as="json" content-type="application/json" on-response="_invoiceGenResponse"></iron-ajax>
+        <iron-ajax url="/Contratos/CountInvoice" last-response="{{invoiceCount}}" id="ajax_count" method="post" handle-as="json" content-type="application/json" on-response="_invoiceCountResponse"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -202,7 +202,8 @@
             </vaadin-grid-column>
         </vaadin-grid>
         
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
     <script>
@@ -213,22 +214,63 @@
 
                 },
 
-                openToast: function (message) {
-                    this.$.ToastMessage.text = message;
-                    this.$.ToastMessage.open();
+                openToastSuccess: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _gridListResponse: function()
+                {
+                    if (this.result == null || this.result == undefined || this.result.length == 0) {
+                        this.openToastSuccess("Não existem aprovações pendentes.");
+                    }               
                 },
 
                 _generateInvoice: function () {
-                    this.$.ajax_generate.body = JSON.stringify(this.result);
-                    this.$.ajax_generate.generateRequest();
-                    this.$.avencaFixaTable.clearCache();
+                    if (this.result == null || this.result == undefined || this.result.length == 0)
+                    {
+                        this.$.ajax_generate.body = JSON.stringify(this.result);
+                        this.$.ajax_generate.generateRequest();
+                        this.$.avencaFixaTable.clearCache();
+                    }
+                    else {
+                        this.openToastError("Não existem linhas disponiíveis para faturar.");
+                    }
+                },
 
+                _invoiceGenResponse: function (e) {
+                    if (e.returnValue == true)
+                    {
+                        this.openToastSuccess("Faturas geradas com sucesso.");
+                    }
+                    else {
+                        this.openToastError("Ocorreu um erro ao tentar gerar faturas.");
+                    }
                 },
 
                 _count: function () {
-                    this.$.ajax_count.body = JSON.stringify(this.result);
-                    this.$.ajax_count.generateRequest();
-                    this.$.avencaFixaTable.clearCache();
+                    debugger;;
+                    if (this.result != null || this.result != undefined || this.result.length != 0) {
+                        this.$.ajax_count.body = JSON.stringify(this.result);
+                        this.$.ajax_count.generateRequest();
+                        this.$.avencaFixaTable.clearCache();
+                    } 
+                    else {
+                        this.openToastError("Não existem linhas disponiíveis para contabilizar.");
+                    }
+                },
+
+                _invoiceCountResponse: function (e) {
+                    if (e.returnValue == true) {
+                        this.openToastSuccess("Faturas contabilizadas com sucesso.");
+                    }
+                    else {
+                        this.openToastError("Ocorreu um erro ao tentar contabilizar faturas.");
+                    }
                 },
 
                 _parseRegionCode: function (param)

@@ -57,11 +57,10 @@ namespace Hydra.Such.Data.NAV
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
                 {
-                    Sell_to_Customer_No = "10000",//PreInvoiceToCreate.InvoiceToClientNo,
-                    VAT_Registration_No = "789456278",//PreInvoiceToCreate.ClientVATReg,
+                    Sell_to_Customer_No = "01121212",//PreInvoiceToCreate.InvoiceToClientNo,
+                    VAT_Registration_No = "123456789",//PreInvoiceToCreate.ClientVATReg,
                     Document_Date = DateTime.Today,
                     Document_DateSpecified = true,
-
                 }
             };
 
@@ -111,6 +110,26 @@ namespace Hydra.Such.Data.NAV
                 return null;
             }
         }
+        
 
+        public static async Task<WSCreatePreInvoice.Delete_Result> DeletePreInvoiceLineList(String HeaderNo, NAVWSConfigurations WSConfigurations)
+        {
+
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoiceLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCreatePreInvoice.WSPreInvoice_PortClient WS_Client = new WSCreatePreInvoice.WSPreInvoice_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSCreatePreInvoice.Delete_Result result = await WS_Client.DeleteAsync(HeaderNo);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }
