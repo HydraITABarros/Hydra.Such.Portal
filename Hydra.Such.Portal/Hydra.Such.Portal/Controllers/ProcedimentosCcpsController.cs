@@ -49,6 +49,20 @@ namespace Hydra.Such.Portal.Controllers
             ViewBag.No = id == null ? "" : id;
             return View();
         }
+
+        public IActionResult DetalhePedidoAquisicao(string id)
+        {
+            ViewBag.No = id == null ? "" : id;
+            ViewBag.TipoProcedimento = 1;
+            return View();
+        }
+
+        public IActionResult DetalhePedidoSimplificado(string id)
+        {
+            ViewBag.No = id == null ? "" : id;
+            ViewBag.TipoProcedimento = 2;
+            return View();
+        }
         #endregion
 
         [HttpPost]
@@ -101,11 +115,16 @@ namespace Hydra.Such.Portal.Controllers
                 if(data != null)
                 {
                     data.UtilizadorCriacao = User.Identity.Name;
-                    ProcedimentosCcp procedimento = DBProcedimentosCCP.__Create(data);
+                    ProcedimentosCcp procedimento = DBProcedimentosCCP.__CreateProcedimento(data);
                     if (procedimento == null)
                     {
                         data.eReasonCode = 3;
                         data.eMessage = "Ocorreu um erro ao criar o Procedimento";
+                    }
+                    else
+                    {
+                        data.eReasonCode = 1;
+                        data.eMessage = "Procedimento criado com sucesso";
                     }
                 }
 
@@ -119,6 +138,34 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
+        //public JsonResult CreateProcedimento([FromBody] int _procedimentotypeid)
+        //{
+        //    try
+        //    {
+        //        ProcedimentoCCPView NewProcView = new ProcedimentoCCPView()
+        //        {
+        //            TipoProcedimento = _procedimentotypeid,
+        //            UtilizadorCriacao = User.Identity.Name
+        //        };
+
+
+        //        ProcedimentosCcp NewProc = DBProcedimentosCCP.__CreateProcedimento(NewProcView);
+
+        //        if(NewProc != null)
+        //        {
+        //            return Json(CCPFunctions.CastProcCcpToProcCcpView(NewProc));
+        //        }
+        //        else
+        //        {
+        //            return Json(null);
+        //        }
+        //    }
+        //    catch(Exception e)
+        //    {
+        //        return Json(null);
+        //    }
+        //}
+
         [HttpPost]
         public JsonResult UpdateProcedimento([FromBody] ProcedimentoCCPView data)
         {
@@ -127,7 +174,7 @@ namespace Hydra.Such.Portal.Controllers
                 if(data != null)
                 {
                     data.UtilizadorModificacao = User.Identity.Name;
-                    ProcedimentosCcp proc = DBProcedimentosCCP.__Update(data);
+                    ProcedimentosCcp proc = DBProcedimentosCCP.__UpdateProcedimento(data);
                     if(proc == null)
                     {
                         data.eReasonCode = 3;
@@ -150,7 +197,7 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             if(data != null)
             {
-                if (DBProcedimentosCCP.__Delete(data.No))
+                if (DBProcedimentosCCP.__DeleteProcedimento(data.No))
                 {
                     result = new ErrorHandler()
                     {
