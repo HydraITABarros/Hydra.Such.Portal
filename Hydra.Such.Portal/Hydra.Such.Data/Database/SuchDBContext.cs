@@ -1288,6 +1288,8 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Grupo Contab. Projeto")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.Moeda).HasMaxLength(20);
+
                 entity.Property(e => e.Motorista).HasMaxLength(80);
 
                 entity.Property(e => e.NºDocumento)
@@ -1345,6 +1347,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.ValorUnitárioAFaturar).HasColumnName("Valor Unitário a Faturar");
 
                 entity.HasOne(d => d.CódDestinoFinalResíduosNavigation)
                     .WithMany(p => p.DiárioDeProjeto)
