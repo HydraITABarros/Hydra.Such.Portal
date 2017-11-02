@@ -281,10 +281,10 @@
                     <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piCurrency" label="Moeda" value="{{currency}}" disabled></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
+                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="[0-9]+([\.,][0-9]+)?" value="{{unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2 alignPoga">
                     <vaadin-checkbox id="pcInvoice" checked="{{billable}}"> Faturável</vaadin-checkbox>
@@ -670,6 +670,37 @@
                     </template>
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="currency">Moeda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="currency"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field value="{{item.currency}}" disabled></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.currency}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="unitValueToInvoice">Valor Unitário A Faturar</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitValueToInvoice"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{item.unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.unitValueToInvoice}}€
+                    </template>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="75px" resizable>
                 <template class="header">
                     <p class="alignCenter">Faturável</p>
@@ -780,6 +811,11 @@
                         notify: true,
                         value: ""
                     },
+                    currency: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
                     unitCost: {
                         type: Number,
                         notify: true,
@@ -796,6 +832,11 @@
                         value: ""
                     },
                     totalPrice: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    unitValueToInvoice: {
                         type: Number,
                         notify: true,
                         value: ""
@@ -870,7 +911,9 @@
                             unitPrice: this.unitPrice,
                             totalPrice: this.totalPrice,
                             billable: this.billable,
-                            invoiceToClientNo: this.invoiceClientNo
+                            invoiceToClientNo: this.invoiceClientNo,
+                            unitValueToInvoice: this.unitValueToInvoice,
+                            currency: this.currency
                         });
 
                         // Save to DB
@@ -957,6 +1000,7 @@
                         this.codeProjectContabGroup = this.related.contabGroup;
                         this.codeResponsabilityCenter = this.related.responsabilityCenter;
                         this.invoiceClientNo = this.related.invoiceClientNo;
+                        this.currency = this.related.currency;
                     }
                 },
 
@@ -1018,7 +1062,9 @@
                                 unitPrice: e.unitPrice,
                                 totalPrice: e.totalPrice,
                                 billable: e.billable,
-                                invoiceToClientNo: e.invoiceClientNo
+                                invoiceToClientNo: e.invoiceClientNo,
+                                unitValueToInvoice: this.unitValueToInvoice,
+                                currency: this.currency
                             });
                         });
                         this.$.projectDiaryProject.clearCache();
