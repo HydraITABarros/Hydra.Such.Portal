@@ -152,8 +152,9 @@
                 ready: function () {
                     debugger;;
 
-                    this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
+                    this.$.page_databound_ajax.body = JSON.stringify({"No": this._procedimentoid});
                     this.$.page_databound_ajax.generateRequest();
+
 
                     if (this._procedimentoid == "") {
                         this._isCreate = true;
