@@ -34,7 +34,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Contratos
         public IActionResult Contratos(int? archived, string contractNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -50,12 +50,12 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesContrato(string id, string version)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
-                ViewBag.UPermissions = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
+                ViewBag.UPermissions = UPerm;
                 return View();
             }
             else
@@ -73,7 +73,15 @@ namespace Hydra.Such.Portal.Controllers
       
         public IActionResult Administracao()
         {
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 18);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
     }
 }

@@ -48,6 +48,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    item.DataHoraCriação = DateTime.Now;
                     ctx.AcessosDimensões.Add(item);
                     ctx.SaveChanges();
                 }
@@ -67,7 +68,11 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    items.ForEach(x => ctx.AcessosDimensões.Add(x));
+                    items.ForEach(x =>
+                    {
+                        x.DataHoraCriação = DateTime.Now;
+                        ctx.AcessosDimensões.Add(x);
+                    });
                     ctx.SaveChanges();
                 }
 
@@ -94,6 +99,7 @@ namespace Hydra.Such.Data.Logic
                     items.ForEach(x =>
                         {
                             x.IdUtilizador = userId;
+                            x.DataHoraCriação = DateTime.Now;
                             ctx.AcessosDimensões.Add(x);
                         });
                     ctx.SaveChanges();
@@ -113,6 +119,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    item.DataHoraModificação = DateTime.Now;
                     ctx.AcessosDimensões.Update(item);
                     ctx.SaveChanges();
                 }
@@ -125,6 +132,31 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
+        
+        //public static List<AcessosDimensões> Update(string userId, List<AcessosDimensões> items)
+        //{
+        //    try
+        //    {
+        //        using (var ctx = new SuchDBContext())
+        //        {
+        //            //Update existing
+        //            items.ForEach(x =>
+        //            {
+        //                x.DataHoraModificação = DateTime.Now;
+        //                ctx.AcessosDimensões.Update(x);
+        //            });
+        //            //delete unexisting
+        //            var itemsToDelete
+        //            ctx.SaveChanges();
+        //        }
+        //        return items;
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        return null;
+        //    }
+        //}
 
         public static bool Delete(string userId, int dimension, string dimensionValue)
         {
@@ -184,38 +216,46 @@ namespace Hydra.Such.Data.Logic
             return new List<UserDimensionsViewModel>();
         }
 
-        public static UserDimensionsViewModel ParseToViewModel(this AcessosDimensões dimensionAccess)
+        public static UserDimensionsViewModel ParseToViewModel(this AcessosDimensões item)
         {
             return new UserDimensionsViewModel()
             {
-                UserId = dimensionAccess.IdUtilizador,
-                Dimension = dimensionAccess.Dimensão,
-                DimensionValue = dimensionAccess.ValorDimensão
+                UserId = item.IdUtilizador,
+                Dimension = item.Dimensão,
+                DimensionValue = item.ValorDimensão,
+                CreateDate = item.DataHoraCriação.HasValue ? item.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
+                UpdateDate = item.DataHoraModificação.HasValue ? item.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
+                CreateUser = item.UtilizadorCriação,
+                UpdateUser = item.UtilizadorModificação
             };
         }
 
-        public static List<UserDimensionsViewModel> ParseToViewModel(this List<AcessosDimensões> dimensionAccess)
+        public static List<UserDimensionsViewModel> ParseToViewModel(this List<AcessosDimensões> items)
         {
             List<UserDimensionsViewModel> userDimensions = new List<UserDimensionsViewModel>();
-            dimensionAccess.ForEach(x =>
+            items.ForEach(x =>
                 userDimensions.Add(x.ParseToViewModel()));
             return userDimensions;
         }
 
-        public static AcessosDimensões ParseToDB(this UserDimensionsViewModel userDimension)
+        public static AcessosDimensões ParseToDB(this UserDimensionsViewModel item)
         {
             return new AcessosDimensões()
             {
-                IdUtilizador = userDimension.UserId,
-                Dimensão = userDimension.Dimension,
-                ValorDimensão = userDimension.DimensionValue
+                IdUtilizador = item.UserId,
+                Dimensão = item.Dimension,
+                ValorDimensão = item.DimensionValue,
+                DataHoraCriação = string.IsNullOrEmpty(item.CreateDate) ? (DateTime?)null : DateTime.Parse(item.CreateDate),
+                DataHoraModificação = string.IsNullOrEmpty(item.UpdateDate) ? (DateTime?)null : DateTime.Parse(item.UpdateDate),
+                UtilizadorCriação = item.CreateUser,
+                UtilizadorModificação = item.UpdateUser
             };
         }
 
-        public static List<AcessosDimensões> ParseToDB(this List<UserDimensionsViewModel> userDimensions)
+        public static List<AcessosDimensões> ParseToDB(this List<UserDimensionsViewModel> items)
         {
             List<AcessosDimensões> dimensionAccess = new List<AcessosDimensões>();
-            userDimensions.ForEach(x =>
+            items.ForEach(x =>
                 dimensionAccess.Add(x.ParseToDB()));
             return dimensionAccess;
         }

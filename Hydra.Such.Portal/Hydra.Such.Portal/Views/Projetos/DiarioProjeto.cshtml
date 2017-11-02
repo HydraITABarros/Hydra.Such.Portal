@@ -55,34 +55,6 @@
             input {
                 font: inherit;
             }
-
-            .editGrid paper-input {
-                max-width: 200px !important;
-                font-size: 13px !important;
-            }
-
-            /*.editGrid vaadin-combo-box {
-                max-width: 200px !important;
-                font-size: 13px !important;
-            }*/
-
-            /*vaadin-grid#projectDiaryProject vaadin-grid-sorter {
-                margin: 0 auto;
-                white-space: nowrap;
-            }
-
-            vaadin-grid#projectDiaryProject vaadin-grid-filter {
-                margin: 0 auto;
-                white-space: nowrap;
-            }
-
-            vaadin-grid#projectDiaryProject paper-checkbox {
-                text-align: center;
-            }
-
-            --vaadin-grid-header-cell: {
-                font-size: 12px;
-            }*/
         </style>
 
         <div class="subMenu">
@@ -113,52 +85,18 @@
                    content-type="application/json"></iron-ajax>
 
         @*CODE OPTIONS*@
-        <iron-ajax url="/PopulateDropdowns/GetCGAccountCode"
-                   id="ajax_code_options"
-                   last-response="{{codeOptions}}"
-                   method="post"
-                   on-response="_updateMeasureUnit"
-                   handle-as="json"
-                   params='{}'
-                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>        
         @*CODE OPTIONS*@
 
-        @*Temp*@
-        <iron-ajax url="/PopulateDropdowns/GetCGAccountCode"
-                   id="ajax_account_options"
-                   last-response="{{accountCode}}"
-                   method="post"
-                   handle-as="json"
-                   auto
-                   params='{}'
-                   content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetResourcesCode"
-                   id="ajax_resource_options"
-                   last-response="{{resourceCode}}"
-                   method="post"
-                   handle-as="json"
-                   auto
-                   params='{}'
-                   content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProductsCode"
-                   id="ajax_products_options"
-                   last-response="{{productCode}}"
-                   method="post"
-                   auto
-                   handle-as="json"
-                   params='{}'
-                   content-type="application/json"></iron-ajax>
+        @*Code in Form*@
+        <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{codeOptions}}" id="ajax_code_options" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        @*Code in Form*@
 
-        <iron-ajax url="/PopulateDropdowns/Alpha"
-                   id="ajax_products_options"
-                   last-response="{{allofit}}"
-                   method="post"
-                   auto
-                   handle-as="json"
-                   params='{}'
-                   content-type="application/json"></iron-ajax>
-        @*Temp*@
-
+        @*Code in Lines*@
+        <iron-ajax url="/PopulateDropdowns/GetContractDiaryLineCodes" last-response="{{CBContractLineCodesGrid}}" id="contractlinecodesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        @*Code in Lines*@
 
         <iron-ajax url="/PopulateDropdowns/GetMeasureUnits"
                    last-response="{{MeasureUnit}}"
@@ -255,7 +193,7 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piDescription" label="Descrição" disabled value="{{description}}"></vaadin-text-field>
+                    <vaadin-text-field id="piDescription" label="Descrição" value="{{description}}"></vaadin-text-field>
                 </div>
             </div>
             <div class="row">
@@ -271,7 +209,7 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piQuantity" pattern="[0-9]*" prevent-invalid-input label="Quantidade" value="{{quantity}}"></vaadin-text-field>
+                    <vaadin-text-field id="piQuantity" pattern="[0-9]*" prevent-invalid-input label="Quantidade" value="{{quantity}}" on-changed="_calcTotals"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-combo-box id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[MeasureUnit]]" item-value-path="id" value="{{codeMeasurementUnit}}" item-label-path="value" label="Cód. Unidade Medida">
@@ -319,38 +257,45 @@
                 </div>
             </div>
             <div class="row">
-                    <div class="col-lg-2">
-                        <vaadin-combo-box id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" items="[[ResponsabilityCenterData]]" value="{{codeResponsabilityCenter}}" item-value-path="id" item-label-path="value" label="Cód. Centro Respon.">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-2">
-                        <vaadin-text-field id="piUnitCost" label="Custo Uniário" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitCost}}"><div slot="suffix">€</div></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-2">
-                        <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-2">
-                        <vaadin-text-field id="piUnitPrice" label="Preço Uniário" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitPrice}}"><div slot="suffix">€</div></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-2">
-                        <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-2 alignPoga">
-                        <vaadin-checkbox id="pcInvoice" checked="{{billable}}"> Faturável</vaadin-checkbox>
-                    </div>
-             </div>
-             <div class="row">
-                    <div class="col-lg-2 alignPoga">
-                        <paper-button class="btnSave" raised on-tap="_add">Criar</paper-button>
-                    </div>
-             </div>
+                <div class="col-lg-2">
+                    <vaadin-combo-box id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" items="[[ResponsabilityCenterData]]" value="{{codeResponsabilityCenter}}" item-value-path="id" item-label-path="value" label="Cód. Centro Respon.">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piUnitCost" label="Custo Uniário" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals"><div slot="suffix">€</div></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piUnitPrice" label="Preço Uniário" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitPrice}}" on-value-changed="_calcTotals"><div slot="suffix">€</div></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="[0-9]+([\.,][0-9]+)?" value="{{unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piCurrency" label="Moeda" value="{{currency}}" disabled></vaadin-text-field>
+                </div>
+                <div class="col-lg-2 alignPoga">
+                    <vaadin-checkbox id="pcInvoice" checked="{{billable}}"> Faturável</vaadin-checkbox>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-lg-2 alignPoga">
+                    <paper-button class="btnSave" raised on-tap="_add">Criar</paper-button>
+                </div>
+            </div>
             <vaadin-text-field id="piInvoiceClientNo" disabled value="{{invoiceClientNo}}" hidden></vaadin-text-field>
         </div>
 
@@ -407,264 +352,329 @@
                    on-response="_movementLinesResponse"
                    content-type="application/json"></iron-ajax>
 
-        <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result]]" class="editGrid">
+        <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result]]" class="editGrid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectNo"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[response]]" on-value-changed="_projectChange" item-value-path="id" item-label-path="value" disabled value="{{item.projectNo}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[response]]" item-value-path="id" item-label-path="value" disabled value="{{item.projectNo}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.projectNo}}
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
                     <vaadin-grid-filter path="date"></vaadin-grid-filter>
                 </template>
                 <template>
-                    @*<input type="date" id="dpDate" name="dpDate" value="{{item.date}}"/>*@
-                    <vaadin-date-picker id="dpDate" name="dpDate" value="{{item.date}}"></vaadin-date-picker>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-date-picker id="dpDate" name="dpDate" value="{{item.date}}"></vaadin-date-picker>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.date}}
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="200px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="movementType">Tipo Movimento</vaadin-grid-sorter>
-                    @*<vaadin-grid-filter path="movementType"></vaadin-grid-filter>*@
                 </template>
                 <template>
-                    @*<cb-movetype name="movementType" indexvalue="{{item.movementType}}"></cb-movetype>*@
-                    <vaadin-combo-box items="[[response2]]" item-value-path="id" item-label-path="value" value="{{item.movementType}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[response2]]" item-value-path="id" item-label-path="value" value="{{item.movementType}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseMovementType(item.movementType) ]]
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="200px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
-                    @*<vaadin-grid-filter path="type"></vaadin-grid-filter>*@
                 </template>
                 <template>
-                    <vaadin-combo-box id="type[[index]]" items="[[response3]]" on-value-changed="_lineProjectTypeChange" item-value-path="id" item-label-path="value" value="{{item.type}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box id="type[[index]]" items="[[response3]]" on-value-changed="_lineProjectTypeChange" item-value-path="id" item-label-path="value" value="{{item.type}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseType(item.type) ]]
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="200px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box id="code[[index]]" items="[[allofit.0]]" on-value-changed="_codeChange" item-value-path="id" item-label-path="value" value="{{item.code}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box id="_CLGridContractLineType" name="_CLGridContractLineType" items="[[CBContractLineCodesGrid]]" on-value-changed="_lineCodeChange" item-value-path="id" item-label-path="id" value="{{item.code}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.id]]</div>
+                                        <div secundary>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseCode(item.code, item.type) ]]
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="200px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field id="description" value="{{item.description}}" disabled></vaadin-text-field>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="description" value="{{item.description}}"></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.description}}
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="200px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="projectContabGroup">Grupo Contab.</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectContabGroup"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[ContabGroupData]]" item-value-path="id" item-label-path="id" value="{{item.projectContabGroup}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.id]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[ContabGroupData]]" item-value-path="id" item-label-path="id" value="{{item.projectContabGroup}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.id]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseContabGroup(item.projectContabGroup) ]]
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="quantity"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field pattern="[0-9]" value="{{item.quantity}}"></vaadin-text-field>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field pattern="[0-9]" id="lineQuantity" value="{{item.quantity}}" on-value-changed="_lineCalcTotals"></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.quantity}}
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="measurementUnitCode">Cód. Unidade Medida</vaadin-grid-sorter>
                     <vaadin-grid-filter path="measurementUnitCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[MeasureUnit]]" item-value-path="id" item-label-path="value" value="{{item.measurementUnitCode}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[MeasureUnit]]" item-value-path="id" item-label-path="value" value="{{item.measurementUnitCode}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseMeasurementUnit(item.measurementUnitCode) ]]
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
                     <vaadin-grid-filter path="locationCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[Locations]]" item-value-path="id" item-label-path="value" value="{{item.locationCode}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[Locations]]" item-value-path="id" item-label-path="value" value="{{item.locationCode}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseLocation(item.locationCode) ]]
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="regionCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{item.regionCode}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{item.regionCode}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseRegion(item.regionCode) ]]
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="functionalAreaCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" value="{{item.functionalAreaCode}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" value="{{item.functionalAreaCode}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseFuncArea(item.functionalAreaCode) ]]
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="responsabilityCenterCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[ResponsabilityCenterData]]" item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[ResponsabilityCenterData]]" item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseResponsabilityCenter(item.responsabilityCenterCode) ]]
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="unitCost"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field id="piUnitCost" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{item.unitCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="lineUnitCost" on-value-changed="_lineCalcTotals" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{item.unitCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.unitCost}}€
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
                     <vaadin-grid-filter path="totalCost"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{item.totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{item.totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.totalCost}}€
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="unitPrice"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{item.unitPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" id="lineUnitPrice" on-value-changed="_lineCalcTotals" class="alignRight" value="{{item.unitPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.unitPrice}}€
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="totalPrice">Preço Total</vaadin-grid-sorter>
                     <vaadin-grid-filter path="totalPrice"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{item.totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{item.totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.totalPrice}}€
+                    </template>
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="75px" resizable>
                 <template class="header">
                     <p class="alignCenter">Faturável</p>
                     <vaadin-grid-filter path="billable" value="[[_filterActive]]">
-                    <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
                     </vaadin-grid-filter>
                 </template>
                 <template>
@@ -672,10 +682,6 @@
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column hidden>
-                @*<template class="header">
-                        <vaadin-grid-sorter path="invoiceToClientNo">Fatura a Nº Cliente</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="invoiceToClientNo"></vaadin-grid-filter>
-                    </template>*@
                 <template>
                     <vaadin-text-field id="invoiceToClientNo" value="{{item.invoiceToClientNo}}" disabled></vaadin-text-field>
                 </template>
@@ -693,7 +699,10 @@
             <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
             <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
         </div>
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
     </template>
 
     <script>
@@ -805,15 +814,19 @@
                         type: Boolean,
                         value: true
                     },
+                    _SelectedLine: {
+                        observer: '_lineSelected'
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
                 },
 
                 ready: function () {
                     if ("@ViewBag.ProjectNo" != "") {
                         this.$.projectList.value = "@ViewBag.ProjectNo";
                         this.disabledProjectNo = true;
-
-                        //Add new fields
-                        //_projectChange();
                     }
                     //else
                     //{
@@ -823,9 +836,13 @@
                     //}
                 },
 
-                openToast: function (message) {
-                    this.$.ToastMessage.text = message;
-                    this.$.ToastMessage.open();
+                openToastSuccess: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
                 },
 
                 _add() {
@@ -881,6 +898,7 @@
                 },
 
                 _cancel: function () {
+                    this.openToastError("Nope!");
                     this.$.ajax_getall.generateRequest();
                     this.$.projectDiaryProject.clearCache();
                 },
@@ -892,10 +910,10 @@
                         this.$.ajax_getall.generateRequest();
                         this.$.projectDiaryProject.clearCache();
 
-                        this.openToast("Diário de Projeto atualizado.");
+                        this.openToastSuccess("Diário de Projeto atualizado.");
                     }
                     else {
-                        this.openToast("Occorreu um erro ao atualizar as o Diário de Projeto.");
+                        this.openToastError("Occorreu um erro ao atualizar as o Diário de Projeto.");
                     }
                 },
 
@@ -932,95 +950,14 @@
                     }
                 },
 
-                _codeChange: function (e) {
-                    if (e.detail.value != null && e.detail.value != "") {
-                        var index = this.codeOptions.findIndex(i => i.id === e.detail.value);
-                        this.code = this.codeOptions[index].id;
-                        this.description = this.codeOptions[index].value;
-                        this.codeMeasurementUnit = this.codeOptions[index].extra;
-                    }
-                },
-
-                //_lineProjectTypeChange: function (e) {
-                //    if (e.target.id != null && e.target.id != "") {
-                //        if (e.target.id != "type")
-                //        {
-                //            var code = e.target.id.slice(4);
-                //        }
-                //        var codecombo = this.$$("#code" + code);
-
-                //        switch (e.target.value) {
-                //            case 1:
-                //                codecombo.items = this.allofit[0];
-                //                break;
-                //            case 2:
-                //                codecombo.items = this.allofit[1];
-                //                break;
-                //            case 3:
-                //                codecombo.items = this.allofit[2];
-                //            default:
-                //                break;
-                //        }
-                //    }
-                //},
-
-                _lineChange: function (e) {
-                    if (e.target.id != null && e.target.id != "") {
-                        if (e.target.id != "code") {
-                            var code = e.target.id.slice(4);
-                        }
-
-                        var typcode = this.$$("#type" + code);
-                        var codecombo = this.$$(e.target.id);
-
-                        switch (typcode.value) {
-                            case 1:
-                                codecombo.items = this.allofit[0];
-                                break;
-                            case 2:
-                                codecombo.items = this.allofit[1];
-                                break;
-                            case 3:
-                                codecombo.items = this.allofit[2];
-                            default:
-                                break;
-                        }
-                    }
-                },
-
-                //_selectItem: function (e) {
-                //    debugger;;
-
-                //    if (e.target.id != null) {
-                //        //get id line
-                //        var code = e.target.id.slice(4);
-                //        var codecombo = this.$$("#code" + code);
-
-                //        switch (e.target.value) {
-                //            case 1:
-                //                codecombo.items = this.resourceCode;
-                //                break;
-                //            case 2:
-                //                codecombo.items = this.productCode;
-                //                break;
-                //            case 3:
-                //                codecombo.items = this.accountCode;
-                //            default:
-                //                codecombo.items = null;
-                //                break;
-                //        }
-                //        //codecombo.value = e.model.item["code"];
-                //    }
-                //},
-
                 _updateRelatedResponse: function (related) {
                     if (related != null) {
-                        debugger;;
                         this.codeRegion = this.related.regionCode;
                         this.codeFuncArea = this.related.funcAreaCode;
                         this.codeProjectContabGroup = this.related.contabGroup;
                         this.codeResponsabilityCenter = this.related.responsabilityCenter;
                         this.invoiceClientNo = this.related.invoiceClientNo;
+                        this.currency = this.related.currency;
                     }
                 },
 
@@ -1028,10 +965,10 @@
                     var self = this;
                     if (this.$.ajax_update.url == "/Projetos/RegisterDiaryLines") {
                         if (e.detail.status === 200) {
-                            this.openToast("Linhas do Diário registadas com sucesso.");
+                            this.openToastSuccess("Linhas do Diário registadas com sucesso.");
                         }
                         else {
-                            this.openToast("Occorreu um erro ao registar as linhas do Diário.");
+                            this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
                         }
                         this.$.ajax_update.url == "/Projetos/RegisterDiaryLines";
                     }
@@ -1045,7 +982,6 @@
 
                 _getMovements: function () {
                     //Request
-                    debugger;;
                     if (this.$.projectList.value != null && this.$.projectList.value != "")
                     {
                         this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
@@ -1054,13 +990,12 @@
                     }
                     else
                     {
-                        this.openToast("Precisa de selecionar um projeto.");
+                        this.openToastError("Precisa de selecionar um projeto.");
                     }
 
                 },
 
                 _movementLinesResponse: function () {
-                    debugger;;
                     if (this.movementLines != null)
                     {
                         this.movementLines.forEach(function (e) {
@@ -1088,10 +1023,214 @@
                             });
                         });
                         this.$.projectDiaryProject.clearCache();
-                        this.openToast("Movimentos adicionados com sucesso.");
+                        this.openToastSuccess("Movimentos adicionados com sucesso.");
 
                     }
-                }
+                },
+
+                _calcTotals: function (e) {
+                    switch (e.target.id) {
+                        case "piQuantity":
+                            this.quantity = e.detail.value;
+                            break;
+                        case "piUnitCost":
+                            this.unitCost = e.detail.value;
+                            break;
+                        case "piUnitPrice":
+                            this.unitPrice = e.detail.value;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if (this.quantity != null && this.quantity != "" &&
+                        this.unitPrice != null && this.unitPrice != "")
+                    {
+                        this.totalPrice = this.unitPrice * this.quantity;
+                    }
+                    if (this.quantity != null && this.quantity != "" &&
+                        this.unitCost != null && this.unitCost != "")
+                    {
+                        this.totalCost = this.unitCost * this.quantity;
+                    }
+                },
+
+                _lineProjectTypeChange: function (e) {
+                    this.$.contractlinecodesgrid_ajax.body = JSON.stringify(e.detail.value);
+                    this.$.contractlinecodesgrid_ajax.generateRequest();
+
+                    this.result.find(x => x == this._SelectedLine).code = "";
+                    this.result.find(x => x == this._SelectedLine).type = e.detail.value;
+                    this.$.projectDiaryProject.clearCache();
+                },
+
+                _lineCodeChange: function (e) {
+                    if (e.detail.value != null && e.detail.value != "") {
+                        var index = this.CBContractLineCodesGrid.findIndex(i => i.id === e.detail.value);
+                        this.result.find(x => x == this._SelectedLine).code = e.detail.value;
+                        this.result.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
+                        this.result.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
+                        this.$.projectDiaryProject.clearCache();
+                    }
+                    //if (e.detail.value != null && e.detail.value != "") {
+                    //    var index = this.codeOptions.findIndex(i => i.id === e.detail.value);
+                    //    this.code = this.codeOptions[index].id;
+                    //    this.description = this.codeOptions[index].value;
+                    //    this.codeMeasurementUnit = this.codeOptions[index].extra;
+                },
+
+                _codeChange: function (e)
+                {
+                    debugger;;
+                    if (e.detail.value != null && e.detail.value != "") {
+                        var index = this.codeOptions.findIndex(i => i.id === e.detail.value);
+                        this.code = this.codeOptions[index].id;
+                        this.description = this.codeOptions[index].value;
+                        this.codeMeasurementUnit = this.codeOptions[index].extra;
+                    }
+                },
+
+                // PARSING FUNCTIONS -> GRID LINES
+                _parseMovementType: function (param) {
+                    if (param != undefined) {
+                        var sel = this.response2.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseType: function (param) {
+                    if (param != undefined) {
+                        var sel = this.response3.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseCode: function (param1, param2) {
+                    if (param1 != undefined && param2 != undefined) {
+                        var sel;
+                        if (param2 == 1) {
+                            sel = this.CBResourceCode.find(x => x.id == param1);
+                        } else if (param2 == 2) {
+                            sel = this.CBCodeProducts.find(x => x.id == param1);
+                        } else {
+                            sel = this.CBCGAccountCode.find(x => x.id == param1);
+                        }
+                        if (sel != undefined) {
+                            return sel.id;
+                        }
+                    }
+                    return "";
+                },
+                _parseContabGroup: function (param) {
+                    if (param != undefined) {
+                        var sel = this.ContabGroupData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseMeasurementUnit: function (param) {
+                    if (param != undefined) {
+                        var sel = this.MeasureUnit.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseLocation: function (param) {
+                    if (param != undefined) {
+                        var sel = this.Locations.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseRegion: function (param) {
+                    if (param != undefined) {
+                        var sel = this.RegionData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseFuncArea: function (param) {
+                    if (param != undefined) {
+                        var sel = this.FunctionalAreaCodeData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseResponsabilityCenter: function (param) {
+                    if (param != undefined) {
+                        var sel = this.ResponsabilityCenterData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+
+                _lineCalcTotals: function (param) {
+
+                    debugger;;
+
+                    var qnt = this.result.find(x => x == this._SelectedLine).quantity;
+                    var unitCost = this.result.find(x => x == this._SelectedLine).unitCost;
+                    var unitPrice = this.result.find(x => x == this._SelectedLine).unitPrice;
+
+                    switch (param.target.id) {
+                        case "lineQuantity":
+                            var qnt = param.detail.value;
+                            this.result.find(x => x == this._SelectedLine).quantity = qnt;
+                            break;
+                        case "lineUnitCost":
+                            var unitCost = param.detail.value;
+                            unitCost = this.result.find(x => x == this._SelectedLine).unitCost = unitCost;
+                            break;
+                        case "lineUnitPrice":
+                            var unitPrice = param.detail.value;
+                            this.result.find(x => x == this._SelectedLine).unitPrice = unitPrice;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if (qnt != "" && qnt != null && unitCost != "" && unitCost != null)
+                    {
+                        this.result.find(x => x == this._SelectedLine).totalCost = qnt * unitCost;
+                    }
+                    if (qnt != "" && qnt != null && unitPrice != "" && unitPrice != null)
+                    {
+                        this.result.find(x => x == this._SelectedLine).totalPrice = qnt * unitPrice;
+                    }
+                    this.$.projectDiaryProject.clearCache();
+                },
+
+                _lineSelected: function (item) {
+                    if (item != null) {
+                        var oSel = this.result.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
+                        var sel = this.result.find(x => x == item);
+                        if (sel != undefined) {
+                            this.result.find(x => x == item).selected = true;
+                            this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
+                            this.$.contractlinecodesgrid_ajax.generateRequest();
+                            this.$.projectDiaryProject.clearCache();
+                        }
+                    }
+                },
             });
         });
     </script>

@@ -120,7 +120,7 @@
     </div>
     <div class="row">
         <div class="col-lg-2">
-            <vaadin-combo-box id="cboClients" items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{ddClients}}" label="Cliente">
+            <vaadin-combo-box id="cboClients" items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{ddClients}}" label="Cliente" disabled="{{ _permissionsCreate }}">
                 <template>
                     <table width="280px">
                         <tr>
@@ -132,7 +132,7 @@
             </vaadin-combo-box>
         </div>
         <div class="col-lg-2 ">
-            <vaadin-combo-box id="cboServices" items="[[Services]]" item-value-path="id" item-label-path="value" value="{{ddServices}}" label="Serviço">
+            <vaadin-combo-box id="cboServices" items="[[Services]]" item-value-path="id" item-label-path="value" value="{{ddServices}}" label="Serviço" disabled="{{ _permissionsCreate }}">
                 <template>
                     <table width="160px">
                         <tr>
@@ -143,11 +143,11 @@
                 </template>
             </vaadin-combo-box>
         </div>
-        @*<div class="col-lg-2 alignPoga">
-            <vaadin-checkbox id="chkServiceGroup" checked="{{chkServiceGroup}}"> Grupo Serviços </vaadin-checkbox>
-        </div>*@
+        <div class="col-lg-2 alignPoga">
+            <vaadin-checkbox id="chkServiceGroup" checked="{{chkServiceGroup}}"  disabled="{{ _permissionsCreate }}"> Grupo Serviços </vaadin-checkbox>
+        </div>
         <div class="col-lg-1 alignPoga">
-            <paper-button class="btnSave" on-tap="_createClientService">Criar</paper-button>
+            <paper-button class="btnSave" on-tap="_createClientService"  disabled="{{ _permissionsCreate }}">Criar</paper-button>
         </div>
     </div><br />
      
@@ -186,7 +186,7 @@
         </vaadin-grid-column>
         <vaadin-grid-column resizable>
             <template class="header">
-                <p class="alignCenter">
+                <p>
                     <vaadin-grid-filter path="serviceGroup" value="[[_filterActive]]">
                         <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
                     </vaadin-grid-filter>
@@ -194,7 +194,7 @@
                 </p>
             </template>
             <template>
-                <vaadin-checkbox checked="{{item.serviceGroup}}"></vaadin-checkbox>
+                <vaadin-checkbox checked="{{item.serviceGroup}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
             </template>
         </vaadin-grid-column>
         <vaadin-grid-column width="10%" resizable>
@@ -202,24 +202,46 @@
             </template>
             <template>
                 <center>
-                    <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile">Eliminar</paper-button>
+                    <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
                 </center>
             </template>
         </vaadin-grid-column>
     </vaadin-grid>
     <div class="marginSpace">
-        <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+        <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
     </div>
     <paper-toast id="ToastError" style="background-color:red" duration="4000" text="Este Serviço Cliente já existe." horizontalAlign="right"></paper-toast>
     <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
 </template>
 
 <script>
+    var CreateValue = true, UpdateValue = true, DeleteValue = true;
+    if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' =="false") {
+        CreateValue = false;
+    }
+    if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' =="false") {
+        UpdateValue = false;
+    }
+    if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' =="false") {
+        DeleteValue = false;
+    }
     document.addEventListener('WebComponentsReady', function () {
         Polymer({
             is: 'x-client-services',
             properties: {
+                _permissionsUpdate: {
+                    type: Boolean,
+                    value: UpdateValue
+                },
+                _permissionsCreate: {
+                    type: Boolean,
+                    value: CreateValue
+                },
+                _permissionsDelete: {
+                    type: Boolean,
+                    value: DeleteValue
+                },
                 ddClients: {
                     type: Number,
                     notify: true,

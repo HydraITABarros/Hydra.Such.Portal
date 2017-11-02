@@ -215,13 +215,32 @@ namespace Hydra.Such.Portal.Controllers
             List<DDMessageRelated> result = new List<DDMessageRelated>();
             switch (ContractLineType)
             {
-                case 3:
+                case 1:
                     result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name, extra = x.MeasureUnit }).ToList();
                     break;
                 case 2:
                     result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName,"", "", 0, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name, extra = x.MeasureUnit }).ToList();
                     break;
+                case 3:
+                    result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name }).ToList();
+                    break;
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractDiaryLineCodes([FromBody] int ContractLineType)
+        {
+            List<DDMessageRelated> result = new List<DDMessageRelated>();
+            switch (ContractLineType)
+            {
+                case 2:
+                    result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name, extra = x.MeasureUnit }).ToList();
+                    break;
                 case 1:
+                    result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name, extra = x.MeasureUnit }).ToList();
+                    break;
+                case 3:
                     result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name }).ToList();
                     break;
             }
@@ -283,7 +302,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetRegionCode()
         {
-            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Select(x => new DDMessageString() {
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1,User.Identity.Name).Select(x => new DDMessageString() {
                 id = x.Code,
                 value = x.Name
             }).ToList();
@@ -295,7 +314,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetFunctionalAreaCode()
         {
 
-            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2).Select(x => new DDMessageString()
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name).Select(x => new DDMessageString()
             {
                 id = x.Code,
                 value = x.Name
@@ -306,7 +325,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetResponsabilityCenterCode()
         {
-            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Select(x => new DDMessageString()
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name).Select(x => new DDMessageString()
             {
                 id = x.Code,
                 value = x.Name
@@ -450,7 +469,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetNAVContabGroupTypes()
         {
 
-            List<NAVDimValueViewModel> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2);
+            List<NAVDimValueViewModel> result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name);
             return Json(result);
         }
 
@@ -621,6 +640,7 @@ namespace Hydra.Such.Portal.Controllers
                     id = x.Code,
                     value = x.Name
                 }).ToList();
+
             return Json(result);
         }
     }

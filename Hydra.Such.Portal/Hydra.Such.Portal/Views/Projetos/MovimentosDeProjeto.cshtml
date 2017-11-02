@@ -17,6 +17,7 @@
 <link rel="import" href="~/lib/paper-input/paper-input.html" />
 <link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
 <h1 class="title">Movimentos do projeto @ViewBag.ProjectNo</h1>
 
@@ -33,6 +34,7 @@
                    method="post"
                    handle-as="json"
                    id="grid_databound_ajax"
+                   on-response="_gridListResponse"
                    content-type="application/json"></iron-ajax>
 
         @*Populate Dropdown*@
@@ -329,6 +331,10 @@
             </vaadin-grid-column>
         </vaadin-grid>
 
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -347,6 +353,24 @@
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
                     }
+                },
+
+                openToastSuccess: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _gridListResponse: function ()
+                {
+                    if (this.result == null || this.result == undefined || this.result.length == 0)
+                    {
+                        this.openToastError("Não existem movimentos associados a este projeto.");                        
+                    }
+
                 }
             });
         });

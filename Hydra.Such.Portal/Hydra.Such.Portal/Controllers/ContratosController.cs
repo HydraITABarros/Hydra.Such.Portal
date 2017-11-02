@@ -50,7 +50,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
-                ViewBag.UPermissions = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
+                ViewBag.UPermissions = UPerm;
                 return View();
             }
             else
@@ -58,8 +58,8 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
 
-            
-            
+
+
         }
 
         public IActionResult AvencaFixa()
@@ -84,12 +84,12 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ContractsList = DBContracts.GetByNo(ContractNo, true);
             }
-            
+
 
 
             List<ContractViewModel> result = new List<ContractViewModel>();
 
-            ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x,_config.NAVDatabaseName,_config.NAVCompanyName)));
+            ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
             return Json(result);
         }
@@ -129,7 +129,8 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
                 }
-                else {
+                else
+                {
                     cContract = DBContracts.GetByIdLastVersion(data.ContractNo);
                 }
 
@@ -213,7 +214,7 @@ namespace Hydra.Such.Portal.Controllers
                                 r.CreateUser = User.Identity.Name;
                                 DBContractInvoiceText.Create(DBContractInvoiceText.ParseToDB(r));
                             });
-                            
+
                             //Update Last Numeration Used
                             ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
                             ConfigNumerations.ÚltimoNºUsado = data.ContractNo;
@@ -265,20 +266,20 @@ namespace Hydra.Such.Portal.Controllers
                             ContratoDB.Notas = data.Notes;
                             ContratoDB.DataInício1ºContrato = data.StartDateFirstContract == ""
                                 ? null
-                                : (DateTime?) DateTime.Parse(data.StartDateFirstContract);
+                                : (DateTime?)DateTime.Parse(data.StartDateFirstContract);
                             ContratoDB.NºRequisiçãoDoCliente = data.ClientRequisitionNo;
                             ContratoDB.NºCompromisso = data.PromiseNo;
                             ContratoDB.DataInicial = data.StartData == ""
                                 ? null
-                                : (DateTime?) DateTime.Parse(data.StartData);
+                                : (DateTime?)DateTime.Parse(data.StartData);
                             ContratoDB.Estado = data.Status - 1;
                             ContratoDB.DataReceçãoRequisição = data.ReceiptDateRequisition == ""
                                 ? null
-                                : (DateTime?) DateTime.Parse(data.ReceiptDateRequisition);
+                                : (DateTime?)DateTime.Parse(data.ReceiptDateRequisition);
                             ContratoDB.NºVersão = data.VersionNo;
                             ContratoDB.DataExpiração = data.DueDate == ""
                                 ? null
-                                : (DateTime?) DateTime.Parse(data.DueDate);
+                                : (DateTime?)DateTime.Parse(data.DueDate);
                             ContratoDB.EstadoAlteração = data.ChangeStatus - 1;
                             ContratoDB.CódEndereçoEnvio = data.CodeShippingAddress;
                             ContratoDB.EnvioAEndereço = data.ShippingAddress;
@@ -425,7 +426,7 @@ namespace Hydra.Such.Portal.Controllers
 
             if (data != null)
             {
-                Contratos cContract = DBContracts.GetByIdAndVersion(data.ContractNo,data.VersionNo);
+                Contratos cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
 
                 if (cContract != null)
                 {
@@ -546,7 +547,7 @@ namespace Hydra.Such.Portal.Controllers
                             x = DBContractLines.ParseToViewModel(DBContractLines.Create(DBContractLines.ParseToDB(x)));
                         }
                     });
-                    
+
                     data.eReasonCode = 1;
                     data.eMessage = "Linhas de contrato atualizadas com sucesso.";
                 }
@@ -662,8 +663,14 @@ namespace Hydra.Such.Portal.Controllers
                             DataHoraCriação = DateTime.Now,
                             UtilizadorCriação = User.Identity.Name
                         };
-                        //Create
-                        DBAuthorizeInvoiceContracts.Create(newInvoiceContract);
+                        try
+                        {
+                            DBAuthorizeInvoiceContracts.Create(newInvoiceContract);
+                        }
+                        catch (Exception ex)
+                        {
+                            return Json(false);
+                        }
                     }
 
                     //Create Contract Lines
@@ -712,8 +719,14 @@ namespace Hydra.Such.Portal.Controllers
                         DataHoraCriação = DateTime.Now,
                         UtilizadorCriação = User.Identity.Name
                     };
-                    //Create
-                    DBInvoiceContractLines.Create(newInvoiceLine);
+                    try
+                    {
+                        DBInvoiceContractLines.Create(newInvoiceLine);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Json(false);
+                    }
                 }
             }
             return Json(true);
@@ -733,37 +746,35 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
                     List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato && x.GrupoFatura == item.GrupoFatura).ToList();
-                    Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
-                    InvoiceLines.Wait();
-
-                    if (InvoiceLines.IsCompletedSuccessfully)
+                    
+                    if (itemList.Count > 0)
                     {
-                        Task<WSGenericCodeUnit.FxPostInvoice_Result> postNAV = WSGeneric.CreatePreInvoiceLineList(InvoiceHeaderNo, _configws);
-                        postNAV.Wait();
+                        Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);                        
+                        InvoiceLines.Wait();
 
-                        if (postNAV.IsCompletedSuccessfully)
+                        if (InvoiceLines.IsCompletedSuccessfully)
                         {
-                            return Json(true);
+                            Task<WSGenericCodeUnit.FxPostInvoice_Result> postNAV = WSGeneric.CreatePreInvoiceLineList(InvoiceHeaderNo, _configws);
+                            postNAV.Wait();
+
+                            if (!postNAV.IsCompletedSuccessfully)
+                            {
+                                return Json(false);
+                            }
                         }
                         else
                         {
                             return Json(false);
                         }
-                    }
-                    else
-                    {
-                        return Json(false);
-                    }
+                    }                   
                 }
                 else
                 {
                     return Json(false);
                 }
-
             }
             return Json(true);
         }
-
         #endregion
 
     }

@@ -78,10 +78,10 @@
         </div>
         <div class="row">
             <div class="col-lg-2">
-                <vaadin-text-field id="piDescription" label="Descrição"></vaadin-text-field>
+                <vaadin-text-field id="piDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
             </div>
             <div class="col-lg-2 alignPoga">
-                <paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile">Criar</paper-button>
+                <paper-button id="btnAddNew" class="btnSave" on-tap="_createAccessProfile" disabled="{{ _permissionsCreate }}">Criar</paper-button>
             </div>
         </div><br />
         <vaadin-grid id="gridFinalWasteDestinations" aria-label="ProfileModelsTabel" items="[[result]]" class="grid">
@@ -100,7 +100,7 @@
                     <vaadin-grid-filter path="description" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.description}}"></vaadin-text-field>
+                    <vaadin-text-field value="{{item.description}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column with="10%" resizable>
@@ -108,21 +108,45 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button> </center>
+                        <paper-button class="btnRemove" raised on-tap="_delete" disabled="{{_permissionsDelete}}">Eliminar</paper-button> </center>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
         <div class="marginSpace">
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
         </div>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
     <script>
+        var CreateValue = true, UpdateValue = true, DeleteValue = true;
+        if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' =="false") {
+            CreateValue = false;
+        }
+        if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' =="false") {
+            UpdateValue = false;
+        }
+        if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' =="false") {
+            DeleteValue = false;
+        }
         document.addEventListener('WebComponentsReady',
             function () {
                 Polymer({
                     is: 'x-final-waste-destinations',
+                    properties: {
+                        _permissionsUpdate: {
+                            type: Boolean,
+                            value: UpdateValue
+                        },
+                        _permissionsCreate: {
+                            type: Boolean,
+                            value: CreateValue
+                        },
+                        _permissionsDelete: {
+                            type: Boolean,
+                            value: DeleteValue
+                        },
+                    },
                     ready: function () {
                         this.$.ajax_GetAll.generateRequest();
                     },

@@ -53,6 +53,8 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorModificação { get; set; }
         public bool? Registado { get; set; }
         public bool? Faturada { get; set; }
+        public string Moeda { get; set; }
+        public decimal? ValorUnitárioAFaturar { get; set; }
 
         public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
         public LinhasRequisição Nº { get; set; }
