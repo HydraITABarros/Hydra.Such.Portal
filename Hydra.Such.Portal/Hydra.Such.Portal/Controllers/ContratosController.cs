@@ -749,7 +749,7 @@ namespace Hydra.Such.Portal.Controllers
                     
                     if (itemList.Count > 0)
                     {
-                        Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
+                        Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);                        
                         InvoiceLines.Wait();
 
                         if (InvoiceLines.IsCompletedSuccessfully)

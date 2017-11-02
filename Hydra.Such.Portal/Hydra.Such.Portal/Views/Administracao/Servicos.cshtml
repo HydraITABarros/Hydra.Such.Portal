@@ -77,10 +77,10 @@
         </div>
         <div class="row">
             <div class="col-lg-2">
-                <vaadin-text-field id="ddDescription" label="Descrição"></vaadin-text-field>
+                <vaadin-text-field id="ddDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
             </div>
             <div class="col-lg-2 alignPoga">
-                <paper-button id="btnAddNew" class="btnSave" on-tap="_createService">Criar</paper-button>
+                <paper-button id="btnAddNew" class="btnSave" on-tap="_createService" disabled="{{ _permissionsCreate }}">Criar</paper-button>
             </div>
         </div><br />
         
@@ -100,7 +100,7 @@
                     <vaadin-grid-filter path="description" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.description}}"></vaadin-text-field>   
+                    <vaadin-text-field value="{{item.description}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>   
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="10%" resizable>
@@ -108,23 +108,47 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile">Eliminar</paper-button>
+                        <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile"  disabled="{{_permissionsDelete}}">Eliminar</paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
 
         <div class="marginSpace">
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
         </div>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
 
     <script>
+        var CreateValue = true, UpdateValue = true, DeleteValue = true;
+         if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' =="false") {
+            CreateValue = false;
+        }
+        if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' =="false") {
+            UpdateValue = false;
+        }
+        if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' =="false") {
+            DeleteValue = false;
+        }
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-services',
+                properties: {
+                    _permissionsUpdate: {
+                        type: Boolean,
+                        value: UpdateValue
+                    },
+                    _permissionsCreate: {
+                        type: Boolean,
+                        value: CreateValue
+                    },
+                    _permissionsDelete: {
+                        type: Boolean,
+                        value: DeleteValue
+                    },
+                },
                 ready: function () {
                     this.$.page_databound_ajax.generateRequest();
                 },
@@ -169,7 +193,7 @@
                         }
                         else {
                             this.result.push(thisLine);
-                        } 
+                        }
                         this.$.ajax_update.body = JSON.stringify(this.result);
                         this.$.ajax_update.generateRequest();
                         this.$.gridServices.clearCache();

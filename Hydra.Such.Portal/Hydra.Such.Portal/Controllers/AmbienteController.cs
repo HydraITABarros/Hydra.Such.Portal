@@ -58,7 +58,15 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Administracao()
         {
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 2, 18);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
     }
 }
