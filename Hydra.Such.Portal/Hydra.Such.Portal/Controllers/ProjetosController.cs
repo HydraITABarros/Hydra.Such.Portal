@@ -355,7 +355,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAllProjectDiary(string projectNo)
         {
-            if (projectNo != null && projectNo != "")
+            if (projectNo == null || projectNo == "")
             {
                 List<ProjectDiaryViewModel> dp = DBProjectDiary.GetAll(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
                 {
@@ -380,7 +380,9 @@ namespace Hydra.Such.Portal.Controllers
                     TotalPrice = x.PreçoTotal,
                     Billable = x.Faturável,
                     Registered = x.Registado,
-                    Billed = (bool)x.Faturada
+                    Billed = (bool)x.Faturada,
+                    Currency = x.Moeda,
+                    UnitValueToInvoice = x.ValorUnitárioAFaturar
                 }).ToList();
                 return Json(dp);
             }
@@ -409,7 +411,9 @@ namespace Hydra.Such.Portal.Controllers
                     TotalPrice = x.PreçoTotal,
                     Billable = x.Faturável,
                     Registered = x.Registado,
-                    Billed = (bool)x.Faturada
+                    Billed = (bool)x.Faturada,
+                    Currency = x.Moeda,
+                    UnitValueToInvoice = x.ValorUnitárioAFaturar
                 }).ToList();
                 return Json(dp);
             }
@@ -466,6 +470,8 @@ namespace Hydra.Such.Portal.Controllers
                     Faturável = x.Billable,
                     Registado = false,
                     FaturaANºCliente = x.InvoiceToClientNo,
+                    Moeda = x.Currency,
+                    ValorUnitárioAFaturar = x.UnitValueToInvoice
                     
                 };
 
@@ -701,6 +707,8 @@ namespace Hydra.Such.Portal.Controllers
                     TotalCost = x.CustoTotal,
                     UnitPrice = x.PreçoUnitário,
                     TotalPrice = x.PreçoTotal,
+                    UnitValueToInvoice = x.ValorUnitárioAFaturar,
+                    Currency = x.Moeda,
                     Billable = x.Faturável,
                     InvoiceToClientNo = x.FaturaANºCliente,
                     CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
@@ -713,6 +721,11 @@ namespace Hydra.Such.Portal.Controllers
                     if(lst.MovementType == 3)
                     {
                         lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
+                    }
+
+                    if(lst.Currency != "" || !String.IsNullOrEmpty(lst.Currency))
+                    {
+                        lst.UnitPrice = lst.UnitValueToInvoice;
                     }
                 }
                 return Json(result);
