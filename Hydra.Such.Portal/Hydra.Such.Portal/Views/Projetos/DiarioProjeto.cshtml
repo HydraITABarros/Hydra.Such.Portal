@@ -1071,6 +1071,17 @@
                     //    this.codeMeasurementUnit = this.codeOptions[index].extra;
                 },
 
+                _codeChange: function (e)
+                {
+                    debugger;;
+                    if (e.detail.value != null && e.detail.value != "") {
+                        var index = this.codeOptions.findIndex(i => i.id === e.detail.value);
+                        this.code = this.codeOptions[index].id;
+                        this.description = this.codeOptions[index].value;
+                        this.codeMeasurementUnit = this.codeOptions[index].extra;
+                    }
+                },
+
                 // PARSING FUNCTIONS -> GRID LINES
                 _parseMovementType: function (param) {
                     if (param != undefined) {
