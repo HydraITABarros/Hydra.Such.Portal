@@ -348,14 +348,23 @@ namespace Hydra.Such.Portal.Controllers
         #region DiárioDeProjetos
         public IActionResult DiarioProjeto(String id)
         {
-            ViewBag.ProjectNo = id ?? "";
-            return View();
+            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
+            //if (UPerm != null && UPerm.Read.Value)
+            //{
+              //  ViewBag.UPermissions = UPerm;
+                ViewBag.ProjectNo = id ?? "";
+                return View();
+            //}
+            //else
+            //{
+            //    return RedirectToAction("AccessDenied", "Error");
+            //}
         }
 
         [HttpPost]
-        public JsonResult GetAllProjectDiary(string projectNo)
+        public JsonResult GetAllProjectDiary([FromBody]string projectNo)
         {
-            if (projectNo != null && projectNo != "")
+            if (projectNo == null || projectNo == "")
             {
                 List<ProjectDiaryViewModel> dp = DBProjectDiary.GetAll(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
                 {
