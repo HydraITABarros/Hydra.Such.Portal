@@ -379,7 +379,8 @@ namespace Hydra.Such.Portal.Controllers
                     UnitPrice = x.PreçoUnitário,
                     TotalPrice = x.PreçoTotal,
                     Billable = x.Faturável,
-                    Registered = x.Registado
+                    Registered = x.Registado,
+                    Billed = (bool)x.Faturada
                 }).ToList();
                 return Json(dp);
             }
@@ -407,7 +408,8 @@ namespace Hydra.Such.Portal.Controllers
                     UnitPrice = x.PreçoUnitário,
                     TotalPrice = x.PreçoTotal,
                     Billable = x.Faturável,
-                    Registered = x.Registado
+                    Registered = x.Registado,
+                    Billed = (bool)x.Faturada
                 }).ToList();
                 return Json(dp);
             }
@@ -464,16 +466,19 @@ namespace Hydra.Such.Portal.Controllers
                     Faturável = x.Billable,
                     Registado = false,
                     FaturaANºCliente = x.InvoiceToClientNo,
+                    
                 };
 
                 if (x.LineNo > 0)
                 {
+                    newdp.Faturada = x.Billed;
                     newdp.DataHoraModificação = DateTime.Now;
                     newdp.UtilizadorModificação = User.Identity.Name;
                     DBProjectDiary.Update(newdp);
                 }
                 else
                 {
+                    newdp.Faturada = false;
                     newdp.DataHoraCriação = DateTime.Now;
                     newdp.UtilizadorCriação = User.Identity.Name;
                     DBProjectDiary.Create(newdp);
@@ -805,6 +810,8 @@ namespace Hydra.Such.Portal.Controllers
                                     InvoiceMessages Messages = new InvoiceMessages();
                                     Messages.ClientNo = num_cliente;
                                     Messages.Iserror = true;
+
+                                    ClientsError.Add(Messages);
                                 }
                             }
                             catch (Exception ex)
@@ -815,6 +822,8 @@ namespace Hydra.Such.Portal.Controllers
                                 InvoiceMessages Messages = new InvoiceMessages();
                                 Messages.ClientNo = num_cliente;
                                 Messages.Iserror = true;
+
+                                ClientsError.Add(Messages);
                             }
                         }
                         else
