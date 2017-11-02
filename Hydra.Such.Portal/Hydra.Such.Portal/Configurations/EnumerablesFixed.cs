@@ -257,6 +257,11 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 2,
                 Value = "Venda"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Devolução"
             }
         };
 

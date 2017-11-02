@@ -706,6 +706,13 @@ namespace Hydra.Such.Portal.Controllers
                     ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
                 }).OrderBy(x => x.ClientName).ToList();
 
+                foreach(var lst in result)
+                {
+                    if(lst.MovementType == 3)
+                    {
+                        lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
+                    }
+                }
                 return Json(result);
             }
             catch (Exception ex)
@@ -844,6 +851,7 @@ namespace Hydra.Such.Portal.Controllers
             //ProjectDiaryViewModel message = new ProjectDiaryViewModel();
             //message.eReasonCode = 1;
             //message.eMessage = "Linhas de Fatura criadas com sucesso";
+            data.Clear();
             return Json(ClientsError);
         }
 
