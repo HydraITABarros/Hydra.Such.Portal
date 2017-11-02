@@ -97,19 +97,19 @@ namespace Hydra.Such.Data.NAV
                    Document_No = HeaderNo,
                    Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
                    Document_TypeSpecified = true,
-                   No = x.Código,
-                   Type = ConvertType(x.Tipo),
-                   Description = x.Descrição,
-                   Quantity = x.Quantidade.Value,
-                   QuantitySpecified = true,
-                   Unit_of_Measure = x.CódUnidadeMedida,
-                   Unit_Price = x.PreçoUnitário.Value,
-                   Unit_PriceSpecified = true,
-                   Amount = x.ValorVenda.Value,
-                   AmountSpecified = true,
-                   RegionCode20 = x.CódigoRegião,
-                   FunctionAreaCode20 = x.CódigoÁreaFuncional,
-                   ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade
+                   //No = x.Código,
+                   //Type = ConvertType(x.Tipo),
+                   //Description = x.Descrição,
+                   //Quantity = x.Quantidade.Value,
+                   //QuantitySpecified = true,
+                   //Unit_of_Measure = x.CódUnidadeMedida,
+                   //Unit_Price = x.PreçoUnitário.Value,
+                   //Unit_PriceSpecified = true,
+                   //Amount = x.ValorVenda.Value,
+                   //AmountSpecified = true,
+                   //RegionCode20 = x.CódigoRegião,
+                   //FunctionAreaCode20 = x.CódigoÁreaFuncional,
+                   //ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade
                }).ToArray();
 
             WSCreatePreInvoiceLine.CreateMultiple NAVCreate = new WSCreatePreInvoiceLine.CreateMultiple(parsedList);
