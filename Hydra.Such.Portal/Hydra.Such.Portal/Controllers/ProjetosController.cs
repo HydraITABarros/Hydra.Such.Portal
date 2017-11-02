@@ -493,7 +493,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             //Get Project Info
             Projetos proj = DBProjects.GetById(projectNo);
-
+            
             if (proj != null)
             {
                 ProjectInfo pi = new ProjectInfo
@@ -503,7 +503,8 @@ namespace Hydra.Such.Portal.Controllers
                     RegionCode = proj.CódigoRegião,
                     FuncAreaCode = proj.CódigoÁreaFuncional,
                     ResponsabilityCenter = proj.CódigoCentroResponsabilidade,
-                    InvoiceClientNo = proj.NºCliente
+                    InvoiceClientNo = proj.NºCliente,
+                    Currency = DBNAV2017Clients.GetClientCurrencyByNo(proj.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName) //== null ? "EUR" : DBNAV2017Clients.GetClientCurrencyByNo(proj.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
                 };
 
                 return Json(pi);
@@ -608,6 +609,7 @@ namespace Hydra.Such.Portal.Controllers
             public string FuncAreaCode { get; set; }
             public string ResponsabilityCenter { get; set; }
             public string InvoiceClientNo { get; set; }
+            public string Currency { get; set; }
         }
         #endregion
 
