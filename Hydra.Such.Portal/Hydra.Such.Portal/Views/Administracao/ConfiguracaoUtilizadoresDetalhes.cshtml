@@ -61,51 +61,18 @@
         </div>
 
         @*CREATE NEW PROFILEMODEL*@
-        <iron-ajax url="/Administracao/CreateUserConfig"
-                   id="ajax_create"
-                   last-response="{{data}}"
-                   method="post"
-                   handle-as="json"
-                   on-response="_responseProcessor"
-                   content-type="application/json; charset=utf-8"></iron-ajax>
+        <iron-ajax url="/Administracao/CreateUserConfig" id="ajax_create" last-response="{{data}}" method="post" handle-as="json" on-response="_responseProcessor" content-type="application/json; charset=utf-8"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{AreasData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFeatures" last-response="{{FeaturesData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetUserProfileModels" last-response="{{UserProfileModelsData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetDimensions" last-response="{{DimensionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValue_ajax" last-response="{{DimensionValueData}}" auto method="post" params='{"dimensionId": ""}' handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGrid_ajax" last-response="{{DimensionValueGridData}}" auto method="post" params='{"dimensionId": ""}' handle-as="json" content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGridOPT1_ajax" last-response="{{DimensionValuesForLocation}}" auto method="post" params='{"dimensionId": 1}' handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGridOPT2_ajax" last-response="{{DimensionValuesForA}}" auto method="post" params='{"dimensionId": 2}' handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGridOPT3_ajax" last-response="{{DimensionValuesForB}}" auto method="post" params='{"dimensionId": 3}' handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetAreas"
-                   last-response="{{AreasData}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-
-        <iron-ajax url="/PopulateDropdowns/GetFeatures"
-                   last-response="{{FeaturesData}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-
-        <iron-ajax url="/PopulateDropdowns/GetUserProfileModels"
-                   last-response="{{UserProfileModelsData}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-
-        <iron-ajax url="/PopulateDropdowns/GetDimensions"
-                   last-response="{{DimensionData}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-
-        <iron-ajax url="/PopulateDropdowns/GetDimensionValues"
-                   id="dimensionValue_ajax"
-                   last-response="{{DimensionValueData}}"
-                   auto
-                   method="post"
-                   params='{"dimensionId": ""}'
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
 
         <h2 class="separator">Perfis Utilizadores</h2>
         <div class="row">
@@ -280,8 +247,18 @@
         <table class="table inlineForm">
             <tr>
                 <td width="20%">
-                    <vaadin-combo-box items="[[DimensionData]]" item-value-path="id" item-label-path="value" label="Dimensão" value="{{ddDimension}}"
+                    @*<vaadin-combo-box items="[[DimensionData]]" item-value-path="id" item-label-path="value" label="Dimensão" value="{{ddDimension}}"
                         on-value-changed="_onDimensionChanged">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>*@
+
+                    <vaadin-combo-box items="[[DimensionData]]" id="_Dimension" name="_Dimension" item-value-path="id" item-label-path="value" label="Dimensão" value="{{ddDimension}}" on-value-changed="_onDimensionChanged">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -305,13 +282,31 @@
                 <td width="60%"><paper-button class="btnSave" raised on-tap="_createUserDimensionAccess">Criar</paper-button></td>
             </tr>
         </table>
-        <vaadin-grid id="gridAllowedUserDimensions" aria-label="gridAllowedUserDimensions" items="{{ data.allowedUserDimensions }}" class="grid">
+        <vaadin-grid id="gridAllowedUserDimensions" aria-label="gridAllowedUserDimensions" items="{{ data.allowedUserDimensions }}" class="grid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="20%">
                 <template class="header">
                     Dimensão
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[DimensionData]]" item-value-path="id" item-label-path="value" value="{{item.dimension}}" on-value-changed="_onDimensionChanged">
+
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[DimensionData]]" id="_DimensionGridData" name="_DimensionGridData" item-value-path="id" item-label-path="value" value="{{item.dimension}}" on-value-changed="_onDimensionInGridChanged">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _formatDimension(item.dimension) ]]
+                    </template>
+
+
+
+                    @*<vaadin-combo-box items="[[DimensionData]]" item-value-path="id" item-label-path="value" value="{{item.dimension}}" on-value-changed="_onDimensionChanged">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -319,7 +314,7 @@
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
-                    </vaadin-combo-box>
+                    </vaadin-combo-box>*@
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="20%">
@@ -327,7 +322,21 @@
                     Valor Dimensão
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[DimensionValueData]]" item-value-path="id" item-label-path="value" value="{{item.dimensionValue}}">
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[DimensionValueGridData]]" id="_CLGridCode" name="_CLGridCode" item-value-path="id" item-label-path="value" value="{{item.dimensionValue}}" on-value-changed="_clContractLineCodeGridChange">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _formatDimensionValue(item.dimension, item.dimensionValue) ]]
+                    </template>
+                    @*<vaadin-combo-box items="[[DimensionValueData]]" item-value-path="id" item-label-path="value" value="{{item.dimensionValue}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -335,7 +344,7 @@
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
-                    </vaadin-combo-box>
+                    </vaadin-combo-box>*@
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="60%">
@@ -413,6 +422,9 @@
                         type: Text,
                         notify: true,
                         value: ""
+                    },
+                    _SelectedLine: {
+                        observer: '_lineSelectedHandler'
                     },
                },
                 ready: function () {
@@ -552,16 +564,78 @@
                 },
                 _onDimensionChanged: function (e) {
                     if (e.detail.value != null && e.detail.value != "") {
-                        var dimensionId = e.detail.value; debugger;;
+                        var dimensionId = e.detail.value;
                         this.$.dimensionValue_ajax.params = { "dimensionId": dimensionId };
                         this.$.dimensionValue_ajax.generateRequest();
                     }
+                },
+                _onDimensionInGridChanged: function (e) {
+                    this.$.dimensionValueInGrid_ajax.body = JSON.stringify(e.detail.value);
+                    this.$.dimensionValueInGrid_ajax.generateRequest();
                 },
                 _onDeleteUserDimensionAccess: function (e) {
                     var index = this.data.allowedUserDimensions.indexOf(e.model.item);
                     this.data.allowedUserDimensions.splice(index, 1);
 
                     this.$.gridAllowedUserDimensions.clearCache();
+                },
+                _formatDimension: function (param) {
+                    if (param != undefined) {
+                        var sel = this.DimensionData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _formatDimensionValue: function (dimension, dimensionValue) {
+                    if (dimensionValue != undefined) {
+                        var sel;
+                        switch (dimension)
+                        { 
+                            case 1:
+                                sel = this.DimensionValuesForLocation.find(x => x.id == dimensionValue);
+                                break;
+                            case 2:
+                                sel = this.DimensionValuesForA.find(x => x.id == dimensionValue);
+                                break;
+                            case 3:
+                                sel = this.DimensionValuesForB.find(x => x.id == dimensionValue);
+                                break;
+                        }
+                            if (sel != undefined) {
+                                return sel.value;
+                            }
+                    }
+                    return "";
+                },
+                _clContractLineCodeGridChange: function (e) {
+                    if (e.detail.value != null && e.detail.value != "") {
+                        var index = this.CBContractLineCodesGrid.findIndex(i => i.id === e.detail.value);
+                        //this.CBContractLineCodes[index].id;
+                        this.data.allowedUserDimensions.find(x => x == this._SelectedLine).code = e.detail.value;
+                        this.data.allowedUserDimensions.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
+                        this.data.allowedUserDimensions.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
+                        this.$.gridAllowedUserDimensions.clearCache();
+                    }
+                },
+                _lineSelectedHandler: function (item) {
+                    if (item != null) {
+                        var oSel = this.data.allowedUserDimensions.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
+
+                        var sel = this.data.allowedUserDimensions.find(x => x == item);
+                        if (sel != undefined) {
+                            this.data.allowedUserDimensions.find(x => x == item).selected = true;
+
+                            this.$.dimensionValueInGrid_ajax.body = JSON.stringify(item.dimension);
+                            this.$.dimensionValueInGrid_ajax.generateRequest();
+                            
+                            this.$.gridAllowedUserDimensions.clearCache();
+                        }
+                    }
                 },
             });
         });
