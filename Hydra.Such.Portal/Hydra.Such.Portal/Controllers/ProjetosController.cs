@@ -355,7 +355,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAllProjectDiary(string projectNo)
         {
-            if (projectNo == null || projectNo == "")
+            if (projectNo != null && projectNo != "")
             {
                 List<ProjectDiaryViewModel> dp = DBProjectDiary.GetAll(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
                 {
