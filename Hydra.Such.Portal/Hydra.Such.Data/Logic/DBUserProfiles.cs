@@ -169,5 +169,20 @@ namespace Hydra.Such.Data.Logic
                 return false;
             }
         }
+
+        public static List<PerfisUtilizador> GetByUserId(string UserId)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.PerfisUtilizador.Where(x => x.IdUtilizador == UserId).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

@@ -228,6 +228,25 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetContractDiaryLineCodes([FromBody] int ContractLineType)
+        {
+            List<DDMessageRelated> result = new List<DDMessageRelated>();
+            switch (ContractLineType)
+            {
+                case 2:
+                    result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name, extra = x.MeasureUnit }).ToList();
+                    break;
+                case 1:
+                    result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name, extra = x.MeasureUnit }).ToList();
+                    break;
+                case 3:
+                    result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name }).ToList();
+                    break;
+            }
+            return Json(result);
+        }
+
 
         [HttpPost]
         public JsonResult GetClientServices([FromBody] string ClientNo)
