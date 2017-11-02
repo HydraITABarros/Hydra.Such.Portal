@@ -275,9 +275,16 @@
                 <div class="col-lg-2">
                     <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
+                </div>
                 <div class="col-lg-2 alignPoga">
                     <vaadin-checkbox id="pcInvoice" checked="{{billable}}"> Faturável</vaadin-checkbox>
                 </div>
+
             </div>
             <div class="row">
                 <div class="col-lg-2 alignPoga">
