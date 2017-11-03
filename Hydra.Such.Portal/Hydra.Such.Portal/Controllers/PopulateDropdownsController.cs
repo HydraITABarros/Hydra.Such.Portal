@@ -641,6 +641,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetDimensionValuesFromLines([FromBody] int dimensionId)
+        {
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, dimensionId)
+                .Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            return Json(result);
+        }
+        [HttpPost]
         public JsonResult GetDimensionValues(int dimensionId)
         {
             List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, dimensionId)
@@ -652,6 +663,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
     }
 
     public class DDMessage
