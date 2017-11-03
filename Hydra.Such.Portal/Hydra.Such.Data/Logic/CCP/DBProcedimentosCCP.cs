@@ -77,7 +77,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
                 proc.Nº = DBNumerationConfigurations.GetNextNumeration(NumeracaoProcedimento, true);
                 proc.DataHoraCriação = DateTime.Now;
-
+                proc.Estado = 0;
                 proc.Nº1 = new TemposPaCcp()
                 {
                     NºProcedimento = proc.Nº,

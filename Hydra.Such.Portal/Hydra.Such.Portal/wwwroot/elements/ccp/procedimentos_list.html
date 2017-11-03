@@ -1,16 +1,20 @@
 ﻿
-<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
-<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
-<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
 <dom-module id="x-procedimentoslist">
     <template>
@@ -41,6 +45,11 @@
             </style>
         </custom-style>
 
+        <!-- Dropdowns populate-->
+        <iron-ajax url="/PopulateDropdowns/GetPocedimentosCcpProcedimentoType" last-response="{{LProcedimentoType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpType" last-response="{{LType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpStates" last-response="{{LProcedimentoState}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/ProcedimentosCcps/GetProcedimentosByProcedimentoType"
                    last-response="{{result}}"
                    method="post"
@@ -48,20 +57,12 @@
                    id="grid_databound_ajax"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/ProcedimentosCcps/CreateProcedimento"
-                   last-response="{{newItem}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_create_procedimento"
-                   on-response="_createResponseProcessor"
-                   content-type="application/json">
-        </iron-ajax>
 
         <div class="marginSpace">
             <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
         </div>
         <vaadin-grid aria-label="ProcedimentosGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="50px">
+            <vaadin-grid-column>
                 <template class="header">
                     <vaadin-grid-sorter path="No">Nº</vaadin-grid-sorter>
                     <vaadin-grid-filter path="No" />
@@ -70,22 +71,22 @@
                     {{item.no}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="120px">
+            <vaadin-grid-column>
+                <template class="header">
+                    <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="estado" />
+                </template>
+                <template>
+                    {{item.estado}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
                 <template class="header">
                     <vaadin-grid-sorter path="nomeProcesso">Nome Processo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="nomeProcesso" />
                 </template>
                 <template>
                     {{item.nomeProcesso}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="50px">
-                <template class="header">
-                    <vaadin-grid-sorter path="tipoProcedimento">Tipo Procedimento</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tipoProcedimento" />
-                </template>
-                <template>
-                    {{item.tipoProcedimento}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -115,7 +116,13 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "/ProcedimentosCcps/Detalhes/" + item.no;
+                        if (this._procedimentotypeid == 1) {
+                            window.location.href = "/ProcedimentosCcps/DetalhePedidoAquisicao/" + item.no;
+                        }
+                        else {
+                            window.location.href = "/ProcedimentosCcps/DetalhePedidoSimplificado/" + item.no;
+                        }
+                        
                     }
                 },
                 _openToast: function (message) {
@@ -127,13 +134,13 @@
                     debugger;
 
                     if (item != null) {
-                        item.tipoProcedimento = this._procedimentotypeid;
-                        window.location.href = "/ProcedimentosCcps/Detalhes/";
-                    }
-                },
-                _createResponseProcessor: function () {
-                    if (this.data.eReasonCode != 1) {
-                        this._openToast(this.data.eMessage);
+                        if (this._procedimentotypeid == 1) {
+                            window.location.href = "/ProcedimentosCcps/DetalhePedidoAquisicao/";
+                        }
+                        else {
+                            window.location.href = "/ProcedimentosCcps/DetalhePedidoSimplificado/";
+                        }
+                        //window.location.href = "/ProcedimentosCcps/DetalhePedidoAquisicao/";
                     }
                 }
             });
