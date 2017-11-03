@@ -1,20 +1,27 @@
 ﻿
 <link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
-<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
-<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
-<link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
-<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 
 <h1 class="title">Folha de Horas</h1>
 
@@ -52,6 +59,16 @@
             .break_clear {
                 margin-top: 15px;
             }
+
+            hr
+            {
+                line-height: 5px;
+            }
+
+            .customHr {
+                line-height: 1px;
+                background-color: black;
+            }     
         </style>
 
         <!-- DROPDOWNS POPULATE -->
@@ -63,6 +80,7 @@
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraDisplacementOutsideCity" last-response="{{LFolhaDeHoraDisplacementOutsideCity}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUtilizadores" last-response="{{LFolhaDeHoraValidators}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetEmployees_FH" last-response="{{LFolhaDeHoraEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraPercursoOrigemDestino" last-response="{{LFolhaDeHoraPercursoOrigemDestino}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <!-- FOLHADEHORA CRUDS -->
         <iron-ajax url="/FolhasDeHoras/GetFolhaDeHoraDetails"
@@ -103,7 +121,12 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <!--PERCURSO-->
+
+
+        <!------------ PERCURSO ------------>
+        
+        
+        
         <iron-ajax
                    url="/FolhasDeHoras/PercursoGetAllByFolhaHoraNoToList"
                    last-response="{{percurso}}"
@@ -112,6 +135,48 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+
+
+        <!------------ AJUDA ------------>
+
+
+
+        <iron-ajax url="/FolhasDeHoras/AjudaGetAllByFolhaHoraNoToList"
+                   last-response="{{ajuda}}"
+                   id="page_ajuda_tabela"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+
+
+        <!------------ MÃO-DE-OBRA ------------>
+
+
+
+        <iron-ajax url="/FolhasDeHoras/MaoDeObraGetAllByFolhaHoraNoToList"
+                   last-response="{{maodeobra}}"
+                   id="page_maodeobra_tabela"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+
+
+        <!------------ PRESENÇAS ------------>
+
+
+
+        <iron-ajax url="/FolhasDeHoras/PresencasGetAllByFolhaHoraNoToList"
+                   last-response="{{presenca}}"
+                   id="page_presenca_tabela"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
 
 
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
@@ -209,13 +274,344 @@
                     <div class="col-sm-3">
                     </div>
                 </div>
+
+
+
+                <!------------ PERCURSOS ------------>
+
+
+
+                <h1 class="title">Percursos</h1>
+                <h2 class="separator">Novo Registo</h2>
+
+                <div class="row">
+                    <div class="col-sm-2">
+                        <vaadin-combo-box id="percOrigem" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" value="{{data.source}}" label="Código Origem" required>
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-combo-box id="percDestino" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" value="{{data.destiny}}" label="Código Destino" required>
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-date-picker id="percDataDespesa" label="Data Despesa" name="datePercursoDespesaText" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" required value="{{data.dateTravelText}}"></vaadin-date-picker>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-text-field id="percJustificacao" label="Justificação" maxlength="200"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-text-field id="percDistanciaEfetuada" label="Distância Efectuada" maxlength="18" pattern="[0-9]*" style="text-align:right;"><div slot="suffix">KM</div></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-2" style="text-align:right">
+                        <vaadin-text-field id="percCustoUnitario" label="Custo Unitário" maxlength="18" pattern="^\d+(\.|\,)\d{2}$" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        <paper-button class="btnSave" raised on-tap="_addPercurso">Criar</paper-button>
+                    </div>
+                </div>
+
+                <h2 class="separator">Percursos Ativos</h2>
+
+                <vaadin-grid id="tabPercurso" aria-label="TabelaPercursos" items="[[percurso]]" class="editGrid" multi-sort="true">
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="source">Código Origem</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="source" />
+                        </template>
+                        <template>
+                            <vaadin-combo-box id="tabPercursoSource" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" value="{{item.source}}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="">Descrição Origem</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabPercursoSourceDescription" value="" maxlength="200" disabled="true"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="destiny">Código Destino</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="destiny" />
+                        </template>
+                        <template>
+                            <vaadin-combo-box id="tabPercursoDestiny" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" value="{{item.destiny}}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="">Descrição Destino</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabPercursoDestinyDescription" value="" maxlength="200" disabled="true"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="dateTravelText">Data Despesa</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="dateTravelText" />
+                        </template>
+                        <template>
+                            <vaadin-date-picker id="tabPercursoDateTravelText" name="dateTravelText" value="{{item.dateTravel}}"></vaadin-date-picker>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="justification">Justificação</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="justification" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabPercursoJustification" value="{{item.justification}}" maxlength="200"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="distance">Distância Efectuada</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="distance" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabPercursoDistance" value="{{item.distance}}" maxlength="18" pattern="[0-9]*" style="text-align:right;"><div slot="suffix">KM</div></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="">Distância Prevista</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabPercursoExpectedDistance" value="" maxlength="18" pattern="[0-9]*" style="text-align:right;" disabled="true"><div slot="suffix">KM</div></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="unitCost" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabPercursoUnitCost" value="{{item.unitCost}}" maxlength="18" pattern="^\d+(\.|\,)\d{2}$" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="totalCost" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabPercursoTotalCost" value="{{item.totalCost}}" maxlength="18" pattern="^\d+(\.|\,)\d{2}$" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%">
+                        <template class="header">
+                        </template>
+                        <template>
+                            <paper-button class="btnRemove" raised on-tap="_deletePercurso">Eliminar</paper-button>
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+
+
+
+                <!------------ AJUDAS DE CUSTO / DESPESAS ------------>
+
+
+
+                <br />
+                <h1 class="title">Ajudas de Custo/Despesas</h1>
+                <h2 class="separator">Novo Registo</h2>
+
+                <div class="row break_clear">
+                    <div class="col-sm-2">
+                        <vaadin-text-field id="ajudaTipoCusto" label="Tipo Custo" required maxlength="200"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-text-field id="ajudaCodigoTipoCusto" label="Cód Tipo Custo" required maxlength="200"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-1">
+                        <vaadin-text-field id="ajudaQuantidade" label="Quantidade" required maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-1">
+                        <vaadin-text-field id="ajudaCustoUnitario" label="Custo Unitário" required maxlength="18" pattern="^\d+(\.|\,)\d{2}$" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-1">
+                        <vaadin-text-field id="ajudaPrecoUnitario" label="Preço Unitário" required maxlength="18" pattern="^\d+(\.|\,)\d{2}$" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-1">
+                        <vaadin-text-field id="ajudaPrecoVenda" label="Preço Venda" required maxlength="18" pattern="^\d+(\.|\,)\d{2}$" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-2">
+                        <vaadin-date-picker id="ajudaDataDespesa" label="Data Despesa" name="ajudaDataDespesa" required maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}"></vaadin-date-picker>
+                    </div>
+                    <div class="col-sm-2" style="text-align:right">
+                        <vaadin-text-field id="ajudaJustificacao" label="Justificação" required maxlength="200" style="text-align:left;"></vaadin-text-field>
+                        <paper-button class="btnSave" raised on-tap="_addAjuda">Criar</paper-button>
+                    </div>
+                </div>
+
+                <h2 class="separator">Ajudas de Custo/Despesas Activas</h2>
+
+                <vaadin-grid id="tabAjuda" aria-label="Tabela Ajudas de Custo/Despesas" items="[[ajuda]]" class="editGrid">
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="costType">Tipo Custo</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="costType" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabAjudaTipoCusto" value="{{item.costType}}" maxlength="200"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="">Cód. Tipo Custo</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabAjudaCodTipoCusto" value="" maxlength="200"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="">Descrição Tipo Custo</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabAjudaDescricao" value="" maxlength="200" disabled="true"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="amount">Quantidade</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="amount" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabAjudaQuantidade" value="{{item.amount}}" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="unitCost" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabAjudaCustoUnitario" value="{{item.unitCost}}" maxlength="18" pattern="^\d+(\.|\,)\d{2}$" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="totalCost" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabAjudaCustoTotal" value="{{item.totalCost}}" maxlength="18" pattern="^\d+(\.|\,)\d{2}$" disabled="true" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="unitPrice" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabAjudaPrecoUnitario" value="{{item.unitPrice}}" maxlength="18" pattern="^\d+(\.|\,)\d{2}$" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="">Preço Venda</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabAjudaPrecoVenda" value="" maxlength="18" pattern="^\d+(\.|\,)\d{2}$" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="dateTravelText">Data Despesa</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="dateTravelText" />
+                        </template>
+                        <template>
+                            <vaadin-date-picker id="tabAjudaDataDespesa" name="tabAjudaDataDespesa" value="{{item.dateTravelText}}" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}"></vaadin-date-picker>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="9%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="justification">Justificação</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="justification" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabAjudaJustificacao" value="{{item.justification}}" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%">
+                        <template class="header">
+                        </template>
+                        <template>
+                            <paper-button class="btnRemove" raised on-tap="_deleteAjuda">Eliminar</paper-button>
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
             </div>
 
-            <!--Mão-de-obra-->
+
+
+
+            <!------------ MÃO-DE-OBRA ------------>
+
+
+
             <div>
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.projectNo}}" id="projectNo" name="projectNo" disabled="true" label="Nº Obra"> </vaadin-text-field>
+                        <vaadin-text-field type="text" value="{{data.projectNo}}" id="percOrigem" name="projectNo" disabled="true" label="Nº Obra"> </vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.projectDescription}}" disabled="true" id="projectDescription" name="projectDescription" label="Descrição"> </vaadin-text-field>
@@ -228,9 +624,223 @@
                         <vaadin-text-field type="text" value="{{data.employeeName}}" disabled="true" id="employeeName" name="employeeName" label="Nome Empregado"> </vaadin-text-field>
                     </div>
                 </div>
+                
+                <br />
+                <h1 class="title">Mão-de-Obra</h1>
+                <h2 class="separator">Novo Registo</h2>
+
+                <div class="row break_clear">
+                    <div class="col-sm-2">
+                        <vaadin-date-picker id="maoDeObraDate" name="maoDeObraDate" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10"></vaadin-date-picker>
+                    </div>
+                    <div class="col-sm-1">
+                        <vaadin-combo-box items="[[LFolhaDeHoraProjectNo]]" id="maoDeObraProjectNo" item-value-path="id" item-label-path="value" label="Nº Obra" required>
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-sm-1">
+                        <vaadin-text-field id="maoDeObraWorkTypeCode" label="Tipo Trabalho" maxlength="200"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-1">
+                        <vaadin-text-field id="maoDeObraStartTime" label="Hora de Início" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-1 alignPoga">
+                        <vaadin-checkbox id="maoDeObraLunchTime" checked="" >Almoço</vaadin-checkbox>
+                    </div>
+                    <div class="col-sm-1">
+                        <vaadin-text-field id="maoDeObraEndTime" label="Hora de Fim" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-1 alignPoga">
+                        <vaadin-checkbox id="maoDeObraDinnerTime" checked="">Jantar</vaadin-checkbox>
+                    </div>
+                    <div class="col-sm-1">
+                        <vaadin-text-field id="maoDeObraFamilyCodeResource" label="Nº Famíl Recur" maxlength="200"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-1">
+                        <vaadin-text-field id="maoDeObraDirectUnitCost" label="Cus Unit Diret" pattern="^\d+(\.|\,)\d{2}$" maxlength="18" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-1">
+                        <vaadin-text-field id="maoDeObraCodeCenterResponsibility" label="Cresp" maxlength="200"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-1" style="text-align:right">
+                        <vaadin-text-field id="maoDeObraTotalPrice" label="Preço Total" pattern="^\d+(\.|\,)\d{2}$" maxlength="18" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        <paper-button class="btnSave" raised on-tap="_addMaoDeObra">Criar</paper-button>
+                    </div>
+                </div>
+
+                <h2 class="separator">Mão-de-Obra Activas</h2>
+
+                <vaadin-grid id="tabMaoDeObra" aria-label="Tabela Mão-de-Obra" items="[[maodeobra]]" class="editGrid">
+                    <vaadin-grid-column width="6%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="date" />
+                        </template>
+                        <template>
+                            <vaadin-date-picker id="tabMaoDeObraDate" name="tabMaoDeObraDate" value="{{item.dateText}}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10"></vaadin-date-picker>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="6%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="projectNo">Nº Obra</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="projectNo" />
+                        </template>
+                        <template>
+                            <vaadin-combo-box items="[[LFolhaDeHoraProjectNo]]" id="tabMaoDeObraProjectNo" name="tabMaoDeObraProjectNo" item-value-path="id" item-label-path="value" value="{{item.projectNo}}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="6%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="workTypeCode">Cód. Tipo Trabalho</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="workTypeCode" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabMaoDeObraWorkTypeCode" value="{{item.workTypeCode}}" maxlength="200"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="6%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="startTime">Hora de Início</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="startTime" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabMaoDeObraStartTime" value="{{item.startTimeText}}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="6%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="lunchTime">Horário Almoço</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="lunchTime" />
+                        </template>
+                        <template>
+                            <vaadin-checkbox checked="{{item.lunchTime}}"></vaadin-checkbox>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="6%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="endTime">Hora de Fim</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="endTime" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabMaoDeObraEndTime" value="{{item.endTimeText}}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="6%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="dinnerTime">Horário Jantar</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="dinnerTime" />
+                        </template>
+                        <template>
+                            <vaadin-checkbox checked="{{item.dinnerTime}}"></vaadin-checkbox>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="6%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="familyCodeResource">Nº Família Recurso</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="familyCodeResource" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabMaoDeObraFamilyCodeResource" value="{{item.familyCodeResource}}" maxlength="200"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="6%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="oMTypeCode">Tipo de OM</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="oMTypeCode" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabMaoDeObraOMTypeCode" value="{{item.oMTypeCode}}" maxlength="200" disabled="true"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="6%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="hoursNoText">Nº Horas</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="hoursNoText" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabMaoDeObraHoursNoText" value="{{item.hoursNoText}}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="true"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="6%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="directUnitCost">Custo Unit. Directo</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="directUnitCost" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabMaoDeObraDirectUnitCost" value="{{item.directUnitCost}}" pattern="^\d+(\.|\,)\d{2}$" maxlength="18" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="6%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="">Código Centro Responsabilidade</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabMaoDeObraCodeCenterResponsibility" value="" maxlength="200"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="6%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="totalPrice">Preço Total</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="totalPrice" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabMaoDeObraTotalPrice" value="{{item.totalPrice}}" pattern="^\d+(\.|\,)\d{2}$" maxlength="18" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="6%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="">Descrição</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabMaoDeObraDescription" value="" maxlength="200" disabled="true"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="16%">
+                        <template class="header">
+                        </template>
+                        <template>
+                            <paper-button class="btnRemove" raised on-tap="_deleteMaoDeObra">Eliminar</paper-button>
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
             </div>
 
-            <!--Presenças-->
+
+
+            <!------------ PRESENÇAS ------------>
+            
+            
+            
             <div>
                 <div class="row break_clear">
                     <div class="col-sm-6">
@@ -241,7 +851,107 @@
                         <vaadin-text-field type="text" value="{{data.employeeName}}" disabled="true" id="employeeName" name="employeeName" label="Nome Empregado"> </vaadin-text-field>
                     </div>
                 </div>
+
+                <br />
+                <h1 class="title">Presenças</h1>
+                <h2 class="separator">Novo Registo</h2>
+
+                <div class="row break_clear">
+                    <div class="col-sm-2">
+                        <vaadin-date-picker id="presencaDate" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10"></vaadin-date-picker>
+                    </div>
+                    <div class="col-sm-1">
+                        <vaadin-text-field id="presencaFirstHourEntry" label="1ª Entrada" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-1">
+                        <vaadin-text-field id="presencaFirstHourDeparture" label="1ª Saída" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-1">
+                        <vaadin-text-field id="presencaSecondHourEntry" label="2ª Entrada" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-1">
+                        <vaadin-text-field id="presencaSecondHourDeparture" label="2ª Saída" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8"></vaadin-text-field>
+                    </div>
+                    <div class="col-sm-6" style="text-align:right;">
+                        <vaadin-text-field id="presencaComments" label="observações" maxlength="200" style="text-align:left;"></vaadin-text-field>
+                        <paper-button class="btnSave" raised on-tap="_addPresenca">Criar</paper-button>
+                    </div>
+                </div>
+
+                <h2 class="separator">Presenças Activas</h2>
+
+                <vaadin-grid id="tabPresenca" aria-label="Tabela Presenças" items="[[presenca]]" class="editGrid">
+                    <vaadin-grid-column width="14%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="date" />
+                        </template>
+                        <template>
+                            <vaadin-date-picker id="tabPresencaDate" name="tabPresencaDate" value="{{item.dateText}}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10"></vaadin-date-picker>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="14%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="firstHourEntry">1ª Entrada</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="firstHourEntry" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabPresencaFirstHourEntry" value="{{item.firstHourEntry}}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="14%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="firstHourDeparture">1ª Saída</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="firstHourDeparture" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabPresencaFirstHourDeparture" value="{{item.firstHourDeparture}}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="14%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="secondHourEntry">2ª Entrada</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="secondHourEntry" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabPresencaSecondHourEntry" value="{{item.secondHourEntry}}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="14%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="secondHourDeparture">2ª Saída</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="secondHourDeparture" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabPresencaSecondHourDeparture" value="{{item.secondHourDeparture}}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+
+                    <vaadin-grid-column width="14%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="">observações</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="" />
+                        </template>
+                        <template>
+                            <vaadin-text-field name="tabPresencaComments" value="" maxlength="200"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="16%">
+                        <template class="header">
+                        </template>
+                        <template>
+                            <paper-button class="btnRemove" raised on-tap="_deletePresenca">Eliminar</paper-button>
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
             </div>
+
 
 
             <!--Detalhe-->
@@ -357,125 +1067,6 @@
             </div>
         </iron-pages>
 
-        <h4 class="separator" style="text-align:center">PERCURSOS</h4>
-        <h2 class="separator">Novo Registo</h2>
-        <div class="row">
-            <div class="col-sm-2"><vaadin-text-field id="percCodOrigem" label="Código Origem" maxlength="20"></vaadin-text-field></div>
-            <div class="col-sm-2"><vaadin-text-field id="percCodDestino" label="Código Destino" maxlength="20"></vaadin-text-field></div>
-            <div class="col-sm-2"><vaadin-text-field id="percDataDespesa" label="Data Despesa" maxlength="20"></vaadin-text-field></div>
-            <div class="col-sm-2"><vaadin-text-field id="percJustificacao" label="Justificação" maxlength="20"></vaadin-text-field></div>
-            <div class="col-sm-2"><vaadin-text-field id="percDistEfetuada" label="Distância Efectuada" maxlength="20"></vaadin-text-field></div>
-            <div class="col-sm-2"><vaadin-text-field id="percCustoUnitario" label="Custo Unitário" maxlength="20"></vaadin-text-field></div>
-            <div class="col-sm-2 alignPoga"><paper-button class="btnSave" raised on-tap="_add">Criar Percur.</paper-button></div>
-        </div>
-
-        <h2 class="separator">Percursos</h2>
-
-        <vaadin-grid id="percursosTable" aria-label="Tabela Percursos" items="[[percurso]]" class="editGrid">
-            <vaadin-grid-column width="9%">
-                <template class="header">
-                    Código Origem
-                </template>
-                <template>
-                    <vaadin-text-field name="source" value="{{item.source}}" maxlength="20"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="9%">
-                <template class="header">
-                    Descrição Origem
-                </template>
-                <template>
-                    <vaadin-text-field name="sourceDescription" value="" maxlength="20"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="9%">
-                <template class="header">
-                    Código Destino
-                </template>
-                <template>
-                    <vaadin-text-field name="destiny" value="{{item.destiny}}" maxlength="20"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="9%">
-                <template class="header">
-                    Descrição Destino
-                </template>
-                <template>
-                    <vaadin-text-field name="destinyDescription" value="" maxlength="20"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="9%">
-                <template class="header">
-                    Data Despesa
-                </template>
-                <template>
-                    <vaadin-text-field name="dateTravel" value="{{item.dateTravelText}}" maxlength="20"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="9%">
-                <template class="header">
-                    Justificação
-                </template>
-                <template>
-                    <vaadin-text-field name="justification" value="{{item.justification}}" maxlength="20"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="9%">
-                <template class="header">
-                    Distância Efectuada
-                </template>
-                <template>
-                    <vaadin-text-field name="distance" value="{{item.distance}}" maxlength="20"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="9%">
-                <template class="header">
-                    Distância Prevista
-                </template>
-                <template>
-                    <vaadin-text-field name="expectedDistance" value="" maxlength="20"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="9%">
-                <template class="header">
-                    Custo Unitário
-                </template>
-                <template>
-                    <vaadin-text-field name="unitCost" value="{{item.unitCost}}" maxlength="20"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="9%">
-                <template class="header">
-                    Custo Total
-                </template>
-                <template>
-                    <vaadin-text-field name="totalCost" value="{{item.totalCost}}" maxlength="20"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="10%">
-                <template class="header">
-                </template>
-                <template>
-                    <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
-                </template>
-            </vaadin-grid-column>
-        </vaadin-grid>
-
-        <div class="marginSpace">
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar P.</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar P</paper-button>
-        </div>
-
         <div class="marginSpace">
             <template is="dom-if" if="{{ _isCreate }}">
                 <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Nova FH</paper-button>
@@ -527,6 +1118,18 @@
                     //GET PERCURSO TABELA
                     this.$.page_percurso_tabela.body = JSON.stringify(this._folhadehoraid);
                     this.$.page_percurso_tabela.generateRequest();
+
+                    //GET AJUDA TABELA
+                    this.$.page_ajuda_tabela.body = JSON.stringify(this._folhadehoraid);
+                    this.$.page_ajuda_tabela.generateRequest();
+
+                    //GET MÃO DE OBRA TABELA
+                    this.$.page_maodeobra_tabela.body = JSON.stringify(this._folhadehoraid);
+                    this.$.page_maodeobra_tabela.generateRequest();
+
+                    //GET PRESENÇAS TABELA
+                    this.$.page_presenca_tabela.body = JSON.stringify(this._folhadehoraid);
+                    this.$.page_presenca_tabela.generateRequest();
 
                     if (this._folhadehoraid == "") {
                         this._isCreate = true;
@@ -588,6 +1191,155 @@
                             }
                         }
                     });
+                },
+
+                _deletePercurso: function (e) {
+                    var index = this.percurso.indexOf(e.model.item);
+                    this.percurso.splice(index, 1);
+
+                    this.$.tabPercurso.clearCache();
+                },
+
+                _deleteAjuda: function (e) {
+                    var index = this.ajuda.indexOf(e.model.item);
+                    this.ajuda.splice(index, 1);
+
+                    this.$.tabAjuda.clearCache();
+                },
+
+                _deleteMaoDeObra: function (e) {
+                    var index = this.maodeobra.indexOf(e.model.item);
+                    this.maodeobra.splice(index, 1);
+
+                    this.$.tabMaoDeObra.clearCache();
+                },
+
+                _deletePresenca: function (e) {
+                    var index = this.presenca.indexOf(e.model.item);
+                    this.presenca.splice(index, 1);
+
+                    this.$.tabPresenca.clearCache();
+                },
+
+                _addPercurso() {
+                    if (this.$.percOrigem.value != "" &&
+                        this.$.percDestino.value != "" &&
+                        this.$.percDataDespesa.value != "" &&
+                        isNaN(this.$.percDistanciaEfetuada.value) == false &&
+                        isNaN(this.$.percCustoUnitario.value) == false
+                    ) {
+                        this.percurso.unshift({
+                            source: this.$.percOrigem.value,
+                            destiny: this.$.percDestino.value,
+                            dateTravelText: this.$.percDataDespesa.value,
+                            justification: this.$.percJustificacao.value,
+                            distance: this.$.percDistanciaEfetuada.value,
+                            unitCost: this.$.percCustoUnitario.value,
+                            totalCost: parseFloat(this.$.percDistanciaEfetuada.value) * parseFloat(this.$.percCustoUnitario.value)
+                        });
+
+                        this.percurso.unshift({
+                            source: this.$.percDestino.value,
+                            destiny: this.$.percOrigem.value,
+                            dateTravelText: this.$.percDataDespesa.value,
+                            justification: this.$.percJustificacao.value,
+                            distance: this.$.percDistanciaEfetuada.value,
+                            unitCost: this.$.percCustoUnitario.value,
+                            totalCost: parseFloat(this.$.percDistanciaEfetuada.value) * parseFloat(this.$.percCustoUnitario.value)
+                        });
+                        this.$.tabPercurso.clearCache();
+                    }
+                    else {
+                        alert("Tem de preencher todos os campos do Percurso.");
+                    }
+                },
+
+                _addAjuda() {
+                    if (this.$.ajudaTipoCusto.value != "" &&
+                        this.$.ajudaCodigoTipoCusto.value != "" &&
+                        this.$.ajudaDataDespesa.value != "" &&
+                        this.$.ajudaJustificacao.value != "" &&
+
+                        isNaN(this.$.ajudaQuantidade.value) == false &&
+                        isNaN(this.$.ajudaCustoUnitario.value) == false &&
+                        isNaN(this.$.ajudaPrecoUnitario.value) == false &&
+                        isNaN(this.$.ajudaPrecoVenda.value) == false
+                    ) {
+                        this.ajuda.unshift({
+                            costType: 2,
+                            amount: this.$.ajudaQuantidade.value,
+                            unitCost: this.$.ajudaCustoUnitario.value,
+                            unitPrice: this.$.ajudaPrecoUnitario.value,
+                            totalCost: parseFloat(this.$.ajudaCustoUnitario.value) * parseFloat(this.$.ajudaPrecoUnitario.value),
+                            dateTravelText: this.$.ajudaDataDespesa.value,
+                            justification: this.$.ajudaJustificacao.value
+                        });
+
+                        this.$.tabAjuda.clearCache();
+                    }
+                    else {
+                        alert("Tem de preencher todos os campos da Ajuda.");
+                    }
+                },
+
+                _addMaoDeObra() {
+                    if (this.$.maoDeObraDate.value != "" &&
+                        this.$.maoDeObraProjectNo.value != "" &&
+                        this.$.maoDeObraWorkTypeCode.value != "" &&
+                        this.$.maoDeObraStartTime.value != "" &&
+                        this.$.maoDeObraEndTime.value != "" &&
+                        this.$.maoDeObraFamilyCodeResource.value != "" &&
+                        this.$.maoDeObraCodeCenterResponsibility.value != "" &&
+
+                        isNaN(this.$.maoDeObraDirectUnitCost.value) == false &&
+                        isNaN(this.$.maoDeObraTotalPrice.value) == false
+                    ) {
+                        this.maodeobra.unshift({
+                            folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                            dateText: this.$.maoDeObraDate.value,
+                            employedNo: this.$.employeeNo.value,
+                            projectNo: this.$.maoDeObraProjectNo.value,
+                            workTypeCode: this.$.maoDeObraWorkTypeCode.value,
+                            //StartTime: Convert.ToLocalTime(this.$.maoDeObraStartTime.value),
+                            startTimeText: this.$.maoDeObraStartTime.value,
+                            //EndTime: Convert.ToLocalTime(this.$.maoDeObraEndTime.value),
+                            endTimeText: this.$.maoDeObraEndTime.value,
+                            //LunchTime: this.$.maoDeObraLunchTime.value,
+                            //DinnerTime: this.$.maoDeObraDinnerTime.value,
+                            familyCodeResource: this.$.maoDeObraFamilyCodeResource.value,
+                            directUnitCost: parseFloat(this.$.maoDeObraDirectUnitCost.value),
+                            totalPrice: parseFloat(this.$.maoDeObraTotalPrice.value)
+                        });
+
+                        this.$.tabMaoDeObra.clearCache();
+                    }
+                    else {
+                        alert("Tem de preencher todos os campos da Mão-de-Obra.");
+                    }
+                },
+
+                _addPresenca() {
+                    if (this.$.presencaDate.value != "" &&
+                        this.$.presencaFirstHourEntry.value != "" &&
+                        this.$.presencaFirstHourDeparture.value != "" &&
+                        this.$.presencaSecondHourEntry.value != "" &&
+                        this.$.presencaSecondHourDeparture.value != "" &&
+                        this.$.presencaComments.value != ""
+                    ) {
+                        this.presenca.unshift({
+                            folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                            dateText: this.$.presencaDate.value,
+                            firstHourEntry: this.$.presencaFirstHourEntry.value,
+                            firstHourDeparture: this.$.presencaFirstHourDeparture.value,
+                            secondHourEntry: this.$.presencaSecondHourEntry.value,
+                            secondHourDeparture: this.$.presencaSecondHourDeparture.value
+                        });
+
+                        this.$.tabPresenca.clearCache();
+                    }
+                    else {
+                        alert("Tem de preencher todos os campos da Presença.");
+                    }
                 },
 
                 //Responses Processors

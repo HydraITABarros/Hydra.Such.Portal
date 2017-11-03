@@ -366,7 +366,89 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        #endregion
 
+        #region AJUDA
+
+        [HttpPost]
+        public JsonResult AjudaGetAllByFolhaHoraNoToList([FromBody] string FolhaHoraNo)
+        {
+            try
+            {
+                List<PercursosEAjudasCustoDespesasFolhaDeHorasListItemViewModel> result = DBPercursosEAjudasCustoDespesasFolhaDeHoras.GetAllByAjudaToList(FolhaHoraNo);
+
+                result.ForEach(x =>
+                {
+                    //x.AreaText = EnumerablesFixed.Areas.Where(y => y.Id == x.Area).FirstOrDefault().Value;
+                    //x.TypeDeslocationText = EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == x.TypeDeslocation).FirstOrDefault().Value;
+                    //if (x.DisplacementOutsideCity.Value) x.DisplacementOutsideCityText = "Sim"; else x.DisplacementOutsideCityText = "Não";
+                    //x.StatusText = EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == x.Status).FirstOrDefault().Value;
+                    //x.Validators = DBUserConfigurations.GetById(x.Validators).Nome;
+                });
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        
+        #endregion
+
+        #region MÃO-DE-OBRA
+
+        [HttpPost]
+        public JsonResult MaoDeObraGetAllByFolhaHoraNoToList([FromBody] string FolhaHoraNo)
+        {
+            try
+            {
+                List<MaoDeObraFolhaDeHorasListItemViewModel> result = DBMaoDeObraFolhaDeHoras.GetAllByMaoDeObraToList(FolhaHoraNo);
+
+                result.ForEach(x =>
+                {
+                    //x.AreaText = EnumerablesFixed.Areas.Where(y => y.Id == x.Area).FirstOrDefault().Value;
+                    //x.TypeDeslocationText = EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == x.TypeDeslocation).FirstOrDefault().Value;
+                    //if (x.DisplacementOutsideCity.Value) x.DisplacementOutsideCityText = "Sim"; else x.DisplacementOutsideCityText = "Não";
+                    //x.StatusText = EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == x.Status).FirstOrDefault().Value;
+                    //x.Validators = DBUserConfigurations.GetById(x.Validators).Nome;
+                });
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
+        #region Presença
+
+        [HttpPost]
+        public JsonResult PresencasGetAllByFolhaHoraNoToList([FromBody] string FolhaHoraNo)
+        {
+            try
+            {
+                List<PresencasFolhaDeHorasListItemViewModel> result = DBPresencasFolhaDeHoras.GetAllByPresencaToList(FolhaHoraNo);
+
+                result.ForEach(x =>
+                {
+                    //x.AreaText = EnumerablesFixed.Areas.Where(y => y.Id == x.Area).FirstOrDefault().Value;
+                    //x.TypeDeslocationText = EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == x.TypeDeslocation).FirstOrDefault().Value;
+                    //if (x.DisplacementOutsideCity.Value) x.DisplacementOutsideCityText = "Sim"; else x.DisplacementOutsideCityText = "Não";
+                    //x.StatusText = EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == x.Status).FirstOrDefault().Value;
+                    //x.Validators = DBUserConfigurations.GetById(x.Validators).Nome;
+                });
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         #endregion
     }

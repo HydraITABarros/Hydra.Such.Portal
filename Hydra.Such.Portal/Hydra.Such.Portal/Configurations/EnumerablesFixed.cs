@@ -172,6 +172,11 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 18,
                 Value = "Administração"
             },
+            new EnumData()
+            {
+                Id = 19,
+                Value = "Diário de Projeto"
+            }
         };
 
         public static readonly List<EnumData> ProposalStatus = new List<EnumData>(){
@@ -257,6 +262,11 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 2,
                 Value = "Venda"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Devolução"
             }
         };
 
@@ -822,127 +832,127 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 0,
-                Value = "Inicial"
+                Value = "0 - Inicial"
             },
 
             new EnumData()
             {
                 Id = 1,
-                Value = "Cabimento"
+                Value = "1 - Cabimento"
             },
 
             new EnumData()
             {
                 Id = 2,
-                Value = "Avaliação Imobilizado"
+                Value = "2 - Avaliação Imobilizado"
             },
 
             new EnumData()
             {
                 Id = 3,
-                Value = "Autorização CA Imobilizado"
+                Value = "3 - Autorização CA Imobilizado"
             },
 
             new EnumData()
             {
                 Id = 4,
-                Value = "Fundamento Processual"
+                Value = "4 - Fundamento Processual"
             },
 
             new EnumData()
             {
                 Id = 5,
-                Value = "Fundamento Financeiro"
+                Value = "5 - Fundamento Financeiro"
             },
 
             new EnumData()
             {
                 Id = 6,
-                Value = "Fundamento Jurídico"
+                Value = "6 - Fundamento Jurídico"
             },
 
             new EnumData()
             {
                 Id = 7,
-                Value = "Pedido Aberto"
+                Value = "7 - Pedido Aberto"
             },
 
             new EnumData()
             {
                 Id = 8,
-                Value = "Autorização em Aberto"
+                Value = "8 - Autorização em Aberto"
             },
 
             new EnumData()
             {
                 Id = 9,
-                Value = "Publicação Plataforma"
+                Value = "9 - Publicação Plataforma"
             },
 
             new EnumData()
             {
                 Id = 10,
-                Value = "Recolha Proposta"
+                Value = "10 - Recolha Proposta"
             },
 
             new EnumData()
             {
                 Id = 11,
-                Value = "Relatório Preliminar Júri"
+                Value = "11 - Relatório Preliminar Júri"
             },
 
             new EnumData()
             {
                 Id = 12,
-                Value = "Audição Prévia"
+                Value = "12 - Audição Prévia"
             },
 
             new EnumData()
             {
                 Id = 13,
-                Value = "Relatório Final"
+                Value = "13 - Relatório Final"
             },
 
             new EnumData()
             {
                 Id = 14,
-                Value = "Avaliação Jurídico Contrato"
+                Value = "14 - Avaliação Jurídico Contrato"
             },
 
             new EnumData()
             {
                 Id = 15,
-                Value = "Valor Adjudicado"
+                Value = "15 - Valor Adjudicado"
             },
 
             new EnumData()
             {
                 Id = 16,
-                Value = "Pedido Adjudicado"
+                Value = "16 - Pedido Adjudicado"
             },
 
             new EnumData()
             {
                 Id = 17,
-                Value = "Autorização Adjudicação"
+                Value = "17 - Autorização Adjudicação"
             },
 
             new EnumData()
             {
                 Id = 18,
-                Value = "Adjudicação Fornecedor"
+                Value = "18 - Adjudicação Fornecedor"
             },
 
             new EnumData()
             {
                 Id = 19,
-                Value = "Final Processo"
+                Value = "19 - Final Processo"
             },
 
             new EnumData()
             {
                 Id = 20,
-                Value = "Fechado"
+                Value = "20 - Fechado"
             }
         };
         // zpgm.>

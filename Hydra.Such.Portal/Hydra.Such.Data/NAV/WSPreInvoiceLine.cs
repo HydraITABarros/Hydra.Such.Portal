@@ -98,7 +98,7 @@ namespace Hydra.Such.Data.NAV
                    Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
                    Document_TypeSpecified = true,
                    No = x.Código,
-                   Type = ConvertType(x.Tipo),
+                   Type = ConvertType(x.Tipo.Replace(" ", String.Empty)),
                    Description = x.Descrição,
                    Quantity = x.Quantidade.Value,
                    QuantitySpecified = true,

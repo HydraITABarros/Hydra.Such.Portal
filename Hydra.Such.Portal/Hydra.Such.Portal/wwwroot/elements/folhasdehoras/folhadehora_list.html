@@ -1,20 +1,16 @@
 ﻿
-<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
-<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
-<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
-<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
-<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
-<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
-<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 
 <dom-module id="x-folhadehoralist">
     <template>
@@ -39,7 +35,7 @@
                         padding-left: 5px;
                     }
 
-                vaadin-text-field {
+                paper-input {
                     max-width: 200px !important;
                 }
             </style>
@@ -517,6 +513,7 @@
                     {{item.timeIntegrationRHKMText}}
                 </template>
             </vaadin-grid-column>
+        </vaadin-grid>
     </template>
 
     <script>
