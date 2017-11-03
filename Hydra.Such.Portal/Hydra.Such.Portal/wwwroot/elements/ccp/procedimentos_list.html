@@ -40,11 +40,20 @@
                 }
             </style>
         </custom-style>
+
         <iron-ajax url="/ProcedimentosCcps/GetProcedimentosByProcedimentoType"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
                    id="grid_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/CreateProcedimento"
+                   last-response="{{newItem}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_create_procedimento"
+                   on-response="_createResponseProcessor"
                    content-type="application/json">
         </iron-ajax>
 
@@ -84,6 +93,8 @@
 
     <script>
         document.addEventListener('WebComponentsReady', function () {
+            debugger;
+
             Polymer({
                 is: 'x-procedimentoslist',
                 properties: {
@@ -96,20 +107,35 @@
                         value: 0
                     }
                 },
+                ready: function () {
+                    debugger;
+
+                    this.$.grid_databound_ajax.body = JSON.stringify(this._procedimentotypeid);
+                    this.$.grid_databound_ajax.generateRequest();
+                },
                 _rowSelected: function (item) {
                     if (item != null) {
                         window.location.href = "/ProcedimentosCcps/Detalhes/" + item.no;
                     }
                 },
+                _openToast: function (message) {
+                    debugger;;
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
                 _create: function (item) {
+                    debugger;
+
                     if (item != null) {
+                        item.tipoProcedimento = this._procedimentotypeid;
                         window.location.href = "/ProcedimentosCcps/Detalhes/";
                     }
                 },
-                ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify(this._procedimentotypeid);
-                    this.$.grid_databound_ajax.generateRequest();
-                },
+                _createResponseProcessor: function () {
+                    if (this.data.eReasonCode != 1) {
+                        this._openToast(this.data.eMessage);
+                    }
+                }
             });
         });
     </script>

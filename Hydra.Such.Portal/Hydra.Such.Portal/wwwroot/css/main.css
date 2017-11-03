@@ -143,6 +143,18 @@ ul.nav li:hover {
 .alignPoga {
     margin-top: 40px;
 }
+
+.toastSuccess {
+    border-radius: 8px;
+    background-color: #00CD00;
+    color: black;
+}
+
+.toastError {
+    border-radius: 8px;
+    background-color: #FA1114;
+    color: black;
+}
 /* Custom General Classes */
 /* Main Menu */
 .item {

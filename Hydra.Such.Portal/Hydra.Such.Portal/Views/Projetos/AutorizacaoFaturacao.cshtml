@@ -288,6 +288,7 @@
             </vaadin-grid-column>
         </vaadin-grid>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
     
 
@@ -335,9 +336,25 @@
                  _CreateLinesResponse: function (e) {
                      debugger;
                      var message = this.lines.eReasonCode;
+                     debugger;
                      switch (message) {
-                         case 4: this.openToast('Error.');
+                         
+                         case 1: this.$.ToastMessage.text = 'Faturas criadas com sucesso';
+                             this.$.ToastMessage.open();
+                             break;
+                         case 2: this.$.ToastError.text = 'Ocorreu um erro ao criar Linhas de Fatura no NAV';
+                             this.$.ToastError.open();
+                             break;
+                         case 3: this.$.ToastError.text = 'Ocorreu um erro ao criar o Cabeçalho das Faturas no NAV.';
+                             this.$.ToastError.open();
+                             break;
+                         case 4: this.$.ToastError.text = 'Ocorreu um erro ao criar Pré Fatura';
+                             this.$.ToastError.open();
                      }
+                     
+                     this.$.page_databound_ajax.generateRequest();
+                     this.$.ToastMessage.text = 'Faturas criadas com sucesso';
+                     this.$.ToastMessage.open();
                  }
              });
          });

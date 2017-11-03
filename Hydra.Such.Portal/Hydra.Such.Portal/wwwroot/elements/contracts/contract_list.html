@@ -48,12 +48,13 @@
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
-        
 
-        <template is="dom-if" if="{{ !_disabledCreate }}">
-            <div class="marginSpace">
-                <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
-            </div>
+        <template is="dom-if" if="{{ _permissions.create }}">
+            <template is="dom-if" if="{{ !_disabledCreate }}">
+                <div class="marginSpace">
+                    <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
+                </div>
+            </template>
         </template>
 
 
@@ -158,6 +159,9 @@
             Polymer({
                 is: 'x-contractlist',
                 properties: {
+                    _permissions: {
+                        type: Array
+                    },
                     activeItem: {
                         observer: '_rowSelected'
                     },
@@ -181,7 +185,7 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "/DetalhesContrato/" + item.projectNo;
+                        window.location.href = "DetalhesContrato/" + item.contractNo;
                     }
                 },
                 _create: function (item) {
@@ -190,11 +194,10 @@
                     }
                 },
                 ready: function () {
-                    debugger;;
                     if (this._archived == 1) {
                         this._disabledCreate = true;
                     }
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno } );
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
                 },
             });

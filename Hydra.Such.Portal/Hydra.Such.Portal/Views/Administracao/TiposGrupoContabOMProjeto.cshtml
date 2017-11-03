@@ -101,9 +101,9 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-lg-2"><vaadin-text-field id="ddDescription" label="Descrição"></vaadin-text-field></div>
+    <div class="col-lg-2"><vaadin-text-field id="ddDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
     <div class="col-lg-2">
-        <vaadin-combo-box items="[[CGTOM_Type]]" item-value-path="id" item-label-path="value" value="{{ddCGTOM_Type}}" label="Tipo">
+        <vaadin-combo-box items="[[CGTOM_Type]]" item-value-path="id" item-label-path="value" value="{{ddCGTOM_Type}}" label="Tipo" disabled="{{ _permissionsCreate }}">
             <template>
                 <table width="200px">
                     <tr>
@@ -114,10 +114,10 @@
             </template>
         </vaadin-combo-box>
     </div>
-    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCorrectiveMaintenance"> Manut. Correctiva </vaadin-checkbox></div>
-    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkPreventiveMaintenance"> Manut. Preventiva </vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCorrectiveMaintenance" disabled="{{ _permissionsCreate }}"> Manut. Correctiva </vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkPreventiveMaintenance" disabled="{{ _permissionsCreate }}"> Manut. Preventiva </vaadin-checkbox></div>
     <div class="col-lg-2 ">
-        <vaadin-combo-box items="[[CGTOM_FailType]]" item-value-path="id" item-label-path="value" value="{{ddCGTOM_FailType}}" label="Tipo Razão Falha">
+        <vaadin-combo-box items="[[CGTOM_FailType]]" item-value-path="id" item-label-path="value" value="{{ddCGTOM_FailType}}" label="Tipo Razão Falha" disabled="{{ _permissionsCreate }}">
             <template>
                 <table width="160px">
                     <tr>
@@ -128,23 +128,23 @@
             </template>
         </vaadin-combo-box>
     </div>
-    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkResponseTimeIndicator">Ind. Tempo Resposta</vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkResponseTimeIndicator" disabled="{{ _permissionsCreate }}">Ind. Tempo Resposta</vaadin-checkbox></div>
 </div>
 <div class="row">
-    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkStopTimeIndicator"> Ind. Tempo Imobilização </vaadin-checkbox></div>
-    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkRepairEffectiveTimeIndicator"> Ind. Tempo Efetivo Reparação </vaadin-checkbox></div>
-    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkClosingWorksTimeIndicator"> Ind. Tempo Fecho Obras </vaadin-checkbox></div>
-    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkBillingTimeIndicator"> Ind. Tempo Faturação </vaadin-checkbox> </div>
-    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkEmployeesOccupationTimeIndicator">Ind. Tempo Ocup. Colaboradores</vaadin-checkbox></div>
-    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCostSaleValueIndicator">Ind. Valor Custo/Venda</vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkStopTimeIndicator" disabled="{{ _permissionsCreate }}"> Ind. Tempo Imobilização </vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkRepairEffectiveTimeIndicator" disabled="{{ _permissionsCreate }}"> Ind. Tempo Efetivo Reparação </vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkClosingWorksTimeIndicator" disabled="{{ _permissionsCreate }}"> Ind. Tempo Fecho Obras </vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkBillingTimeIndicator" disabled="{{ _permissionsCreate }}"> Ind. Tempo Faturação </vaadin-checkbox> </div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkEmployeesOccupationTimeIndicator" disabled="{{ _permissionsCreate }}">Ind. Tempo Ocup. Colaboradores</vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCostSaleValueIndicator" disabled="{{ _permissionsCreate }}">Ind. Valor Custo/Venda</vaadin-checkbox></div>
 </div>
 <div class="row">
-    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCATCoverageRateIndicator">Ind. Taxa Cobertura CAT</vaadin-checkbox></div>
-    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCATComplianceRateIndicator">Ind. Taxa Cumprimento CAT</vaadin-checkbox></div>
-    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkMPRoutineFulfillmentRateIndicator">Ind. Taxa Cumpr. Rotinas MP</vaadin-checkbox></div>
-    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkBreakoutIncidentsIndicator">Ind. Incidências Avarias</vaadin-checkbox></div>
-    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkOrdernInProgressIndicator">Ind. Ordens em Curso</vaadin-checkbox></div>
-    <div class="col-lg-2 alignPoga"><paper-button class="btnSave" on-tap="_createContabGroupTypeOM">Criar</paper-button></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCATCoverageRateIndicator" disabled="{{ _permissionsCreate }}">Ind. Taxa Cobertura CAT</vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkCATComplianceRateIndicator" disabled="{{ _permissionsCreate }}">Ind. Taxa Cumprimento CAT</vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkMPRoutineFulfillmentRateIndicator" disabled="{{ _permissionsCreate }}">Ind. Taxa Cumpr. Rotinas MP</vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkBreakoutIncidentsIndicator" disabled="{{ _permissionsCreate }}">Ind. Incidências Avarias</vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><vaadin-checkbox id="chkOrdernInProgressIndicator" disabled="{{ _permissionsCreate }}">Ind. Ordens em Curso</vaadin-checkbox></div>
+    <div class="col-lg-2 alignPoga"><paper-button class="btnSave" on-tap="_createContabGroupTypeOM" disabled="{{ _permissionsCreate }}">Criar</paper-button></div>
 </div><br />
 
 <vaadin-grid id="gridContabGroupTypesOM" aria-label="gridContabGroupTypesTableOM" items="[[result]]" style="max-height:400px" class="grid" multi-sort="true">
@@ -163,7 +163,7 @@
             <vaadin-grid-filter path="type" />
         </template>
         <template>
-            <vaadin-combo-box items="[[CGTOM_Type]]" item-value-path="id" item-label-path="value" value="{{item.type}}">
+            <vaadin-combo-box items="[[CGTOM_Type]]" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled="{{ _permissionsUpdate }}">
                 <template>
                     <table width="200px">
                         <tr>
@@ -181,7 +181,7 @@
             <vaadin-grid-filter path="description" />
         </template>
         <template>
-            <vaadin-text-field value="{{item.description}}"></vaadin-text-field>
+            <vaadin-text-field value="{{item.description}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column  width="200px" resizable>
@@ -189,7 +189,7 @@
             <vaadin-grid-sorter path="correctiveMaintenance">Manut. Corretiva</vaadin-grid-sorter>
         </template>
         <template>
-            <vaadin-checkbox checked="{{item.correctiveMaintenance}}"></vaadin-checkbox>
+            <vaadin-checkbox checked="{{item.correctiveMaintenance}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column width="200px" resizable>
@@ -197,7 +197,7 @@
             <vaadin-grid-sorter path="preventiveMaintenance">Manut. Preventiva</vaadin-grid-sorter>
         </template>
         <template>
-            <vaadin-checkbox checked="{{item.preventiveMaintenance}}"></vaadin-checkbox>
+            <vaadin-checkbox checked="{{item.preventiveMaintenance}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column width="200px" resizable>
@@ -206,7 +206,7 @@
             <vaadin-grid-filter path="failType" />
         </template>
         <template>
-            <vaadin-combo-box items="[[CGTOM_FailType]]" item-value-path="id" item-label-path="value" value="{{item.failType}}">
+            <vaadin-combo-box items="[[CGTOM_FailType]]" item-value-path="id" item-label-path="value" value="{{item.failType}}" disabled="{{ _permissionsUpdate }}">
                 <template>
                     <table width="160px">
                         <tr>
@@ -223,7 +223,7 @@
             <vaadin-grid-sorter path="responseTimeIndicator">Ind. Tempo Resposta</vaadin-grid-sorter>
         </template>
         <template>
-            <vaadin-checkbox checked="{{item.responseTimeIndicator}}"></vaadin-checkbox>
+            <vaadin-checkbox checked="{{item.responseTimeIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column width="200px" resizable>
@@ -231,7 +231,7 @@
             <vaadin-grid-sorter path="stopTimeIndicator">Ind. Tempo Imobilização</vaadin-grid-sorter>
         </template>
         <template>
-            <vaadin-checkbox checked="{{item.stopTimeIndicator}}"></vaadin-checkbox>
+            <vaadin-checkbox checked="{{item.stopTimeIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column width="200px" resizable>
@@ -239,7 +239,7 @@
             <vaadin-grid-sorter path="repairEffectiveTimeIndicator">Ind. Tempo Efetivo Reparação</vaadin-grid-sorter>
         </template>
         <template>
-            <vaadin-checkbox checked="{{item.repairEffectiveTimeIndicator}}"></vaadin-checkbox>
+            <vaadin-checkbox checked="{{item.repairEffectiveTimeIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column width="200px" resizable>
@@ -247,7 +247,7 @@
             <vaadin-grid-sorter path="closingWorksTimeIndicator">Ind. Tempo Fecho Obras</vaadin-grid-sorter>
         </template>
         <template>
-            <vaadin-checkbox checked="{{item.closingWorksTimeIndicator}}"></vaadin-checkbox>
+            <vaadin-checkbox checked="{{item.closingWorksTimeIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column width="200px" resizable>
@@ -255,7 +255,7 @@
             <vaadin-grid-sorter path="billingTimeIndicator">Ind. Tempo Faturação</vaadin-grid-sorter>
         </template>
         <template>
-            <vaadin-checkbox checked="{{item.billingTimeIndicator}}"></vaadin-checkbox>
+            <vaadin-checkbox checked="{{item.billingTimeIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column width="200px" resizable>
@@ -263,7 +263,7 @@
             <vaadin-grid-sorter path="employeesOccupationTimeIndicator">Ind. Tempo Ocup. Colaboradores</vaadin-grid-sorter>
         </template>
         <template>
-            <vaadin-checkbox checked="{{item.employeesOccupationTimeIndicator}}"></vaadin-checkbox>
+            <vaadin-checkbox checked="{{item.employeesOccupationTimeIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column width="200px" resizable>
@@ -271,7 +271,7 @@
             <vaadin-grid-sorter path="costSaleValueIndicator">Ind. Valor Custo/Venda</vaadin-grid-sorter>
         </template>
         <template>
-            <vaadin-checkbox checked="{{item.costSaleValueIndicator}}"></vaadin-checkbox>
+            <vaadin-checkbox checked="{{item.costSaleValueIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column width="200px" resizable>
@@ -279,7 +279,7 @@
             <vaadin-grid-sorter path="catComplianceRateIndicator">Ind. Taxa Cumprimento CAT</vaadin-grid-sorter>
         </template>
         <template>
-            <vaadin-checkbox checked="{{item.catComplianceRateIndicator}}"></vaadin-checkbox>
+            <vaadin-checkbox checked="{{item.catComplianceRateIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column width="200px" resizable>
@@ -287,7 +287,7 @@
             <vaadin-grid-sorter path="catCoverageRateIndicator">Ind. Taxa Cobertura CAT</vaadin-grid-sorter>
         </template>
         <template>
-            <vaadin-checkbox checked="{{item.catCoverageRateIndicator}}"></vaadin-checkbox>
+            <vaadin-checkbox checked="{{item.catCoverageRateIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column width="200px" resizable>
@@ -295,7 +295,7 @@
             <vaadin-grid-sorter path="mpRoutineFulfillmentRateIndicator">Ind. Taxa Cumpr. Rotinas</vaadin-grid-sorter>
         </template>
         <template>
-            <vaadin-checkbox checked="{{item.mpRoutineFulfillmentRateIndicator}}"></vaadin-checkbox>
+            <vaadin-checkbox checked="{{item.mpRoutineFulfillmentRateIndicator}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column width="200px" resizable>
@@ -303,7 +303,7 @@
             <vaadin-grid-sorter path="breakoutIncidentsIndicator">Ind. Incidencias Avarias</vaadin-grid-sorter>
         </template>
         <template>
-            <vaadin-checkbox checked="{{item.breakoutIncidentsIndicator}}"></vaadin-checkbox>
+            <vaadin-checkbox checked="{{item.breakoutIncidentsIndicator}}"  disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column width="200px" resizable>
@@ -311,7 +311,7 @@
             <vaadin-grid-sorter path="ordernInProgressIndicator">Ind. Ordens em Curso</vaadin-grid-sorter>
         </template>
         <template>
-            <vaadin-checkbox checked="{{item.ordernInProgressIndicator}}"></vaadin-checkbox>
+            <vaadin-checkbox checked="{{item.ordernInProgressIndicator}}"  disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
         </template>
     </vaadin-grid-column>
     <vaadin-grid-column width="200px" resizable>
@@ -319,24 +319,46 @@
         </template>
         <template>
             <center>
-                <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile">Eliminar</paper-button>
+                <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
             </center>
         </template>
     </vaadin-grid-column>
 </vaadin-grid>
 
 <div class="marginSpace">
-    <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-    <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+    <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+    <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
 </div>
 <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
 </template>
 
 <script>
+    var CreateValue = true, UpdateValue = true, DeleteValue = true;
+    if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' =="false") {
+        CreateValue = false;
+    }
+    if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' =="false") {
+        UpdateValue = false;
+    }
+    if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' =="false") {
+        DeleteValue = false;
+    }
     document.addEventListener('WebComponentsReady', function () {
         Polymer({
             is: 'x-contab-group-types-om',
             properties: {
+                _permissionsUpdate: {
+                    type: Boolean,
+                    value: UpdateValue
+                },
+                _permissionsCreate: {
+                    type: Boolean,
+                    value: CreateValue
+                },
+                _permissionsDelete: {
+                    type: Boolean,
+                    value: DeleteValue
+                },
                 ddCGTOM_Type: {
                     type: Number,
                     notify: true,

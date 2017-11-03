@@ -1,51 +1,43 @@
 ﻿
-@{
-    ViewData["Title"] = "DiarioProjeto";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
-@*Themes*@
-@*<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />*@
-@*<link rel="import" href="~/lib/vaadin-material-theme/vaadin-date-picker.html" />*@
-@*Themes*@
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
-<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
 
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
-<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
 
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html" />
-<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
-
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
 
-<link rel="import" href="~/lib/iron-form/iron-form.html" />
-<link rel="import" href="~/lib/paper-button/paper-button.html" />
-<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
-<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="/lib/iron-flex-layout/iron-flex-layout-classes.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
-<link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
-<link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
-<link rel="import" href="~/elements/comboboxs/ProjectList.html" />
-
-<h1 class="title">Diário de Projeto</h1>
-
-<x-projdiary></x-projdiary>
-<dom-module id="x-projdiary">
+<dom-module id="x-projectdiary">
     <template>
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="~/css/main.css" />
+
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
 
         <style>
             input[readonly] {
@@ -62,7 +54,6 @@
             <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
         </div>
 
-        @*Populate Dropdown*@
         <iron-ajax url="/PopulateDropdowns/GetProjectList"
                    last-response="{{response}}"
                    auto
@@ -84,19 +75,11 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        @*CODE OPTIONS*@
         <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>        
-        @*CODE OPTIONS*@
-
-        @*Code in Form*@
+        <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{codeOptions}}" id="ajax_code_options" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        @*Code in Form*@
-
-        @*Code in Lines*@
         <iron-ajax url="/PopulateDropdowns/GetContractDiaryLineCodes" last-response="{{CBContractLineCodesGrid}}" id="contractlinecodesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        @*Code in Lines*@
 
         <iron-ajax url="/PopulateDropdowns/GetMeasureUnits"
                    last-response="{{MeasureUnit}}"
@@ -140,7 +123,6 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        @*Populate Dropdown*@
 
         <div>
             <div class="row">
@@ -281,10 +263,10 @@
                     <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piCurrency" label="Moeda" value="{{currency}}" disabled></vaadin-text-field>
+                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="[0-9]+([\.,][0-9]+)?" value="{{unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
                 </div>
                 <div class="col-lg-2 alignPoga">
                     <vaadin-checkbox id="pcInvoice" checked="{{billable}}"> Faturável</vaadin-checkbox>
@@ -305,8 +287,6 @@
                    last-response="{{result}}"
                    id="ajax_getall"
                    method="post"
-                   auto
-                   params='{"projectNo":"@ViewBag.projectNo"}'
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
@@ -315,7 +295,6 @@
                    id="ajax_update"
                    method="post"
                    on-response="_updateResponse"
-                   params='{"projectNo":"@ViewBag.projectNo"}'
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
@@ -670,37 +649,6 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="currency">Moeda</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="currency"></vaadin-grid-filter>
-                </template>
-                <template>
-                    <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{item.currency}}" disabled></vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.currency}}
-                    </template>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="unitValueToInvoice">Valor Unitário A Faturar</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="unitValueToInvoice"></vaadin-grid-filter>
-                </template>
-                <template>
-                    <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{item.unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.unitValueToInvoice}}€
-                    </template>
-                </template>
-            </vaadin-grid-column>
-
             <vaadin-grid-column width="75px" resizable>
                 <template class="header">
                     <p class="alignCenter">Faturável</p>
@@ -739,8 +687,13 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-projdiary',
+                is: 'x-projectdiary',
                 properties: {
+                    paramprojno: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
                     projectNo: {
                         type: String,
                         notifiy: true,
@@ -811,11 +764,6 @@
                         notify: true,
                         value: ""
                     },
-                    currency: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
                     unitCost: {
                         type: Number,
                         notify: true,
@@ -832,11 +780,6 @@
                         value: ""
                     },
                     totalPrice: {
-                        type: Number,
-                        notify: true,
-                        value: ""
-                    },
-                    unitValueToInvoice: {
                         type: Number,
                         notify: true,
                         value: ""
@@ -865,16 +808,14 @@
                 },
 
                 ready: function () {
-                    if ("@ViewBag.ProjectNo" != "") {
-                        this.$.projectList.value = "@ViewBag.ProjectNo";
+                    debugger;;
+                    if (this.paramprojno != "") {
+                        this.$.projectList.value = this.paramprojno;
                         this.disabledProjectNo = true;
                     }
-                    //else
-                    //{
-                    //    this.$.ajax_getall.generateRequest();
-                    //    this.$.ajax_getall.body = JSON.stringify("");
-                    //    this.$.projectDiaryProject.clearCache();
-                    //}
+
+                    this.$.ajax_getall.body = JSON.stringify( this.paramprojno);
+                    this.$.ajax_getall.generateRequest();             
                 },
 
                 openToastSuccess: function (message) {
@@ -911,9 +852,7 @@
                             unitPrice: this.unitPrice,
                             totalPrice: this.totalPrice,
                             billable: this.billable,
-                            invoiceToClientNo: this.invoiceClientNo,
-                            unitValueToInvoice: this.unitValueToInvoice,
-                            currency: this.currency
+                            invoiceToClientNo: this.invoiceClientNo
                         });
 
                         // Save to DB
@@ -1000,7 +939,6 @@
                         this.codeProjectContabGroup = this.related.contabGroup;
                         this.codeResponsabilityCenter = this.related.responsabilityCenter;
                         this.invoiceClientNo = this.related.invoiceClientNo;
-                        this.currency = this.related.currency;
                     }
                 },
 
@@ -1025,22 +963,19 @@
 
                 _getMovements: function () {
                     //Request
-                    if (this.$.projectList.value != null && this.$.projectList.value != "")
-                    {
+                    if (this.$.projectList.value != null && this.$.projectList.value != "") {
                         this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
                         this.$.ajax_movementLines.generateRequest();
                         //Update List
                     }
-                    else
-                    {
+                    else {
                         this.openToastError("Precisa de selecionar um projeto.");
                     }
 
                 },
 
                 _movementLinesResponse: function () {
-                    if (this.movementLines != null)
-                    {
+                    if (this.movementLines != null) {
                         this.movementLines.forEach(function (e) {
 
                             this.result.unshift({
@@ -1062,9 +997,7 @@
                                 unitPrice: e.unitPrice,
                                 totalPrice: e.totalPrice,
                                 billable: e.billable,
-                                invoiceToClientNo: e.invoiceClientNo,
-                                unitValueToInvoice: this.unitValueToInvoice,
-                                currency: this.currency
+                                invoiceToClientNo: e.invoiceClientNo
                             });
                         });
                         this.$.projectDiaryProject.clearCache();
@@ -1089,13 +1022,11 @@
                     }
 
                     if (this.quantity != null && this.quantity != "" &&
-                        this.unitPrice != null && this.unitPrice != "")
-                    {
+                        this.unitPrice != null && this.unitPrice != "") {
                         this.totalPrice = this.unitPrice * this.quantity;
                     }
                     if (this.quantity != null && this.quantity != "" &&
-                        this.unitCost != null && this.unitCost != "")
-                    {
+                        this.unitCost != null && this.unitCost != "") {
                         this.totalCost = this.unitCost * this.quantity;
                     }
                 },
@@ -1117,16 +1048,9 @@
                         this.result.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
                         this.$.projectDiaryProject.clearCache();
                     }
-                    //if (e.detail.value != null && e.detail.value != "") {
-                    //    var index = this.codeOptions.findIndex(i => i.id === e.detail.value);
-                    //    this.code = this.codeOptions[index].id;
-                    //    this.description = this.codeOptions[index].value;
-                    //    this.codeMeasurementUnit = this.codeOptions[index].extra;
                 },
 
-                _codeChange: function (e)
-                {
-                    debugger;;
+                _codeChange: function (e) {
                     if (e.detail.value != null && e.detail.value != "") {
                         var index = this.codeOptions.findIndex(i => i.id === e.detail.value);
                         this.code = this.codeOptions[index].id;
@@ -1250,12 +1174,10 @@
                             break;
                     }
 
-                    if (qnt != "" && qnt != null && unitCost != "" && unitCost != null)
-                    {
+                    if (qnt != "" && qnt != null && unitCost != "" && unitCost != null) {
                         this.result.find(x => x == this._SelectedLine).totalCost = qnt * unitCost;
                     }
-                    if (qnt != "" && qnt != null && unitPrice != "" && unitPrice != null)
-                    {
+                    if (qnt != "" && qnt != null && unitPrice != "" && unitPrice != null) {
                         this.result.find(x => x == this._SelectedLine).totalPrice = qnt * unitPrice;
                     }
                     this.$.projectDiaryProject.clearCache();

@@ -172,6 +172,11 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 18,
                 Value = "Administração"
             },
+            new EnumData()
+            {
+                Id = 19,
+                Value = "Diário de Projeto"
+            }
         };
 
         public static readonly List<EnumData> ProposalStatus = new List<EnumData>(){
@@ -257,6 +262,11 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 2,
                 Value = "Venda"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Devolução"
             }
         };
 

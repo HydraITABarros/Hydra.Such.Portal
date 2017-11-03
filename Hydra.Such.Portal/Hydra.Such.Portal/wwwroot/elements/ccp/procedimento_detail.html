@@ -4,14 +4,16 @@
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
-<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
-<link rel="import" href="/lib/paper-button/paper-button.html" />
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
-<link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-material-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
 <h1>Detalhes Procedimento</h1>
 
@@ -50,36 +52,65 @@
                    on-response="_responseProcessor"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/DeleteProcedimento"
+                   last-response="{{deletedData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_procedimento"
+                   on-response="_responseDeleteProcessor"
+                   content-type="application/json">
+        </iron-ajax>
 
-        <div>
-            <div class="row">
-                <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LType]]" item-value-path="id" item-label-path="value" required value="{{data.tipo}}" label="Tipo">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+            <paper-tab>Unidade Produtiva (0)</paper-tab>
+            <paper-tab>Imobilizado (1-2)</paper-tab>
+            <paper-tab>Fundamentos Decisão (4, 5 e 7)</paper-tab>
+            <paper-tab>CCP</paper-tab>
+            <paper-tab>Jurídicos</paper-tab>
+            <paper-tab>Valores Adjudicação</paper-tab>
+            <paper-tab>CA</paper-tab>
+            <paper-tab>Adjudicação</paper-tab>
+            <paper-tab>Workflow</paper-tab>
+            <paper-tab>Notas</paper-tab>
+            <paper-tab>Tempos</paper-tab>
+        </paper-tabs>
+
+        <iron-pages selected="{{selected}}">
+            <div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <vaadin-text-field type="text" value="{{data.no}}" id="no" name="no" label="Nº Procedimento" disabled="true"> </vaadin-text-field>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[LType]]" item-value-path="id" item-label-path="value" required value="{{data.tipo}}" label="Tipo">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[LProcedimentoType]]" item-value-path="id" item-label-path="value" required value="{{data.tipoProcedimento}}" label="Tipo Procedimento">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-3">
-                    <vaadin-combo-box items="[[LProcedimentoType]]" item-value-path="id" item-label-path="value" required value="{{data.tipoProcedimento}}" label="Tipo Procedimento">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-            </div>
-        </div>
-
+        </iron-pages>
         <!-- Save and Create Buttons -->
         <div class="marginSpace">
             <template is="dom-if" if="{{ _isCreate }}">
@@ -87,7 +118,7 @@
             </template>
             <template is="dom-if" if="{{ !_isCreate }}">
                 <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
             </template>
         </div>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
@@ -104,6 +135,10 @@
                         notify: true,
                         value: ""
                     },
+                    _procedimentotypeid: {
+                        type: Number,
+                        value: 0
+                    },
                     selected: {
                         type: Number,
                         value: 0
@@ -117,12 +152,12 @@
                 ready: function () {
                     debugger;;
 
-                    this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
+                    this.$.page_databound_ajax.body = JSON.stringify({"No": this._procedimentoid});
                     this.$.page_databound_ajax.generateRequest();
+
 
                     if (this._procedimentoid == "") {
                         this._isCreate = true;
-                        //this.data.area = this._areaid;
                     }
                 },
 
@@ -145,14 +180,9 @@
                 _create: function () {
                     debugger;;
 
-                    //if (this._validateData()) {
-                    //    this._executeRequest("/ProcedimentosCcps/CreateProcedimento", this.data)
-                    //}
-
                     if (this._validateData()) {
-                        this.$.page_validator_ajax.body = JSON.stringify(this.data);
-                        this.$.page_validator_ajax.generateRequest();
-                    }
+                        this._executeRequest("/ProcedimentosCcps/CreateProcedimento", this.data)
+                    }  
                 },
 
                 _update: function () {
@@ -163,33 +193,33 @@
                 },
 
                 _delete: function () {
-                    //debugger;;
-                    //var FolhaDeHora = this.data;
-                    //var ajax_request = this.$.ajax_delete_folhadehora;
-                    //bootbox.confirm({
-                    //    message: "Tem a certeza que pretende remover a Folha de Horas " + this.data.folhaDeHorasNo + "?",
-                    //    buttons: {
-                    //        confirm: {
-                    //            label: 'Sim',
-                    //            className: 'btn-success'
-                    //        },
-                    //        cancel: {
-                    //            label: 'Não',
-                    //            className: 'btn-danger'
-                    //        }
-                    //    },
-                    //    callback: function (result) {
-                    //        if (result) {
-                    //            ajax_request.body = JSON.stringify(FolhaDeHora);
-                    //            ajax_request.generateRequest();
-                    //        }
-                    //    }
-                    //});
+                    debugger;;
+                    var Procedimento = this.data;
+                    var ajax_request = this.$.ajax_delete_procedimento;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o Procedimento " + this.data.no + "?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(Procedimento);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
                 },
 
                 //Responses Processors
                 _responseProcessor: function (data) {
-                    //debugger;;
+                    debugger;;
                     var self = this;
 
                     //Set AreaId
@@ -197,19 +227,19 @@
                     //    this.data.area = this._areaid;
                     //}
 
-                    //if (data.detail.status === 200) {
-                    //    if (data.detail.url.indexOf("GetFolhaDeHora") !== -1) {
-                    //        if (this.data.FolhaDeHorasNo == "") {
-                    //            this._isCreate = true;
-                    //        }
-                    //    } else if (data.detail.url.indexOf("Create") !== -1) {
-                    //        this._createResponseProcessor();
-                    //    } else if (data.detail.url.indexOf("Update") !== -1) {
-                    //        this._openToast("Folha de Horas atualizada com sucesso.")
-                    //    }
-                    //} else {
-                    //    this._openToast("Ocorreu um erro ao criar a Folha de Hora.")
-                    //}
+                    if (data.detail.status === 200) {
+                        if (data.detail.url.indexOf("GetProcedimento") !== -1) {
+                            if (this.data.No == "") {
+                                this._isCreate = true;
+                            }
+                        } else if (data.detail.url.indexOf("Create") !== -1) {
+                            this._createResponseProcessor();
+                        } else if (data.detail.url.indexOf("Update") !== -1) {
+                            this._openToast("Procedimento atualizado com sucesso.")
+                        }
+                    } else {
+                        this._openToast("Ocorreu um erro ao criar o Procedimento.")
+                    }
                 },
 
                 _createResponseProcessor: function () {
@@ -235,19 +265,19 @@
                 },
 
                 _responseDeleteProcessor: function (data) {
-                    //debugger;;
+                    debugger;;
                     var self = this;
-                    //if (data.detail.status === 200) {
-                    //    if (this.deletedData.eReasonCode == 1) {
-                    //        this._openToast("Não é possivel eliminar a Folha de Horas pois este já possui movimentos.");
-                    //    } else {
-                    //        this._openToast(this.deletedData.eMessage);
-                    //        setTimeout(
-                    //            function () {
-                    //                window.location.replace("/");
-                    //            }, 2500);
-                    //    }
-                    //}
+                    if (data.detail.status === 200) {
+                        if (this.deletedData.eReasonCode == 4) {
+                            this._openToast("Não é possivel eliminar o Procedimento.");
+                        } else {
+                            this._openToast(this.deletedData.eMessage);
+                            setTimeout(
+                                function () {
+                                    window.location.replace("/");
+                                }, 2500);
+                        }
+                    }
                 },
 
                 //Helpers

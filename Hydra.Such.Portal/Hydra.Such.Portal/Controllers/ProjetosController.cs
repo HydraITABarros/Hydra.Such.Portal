@@ -156,7 +156,11 @@ namespace Hydra.Such.Portal.Controllers
                     //Get Project Numeration
                     Configuração Configs = DBConfigurations.GetById(1);
                     int ProjectNumerationConfigurationId = Configs.NumeraçãoProjetos.Value;
-                    data.ProjectNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ProjectNo == "" || data.ProjectNo == null));
+
+                    if (data.ProjectNo == "" || data.ProjectNo == null)
+                    {
+                        data.ProjectNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ProjectNo == "" || data.ProjectNo == null));
+                    }
 
                     if (data.ProjectNo != null)
                     {
@@ -168,7 +172,7 @@ namespace Hydra.Such.Portal.Controllers
                             Área = data.Area,
                             Descrição = data.Description,
                             NºCliente = data.ClientNo,
-                            Data = DateTime.Parse(data.Date),
+                            Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null,
                             Estado = data.Status,
                             CódigoRegião = data.RegionCode,
                             CódigoÁreaFuncional = data.FunctionalAreaCode,
@@ -189,7 +193,7 @@ namespace Hydra.Such.Portal.Controllers
                             TipoGrupoContabProjeto = data.GroupContabProjectType,
                             TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
                             PedidoDoCliente = data.ClientRequest,
-                            DataDoPedido = DateTime.Parse(data.RequestDate),
+                            DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null,
                             ValidadeDoPedido = data.RequestValidity,
                             DescriçãoDetalhada = data.DetailedDescription,
                             CategoriaProjeto = data.ProjectCategory,
@@ -212,7 +216,15 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             //Create Project on NAV
                             Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(data, _configws);
-                            TCreateNavProj.Wait();
+                            try
+                            {
+                                TCreateNavProj.Wait();
+                            }
+                            catch (Exception)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                            }
                             if (!TCreateNavProj.IsCompletedSuccessfully)
                             {
                                 //Delete Created Project on Database
@@ -336,12 +348,21 @@ namespace Hydra.Such.Portal.Controllers
         #region DiárioDeProjetos
         public IActionResult DiarioProjeto(String id)
         {
-            ViewBag.ProjectNo = id ?? "";
-            return View();
+            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
+            //if (UPerm != null && UPerm.Read.Value)
+            //{
+              //  ViewBag.UPermissions = UPerm;
+                ViewBag.ProjectNo = id ?? "";
+                return View();
+            //}
+            //else
+            //{
+            //    return RedirectToAction("AccessDenied", "Error");
+            //}
         }
 
         [HttpPost]
-        public JsonResult GetAllProjectDiary(string projectNo)
+        public JsonResult GetAllProjectDiary([FromBody]string projectNo)
         {
             if (projectNo == null || projectNo == "")
             {
@@ -367,7 +388,10 @@ namespace Hydra.Such.Portal.Controllers
                     UnitPrice = x.PreçoUnitário,
                     TotalPrice = x.PreçoTotal,
                     Billable = x.Faturável,
-                    Registered = x.Registado
+                    Registered = x.Registado,
+                    Billed = (bool)x.Faturada,
+                    Currency = x.Moeda,
+                    UnitValueToInvoice = x.ValorUnitárioAFaturar
                 }).ToList();
                 return Json(dp);
             }
@@ -395,7 +419,10 @@ namespace Hydra.Such.Portal.Controllers
                     UnitPrice = x.PreçoUnitário,
                     TotalPrice = x.PreçoTotal,
                     Billable = x.Faturável,
-                    Registered = x.Registado
+                    Registered = x.Registado,
+                    Billed = (bool)x.Faturada,
+                    Currency = x.Moeda,
+                    UnitValueToInvoice = x.ValorUnitárioAFaturar
                 }).ToList();
                 return Json(dp);
             }
@@ -451,17 +478,22 @@ namespace Hydra.Such.Portal.Controllers
                     PreçoTotal = x.TotalPrice,
                     Faturável = x.Billable,
                     Registado = false,
-                    FaturaANºCliente = x.InvoiceToClientNo
+                    FaturaANºCliente = x.InvoiceToClientNo,
+                    Moeda = x.Currency,
+                    ValorUnitárioAFaturar = x.UnitValueToInvoice
+                    
                 };
 
                 if (x.LineNo > 0)
                 {
+                    newdp.Faturada = x.Billed;
                     newdp.DataHoraModificação = DateTime.Now;
                     newdp.UtilizadorModificação = User.Identity.Name;
                     DBProjectDiary.Update(newdp);
                 }
                 else
                 {
+                    newdp.Faturada = false;
                     newdp.DataHoraCriação = DateTime.Now;
                     newdp.UtilizadorCriação = User.Identity.Name;
                     DBProjectDiary.Create(newdp);
@@ -476,7 +508,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             //Get Project Info
             Projetos proj = DBProjects.GetById(projectNo);
-
+            
             if (proj != null)
             {
                 ProjectInfo pi = new ProjectInfo
@@ -486,7 +518,8 @@ namespace Hydra.Such.Portal.Controllers
                     RegionCode = proj.CódigoRegião,
                     FuncAreaCode = proj.CódigoÁreaFuncional,
                     ResponsabilityCenter = proj.CódigoCentroResponsabilidade,
-                    InvoiceClientNo = proj.NºCliente
+                    InvoiceClientNo = proj.NºCliente,
+                    Currency = DBNAV2017Clients.GetClientCurrencyByNo(proj.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName) //== null ? "EUR" : DBNAV2017Clients.GetClientCurrencyByNo(proj.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
                 };
 
                 return Json(pi);
@@ -591,14 +624,22 @@ namespace Hydra.Such.Portal.Controllers
             public string FuncAreaCode { get; set; }
             public string ResponsabilityCenter { get; set; }
             public string InvoiceClientNo { get; set; }
+            public string Currency { get; set; }
         }
         #endregion
 
         #region Job Ledger Entry
         public IActionResult MovimentosDeProjeto(String id)
         {
-            ViewBag.ProjectNo = id ?? "";
-            return View();
+            if (id != null)
+            {
+                ViewBag.ProjectNo = id ?? "";
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("PageNotFound", "Error");
+            }
         }
 
         [HttpPost]
@@ -645,6 +686,7 @@ namespace Hydra.Such.Portal.Controllers
         #region InvoiceAutorization
         public IActionResult AutorizacaoFaturacao(String id)
         {
+
             return View();
         }
 
@@ -674,13 +716,27 @@ namespace Hydra.Such.Portal.Controllers
                     TotalCost = x.CustoTotal,
                     UnitPrice = x.PreçoUnitário,
                     TotalPrice = x.PreçoTotal,
+                    UnitValueToInvoice = x.ValorUnitárioAFaturar,
+                    Currency = x.Moeda,
                     Billable = x.Faturável,
                     InvoiceToClientNo = x.FaturaANºCliente,
                     CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
                     ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
                     ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
-                }).ToList();
+                }).OrderBy(x => x.ClientName).ToList();
 
+                foreach(var lst in result)
+                {
+                    if(lst.MovementType == 3)
+                    {
+                        lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
+                    }
+
+                    if(lst.Currency != "" || !String.IsNullOrEmpty(lst.Currency))
+                    {
+                        lst.UnitPrice = lst.UnitValueToInvoice;
+                    }
+                }
                 return Json(result);
             }
             catch (Exception ex)
@@ -695,61 +751,139 @@ namespace Hydra.Such.Portal.Controllers
         {
             string num_cliente = "";
             string PKey = "";
+            int lineNo = 1;
+            List<InvoiceMessages> ClientsError = new List<InvoiceMessages>();
             try
             {
                 if (data != null)
                 {
+                    List<ProjectDiaryViewModel> NewList = new List<ProjectDiaryViewModel>();
+                    
                     foreach (var lines in data)
                     {
                         if (num_cliente != lines.InvoiceToClientNo)
                         {
-                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(lines, _configws);
-                            TCreatePreInvoice.Wait();
-                            if (!TCreatePreInvoice.IsCompletedSuccessfully)
+                            if (NewList.Count() > 0)
                             {
-                                lines.eReasonCode = 3;
-                                lines.eMessage = "Ocorreu um erro ao criar o Cabeçalho da Fatura no NAV.";
+                                //update to Invoiced = true
+                                foreach(var lst in NewList)
+                                {
+                                    DiárioDeProjeto upDate = DBProjectDiary.GetByLineNo(lst.LineNo, User.Identity.Name).FirstOrDefault();
+                                    upDate.Faturada = true;
+                                    DBProjectDiary.Update(upDate);
+                                }
+                                InvoiceMessages Messages = new InvoiceMessages();
+                                Messages.ClientNo = num_cliente;
+                                Messages.Iserror = false;
+
+                                ClientsError.Add(Messages);
+                                NewList.Clear();
                             }
-                            else
+
+                            try
                             {
+                                PKey = "";
+                                Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(lines, _configws);
+                                TCreatePreInvoice.Wait();
+                                if (TCreatePreInvoice.IsCompletedSuccessfully)
+                                {
+                                    num_cliente = lines.InvoiceToClientNo;
+                                    PKey = TCreatePreInvoice.Result.WSPreInvoice.No;
+                                }
+                                else
+                                {
+                                    num_cliente = lines.InvoiceToClientNo;
+                                    PKey = "";
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                PKey = "";
                                 num_cliente = lines.InvoiceToClientNo;
-                                PKey = TCreatePreInvoice.Result.WSPreInvoice.No;
+                                throw;
                             }
                         }
 
-                        Task<WSCreatePreInvoiceLine.Create_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLine(lines, _configws, PKey);
-                        TCreatePreInvoiceLine.Wait();
-                        if (!TCreatePreInvoiceLine.IsCompletedSuccessfully || String.IsNullOrEmpty(TCreatePreInvoiceLine.Result.WsPreInvoiceLine.Key))
+                        if (!String.IsNullOrEmpty(PKey) && PKey != "error")
                         {
-                            lines.eReasonCode = 2;
-                            lines.eMessage = "Ocorreu um erro ao criar o Linhas de Fatura no NAV.";
+                            try
+                            {
+                                Task<WSCreatePreInvoiceLine.Create_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLine(lines, _configws, PKey);
+                                TCreatePreInvoiceLine.Wait();
+
+                                if (TCreatePreInvoiceLine.IsCompletedSuccessfully && !String.IsNullOrEmpty(TCreatePreInvoiceLine.Result.WsPreInvoiceLine.Key))
+                                {
+                                    num_cliente = lines.InvoiceToClientNo;
+                                    NewList.Add(lines);
+                                    if(data.Count() == lineNo)
+                                    {
+                                        //update to Invoiced = true
+                                        foreach (var lst in NewList)
+                                        {
+                                            DiárioDeProjeto upDate = DBProjectDiary.GetByLineNo(lst.LineNo, User.Identity.Name).FirstOrDefault();
+                                            upDate.Faturada = true;
+                                            DBProjectDiary.Update(upDate);
+
+                                            InvoiceMessages Messages = new InvoiceMessages();
+                                            Messages.ClientNo = num_cliente;
+                                            Messages.Iserror = false;
+
+                                            ClientsError.Add(Messages);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    Task<WSCreatePreInvoice.Delete_Result> DeleteHeader = WSPreInvoice.DeletePreInvoiceLineList(PKey, _configws);
+                                    num_cliente = lines.InvoiceToClientNo;
+                                    PKey = "error";
+
+                                    InvoiceMessages Messages = new InvoiceMessages();
+                                    Messages.ClientNo = num_cliente;
+                                    Messages.Iserror = true;
+
+                                    ClientsError.Add(Messages);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Task<WSCreatePreInvoice.Delete_Result> DeleteHeader = WSPreInvoice.DeletePreInvoiceLineList(PKey, _configws);
+                                PKey = "error";
+
+                                InvoiceMessages Messages = new InvoiceMessages();
+                                Messages.ClientNo = num_cliente;
+                                Messages.Iserror = true;
+
+                                ClientsError.Add(Messages);
+                            }
                         }
                         else
                         {
                             num_cliente = lines.InvoiceToClientNo;
-
-                            //update to Invoiced = true
-                            DiárioDeProjeto upDate = DBProjectDiary.GetByLineNo(lines.LineNo, User.Identity.Name).FirstOrDefault();
-                            upDate.Registado = true;
-                            DBProjectDiary.Update(upDate);
-
-                            lines.eReasonCode = 1;
-                            lines.eMessage = "Linhas de Fatura criadas com sucesso";
                         }
+                        lineNo += 1;
                     }
                 }
             }
             catch (Exception ex)
             {
                 ProjectDiaryViewModel dataerror = new ProjectDiaryViewModel();
-
                 dataerror.eReasonCode = 4;
                 dataerror.eMessage = "Ocorreu um erro ao criar Pré Fatura";
                 return Json(dataerror);
             }
-            return Json(data);
+            //ProjectDiaryViewModel message = new ProjectDiaryViewModel();
+            //message.eReasonCode = 1;
+            //message.eMessage = "Linhas de Fatura criadas com sucesso";
+            data.Clear();
+            return Json(ClientsError);
+        }
+
+        private class InvoiceMessages
+        {
+            public bool Iserror { get; set; }
+            public string ClientNo { get; set; }
         }
         #endregion InvoiceAutorization
-
     }
 }
