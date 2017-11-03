@@ -622,6 +622,14 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(CCPStates);
         }
+
+        [HttpPost]
+        public JsonResult GetBoolValues()
+        {
+            List<EnumBoolValues> BoolValues = EnumerablesFixed.BoolValues;
+
+            return Json(BoolValues);
+        }
         // zpgm.>
         
         [HttpPost]
