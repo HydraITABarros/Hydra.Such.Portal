@@ -61,6 +61,28 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!-- Header section of the Procedimento details -->
+        <div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <vaadin-text-field type="text" value="{{data.no}}" id="no" name="no" label="Nº Procedimento" disabled="true"> </vaadin-text-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <vaadin-combo-box items="[[LProcedimentoState]]" item-value-path="id" item-label-path="value" required value="{{data.estado}}" label="Estado">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+            </div>
+        </div>
+
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
             <paper-tab>Unidade Produtiva (0)</paper-tab>
             <paper-tab>Imobilizado (1-2)</paper-tab>
@@ -77,12 +99,6 @@
 
         <iron-pages selected="{{selected}}">
             <div>
-                <div class="row">
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.no}}" id="no" name="no" label="Nº Procedimento" disabled="true"> </vaadin-text-field>
-                    </div>
-                </div>
-                
                 <div class="row">
                     <div class="col-sm-3">
                         <vaadin-combo-box items="[[LType]]" item-value-path="id" item-label-path="value" required value="{{data.tipo}}" label="Tipo">
@@ -152,8 +168,11 @@
                 ready: function () {
                     debugger;;
 
+                    //this.data.tipoProcedimento = this._procedimentotypeid;
+
                     this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
                     this.$.page_databound_ajax.generateRequest();
+
 
                     if (this._procedimentoid == "") {
                         this._isCreate = true;

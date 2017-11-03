@@ -36,13 +36,13 @@ namespace Hydra.Such.Data.Logic.CCP
             }
         }
 
-        public static ProcedimentosCcp GetProcedimentoById(string proc_id)
+        public static ProcedimentosCcp GetProcedimentoById(string ProcedimentoID)
         {
             var context = new SuchDBContext();
 
             try
             {
-                return context.ProcedimentosCcp.Where(p => p.Nº == proc_id).FirstOrDefault();
+                return context.ProcedimentosCcp.Where(p => p.Nº == ProcedimentoID).FirstOrDefault();
             }
             catch (Exception e)
             {
@@ -50,21 +50,23 @@ namespace Hydra.Such.Data.Logic.CCP
             }
         }
         #endregion
-        #region Create and Updates
+
+
+        #region Create, Update and Delete Procedimentos
         // zpgm - two overloaded methods to create ProcedimentosCcp: 
-        //      the first uses a ProcedimentoCCPView object and returns aProcedimentosCcp object
+        //      the first uses a ProcedimentoCCPView object and returns a ProcedimentosCcp object
         //      the second uses a ProcedimentosCcp object and returns an object of the same type
-        public static ProcedimentosCcp __Create(ProcedimentoCCPView procedimento)
+        public static ProcedimentosCcp __CreateProcedimento(ProcedimentoCCPView Procedimento)
         {
             SuchDBContext context = new SuchDBContext();
-            ProcedimentosCcp proc = CCPFunctions.CastProcCcpViewToProcCcp(procedimento);
+            ProcedimentosCcp proc = CCPFunctions.CastProcCcpViewToProcCcp(Procedimento);
 
             try
             {
                 Configuração config = DBConfigurations.GetById(1);
                 int NumeracaoProcedimento = 0;
 
-                if(proc.TipoProcedimento == 1)
+                if (proc.TipoProcedimento == 1)
                 {
                     NumeracaoProcedimento = config.NumeraçãoProcedimentoAquisição.Value;
                 }
@@ -75,30 +77,23 @@ namespace Hydra.Such.Data.Logic.CCP
 
                 proc.Nº = DBNumerationConfigurations.GetNextNumeration(NumeracaoProcedimento, true);
                 proc.DataHoraCriação = DateTime.Now;
-
+                proc.Estado = 0;
                 proc.Nº1 = new TemposPaCcp()
                 {
                     NºProcedimento = proc.Nº,
                     Estado0 = 1,
                     DataHoraCriação = proc.DataHoraCriação,
-                    UtilizadorCriação =  proc.UtilizadorCriação
-                };
-
-                proc.NºNavigation = new RegistoDeAtas()
-                {
-                    // preencher o nº de acta
-                    // NºAta
-                    NºProcedimento = proc.Nº,
-                    DataHoraCriação = proc.DataHoraCriação,
                     UtilizadorCriação = proc.UtilizadorCriação
                 };
+
+                proc.NºNavigation = __CreateRegistoDeAtas(proc);
+
+                context.Add(proc.NºNavigation);
+                context.SaveChanges();
 
                 context.Add(proc.Nº1);
                 context.SaveChanges();
 
-                context.Add(proc.NºNavigation);
-                context.SaveChanges();
-                
                 context.Add(proc);
                 context.SaveChanges();
 
@@ -108,39 +103,38 @@ namespace Hydra.Such.Data.Logic.CCP
 
                 return proc;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return null;
             }
 
         }
-
-        public static ProcedimentosCcp __Create(ProcedimentosCcp procedimento)
+        public static ProcedimentosCcp __CreateProcedimento(ProcedimentosCcp Procedimento)
         {
             try
             {
-                ProcedimentoCCPView ProcCCPView = CCPFunctions.CastProcCcpToProcCcpView(procedimento);
-                ProcedimentosCcp Proc =  __Create(ProcCCPView);
+                ProcedimentoCCPView ProcCCPView = CCPFunctions.CastProcCcpToProcCcpView(Procedimento);
+                ProcedimentosCcp Proc = __CreateProcedimento(ProcCCPView);
 
-                procedimento.Nº = Proc.Nº;
-                procedimento.DataHoraCriação = Proc.DataHoraCriação;
-                procedimento.UtilizadorCriação = Proc.UtilizadorCriação;
+                Procedimento.Nº = Proc.Nº;
+                Procedimento.DataHoraCriação = Proc.DataHoraCriação;
+                Procedimento.UtilizadorCriação = Proc.UtilizadorCriação;
 
-                return procedimento;
+                return Procedimento;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return null;
             }
-            
+
         }
 
-        public static ProcedimentosCcp __Update(ProcedimentoCCPView procedimento)
+        public static ProcedimentosCcp __UpdateProcedimento(ProcedimentoCCPView Procedimento)
         {
             SuchDBContext context = new SuchDBContext();
             try
             {
-                ProcedimentosCcp proc = CCPFunctions.CastProcCcpViewToProcCcp(procedimento);
+                ProcedimentosCcp proc = CCPFunctions.CastProcCcpViewToProcCcp(Procedimento);
                 proc.DataHoraModificação = DateTime.Now;
 
                 context.ProcedimentosCcp.Update(proc);
@@ -155,13 +149,133 @@ namespace Hydra.Such.Data.Logic.CCP
 
         }
 
-        public static bool __Delete(string procedimentoNo)
+        public static bool __DeleteProcedimento(string ProcedimentoID)
         {
             SuchDBContext context = new SuchDBContext();
 
             try
             {
-                context.ProcedimentosCcp.RemoveRange(context.ProcedimentosCcp.Where(p => p.Nº == procedimentoNo));
+                context.ProcedimentosCcp.RemoveRange(context.ProcedimentosCcp.Where(p => p.Nº == ProcedimentoID));
+                context.SaveChanges();
+
+                if (!__DeleteAllRegistoDeAtasRelatedToProcedimento(ProcedimentoID))
+                    return false;
+
+                if (!__DeleteTemposPaCcp(ProcedimentoID))
+                    return false;
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        #endregion
+
+        #region Create, Update and Delete RegistoDeActas
+        public static string GetActaNumber(string ProcedimentoID)
+        {
+            SuchDBContext context = new SuchDBContext();
+
+            int num = context.RegistoDeAtas.Where(a => a.NºProcedimento == ProcedimentoID).Count();
+
+            num += 1;
+
+            return num.ToString().PadLeft(4, '0');
+        }
+        public static RegistoDeAtas __CreateRegistoDeAtas(ProcedimentosCcp Procedimento)
+        {
+            //SuchDBContext context = new SuchDBContext();
+            try
+            {
+                RegistoDeAtas Acta = new RegistoDeAtas()
+                {
+                    NºProcedimento = Procedimento.Nº,
+                    NºAta = GetActaNumber(Procedimento.Nº),
+                    DataHoraCriação = Procedimento.DataHoraCriação,
+                    UtilizadorCriação = Procedimento.UtilizadorCriação
+                };
+
+                //context.Add(Acta);
+                //context.SaveChanges();
+
+                return Acta;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static RegistoDeAtas __UpdateRegistoDeAtas(string ProcedimentoID, string NoActa, DateTime DataActa, string Observacoes, string ModificationUser, DateTime ModificationDate)
+        {
+            SuchDBContext context = new SuchDBContext();
+
+            try
+            {
+                RegistoDeAtas Acta = context.RegistoDeAtas.Where(a => a.NºProcedimento == ProcedimentoID && a.NºAta == NoActa).FirstOrDefault();
+
+                Acta.Observações = Observacoes;
+                Acta.DataDaAta = DataActa;
+                Acta.DataHoraModificação = ModificationDate;
+                Acta.UtilizadorModificação = ModificationUser;
+
+                context.RegistoDeAtas.Update(Acta);
+                context.SaveChanges();
+
+                return Acta;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
+        }
+
+        public static bool __DeleteAllRegistoDeAtasRelatedToProcedimento(string ProcedimentoID)
+        {
+            SuchDBContext context = new SuchDBContext();
+            try
+            {
+                RegistoDeAtas Acta = context.RegistoDeAtas.Where(a => a.NºProcedimento == ProcedimentoID).FirstOrDefault();
+
+                context.RegistoDeAtas.RemoveRange(context.RegistoDeAtas.Where(a => a.NºProcedimento == ProcedimentoID));
+                context.SaveChanges();
+
+                return true;
+            }
+            catch(Exception e)
+            {
+                return false;
+            }
+        }
+
+        public static bool __DeleteRegistoDeAtas(string ProcedimentoID, string NoActa)
+        {
+            SuchDBContext context = new SuchDBContext();
+            try
+            {
+                context.RegistoDeAtas.RemoveRange(context.RegistoDeAtas.Where(a => a.NºProcedimento == ProcedimentoID && a.NºAta == NoActa));
+                context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        #endregion
+
+        #region Delete TemposPaCcp
+        public static bool __DeleteTemposPaCcp(string ProcedimentoID)
+        {
+            SuchDBContext context = new SuchDBContext();
+            try
+            {
+                context.TemposPaCcp.RemoveRange(context.TemposPaCcp.Where(t => t.NºProcedimento == ProcedimentoID));
+
                 context.SaveChanges();
 
                 return true;

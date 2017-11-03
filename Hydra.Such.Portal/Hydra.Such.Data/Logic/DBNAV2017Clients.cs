@@ -53,6 +53,7 @@ namespace Hydra.Such.Data.Logic
             try
             {
                 string result = "";
+                string currency = "";
                 using (var ctx = new SuchDBContextExtention())
                 {
                     var parameters = new[]{
@@ -66,6 +67,7 @@ namespace Hydra.Such.Data.Logic
                     foreach (dynamic temp in data)
                     {
                         result = (string)temp.Name;
+                        
                     }
                 }
 
@@ -104,5 +106,35 @@ namespace Hydra.Such.Data.Logic
                     return "";
                 }
             }
+
+
+        public static string GetClientCurrencyByNo(string NoClient, string NAVDatabaseName, string NAVCompanyName)
+        {
+            try
+            {
+                string result = "";
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@NoCliente", NoClient)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017Clientes @DBName, @CompanyName, @NoCliente", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result = (string)temp.Currency;
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+        }
     }
 }
