@@ -493,9 +493,10 @@ namespace Hydra.Such.Portal.Controllers
         #region TiposDeProjeto
         public IActionResult TiposProjetoDetalhes(string id)
         {
+          
             UserAccessesViewModel UPerm = GetPermissions(id);
             if (UPerm != null && UPerm.Read.Value)
-            {
+            { 
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
                 ViewBag.UpdatePermissions = !UPerm.Update.Value;
                 ViewBag.DeletePermissions = !UPerm.Delete.Value;
