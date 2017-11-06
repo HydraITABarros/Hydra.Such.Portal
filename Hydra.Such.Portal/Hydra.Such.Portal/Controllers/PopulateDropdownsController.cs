@@ -14,6 +14,7 @@ using Hydra.Such.Data.ViewModel.ProjectDiary;
 using Microsoft.AspNetCore.Authorization;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.Logic.Contracts;
+using Hydra.Such.Data.Logic.FolhaDeHora;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -132,10 +133,10 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetFolhaDeHoraPercursoOrigemDestino()
         {
-            List<DDMessageString> result = DBNAV2017PaymentTerms.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            List<DDMessageString> result = DBOrigemDestinoFh.GetAll().Select(x => new DDMessageString()
             {
-                id = x.Code,
-                value = x.Description
+                id = x.Código,
+                value = x.Descrição
             }).ToList();
             return Json(result);
         }
@@ -621,6 +622,14 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(CCPStates);
         }
+
+        [HttpPost]
+        public JsonResult GetBoolValues()
+        {
+            List<EnumBoolValues> BoolValues = EnumerablesFixed.BoolValues;
+
+            return Json(BoolValues);
+        }
         // zpgm.>
         
         [HttpPost]
@@ -631,6 +640,17 @@ namespace Hydra.Such.Portal.Controllers
             return Json(dimensions);
         }
 
+        [HttpPost]
+        public JsonResult GetDimensionValuesFromLines([FromBody] int dimensionId)
+        {
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, dimensionId)
+                .Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            return Json(result);
+        }
         [HttpPost]
         public JsonResult GetDimensionValues(int dimensionId)
         {
@@ -643,6 +663,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
     }
 
     public class DDMessage

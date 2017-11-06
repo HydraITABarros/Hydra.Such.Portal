@@ -127,7 +127,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.PercursosEAjudasCustoDespesasFolhaDeHoras.Where(x => x.NºFolhaDeHoras == FolhaHoraNo).Select(x => new PercursosEAjudasCustoDespesasFolhaDeHorasListItemViewModel()
+                    return ctx.PercursosEAjudasCustoDespesasFolhaDeHoras.Where(x => x.NºFolhaDeHoras == FolhaHoraNo && x.TipoCusto == 1).Select(x => new PercursosEAjudasCustoDespesasFolhaDeHorasListItemViewModel()
                     {
                         FolhaDeHorasNo = x.NºFolhaDeHoras,
                         CostType = x.TipoCusto,
@@ -136,7 +136,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Source = x.Origem,
                         Destiny = x.Destino,
                         DateTravel = x.DataViagem,
-                        DateTravelText = x.DataViagem.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        DateTravelText = x.DataViagem.Value.ToShortDateString(),//.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
                         Distance = Convert.ToDecimal(x.Distância),
                         Amount = Convert.ToDecimal(x.Quantidade),
                         UnitCost = Convert.ToDecimal(x.CustoUnitário),
@@ -145,10 +145,10 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Justification = x.Justificação,
                         Payroll = x.RúbricaSalarial,
                         DateTimeCreation = x.DataHoraCriação,
-                        DateTimeCreationText = x.DataHoraCriação.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        DateTimeCreationText = x.DataHoraCriação.Value.ToShortDateString(),//.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
                         UserCreation = x.UtilizadorCriação,
                         DateTimeModification = x.DataHoraModificação,
-                        DateTimeModificationText = x.DataHoraModificação.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        DateTimeModificationText = x.DataHoraModificação.Value.ToShortDateString(),//.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
                         UserModification = x.UtilizadorModificação
                     }).ToList(); ;
                 }
@@ -160,5 +160,43 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
+        public static List<PercursosEAjudasCustoDespesasFolhaDeHorasListItemViewModel> GetAllByAjudaToList(string FolhaHoraNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.PercursosEAjudasCustoDespesasFolhaDeHoras.Where(x => x.NºFolhaDeHoras == FolhaHoraNo && x.TipoCusto == 2).Select(x => new PercursosEAjudasCustoDespesasFolhaDeHorasListItemViewModel()
+                    {
+                        FolhaDeHorasNo = x.NºFolhaDeHoras,
+                        CostType = x.TipoCusto,
+                        LineNo = x.NºLinha,
+                        Description = x.Descrição,
+                        Source = x.Origem,
+                        Destiny = x.Destino,
+                        DateTravel = x.DataViagem,
+                        DateTravelText = x.DataViagem.Value.ToShortDateString(),//.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        Distance = Convert.ToDecimal(x.Distância),
+                        Amount = Convert.ToDecimal(x.Quantidade),
+                        UnitCost = Convert.ToDecimal(x.CustoUnitário),
+                        TotalCost = Convert.ToDecimal(x.CustoTotal),
+                        UnitPrice = Convert.ToDecimal(x.PreçoUnitário),
+                        Justification = x.Justificação,
+                        Payroll = x.RúbricaSalarial,
+                        DateTimeCreation = x.DataHoraCriação,
+                        DateTimeCreationText = x.DataHoraCriação.Value.ToShortDateString(),//.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        UserCreation = x.UtilizadorCriação,
+                        DateTimeModification = x.DataHoraModificação,
+                        DateTimeModificationText = x.DataHoraModificação.Value.ToShortDateString(),//.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        UserModification = x.UtilizadorModificação
+                    }).ToList(); ;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
     }
 }

@@ -348,14 +348,23 @@ namespace Hydra.Such.Portal.Controllers
         #region DiárioDeProjetos
         public IActionResult DiarioProjeto(String id)
         {
-            ViewBag.ProjectNo = id ?? "";
-            return View();
+            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
+            //if (UPerm != null && UPerm.Read.Value)
+            //{
+              //  ViewBag.UPermissions = UPerm;
+                ViewBag.ProjectNo = id ?? "";
+                return View();
+            //}
+            //else
+            //{
+            //    return RedirectToAction("AccessDenied", "Error");
+            //}
         }
 
         [HttpPost]
-        public JsonResult GetAllProjectDiary(string projectNo)
+        public JsonResult GetAllProjectDiary([FromBody]string projectNo)
         {
-            if (projectNo != null && projectNo != "")
+            if (projectNo == null || projectNo == "")
             {
                 List<ProjectDiaryViewModel> dp = DBProjectDiary.GetAll(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
                 {
@@ -380,7 +389,9 @@ namespace Hydra.Such.Portal.Controllers
                     TotalPrice = x.PreçoTotal,
                     Billable = x.Faturável,
                     Registered = x.Registado,
-                    Billed = (bool)x.Faturada
+                    Billed = (bool)x.Faturada,
+                    Currency = x.Moeda,
+                    UnitValueToInvoice = x.ValorUnitárioAFaturar
                 }).ToList();
                 return Json(dp);
             }
@@ -399,7 +410,7 @@ namespace Hydra.Such.Portal.Controllers
                     MeasurementUnitCode = x.CódUnidadeMedida,
                     LocationCode = x.CódLocalização,
                     ProjectContabGroup = x.GrupoContabProjeto,
-                    RegionCode = x.CódigoRegião,
+                    RegionCode = x.CódigoRegião, 
                     FunctionalAreaCode = x.CódigoÁreaFuncional,
                     ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                     User = x.Utilizador,
@@ -409,7 +420,9 @@ namespace Hydra.Such.Portal.Controllers
                     TotalPrice = x.PreçoTotal,
                     Billable = x.Faturável,
                     Registered = x.Registado,
-                    Billed = (bool)x.Faturada
+                    Billed = (bool)x.Faturada,
+                    Currency = x.Moeda,
+                    UnitValueToInvoice = x.ValorUnitárioAFaturar
                 }).ToList();
                 return Json(dp);
             }
@@ -466,6 +479,8 @@ namespace Hydra.Such.Portal.Controllers
                     Faturável = x.Billable,
                     Registado = false,
                     FaturaANºCliente = x.InvoiceToClientNo,
+                    Moeda = x.Currency,
+                    ValorUnitárioAFaturar = x.UnitValueToInvoice
                     
                 };
 
@@ -493,7 +508,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             //Get Project Info
             Projetos proj = DBProjects.GetById(projectNo);
-
+            
             if (proj != null)
             {
                 ProjectInfo pi = new ProjectInfo
@@ -503,7 +518,8 @@ namespace Hydra.Such.Portal.Controllers
                     RegionCode = proj.CódigoRegião,
                     FuncAreaCode = proj.CódigoÁreaFuncional,
                     ResponsabilityCenter = proj.CódigoCentroResponsabilidade,
-                    InvoiceClientNo = proj.NºCliente
+                    InvoiceClientNo = proj.NºCliente,
+                    Currency = DBNAV2017Clients.GetClientCurrencyByNo(proj.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName) //== null ? "EUR" : DBNAV2017Clients.GetClientCurrencyByNo(proj.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
                 };
 
                 return Json(pi);
@@ -608,6 +624,7 @@ namespace Hydra.Such.Portal.Controllers
             public string FuncAreaCode { get; set; }
             public string ResponsabilityCenter { get; set; }
             public string InvoiceClientNo { get; set; }
+            public string Currency { get; set; }
         }
         #endregion
 
@@ -699,6 +716,8 @@ namespace Hydra.Such.Portal.Controllers
                     TotalCost = x.CustoTotal,
                     UnitPrice = x.PreçoUnitário,
                     TotalPrice = x.PreçoTotal,
+                    UnitValueToInvoice = x.ValorUnitárioAFaturar,
+                    Currency = x.Moeda,
                     Billable = x.Faturável,
                     InvoiceToClientNo = x.FaturaANºCliente,
                     CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
@@ -711,6 +730,11 @@ namespace Hydra.Such.Portal.Controllers
                     if(lst.MovementType == 3)
                     {
                         lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
+                    }
+
+                    if(lst.Currency != "" || !String.IsNullOrEmpty(lst.Currency))
+                    {
+                        lst.UnitPrice = lst.UnitValueToInvoice;
                     }
                 }
                 return Json(result);
