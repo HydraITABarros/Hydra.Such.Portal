@@ -79,12 +79,22 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 3);
                 ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+
             }
             else
             {
                 ContractsList = DBContracts.GetByNo(ContractNo, true);
             }
 
+
+            //Apply User Dimensions Validations
+            List<UserDimensionsViewModel> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimension == 1 && y.DimensionValue == x.CódigoRegião));
+            //FunctionalAreas
+            ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimension == 2 && y.DimensionValue == x.CódigoÁreaFuncional));
+            //ResponsabilityCenter
+            ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimension == 3 && y.DimensionValue == x.CódigoCentroResponsabilidade));
 
 
             List<ContractViewModel> result = new List<ContractViewModel>();
@@ -394,21 +404,34 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
-                    // Delete Contract Lines
-                    DBContractLines.DeleteAllFromContract(data.ContractNo);
+                    //Verify if contract have Invoices Or Projects
+                    bool haveContracts = DBContracts.GetAllByContractNo(data.ContractNo).Count > 0;
+                    bool haveInvoices = DBContractInvoices.GetByContractNo(data.ContractNo).Count > 0;
 
-                    // Delete Contract Invoice Texts
-                    DBContractInvoiceText.DeleteAllFromContract(data.ContractNo);
+                    if (haveContracts || haveInvoices)
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Não é possivel remover o contrato pois possui faturas e/ou projetos associados.";
+                    }
+                    else
+                    {
+                        // Delete Contract Lines
+                        DBContractLines.DeleteAllFromContract(data.ContractNo);
 
-                    // Delete Contract Client Requisitions
-                    DBContractClientRequisition.DeleteAllFromContract(data.ContractNo);
+                        // Delete Contract Invoice Texts
+                        DBContractInvoiceText.DeleteAllFromContract(data.ContractNo);
 
-                    // Delete Contract 
-                    DBContracts.DeleteByContractNo(data.ContractNo);
+                        // Delete Contract Client Requisitions
+                        DBContractClientRequisition.DeleteAllFromContract(data.ContractNo);
+
+                        // Delete Contract 
+                        DBContracts.DeleteByContractNo(data.ContractNo);
 
 
-                    result.eReasonCode = 1;
-                    result.eMessage = "Contrato eliminado com sucesso.";
+                        result.eReasonCode = 1;
+                        result.eMessage = "Contrato eliminado com sucesso.";
+                    }
+                    
                 }
             }
             catch (Exception ex)

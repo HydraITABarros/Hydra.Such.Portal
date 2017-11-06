@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
+using Hydra.Such.Data.Logic.Contracts;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -40,6 +41,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.Archived = archived == null ? 0 : 1;
                 ViewBag.ContractNo = contractNo ?? "";
+                ViewBag.UPermissions = UPerm;
                 return View();
             }
             else
@@ -53,6 +55,21 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
             if (UPerm != null && UPerm.Read.Value)
             {
+                Contratos cContract = null;
+                if (version != "")
+                {
+                    cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
+                }
+                else
+                {
+                    cContract = DBContracts.GetByIdLastVersion(id);
+                }
+
+                if (cContract != null && cContract.Arquivado == true)
+                {
+                    UPerm.Update = false;
+                }
+
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
                 ViewBag.UPermissions = UPerm;
