@@ -383,7 +383,7 @@ namespace Hydra.Such.Portal.Controllers
                 Id = Cfg.Id,
                 ProjectNumeration = Cfg.NumeraçãoProjetos,
                 ContractNumeration = Cfg.NumeraçãoContratos,
-                TimeSheetNumeration = Cfg.NumeraçãoFolhasDeHoras
+                TimeSheetNumeration = Cfg.NumeraçãoFolhasDeHoras                
             };
             return Json(result);
         }

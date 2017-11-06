@@ -8,8 +8,6 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
-
-
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
@@ -20,47 +18,14 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
-<dom-module id="x-contractdetails">
+<h1 class="title">Detalhes Propostas</h1>
+
+<x-proposalsdetails></x-proposalsdetails>
+<dom-module id="x-proposalsdetails">
     <template>
-        <!-- STYLES -->
-        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
-        <style>
-            vaadin-combo-box {
-                margin-top: 0px !important;
-                width: 100% !important;
-            }
-
-            vaadin-date-picker {
-                margin-top: 0px !important;
-                width: 100% !important;
-            }
-
-            vaadin-text-field {
-                margin-top: 0px !important;
-                width: 100%;
-            }
-
-            paper-button {
-                margin-top: 10px;
-            }
-
-            .break_clear {
-                margin-top: 15px;
-                margin-right: 0px !important;
-                margin-left: 0px !important;
-            }
-
-            .break_frm {
-                margin-top: 15px;
-            }
-
-            .marginSpace {
-                margin: 0px !important;
-            }
-        </style>
-
 
         <!-- DROPDOWNS POPULATE -->
         <iron-ajax url="/PopulateDropdowns/GetFeeUnits" last-response="{{CBFeeUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -125,8 +90,6 @@
                    id="address_ajax"
                    on-response="_addressResponseProcessor"
                    content-type="application/json"></iron-ajax>
-
-
 
 
         <div class="row" style="display: {{ _showContractLines }};">
@@ -626,7 +589,7 @@
                                                                 </paper-icon-item>
                                                             </template>
                                                         </vaadin-combo-box>
-                                                        
+
                                                     </template>
                                                 </vaadin-grid-column>
                                                 <vaadin-grid-column>
@@ -692,21 +655,8 @@
                 </div>
             </div>
         </div>
-
-
-
-
-
-
-
-
         <hr />
-
         <!-- Contract Lines -->
-
-
-
-
         <iron-ajax url="/Contratos/GetContractLines"
                    last-response="{{dataLines}}"
                    method="post"
@@ -885,13 +835,13 @@
                         </div>
 
                         <div class="row">
-                            <vaadin-grid aria-label="ContractLines" id="grid_contractlines" name="grid_contractlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}"> 
+                            <vaadin-grid aria-label="ContractLines" id="grid_contractlines" name="grid_contractlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
                                 <vaadin-grid-column width="130px">
                                     <template class="header">
                                         <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="type" />
                                     </template>
-                                    <template>                                        
+                                    <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLGridContractLineType" name="_CLGridContractLineType" item-value-path="id" item-label-path="value" value="{{item.type}}" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineTypeGridChange">
                                                 <template>
@@ -995,7 +945,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column  width="125px">
+                                <vaadin-grid-column width="125px">
                                     <template class="header">
                                         <vaadin-grid-sorter path="lineDiscount">% Desconto Linha</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="lineDiscount" />
@@ -1009,7 +959,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column  width="75px">
+                                <vaadin-grid-column width="75px">
                                     <template class="header">
                                         <vaadin-grid-sorter path="billable">Fáturavel</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="billable" />
@@ -1020,13 +970,13 @@
                                         </center>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column  width="125px">
+                                <vaadin-grid-column width="125px">
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeRegion" />
                                     </template>
                                     <template>
-                                        
+
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-combo-box items="[[CBRegions]]" id="_CLGridRegion" name="_CLGridRegion" item-value-path="id" item-label-path="value" value="{{item.codeRegion}}" disabled="{{ !_permissions.update }}">
                                                 <template>
@@ -1044,7 +994,7 @@
                                     </template>
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="150px">
-                                    <template class="header" >
+                                    <template class="header">
                                         <vaadin-grid-sorter path="codeFunctionalArea">Cód. Area Funcional</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeFunctionalArea" />
                                     </template>
@@ -1082,7 +1032,7 @@
                                                 </template>
                                             </vaadin-combo-box>
                                         </template>
-                                        <template is="dom-if" if="{{ !item.selected }}">                                
+                                        <template is="dom-if" if="{{ !item.selected }}">
                                             [[ _clFormatResponsabilityCenter(item.codeResponsabilityCenter) ]]
                                         </template>
                                     </template>
@@ -1223,7 +1173,7 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column  width="100px">
+                                <vaadin-grid-column width="100px">
                                     <template class="header">
                                         <vaadin-grid-sorter path="createContract">Cria Contrato</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="createContract" />
@@ -1234,17 +1184,6 @@
                                         </center>
                                     </template>
                                 </vaadin-grid-column>
-                                <!--<vaadin-grid-column>
-                                    <template class="header">
-                                    </template>
-                                    <template>
-                                        <center>
-                                            <template is="dom-if" if="{{ !_permissions.update }}">
-                                                <paper-button class="btnRemove" raised on-tap="_deleteInvoiceText">Eliminar</paper-button>
-                                            </template>
-                                        </center>
-                                    </template>
-                                </vaadin-grid-column>-->
                             </vaadin-grid>
                         </div>
                         <div class="marginSpace">
@@ -1256,7 +1195,7 @@
                 </div>
             </div>
         </div>
-        
+
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
@@ -1265,7 +1204,7 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-contractdetails',
+                is: 'x-proposalsdetails',
                 properties: {
                     _permissions: {
                         type: Array
@@ -1454,7 +1393,7 @@
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
                     this.$.page_databound_ajax.generateRequest();
-                    
+
                     if (this._contractno == "") {
                         this._isCreate = true;
                     }
@@ -1536,7 +1475,7 @@
                 //Responses Processors
                 _responseProcessor: function (data) {
                     var self = this;
-                    
+
                     //Set AreaId
                     if (this.data.contractNo == "" || this.data.contractNo == null) {
                         this.data.area = this._areaid;
@@ -1593,7 +1532,6 @@
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.validateResponse == "") {
-                            debugger;;
                             this._executeRequest("/Contratos/CreateContract", this.data)
                         } else {
                             this._openToast(data);
@@ -1672,8 +1610,6 @@
 
                 //Helpers
                 _executeRequest: function (url, data) {
-                    debugger;;
-                    this.data.contractType = 2;
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
@@ -1681,7 +1617,7 @@
                 _openContractArchive: function () {
                     window.location.href = "../?archived=1&contractno=" + this.data.contractNo;
                 },
-                
+
 
                 //#################################
                 //        CONTRACT LINES
@@ -1691,26 +1627,26 @@
                         contractNo: this.data.contractNo,
                         versionNo: this.data.versionNo,
                         contractType: 3,
-                        type : this._CLContractLineType,
-                        codeMeasureUnit : this._CLMeasureUnit,
-                        codeRegion : this._CLRegion,
-                        frequency : this._CLFrequency,
-                        versionStartDate : this._CLVersionStartDate,
-                        serviceClientNo : this._CLServiceClient,
-                        code : this._CLCode,
-                        unitPrice : this._CLUnitPrice,
-                        codeFunctionalArea : this._CLFunctionalArea,
-                        interventionHours : this._CLInterventionHours,
-                        versionEndDate : this._CLVersionEndDate,
+                        type: this._CLContractLineType,
+                        codeMeasureUnit: this._CLMeasureUnit,
+                        codeRegion: this._CLRegion,
+                        frequency: this._CLFrequency,
+                        versionStartDate: this._CLVersionStartDate,
+                        serviceClientNo: this._CLServiceClient,
+                        code: this._CLCode,
+                        unitPrice: this._CLUnitPrice,
+                        codeFunctionalArea: this._CLFunctionalArea,
+                        interventionHours: this._CLInterventionHours,
+                        versionEndDate: this._CLVersionEndDate,
                         invoiceGroup: this._CLInvoiceGroup,
-                        description : this._CLDescription,
-                        lineDiscount : this._CLDiscountLine,
-                        codeResponsabilityCenter : this._CLResponsabilityCenter,
-                        totalTechinicians : this._CLTotalTechnicians,
-                        responsibleNo : this._CLResponsible,
-                        createContract : this._CLCreateContract,
-                        quantity : this._CLQuantity,
-                        billable : this._CLBillable
+                        description: this._CLDescription,
+                        lineDiscount: this._CLDiscountLine,
+                        codeResponsabilityCenter: this._CLResponsabilityCenter,
+                        totalTechinicians: this._CLTotalTechnicians,
+                        responsibleNo: this._CLResponsible,
+                        createContract: this._CLCreateContract,
+                        quantity: this._CLQuantity,
+                        billable: this._CLBillable
                     });
                     this.$.grid_contractlines.clearCache();
 
@@ -1790,7 +1726,7 @@
                         var sel = this.CBContractLineTypes.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
-                        } 
+                        }
                     }
                     return "";
                 },
@@ -1815,7 +1751,7 @@
                         var sel = this.CBMeasureUnits.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
-                        } 
+                        }
                     }
                     return "";
                 },
@@ -1824,7 +1760,7 @@
                         var sel = this.CBRegions.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
-                        } 
+                        }
                     }
                     return "";
                 },
@@ -1833,7 +1769,7 @@
                         var sel = this.CBFunctionalAreas.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
-                        } 
+                        }
                     }
                     return "";
                 },
@@ -1842,7 +1778,7 @@
                         var sel = this.CBResponsabilityCenterCodes.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
-                        } 
+                        }
                     }
                     return "";
                 },
@@ -1851,7 +1787,7 @@
                         var sel = this.CBEmployees.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
-                        } 
+                        }
                     }
                     return "";
                 },
@@ -1872,4 +1808,3 @@
     </script>
 
 </dom-module>
-
