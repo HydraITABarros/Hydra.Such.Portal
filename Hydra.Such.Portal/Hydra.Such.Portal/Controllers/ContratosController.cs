@@ -598,9 +598,6 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
-
-
-
         #region Oportunidades
 
         public JsonResult GetListOportunitiesByArea([FromBody] JObject requestParams)

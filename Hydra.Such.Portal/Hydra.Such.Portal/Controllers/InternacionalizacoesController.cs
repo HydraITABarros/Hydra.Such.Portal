@@ -83,6 +83,23 @@ namespace Hydra.Such.Portal.Controllers {
         }
         #endregion
 
+        #region Oportunidades
+        public IActionResult Oportunidades(int? archived, string contractNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 8, 20);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Archived = archived == null ? 0 : 1;
+                ViewBag.ContractNo = contractNo ?? "";
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        #endregion
 
         public IActionResult Administracao()
         {

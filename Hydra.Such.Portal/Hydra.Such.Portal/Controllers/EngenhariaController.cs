@@ -87,7 +87,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Oportunidades
         public IActionResult Oportunidades(int? archived, string contractNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 20);
 
             if (UPerm != null && UPerm.Read.Value)
             {
