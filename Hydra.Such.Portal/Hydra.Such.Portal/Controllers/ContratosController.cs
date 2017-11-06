@@ -562,6 +562,39 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
 
+
+
+        #region Oportunidades
+
+        public JsonResult GetListOportunitiesByArea([FromBody] JObject requestParams)
+        {
+            int AreaId = int.Parse(requestParams["AreaId"].ToString());
+            int Archived = int.Parse(requestParams["Archived"].ToString());
+            string ContractNo = requestParams["ContractNo"].ToString();
+
+            List<Contratos> ContractsList = null;
+
+            if (Archived == 0 || ContractNo == "")
+            {
+                ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 1);
+                ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+            }
+            else
+            {
+                ContractsList = DBContracts.GetByNo(ContractNo, true);
+            }
+
+
+
+            List<ContractViewModel> result = new List<ContractViewModel>();
+
+            ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
+
+            return Json(result);
+        }
+
+        #endregion
+
         #region Avenca Fixa
 
         public JsonResult GetAllAvencaFixa()

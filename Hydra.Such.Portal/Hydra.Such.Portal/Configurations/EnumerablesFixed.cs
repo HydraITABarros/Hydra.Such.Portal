@@ -176,6 +176,16 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 19,
                 Value = "Diário de Projeto"
+            },
+            new EnumData()
+            {
+                Id = 20,
+                Value = "Oportunidades"
+            },
+             new EnumData()
+            {
+                Id = 21,
+                Value = "Propostas"
             }
         };
 
