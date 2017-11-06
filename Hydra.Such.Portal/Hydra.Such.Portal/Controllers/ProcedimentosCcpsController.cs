@@ -53,7 +53,6 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult DetalhePedidoAquisicao(string id)
         {
             ViewBag.No = id == null ? "" : id;
-            ViewBag.TipoProcedimento = 1;
             return View();
         }
 
@@ -137,34 +136,6 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(data);
         }
-
-        //public JsonResult CreateProcedimento([FromBody] int _procedimentotypeid)
-        //{
-        //    try
-        //    {
-        //        ProcedimentoCCPView NewProcView = new ProcedimentoCCPView()
-        //        {
-        //            TipoProcedimento = _procedimentotypeid,
-        //            UtilizadorCriacao = User.Identity.Name
-        //        };
-
-
-        //        ProcedimentosCcp NewProc = DBProcedimentosCCP.__CreateProcedimento(NewProcView);
-
-        //        if(NewProc != null)
-        //        {
-        //            return Json(CCPFunctions.CastProcCcpToProcCcpView(NewProc));
-        //        }
-        //        else
-        //        {
-        //            return Json(null);
-        //        }
-        //    }
-        //    catch(Exception e)
-        //    {
-        //        return Json(null);
-        //    }
-        //}
 
         [HttpPost]
         public JsonResult UpdateProcedimento([FromBody] ProcedimentoCCPView data)

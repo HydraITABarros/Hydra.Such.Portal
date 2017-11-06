@@ -1,5 +1,4 @@
-﻿
-<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
@@ -12,7 +11,7 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 
-<dom-module id="x-contractlist">
+<dom-module id="x-oportunitieslist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/css/main.css" />
@@ -61,7 +60,7 @@
         <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="contractNo">Nº Oportunidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="contractNo" />
                 </template>
                 <template>
@@ -84,6 +83,15 @@
                 </template>
                 <template>
                     {{item.endDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="contactNo">Nº Contacto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contactNo" />
+                </template>
+                <template>
+                    {{item.contactNo}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="200px">
@@ -157,7 +165,7 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-contractlist',
+                is: 'x-oportunitieslist',
                 properties: {
                     _permissions: {
                         type: Array
@@ -185,7 +193,7 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesContrato/" + item.contractNo +"?version="+item.versionNo;
+                        window.location.href = "DetalhesContrato/" + item.contractNo;
                     }
                 },
                 _create: function (item) {
@@ -197,7 +205,6 @@
                     if (this._archived == 1) {
                         this._disabledCreate = true;
                     }
-                    
                     this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
                 },

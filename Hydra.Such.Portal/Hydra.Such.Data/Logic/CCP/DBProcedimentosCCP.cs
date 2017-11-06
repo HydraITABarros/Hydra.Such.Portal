@@ -77,7 +77,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
                 proc.Nº = DBNumerationConfigurations.GetNextNumeration(NumeracaoProcedimento, true);
                 proc.DataHoraCriação = DateTime.Now;
-
+                proc.Estado = 0;
                 proc.Nº1 = new TemposPaCcp()
                 {
                     NºProcedimento = proc.Nº,
@@ -86,7 +86,7 @@ namespace Hydra.Such.Data.Logic.CCP
                     UtilizadorCriação = proc.UtilizadorCriação
                 };
 
-                proc.NºNavigation = __CreateRegistoDeAtas(proc);
+                proc.NºNavigation = __CreateRegistoDeAtas(proc, false);
 
                 context.Add(proc.NºNavigation);
                 context.SaveChanges();
@@ -128,7 +128,6 @@ namespace Hydra.Such.Data.Logic.CCP
             }
 
         }
-
         public static ProcedimentosCcp __UpdateProcedimento(ProcedimentoCCPView Procedimento)
         {
             SuchDBContext context = new SuchDBContext();
@@ -148,7 +147,6 @@ namespace Hydra.Such.Data.Logic.CCP
             }
 
         }
-
         public static bool __DeleteProcedimento(string ProcedimentoID)
         {
             SuchDBContext context = new SuchDBContext();
@@ -184,9 +182,9 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return num.ToString().PadLeft(4, '0');
         }
-        public static RegistoDeAtas __CreateRegistoDeAtas(ProcedimentosCcp Procedimento)
+        public static RegistoDeAtas __CreateRegistoDeAtas(ProcedimentosCcp Procedimento, bool SaveRecord)
         {
-            //SuchDBContext context = new SuchDBContext();
+            SuchDBContext context = new SuchDBContext();
             try
             {
                 RegistoDeAtas Acta = new RegistoDeAtas()
@@ -197,9 +195,12 @@ namespace Hydra.Such.Data.Logic.CCP
                     UtilizadorCriação = Procedimento.UtilizadorCriação
                 };
 
-                //context.Add(Acta);
-                //context.SaveChanges();
-
+                if (SaveRecord)
+                {
+                    context.Add(Acta);
+                    context.SaveChanges();
+                }
+                
                 return Acta;
             }
             catch (Exception e)

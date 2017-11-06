@@ -410,7 +410,7 @@ namespace Hydra.Such.Portal.Controllers
                     MeasurementUnitCode = x.CódUnidadeMedida,
                     LocationCode = x.CódLocalização,
                     ProjectContabGroup = x.GrupoContabProjeto,
-                    RegionCode = x.CódigoRegião,
+                    RegionCode = x.CódigoRegião, 
                     FunctionalAreaCode = x.CódigoÁreaFuncional,
                     ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                     User = x.Utilizador,
