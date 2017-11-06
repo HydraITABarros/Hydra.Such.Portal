@@ -193,19 +193,23 @@ namespace Hydra.Such.Portal.Controllers
 
                     switch (data.ContractType)
                     {
-                        case 2:
-                            ProjectNumerationConfigurationId = Configs.NumeraçãoContratos.Value;
-                            data.ContractNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ContractNo == "" || data.ContractNo == null));
+                        case 1:
+                            ProjectNumerationConfigurationId = Configs.NumeraçãoOportunidades.Value;
                             break;
-
+                        case 2:
+                            ProjectNumerationConfigurationId = Configs.NumeraçãoPropostas.Value;
+                            break;
+                        case 3:
+                            ProjectNumerationConfigurationId = Configs.NumeraçãoContratos.Value;
+                            break;
                         default:
                             break;
                     }
 
+                    data.ContractNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ContractNo == "" || data.ContractNo == null));
+
                     if (data.ContractNo != null)
                     {
-
-
                         Contratos cContract = DBContracts.ParseToDB(data);
                         cContract.TipoContrato = data.ContractType;
                         cContract.UtilizadorCriação = User.Identity.Name;

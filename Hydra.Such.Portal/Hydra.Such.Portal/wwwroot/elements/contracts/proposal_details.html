@@ -115,7 +115,7 @@
                             <div>
                                 <div class="row break_clear">
                                     <div class="col-lg-3">
-                                        <vaadin-text-field id="contractNo" name="contractNo" label="Nº Contrato" value="{{data.contractNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                        <vaadin-text-field id="contractNo" name="contractNo" label="Nº Proposta" value="{{data.contractNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
                                     </div>
                                     <div class="col-lg-3">
                                         <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
@@ -200,16 +200,16 @@
                                         </vaadin-combo-box>
                                     </div>
                                     <div class="col-lg-3">
-                                        <vaadin-date-picker label="Data Inicio 1º Contrato" id="startDateFirstContract" name="startDateFirstContract" value="{{data.startDateFirstContract}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                        <vaadin-date-picker label="Data Inicio 1º Proposta" id="startDateFirstContract" name="startDateFirstContract" value="{{data.startDateFirstContract}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                     </div>
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.firstContractReference}}" id="firstContractReference" name="firstContractReference" label="Referência 1º Contrato" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{data.firstContractReference}}" id="firstContractReference" name="firstContractReference" label="Referência 1º Proposta" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
                                 </div>
 
                                 <div class="row break_clear">
                                     <div class="panel panel-default">
-                                        <div class="panel-heading">Versão Atual do Contrato</div>
+                                        <div class="panel-heading">Versão Atual da Proposta</div>
                                         <div class="panel-body">
                                             <div class="row break_clear">
                                                 <div class="col-lg-3">
@@ -484,7 +484,7 @@
                                         </vaadin-combo-box>
                                     </div>
                                     <div class="col-lg-3">
-                                        <vaadin-combo-box items="[[CBMaintenanceTypes]]" item-value-path="id" item-label-path="value" value="{{data.maintenanceContractType}}" label="Tipo Contrato Manut." disabled="{{ !_permissions.update }}">
+                                        <vaadin-combo-box items="[[CBMaintenanceTypes]]" item-value-path="id" item-label-path="value" value="{{data.maintenanceContractType}}" label="Tipo Proposta Manut." disabled="{{ !_permissions.update }}">
                                             <template>
                                                 <paper-icon-item>
                                                     <paper-item-body two-line>
@@ -1610,6 +1610,7 @@
 
                 //Helpers
                 _executeRequest: function (url, data) {
+                    this.data.contractType = 2;
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();

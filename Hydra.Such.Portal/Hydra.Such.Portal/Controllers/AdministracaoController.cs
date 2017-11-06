@@ -383,7 +383,10 @@ namespace Hydra.Such.Portal.Controllers
                 Id = Cfg.Id,
                 ProjectNumeration = Cfg.NumeraçãoProjetos,
                 ContractNumeration = Cfg.NumeraçãoContratos,
-                TimeSheetNumeration = Cfg.NumeraçãoFolhasDeHoras                
+                TimeSheetNumeration = Cfg.NumeraçãoFolhasDeHoras,
+                OportunitiesNumeration = Cfg.NumeraçãoOportunidades,
+                ProposalsNumeration = Cfg.NumeraçãoPropostas,
+                ContactsNumeration = Cfg.NumeraçãoContactos
             };
             return Json(result);
         }
@@ -403,6 +406,9 @@ namespace Hydra.Such.Portal.Controllers
             configObj.NumeraçãoProjetos = data.ProjectNumeration;
             configObj.NumeraçãoContratos = data.ContractNumeration;
             configObj.NumeraçãoFolhasDeHoras = data.TimeSheetNumeration;
+            configObj.NumeraçãoOportunidades = data.OportunitiesNumeration;
+            configObj.NumeraçãoPropostas = data.ProposalsNumeration;
+            configObj.NumeraçãoContactos = data.ContactsNumeration;
             configObj.UtilizadorModificação = User.Identity.Name;
             //configObj.UtilizadorCriação = User.Identity.Name;
             //configObj.DataHoraCriação = DateTime.Now;
