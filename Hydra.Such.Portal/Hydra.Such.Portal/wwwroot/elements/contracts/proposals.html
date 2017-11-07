@@ -182,6 +182,7 @@
                     if (this._archived == 1) {
                         this._disabledCreate = true;
                     }
+                    debugger;;
                     this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
                 },
