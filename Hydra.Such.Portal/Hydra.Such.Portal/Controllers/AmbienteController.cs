@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.ViewModel;
+using Hydra.Such.Data.Logic.Contracts;
+using Hydra.Such.Data.Database;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -35,11 +37,22 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult DetalhesContrato(string id, string version)
+        public IActionResult DetalhesContrato(string id, string version = "")
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 2, 2);
             if (UPerm != null && UPerm.Read.Value)
             {
+                Contratos cContract = null;
+                if (version != "")
+                    cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
+                else
+                    cContract = DBContracts.GetByIdLastVersion(id);
+
+                if (cContract != null && cContract.Arquivado == true)
+                {
+                    UPerm.Update = false;
+                }
+
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
                 ViewBag.UPermissions = UPerm;

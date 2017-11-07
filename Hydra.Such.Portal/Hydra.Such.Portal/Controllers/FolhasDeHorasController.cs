@@ -143,6 +143,107 @@ namespace Hydra.Such.Portal.Controllers
                     List<NAVEmployeeViewModel> employee = DBNAV2009Employees.GetAll(cFolhaDeHora.NºEmpregado, _config.NAVDatabaseName, _config.NAVCompanyName);
                     result.EmployeeName = employee[0].Name;
 
+                    //PERCURSO
+                    result.FolhaDeHoraPercurso = DBPercursosEAjudasCustoDespesasFolhaDeHoras.GetAllByPercursoToList(data.FolhaDeHorasNo).Select(x => new PercursosEAjudasCustoDespesasFolhaDeHorasListItemViewModel()
+                    {
+                        FolhaDeHorasNo = x.FolhaDeHorasNo,
+                        CostType = x.CostType,
+                        LineNo = x.LineNo,
+                        Description = x.Description,
+                        Source = x.Source,
+                        Destiny = x.Destiny,
+                        DateTravel = x.DateTravel,
+                        DateTravelText = x.DateTravelText,
+                        Distance = x.Distance,
+                        Amount = x.Amount,
+                        UnitCost = x.UnitCost,
+                        TotalCost = x.TotalCost,
+                        UnitPrice = x.UnitPrice,
+                        Justification = x.Justification,
+                        Payroll = x.Payroll,
+                        DateTimeCreation = x.DateTimeCreation,
+                        DateTimeCreationText = x.DateTimeCreationText,
+                        UserCreation = x.UserCreation,
+                        DateTimeModification = x.DateTimeModification,
+                        DateTimeModificationText = x.DateTimeModificationText,
+                        UserModification = x.UserModification
+                    }).ToList();
+
+                    //AJUDA DE CUSTO/DESPESA
+                    result.FolhaDeHoraAjuda = DBPercursosEAjudasCustoDespesasFolhaDeHoras.GetAllByAjudaToList(data.FolhaDeHorasNo).Select(x => new PercursosEAjudasCustoDespesasFolhaDeHorasListItemViewModel()
+                    {
+                        FolhaDeHorasNo = x.FolhaDeHorasNo,
+                        CostType = x.CostType,
+                        LineNo = x.LineNo,
+                        Description = x.Description,
+                        Source = x.Source,
+                        Destiny = x.Destiny,
+                        DateTravel = x.DateTravel,
+                        DateTravelText = x.DateTravelText,
+                        Distance = x.Distance,
+                        Amount = x.Amount,
+                        UnitCost = x.UnitCost,
+                        TotalCost = x.TotalCost,
+                        UnitPrice = x.UnitPrice,
+                        Justification = x.Justification,
+                        Payroll = x.Payroll,
+                        DateTimeCreation = x.DateTimeCreation,
+                        DateTimeCreationText = x.DateTimeCreationText,
+                        UserCreation = x.UserCreation,
+                        DateTimeModification = x.DateTimeModification,
+                        DateTimeModificationText = x.DateTimeModificationText,
+                        UserModification = x.UserModification
+                    }).ToList();
+
+                    //MÃO-DE-OBRA
+                    result.FolhaDeHoraMaoDeObra = DBMaoDeObraFolhaDeHoras.GetAllByMaoDeObraToList(data.FolhaDeHorasNo).Select(x => new MaoDeObraFolhaDeHorasListItemViewModel()
+                    {
+                        FolhaDeHorasNo = x.FolhaDeHorasNo,
+                        LineNo = x.LineNo,
+                        Date = x.Date,
+                        EmployedNo = x.EmployedNo,
+                        ProjectNo = x.ProjectNo,
+                        WorkTypeCode = x.WorkTypeCode,
+                        StartTime = x.StartTime,
+                        StartTimeText = x.StartTimeText,
+                        EndTime = x.EndTime,
+                        EndTimeText = x.EndTimeText,
+                        LunchTime = x.LunchTime,
+                        DinnerTime = x.DinnerTime,
+                        FamilyCodeResource = x.FamilyCodeResource,
+                        ResourceNo = x.ResourceNo,
+                        UnitCodeMeasure = x.UnitCodeMeasure,
+                        OMTypeCode = x.OMTypeCode,
+                        HoursNo = x.HoursNo,
+                        HoursNoText = x.HoursNoText,
+                        DirectUnitCost = x.DirectUnitCost,
+                        CostPrice = x.CostPrice,
+                        SalePrice = x.SalePrice,
+                        TotalPrice = x.TotalPrice,
+                        DateTimeCreation = x.DateTimeCreation,
+                        UserCreation = x.UserCreation,
+                        DateTimeModification = x.DateTimeModification,
+                        UserModification = x.UserModification
+                    }).ToList();
+
+                    //PRESENÇA
+                    result.FolhaDeHoraPresenca = DBPresencasFolhaDeHoras.GetAllByPresencaToList(data.FolhaDeHorasNo).Select(x => new PresencasFolhaDeHorasListItemViewModel()
+                    {
+                        FolhaDeHorasNo = x.FolhaDeHorasNo,
+                        Date = x.Date,
+                        DateText = x.DateText,
+                        FirstHourEntry = x.FirstHourEntry,
+                        FirstHourDeparture = x.FirstHourDeparture,
+                        SecondHourEntry = x.SecondHourEntry,
+                        SecondHourDeparture = x.SecondHourDeparture,
+                        DateTimeCreation = x.DateTimeCreation,
+                        DateTimeCreationText = x.DateTimeCreationText,
+                        UserCreation = x.UserCreation,
+                        DateTimeModification = x.DateTimeModification,
+                        DateTimeModificationText = x.DateTimeModificationText,
+                        UserModification = x.UserModification
+                    }).ToList();
+
                     return Json(result);
                 }
 
@@ -261,6 +362,66 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult UpdateFolhaDeHora([FromBody] FolhaDeHoraDetailsViewModel data)
         {
+            FolhasDeHoras FHUpdate = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
+            if (FHUpdate == null)
+            {
+                data.eReasonCode = 1;
+                data.eMessage = "Não foi possivel obter a Folha de Horas.";
+            }
+            else
+            {
+                FHUpdate.CriadoPor = data.CreatedBy;
+                FHUpdate.CódigoCentroResponsabilidade = data.CRESPCode;
+                FHUpdate.CódigoRegião = data.RegionCode;
+                FHUpdate.CódigoTipoKmS = data.CodeTypeKms;
+                FHUpdate.CódigoÁreaFuncional = data.AreaCode;
+                FHUpdate.DataHoraChegada = data.DateTimeArrival;
+                FHUpdate.DataHoraCriação = data.DateTimeCreation;
+                FHUpdate.DataHoraModificação = System.DateTime.Now;
+                FHUpdate.DataHoraPartida = data.DateTimeDeparture;
+                FHUpdate.DataHoraTerminado = data.DateTimeFinished;
+                FHUpdate.DataHoraValidação = data.DateTimeValidation;
+                FHUpdate.DataHoraÚltimoEstado = data.DateTimeLastState;
+                FHUpdate.DataIntegraçãoEmRh = data.DateTimeIntegrationRH;
+                FHUpdate.DataIntegraçãoEmRhKm = data.DateTimeIntegrationRHKM;
+                FHUpdate.DeslocaçãoForaConcelho = data.DisplacementOutsideCity;
+                FHUpdate.DeslocaçãoPlaneada = data.PlannedScrolling;
+                //FHUpdate.DistribuiçãoCustoFolhaDeHoras = data.;
+                FHUpdate.Estado = data.Status;
+                FHUpdate.IntegradorEmRh = data.IntegratorRH;
+                FHUpdate.IntegradorEmRhKm = data.IntegratorRHKM;
+                FHUpdate.Matrícula = data.CarRegistration;
+                //FHUpdate.MãoDeObraFolhaDeHoras = data.;
+                FHUpdate.NomeEmpregado = data.EmployeeName;
+                FHUpdate.NºEmpregado = data.EmployeeNo;
+                FHUpdate.NºFolhaDeHoras = data.FolhaDeHorasNo;
+                FHUpdate.NºProjeto = data.ProjectNo;
+                //FHUpdate.NºProjetoNavigation = data.;
+                FHUpdate.NºResponsável1 = data.Responsible1;
+                FHUpdate.NºResponsável2 = data.Responsible2;
+                FHUpdate.NºResponsável3 = data.Responsible3;
+                FHUpdate.Observações = data.Comments;
+                //FHUpdate.PercursosEAjudasCustoDespesasFolhaDeHoras = data.;
+                //FHUpdate.PresençasFolhaDeHoras = data.;
+                FHUpdate.Terminada = data.Finished;
+                FHUpdate.TerminadoPor = data.FinishedBy;
+                FHUpdate.TipoDeslocação = data.TypeDeslocation;
+                FHUpdate.UtilizadorCriação = data.UserCreation;
+                FHUpdate.UtilizadorModificação = User.Identity.Name;
+                FHUpdate.Validado = data.Validated;
+                FHUpdate.Validador = data.Validator;
+                FHUpdate.Validadores = data.Validators;
+                FHUpdate.ValidadoresRhKm = data.ValidatorsRHKM;
+                FHUpdate.Área = data.Area;
+
+                DBFolhasDeHoras.Update(FHUpdate);
+            }
+
+
+
+
+
+
             if (data != null)
             {
                 FolhasDeHoras cFolhaDeHora = new FolhasDeHoras()

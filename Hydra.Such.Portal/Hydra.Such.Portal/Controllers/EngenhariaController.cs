@@ -50,20 +50,16 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult DetalhesContrato(string id, string version)
+        public IActionResult DetalhesContrato(string id, string version = "")
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
             if (UPerm != null && UPerm.Read.Value)
             {
                 Contratos cContract = null;
                 if (version != "")
-                {
                     cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
-                }
                 else
-                {
                     cContract = DBContracts.GetByIdLastVersion(id);
-                }
 
                 if (cContract != null && cContract.Arquivado == true)
                 {

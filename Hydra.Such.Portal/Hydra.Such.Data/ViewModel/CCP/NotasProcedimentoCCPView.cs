@@ -5,20 +5,16 @@ using Hydra.Such.Data.Database;
 
 namespace Hydra.Such.Data.ViewModel.CCP
 {
-    public class ElementosJuriView
+    public class NotasProcedimentoCCPView
     {
         public string NoProcedimento { get; set; }
         public int NoLinha { get; set; }
+        public DateTime? DataHora { get; set; }
+        public string Nota { get; set; }
         public string Utilizador { get; set; }
-        public string NoEmpregado { get; set; }
-        public bool? Presidente { get; set; }
-        public bool? Vogal { get; set; }
-        public bool? Suplente { get; set; }
-        public string Email { get; set; }
-        public bool? EnviarEmail { get; set; }
         public DateTime? DataHoraCriacao { get; set; }
+        public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificacao { get; set; }
-        public string UtilizadorCriacao { get; set; }
         public string UtilizadorModificacao { get; set; }
 
         public ProcedimentosCcp NoProcedimentoNavigation { get; set; }
