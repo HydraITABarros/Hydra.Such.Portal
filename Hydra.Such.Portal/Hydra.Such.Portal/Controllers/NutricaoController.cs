@@ -68,16 +68,16 @@ namespace Hydra.Such.Portal.Controllers
         
         public IActionResult AutorizacaoFaturacao(string id)
         {
-            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 19);
-            //if (UPerm != null && UPerm.Read.Value)
-            //{
-                //ViewBag.UPermissions = UPerm;
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 22);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
                 return View();
-            //}
-            //else
-            //{
-            //    return RedirectToAction("AccessDenied", "Error");
-            //}
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         #endregion
