@@ -54,6 +54,7 @@ namespace Hydra.Such.Data.NAV
                     Bill_to_Customer_No = ProjectToCreate.ClientNo,
                     Creation_Date = DateTime.Parse(ProjectToCreate.Date),
                     Status = StatusValue,
+                    RegionCode20 = ProjectToCreate.RegionCode,
                     FunctionAreaCode20 = ProjectToCreate.FunctionalAreaCode,
                     ResponsabilityCenterCode20 = ProjectToCreate.ResponsabilityCenterCode,
                     Job_Posting_Group = "",
@@ -76,7 +77,7 @@ namespace Hydra.Such.Data.NAV
             }
             catch (Exception ex)
             {
-                return null;
+                throw;
             }
 
         }

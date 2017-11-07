@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
+using Hydra.Such.Data.Logic.Contracts;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -40,6 +41,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.Archived = archived == null ? 0 : 1;
                 ViewBag.ContractNo = contractNo ?? "";
+                ViewBag.UPermissions = UPerm;
                 return View();
             }
             else
@@ -48,11 +50,22 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult DetalhesContrato(string id, string version)
+        public IActionResult DetalhesContrato(string id, string version = "")
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
             if (UPerm != null && UPerm.Read.Value)
             {
+                Contratos cContract = null;
+                if (version != "")
+                    cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
+                else
+                    cContract = DBContracts.GetByIdLastVersion(id);
+
+                if (cContract != null && cContract.Arquivado == true)
+                {
+                    UPerm.Update = false;
+                }
+
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
                 ViewBag.UPermissions = UPerm;
@@ -70,7 +83,43 @@ namespace Hydra.Such.Portal.Controllers
         #region Oportunidades
         public IActionResult Oportunidades(int? archived, string contractNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 20);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Archived = archived == null ? 0 : 1;
+                ViewBag.ContractNo = contractNo ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult DetalhesOportunidade(string id, string version)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 20);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ContractNo = id ?? "";
+                ViewBag.VersionNo = version ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        #endregion
+
+
+        #region Propostas
+        public IActionResult Propostas(int? archived, string contractNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 21);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -83,9 +132,23 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+
+        public IActionResult DetalhesProposta(string id, string version)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 21);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ContractNo = id ?? "";
+                ViewBag.VersionNo = version ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
         #endregion
-
-
 
 
         public IActionResult Requisicoes()

@@ -42,8 +42,18 @@ namespace Hydra.Such.Portal.Controllers
             {
                 x.StatusDescription = EnumerablesFixed.ProjectStatus.Where(y => y.Id == x.Status).FirstOrDefault().Value;
                 x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
-
             });
+
+
+            //Apply User Dimensions Validations
+            List<UserDimensionsViewModel> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimension == 1 && y.DimensionValue == x.RegionCode));
+            //FunctionalAreas
+            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimension == 2 && y.DimensionValue == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimension == 3 && y.DimensionValue == x.ResponsabilityCenterCode));
+            
             return Json(result);
         }
         #endregion
@@ -631,14 +641,22 @@ namespace Hydra.Such.Portal.Controllers
         #region Job Ledger Entry
         public IActionResult MovimentosDeProjeto(String id)
         {
-            if (id != null)
-            {
-                ViewBag.ProjectNo = id ?? "";
-                return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
+            if (UPerm != null && UPerm.Read.Value)
+            {             
+                if (id != null)
+                {
+                    ViewBag.ProjectNo = id ?? "";
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("PageNotFound", "Error");
+                }
             }
             else
             {
-                return RedirectToAction("PageNotFound", "Error");
+                return RedirectToAction("AccessDenied", "Error");
             }
         }
 
@@ -885,5 +903,6 @@ namespace Hydra.Such.Portal.Controllers
             public string ClientNo { get; set; }
         }
         #endregion InvoiceAutorization
+
     }
 }
