@@ -844,7 +844,6 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
-
         #region Propostas
 
         public IActionResult Propostas()
