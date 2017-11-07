@@ -78,7 +78,7 @@ namespace Hydra.Such.Portal.Controllers
                     Description = x.Descrição
                 }).ToList();
 
-                result.AllowedUserDimensions = DBUserDimensions.GetByUserId(data.IdUser).ToList();
+                result.AllowedUserDimensions = DBUserDimensions.GetByUserId(data.IdUser).ParseToViewModel().ToList();
             }
 
             return Json(result);
@@ -93,7 +93,7 @@ namespace Hydra.Such.Portal.Controllers
                 Nome = data.Name,
                 Administrador = data.Administrator,
                 Ativo = data.Active,
-                UtilizadorCriação = User.Identity.Name
+                UtilizadorCriação = User.Identity.Name,
             });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -151,25 +151,27 @@ namespace Hydra.Such.Portal.Controllers
 
                 //Get Existing from db
                 var userAccesses = DBUserAccesses.GetByUserId(data.IdUser);
-                //Get items to delete
+
+                //Get items to delete (for changed keys delete old, create new)
                 var userAccessesToDelete = userAccesses
                     .Where(x => !data.UserAccesses
-                        .Any(y => y.IdUser == data.IdUser &&
-                            y.Area == x.Área &&
+                        .Any(y => y.Area == x.Área &&
                             y.Feature == x.Funcionalidade))
                     .ToList();
                 //Delete 
-                bool uaSuccessfullyDeleted = DBUserAccesses.Delete(userAccessesToDelete);
-                if (!uaSuccessfullyDeleted)
+                if (userAccessesToDelete.Count > 0)
                 {
-                    data.eMessage = "Ocorreu um erro ao eliminar os acessos do utilizador.";
+                    bool uaSuccessfullyDeleted = DBUserAccesses.Delete(userAccessesToDelete);
+                    if (!uaSuccessfullyDeleted)
+                    {
+                        data.eMessage = "Ocorreu um erro ao eliminar os acessos do utilizador.";
+                    }
                 }
 
-                //Create or update existing
+                //Create (for changed keys) or Update existing
                 data.UserAccesses.ForEach(userAccess =>
                     {
-                        var updatedUA = userAccesses.SingleOrDefault(x => x.IdUtilizador == data.IdUser &&
-                            x.Área == userAccess.Area &&
+                        var updatedUA = userAccesses.SingleOrDefault(x => x.Área == userAccess.Area &&
                             x.Funcionalidade == userAccess.Feature);
 
                         if (updatedUA == null)
@@ -179,7 +181,9 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 IdUtilizador = data.IdUser,
                                 Área = userAccess.Area,
-                                Funcionalidade = userAccess.Feature
+                                Funcionalidade = userAccess.Feature,
+                                UtilizadorCriação = User.Identity.Name,
+                                DataHoraCriação = DateTime.Now
                             };
                             updatedUA = DBUserAccesses.Create(updatedUA);
                         }
@@ -197,20 +201,102 @@ namespace Hydra.Such.Portal.Controllers
                 );
                 #endregion
 
-                DBUserProfiles.DeleteAllFromUser(data.IdUser);
-                data.UserProfiles.ForEach(x =>
+                #region Update Profiles
+
+                //Get Existing from db
+                var userProfiles = DBUserProfiles.GetByUserId(data.IdUser);
+
+                //Get items to delete (for changed keys delete old, create new)
+                var userProfilesToDelete = userProfiles
+                    .Where(x => !data.UserProfiles
+                        .Any(y => y.Id == x.IdPerfil))
+                    .ToList();
+
+                //Delete 
+                if (userProfilesToDelete.Count > 0)
                 {
-                    DBUserProfiles.Create(new PerfisUtilizador()
+                    bool upSuccessfullyDeleted = DBUserProfiles.Delete(userProfilesToDelete);
+                    if (!upSuccessfullyDeleted)
                     {
-                        IdUtilizador = userConfig.IdUtilizador,
-                        IdPerfil = x.Id,
-                        UtilizadorCriação = User.Identity.Name
-                    });
+                        data.eMessage = "Ocorreu um erro ao eliminar os perfis do utilizador.";
+                    }
+                }
+
+                //Create (for changed keys) or Update existing
+                data.UserProfiles.ForEach(userProfile =>
+                {
+                    var updatedUP = userProfiles.SingleOrDefault(x => x.IdPerfil == userProfile.Id);
+
+                    if (updatedUP == null)
+                    {
+                        //Create
+                        updatedUP = new PerfisUtilizador()
+                        {
+                            IdUtilizador = data.IdUser,
+                            IdPerfil = userProfile.Id,
+                            UtilizadorCriação = User.Identity.Name,
+                            DataHoraCriação = DateTime.Now
+                        };
+                        updatedUP = DBUserProfiles.Create(updatedUP);
+                    }
+                    //Update
+                    updatedUP.UtilizadorModificação = User.Identity.Name;
+                    updatedUP.DataHoraModificação = DateTime.Now;
+
+                    DBUserProfiles.Update(updatedUP);
                 });
-                
-                //Update AllowedUserDimemsions
-                DBUserDimensions.DeleteAllFromUser(data.IdUser);
-                DBUserDimensions.Create(data.IdUser, data.AllowedUserDimensions.ParseToDB());
+
+                #endregion
+
+                #region Update AllowedUserDimemsions
+
+                //Get Existing from db
+                var userDimensions = DBUserDimensions.GetByUserId(data.IdUser);
+
+                //Get items to delete (for changed keys delete old, create new)
+                var userDimensionsToDelete = userDimensions
+                    .Where(x => !data.AllowedUserDimensions
+                        .Any(y => y.Dimension == x.Dimensão &&
+                            y.DimensionValue == x.ValorDimensão))
+                    .ToList();
+
+                //Delete 
+                if (userDimensionsToDelete.Count > 0)
+                {
+                    bool udSuccessfullyDeleted = DBUserDimensions.Delete(userDimensionsToDelete);
+                    if (!udSuccessfullyDeleted)
+                    {
+                        data.eMessage = "Ocorreu um erro ao eliminar as dimensões permitidas ao utilizador.";
+                    }
+                }
+
+                //Create (for changed keys) or Update existing
+                data.AllowedUserDimensions.ForEach(userDimension =>
+                {
+                    var updatedUD = userDimensions.SingleOrDefault(x => x.Dimensão == userDimension.Dimension &&
+                        x.ValorDimensão == userDimension.DimensionValue);
+
+                    if (updatedUD == null)
+                    {
+                        //Create
+                        updatedUD = new AcessosDimensões()
+                        {
+                            IdUtilizador = data.IdUser,
+                            Dimensão = userDimension.Dimension,
+                            ValorDimensão = userDimension.DimensionValue,
+                            UtilizadorCriação = User.Identity.Name,
+                            DataHoraCriação = DateTime.Now
+                        };
+                        updatedUD = DBUserDimensions.Create(updatedUD);
+                    }
+                    //Update
+                    updatedUD.UtilizadorModificação = User.Identity.Name;
+                    updatedUD.DataHoraModificação = DateTime.Now;
+
+                    DBUserDimensions.Update(updatedUD);
+                });
+
+                #endregion
             }
             return Json(data);
         }
@@ -231,6 +317,100 @@ namespace Hydra.Such.Portal.Controllers
             DBUserConfigurations.Update(UCObj);
             return Json(data);
         }
+
+        [HttpPost]
+        public JsonResult CreateUserDimension([FromBody] UserDimensionsViewModel data)
+        {
+            bool result = false;
+            try
+            {
+                AcessosDimensões userDimension = new AcessosDimensões();
+                userDimension.UtilizadorCriação = User.Identity.Name;
+                userDimension.DataHoraCriação = DateTime.Now;
+                userDimension.IdUtilizador = data.UserId;
+                userDimension.Dimensão = data.Dimension;
+                userDimension.ValorDimensão = data.DimensionValue;
+
+                var dbCreateResult = DBUserDimensions.Create(userDimension);
+                result = dbCreateResult != null ? true : false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteUserDimension([FromBody] UserDimensionsViewModel data)
+        {
+            var userDimension = DBUserDimensions.GetById(data.UserId, data.Dimension, data.DimensionValue);
+            return Json(userDimension != null ? DBUserDimensions.Delete(userDimension) : false);
+        }
+
+        [HttpPost]
+        public JsonResult CreateUserAccess([FromBody] UserAccessesViewModel data)
+        {
+            bool result = false;
+            try
+            {
+                AcessosUtilizador userAccess = new AcessosUtilizador();
+                userAccess.IdUtilizador = data.IdUser;
+                userAccess.Área = data.Area;
+                userAccess.Funcionalidade = data.Feature;
+                userAccess.Eliminação = data.Delete;
+                userAccess.Inserção = data.Create;
+                userAccess.Leitura = data.Read;
+                userAccess.Modificação = data.Update;
+                userAccess.UtilizadorCriação = User.Identity.Name;
+                userAccess.DataHoraCriação = DateTime.Now;
+
+                var dbCreateResult = DBUserAccesses.Create(userAccess);
+                result = dbCreateResult != null ? true : false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteUserProfile([FromBody] UserProfileViewModel data)
+        {
+            var userProfile = DBUserProfiles.GetById(data.UserId, data.Id);
+            return Json(userProfile != null ? DBUserProfiles.Delete(userProfile) : false);
+        }
+
+        [HttpPost]
+        public JsonResult CreateUserProfile([FromBody] UserProfileViewModel data)
+        {
+            bool result = false;
+            try
+            {
+                PerfisUtilizador userProfile = new PerfisUtilizador();
+                userProfile.IdUtilizador = data.UserId;
+                userProfile.IdPerfil = data.Id;
+                userProfile.UtilizadorCriação = User.Identity.Name;
+                userProfile.DataHoraCriação = DateTime.Now;
+
+                var dbCreateResult = DBUserProfiles.Create(userProfile);
+                result = dbCreateResult != null ? true : false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteUserAccess([FromBody] UserAccessesViewModel data)
+        {
+            var userAccess = DBUserAccesses.GetById(data.IdUser, data.Area, data.Feature);
+            return Json(userAccess != null ? DBUserAccesses.Delete(userAccess) : false);
+        }
+
         #endregion
 
         #region PerfisModelo
