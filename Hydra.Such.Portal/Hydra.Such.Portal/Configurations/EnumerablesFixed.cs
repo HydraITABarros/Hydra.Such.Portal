@@ -176,6 +176,21 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 19,
                 Value = "Diário de Projeto"
+            },
+            new EnumData()
+            {
+                Id = 20,
+                Value = "Oportunidades"
+            },
+             new EnumData()
+            {
+                Id = 21,
+                Value = "Propostas"
+            },
+             new EnumData()
+            {
+                Id = 22,
+                Value = "Autorizaçãp Faturação"
             }
         };
 
@@ -955,6 +970,27 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "20 - Fechado"
             }
         };
+
+        public static readonly List<EnumBoolValues> BoolValues = new List<EnumBoolValues>()
+        {
+            new EnumBoolValues
+            {
+                BooleanValue = true,
+                StringValue = "Sim"
+            },
+
+            new EnumBoolValues
+            {
+                BooleanValue = false,
+                StringValue = "Não"
+            },
+
+            new EnumBoolValues
+            {
+                BooleanValue = null,
+                StringValue =""
+            }
+        };
         // zpgm.>
 
         public static readonly List<EnumData> Dimension = new List<EnumData>() {
@@ -968,5 +1004,11 @@ namespace Hydra.Such.Portal.Configurations
     {
         public string Id { get; set; }
         public string Value { get; set; }
+    }
+
+    public class EnumBoolValues
+    {
+        public bool? BooleanValue { get; set; }
+        public string StringValue { get; set; }
     }
 }

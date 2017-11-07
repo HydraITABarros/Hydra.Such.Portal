@@ -120,10 +120,10 @@
                         <vaadin-text-field value="{{data.projectNo}}" disabled="{{ !_isCreate }}" id="ProjectNo" name="ProjectNo" ed label="Nº Projeto"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectClients]]" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Cliente" disabled="{{ !_permissions.update }}">
+                        <vaadin-combo-box items="[[LProjectClients]]" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -150,7 +150,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectEmployees]]" item-value-path="id" item-label-path="value" value="{{data.projectLeader}}" label="Chefe Projeto" disabled="{{ !_permissions.update }}">
+                        <vaadin-combo-box items="[[LProjectEmployees]]" item-value-path="id" item-label-path="value" value="{{data.projectLeader}}" label="Chefe Projeto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -161,7 +161,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectEmployees]]" item-value-path="id" item-label-path="value" value="{{data.projectResponsible}}" label="Responsável Projeto" disabled="{{ !_permissions.update }}"> 
+                        <vaadin-combo-box items="[[LProjectEmployees]]" item-value-path="id" item-label-path="value" value="{{data.projectResponsible}}" label="Responsável Projeto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> 
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -188,7 +188,7 @@
                             <vaadin-checkbox checked="{{data.billable}}" disabled="{{ !_permissions.update }}">Faturável</vaadin-checkbox>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.contractNo}}" label="Nº Contrato" disabled="{{ !_permissions.update }}">
+                        <vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.contractNo}}" label="Nº Contrato" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -199,7 +199,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectTypes]]" item-value-path="id" item-label-path="value" value="{{data.projectTypeCode}}" label="Cód. Tipo Projeto" disabled="{{ !_permissions.update }}">
+                        <vaadin-combo-box items="[[LProjectTypes]]" item-value-path="id" item-label-path="value" value="{{data.projectTypeCode}}" label="Cód. Tipo Projeto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -220,7 +220,7 @@
             <div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectRegionCodes]]" item-value-path="id" item-label-path="value" value="{{data.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}">
+                        <vaadin-combo-box items="[[LProjectRegionCodes]]" item-value-path="id" item-label-path="value" value="{{data.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -231,7 +231,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}">
+                        <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -242,7 +242,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
+                        <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -496,7 +496,7 @@
                     var self = this;
 
                     //Set AreaId
-                    if (this.data.projectNo == "") {
+                    if (this.data.projectNo == "" || this.data.projectNo == undefined) {
                         this.data.area = this._areaid;
                     } 
 
@@ -573,7 +573,7 @@
                 },
 
                 //BUTTONS
-                _openProjectMovements: function (url, data) {
+                _OpenProjectMovements: function (url, data) {
                     window.location.replace("/Projetos/MovimentosDeProjeto/" + this.data.projectNo);
                 },
                 _OpenProjectDiary: function (url, data) {

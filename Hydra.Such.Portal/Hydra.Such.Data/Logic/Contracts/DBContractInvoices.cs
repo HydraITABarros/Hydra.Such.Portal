@@ -25,7 +25,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
-        public static List<AutorizarFaturaçãoContratos> GetById(string contractNo)
+        public static List<AutorizarFaturaçãoContratos> GetByContractNo(string contractNo)
         {
             try
             {
@@ -39,6 +39,5 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
-
     }
 }

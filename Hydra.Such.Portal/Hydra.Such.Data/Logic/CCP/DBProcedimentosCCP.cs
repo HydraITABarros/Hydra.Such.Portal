@@ -1,5 +1,6 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel.CCP;
+//using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +43,58 @@ namespace Hydra.Such.Data.Logic.CCP
 
             try
             {
-                return context.ProcedimentosCcp.Where(p => p.Nº == ProcedimentoID).FirstOrDefault();
+                ProcedimentosCcp Procedimento = context.ProcedimentosCcp.Where(p => p.Nº == ProcedimentoID).FirstOrDefault();
+
+                if(Procedimento != null)
+                {
+                    /*
+                        Every time a Procedimento is retrieved from the database every other entity related to it must be also retrieved:
+                              Tempos PA CCP
+                              Registo de Actas
+                              Elementos Juri
+                              Emails Procedimento CCP
+                              Linhas Para Encomenda Procedimentos CCP
+                              Notas Procedimento CCP
+                              Workflow Procedimentos CCP
+                    */
+
+                    Procedimento.Nº1 = context.TemposPaCcp.Where(t => t.NºProcedimento == Procedimento.Nº).FirstOrDefault();
+
+                    // zpgm. Registo de Actas is missing while the data model isn't updated
+
+                    var elementosJuri = context.ElementosJuri.Where(e => e.NºProcedimento == Procedimento.Nº);
+                    foreach (ElementosJuri ej in elementosJuri)
+                    {
+                        Procedimento.ElementosJuri.Add(ej);
+                    }
+
+                    var emailsProcedimento = context.EmailsProcedimentosCcp.Where(e => e.NºProcedimento == Procedimento.Nº);
+                    foreach(EmailsProcedimentosCcp em in emailsProcedimento)
+                    {
+                        Procedimento.EmailsProcedimentosCcp.Add(em);
+                    }
+
+                    var linhasEncomendaProc = context.LinhasPEncomendaProcedimentosCcp.Where(l => l.NºProcedimento == Procedimento.Nº);
+                    foreach(LinhasPEncomendaProcedimentosCcp ln in linhasEncomendaProc)
+                    {
+                        Procedimento.LinhasPEncomendaProcedimentosCcp.Add(ln);
+                    }
+
+                    var notasProcedimento = context.NotasProcedimentosCcp.Where(n => n.NºProcedimento == Procedimento.Nº);
+                    foreach(NotasProcedimentosCcp nt in notasProcedimento)
+                    {
+                        Procedimento.NotasProcedimentosCcp.Add(nt);
+                    }
+
+                    var workflowsProcedimento = context.WorkflowProcedimentosCcp.Where(w => w.NºProcedimento == Procedimento.Nº);
+                    foreach(WorkflowProcedimentosCcp wf in workflowsProcedimento)
+                    {
+                        wf.NºProcedimentoNavigation = Procedimento;
+                        Procedimento.WorkflowProcedimentosCcp.Add(wf);
+                    }
+                }
+                
+                return Procedimento;
             }
             catch (Exception e)
             {
@@ -52,14 +104,14 @@ namespace Hydra.Such.Data.Logic.CCP
         #endregion
 
 
-        #region Create, Update and Delete Procedimentos
+        #region CRUD Procedimentos
         // zpgm - two overloaded methods to create ProcedimentosCcp: 
         //      the first uses a ProcedimentoCCPView object and returns a ProcedimentosCcp object
         //      the second uses a ProcedimentosCcp object and returns an object of the same type
         public static ProcedimentosCcp __CreateProcedimento(ProcedimentoCCPView Procedimento)
         {
             SuchDBContext context = new SuchDBContext();
-            ProcedimentosCcp proc = CCPFunctions.CastProcCcpViewToProcCcp(Procedimento);
+            ProcedimentosCcp proc = CCPFunctions.CastProcedimentoCcpViewToProcedimentoCcp(Procedimento);
 
             try
             {
@@ -86,7 +138,7 @@ namespace Hydra.Such.Data.Logic.CCP
                     UtilizadorCriação = proc.UtilizadorCriação
                 };
 
-                proc.NºNavigation = __CreateRegistoDeAtas(proc);
+                proc.NºNavigation = __CreateRegistoDeAtas(proc, false);
 
                 context.Add(proc.NºNavigation);
                 context.SaveChanges();
@@ -113,7 +165,7 @@ namespace Hydra.Such.Data.Logic.CCP
         {
             try
             {
-                ProcedimentoCCPView ProcCCPView = CCPFunctions.CastProcCcpToProcCcpView(Procedimento);
+                ProcedimentoCCPView ProcCCPView = CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(Procedimento);
                 ProcedimentosCcp Proc = __CreateProcedimento(ProcCCPView);
 
                 Procedimento.Nº = Proc.Nº;
@@ -128,13 +180,12 @@ namespace Hydra.Such.Data.Logic.CCP
             }
 
         }
-
         public static ProcedimentosCcp __UpdateProcedimento(ProcedimentoCCPView Procedimento)
         {
             SuchDBContext context = new SuchDBContext();
             try
             {
-                ProcedimentosCcp proc = CCPFunctions.CastProcCcpViewToProcCcp(Procedimento);
+                ProcedimentosCcp proc = CCPFunctions.CastProcedimentoCcpViewToProcedimentoCcp(Procedimento);
                 proc.DataHoraModificação = DateTime.Now;
 
                 context.ProcedimentosCcp.Update(proc);
@@ -148,7 +199,6 @@ namespace Hydra.Such.Data.Logic.CCP
             }
 
         }
-
         public static bool __DeleteProcedimento(string ProcedimentoID)
         {
             SuchDBContext context = new SuchDBContext();
@@ -173,7 +223,7 @@ namespace Hydra.Such.Data.Logic.CCP
         }
         #endregion
 
-        #region Create, Update and Delete RegistoDeActas
+        #region CRUD RegistoDeActas
         public static string GetActaNumber(string ProcedimentoID)
         {
             SuchDBContext context = new SuchDBContext();
@@ -184,9 +234,9 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return num.ToString().PadLeft(4, '0');
         }
-        public static RegistoDeAtas __CreateRegistoDeAtas(ProcedimentosCcp Procedimento)
+        public static RegistoDeAtas __CreateRegistoDeAtas(ProcedimentosCcp Procedimento, bool SaveRecord)
         {
-            //SuchDBContext context = new SuchDBContext();
+            SuchDBContext context = new SuchDBContext();
             try
             {
                 RegistoDeAtas Acta = new RegistoDeAtas()
@@ -197,9 +247,12 @@ namespace Hydra.Such.Data.Logic.CCP
                     UtilizadorCriação = Procedimento.UtilizadorCriação
                 };
 
-                //context.Add(Acta);
-                //context.SaveChanges();
-
+                if (SaveRecord)
+                {
+                    context.Add(Acta);
+                    context.SaveChanges();
+                }
+                
                 return Acta;
             }
             catch (Exception e)
@@ -207,7 +260,6 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
         }
-
         public static RegistoDeAtas __UpdateRegistoDeAtas(string ProcedimentoID, string NoActa, DateTime DataActa, string Observacoes, string ModificationUser, DateTime ModificationDate)
         {
             SuchDBContext context = new SuchDBContext();
@@ -268,6 +320,11 @@ namespace Hydra.Such.Data.Logic.CCP
         }
         #endregion
 
+        #region CRUD ElementosJuri
+
+        #endregion
+
+
         #region Delete TemposPaCcp
         public static bool __DeleteTemposPaCcp(string ProcedimentoID)
         {
@@ -300,7 +357,7 @@ namespace Hydra.Such.Data.Logic.CCP
             {
                 foreach (var x in ProcList)
                 {
-                    ProcViewList.Add(CCPFunctions.CastProcCcpToProcCcpView(x));
+                    ProcViewList.Add(CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(x));
                 }
 
                 return ProcViewList;
@@ -323,7 +380,7 @@ namespace Hydra.Such.Data.Logic.CCP
             {
                 foreach (var x in ProcList)
                 {
-                    ProcViewList.Add(CCPFunctions.CastProcCcpToProcCcpView(x));
+                    ProcViewList.Add(CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(x));
                 }
 
                 return ProcViewList;
@@ -337,7 +394,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
         public static ProcedimentoCCPView GetProcedimentoCCPViewById(string id)
         {
-            return CCPFunctions.CastProcCcpToProcCcpView(GetProcedimentoById(id));
+            return CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(GetProcedimentoById(id));
         }
         #endregion
     }

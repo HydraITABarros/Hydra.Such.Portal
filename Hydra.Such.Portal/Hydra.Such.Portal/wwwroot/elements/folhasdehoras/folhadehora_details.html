@@ -123,62 +123,6 @@
 
 
 
-        <!------------ PERCURSO ------------>
-        
-        
-        
-        <iron-ajax
-                   url="/FolhasDeHoras/PercursoGetAllByFolhaHoraNoToList"
-                   last-response="{{percurso}}"
-                   id="page_percurso_tabela"
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
-
-
-        <!------------ AJUDA ------------>
-
-
-
-        <iron-ajax url="/FolhasDeHoras/AjudaGetAllByFolhaHoraNoToList"
-                   last-response="{{ajuda}}"
-                   id="page_ajuda_tabela"
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
-
-
-
-        <!------------ MÃO-DE-OBRA ------------>
-
-
-
-        <iron-ajax url="/FolhasDeHoras/MaoDeObraGetAllByFolhaHoraNoToList"
-                   last-response="{{maodeobra}}"
-                   id="page_maodeobra_tabela"
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
-
-
-
-        <!------------ PRESENÇAS ------------>
-
-
-
-        <iron-ajax url="/FolhasDeHoras/PresencasGetAllByFolhaHoraNoToList"
-                   last-response="{{presenca}}"
-                   id="page_presenca_tabela"
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
-
-
-
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
             <paper-tab>Viagens</paper-tab>
             <paper-tab>Mão-de-obra</paper-tab>
@@ -286,7 +230,7 @@
 
                 <div class="row">
                     <div class="col-sm-2">
-                        <vaadin-combo-box id="percOrigem" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" value="{{data.source}}" label="Código Origem" required>
+                        <vaadin-combo-box id="percOrigem" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Código Origem" required>
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -297,7 +241,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-sm-2">
-                        <vaadin-combo-box id="percDestino" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" value="{{data.destiny}}" label="Código Destino" required>
+                        <vaadin-combo-box id="percDestino" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Código Destino" required>
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -324,7 +268,7 @@
 
                 <h2 class="separator">Percursos Ativos</h2>
 
-                <vaadin-grid id="tabPercurso" aria-label="TabelaPercursos" items="[[percurso]]" class="editGrid" multi-sort="true">
+                <vaadin-grid id="tabPercurso" aria-label="TabelaPercursos" items="{{ data.folhaDeHoraPercurso }}" class="editGrid" multi-sort="true">
                     <vaadin-grid-column width="9%">
                         <template class="header">
                             <vaadin-grid-sorter path="source">Código Origem</vaadin-grid-sorter>
@@ -490,7 +434,7 @@
 
                 <h2 class="separator">Ajudas de Custo/Despesas Activas</h2>
 
-                <vaadin-grid id="tabAjuda" aria-label="Tabela Ajudas de Custo/Despesas" items="[[ajuda]]" class="editGrid">
+                <vaadin-grid id="tabAjuda" aria-label="Tabela Ajudas de Custo/Despesas" items="{{ data.folhaDeHoraAjuda }}" class="editGrid">
                     <vaadin-grid-column width="9%">
                         <template class="header">
                             <vaadin-grid-sorter path="costType">Tipo Custo</vaadin-grid-sorter>
@@ -611,7 +555,7 @@
             <div>
                 <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.projectNo}}" id="percOrigem" name="projectNo" disabled="true" label="Nº Obra"> </vaadin-text-field>
+                        <vaadin-text-field type="text" value="{{data.projectNo}}" id="projectNo" name="projectNo" disabled="true" label="Nº Obra"> </vaadin-text-field>
                     </div>
                     <div class="col-sm-3">
                         <vaadin-text-field type="text" value="{{data.projectDescription}}" disabled="true" id="projectDescription" name="projectDescription" label="Descrição"> </vaadin-text-field>
@@ -651,13 +595,13 @@
                         <vaadin-text-field id="maoDeObraStartTime" label="Hora de Início" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8"></vaadin-text-field>
                     </div>
                     <div class="col-sm-1 alignPoga">
-                        <vaadin-checkbox id="maoDeObraLunchTime" checked="" >Almoço</vaadin-checkbox>
+                        <vaadin-checkbox id="maoDeObraLunchTime" checked="{{chkAlmoco}}" >Almoço</vaadin-checkbox>
                     </div>
                     <div class="col-sm-1">
                         <vaadin-text-field id="maoDeObraEndTime" label="Hora de Fim" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8"></vaadin-text-field>
                     </div>
                     <div class="col-sm-1 alignPoga">
-                        <vaadin-checkbox id="maoDeObraDinnerTime" checked="">Jantar</vaadin-checkbox>
+                        <vaadin-checkbox id="maoDeObraDinnerTime" checked="{{chkJantar}}">Jantar</vaadin-checkbox>
                     </div>
                     <div class="col-sm-1">
                         <vaadin-text-field id="maoDeObraFamilyCodeResource" label="Nº Famíl Recur" maxlength="200"></vaadin-text-field>
@@ -676,7 +620,7 @@
 
                 <h2 class="separator">Mão-de-Obra Activas</h2>
 
-                <vaadin-grid id="tabMaoDeObra" aria-label="Tabela Mão-de-Obra" items="[[maodeobra]]" class="editGrid">
+                <vaadin-grid id="tabMaoDeObra" aria-label="Tabela Mão-de-Obra" items="{{ data.folhaDeHoraMaoDeObra }}" class="editGrid">
                     <vaadin-grid-column width="6%">
                         <template class="header">
                             <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
@@ -880,7 +824,7 @@
 
                 <h2 class="separator">Presenças Activas</h2>
 
-                <vaadin-grid id="tabPresenca" aria-label="Tabela Presenças" items="[[presenca]]" class="editGrid">
+                <vaadin-grid id="tabPresenca" aria-label="Tabela Presenças" items="{{ data.folhaDeHoraPresenca }}" class="editGrid">
                     <vaadin-grid-column width="14%">
                         <template class="header">
                             <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
@@ -1104,6 +1048,16 @@
                         notify: true,
                         value: ""
                     },
+                    chkAlmoco: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
+                    chkJantar: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
                     _isCreate: {
                         type: Boolean,
                         value: false
@@ -1114,22 +1068,6 @@
                     //GET FOLHADEHORA DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "FolhaDeHorasNo": this._folhadehoraid });
                     this.$.page_databound_ajax.generateRequest();
-
-                    //GET PERCURSO TABELA
-                    this.$.page_percurso_tabela.body = JSON.stringify(this._folhadehoraid);
-                    this.$.page_percurso_tabela.generateRequest();
-
-                    //GET AJUDA TABELA
-                    this.$.page_ajuda_tabela.body = JSON.stringify(this._folhadehoraid);
-                    this.$.page_ajuda_tabela.generateRequest();
-
-                    //GET MÃO DE OBRA TABELA
-                    this.$.page_maodeobra_tabela.body = JSON.stringify(this._folhadehoraid);
-                    this.$.page_maodeobra_tabela.generateRequest();
-
-                    //GET PRESENÇAS TABELA
-                    this.$.page_presenca_tabela.body = JSON.stringify(this._folhadehoraid);
-                    this.$.page_presenca_tabela.generateRequest();
 
                     if (this._folhadehoraid == "") {
                         this._isCreate = true;
@@ -1164,8 +1102,13 @@
                 },
 
                 _update: function () {
-                    if (this._validateData()) {
-                        this._executeRequest("/FolhasDeHoras/UpdateFolhaDeHora", this.data)
+                    var validate = this._validateData();
+                    if (validate == "") {
+                        this.$.ajax_create.url = "/FolhasDeHoras/UpdateFolhaDeHora";
+                        this.$.ajax_create.body = JSON.stringify(this.data);
+                        this.$.ajax_create.generateRequest();
+                    } else {
+                        this.openToast(validate);
                     }
                 },
 
@@ -1194,41 +1137,52 @@
                 },
 
                 _deletePercurso: function (e) {
-                    var index = this.percurso.indexOf(e.model.item);
-                    this.percurso.splice(index, 1);
+                    var index = this.data.folhaDeHoraPercurso.indexOf(e.model.item);
+                    this.data.folhaDeHoraPercurso.splice(index, 1);
 
                     this.$.tabPercurso.clearCache();
                 },
 
                 _deleteAjuda: function (e) {
-                    var index = this.ajuda.indexOf(e.model.item);
-                    this.ajuda.splice(index, 1);
+                    var index = this.data.folhaDeHoraAjuda.indexOf(e.model.item);
+                    this.data.folhaDeHoraAjuda.splice(index, 1);
 
                     this.$.tabAjuda.clearCache();
                 },
 
                 _deleteMaoDeObra: function (e) {
-                    var index = this.maodeobra.indexOf(e.model.item);
-                    this.maodeobra.splice(index, 1);
+                    var index = this.data.folhaDeHoraMaoDeObra.indexOf(e.model.item);
+                    this.data.folhaDeHoraMaoDeObra.splice(index, 1);
 
                     this.$.tabMaoDeObra.clearCache();
                 },
 
                 _deletePresenca: function (e) {
-                    var index = this.presenca.indexOf(e.model.item);
-                    this.presenca.splice(index, 1);
+                    var index = this.data.folhaDeHoraPresenca.indexOf(e.model.item);
+                    this.data.folhaDeHoraPresenca.splice(index, 1);
 
                     this.$.tabPresenca.clearCache();
                 },
 
                 _addPercurso() {
+                    debugger;;
                     if (this.$.percOrigem.value != "" &&
                         this.$.percDestino.value != "" &&
                         this.$.percDataDespesa.value != "" &&
                         isNaN(this.$.percDistanciaEfetuada.value) == false &&
                         isNaN(this.$.percCustoUnitario.value) == false
                     ) {
-                        this.percurso.unshift({
+                        this.data.folhaDeHoraPercurso.unshift({
+                            source: this.$.percDestino.value,
+                            destiny: this.$.percOrigem.value,
+                            dateTravelText: this.$.percDataDespesa.value,
+                            justification: this.$.percJustificacao.value,
+                            distance: this.$.percDistanciaEfetuada.value,
+                            unitCost: this.$.percCustoUnitario.value,
+                            totalCost: parseFloat(this.$.percDistanciaEfetuada.value) * parseFloat(this.$.percCustoUnitario.value)
+                        });
+
+                        this.data.folhaDeHoraPercurso.unshift({
                             source: this.$.percOrigem.value,
                             destiny: this.$.percDestino.value,
                             dateTravelText: this.$.percDataDespesa.value,
@@ -1238,16 +1192,14 @@
                             totalCost: parseFloat(this.$.percDistanciaEfetuada.value) * parseFloat(this.$.percCustoUnitario.value)
                         });
 
-                        this.percurso.unshift({
-                            source: this.$.percDestino.value,
-                            destiny: this.$.percOrigem.value,
-                            dateTravelText: this.$.percDataDespesa.value,
-                            justification: this.$.percJustificacao.value,
-                            distance: this.$.percDistanciaEfetuada.value,
-                            unitCost: this.$.percCustoUnitario.value,
-                            totalCost: parseFloat(this.$.percDistanciaEfetuada.value) * parseFloat(this.$.percCustoUnitario.value)
-                        });
                         this.$.tabPercurso.clearCache();
+
+                        this.$.percOrigem.value = "";
+                        this.$.percDestino.value = "";
+                        this.$.percDataDespesa.value = "";
+                        this.$.percJustificacao.value = "";
+                        this.$.percDistanciaEfetuada.value = "";
+                        this.$.percCustoUnitario.value = "";
                     }
                     else {
                         alert("Tem de preencher todos os campos do Percurso.");
@@ -1265,8 +1217,8 @@
                         isNaN(this.$.ajudaPrecoUnitario.value) == false &&
                         isNaN(this.$.ajudaPrecoVenda.value) == false
                     ) {
-                        this.ajuda.unshift({
-                            costType: 2,
+                        this.data.folhaDeHoraAjuda.unshift({
+                            costType: this.$.ajudaTipoCusto.value,
                             amount: this.$.ajudaQuantidade.value,
                             unitCost: this.$.ajudaCustoUnitario.value,
                             unitPrice: this.$.ajudaPrecoUnitario.value,
@@ -1276,6 +1228,15 @@
                         });
 
                         this.$.tabAjuda.clearCache();
+
+                        this.$.ajudaTipoCusto.value = "";
+                        this.$.ajudaCodigoTipoCusto.value = "";
+                        this.$.ajudaDataDespesa.value = "";
+                        this.$.ajudaJustificacao.value = "";
+                        this.$.ajudaQuantidade.value = "";
+                        this.$.ajudaCustoUnitario.value = "";
+                        this.$.ajudaPrecoUnitario.value = "";
+                        this.$.ajudaPrecoVenda.value = "";
                     }
                     else {
                         alert("Tem de preencher todos os campos da Ajuda.");
@@ -1283,6 +1244,7 @@
                 },
 
                 _addMaoDeObra() {
+                    debugger;;
                     if (this.$.maoDeObraDate.value != "" &&
                         this.$.maoDeObraProjectNo.value != "" &&
                         this.$.maoDeObraWorkTypeCode.value != "" &&
@@ -1294,24 +1256,34 @@
                         isNaN(this.$.maoDeObraDirectUnitCost.value) == false &&
                         isNaN(this.$.maoDeObraTotalPrice.value) == false
                     ) {
-                        this.maodeobra.unshift({
+                        this.data.folhaDeHoraMaoDeObra.unshift({
                             folhaDeHorasNo: this.$.folhaDeHorasNo.value,
                             dateText: this.$.maoDeObraDate.value,
                             employedNo: this.$.employeeNo.value,
                             projectNo: this.$.maoDeObraProjectNo.value,
                             workTypeCode: this.$.maoDeObraWorkTypeCode.value,
-                            //StartTime: Convert.ToLocalTime(this.$.maoDeObraStartTime.value),
                             startTimeText: this.$.maoDeObraStartTime.value,
-                            //EndTime: Convert.ToLocalTime(this.$.maoDeObraEndTime.value),
+                            lunchTime: this.chkAlmoco,
                             endTimeText: this.$.maoDeObraEndTime.value,
-                            //LunchTime: this.$.maoDeObraLunchTime.value,
-                            //DinnerTime: this.$.maoDeObraDinnerTime.value,
+                            dinnerTime: this.chkJantar,
                             familyCodeResource: this.$.maoDeObraFamilyCodeResource.value,
                             directUnitCost: parseFloat(this.$.maoDeObraDirectUnitCost.value),
                             totalPrice: parseFloat(this.$.maoDeObraTotalPrice.value)
                         });
 
                         this.$.tabMaoDeObra.clearCache();
+
+                        this.$.maoDeObraDate.value = "";
+                        this.$.maoDeObraProjectNo.value = "";
+                        this.$.maoDeObraWorkTypeCode.value = "";
+                        this.$.maoDeObraStartTime.value = "";
+                        this.$.maoDeObraEndTime.value = "";
+                        this.chkAlmoco = true;
+                        this.chkJantar = true;
+                        this.$.maoDeObraFamilyCodeResource.value = "";
+                        this.$.maoDeObraCodeCenterResponsibility.value = "";
+                        this.$.maoDeObraDirectUnitCost.value = "";
+                        this.$.maoDeObraTotalPrice.value = "";
                     }
                     else {
                         alert("Tem de preencher todos os campos da Mão-de-Obra.");
@@ -1326,7 +1298,7 @@
                         this.$.presencaSecondHourDeparture.value != "" &&
                         this.$.presencaComments.value != ""
                     ) {
-                        this.presenca.unshift({
+                        this.data.folhaDeHoraPresenca.unshift({
                             folhaDeHorasNo: this.$.folhaDeHorasNo.value,
                             dateText: this.$.presencaDate.value,
                             firstHourEntry: this.$.presencaFirstHourEntry.value,
@@ -1336,6 +1308,13 @@
                         });
 
                         this.$.tabPresenca.clearCache();
+
+                        this.$.presencaDate.value = "";
+                        this.$.presencaFirstHourEntry.value = "";
+                        this.$.presencaFirstHourDeparture.value = "";
+                        this.$.presencaSecondHourEntry.value = "";
+                        this.$.presencaSecondHourDeparture.value = "";
+                        this.$.presencaComments.value = "";
                     }
                     else {
                         alert("Tem de preencher todos os campos da Presença.");
