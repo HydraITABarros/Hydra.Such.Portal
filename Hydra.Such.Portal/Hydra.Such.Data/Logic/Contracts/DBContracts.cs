@@ -147,6 +147,21 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
+
+        public static List<Contratos> GetAllByContractNo(string ContractNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Contratos.Where(x => x.NºContrato == ContractNo && x.Arquivado == false).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         #endregion
 
         public static List<Contratos> GetAllByAreaIdAndType(int AreaId, int ContractType)

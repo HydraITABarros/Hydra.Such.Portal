@@ -25,17 +25,39 @@
         <link rel="stylesheet" href="/css/main.css" />
         <style>
             vaadin-combo-box {
-                padding: 1px 0 !important;
+                margin-top: 0px !important;
+                width: 100% !important;
             }
 
             vaadin-date-picker {
-                margin-top: -14px;
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
                 width: 100%;
-                padding-top: 0px;
+            }
+
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            input {
+                font: inherit;
             }
 
             .break_clear {
                 margin-top: 15px;
+            }
+
+            hr {
+                line-height: 5px;
+            }
+
+            .customHr {
+                line-height: 1px;
+                background-color: black;
             }
         </style>
 
@@ -43,6 +65,7 @@
         <iron-ajax url="/PopulateDropdowns/GetPocedimentosCcpProcedimentoType" last-response="{{LProcedimentoType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpType" last-response="{{LType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpStates" last-response="{{LProcedimentoState}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetBoolValues" last-response="{{LBoolValues}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/ProcedimentosCcps/GetProcedimentoDetails"
                    last-response="{{data}}"
@@ -60,7 +83,71 @@
                    on-response="_responseDeleteProcessor"
                    content-type="application/json">
         </iron-ajax>
+        
+        <!-- Header section of the Procedimento details -->
+        <div>
+            <div class="row break_clear">
+                <div class="col-sm-3">
+                    <vaadin-text-field type="text" value="{{data.no}}" id="no" name="no" label="Nº Procedimento" disabled="true"> </vaadin-text-field>
+                </div>         
+                <div class="col-sm-3">
+                    <vaadin-text-field type="text" value="{{data.codigoRegiao}}" id="codigoRegiao" name="codigoRegiao" label="Região"> </vaadin-text-field>
+                </div>
+                <div class="col-sm-3">
+                    <vaadin-text-field type="text" value="{{data.codigoAreaFuncional}}" id="codigoAreaFuncional" name="codigoAreaFuncional" label="Área Funcional"> </vaadin-text-field>
+                </div>
+                <div class="col-sm-3">
+                    <vaadin-text-field type="text" value="{{data.codigoCentroResponsabilidade}}" id="codigoCentroResponsabilidade" name="codigoCentroResponsabilidade" label="Centro Resp."> </vaadin-text-field>
+                </div>
+                
+            </div>
+        </div>
+        <div>
+            <div class="row break_clear">
+                <div class="col-sm-3">
+                    <vaadin-combo-box items="[[LProcedimentoState]]" item-value-path="id" item-label-path="value" required value="{{data.estado}}" label="Estado">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-sm-3">
+                    <vaadin-combo-box items="[[LType]]" item-value-path="id" item-label-path="value" required value="{{data.tipo}}" label="Tipo">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-sm-3">
+                    <div class="col-sm-6">
+                        <vaadin-text-field type="text" value="{{data.ano}}" id="ano" name="ano" label="Ano"> </vaadin-text-field>
+                    </div>
+                    <div class="col-sm-6">
+                        <vaadin-text-field type="text" value="{{data.referencia}}" id="referencia" name="referencia" label="Referência"> </vaadin-text-field>
+                    </div>
+                </div>             
+            </div>
+        </div>
+        <div>
+            <div class="row break_clear">
+                <div class="col-sm-3">
+                    <vaadin-checkbox checked="{{data.imobilizado}}" required>Imobilizado?</vaadin-checkbox>
+                    <vaadin-checkbox checked="{{data.tratado}}" required>Tratado?</vaadin-checkbox>
+                </div>
+                
+            </div>
+        </div>
 
+
+        <!-- Procedimentos section tabs-->
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
             <paper-tab>Unidade Produtiva (0)</paper-tab>
             <paper-tab>Imobilizado (1-2)</paper-tab>
@@ -76,33 +163,39 @@
         </paper-tabs>
 
         <iron-pages selected="{{selected}}">
-            <div>
-                <div class="row">
+            <!-- Tab Unidade Produtiva-->
+            <div>    
+                <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.no}}" id="no" name="no" label="Nº Procedimento" disabled="true"> </vaadin-text-field>
+                        <vaadin-text-field type="text" value="{{data.informacaoTecnica}}" id="informacaoTecnica" name="informacaoTecnica" label="Informação Técnica"> </vaadin-text-field>
+                    </div>
+                    <div class="col-sm-3">
+                        <p><br>Descrição da prestação de serviços ou bem a adquirir</p>
                     </div>
                 </div>
-                
-                <div class="row">
+                <div class="row break_clear">
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[LType]]" item-value-path="id" item-label-path="value" required value="{{data.tipo}}" label="Tipo">
+                        <vaadin-text-field type="text" value="{{data.fundamentacaoAquisicao}}" id="fundamentacaoAquisicao" name="fundamentacaoAquisicao" label="Fundamentação Aquisição"> </vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.precoBase}}" label="Preço Base?">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
+                                        <div>[[item.stringValue]]</div>
                                     </paper-item-body>
                                 </paper-icon-item>
                             </template>
                         </vaadin-combo-box>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-sm-3">
-                        <vaadin-combo-box items="[[LProcedimentoType]]" item-value-path="id" item-label-path="value" required value="{{data.tipoProcedimento}}" label="Tipo Procedimento">
+                        <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.negociacao}}" label="Negociação?">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
+                                        <div>[[item.stringValue]]</div>
                                     </paper-item-body>
                                 </paper-icon-item>
                             </template>
@@ -110,7 +203,18 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Tab Imobilizado -->
+            <div>
+                <h1 class="title">Aquisição de Imobilizado</h1>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        
+                    </div> 
+                </div>
+            </div>
         </iron-pages>
+
         <!-- Save and Create Buttons -->
         <div class="marginSpace">
             <template is="dom-if" if="{{ _isCreate }}">
@@ -152,7 +256,9 @@
                 ready: function () {
                     debugger;;
 
-                    this.$.page_databound_ajax.body = JSON.stringify({"No": this._procedimentoid});
+                    //this.data.tipoProcedimento = this._procedimentotypeid;
+
+                    this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
                     this.$.page_databound_ajax.generateRequest();
 
 
@@ -179,6 +285,7 @@
                 //CRUDS
                 _create: function () {
                     debugger;;
+                    this.data.tipoProcedimento = this._procedimentotypeid;
 
                     if (this._validateData()) {
                         this._executeRequest("/ProcedimentosCcps/CreateProcedimento", this.data)

@@ -43,7 +43,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                return RedirectToAction("AccessDenied", "Error");
+               return RedirectToAction("AccessDenied", "Error");
             }
         }
         #endregion
@@ -54,6 +54,8 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 19);
             if (UPerm != null && UPerm.Read.Value)
             {
+                UPerm.Update = false;
+
                 ViewBag.ProjectNo = id ?? "";
                 ViewBag.UPermissions = UPerm;
                 return View();
@@ -63,6 +65,21 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+        
+        public IActionResult AutorizacaoFaturacao(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 22);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         #endregion
 
         public IActionResult Contratos()

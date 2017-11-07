@@ -36,6 +36,8 @@
                             <a href="#"> Engenharia <span class="arrow"></span></a>
                         </li>
                         <ul class="sub-menu collapse" id="Engenharia">
+                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Engenharia")</li>
+                            <li>@Html.ActionLink("Propostas", "Propostas", "Engenharia")</li>
                             <li>@Html.ActionLink("Contratos", "Contratos", "Engenharia")</li>
                             @*<li>@Html.ActionLink("Requisições", "Requisicoes", "Engenharia")</li>*@
                             <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos")</li>
@@ -50,6 +52,8 @@
                         <ul class="sub-menu collapse" id="Ambiente">
                             @*
                             <li>@Html.ActionLink("Requisições", "Requisicoes", "Ambiente")</li>*@
+                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Ambiente")</li>
+                            <li>@Html.ActionLink("Propostas", "Propostas", "Ambiente")</li>
                             <li>@Html.ActionLink("Contratos", "Contratos", "Ambiente")</li>
                             <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos")</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "Ambiente")</li>
@@ -62,6 +66,7 @@
                         <ul class="sub-menu collapse" id="Nutricao">
                             <li>@Html.ActionLink("Projetos", "Projetos", "Nutricao")</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Nutricao")</li>
+                            <li>@Html.ActionLink("Autorizção Faturação", "AutorizacaoFaturacao", "Nutricao")</li>
                             @*<li>@Html.ActionLink("Contratos", "Contratos", "Nutricao")</li>
                                 <li>@Html.ActionLink("Requisições", "Requisicoes", "Nutricao")</li>
                                 <li>@Html.ActionLink("Fichas Técnicas de Pratos", "FichasTecnicasPratos", "Nutricao")</li>*@
@@ -73,11 +78,12 @@
                             <a href="#"> Vendas <span class="arrow"></span></a>
                         </li>
                         <ul class="sub-menu collapse" id="Vendas">
+                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Vendas")</li>
+                            <li>@Html.ActionLink("Propostas", "Propostas", "Vendas")</li>
                             <li>@Html.ActionLink("Contratos", "Contratos", "Vendas")</li>
                             <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos")</li>
-                            @*<li>@Html.ActionLink("Contratos", "Contratos", "Vendas")</li>
-                              <li>@Html.ActionLink("Requisições", "Requisicoes", "Vendas")</li>*@
-                                <li>@Html.ActionLink("Administração", "Administracao", "Vendas")</li>
+                            <li>@Html.ActionLink("Requisições", "Requisicoes", "Vendas")</li>
+                            <li>@Html.ActionLink("Administração", "Administracao", "Vendas")</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#Apoio" class="collapsed active">
@@ -95,6 +101,7 @@
                         <ul class="sub-menu collapse" id="PO">
                             <li>@Html.ActionLink("Projetos", "Projetos", "PO")</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos")</li>
+                            <li>@Html.ActionLink("Autorizção Faturação", "AutorizacaoFaturacao", "PO")</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "PO")</li>
                         </ul>
 
@@ -104,6 +111,7 @@
                         <ul class="sub-menu collapse" id="NovasAreas">
                             <li>@Html.ActionLink("Projetos", "Projetos", "NovasAreas")</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos")</li>
+                            <li>@Html.ActionLink("Autorizção Faturação", "AutorizacaoFaturacao", "NovasAreas")</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "NovasAreas")</li>
                         </ul>
 
@@ -113,7 +121,10 @@
                         <ul class="sub-menu collapse" id="Internacionalizacoes">
                             <li>@Html.ActionLink("Projetos", "Projetos", "Internacionalizacoes")</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos")</li>
+                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Internacionalizacoes")</li>
+                            <li>@Html.ActionLink("Propostas", "Propostas", "Internacionalizacoes")</li>
                             <li>@Html.ActionLink("Contratos", "Contratos", "Internacionalizacoes")</li>
+                            <li>@Html.ActionLink("Autorizção Faturação", "AutorizacaoFaturacao", "Internacionalizacoes")</li>
                             <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos")</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "Internacionalizacoes")</li>
                         </ul>
