@@ -49,7 +49,7 @@
                 <vaadin-text-field id="idUser" name="idUser" label="Id Utilizador" value="{{data.idUser}}"></vaadin-text-field>
             </div>
             <div class="col-lg-3">
-                <vaadin-text-field id="UserName" name="UserName" label="Id Utilizador" value="{{data.name}}"></vaadin-text-field>
+                <vaadin-text-field id="UserName" name="UserName" label="Nome Utilizador" value="{{data.name}}"></vaadin-text-field>
             </div>
             <div class="col-lg-3 alignPoga">
                 <vaadin-checkbox checked="{{data.administrator}}"> Administrador</vaadin-checkbox>
@@ -67,16 +67,23 @@
         <iron-ajax url="/PopulateDropdowns/GetUserProfileModels" last-response="{{UserProfileModelsData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetDimensions" last-response="{{DimensionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValue_ajax" last-response="{{DimensionValueData}}" auto method="post" params='{"dimensionId": ""}' handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGrid_ajax" last-response="{{DimensionValueGridData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetDimensionValuesFromLines" id="dimensionValueInGrid_ajax" last-response="{{DimensionValueGridData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGridOPT1_ajax" auto last-response="{{DimensionValuesForRegion}}" method="post" params='{"dimensionId": 1}' handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGridOPT2_ajax" auto last-response="{{DimensionValuesForArea}}" method="post" params='{"dimensionId": 2}' handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGridOPT3_ajax" auto last-response="{{DimensionValuesForResponsability}}" method="post" params='{"dimensionId": 3}' handle-as="json" content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Administracao/DeleteUserDimension" last-response="{{UserDimensionDeleted}}" method="post" handle-as="json" id="page_deleteuserdimension_ajax" on-response="_deleteUserDimensionResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Administracao/CreateUserDimension" last-response="{{UserDimensionCreated}}" method="post" handle-as="json" id="page_createuserdimension_ajax" on-response="_createUserDimensionResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Administracao/DeleteUserAccess" last-response="{{UserAccessDeleted}}" method="post" handle-as="json" id="page_deleteuseraccess_ajax" on-response="_deleteUserAccessResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Administracao/CreateUserAccess" last-response="{{UserAccessCreated}}" method="post" handle-as="json" id="page_createuseraccess_ajax" on-response="_createUserAccessResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Administracao/DeleteUserProfile" last-response="{{UserProfileDeleted}}" method="post" handle-as="json" id="page_deleteuserprofile_ajax" on-response="_deleteUserProfileResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Administracao/CreateUserProfile" last-response="{{UserProfileCreated}}" method="post" handle-as="json" id="page_createuserprofile_ajax" on-response="_createUserProfileResponse" content-type="application/json"></iron-ajax>
+
         <h2 class="separator">Perfis Utilizadores</h2>
         <div class="row">
             <div class="col-lg-3">
-                <vaadin-combo-box items="[[UserProfileModelsData]]" item-value-path="id" item-label-path="value" value="{{ddUserProfile}}" label="Àrea">
+                <vaadin-combo-box items="[[UserProfileModelsData]]" id="_Profiles" item-value-path="id" item-label-path="value" value="{{ddUserProfile}}" label="Àrea">
                     <template>
                         <paper-icon-item>
                             <paper-item-body two-line>
@@ -87,7 +94,7 @@
                 </vaadin-combo-box>
             </div>
             <div class="col-lg-3 alignPoga">
-                <paper-button class="btnEdit" raised on-tap="_addUserProfile">Associar</paper-button>
+                <paper-button class="btnEdit" raised on-tap="_createUserProfile">Associar</paper-button>
             </div>
         </div>
 
@@ -120,7 +127,7 @@
         <table class="table inlineForm">
             <tr>
                 <td width="20$">
-                    <vaadin-combo-box items="[[AreasData]]" item-value-path="id" item-label-path="value" value="{{ddArea}}" label="Àrea">
+                    <vaadin-combo-box items="[[AreasData]]" id="_Areas" item-value-path="id" item-label-path="value" value="{{ddArea}}" label="Àrea">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -131,7 +138,7 @@
                     </vaadin-combo-box>
                 </td>
                 <td width="20%">
-                    <vaadin-combo-box items="[[FeaturesData]]" item-value-path="id" item-label-path="value" value="{{ddFeature}}" label="Funcionalidade">
+                    <vaadin-combo-box items="[[FeaturesData]]" id="_Features" item-value-path="id" item-label-path="value" value="{{ddFeature}}" label="Funcionalidade">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -141,14 +148,13 @@
                         </template>
                     </vaadin-combo-box>
                 </td>
-                <td width="12%"><vaadin-checkbox checked="{{chkCreate}}"> Inserção</vaadin-checkbox></td>
-                <td width="12%"><vaadin-checkbox checked="{{chkRead}}"> Leitura</vaadin-checkbox></td>
-                <td width="12%"><vaadin-checkbox checked="{{chkUpdate}}"> Modificação</vaadin-checkbox></td>
-                <td width="12%"><vaadin-checkbox checked="{{chkDelete}}"> Eliminação</vaadin-checkbox></td>
+                <td width="12%"><vaadin-checkbox id="_chkCreate" checked="{{chkCreate}}"> Inserção</vaadin-checkbox></td>
+                <td width="12%"><vaadin-checkbox id="_chkRead" checked="{{chkRead}}"> Leitura</vaadin-checkbox></td>
+                <td width="12%"><vaadin-checkbox id="_chkUpdate" checked="{{chkUpdate}}"> Modificação</vaadin-checkbox></td>
+                <td width="12%"><vaadin-checkbox id="_chkDelete" checked="{{chkDelete}}"> Eliminação</vaadin-checkbox></td>
                 <td width="12%"><paper-button class="btnSave" raised on-tap="_createUserAccess">Criar</paper-button></td>
             </tr>
         </table>
-
         <vaadin-grid id="gridUserAccesses" aria-label="gridUserAccesses" items="{{ data.userAccesses }}" class="grid">
             <vaadin-grid-column width="20%">
                 <template class="header">
@@ -241,7 +247,6 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
         <h2 class="separator">Acessos Dimensões</h2>
         <table class="table inlineForm">
             <tr>
@@ -257,7 +262,7 @@
                     </vaadin-combo-box>
                 </td>
                 <td width="20%">
-                    <vaadin-combo-box items="[[DimensionValueData]]" item-value-path="id" item-label-path="value" label="Valor Dimensão" value="{{ddDimensionValue}}">
+                    <vaadin-combo-box items="[[DimensionValueData]]" id="_DimensionValue" item-value-path="id" item-label-path="value" label="Valor Dimensão" value="{{ddDimensionValue}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -276,7 +281,6 @@
                     Dimensão
                 </template>
                 <template>
-
                     <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box items="[[DimensionData]]" item-value-path="id" item-label-path="value" value="{{item.dimension}}" on-value-changed="_onDimensionInGridChanged">
                             <template>
@@ -412,8 +416,55 @@
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
+                _formatDimension: function (param) {
+                    if (param != undefined) {
+                        var sel = this.DimensionData.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _formatDimensionValue: function (dimension, dimensionValue) {
+                    if (dimensionValue != undefined) {
+                        var sel;
+                        switch (dimension) {
+                            case 1:
+                                sel = this.DimensionValuesForRegion.find(x => x.id == dimensionValue);
+                                break;
+                            case 2:
+                                sel = this.DimensionValuesForArea.find(x => x.id == dimensionValue);
+                                break;
+                            case 3:
+                                sel = this.DimensionValuesForResponsability.find(x => x.id == dimensionValue);
+                                break;
+                        }
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _lineSelectedHandler: function (item) {
+                    if (item != null) {
+                        var oSel = this.data.allowedUserDimensions.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
 
-                //CRUDS Functions
+                        var sel = this.data.allowedUserDimensions.find(x => x == item);
+                        if (sel != undefined) {
+                            this.data.allowedUserDimensions.find(x => x == item).selected = true;
+
+                            this.$.dimensionValueInGrid_ajax.body = JSON.stringify(item.dimension);
+                            this.$.dimensionValueInGrid_ajax.generateRequest();
+
+                            this.$.gridAllowedUserDimensions.clearCache();
+                        }
+                    }
+                },
+
+                //CRUD Functions
                 _validateData() {
                     if (this.data.idUser == '' || this.data.idUser == null) {
                         return "É obrigatório preencher o Id Utilizador";
@@ -481,13 +532,12 @@
                 },
 
                 //User Profiles Functions
-                _addUserProfile: function () {
+                _createUserProfile: function () {
                     if (this.ddUserProfile == "") {
                         this.openToast("É obrigatório escolher o perfil.");
                     } else {
-                        this.data.userProfiles.unshift({
-                            id: this.ddUserProfile
-                        });
+                        this.$.page_createuserprofile_ajax.body = JSON.stringify({ userId: this.data.idUser, id: this.ddUserProfile });
+                        this.$.page_createuserprofile_ajax.generateRequest();
                         this.$.gridUserProfiles.clearCache();
                     }
 
@@ -495,7 +545,8 @@
                 _deleteUserProfile: function (e) {
                     var index = this.data.userProfiles.indexOf(e.model.item);
                     this.data.userProfiles.splice(index, 1);
-
+                    this.$.page_deleteuserprofile_ajax.body = JSON.stringify({ userId: this.data.idUser, id: e.model.item.id });
+                    this.$.page_deleteuserprofile_ajax.generateRequest();
                     this.$.gridUserProfiles.clearCache();
                 },
                 //User Accesses Functions
@@ -505,37 +556,22 @@
                     } else if (this.ddFeature == null) {
                         this.openToast("É obrigatório preencher a Funcionalidade.");
                     } else {
-                        this.data.userAccesses.unshift({
-                            area: this.ddArea,
-                            feature: this.ddFeature,
-                            read: this.chkRead,
-                            create: this.chkCreate,
-                            update: this.chkUpdate,
-                            delete: this.chkDelete
-                        });
+                        this.$.page_createuseraccess_ajax.body = JSON.stringify({
+                            idUser: this.data.idUser, area: this.ddArea, feature: this.ddFeature,
+                            read: this.chkRead, create: this.chkCreate, update: this.chkUpdate, delete: this.chkDelete });
+                        this.$.page_createuseraccess_ajax.generateRequest();
                         this.$.gridUserAccesses.clearCache();
                     }
                 },
                 _deleteUserAccess: function (e) {
                     var index = this.data.userAccesses.indexOf(e.model.item);
                     this.data.userAccesses.splice(index, 1);
-
+                    this.$.page_deleteuseraccess_ajax.body = JSON.stringify({ idUser: this.data.idUser, area: e.model.item.area, feature: e.model.item.feature });
+                    this.$.page_deleteuseraccess_ajax.generateRequest();
                     this.$.gridUserAccesses.clearCache();
+
                 },
                 //User Accesses Functions
-                _createUserDimensionAccess: function () {
-                    if (this.ddDimension == "") {
-                        this.openToast("É obrigatório preencher a dimensão.");
-                    } else if (this.ddFeature == null) {
-                        this.openToast("É obrigatório preencher o valor dimensão.");
-                    } else {
-                        this.data.allowedUserDimensions.unshift({
-                            dimension: this.ddDimension,
-                            dimensionValue: this.ddDimensionValue
-                        });
-                        this.$.gridAllowedUserDimensions.clearCache();
-                    }
-                },
                 _onDimensionChanged: function (e) {
                     if (e.detail.value != null && e.detail.value != "") {
                         var dimensionId = e.detail.value;
@@ -550,55 +586,75 @@
                 _onDeleteUserDimensionAccess: function (e) {
                     var index = this.data.allowedUserDimensions.indexOf(e.model.item);
                     this.data.allowedUserDimensions.splice(index, 1);
-
+                    this.$.page_deleteuserdimension_ajax.body = JSON.stringify({ userId: this.data.idUser, dimension: e.model.item.dimension, dimensionValue: e.model.item.dimensionValue });
+                    this.$.page_deleteuserdimension_ajax.generateRequest();
                     this.$.gridAllowedUserDimensions.clearCache();
                 },
-                _formatDimension: function (param) {
-                    if (param != undefined) {
-                        var sel = this.DimensionData.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
+                _createUserDimensionAccess: function () {
+                    if (this.ddDimension == "") {
+                        this.openToast("É obrigatório preencher a dimensão.");
+                    } else if (this.ddFeature == null) {
+                        this.openToast("É obrigatório preencher o valor dimensão.");
+                    } else {
+                        this.$.page_createuserdimension_ajax.body = JSON.stringify({ userId: this.data.idUser, dimension: this.ddDimension, dimensionValue: this.ddDimensionValue });
+                        this.$.page_createuserdimension_ajax.generateRequest();
+                        this.$.gridAllowedUserDimensions.clearCache();
                     }
-                    return "";
                 },
-                _formatDimensionValue: function (dimension, dimensionValue) {
-                    if (dimensionValue != undefined) {
-                        var sel;
-                        switch (dimension) {
-                            case 1:
-                                sel = this.DimensionValuesForRegion.find(x => x.id == dimensionValue);
-                                break;
-                            case 2:
-                                sel = this.DimensionValuesForArea.find(x => x.id == dimensionValue);
-                                break;
-                            case 3:
-                                sel = this.DimensionValuesForResponsability.find(x => x.id == dimensionValue);
-                                break;
-                        }
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
+                _deleteUserDimensionResponse: function (e) {
+                    if (this.UserDimensionDeleted) {
+                        this.openToast('Eliminado com sucesso');
                     }
-                    return "";
+                    else {
+                        this.openToast('Ocorreu um erro ao eliminar acesso a dimensão.');
+                    }
                 },
-                _lineSelectedHandler: function (item) {
-                    debugger;;
-                    if (item != null) {
-                        var oSel = this.data.allowedUserDimensions.find(x => x.selected);
-                        if (oSel != undefined) {
-                            oSel.selected = false;
-                        }
-                        
-                        var sel = this.data.allowedUserDimensions.find(x => x == item);
-                        if (sel != undefined) {
-                            this.data.allowedUserDimensions.find(x => x == item).selected = true;
-                            
-                            this.$.dimensionValueInGrid_ajax.body = JSON.stringify(item.dimension);
-                            this.$.dimensionValueInGrid_ajax.generateRequest();
-
-                            this.$.gridAllowedUserDimensions.clearCache();
-                        }
+                _createUserDimensionResponse: function (e) {
+                    if (this.UserDimensionCreated) {
+                        this.openToast('Adicionado com sucesso');
+                        this.$.page_databound_ajax.generateRequest();
+                        this.$._Dimension.value = ""
+                        this.$._DimensionValue.value = "";
+                    }
+                    else {
+                        this.openToast('Ocorreu um erro ao adicionar acesso a dimensão.');
+                    }
+                },
+                _deleteUserAccessResponse: function (e) {
+                    if (this.UserAccessDeleted) {
+                        this.openToast('Eliminado com sucesso');
+                    }
+                    else {
+                        this.openToast('Ocorreu um erro ao eliminar.');
+                    }
+                },
+                _createUserAccessResponse: function (e) {
+                    if (this.UserAccessCreated) {
+                        this.openToast('Adicionado com sucesso');
+                        this.$.page_databound_ajax.generateRequest();
+                        this.$._Areas.value = ""
+                        this.$._Features.value = "";
+                    }
+                    else {
+                        this.openToast('Ocorreu um erro ao adicionar.');
+                    }
+                },
+                _deleteUserProfileResponse: function (e) {
+                    if (this.UserProfileDeleted) {
+                        this.openToast('Eliminado com sucesso');
+                    }
+                    else {
+                        this.openToast('Ocorreu um erro ao eliminar.');
+                    }
+                },
+                _createUserProfileResponse: function (e) {
+                    if (this.UserProfileCreated) {
+                        this.openToast('Adicionado com sucesso');
+                        this.$.page_databound_ajax.generateRequest();
+                        this.$.ddUserProfile.value = ""
+                    }
+                    else {
+                        this.openToast('Ocorreu um erro ao adicionar.');
                     }
                 },
             });

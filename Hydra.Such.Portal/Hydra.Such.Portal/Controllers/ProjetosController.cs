@@ -750,7 +750,7 @@ namespace Hydra.Such.Portal.Controllers
                         lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
                     }
 
-                    if(lst.Currency != "" || !String.IsNullOrEmpty(lst.Currency))
+                    if(!String.IsNullOrEmpty(lst.Currency))
                     {
                         lst.UnitPrice = lst.UnitValueToInvoice;
                     }
@@ -791,7 +791,7 @@ namespace Hydra.Such.Portal.Controllers
                                     DBProjectDiary.Update(upDate);
                                 }
                                 InvoiceMessages Messages = new InvoiceMessages();
-                                Messages.ClientNo = num_cliente;
+                                Messages.ClientNo = lines.InvoiceToClientNo;
                                 Messages.Iserror = false;
 
                                 ClientsError.Add(Messages);
@@ -857,7 +857,7 @@ namespace Hydra.Such.Portal.Controllers
                                     PKey = "error";
 
                                     InvoiceMessages Messages = new InvoiceMessages();
-                                    Messages.ClientNo = num_cliente;
+                                    Messages.ClientNo = lines.InvoiceToClientNo;
                                     Messages.Iserror = true;
 
                                     ClientsError.Add(Messages);
@@ -869,7 +869,7 @@ namespace Hydra.Such.Portal.Controllers
                                 PKey = "error";
 
                                 InvoiceMessages Messages = new InvoiceMessages();
-                                Messages.ClientNo = num_cliente;
+                                Messages.ClientNo = lines.InvoiceToClientNo;
                                 Messages.Iserror = true;
 
                                 ClientsError.Add(Messages);

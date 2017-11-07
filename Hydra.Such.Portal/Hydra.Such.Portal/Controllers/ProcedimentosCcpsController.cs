@@ -91,7 +91,7 @@ namespace Hydra.Such.Portal.Controllers
                     ProcedimentosCcp proc = DBProcedimentosCCP.GetProcedimentoById(data.No);
                     if (proc != null)
                     {
-                        ProcedimentoCCPView result = CCPFunctions.CastProcCcpToProcCcpView(proc);
+                        ProcedimentoCCPView result = CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(proc);
 
                         return Json(result);
                     }
