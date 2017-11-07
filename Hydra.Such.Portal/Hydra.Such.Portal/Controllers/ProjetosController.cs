@@ -893,5 +893,6 @@ namespace Hydra.Such.Portal.Controllers
             public string ClientNo { get; set; }
         }
         #endregion InvoiceAutorization
+
     }
 }

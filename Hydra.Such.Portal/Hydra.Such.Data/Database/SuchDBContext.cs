@@ -647,15 +647,21 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data/Hora Modificação")
                     .HasColumnType("datetime");
 
+                entity.Property(e => e.NumeraçãoContactos).HasColumnName("Numeração Contactos");
+
                 entity.Property(e => e.NumeraçãoContratos).HasColumnName("Numeração Contratos");
 
                 entity.Property(e => e.NumeraçãoFolhasDeHoras).HasColumnName("Numeração Folhas de Horas");
+
+                entity.Property(e => e.NumeraçãoOportunidades).HasColumnName("Numeração Oportunidades");
 
                 entity.Property(e => e.NumeraçãoProcedimentoAquisição).HasColumnName("Numeração Procedimento Aquisição");
 
                 entity.Property(e => e.NumeraçãoProcedimentoSimplificado).HasColumnName("Numeração Procedimento Simplificado");
 
                 entity.Property(e => e.NumeraçãoProjetos).HasColumnName("Numeração Projetos");
+
+                entity.Property(e => e.NumeraçãoPropostas).HasColumnName("Numeração Propostas");
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
