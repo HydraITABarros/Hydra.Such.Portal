@@ -186,6 +186,11 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 21,
                 Value = "Propostas"
+            },
+             new EnumData()
+            {
+                Id = 22,
+                Value = "Autorizaçãp Faturação"
             }
         };
 

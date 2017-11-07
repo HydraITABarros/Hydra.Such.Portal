@@ -189,15 +189,29 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     //Get Contract Numeration
                     Configuração Configs = DBConfigurations.GetById(1);
-                    int ProjectNumerationConfigurationId = Configs.NumeraçãoContratos.Value;
+                    int ProjectNumerationConfigurationId = 0;
+
+                    switch (data.ContractType)
+                    {
+                        case 1:
+                            ProjectNumerationConfigurationId = Configs.NumeraçãoOportunidades.Value;
+                            break;
+                        case 2:
+                            ProjectNumerationConfigurationId = Configs.NumeraçãoPropostas.Value;
+                            break;
+                        case 3:
+                            ProjectNumerationConfigurationId = Configs.NumeraçãoContratos.Value;
+                            break;
+                        default:
+                            break;
+                    }
+
                     data.ContractNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ContractNo == "" || data.ContractNo == null));
 
                     if (data.ContractNo != null)
                     {
-
-
                         Contratos cContract = DBContracts.ParseToDB(data);
-                        cContract.TipoContrato = 3;
+                        cContract.TipoContrato = data.ContractType;
                         cContract.UtilizadorCriação = User.Identity.Name;
                         //Create Contract On Database
                         cContract = DBContracts.Create(cContract);
@@ -584,9 +598,6 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
-
-
-
         #region Oportunidades
 
         public JsonResult GetListOportunitiesByArea([FromBody] JObject requestParams)
@@ -833,5 +844,47 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        #region Propostas
+
+        public IActionResult Propostas()
+        {
+            return View();
+        }
+
+        public JsonResult GetListContractsProposals([FromBody] JObject requestParams)
+        {
+            int AreaId = int.Parse(requestParams["AreaId"].ToString());
+            int Archived = int.Parse(requestParams["Archived"].ToString());
+            string ContractNo = requestParams["ContractNo"].ToString();
+
+            List<Contratos> ContractsList = null;
+
+            if (Archived == 0 || ContractNo == "")
+            {
+                ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 2);
+                ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+            }
+            else
+            {
+                ContractsList = DBContracts.GetByNo(ContractNo, true);
+            }
+
+            List<ContractViewModel> result = new List<ContractViewModel>();
+
+            ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
+
+            return Json(result);
+        }
+
+        #endregion
+
+        #region Detalhes Propostas 
+
+        public IActionResult DetalhesPropostas()
+        {
+            return View();
+        }
+
+        #endregion
     }
 }
