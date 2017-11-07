@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Oportunidades Ambiente</h2>
+<h2 class="separator">Oportunidades Ambiente</h2>
 <link rel="import" href="~/elements/oportunities/oportunities_list.html">
 
 <x-oportunitieslist _areaid="2" _archived="@ViewBag.Archived" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _contractno="@ViewBag.ContractNo"></x-oportunitieslist>
