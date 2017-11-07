@@ -131,6 +131,9 @@
 
 
         <div class="row" style="display: {{ _showContractLines }};">
+            <div class="col-lg-2">
+                <paper-button raised id="btnOportunityAdd" class="" on-tap="_createNewOportunity"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+            </div>
             <div class="col-lg-12">
                 <paper-button raised id="btnContractArchive" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
             </div>
@@ -158,6 +161,18 @@
                                     <div class="col-lg-3">
                                         <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
+
+                                    <!--<div class="col-lg-3">
+                                        <vaadin-combo-box items="[[CBClients]]" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Contacto Cliente" disabled="{{ !_permissions.update }}">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.value]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>-->
                                     <div class="col-lg-3">
                                         <vaadin-combo-box items="[[CBClients]]" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}">
                                             <template>
@@ -1473,6 +1488,9 @@
                     return true;
                 },
 
+                _createNewContract: function () {
+                    window.location.href = "../DetalhesOportunidade";
+                },
 
                 //CRUDS
                 _create: function () {
@@ -1672,6 +1690,7 @@
 
                 //Helpers
                 _executeRequest: function (url, data) {
+                    this.data.contractType = 1;
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
@@ -1688,7 +1707,7 @@
                     this.dataLines.lines.unshift({
                         contractNo: this.data.contractNo,
                         versionNo: this.data.versionNo,
-                        contractType: 3,
+                        contractType: this.data.contractType,
                         type : this._CLContractLineType,
                         codeMeasureUnit : this._CLMeasureUnit,
                         codeRegion : this._CLRegion,

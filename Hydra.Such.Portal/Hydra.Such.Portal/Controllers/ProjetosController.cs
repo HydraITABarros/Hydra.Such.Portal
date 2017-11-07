@@ -631,14 +631,22 @@ namespace Hydra.Such.Portal.Controllers
         #region Job Ledger Entry
         public IActionResult MovimentosDeProjeto(String id)
         {
-            if (id != null)
-            {
-                ViewBag.ProjectNo = id ?? "";
-                return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
+            if (UPerm != null && UPerm.Read.Value)
+            {             
+                if (id != null)
+                {
+                    ViewBag.ProjectNo = id ?? "";
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("PageNotFound", "Error");
+                }
             }
             else
             {
-                return RedirectToAction("PageNotFound", "Error");
+                return RedirectToAction("AccessDenied", "Error");
             }
         }
 
