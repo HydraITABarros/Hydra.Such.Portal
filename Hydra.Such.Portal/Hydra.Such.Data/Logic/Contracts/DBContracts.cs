@@ -180,13 +180,18 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
-        public static List<Contratos> GetAllFixedAndArquived(bool fixedRate, bool arquived)
+        public static List<Contratos> GetAllAvencaFixa()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.ContratoAvençaFixa == fixedRate && x.Arquivado == arquived).ToList();
+                    return ctx.Contratos.Where(x =>
+                    x.ContratoAvençaFixa == true && 
+                    x.Arquivado == false && 
+                    x.Estado == 4 && // Assinado 
+                    x.EstadoAlteração == 2 && // Bloqueado
+                    (x.TipoFaturação == 1 || x.TipoFaturação == 4)).ToList(); // Mensal / Mensal + Consumo
                 }
             }
             catch (Exception ex)

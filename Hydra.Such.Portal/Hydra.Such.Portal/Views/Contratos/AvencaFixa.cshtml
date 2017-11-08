@@ -57,7 +57,7 @@
             }
         </style>
 
-        <iron-ajax url="/Contratos/GetAllAvencaFixa" last-response="{{result}}" id="ajax_getall" method="post" auto handle-as="json" content-type="application/json" on-response="_gridListResponse"></iron-ajax>
+        <iron-ajax url="/Contratos/GetAllAvencaFixa" last-response="{{result}}" id="ajax_getall" method="post" handle-as="json" content-type="application/json" on-response="_gridListResponse"></iron-ajax>
         <iron-ajax url="/Contratos/GenerateInvoice" last-response="{{invoiceGen}}" id="ajax_generate" method="post" handle-as="json" content-type="application/json" on-response="_invoiceGenResponse"></iron-ajax>
         <iron-ajax url="/Contratos/CountInvoice" last-response="{{invoiceCount}}" id="ajax_count" method="post" handle-as="json" content-type="application/json" on-response="_invoiceCountResponse"></iron-ajax>
 
@@ -121,7 +121,7 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="numberOfInvoices">Nº Faturas a Emitar</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="numberOfInvoices">Nº Faturas a Emitir</vaadin-grid-sorter>
                     <vaadin-grid-filter path="numberOfInvoices"></vaadin-grid-filter>
                 </template>
                 <template>
@@ -231,15 +231,15 @@
                 },
 
                 _generateInvoice: function () {
-                    if (this.result == null || this.result == undefined || this.result.length == 0)
-                    {
+                    //if (this.result == null || this.result == undefined || this.result.length == 0)
+                    //{
                         this.$.ajax_generate.body = JSON.stringify(this.result);
                         this.$.ajax_generate.generateRequest();
                         this.$.avencaFixaTable.clearCache();
-                    }
-                    else {
-                        this.openToastError("Não existem linhas disponiíveis para faturar.");
-                    }
+                    //}
+                    //else {
+                    //    this.openToastError("Não existem linhas disponiíveis para faturar.");
+                    //}
                 },
 
                 _invoiceGenResponse: function (e) {
