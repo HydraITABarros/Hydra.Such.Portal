@@ -45,7 +45,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public int? ServiceObject { get; set; }
         public bool? VariableAvengeAgrement { get; set; }
         public string Notes { get; set; }
-        //public string NºContrato { get; set; }
+        public string RelatedContract { get; set; }
         public string ContractStartDate { get; set; }
         public string ContractEndDate { get; set; }
         public string ContractDurationDescription { get; set; }
