@@ -46,13 +46,13 @@ namespace Hydra.Such.Portal.Controllers
 
 
             //Apply User Dimensions Validations
-            List<UserDimensionsViewModel> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimension == 1 && y.DimensionValue == x.RegionCode));
+            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
             //FunctionalAreas
-            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimension == 2 && y.DimensionValue == x.FunctionalAreaCode));
+            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
             //ResponsabilityCenter
-            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimension == 3 && y.DimensionValue == x.ResponsabilityCenterCode));
+            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.ResponsabilityCenterCode));
             
             return Json(result);
         }

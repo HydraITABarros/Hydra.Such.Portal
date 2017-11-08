@@ -88,13 +88,13 @@ namespace Hydra.Such.Portal.Controllers
 
 
             //Apply User Dimensions Validations
-            List<UserDimensionsViewModel> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimension == 1 && y.DimensionValue == x.CódigoRegião));
+            ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.CódigoRegião));
             //FunctionalAreas
-            ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimension == 2 && y.DimensionValue == x.CódigoÁreaFuncional));
+            ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.CódigoÁreaFuncional));
             //ResponsabilityCenter
-            ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimension == 3 && y.DimensionValue == x.CódigoCentroResponsabilidade));
+            ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CódigoCentroResponsabilidade));
 
 
             List<ContractViewModel> result = new List<ContractViewModel>();
