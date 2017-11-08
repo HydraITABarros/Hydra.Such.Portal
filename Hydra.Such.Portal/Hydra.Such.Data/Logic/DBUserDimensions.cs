@@ -217,24 +217,6 @@ namespace Hydra.Such.Data.Logic
         }
         #endregion
 
-        //public static List<UserDimensionsViewModel> GetByUserId(string userId)
-        //{
-        //    try
-        //    {
-        //        using (var ctx = new SuchDBContext())
-        //        {
-        //            return ctx.AcessosDimensões.Where(x => x.IdUtilizador == userId)
-        //                .ToList()
-        //                .ParseToViewModel();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //    }
-        //    return new List<UserDimensionsViewModel>();
-        //}
-
         public static List<AcessosDimensões> GetByUserId(string userId)
         {
             try
