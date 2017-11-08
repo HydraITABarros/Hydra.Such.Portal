@@ -166,16 +166,15 @@ namespace Hydra.Such.Portal.Controllers
                     //Get Project Numeration
                     Configuração Configs = DBConfigurations.GetById(1);
                     int ProjectNumerationConfigurationId = Configs.NumeraçãoProjetos.Value;
-
+                    string projNoAuto = "";
                     if (data.ProjectNo == "" || data.ProjectNo == null)
                     {
-                        data.ProjectNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ProjectNo == "" || data.ProjectNo == null));
+                        projNoAuto = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ProjectNo == "" || data.ProjectNo == null));
+                        data.ProjectNo = projNoAuto;
                     }
 
                     if (data.ProjectNo != null)
                     {
-
-
                         Projetos cProject = new Projetos()
                         {
                             NºProjeto = data.ProjectNo,
@@ -230,7 +229,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 TCreateNavProj.Wait();
                             }
-                            catch (Exception)
+                            catch (Exception ex)
                             {
                                 data.eReasonCode = 3;
                                 data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
@@ -258,6 +257,10 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         data.eReasonCode = 5;
                         data.eMessage = "A numeração configurada não é compativel com a inserida.";
+                    }
+                    if (data.eReasonCode != 1 && projNoAuto != "")
+                    {
+                        data.ProjectNo = "";
                     }
                 }
             }
