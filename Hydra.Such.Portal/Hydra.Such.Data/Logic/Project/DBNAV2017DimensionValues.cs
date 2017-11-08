@@ -78,8 +78,10 @@ namespace Hydra.Such.Data.Logic.Project
                         {
                             List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
                             userDimensionsViewModel.RemoveAll(x => x.Dimension != NAVDimType);
-
-                            result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.Code));
+                            if (userDimensionsViewModel.Count > 0)
+                            {
+                                result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.Code));
+                            }
                         }
                     }
                 }
