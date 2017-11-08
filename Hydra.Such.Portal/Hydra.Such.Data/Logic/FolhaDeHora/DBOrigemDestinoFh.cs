@@ -1,5 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
-using Hydra.Such.Data.ViewModel.FolhasDeHoras;
+using Hydra.Such.Data.ViewModel.FH;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
