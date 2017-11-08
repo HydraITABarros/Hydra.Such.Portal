@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Hydra.Such.Data.ViewModel.FolhasDeHoras;
+using Hydra.Such.Data.ViewModel.FH;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.Database;
@@ -40,15 +40,15 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetListFolhasDeHorasByArea([FromBody] int id)
         {
-            List<FolhaDeHoraListItemViewModel> result = DBFolhasDeHoras.GetAllByAreaToList(id);
+            List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByAreaToList(id);
 
-            result.ForEach(x =>
+            result.ForEach(FH =>
             {
-                x.AreaText = EnumerablesFixed.Areas.Where(y => y.Id == x.Area).FirstOrDefault().Value;
-                x.TypeDeslocationText = EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == x.TypeDeslocation).FirstOrDefault().Value;
-                if (x.DisplacementOutsideCity.Value) x.DisplacementOutsideCityText = "Sim"; else x.DisplacementOutsideCityText = "Não";
-                x.StatusText = EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == x.Status).FirstOrDefault().Value;
-                x.Validators = DBUserConfigurations.GetById(x.Validators).Nome;
+                FH.AreaTexto = EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
+                FH.TipoDeslocacaoTexto = EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
+                if (FH.DeslocacaoForaConcelho.Value) FH.DeslocacaoForaConcelhoTexto = "Sim"; else FH.DeslocacaoForaConcelhoTexto = "Não";
+                FH.Estadotexto = EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == FH.Estado).FirstOrDefault().Value;
+                FH.Validadores = DBUserConfigurations.GetById(FH.Validadores).Nome;
             });
             return Json(result);
         }
@@ -62,198 +62,201 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetFolhaDeHoraDetails([FromBody] FolhaDeHoraDetailsViewModel data)
+        public JsonResult GetFolhaDeHoraDetails([FromBody] FolhaDeHorasViewModel data)
         {
             if (data != null)
             {
-                FolhasDeHoras cFolhaDeHora = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
+                FolhasDeHoras FH = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
 
-                if (cFolhaDeHora != null)
+                if (FH != null)
                 {
-                    FolhaDeHoraDetailsViewModel result = new FolhaDeHoraDetailsViewModel()
+                    FolhaDeHorasViewModel result = new FolhaDeHorasViewModel()
                     {
-                        FolhaDeHorasNo = cFolhaDeHora.NºFolhaDeHoras,
-                        Area = cFolhaDeHora.Área,
-                        AreaText = cFolhaDeHora.Área.ToString(),
-                        ProjectNo = cFolhaDeHora.NºProjeto,
-                        EmployeeNo = cFolhaDeHora.NºEmpregado,
-                        DateTimeDeparture = cFolhaDeHora.DataHoraPartida,
-                        DateDepartureText = cFolhaDeHora.DataHoraPartida == null ? String.Empty : cFolhaDeHora.DataHoraPartida.Value.ToString("yyyy-MM-dd"),
-                        TimeDepartureText = cFolhaDeHora.DataHoraPartida.Value.ToShortTimeString(),
-                        DateTimeArrival = cFolhaDeHora.DataHoraChegada,
-                        DateArrivalText = cFolhaDeHora.DataHoraChegada == null ? String.Empty : cFolhaDeHora.DataHoraChegada.Value.ToString("yyyy-MM-dd"),
-                        TimeArrivalText = cFolhaDeHora.DataHoraChegada.Value.ToShortTimeString(),
-                        TypeDeslocation = cFolhaDeHora.TipoDeslocação,
-                        TypeDeslocationText = cFolhaDeHora.TipoDeslocação.ToString(),
-                        CodeTypeKms = cFolhaDeHora.CódigoTipoKmS,
-                        DisplacementOutsideCity = cFolhaDeHora.DeslocaçãoForaConcelho,
-                        DisplacementOutsideCityText = cFolhaDeHora.DeslocaçãoForaConcelho.ToString(),
-                        Validators = cFolhaDeHora.Validadores,
-                        Status = cFolhaDeHora.Estado,
-                        StatusText = cFolhaDeHora.Estado.ToString(),
-                        CreatedBy = cFolhaDeHora.CriadoPor,
-                        DateTimeCreation = cFolhaDeHora.DataHoraCriação,
-                        DateCreationText = cFolhaDeHora.DataHoraCriação == null ? String.Empty : cFolhaDeHora.DataHoraCriação.Value.ToString("yyyy-MM-dd"),
-                        TimeCreationText = cFolhaDeHora.DataHoraCriação.Value.ToShortTimeString(),
-                        DateTimeLastState = cFolhaDeHora.DataHoraÚltimoEstado,
-                        DateLastStateText = cFolhaDeHora.DataHoraÚltimoEstado == null ? String.Empty : cFolhaDeHora.DataHoraÚltimoEstado.Value.ToString("yyyy-MM-dd"),
-                        TimeLastStateText = cFolhaDeHora.DataHoraÚltimoEstado.Value.ToShortTimeString(),
-                        UserCreation = cFolhaDeHora.CriadoPor,
-                        DateTimeModification = cFolhaDeHora.DataHoraModificação,
-                        DateModificationText = cFolhaDeHora.DataHoraModificação == null ? String.Empty : cFolhaDeHora.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
-                        TimeModificationText = cFolhaDeHora.DataHoraModificação.Value.ToShortTimeString(),
-                        UserModification = cFolhaDeHora.UtilizadorModificação,
-                        EmployeeName = cFolhaDeHora.NomeEmpregado,
-                        CarRegistration = cFolhaDeHora.Matrícula,
-                        Finished = cFolhaDeHora.Terminada,
-                        FinishedText = cFolhaDeHora.Terminada.ToString(),
-                        FinishedBy = cFolhaDeHora.TerminadoPor,
-                        DateTimeFinished = cFolhaDeHora.DataHoraTerminado,
-                        DateFinishedText = cFolhaDeHora.DataHoraTerminado == null ? String.Empty : cFolhaDeHora.DataHoraTerminado.Value.ToString("yyyy-MM-dd"),
-                        TimeFinishedText = cFolhaDeHora.DataHoraTerminado.Value.ToShortTimeString(),
-                        Validated = cFolhaDeHora.Validado,
-                        ValidatedText = cFolhaDeHora.Validado.ToString(),
-                        PlannedScrolling = cFolhaDeHora.DeslocaçãoPlaneada,
-                        PlannedScrollingText = cFolhaDeHora.DeslocaçãoPlaneada.ToString(),
-                        Comments = cFolhaDeHora.Observações,
-                        Responsible1 = cFolhaDeHora.NºResponsável1,
-                        Responsible2 = cFolhaDeHora.NºResponsável2,
-                        Responsible3 = cFolhaDeHora.NºResponsável3,
-                        ValidatorsRHKM = cFolhaDeHora.ValidadoresRhKm,
-                        RegionCode = cFolhaDeHora.CódigoRegião,
-                        AreaCode = cFolhaDeHora.CódigoÁreaFuncional,
-                        CRESPCode = cFolhaDeHora.CódigoCentroResponsabilidade,
-                        Validator = cFolhaDeHora.Validador,
-                        DateTimeValidation = cFolhaDeHora.DataHoraValidação,
-                        DateValidationText = cFolhaDeHora.DataHoraValidação == null ? String.Empty : cFolhaDeHora.DataHoraValidação.Value.ToString("yyyy-MM-dd"),
-                        TimeValidationText = cFolhaDeHora.DataHoraValidação.Value.ToShortTimeString(),
-                        IntegratorRH = cFolhaDeHora.IntegradorEmRh,
-                        DateTimeIntegrationRH = cFolhaDeHora.DataIntegraçãoEmRh,
-                        DateIntegrationRHText = cFolhaDeHora.DataIntegraçãoEmRh == null ? String.Empty : cFolhaDeHora.DataIntegraçãoEmRh.Value.ToString("yyyy-MM-dd"),
-                        TimeIntegrationRHText = cFolhaDeHora.DataIntegraçãoEmRh.Value.ToShortTimeString(),
-                        IntegratorRHKM = cFolhaDeHora.IntegradorEmRhKm,
-                        DateTimeIntegrationRHKM = cFolhaDeHora.DataIntegraçãoEmRhKm,
-                        DateIntegrationRHKMText = cFolhaDeHora.DataIntegraçãoEmRhKm == null ? String.Empty : cFolhaDeHora.DataIntegraçãoEmRhKm.Value.ToString("yyyy-MM-dd"),
-                        TimeIntegrationRHKMText = cFolhaDeHora.DataIntegraçãoEmRhKm.Value.ToShortTimeString()
+                        FolhaDeHorasNo = FH.NºFolhaDeHoras,
+                        Area = FH.Área,
+                        AreaTexto = FH.Área.ToString(),
+                        ProjetoNo = FH.NºProjeto,
+                        ProjetoDescricao = "",
+                        EmpregadoNo = FH.NºEmpregado,
+                        DataHoraPartida = FH.DataHoraPartida,
+                        DataPartidaTexto = FH.DataHoraPartida.Value.ToShortDateString(),
+                        HoraPartidaTexto = FH.DataHoraPartida.Value.ToShortTimeString(),
+                        DataHoraChegada = FH.DataHoraChegada,
+                        DataChegadaTexto = FH.DataHoraChegada.Value.ToShortDateString(),
+                        HoraChegadaTexto = FH.DataHoraChegada.Value.ToShortTimeString(),
+                        TipoDeslocacao = FH.TipoDeslocação,
+                        TipoDeslocacaoTexto = FH.TipoDeslocação.ToString(),
+                        CodigoTipoKms = FH.CódigoTipoKmS,
+                        DeslocacaoForaConcelho = FH.DeslocaçãoForaConcelho,
+                        DeslocacaoForaConcelhoTexto = FH.DeslocaçãoForaConcelho.ToString(),
+                        Validadores = FH.Validadores,
+                        Estado = FH.Estado,
+                        Estadotexto = FH.Estado.ToString(),
+                        CriadoPor = FH.CriadoPor,
+                        DataHoraCriacao = FH.DataHoraCriação,
+                        DataCriacaoTexto = FH.DataHoraCriação.Value.ToShortDateString(),
+                        HoraCriacaoTexto = FH.DataHoraCriação.Value.ToShortTimeString(),
+                        DataHoraUltimoEstado = FH.DataHoraÚltimoEstado,
+                        DataUltimoEstadoTexto = FH.DataHoraÚltimoEstado.Value.ToShortDateString(),
+                        HoraUltimoEstadoTexto = FH.DataHoraÚltimoEstado.Value.ToShortTimeString(),
+                        UtilizadorCriacao = FH.UtilizadorCriação,
+                        DataHoraModificacao = FH.DataHoraModificação,
+                        DataModificacaoTexto = FH.DataHoraModificação.Value.ToShortDateString(),
+                        HoraModificacaoTexto = FH.DataHoraModificação.Value.ToShortTimeString(),
+                        UtilizadorModificacao = FH.UtilizadorModificação,
+                        EmpregadoNome = FH.NomeEmpregado,
+                        Matricula = FH.Matrícula,
+                        Terminada = FH.Terminada,
+                        TerminadaTexto = FH.Terminada.ToString(),
+                        TerminadoPor = FH.TerminadoPor,
+                        DataHoraTerminado = FH.DataHoraTerminado,
+                        DataTerminadoTexto = FH.DataHoraTerminado.Value.ToShortDateString(),
+                        HoraTerminadoTexto = FH.DataHoraTerminado.Value.ToShortTimeString(),
+                        Validado = FH.Validado,
+                        ValidadoTexto = FH.Validado.ToString(),
+                        DeslocacaoPlaneada = FH.DeslocaçãoPlaneada,
+                        DeslocacaoPlaneadaTexto = FH.DeslocaçãoPlaneada.ToString(),
+                        Observacoes = FH.Observações,
+                        Responsavel1No = FH.NºResponsável1,
+                        Responsavel2No = FH.NºResponsável2,
+                        Responsavel3No = FH.NºResponsável3,
+                        ValidadoresRHKM = FH.ValidadoresRhKm,
+                        CodigoRegiao = FH.CódigoRegião,
+                        CodigoAreaFuncional = FH.CódigoÁreaFuncional,
+                        CodigoCentroResponsabilidade = FH.CódigoCentroResponsabilidade,
+                        Validador = FH.Validador,
+                        DataHoraValidacao = FH.DataHoraValidação,
+                        DataValidacaoTexto = FH.DataHoraValidação.Value.ToShortDateString(),
+                        HoraValidacaoTexto = FH.DataHoraValidação.Value.ToShortTimeString(),
+                        IntegradorEmRH = FH.IntegradorEmRh,
+                        DataIntegracaoEmRH = FH.DataIntegraçãoEmRh,
+                        DataIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh.Value.ToShortDateString(),
+                        HoraIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh.Value.ToShortTimeString(),
+                        IntegradorEmRHKM = FH.IntegradorEmRhKm,
+                        DataIntegracaoEmRHKM = FH.DataIntegraçãoEmRhKm,
+                        DataIntegracaoEmRHKMTexto = FH.DataIntegraçãoEmRhKm.Value.ToShortDateString(),
+                        HoraIntegracaoEmRHKMTexto = FH.DataIntegraçãoEmRhKm.Value.ToShortTimeString()
                     };
 
-                    Projetos cProject = DBProjects.GetById(cFolhaDeHora.NºProjeto);
-                    result.ProjectDescription = cProject.Descrição;
+                    Projetos cProject = DBProjects.GetById(FH.NºProjeto);
+                    result.ProjetoDescricao = cProject.Descrição;
 
-                    List<NAVEmployeeViewModel> employee = DBNAV2009Employees.GetAll(cFolhaDeHora.NºEmpregado, _config.NAVDatabaseName, _config.NAVCompanyName);
-                    result.EmployeeName = employee[0].Name;
+                    List<NAVEmployeeViewModel> employee = DBNAV2009Employees.GetAll(FH.NºEmpregado, _config.NAVDatabaseName, _config.NAVCompanyName);
+                    result.EmpregadoNome = employee[0].Name;
 
                     //PERCURSO
-                    result.FolhaDeHoraPercurso = DBPercursosEAjudasCustoDespesasFolhaDeHoras.GetAllByPercursoToList(data.FolhaDeHorasNo).Select(x => new PercursosEAjudasCustoDespesasFolhaDeHorasListItemViewModel()
+                    result.FolhaDeHorasPercurso = DBPercursosEAjudasCustoDespesasFolhaDeHoras.GetAllByPercursoToList(data.FolhaDeHorasNo).Select(Percurso => new PercursosEAjudasCustoDespesasFolhaDeHorasViewModel()
                     {
-                        FolhaDeHorasNo = x.FolhaDeHorasNo,
-                        CostType = x.CostType,
-                        LineNo = x.LineNo,
-                        Description = x.Description,
-                        Source = x.Source,
-                        Destiny = x.Destiny,
-                        DateTravel = x.DateTravel,
-                        DateTravelText = x.DateTravelText,
-                        Distance = x.Distance,
-                        Amount = x.Amount,
-                        UnitCost = x.UnitCost,
-                        TotalCost = x.TotalCost,
-                        UnitPrice = x.UnitPrice,
-                        Justification = x.Justification,
-                        Payroll = x.Payroll,
-                        DateTimeCreation = x.DateTimeCreation,
-                        DateTimeCreationText = x.DateTimeCreationText,
-                        UserCreation = x.UserCreation,
-                        DateTimeModification = x.DateTimeModification,
-                        DateTimeModificationText = x.DateTimeModificationText,
-                        UserModification = x.UserModification
+                        FolhaDeHorasNo = Percurso.FolhaDeHorasNo,
+                        TipoCusto = Percurso.TipoCusto,
+                        LinhaNo = Percurso.LinhaNo,
+                        Descricao = Percurso.Descricao,
+                        Origem = Percurso.Origem,
+                        Destino = Percurso.Destino,
+                        DataViagem = Percurso.DataViagem,
+                        DataViagemTexto = Percurso.DataViagem.Value.ToShortDateString(),
+                        Distancia = Convert.ToDecimal(Percurso.Distancia),
+                        Quantidade = Convert.ToDecimal(Percurso.Quantidade),
+                        CustoUnitario = Convert.ToDecimal(Percurso.CustoUnitario),
+                        CustoTotal = Convert.ToDecimal(Percurso.CustoTotal),
+                        PrecoUnitario = Convert.ToDecimal(Percurso.PrecoUnitario),
+                        Justificacao = Percurso.Justificacao,
+                        RubricaSalarial = Percurso.RubricaSalarial,
+                        DataHoraCriacao = Percurso.DataHoraCriacao,
+                        DataHoraCriacaoTexto = Percurso.DataHoraCriacao.Value.ToShortDateString(),
+                        UtilizadorCriacao = Percurso.UtilizadorCriacao,
+                        DataHoraModificacao = Percurso.DataHoraModificacao,
+                        DataHoraModificacaoTexto = Percurso.DataHoraModificacao.Value.ToShortDateString(),
+                        UtilizadorModificacao = Percurso.UtilizadorModificacao
                     }).ToList();
 
                     //AJUDA DE CUSTO/DESPESA
-                    result.FolhaDeHoraAjuda = DBPercursosEAjudasCustoDespesasFolhaDeHoras.GetAllByAjudaToList(data.FolhaDeHorasNo).Select(x => new PercursosEAjudasCustoDespesasFolhaDeHorasListItemViewModel()
+                    result.FolhaDeHorasAjuda = DBPercursosEAjudasCustoDespesasFolhaDeHoras.GetAllByAjudaToList(data.FolhaDeHorasNo).Select(Ajuda => new PercursosEAjudasCustoDespesasFolhaDeHorasViewModel()
                     {
-                        FolhaDeHorasNo = x.FolhaDeHorasNo,
-                        CostType = x.CostType,
-                        LineNo = x.LineNo,
-                        Description = x.Description,
-                        Source = x.Source,
-                        Destiny = x.Destiny,
-                        DateTravel = x.DateTravel,
-                        DateTravelText = x.DateTravelText,
-                        Distance = x.Distance,
-                        Amount = x.Amount,
-                        UnitCost = x.UnitCost,
-                        TotalCost = x.TotalCost,
-                        UnitPrice = x.UnitPrice,
-                        Justification = x.Justification,
-                        Payroll = x.Payroll,
-                        DateTimeCreation = x.DateTimeCreation,
-                        DateTimeCreationText = x.DateTimeCreationText,
-                        UserCreation = x.UserCreation,
-                        DateTimeModification = x.DateTimeModification,
-                        DateTimeModificationText = x.DateTimeModificationText,
-                        UserModification = x.UserModification
+                        FolhaDeHorasNo = Ajuda.FolhaDeHorasNo,
+                        TipoCusto = Ajuda.TipoCusto,
+                        LinhaNo = Ajuda.LinhaNo,
+                        Descricao = Ajuda.Descricao,
+                        Origem = Ajuda.Origem,
+                        Destino = Ajuda.Destino,
+                        DataViagem = Ajuda.DataViagem,
+                        DataViagemTexto = Ajuda.DataViagem.Value.ToShortDateString(),
+                        Distancia = Convert.ToDecimal(Ajuda.Distancia),
+                        Quantidade = Convert.ToDecimal(Ajuda.Quantidade),
+                        CustoUnitario = Convert.ToDecimal(Ajuda.CustoUnitario),
+                        CustoTotal = Convert.ToDecimal(Ajuda.CustoTotal),
+                        PrecoUnitario = Convert.ToDecimal(Ajuda.PrecoUnitario),
+                        Justificacao = Ajuda.Justificacao,
+                        RubricaSalarial = Ajuda.RubricaSalarial,
+                        DataHoraCriacao = Ajuda.DataHoraCriacao,
+                        DataHoraCriacaoTexto = Ajuda.DataHoraCriacao.Value.ToShortDateString(),
+                        UtilizadorCriacao = Ajuda.UtilizadorCriacao,
+                        DataHoraModificacao = Ajuda.DataHoraModificacao,
+                        DataHoraModificacaoTexto = Ajuda.DataHoraModificacao.Value.ToShortDateString(),
+                        UtilizadorModificacao = Ajuda.UtilizadorModificacao
                     }).ToList();
 
                     //MÃO-DE-OBRA
-                    result.FolhaDeHoraMaoDeObra = DBMaoDeObraFolhaDeHoras.GetAllByMaoDeObraToList(data.FolhaDeHorasNo).Select(x => new MaoDeObraFolhaDeHorasListItemViewModel()
+                    result.FolhaDeHorasMaoDeObra = DBMaoDeObraFolhaDeHoras.GetAllByMaoDeObraToList(data.FolhaDeHorasNo).Select(MaoDeObra => new MaoDeObraFolhaDeHorasViewModel()
                     {
-                        FolhaDeHorasNo = x.FolhaDeHorasNo,
-                        LineNo = x.LineNo,
-                        Date = x.Date,
-                        EmployedNo = x.EmployedNo,
-                        ProjectNo = x.ProjectNo,
-                        WorkTypeCode = x.WorkTypeCode,
-                        StartTime = x.StartTime,
-                        StartTimeText = x.StartTimeText,
-                        EndTime = x.EndTime,
-                        EndTimeText = x.EndTimeText,
-                        LunchTime = x.LunchTime,
-                        DinnerTime = x.DinnerTime,
-                        FamilyCodeResource = x.FamilyCodeResource,
-                        ResourceNo = x.ResourceNo,
-                        UnitCodeMeasure = x.UnitCodeMeasure,
-                        OMTypeCode = x.OMTypeCode,
-                        HoursNo = x.HoursNo,
-                        HoursNoText = x.HoursNoText,
-                        DirectUnitCost = x.DirectUnitCost,
-                        CostPrice = x.CostPrice,
-                        SalePrice = x.SalePrice,
-                        TotalPrice = x.TotalPrice,
-                        DateTimeCreation = x.DateTimeCreation,
-                        UserCreation = x.UserCreation,
-                        DateTimeModification = x.DateTimeModification,
-                        UserModification = x.UserModification
+                        FolhaDeHorasNo = MaoDeObra.FolhaDeHorasNo,
+                        LinhaNo = MaoDeObra.LinhaNo,
+                        Date = MaoDeObra.Date,
+                        EmpregadoNo = MaoDeObra.EmpregadoNo,
+                        ProjetoNo = MaoDeObra.ProjetoNo,
+                        CodigoTipoTrabalho = MaoDeObra.CodigoTipoTrabalho,
+                        //HoraInicio = Convert.ToDateTime("1753-01-01 " + MaoDeObra.HoraInicio),
+                        HoraInicioTexto = MaoDeObra.HoraInicio.ToString(),
+                        //HoraFim = Convert.ToDateTime("1753-01-01 " + MaoDeObra.HoraFim),
+                        HoraFimTexto = MaoDeObra.HoraFim.ToString(),
+                        HorarioAlmoco = MaoDeObra.HorarioAlmoco,
+                        HorarioJantar = MaoDeObra.HorarioJantar,
+                        CodigoFamiliaRecurso = MaoDeObra.CodigoFamiliaRecurso,
+                        RecursoNo = MaoDeObra.RecursoNo,
+                        CodigoUnidadeMedida = MaoDeObra.CodigoUnidadeMedida,
+                        CodigoTipoOM = MaoDeObra.CodigoTipoOM,
+                        //HorasNo = Convert.ToDateTime("1753-01-01 " + MaoDeObra.HorasNo),
+                        HorasNoTexto = MaoDeObra.HorasNo.ToString(),
+                        CustoUnitarioDireto = Convert.ToDecimal(MaoDeObra.CustoUnitarioDireto),
+                        PrecoDeCusto = Convert.ToDecimal(MaoDeObra.PrecoDeCusto),
+                        PrecoDeVenda = Convert.ToDecimal(MaoDeObra.PrecoDeVenda),
+                        PrecoTotal = Convert.ToDecimal(MaoDeObra.PrecoTotal),
+                        DataHoraCriacao = MaoDeObra.DataHoraCriacao,
+                        DataHoraCriacaoTexto = MaoDeObra.DataHoraCriacao.Value.ToShortDateString(),
+                        UtilizadorCriacao = MaoDeObra.UtilizadorCriacao,
+                        DataHoraModificacao = MaoDeObra.DataHoraModificacao,
+                        DataHoraModificacaoTexto = MaoDeObra.DataHoraModificacao.Value.ToShortDateString(),
+                        UtilizadorModificacao = MaoDeObra.UtilizadorModificacao
                     }).ToList();
 
                     //PRESENÇA
-                    result.FolhaDeHoraPresenca = DBPresencasFolhaDeHoras.GetAllByPresencaToList(data.FolhaDeHorasNo).Select(x => new PresencasFolhaDeHorasListItemViewModel()
+                    result.FolhaDeHorasPresenca = DBPresencasFolhaDeHoras.GetAllByPresencaToList(data.FolhaDeHorasNo).Select(Presenca => new PresencasFolhaDeHorasViewModel()
                     {
-                        FolhaDeHorasNo = x.FolhaDeHorasNo,
-                        Date = x.Date,
-                        DateText = x.DateText,
-                        FirstHourEntry = x.FirstHourEntry,
-                        FirstHourDeparture = x.FirstHourDeparture,
-                        SecondHourEntry = x.SecondHourEntry,
-                        SecondHourDeparture = x.SecondHourDeparture,
-                        DateTimeCreation = x.DateTimeCreation,
-                        DateTimeCreationText = x.DateTimeCreationText,
-                        UserCreation = x.UserCreation,
-                        DateTimeModification = x.DateTimeModification,
-                        DateTimeModificationText = x.DateTimeModificationText,
-                        UserModification = x.UserModification
+                        FolhaDeHorasNo = Presenca.FolhaDeHorasNo,
+                        Data = Presenca.Data,
+                        DataTexto = Presenca.Data.Value.ToShortDateString(),
+                        Hora1Entrada = Presenca.Hora1Entrada.ToString(),
+                        Hora1Saida = Presenca.Hora1Saida.ToString(),
+                        Hora2Entrada = Presenca.Hora2Entrada.ToString(),
+                        Hora2Saida = Presenca.Hora2Saida.ToString(),
+                        DataHoraCriacao = Presenca.DataHoraCriacao,
+                        DataHoraCriacaoTexto = Presenca.DataHoraCriacao.Value.ToShortDateString(),
+                        UtilizadorCriacao = Presenca.UtilizadorCriacao,
+                        DataHoraModificacao = Presenca.DataHoraModificacao,
+                        DataHoraModificacaoTexto = Presenca.DataHoraModificacao.Value.ToShortDateString(),
+                        UtilizadorModificacao = Presenca.UtilizadorModificacao
                     }).ToList();
 
                     return Json(result);
                 }
 
-                return Json(new FolhaDeHoraDetailsViewModel());
+                return Json(new FolhaDeHorasViewModel());
             }
             return Json(false);
         }
 
         [HttpPost]
-        public JsonResult ValidateNumeration([FromBody] FolhaDeHoraDetailsViewModel data)
+        public JsonResult ValidateNumeration([FromBody] FolhaDeHorasViewModel data)
         {
             //Get FolhaDeHora Numeration
             Configuração Cfg = DBConfigurations.GetById(1);
@@ -279,7 +282,7 @@ namespace Hydra.Such.Portal.Controllers
         //eReason = 3 -> Error creating Project on NAV 
         //eReason = 4 -> Unknow Error 
         [HttpPost]
-        public JsonResult CreateFolhaDeHora([FromBody] FolhaDeHoraDetailsViewModel data)
+        public JsonResult CreateFolhaDeHora([FromBody] FolhaDeHorasViewModel data)
         {
             try
             {
@@ -293,42 +296,42 @@ namespace Hydra.Such.Portal.Controllers
                     FolhasDeHoras cFolhaDeHora = new FolhasDeHoras()
                     {
                         NºFolhaDeHoras = data.FolhaDeHorasNo,
-                        Área = 1,//Convert.ToInt16(data.AreaText),
-                        NºProjeto = data.ProjectNo,
-                        NºEmpregado = data.EmployeeNo,
-                        DataHoraPartida = DateTime.Parse(string.Concat(data.DateDepartureText, " ", data.TimeDepartureText)),
-                        DataHoraChegada = DateTime.Parse(string.Concat(data.DateArrivalText, " ", data.TimeArrivalText)),
-                        TipoDeslocação = data.TypeDeslocation,
-                        CódigoTipoKmS = data.CodeTypeKms,
-                        DeslocaçãoForaConcelho = Convert.ToBoolean(data.DisplacementOutsideCityText),
-                        Validadores = User.Identity.Name,//data.Validators,
-                        Estado = 1,//Convert.ToUInt16(data.StatusText),
+                        Área = data.Area,
+                        NºProjeto = data.ProjetoNo,
+                        NºEmpregado = data.EmpregadoNo,
+                        DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
+                        DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
+                        TipoDeslocação = data.TipoDeslocacao,
+                        CódigoTipoKmS = data.CodigoTipoKms,
+                        DeslocaçãoForaConcelho = Convert.ToBoolean(data.DeslocacaoForaConcelhoTexto),
+                        Validadores = User.Identity.Name,
+                        Estado = 1,
                         CriadoPor = User.Identity.Name,
                         DataHoraCriação = DateTime.Now,
                         DataHoraÚltimoEstado = DateTime.Now,
                         UtilizadorCriação = User.Identity.Name,
                         DataHoraModificação = DateTime.Now,
                         UtilizadorModificação = User.Identity.Name,
-                        NomeEmpregado = data.EmployeeNo,
-                        Matrícula = data.CarRegistration,
-                        Terminada = data.Finished,
+                        NomeEmpregado = data.EmpregadoNome,
+                        Matrícula = data.Matricula,
+                        Terminada = data.Terminada,
                         TerminadoPor = User.Identity.Name,
                         DataHoraTerminado = DateTime.Now,
-                        Validado = Convert.ToBoolean(data.ValidatedText),
-                        DeslocaçãoPlaneada = Convert.ToBoolean(data.PlannedScrollingText),
-                        Observações = data.Comments,
-                        NºResponsável1 = User.Identity.Name,//data.Responsible1,
-                        NºResponsável2 = User.Identity.Name,//data.Responsible2,
-                        NºResponsável3 = User.Identity.Name,//data.Responsible3,
-                        ValidadoresRhKm = User.Identity.Name,//data.ValidatorsRHKM,
-                        CódigoRegião = data.RegionCode,
-                        CódigoÁreaFuncional = data.AreaCode,
-                        CódigoCentroResponsabilidade = data.CRESPCode,
-                        Validador = User.Identity.Name,//data.Validator,
+                        Validado = Convert.ToBoolean(data.ValidadoTexto),
+                        DeslocaçãoPlaneada = Convert.ToBoolean(data.DeslocacaoPlaneadaTexto),
+                        Observações = data.Observacoes,
+                        NºResponsável1 = User.Identity.Name,
+                        NºResponsável2 = User.Identity.Name,
+                        NºResponsável3 = User.Identity.Name,
+                        ValidadoresRhKm = User.Identity.Name,
+                        CódigoRegião = data.CodigoRegiao,
+                        CódigoÁreaFuncional = data.CodigoAreaFuncional,
+                        CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade,
+                        Validador = User.Identity.Name,
                         DataHoraValidação = DateTime.Now,
-                        IntegradorEmRh = User.Identity.Name,//data.IntegratorRH,
+                        IntegradorEmRh = User.Identity.Name,
                         DataIntegraçãoEmRh = DateTime.Now,
-                        IntegradorEmRhKm = User.Identity.Name,//data.IntegratorRHKM,
+                        IntegradorEmRhKm = User.Identity.Name,
                         DataIntegraçãoEmRhKm = DateTime.Now
                     };
 
@@ -360,7 +363,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateFolhaDeHora([FromBody] FolhaDeHoraDetailsViewModel data)
+        public JsonResult UpdateFolhaDeHora([FromBody] FolhaDeHorasViewModel data)
         {
             FolhasDeHoras FHUpdate = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
             if (FHUpdate == null)
@@ -370,48 +373,48 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
-                FHUpdate.CriadoPor = data.CreatedBy;
-                FHUpdate.CódigoCentroResponsabilidade = data.CRESPCode;
-                FHUpdate.CódigoRegião = data.RegionCode;
-                FHUpdate.CódigoTipoKmS = data.CodeTypeKms;
-                FHUpdate.CódigoÁreaFuncional = data.AreaCode;
-                FHUpdate.DataHoraChegada = data.DateTimeArrival;
-                FHUpdate.DataHoraCriação = data.DateTimeCreation;
+                FHUpdate.CriadoPor = data.CriadoPor;
+                FHUpdate.CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade;
+                FHUpdate.CódigoRegião = data.CodigoRegiao;
+                FHUpdate.CódigoTipoKmS = data.CodigoTipoKms;
+                FHUpdate.CódigoÁreaFuncional = data.CodigoAreaFuncional;
+                FHUpdate.DataHoraChegada = data.DataHoraChegada;
+                FHUpdate.DataHoraCriação = data.DataHoraCriacao;
                 FHUpdate.DataHoraModificação = System.DateTime.Now;
-                FHUpdate.DataHoraPartida = data.DateTimeDeparture;
-                FHUpdate.DataHoraTerminado = data.DateTimeFinished;
-                FHUpdate.DataHoraValidação = data.DateTimeValidation;
-                FHUpdate.DataHoraÚltimoEstado = data.DateTimeLastState;
-                FHUpdate.DataIntegraçãoEmRh = data.DateTimeIntegrationRH;
-                FHUpdate.DataIntegraçãoEmRhKm = data.DateTimeIntegrationRHKM;
-                FHUpdate.DeslocaçãoForaConcelho = data.DisplacementOutsideCity;
-                FHUpdate.DeslocaçãoPlaneada = data.PlannedScrolling;
+                FHUpdate.DataHoraPartida = data.DataHoraPartida;
+                FHUpdate.DataHoraTerminado = data.DataHoraTerminado;
+                FHUpdate.DataHoraValidação = data.DataHoraValidacao;
+                FHUpdate.DataHoraÚltimoEstado = data.DataHoraUltimoEstado;
+                FHUpdate.DataIntegraçãoEmRh = data.DataIntegracaoEmRH;
+                FHUpdate.DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM;
+                FHUpdate.DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho;
+                FHUpdate.DeslocaçãoPlaneada = data.DeslocacaoPlaneada;
                 //FHUpdate.DistribuiçãoCustoFolhaDeHoras = data.;
-                FHUpdate.Estado = data.Status;
-                FHUpdate.IntegradorEmRh = data.IntegratorRH;
-                FHUpdate.IntegradorEmRhKm = data.IntegratorRHKM;
-                FHUpdate.Matrícula = data.CarRegistration;
+                FHUpdate.Estado = data.Estado;
+                FHUpdate.IntegradorEmRh = data.IntegradorEmRH;
+                FHUpdate.IntegradorEmRhKm = data.IntegradorEmRHKM;
+                FHUpdate.Matrícula = data.Matricula;
                 //FHUpdate.MãoDeObraFolhaDeHoras = data.;
-                FHUpdate.NomeEmpregado = data.EmployeeName;
-                FHUpdate.NºEmpregado = data.EmployeeNo;
+                FHUpdate.NomeEmpregado = data.EmpregadoNome;
+                FHUpdate.NºEmpregado = data.EmpregadoNo;
                 FHUpdate.NºFolhaDeHoras = data.FolhaDeHorasNo;
-                FHUpdate.NºProjeto = data.ProjectNo;
+                FHUpdate.NºProjeto = data.ProjetoNo;
                 //FHUpdate.NºProjetoNavigation = data.;
-                FHUpdate.NºResponsável1 = data.Responsible1;
-                FHUpdate.NºResponsável2 = data.Responsible2;
-                FHUpdate.NºResponsável3 = data.Responsible3;
-                FHUpdate.Observações = data.Comments;
+                FHUpdate.NºResponsável1 = data.Responsavel1No;
+                FHUpdate.NºResponsável2 = data.Responsavel2No;
+                FHUpdate.NºResponsável3 = data.Responsavel3No;
+                FHUpdate.Observações = data.Observacoes;
                 //FHUpdate.PercursosEAjudasCustoDespesasFolhaDeHoras = data.;
                 //FHUpdate.PresençasFolhaDeHoras = data.;
-                FHUpdate.Terminada = data.Finished;
-                FHUpdate.TerminadoPor = data.FinishedBy;
-                FHUpdate.TipoDeslocação = data.TypeDeslocation;
-                FHUpdate.UtilizadorCriação = data.UserCreation;
+                FHUpdate.Terminada = data.Terminada;
+                FHUpdate.TerminadoPor = data.TerminadoPor;
+                FHUpdate.TipoDeslocação = data.TipoDeslocacao;
+                FHUpdate.UtilizadorCriação = data.UtilizadorCriacao;
                 FHUpdate.UtilizadorModificação = User.Identity.Name;
-                FHUpdate.Validado = data.Validated;
-                FHUpdate.Validador = data.Validator;
-                FHUpdate.Validadores = data.Validators;
-                FHUpdate.ValidadoresRhKm = data.ValidatorsRHKM;
+                FHUpdate.Validado = data.Validado;
+                FHUpdate.Validador = data.Validador;
+                FHUpdate.Validadores = data.Validadores;
+                FHUpdate.ValidadoresRhKm = data.ValidadoresRHKM;
                 FHUpdate.Área = data.Area;
 
                 DBFolhasDeHoras.Update(FHUpdate);
@@ -427,42 +430,42 @@ namespace Hydra.Such.Portal.Controllers
                 FolhasDeHoras cFolhaDeHora = new FolhasDeHoras()
                 {
                     NºFolhaDeHoras = data.FolhaDeHorasNo,
-                    Área = Convert.ToInt16(data.AreaText),
-                    NºProjeto = data.ProjectNo,
-                    NºEmpregado = data.EmployeeNo,
-                    DataHoraPartida = DateTime.Parse(string.Concat(data.DateDepartureText, " ", data.TimeDepartureText)),
-                    DataHoraChegada = DateTime.Parse(string.Concat(data.DateArrivalText, " ", data.TimeArrivalText)),
-                    TipoDeslocação = Convert.ToInt16(data.TypeDeslocationText),
-                    CódigoTipoKmS = data.CodeTypeKms,
-                    DeslocaçãoForaConcelho = Convert.ToBoolean(data.DisplacementOutsideCityText),
-                    Validadores = data.Validators,
-                    Estado = Convert.ToUInt16(data.StatusText),
+                    Área = Convert.ToInt16(data.AreaTexto),
+                    NºProjeto = data.ProjetoNo,
+                    NºEmpregado = data.EmpregadoNo,
+                    DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
+                    DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
+                    TipoDeslocação = Convert.ToInt16(data.TipoDeslocacaoTexto),
+                    CódigoTipoKmS = data.CodigoTipoKms,
+                    DeslocaçãoForaConcelho = Convert.ToBoolean(data.DeslocacaoForaConcelhoTexto),
+                    Validadores = data.Validadores,
+                    Estado = Convert.ToUInt16(data.Estadotexto),
                     CriadoPor = User.Identity.Name,
                     DataHoraCriação = DateTime.Now,
                     DataHoraÚltimoEstado = DateTime.Now,
                     //UserCreation = User.Identity.Name,
                     DataHoraModificação = DateTime.Now,
                     UtilizadorModificação = User.Identity.Name,
-                    NomeEmpregado = data.EmployeeNo,
-                    Matrícula = data.CarRegistration,
-                    Terminada = data.Finished,
+                    NomeEmpregado = data.EmpregadoNo,
+                    Matrícula = data.Matricula,
+                    Terminada = data.Terminada,
                     TerminadoPor = User.Identity.Name,
                     DataHoraTerminado = DateTime.Now,
-                    Validado = Convert.ToBoolean(data.ValidatedText),
-                    DeslocaçãoPlaneada = Convert.ToBoolean(data.PlannedScrollingText),
-                    Observações = data.Comments,
-                    NºResponsável1 = data.Responsible1,
-                    NºResponsável2 = data.Responsible2,
-                    NºResponsável3 = data.Responsible3,
-                    ValidadoresRhKm = data.ValidatorsRHKM,
-                    CódigoRegião = data.RegionCode,
-                    CódigoÁreaFuncional = data.AreaCode,
-                    CódigoCentroResponsabilidade = data.CRESPCode,
-                    Validador = data.Validator,
+                    Validado = Convert.ToBoolean(data.ValidadoTexto),
+                    DeslocaçãoPlaneada = Convert.ToBoolean(data.DeslocacaoPlaneadaTexto),
+                    Observações = data.Observacoes,
+                    NºResponsável1 = data.Responsavel1No,
+                    NºResponsável2 = data.Responsavel2No,
+                    NºResponsável3 = data.Responsavel3No,
+                    ValidadoresRhKm = data.ValidadoresRHKM,
+                    CódigoRegião = data.CodigoRegiao,
+                    CódigoÁreaFuncional = data.CodigoAreaFuncional,
+                    CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade,
+                    Validador = data.Validador,
                     DataHoraValidação = DateTime.Now,
-                    IntegradorEmRh = data.IntegratorRH,
+                    IntegradorEmRh = data.IntegradorEmRH,
                     DataIntegraçãoEmRh = DateTime.Now,
-                    IntegradorEmRhKm = data.IntegratorRHKM,
+                    IntegradorEmRhKm = data.IntegradorEmRHKM,
                     DataIntegraçãoEmRhKm = DateTime.Now
                 };
 
@@ -473,7 +476,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult DeleteFolhaDeHoras([FromBody] FolhaDeHoraDetailsViewModel data)
+        public JsonResult DeleteFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
 
             if (data != null)
@@ -508,7 +511,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                List<PercursosEAjudasCustoDespesasFolhaDeHorasListItemViewModel> result = DBPercursosEAjudasCustoDespesasFolhaDeHoras.GetAllByPercursoToList(FolhaHoraNo);
+                List<PercursosEAjudasCustoDespesasFolhaDeHorasViewModel> result = DBPercursosEAjudasCustoDespesasFolhaDeHoras.GetAllByPercursoToList(FolhaHoraNo);
 
                 result.ForEach(x =>
                 {
@@ -536,7 +539,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                List<PercursosEAjudasCustoDespesasFolhaDeHorasListItemViewModel> result = DBPercursosEAjudasCustoDespesasFolhaDeHoras.GetAllByAjudaToList(FolhaHoraNo);
+                List<PercursosEAjudasCustoDespesasFolhaDeHorasViewModel> result = DBPercursosEAjudasCustoDespesasFolhaDeHoras.GetAllByAjudaToList(FolhaHoraNo);
 
                 result.ForEach(x =>
                 {
@@ -564,7 +567,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                List<MaoDeObraFolhaDeHorasListItemViewModel> result = DBMaoDeObraFolhaDeHoras.GetAllByMaoDeObraToList(FolhaHoraNo);
+                List<MaoDeObraFolhaDeHorasViewModel> result = DBMaoDeObraFolhaDeHoras.GetAllByMaoDeObraToList(FolhaHoraNo);
 
                 result.ForEach(x =>
                 {
@@ -592,7 +595,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                List<PresencasFolhaDeHorasListItemViewModel> result = DBPresencasFolhaDeHoras.GetAllByPresencaToList(FolhaHoraNo);
+                List<PresencasFolhaDeHorasViewModel> result = DBPresencasFolhaDeHoras.GetAllByPresencaToList(FolhaHoraNo);
 
                 result.ForEach(x =>
                 {

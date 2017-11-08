@@ -90,11 +90,14 @@ namespace Hydra.Such.Portal.Controllers
             //Apply User Dimensions Validations
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.CódigoRegião));
+            if  (CUserDimensions.Where(x => x.Dimensão == 1).Count() >0  )
+                ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.CódigoRegião));
             //FunctionalAreas
-            ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.CódigoÁreaFuncional));
+            if (CUserDimensions.Where(x => x.Dimensão == 2).Count() > 0)
+                ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.CódigoÁreaFuncional));
             //ResponsabilityCenter
-            ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CódigoCentroResponsabilidade));
+            if (CUserDimensions.Where(x => x.Dimensão == 3).Count() > 0)
+                ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CódigoCentroResponsabilidade));
 
 
             List<ContractViewModel> result = new List<ContractViewModel>();
@@ -943,7 +946,7 @@ namespace Hydra.Such.Portal.Controllers
                         else if (originType == 1)
                         {
                             item.NºOportunidade = oldNumeration;
-                            item.NºDeContrato = newNumeration;
+                            item.NºProposta = newNumeration;
                         }
 
                         DBContracts.Create(item);
