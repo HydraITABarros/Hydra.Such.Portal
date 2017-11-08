@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2 class="separator">Contratos Engenharia</h2>
+<h1 class="title">Propostas Engenharia</h1>
 <link rel="import" href="~/elements/contracts/proposals.html">
 
-<x-proposals _areaid="2" _archived="@ViewBag.Archived" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _contractno="@ViewBag.ContractNo"></x-proposals>
+<x-proposals _areaid="1" _archived="@ViewBag.Archived" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _contractno="@ViewBag.ContractNo"></x-proposals>

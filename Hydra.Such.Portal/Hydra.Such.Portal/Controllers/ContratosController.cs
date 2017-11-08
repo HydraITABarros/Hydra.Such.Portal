@@ -90,11 +90,14 @@ namespace Hydra.Such.Portal.Controllers
             //Apply User Dimensions Validations
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.CódigoRegião));
+            if  (CUserDimensions.Where(x => x.Dimensão == 1).Count() >0  )
+                ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.CódigoRegião));
             //FunctionalAreas
-            ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.CódigoÁreaFuncional));
+            if (CUserDimensions.Where(x => x.Dimensão == 2).Count() > 0)
+                ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.CódigoÁreaFuncional));
             //ResponsabilityCenter
-            ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CódigoCentroResponsabilidade));
+            if (CUserDimensions.Where(x => x.Dimensão == 3).Count() > 0)
+                ContractsList.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CódigoCentroResponsabilidade));
 
 
             List<ContractViewModel> result = new List<ContractViewModel>();
@@ -110,7 +113,22 @@ namespace Hydra.Such.Portal.Controllers
         {
             //Get Project Numeration
             Configuração Cfg = DBConfigurations.GetById(1);
-            int ProjectNumerationConfigurationId = Cfg.NumeraçãoContratos.Value;
+            int ProjectNumerationConfigurationId = 0;
+
+            switch (data.ContractType)
+            {
+                case 1:
+                    ProjectNumerationConfigurationId = Cfg.NumeraçãoOportunidades.Value;
+                    break;
+                case 2:
+                    ProjectNumerationConfigurationId = Cfg.NumeraçãoPropostas.Value;
+                    break;
+                case 3:
+                    ProjectNumerationConfigurationId = Cfg.NumeraçãoContratos.Value;
+                    break;
+                default:
+                    break;
+            }
 
             ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
 
@@ -897,21 +915,22 @@ namespace Hydra.Such.Portal.Controllers
 
                 foreach (var item in thisHeader)
                 {
-                    String oldNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(originType), (item.NºContrato == "" || item.NºContrato == null));
-                    String newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), (item.NºContrato == "" || item.NºContrato == null));
+                    String oldNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(originType), true);
+                    String newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), true);
                     try
                     {
                         item.TipoContrato = contractType;
+                        item.Arquivado = false;
 
                         if (originType == 2)
                         {
                             item.NºProposta = oldNumeration;
-                            item.NºContrato = newNumeration;
+                            item.NºDeContrato = newNumeration;
                         }
                         else if (originType == 1)
                         {
                             item.NºOportunidade = oldNumeration;
-                            item.NºContrato = newNumeration;
+                            item.NºProposta = newNumeration;
                         }
 
                         DBContracts.Create(item);
@@ -926,7 +945,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         try
                         {
-                            line.NºContrato = item.NºContrato;
+                            line.NºContrato = newNumeration;
                             DBContractLines.Create(line);
                         }
                         catch (Exception ex)

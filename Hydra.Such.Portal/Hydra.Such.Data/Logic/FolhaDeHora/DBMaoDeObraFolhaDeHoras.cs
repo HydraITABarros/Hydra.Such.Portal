@@ -1,5 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
-using Hydra.Such.Data.ViewModel.FolhasDeHoras;
+using Hydra.Such.Data.ViewModel.FH;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -115,40 +115,42 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
         }
         #endregion
 
-        public static List<MaoDeObraFolhaDeHorasListItemViewModel> GetAllByMaoDeObraToList(string FolhaHoraNo)
+        public static List<MaoDeObraFolhaDeHorasViewModel> GetAllByMaoDeObraToList(string FolhaHoraNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.MãoDeObraFolhaDeHoras.Where(x => x.NºFolhaDeHoras == FolhaHoraNo).Select(x => new MaoDeObraFolhaDeHorasListItemViewModel()
+                    return ctx.MãoDeObraFolhaDeHoras.Where(MaoDeObra => MaoDeObra.NºFolhaDeHoras == FolhaHoraNo).Select(MaoDeObra => new MaoDeObraFolhaDeHorasViewModel()
                     {
-                        FolhaDeHorasNo = x.NºFolhaDeHoras,
-                        LineNo = x.NºLinha,
-                        Date = x.Date,
-                        EmployedNo = x.NºEmpregado,
-                        ProjectNo = x.NºProjeto,
-                        WorkTypeCode = x.CódigoTipoTrabalho,
-                        //StartTime = Convert.ToDateTime(x.HoraInício).ToLocalTime(),
-                        StartTimeText = Convert.ToString(x.HoraInício),
-                        //EndTime = Convert.ToDateTime(x.HoraFim).ToLocalTime(),
-                        EndTimeText = Convert.ToString(x.HoraFim),
-                        LunchTime = x.HorárioAlmoço,
-                        DinnerTime = x.HorárioJantar,
-                        FamilyCodeResource = x.CódigoFamíliaRecurso,
-                        ResourceNo = x.NºRecurso,
-                        UnitCodeMeasure = x.CódUnidadeMedida,
-                        OMTypeCode = x.CódigoTipoOm,
-                        //HoursNo = Convert.ToDateTime(x.NºDeHotas).ToLocalTime(),
-                        HoursNoText = Convert.ToString(x.NºDeHotas),
-                        DirectUnitCost = Convert.ToDecimal(x.CustoUnitárioDireto),
-                        CostPrice = Convert.ToDecimal(x.PreçoDeCusto),
-                        SalePrice = Convert.ToDecimal(x.PreçoDeVenda),
-                        TotalPrice = Convert.ToDecimal(x.PreçoTotal),
-                        DateTimeCreation = x.DataHoraCriação,
-                        UserCreation = x.UtilizadorCriação,
-                        DateTimeModification = x.DataHoraModificação,
-                        UserModification = x.UtilizadorModificação
+                        FolhaDeHorasNo = MaoDeObra.NºFolhaDeHoras,
+                        LinhaNo = MaoDeObra.NºLinha,
+                        Date = MaoDeObra.Date,
+                        EmpregadoNo = MaoDeObra.NºEmpregado,
+                        ProjetoNo = MaoDeObra.NºProjeto,
+                        CodigoTipoTrabalho = MaoDeObra.CódigoTipoTrabalho,
+                        HoraInicio = Convert.ToDateTime("1753-01-01 " + MaoDeObra.HoraInício),
+                        HoraInicioTexto = MaoDeObra.HoraInício.ToString(),
+                        HoraFim = Convert.ToDateTime("1753-01-01 " + MaoDeObra.HoraFim),
+                        HoraFimTexto = MaoDeObra.HoraFim.ToString(),
+                        HorarioAlmoco = MaoDeObra.HorárioAlmoço,
+                        HorarioJantar = MaoDeObra.HorárioJantar,
+                        CodigoFamiliaRecurso = MaoDeObra.CódigoFamíliaRecurso,
+                        RecursoNo = MaoDeObra.NºRecurso,
+                        CodigoUnidadeMedida = MaoDeObra.CódUnidadeMedida,
+                        CodigoTipoOM = MaoDeObra.CódigoTipoOm,
+                        HorasNo = Convert.ToDateTime("1753-01-01 " + MaoDeObra.NºDeHotas),
+                        HorasNoTexto = MaoDeObra.NºDeHotas.ToString(),
+                        CustoUnitarioDireto = Convert.ToDecimal(MaoDeObra.CustoUnitárioDireto),
+                        PrecoDeCusto = Convert.ToDecimal(MaoDeObra.PreçoDeCusto),
+                        PrecoDeVenda = Convert.ToDecimal(MaoDeObra.PreçoDeVenda),
+                        PrecoTotal = Convert.ToDecimal(MaoDeObra.PreçoTotal),
+                        DataHoraCriacao = MaoDeObra.DataHoraCriação,
+                        DataHoraCriacaoTexto = MaoDeObra.DataHoraCriação.Value.ToShortDateString(),
+                        UtilizadorCriacao = MaoDeObra.UtilizadorCriação,
+                        DataHoraModificacao = MaoDeObra.DataHoraModificação,
+                        DataHoraModificacaoTexto = MaoDeObra.DataHoraModificação.Value.ToShortDateString(),
+                        UtilizadorModificacao = MaoDeObra.UtilizadorModificação
                     }).ToList(); ;
                 }
             }

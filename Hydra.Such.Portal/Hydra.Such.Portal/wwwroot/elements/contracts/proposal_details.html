@@ -18,8 +18,6 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
-<h1 class="title">Detalhes Propostas</h1>
-
 <x-proposalsdetails></x-proposalsdetails>
 <dom-module id="x-proposalsdetails">
     <template>
@@ -1241,7 +1239,8 @@
         </div>
 
 
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
 
@@ -1442,10 +1441,16 @@
                     }
 
                 },
-                _openToast: function (message) {
-                    this.$.ToastMessage.text = message;
-                    this.$.ToastMessage.open();
+
+                openToastSuccess: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
                 },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
                 _validateData: function () {
                     if (false) {
                         this._openToast(validate);
@@ -1457,6 +1462,7 @@
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
+                        this.data.contractType = 2;
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
                         this.$.page_validator_ajax.generateRequest();
                     }
@@ -1587,7 +1593,7 @@
                         if (this.deletedData.eReasonCode == 1) {
                             setTimeout(
                                 function () {
-                                    window.location.replace("/");
+                                    window.location.href = "/";
                                 }, 2500);
                         }
                     }
@@ -1852,6 +1858,16 @@
                     {
                         this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "OriginType": 2, "HeaderType": 3 });
                         this.$.parseToContract_ajax.generateRequest();
+                    }
+                },
+
+                _responseParseToContract: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        this.openToastSuccess("Contrato criado com sucesso.");
+                    }
+                    else {
+                        this.openToastError("Erro na criação do contracto.");
                     }
                 }
             });
