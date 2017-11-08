@@ -16,9 +16,9 @@
 <x-proposals></x-proposals>
 <dom-module id="x-proposals">
     <template>
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="~/css/main.css" />
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
 
         <iron-ajax url="/Contratos/GetListContractsProposals"
                    last-response="{{result}}"
@@ -31,7 +31,7 @@
         <template is="dom-if" if="{{ _permissions.create }}">
             <template is="dom-if" if="{{ !_disabledCreate }}">
                 <div class="marginSpace">
-                    <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
+                    <paper-button class="btnSave" raised on-tap="_create">Criar Novo</paper-button>
                 </div>
             </template>
         </template>
@@ -170,19 +170,18 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesContrato/" + item.contractNo;
+                        window.location.href = "DetalhesProposta/" + item.contractNo;
                     }
                 },
                 _create: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesContrato/";
+                        window.location.href = "DetalhesProposta/";
                     }
                 },
                 ready: function () {
                     if (this._archived == 1) {
                         this._disabledCreate = true;
                     }
-                    debugger;;
                     this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
                 },

@@ -99,6 +99,9 @@
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="row">
                 <div class="col-lg-12">
+                    <template is="dom-if" if="{{ _permissions.create }}">
+                        <paper-button raised id="btnProjectAdd" class="" on-tap="_createNewProject"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                    </template>
                     <paper-button raised id="btnProjectMovements" class="" on-tap="_OpenProjectMovements" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
                     <paper-button raised id="btnProjectDiary" class="" on-tap="_OpenProjectDiary" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
                 </div>
@@ -466,6 +469,9 @@
                     }
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
+                },
+                _createNewProject: function () {
+                    window.location.href = "../DetalhesProjeto";
                 },
                 //CRUDS
                 _create: function () {

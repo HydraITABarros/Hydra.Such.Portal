@@ -40,7 +40,7 @@
             </style>
         </custom-style>
 
-        <iron-ajax url="/Contratos/GetListContractsByArea"
+        <iron-ajax url="/Contratos/GetListOportunitiesByArea"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -202,9 +202,11 @@
                     }
                 },
                 ready: function () {
+                    debugger;
                     if (this._archived == 1) {
                         this._disabledCreate = true;
                     }
+                    
                     this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
                 },
