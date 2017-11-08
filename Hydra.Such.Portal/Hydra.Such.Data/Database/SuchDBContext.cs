@@ -334,6 +334,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºDeFaturasAEmitir).HasColumnName("Nº de Faturas a Emitir");
 
+                entity.Property(e => e.NãoFaturar).HasColumnName("Não Faturar");
+
                 entity.Property(e => e.TotalAFaturar).HasColumnName("Total a Faturar");
 
                 entity.Property(e => e.UtilizadorCriação)
@@ -872,9 +874,25 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20)
                     .ValueGeneratedNever();
 
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraModificação)
+                    .HasColumnName("Data/Hora Modificação")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.Nome)
                     .IsRequired()
                     .HasMaxLength(100);
+
+                entity.Property(e => e.UtilizadorCriação)
+                    .HasColumnName("Utilizador Criação")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorModificação)
+                    .HasColumnName("Utilizador Modificação")
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<Contratos>(entity =>
