@@ -16,7 +16,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.NºContrato == ContractNo && x.Arquivado == Archived).ToList();
+                    return ctx.Contratos.Where(x => x.NºDeContrato == ContractNo && x.Arquivado == Archived).ToList();
                 }
             }
             catch (Exception ex)
@@ -32,7 +32,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.NºContrato == ContractNo && x.NºVersão == VersionNo).FirstOrDefault();
+                    return ctx.Contratos.Where(x => x.NºDeContrato == ContractNo && x.NºVersão == VersionNo).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -48,7 +48,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.NºContrato == ContractNo).OrderByDescending(x => x.NºVersão).FirstOrDefault();
+                    return ctx.Contratos.Where(x => x.NºDeContrato == ContractNo).OrderByDescending(x => x.NºVersão).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -100,7 +100,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.Contratos.RemoveRange(ctx.Contratos.Where(x => x.NºContrato == ContractNo));
+                    ctx.Contratos.RemoveRange(ctx.Contratos.Where(x => x.NºDeContrato == ContractNo));
                     ctx.SaveChanges();
                 }
 
@@ -139,7 +139,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.NºContrato == ContractNo && x.Arquivado == false).FirstOrDefault();
+                    return ctx.Contratos.Where(x => x.NºDeContrato == ContractNo && x.Arquivado == false).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -154,7 +154,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.NºContrato == ContractNo && x.Arquivado == false).ToList();
+                    return ctx.Contratos.Where(x => x.NºDeContrato == ContractNo && x.Arquivado == false).ToList();
                 }
             }
             catch (Exception ex)
@@ -203,7 +203,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             Contratos result = new Contratos()
             {
                 TipoContrato = x.ContractType,
-                NºContrato = x.ContractNo,
+                NºContrato = x.RelatedContract,
                 NºDeContrato = x.ContractNo,
                 NºVersão = x.VersionNo,
                 Área = x.Area,
@@ -364,7 +364,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 UpdateDate = x.DataHoraModificação.HasValue ? x.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
                 CreateUser = x.UtilizadorCriação,
                 UpdateUser = x.UtilizadorModificação,
-                Filed = x.Arquivado
+                Filed = x.Arquivado,
+                RelatedContract = x.NºContrato
             };
 
             result.ClientName = DBNAV2017Clients.GetClientNameByNo(x.NºCliente, NAVDatabaseName, NAVCompanyName);

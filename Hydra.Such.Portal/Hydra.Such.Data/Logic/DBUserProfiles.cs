@@ -9,13 +9,13 @@ namespace Hydra.Such.Data.Logic
     public static class DBUserProfiles
     {
         #region CRUD
-        public static PerfisUtilizador GetById(string UserId, int ProfileId, int Funcionalidade)
+        public static PerfisUtilizador GetById(string userId, int profileId)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.PerfisUtilizador.Where(x => x.IdUtilizador == UserId && x.IdPerfil == ProfileId).FirstOrDefault();
+                    return ctx.PerfisUtilizador.Where(x => x.IdUtilizador == userId && x.IdPerfil == profileId).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -111,21 +111,24 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static bool Delete(PerfisUtilizador ObjectToDelete)
+        public static bool Delete(PerfisUtilizador objectToDelete)
+        {
+            return Delete(new List<PerfisUtilizador>() { objectToDelete });
+        }
+
+        public static bool Delete(List<PerfisUtilizador> items)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.PerfisUtilizador.Remove(ObjectToDelete);
+                    ctx.PerfisUtilizador.RemoveRange(items);
                     ctx.SaveChanges();
                 }
-
                 return true;
             }
             catch (Exception ex)
             {
-
                 return false;
             }
         }
