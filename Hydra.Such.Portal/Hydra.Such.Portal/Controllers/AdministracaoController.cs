@@ -78,7 +78,7 @@ namespace Hydra.Such.Portal.Controllers
                     Description = x.Descrição
                 }).ToList();
 
-                result.AllowedUserDimensions = DBUserDimensions.GetByUserId(data.IdUser).ParseToViewModel().ToList();
+                result.AllowedUserDimensions = DBUserDimensions.GetByUserId(data.IdUser).ParseToViewModel();
             }
 
             return Json(result);
