@@ -25,7 +25,7 @@
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
-<h1 class="title">Detalhes Configuração Utilizadores</h1>
+<h1 class="title">Detalhes de Configuração de Utilizador</h1>
 
 <x-details-config-users></x-details-config-users>
 <dom-module id="x-details-config-users">
@@ -42,6 +42,12 @@
                    id="page_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
+        @if (ViewBag.UserId != "0")
+        {
+            <div class="marginSpace">
+                <paper-button class="btnSave" raised on-tap="_redirectToNewUserConfigForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </div>
+        }
 
         <h2 class="separator">Geral</h2>
         <div class="row">
@@ -80,6 +86,8 @@
         <iron-ajax url="/Administracao/DeleteUserProfile" last-response="{{UserProfileDeleted}}" method="post" handle-as="json" id="page_deleteuserprofile_ajax" on-response="_deleteUserProfileResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Administracao/CreateUserProfile" last-response="{{UserProfileCreated}}" method="post" handle-as="json" id="page_createuserprofile_ajax" on-response="_createUserProfileResponse" content-type="application/json"></iron-ajax>
 
+        @if (ViewBag.UserId != "0")
+        {
         <h2 class="separator">Perfis Utilizadores</h2>
         <div class="row">
             <div class="col-lg-3">
@@ -94,10 +102,11 @@
                 </vaadin-combo-box>
             </div>
             <div class="col-lg-3 alignPoga">
-                <paper-button class="btnEdit" raised on-tap="_createUserProfile">Associar</paper-button>
+                <paper-button class="btnEdit" raised on-tap="_createUserProfile"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Associar</paper-button>
             </div>
         </div>
 
+        
         <vaadin-grid id="gridUserProfiles" aria-label="gridUserProfiles" items="{{ data.userProfiles }}" class="grid">
             <vaadin-grid-column width="20%">
                 <template class="header">
@@ -119,7 +128,7 @@
                 <template class="header">
                 </template>
                 <template>
-                    <paper-button class="btnRemove" raised on-tap="_deleteUserProfile">Eliminar</paper-button>
+                    <paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteUserProfile"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -152,7 +161,9 @@
                 <td width="12%"><vaadin-checkbox id="_chkRead" checked="{{chkRead}}"> Leitura</vaadin-checkbox></td>
                 <td width="12%"><vaadin-checkbox id="_chkUpdate" checked="{{chkUpdate}}"> Modificação</vaadin-checkbox></td>
                 <td width="12%"><vaadin-checkbox id="_chkDelete" checked="{{chkDelete}}"> Eliminação</vaadin-checkbox></td>
-                <td width="12%"><paper-button class="btnSave" raised on-tap="_createUserAccess">Criar</paper-button></td>
+                <td width="12%">
+                    <paper-button class="btnSave" raised on-tap="_createUserAccess"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                </td>
             </tr>
         </table>
         <vaadin-grid id="gridUserAccesses" aria-label="gridUserAccesses" items="{{ data.userAccesses }}" class="grid">
@@ -242,7 +253,7 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove" raised on-tap="_deleteUserAccess">Eliminar</paper-button>
+                        <paper-button raised class="btnRemove" on-tap="_deleteUserAccess"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -272,7 +283,9 @@
                         </template>
                     </vaadin-combo-box>
                 </td>
-                <td width="60%"><paper-button class="btnSave" raised on-tap="_createUserDimensionAccess">Criar</paper-button></td>
+                <td width="60%">
+                    <paper-button class="btnSave" raised on-tap="_createUserDimensionAccess"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                </td>
             </tr>
         </table>
         <vaadin-grid id="gridAllowedUserDimensions" aria-label="gridAllowedUserDimensions" items="{{ data.allowedUserDimensions }}" class="grid" active-item="{{_SelectedLine}}">
@@ -323,16 +336,16 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove" raised on-tap="_onDeleteUserDimensionAccess">Eliminar</paper-button>
+                        <paper-button raised class="btnRemove" on-tap="_onDeleteUserDimensionAccess"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
+        }
         <div class="marginSpace">
             @if (ViewBag.UserId == "0")
             {
-                <paper-button class="btnSave" raised on-tap="_create">Gravar</paper-button>
+                <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
             }
             else
             {
@@ -403,14 +416,13 @@
                     '_onDimensionsCacheLoaded(DimensionData, DimensionValuesForRegion, DimensionValuesForArea, DimensionValuesForResponsability)'
                 ],
 
-                _onDimensionsCacheLoaded: function (optionsForDimension, optionsForRegion, optionsForArea, optionsForResponsability)
-                {
+                _onDimensionsCacheLoaded: function (optionsForDimension, optionsForRegion, optionsForArea, optionsForResponsability) {
                     this.$.page_databound_ajax.body = JSON.stringify({ "IdUser": "@ViewBag.UserId" });
                     this.$.page_databound_ajax.generateRequest();
                 },
 
                 ready: function () {
-                    
+
                 },
                 openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -501,10 +513,9 @@
                     this.$.ajax_create.generateRequest();
                 },
                 _responseProcessor: function (e) {
-                    var self = this;
                     if (e.detail.status === 200) {
                         if (e.detail.url.indexOf("Create") !== -1) {
-                            window.location.href = "/Administracao/ConfiguracaoUtilizadoresDetalhes/" + this.data.IdUser;
+                            window.location.href = "/Administracao/ConfiguracaoUtilizadoresDetalhes/" + this.data.idUser;
                         }
                         else if (e.detail.url.indexOf("Delete") !== -1) {
                             if (this.data.id == 0) {
@@ -651,12 +662,17 @@
                     if (this.UserProfileCreated) {
                         this.openToast('Adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
-                        this.$.ddUserProfile.value = ""
+                        this.$._Profiles.value = ""
                     }
                     else {
                         this.openToast('Ocorreu um erro ao adicionar.');
                     }
                 },
+                _redirectToNewUserConfigForm: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Administracao/ConfiguracaoUtilizadoresDetalhes/0";
+                    }
+                }
             });
         });
     </script>

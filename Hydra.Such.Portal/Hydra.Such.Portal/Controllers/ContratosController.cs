@@ -113,7 +113,22 @@ namespace Hydra.Such.Portal.Controllers
         {
             //Get Project Numeration
             Configuração Cfg = DBConfigurations.GetById(1);
-            int ProjectNumerationConfigurationId = Cfg.NumeraçãoContratos.Value;
+            int ProjectNumerationConfigurationId = 0;
+
+            switch (data.ContractType)
+            {
+                case 1:
+                    ProjectNumerationConfigurationId = Cfg.NumeraçãoOportunidades.Value;
+                    break;
+                case 2:
+                    ProjectNumerationConfigurationId = Cfg.NumeraçãoPropostas.Value;
+                    break;
+                case 3:
+                    ProjectNumerationConfigurationId = Cfg.NumeraçãoContratos.Value;
+                    break;
+                default:
+                    break;
+            }
 
             ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
 
@@ -900,21 +915,22 @@ namespace Hydra.Such.Portal.Controllers
 
                 foreach (var item in thisHeader)
                 {
-                    String oldNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(originType), (item.NºContrato == "" || item.NºContrato == null));
-                    String newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), (item.NºContrato == "" || item.NºContrato == null));
+                    String oldNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(originType), true);
+                    String newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), true);
                     try
                     {
                         item.TipoContrato = contractType;
+                        item.Arquivado = false;
 
                         if (originType == 2)
                         {
                             item.NºProposta = oldNumeration;
-                            item.NºContrato = newNumeration;
+                            item.NºDeContrato = newNumeration;
                         }
                         else if (originType == 1)
                         {
                             item.NºOportunidade = oldNumeration;
-                            item.NºContrato = newNumeration;
+                            item.NºDeContrato = newNumeration;
                         }
 
                         DBContracts.Create(item);
@@ -929,7 +945,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         try
                         {
-                            line.NºContrato = item.NºContrato;
+                            line.NºContrato = newNumeration;
                             DBContractLines.Create(line);
                         }
                         catch (Exception ex)
