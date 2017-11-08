@@ -48,11 +48,14 @@ namespace Hydra.Such.Portal.Controllers
             //Apply User Dimensions Validations
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            if (CUserDimensions.Where(y => y.Dimensão == 1).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
             //FunctionalAreas
-            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            if (CUserDimensions.Where(y => y.Dimensão == 2).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
             //ResponsabilityCenter
-            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.ResponsabilityCenterCode));
+            if (CUserDimensions.Where(y => y.Dimensão == 3).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.ResponsabilityCenterCode));
             
             return Json(result);
         }
