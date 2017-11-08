@@ -104,7 +104,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-
         #region Details
         [HttpPost]
         public JsonResult ValidateNumeration([FromBody] ContractViewModel data)
@@ -131,7 +130,6 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetContractDetails([FromBody] ContractViewModel data)
         {
-
             if (data != null)
             {
                 Contratos cContract = null;
@@ -513,16 +511,16 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetContractLines([FromBody] ContractViewModel data)
         {
-
             if (data != null)
             {
                 List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
 
-                ContractLineHelperViewModel result = new ContractLineHelperViewModel();
-
-                result.ContractNo = data.ContractNo;
-                result.VersionNo = data.VersionNo;
-                result.Lines = new List<ContractLineViewModel>();
+                ContractLineHelperViewModel result = new ContractLineHelperViewModel
+                {
+                    ContractNo = data.ContractNo,
+                    VersionNo = data.VersionNo,
+                    Lines = new List<ContractLineViewModel>()
+                };
 
                 if (ContractLines != null)
                 {
@@ -862,7 +860,7 @@ namespace Hydra.Such.Portal.Controllers
 
             if (Archived == 0 || ContractNo == "")
             {
-                ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 2);
+                ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId+1, 2);
                 ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
             }
             else
@@ -877,6 +875,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+
         #endregion
 
         #region Detalhes Propostas 
@@ -887,5 +886,85 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         #endregion
+
+        public JsonResult ParseContractType([FromBody] JObject requestParams)
+        {
+            // Parse Header
+            String contractNo = requestParams["HeaderNo"].ToString();
+            int originType = int.Parse(requestParams["OriginType"].ToString());
+            int contractType = int.Parse(requestParams["HeaderType"].ToString());
+
+            if (contractNo != null && originType != 0 && contractType != 0)
+            {
+                List<Contratos> thisHeader = DBContracts.GetByNo(contractNo, false);
+
+                foreach (var item in thisHeader)
+                {
+                    String oldNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(originType), (item.NºContrato == "" || item.NºContrato == null));
+                    String newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), (item.NºContrato == "" || item.NºContrato == null));
+                    try
+                    {
+                        item.TipoContrato = contractType;
+
+                        if (originType == 2)
+                        {
+                            item.NºProposta = oldNumeration;
+                            item.NºContrato = newNumeration;
+                        }
+                        else if (originType == 1)
+                        {
+                            item.NºOportunidade = oldNumeration;
+                            item.NºContrato = newNumeration;
+                        }
+
+                        DBContracts.Create(item);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Json(false);
+                    }
+                    // Parse Lines
+                    List<LinhasContratos> relatedLines = DBContractLines.GetAllByActiveContract(contractNo, item.NºVersão);
+                    foreach (var line in relatedLines)
+                    {
+                        try
+                        {
+                            line.NºContrato = item.NºContrato;
+                            DBContractLines.Create(line);
+                        }
+                        catch (Exception ex)
+                        {
+                            return Json(false);
+                        }
+                    }
+                }
+            }
+
+            return Json(true);
+        }
+        
+        private static int GetNumeration(int type)
+        {
+            //Get Contract Numeration
+            Configuração Configs = DBConfigurations.GetById(1);
+            int ProjectNumerationConfigurationId = 0;
+
+            switch (type)
+            {
+                case 1:
+                    ProjectNumerationConfigurationId = Configs.NumeraçãoOportunidades.Value;
+                    break;
+                case 2:
+                    ProjectNumerationConfigurationId = Configs.NumeraçãoPropostas.Value;
+                    break;
+                case 3:
+                    ProjectNumerationConfigurationId = Configs.NumeraçãoContratos.Value;
+                    break;
+                default:
+                    ProjectNumerationConfigurationId = 0;
+                    break;
+            }
+            return ProjectNumerationConfigurationId;
+        }
     }
 }
