@@ -20,7 +20,7 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
-<dom-module id="x-oportunitydetails">">
+<dom-module id="x-oportunitydetails">
     <template>
         <!-- STYLES -->
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -89,6 +89,7 @@
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
         <!-- PROJECT CRUDS -->
@@ -1470,6 +1471,10 @@
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
                     this.$.page_databound_ajax.generateRequest();
+
+                    if (this._contractno == "") {
+                        this._isCreate = true;
+                    }
                 },
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -1480,6 +1485,7 @@
                     this.$.ToastError.open();
                 },
                 _validateData: function () {
+                    debugger;
                     if (this.$.contractNo.validate() &
                         this.$.Description.validate() &
                         this.$.mClients.validate() &
@@ -1512,7 +1518,6 @@
                         this.$.mc.validate() &
                         this.$.mDisplacementFee.validate() &
                         this.$.mInvoicePeriods.validate()) {
-
                         return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");
@@ -1922,6 +1927,23 @@
                     }
                     return "";
                 },
+
+                _parseToContract: function (param) {
+                    if (param != null) {
+                        this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "OriginType": 1, "HeaderType": 2 });
+                        this.$.parseToContract_ajax.generateRequest();
+                    }
+                },
+
+                _responseParseToContract: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        this.openToastSuccess("Contrato criado com sucesso.");
+                    }
+                    else {
+                        this.openToastError("Erro na criação do contracto.");
+                    }
+                }
             });
         });
     </script>

@@ -930,7 +930,7 @@ namespace Hydra.Such.Portal.Controllers
                         else if (originType == 1)
                         {
                             item.NºOportunidade = oldNumeration;
-                            item.NºDeContrato = newNumeration;
+                            item.NºProposta = newNumeration;
                         }
 
                         DBContracts.Create(item);
