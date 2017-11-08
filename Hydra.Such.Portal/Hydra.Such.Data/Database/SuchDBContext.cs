@@ -23,6 +23,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ConfiguraçãoNumerações> ConfiguraçãoNumerações { get; set; }
         public virtual DbSet<ConfiguraçãoTemposCcp> ConfiguraçãoTemposCcp { get; set; }
         public virtual DbSet<ConfigUtilizadores> ConfigUtilizadores { get; set; }
+        public virtual DbSet<Contactos> Contactos { get; set; }
         public virtual DbSet<Contratos> Contratos { get; set; }
         public virtual DbSet<DestinosFinaisResíduos> DestinosFinaisResíduos { get; set; }
         public virtual DbSet<DiárioCafetariaRefeitório> DiárioCafetariaRefeitório { get; set; }
@@ -861,6 +862,19 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Contactos>(entity =>
+            {
+                entity.HasKey(e => e.Nº);
+
+                entity.Property(e => e.Nº)
+                    .HasMaxLength(20)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Nome)
+                    .IsRequired()
+                    .HasMaxLength(100);
             });
 
             modelBuilder.Entity<Contratos>(entity =>

@@ -46,13 +46,13 @@ namespace Hydra.Such.Portal.Controllers
 
 
             //Apply User Dimensions Validations
-            List<UserDimensionsViewModel> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimension == 1 && y.DimensionValue == x.RegionCode));
+            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
             //FunctionalAreas
-            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimension == 2 && y.DimensionValue == x.FunctionalAreaCode));
+            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
             //ResponsabilityCenter
-            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimension == 3 && y.DimensionValue == x.ResponsabilityCenterCode));
+            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.ResponsabilityCenterCode));
             
             return Json(result);
         }
@@ -166,16 +166,15 @@ namespace Hydra.Such.Portal.Controllers
                     //Get Project Numeration
                     Configuração Configs = DBConfigurations.GetById(1);
                     int ProjectNumerationConfigurationId = Configs.NumeraçãoProjetos.Value;
-
+                    string projNoAuto = "";
                     if (data.ProjectNo == "" || data.ProjectNo == null)
                     {
-                        data.ProjectNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ProjectNo == "" || data.ProjectNo == null));
+                        projNoAuto = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ProjectNo == "" || data.ProjectNo == null));
+                        data.ProjectNo = projNoAuto;
                     }
 
                     if (data.ProjectNo != null)
                     {
-
-
                         Projetos cProject = new Projetos()
                         {
                             NºProjeto = data.ProjectNo,
@@ -230,7 +229,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 TCreateNavProj.Wait();
                             }
-                            catch (Exception)
+                            catch (Exception ex)
                             {
                                 data.eReasonCode = 3;
                                 data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
@@ -258,6 +257,10 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         data.eReasonCode = 5;
                         data.eMessage = "A numeração configurada não é compativel com a inserida.";
+                    }
+                    if (data.eReasonCode != 1 && projNoAuto != "")
+                    {
+                        data.ProjectNo = "";
                     }
                 }
             }
@@ -750,7 +753,7 @@ namespace Hydra.Such.Portal.Controllers
                         lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
                     }
 
-                    if(lst.Currency != "" || !String.IsNullOrEmpty(lst.Currency))
+                    if(!String.IsNullOrEmpty(lst.Currency))
                     {
                         lst.UnitPrice = lst.UnitValueToInvoice;
                     }
@@ -791,7 +794,7 @@ namespace Hydra.Such.Portal.Controllers
                                     DBProjectDiary.Update(upDate);
                                 }
                                 InvoiceMessages Messages = new InvoiceMessages();
-                                Messages.ClientNo = num_cliente;
+                                Messages.ClientNo = lines.InvoiceToClientNo;
                                 Messages.Iserror = false;
 
                                 ClientsError.Add(Messages);
@@ -857,7 +860,7 @@ namespace Hydra.Such.Portal.Controllers
                                     PKey = "error";
 
                                     InvoiceMessages Messages = new InvoiceMessages();
-                                    Messages.ClientNo = num_cliente;
+                                    Messages.ClientNo = lines.InvoiceToClientNo;
                                     Messages.Iserror = true;
 
                                     ClientsError.Add(Messages);
@@ -869,7 +872,7 @@ namespace Hydra.Such.Portal.Controllers
                                 PKey = "error";
 
                                 InvoiceMessages Messages = new InvoiceMessages();
-                                Messages.ClientNo = num_cliente;
+                                Messages.ClientNo = lines.InvoiceToClientNo;
                                 Messages.Iserror = true;
 
                                 ClientsError.Add(Messages);

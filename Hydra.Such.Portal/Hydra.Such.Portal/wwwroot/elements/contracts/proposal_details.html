@@ -18,8 +18,6 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
-<h1 class="title">Detalhes Propostas</h1>
-
 <x-proposalsdetails></x-proposalsdetails>
 <dom-module id="x-proposalsdetails">
     <template>
@@ -89,7 +87,7 @@
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-
+        <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <!-- PROJECT CRUDS -->
         <iron-ajax url="/Contratos/GetContractDetails"
@@ -126,6 +124,9 @@
                    on-response="_addressResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
+        </div>
 
         <div class="row" style="display: {{ _showContractLines }};">
             <div class="col-lg-12">
@@ -1238,7 +1239,8 @@
         </div>
 
 
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
 
@@ -1336,7 +1338,6 @@
                         notify: true,
                         value: ""
                     },
-
 
                     //CONTRACT LINES
                     _showContractLines: {
@@ -1440,10 +1441,16 @@
                     }
 
                 },
-                _openToast: function (message) {
-                    this.$.ToastMessage.text = message;
-                    this.$.ToastMessage.open();
+
+                openToastSuccess: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
                 },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
                 _validateData: function () {
                     if (false) {
                         this._openToast(validate);
@@ -1452,10 +1459,10 @@
                     return true;
                 },
 
-
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
+                        this.data.contractType = 2;
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
                         this.$.page_validator_ajax.generateRequest();
                     }
@@ -1845,6 +1852,24 @@
                     }
                     return "";
                 },
+
+                _parseToContract: function (param) {
+                    if (param != null)
+                    {
+                        this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "OriginType": 2, "HeaderType": 3 });
+                        this.$.parseToContract_ajax.generateRequest();
+                    }
+                },
+
+                _responseParseToContract: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        this.openToastSuccess("Contrato criado com sucesso.");
+                    }
+                    else {
+                        this.openToastError("Erro na criação do contracto.");
+                    }
+                }
             });
         });
     </script>

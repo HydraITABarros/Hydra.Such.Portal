@@ -52,12 +52,10 @@ namespace Hydra.Such.Data.Logic
                     ctx.AcessosDimensões.Add(item);
                     ctx.SaveChanges();
                 }
-
                 return item;
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
@@ -177,6 +175,28 @@ namespace Hydra.Such.Data.Logic
             return false;
         }
 
+        public static bool Delete(AcessosDimensões item)
+        {
+            return Delete(new List<AcessosDimensões> { item });
+        }
+
+        public static bool Delete(List<AcessosDimensões> items)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.AcessosDimensões.RemoveRange(items);
+                    ctx.SaveChanges();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public static bool DeleteAllFromUser(string userId)
         {
             try
@@ -197,22 +217,21 @@ namespace Hydra.Such.Data.Logic
         }
         #endregion
 
-        public static List<UserDimensionsViewModel> GetByUserId(string userId)
+        public static List<AcessosDimensões> GetByUserId(string userId)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.AcessosDimensões.Where(x => x.IdUtilizador == userId)
-                        .ToList()
-                        .ParseToViewModel();
+                        .ToList();
                 }
             }
             catch (Exception ex)
             {
-                
+
             }
-            return new List<UserDimensionsViewModel>();
+            return new List<AcessosDimensões>();
         }
 
         public static UserDimensionsViewModel ParseToViewModel(this AcessosDimensões item)
