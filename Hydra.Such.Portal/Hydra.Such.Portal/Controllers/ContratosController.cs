@@ -610,15 +610,13 @@ namespace Hydra.Such.Portal.Controllers
 
             if (Archived == 0 || ContractNo == "")
             {
-                ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 1);
+                ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId+1, 1);
                 ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
             }
             else
             {
                 ContractsList = DBContracts.GetByNo(ContractNo, true);
             }
-
-
 
             List<ContractViewModel> result = new List<ContractViewModel>();
 
