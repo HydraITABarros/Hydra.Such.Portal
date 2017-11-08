@@ -420,7 +420,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 7,
-                Value = "Em vigo"
+                Value = "Em vigor"
             }
         };
 
