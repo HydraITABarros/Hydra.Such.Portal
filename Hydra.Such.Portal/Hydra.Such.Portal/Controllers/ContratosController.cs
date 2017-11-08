@@ -122,7 +122,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             else if (data.ContactNo == "" && !CfgNumeration.Automático.Value)
             {
-                return Json("É obrigatório inserir o Nº de Contratos.");
+                return Json("É obrigatório inserir o Nº de Contrato.");
             }
 
             return Json("");
