@@ -138,9 +138,9 @@ namespace Hydra.Such.Data.Logic
                             NextNumeration += "1".PadLeft(ConfNumeration.NºDígitosIncrementar.Value, '0');
                         }
 
-                        ConfNumeration.ÚltimoNºUsado = NextNumeration;
-                        ctx.ConfiguraçãoNumerações.Update(ConfNumeration);
-                        ctx.SaveChanges();
+                        //ConfNumeration.ÚltimoNºUsado = NextNumeration;
+                        //ctx.ConfiguraçãoNumerações.Update(ConfNumeration);
+                        //ctx.SaveChanges();
 
                         return NextNumeration;
                     }

@@ -136,7 +136,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             else if (data.ContactNo == "" && !CfgNumeration.Automático.Value)
             {
-                return Json("É obrigatório inserir o Nº de Contratos.");
+                return Json("É obrigatório inserir o Nº de Contrato.");
             }
 
             return Json("");
@@ -623,15 +623,13 @@ namespace Hydra.Such.Portal.Controllers
 
             if (Archived == 0 || ContractNo == "")
             {
-                ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 1);
+                ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId+1, 1);
                 ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
             }
             else
             {
                 ContractsList = DBContracts.GetByNo(ContractNo, true);
             }
-
-
 
             List<ContractViewModel> result = new List<ContractViewModel>();
 
