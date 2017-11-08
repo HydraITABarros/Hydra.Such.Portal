@@ -70,5 +70,10 @@ namespace Hydra.Such.Data.ViewModel.FolhasDeHoras
         public DateTime? DateTimeIntegrationRHKM { get; set; }
         public string DateIntegrationRHKMText { get; set; }
         public string TimeIntegrationRHKMText { get; set; }
+
+        public List<PercursosEAjudasCustoDespesasFolhaDeHorasListItemViewModel> FolhaDeHoraPercurso { get; set; }
+        public List<PercursosEAjudasCustoDespesasFolhaDeHorasListItemViewModel> FolhaDeHoraAjuda { get; set; }
+        public List<MaoDeObraFolhaDeHorasListItemViewModel> FolhaDeHoraMaoDeObra { get; set; }
+        public List<PresencasFolhaDeHorasListItemViewModel> FolhaDeHoraPresenca { get; set; }
     }
 }

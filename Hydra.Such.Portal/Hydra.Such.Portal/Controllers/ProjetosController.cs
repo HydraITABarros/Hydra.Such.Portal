@@ -42,8 +42,18 @@ namespace Hydra.Such.Portal.Controllers
             {
                 x.StatusDescription = EnumerablesFixed.ProjectStatus.Where(y => y.Id == x.Status).FirstOrDefault().Value;
                 x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
-
             });
+
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.ResponsabilityCenterCode));
+            
             return Json(result);
         }
         #endregion
@@ -740,7 +750,7 @@ namespace Hydra.Such.Portal.Controllers
                         lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
                     }
 
-                    if(lst.Currency != "" || !String.IsNullOrEmpty(lst.Currency))
+                    if(!String.IsNullOrEmpty(lst.Currency))
                     {
                         lst.UnitPrice = lst.UnitValueToInvoice;
                     }
@@ -781,7 +791,7 @@ namespace Hydra.Such.Portal.Controllers
                                     DBProjectDiary.Update(upDate);
                                 }
                                 InvoiceMessages Messages = new InvoiceMessages();
-                                Messages.ClientNo = num_cliente;
+                                Messages.ClientNo = lines.InvoiceToClientNo;
                                 Messages.Iserror = false;
 
                                 ClientsError.Add(Messages);
@@ -847,7 +857,7 @@ namespace Hydra.Such.Portal.Controllers
                                     PKey = "error";
 
                                     InvoiceMessages Messages = new InvoiceMessages();
-                                    Messages.ClientNo = num_cliente;
+                                    Messages.ClientNo = lines.InvoiceToClientNo;
                                     Messages.Iserror = true;
 
                                     ClientsError.Add(Messages);
@@ -859,7 +869,7 @@ namespace Hydra.Such.Portal.Controllers
                                 PKey = "error";
 
                                 InvoiceMessages Messages = new InvoiceMessages();
-                                Messages.ClientNo = num_cliente;
+                                Messages.ClientNo = lines.InvoiceToClientNo;
                                 Messages.Iserror = true;
 
                                 ClientsError.Add(Messages);

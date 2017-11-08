@@ -175,7 +175,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Source = x.Origem,
                         Destiny = x.Destino,
                         DateTravel = x.DataViagem,
-                        DateTravelText = x.DataViagem.Value.ToShortDateString(),//.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        DateTravelText = x.DataViagem.Value.ToShortDateString(),
                         Distance = Convert.ToDecimal(x.Distância),
                         Amount = Convert.ToDecimal(x.Quantidade),
                         UnitCost = Convert.ToDecimal(x.CustoUnitário),
@@ -184,10 +184,10 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Justification = x.Justificação,
                         Payroll = x.RúbricaSalarial,
                         DateTimeCreation = x.DataHoraCriação,
-                        DateTimeCreationText = x.DataHoraCriação.Value.ToShortDateString(),//.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        DateTimeCreationText = x.DataHoraCriação.Value.ToShortDateString(),
                         UserCreation = x.UtilizadorCriação,
                         DateTimeModification = x.DataHoraModificação,
-                        DateTimeModificationText = x.DataHoraModificação.Value.ToShortDateString(),//.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        DateTimeModificationText = x.DataHoraModificação.Value.ToShortDateString(),
                         UserModification = x.UtilizadorModificação
                     }).ToList(); ;
                 }
