@@ -8,7 +8,7 @@ namespace Hydra.Such.Data.Database
         public FolhasDeHoras()
         {
             DistribuiçãoCustoFolhaDeHoras = new HashSet<DistribuiçãoCustoFolhaDeHoras>();
-            MãoDeObraFolhaDeHoras = new HashSet<MãoDeObraFolhaDeHoras>();
+            MãoDeObraFolhaDeHoras = new  HashSet<MãoDeObraFolhaDeHoras>();
             PercursosEAjudasCustoDespesasFolhaDeHoras = new HashSet<PercursosEAjudasCustoDespesasFolhaDeHoras>();
             PresençasFolhaDeHoras = new HashSet<PresençasFolhaDeHoras>();
         }
