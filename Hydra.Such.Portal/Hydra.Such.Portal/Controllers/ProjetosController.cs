@@ -743,22 +743,39 @@ namespace Hydra.Such.Portal.Controllers
                     UnitValueToInvoice = x.ValorUnitárioAFaturar,
                     Currency = x.Moeda,
                     Billable = x.Faturável,
+                    Billed = (bool)x.Faturada,
                     InvoiceToClientNo = x.FaturaANºCliente,
                     CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
                     ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
                     ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
                 }).OrderBy(x => x.ClientName).ToList();
 
-                foreach(var lst in result)
+                if (result.Count > 0)
                 {
-                    if(lst.MovementType == 3)
+                    var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                    foreach (var lst in result)
                     {
-                        lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
-                    }
+                        if (lst.MovementType == 3)
+                        {
+                            lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
+                        }
 
-                    if(!String.IsNullOrEmpty(lst.Currency))
-                    {
-                        lst.UnitPrice = lst.UnitValueToInvoice;
+                        if (!String.IsNullOrEmpty(lst.Currency))
+                        {
+                            lst.UnitPrice = lst.UnitValueToInvoice;
+                        }
+
+                        if (userDimensions != null)
+                        {
+                            foreach(var dim in userDimensions)
+                            {
+                                if(dim.ValorDimensão != lst.RegionCode || dim.ValorDimensão != lst.ResponsabilityCenterCode || dim.ValorDimensão != lst.FunctionalAreaCode)
+                                {
+                                    result.Remove(lst);
+                                }
+                            }
+
+                        }
                     }
                 }
                 return Json(result);

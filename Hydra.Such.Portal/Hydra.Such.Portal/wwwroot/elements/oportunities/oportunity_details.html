@@ -129,16 +129,14 @@
 
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
+            <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Proposta</paper-button>
         </div>
 
         <div class="row" style="display: {{ _showContractLines }};">
-            <div class="col-lg-2">
+            <div class="col-lg-12">
                 <paper-button raised id="btnContractAdd" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-            </div>
-            <div class="col-lg-10">
-
                 <paper-button raised id="btnContractArchive" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
+
             </div>
         </div>
 
@@ -163,7 +161,7 @@
                                             <vaadin-text-field id="contractNo" name="contractNo" label="Nº Contrato" value="{{data.contractNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-text-field id="ShippingContact" name="ShippingContact" label="Nº Contacto" value="{{data.contactNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                            <vaadin-text-field id="contactNo" name="contactNo" label="Nº Contacto" value="{{data.contactNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
@@ -171,11 +169,12 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
@@ -184,11 +183,12 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBFeeUnits]]" id="mFeeUnits" item-value-path="id" item-label-path="value" value="{{data.provisionUnit}}" label="Unidade Prestação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
@@ -196,22 +196,24 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBRegions]]" id="mCodeRegion" item-value-path="id" item-label-path="value" value="{{data.codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBFunctionalAreas]]" id="mFunctionalArea" item-value-path="id" item-label-path="value" value="{{data.codeFunctionalArea}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
@@ -219,11 +221,12 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="mResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
@@ -240,11 +243,12 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBPaymentTerms]]" id="mPaymentTerms" item-value-path="id" item-label-path="value" value="{{data.codePaymentTerms}}" label="Cód. Termos Pagamento" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
@@ -317,11 +321,12 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBServiceObjects]]" id="mServiceObject" item-value-path="id" item-label-path="value" value="{{data.serviceObject}}" label="Objeto Serviço" disabled="{{ !_permissions.update }}">
                                                 <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
@@ -350,11 +355,12 @@
                                                         <div class="col-lg-2">
                                                             <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ !_permissions.update }}">
                                                                 <template>
-                                                                    <paper-icon-item>
-                                                                        <paper-item-body two-line>
-                                                                            <div>[[item.value]]</div>
-                                                                        </paper-item-body>
-                                                                    </paper-icon-item>
+                                                                    <table width="180px">
+                                                                        <tr>
+                                                                            <td width="40%">[[item.id]]</td>
+                                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                                        </tr>
+                                                                    </table>
                                                                 </template>
                                                             </vaadin-combo-box>
                                                         </div>
@@ -435,11 +441,12 @@
                                                         <template>
                                                             <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRGridInvoiceGroup" name="_CRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ !_permissions.update }}">
                                                                 <template>
-                                                                    <paper-icon-item>
-                                                                        <paper-item-body two-line>
-                                                                            <div>[[item.value]]</div>
-                                                                        </paper-item-body>
-                                                                    </paper-icon-item>
+                                                                    <table width="180px">
+                                                                        <tr>
+                                                                            <td width="40%">[[item.id]]</td>
+                                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                                        </tr>
+                                                                    </table>
                                                                 </template>
                                                             </vaadin-combo-box>
                                                         </template>
@@ -524,22 +531,24 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBBillingTypes]]" id="mBillingTypes" item-value-path="id" item-label-path="value" value="{{data.billingType}}" label="Tipo Faturação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBMaintenanceTypes]]" id="mMaintenanceTypes" item-value-path="id" item-label-path="value" value="{{data.maintenanceContractType}}" label="Tipo Contrato Manut." disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
@@ -557,11 +566,12 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBInvoicePeriods]]" id="mInvoicePeriods" item-value-path="id" item-label-path="value" value="{{data.invocePeriod}}" label="Período Fatura" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
@@ -1466,6 +1476,10 @@
                     _SelectedLine: {
                         observer: '_lineSelected'
                     },
+                    contactNo: {
+                        type: String,
+                        value: ""
+                    }
 
                 },
                 ready: function () {
@@ -1513,7 +1527,7 @@
                         this.$.ShippingLocality.validate() &
                         this.$.ShippingName.validate() &
                         this.$.shippingZipCode.validate() &
-                        this.$.ShippingContact.validate() &
+                        this.$.contactNo.validate() &
                         this.$.mBillingTypes.validate() &
                         this.$.mMaintenanceTypes.validate() &
                         this.$.mProvisioningFee.validate() &
@@ -1647,6 +1661,7 @@
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
                         this._openToast("Projeto criado com sucesso.");
+                        window.location.href = "../DetalhesOportunidade/" + item.contractNo;
                     } else {
                         this._openToastError(this.data.eMessage);
                     }
@@ -1939,13 +1954,16 @@
                         this.$.parseToContract_ajax.generateRequest();
                     }
                 },
+                
+
                 _responseParseToContract: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
-                        this.openToast("Contrato criado com sucesso.");
+                        debugger;
+                        this._openToast("Proposta criada com sucesso.");
                     }
                     else {
-                        this.openToast("Erro na criação do contracto.");
+                        this._openToastError("Erro na criação da proposta.");
                     }
                 }
             });
