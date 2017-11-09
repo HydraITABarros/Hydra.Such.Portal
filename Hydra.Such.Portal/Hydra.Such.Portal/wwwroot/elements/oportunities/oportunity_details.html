@@ -1533,6 +1533,8 @@
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
+                        debugger;
+                        this.data.contractType = 1;
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
                         this.$.page_validator_ajax.generateRequest();
                     }
@@ -1940,10 +1942,10 @@
                 _responseParseToContract: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
-                        this.openToastSuccess("Contrato criado com sucesso.");
+                        this.openToast("Contrato criado com sucesso.");
                     }
                     else {
-                        this.openToastError("Erro na criação do contracto.");
+                        this.openToast("Erro na criação do contracto.");
                     }
                 }
             });
