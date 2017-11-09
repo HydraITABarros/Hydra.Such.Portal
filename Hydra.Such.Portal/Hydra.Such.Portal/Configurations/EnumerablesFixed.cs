@@ -775,6 +775,20 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> FolhaDeHoraAjudaTipoCusto = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 0,
+                Value = "Ajuda de Custo"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Despesa"
+            }
+        };
+
         // zpgm.< Enumerable types for Procedimentos CCP
         public static readonly List<EnumData> ProcedimentosCcpProcedimentoType = new List<EnumData>()
         {
