@@ -93,6 +93,11 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         ProcedimentoCCPView result = CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(proc);
 
+                        if(proc.ElementosJuri != null && proc.ElementosJuri.Count > 0)
+                        {
+                            result.ElementosJuri = DBProcedimentosCCP.GetElementosJuriViewProcedimento(proc);
+                        }
+                        
                         return Json(result);
                     }
 
@@ -168,6 +173,7 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             if(data != null)
             {
+                
                 if (DBProcedimentosCCP.__DeleteProcedimento(data.No))
                 {
                     result = new ErrorHandler()

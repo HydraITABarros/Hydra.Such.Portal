@@ -138,15 +138,13 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataHoraCriação = ProcedimentoView.DataHoraCriacao,
                 UtilizadorCriação = ProcedimentoView.UtilizadorCriacao,
                 DataHoraModificação = ProcedimentoView.DataHoraModificacao,
-                UtilizadorModificação = ProcedimentoView.UtilizadorModificacao,
-                ElementosJuri = ProcedimentoView.ElementosJuri
-
+                UtilizadorModificação = ProcedimentoView.UtilizadorModificacao
             });
         }
         // this function receives an ProcedimentosCcp objet and maps it to a ProcedimentosCccpView object
         public static ProcedimentoCCPView CastProcedimentoCcpToProcedimentoCcpView(ProcedimentosCcp Procedimento)
         {
-            return (new ProcedimentoCCPView
+            ProcedimentoCCPView ProcedimentoView = new ProcedimentoCCPView()
             {
                 No = Procedimento.Nº,
                 Tipo = Procedimento.Tipo,
@@ -267,7 +265,9 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 UtilizadorCriacao = Procedimento.UtilizadorCriação,
                 DataHoraModificacao = Procedimento.DataHoraModificação,
                 UtilizadorModificacao = Procedimento.UtilizadorModificação
-            });
+            };
+
+            return ProcedimentoView;
         }
 
         public static RegistoDeAtas CastRegistoActasViewToRegistoActas(RegistoActasView ActaView)
@@ -427,7 +427,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
         }
         public static ElementosJuriView CastElementosJuriToElementosJuriView(ElementosJuri Elementos)
         {
-            return (new ElementosJuriView()
+            ElementosJuriView ElementoJuriV = new ElementosJuriView()
             {
                 NoProcedimento = Elementos.NºProcedimento,
                 NoLinha = Elementos.NºLinha,
@@ -442,7 +442,9 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataHoraModificacao = Elementos.DataHoraModificação,
                 UtilizadorCriacao = Elementos.UtilizadorCriação,
                 UtilizadorModificacao = Elementos.UtilizadorModificação
-            });
+            };
+
+            return ElementoJuriV;
         }
 
         public static NotasProcedimentosCcp CastNotaProcedimentoViewToNotaProcedimento(NotasProcedimentoCCPView NotaView)
@@ -476,7 +478,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
             });
         }
 
-        public static WorkflowProcedimentosCcp CastWorkflowProcedimentoToWorkflowProcedimentoView(WorkflowProcedimentosCCPView WorkflowView)
+        public static WorkflowProcedimentosCcp CastWorkflowProcedimentoViewToWorkflowProcedimento(WorkflowProcedimentosCCPView WorkflowView)
         {
             return (new WorkflowProcedimentosCcp()
             {
@@ -498,7 +500,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 UtilizadorModificação = WorkflowView.UtilizadorModificacao
             });
         }
-        public static WorkflowProcedimentosCCPView CastWorkflowProcedimentoViewToWorkflowProcedimento(WorkflowProcedimentosCcp Workflow)
+        public static WorkflowProcedimentosCCPView CastWorkflowProcedimentoToWorkflowProcedimentoView(WorkflowProcedimentosCcp Workflow)
         {
             return (new WorkflowProcedimentosCCPView()
             {
