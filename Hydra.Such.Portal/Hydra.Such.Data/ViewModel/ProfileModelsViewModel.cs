@@ -12,4 +12,9 @@ namespace Hydra.Such.Data.ViewModel
         
         public List<AccessProfileModelView> ProfileModelAccesses { get; set; }
     }
+
+    public class UserProfileViewModel : ProfileModelsViewModel
+    {
+        public string UserId { get; set; }
+    }
 }

@@ -99,6 +99,9 @@
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="row">
                 <div class="col-lg-12">
+                    <template is="dom-if" if="{{ _permissions.create }}">
+                        <paper-button raised id="btnProjectAdd" class="" on-tap="_createNewProject"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                    </template>
                     <paper-button raised id="btnProjectMovements" class="" on-tap="_OpenProjectMovements" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
                     <paper-button raised id="btnProjectDiary" class="" on-tap="_OpenProjectDiary" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
                 </div>
@@ -123,13 +126,14 @@
                         <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectClients]]" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <vaadin-combo-box items="[[LProjectClients]]" id="ProjectClient" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </div>
@@ -150,24 +154,26 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectEmployees]]" item-value-path="id" item-label-path="value" value="{{data.projectLeader}}" label="Chefe Projeto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <vaadin-combo-box items="[[LProjectEmployees]]" id="ProjectLeader" item-value-path="id" item-label-path="value" value="{{data.projectLeader}}" label="Chefe Projeto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectEmployees]]" item-value-path="id" item-label-path="value" value="{{data.projectResponsible}}" label="Responsável Projeto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> 
+                        <vaadin-combo-box items="[[LProjectEmployees]]" id="ProjectResponsible" item-value-path="id" item-label-path="value" value="{{data.projectResponsible}}" label="Responsável Projeto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> 
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </div>
@@ -188,7 +194,7 @@
                             <vaadin-checkbox checked="{{data.billable}}" disabled="{{ !_permissions.update }}">Faturável</vaadin-checkbox>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.contractNo}}" label="Nº Contrato" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <vaadin-combo-box items="[[LProjectContracts]]" id="ContractNo" item-value-path="id" item-label-path="value" value="{{data.contractNo}}" label="Nº Contrato" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -199,7 +205,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectTypes]]" item-value-path="id" item-label-path="value" value="{{data.projectTypeCode}}" label="Cód. Tipo Projeto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <vaadin-combo-box items="[[LProjectTypes]]" id="ProjectType" item-value-path="id" item-label-path="value" value="{{data.projectTypeCode}}" label="Cód. Tipo Projeto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -220,46 +226,50 @@
             <div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectRegionCodes]]" item-value-path="id" item-label-path="value" value="{{data.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <vaadin-combo-box items="[[LProjectRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{data.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="180px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectGroupContab]]" item-value-path="id" item-label-path="value" value="{{data.accountWorkGroup}}" label="Grupo Contab. Obra" disabled="{{ !_permissions.update }}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </div>
@@ -269,22 +279,24 @@
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectCountabGroupTypes]]" item-value-path="id" item-label-path="value" value="{{data.groupContabProjectType}}" label="Tipo Grupo Contab. Projeto" disabled="{{ !_permissions.update }}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectCountabGroupTypesOM]]" item-value-path="id" item-label-path="value" value="{{data.groupContabOMProjectType}}" label="Tipo Grupo Contab. OM Projeto" disabled="{{ !_permissions.update }}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
 
@@ -400,6 +412,7 @@
         </div>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
 
     <script>
@@ -446,15 +459,29 @@
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
-                },          
-                _validateData: function() {
-                    if (false) {
-                        this._openToast(validate);
-                        return false;
-                    }
-                    return true;
                 },
-
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },       
+                _validateData: function() {
+                    if (this.$.Description.validate() &
+                        this.$.ProjectClient.validate() &
+                        this.$.ProjectLeader.validate() &
+                        this.$.ProjectResponsible.validate() &
+                        this.$.ContractNo.validate() &
+                        this.$.ProjectType.validate() &
+                        this.$.RegionCode.validate() &
+                        this.$.FunctionalAreaCode.validate() &
+                        this.$.ResponsabilityCenterCode.validate()) {
+                        return true;
+                    }
+                    this._openToastError("Verifique os dados inseridos.");
+                    return false;
+                },
+                _createNewProject: function () {
+                    window.location.href = "../DetalhesProjeto";
+                },
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
@@ -490,7 +517,6 @@
                         }
                     });
                 },
-
                 //Responses Processors
                 _responseProcessor: function (data) {
                     var self = this;
@@ -498,7 +524,7 @@
                     //Set AreaId
                     if (this.data.projectNo == "" || this.data.projectNo == undefined) {
                         this.data.area = this._areaid;
-                    } 
+                    }
 
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetProject") !== -1) {
@@ -511,7 +537,7 @@
                             this._openToast("Projeto atualizado com sucesso.")
                         }
                     } else {
-                        this._openToast("Ocorreu um erro ao criar o projeto.")
+                        this._openToastError("Ocorreu um erro ao criar o projeto.")
                     }
                 },
                 _createResponseProcessor: function () {
@@ -519,7 +545,7 @@
                         this._isCreate = false;
                         this._openToast("Projeto criado com sucesso.");
                     } else {
-                        this._openToast(this.data.eMessage);
+                        this._openToastError(this.data.eMessage);
                     }
                 },
                 _responseValidatorProcessor: function (data) {
@@ -528,7 +554,7 @@
                         if (this.validateResponse == "") {
                             this._executeRequest("/Projetos/CreateProject", this.data)
                         } else {
-                            this._openToast(this.validateResponse);
+                            this._openToastError(this.validateResponse);
                         }
                     }
                 },
@@ -536,17 +562,16 @@
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.deletedData.eReasonCode == 1) {
-                            this._openToast("Não é possivel eliminar o projeto pois este já possui movimentos.");
+                            this._openToastError("Não é possivel eliminar o projeto pois este já possui movimentos.");
                         } else {
                             this._openToast(this.deletedData.eMessage);
                             setTimeout(
                                 function () {
-                                    window.location.replace("/");
+                                    window.location.href = "/";
                                 }, 2500);
                         }
                     }
                 },
-
                 //Address Functions
                 _getAddressByCode: function (e) {
                     this.$.address_ajax.body = JSON.stringify(e.detail.value);
@@ -563,23 +588,19 @@
                         this.$.ShippingContact.value = this.addressData.contact;
                     } 
                 },
-
-
                 //Helpers
                 _executeRequest: function (url, data) {
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
                 },
-
                 //BUTTONS
                 _OpenProjectMovements: function (url, data) {
-                    window.location.replace("/Projetos/MovimentosDeProjeto/" + this.data.projectNo);
+                    window.location.href = "/Projetos/MovimentosDeProjeto/" + this.data.projectNo;
                 },
                 _OpenProjectDiary: function (url, data) {
-                    window.location.replace("/Projetos/DiarioProjeto/" + this.data.projectNo);
+                    window.location.href = "/Projetos/DiarioProjeto/" + this.data.projectNo;
                 }
-                
             });
         });
     </script>

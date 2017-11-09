@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewData["Title"] = "Detalhes de Contacto";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<h1>Detalhes de Contacto</h1>
+<x-contact-details></x-contact-details>
+<dom-module id="x-contact-details">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{contact}}" id="contact_datasource" url="/Contactos/GetById"></iron-ajax>
+
+        @if (ViewBag.Id != "0")
+        {
+            <div class="marginSpace">
+                <paper-button class="btnSave" raised on-tap="_redirectToNewContactForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </div>
+        }
+        <div class="row">
+            <div class="col-lg-3">
+                <vaadin-text-field id="contactId" name="contactId" label="Nº" value="{{contact.id}}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="contactName" name="contactName" label="Nome Utilizador" value="{{contact.name}}"></vaadin-text-field>
+            </div>
+        </div>
+
+        <div class="marginSpace">
+            @if (ViewBag.Id == "0")
+            {
+                <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+            }
+            else
+            {
+                <paper-button class="btnEdit" raised on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
+                <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+            }
+        </div>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-contact-details',
+                properties: {
+                },
+                ready: function () {
+                    debugger;;
+                    this.$.contact_datasource.body = JSON.stringify({ "Id": "@ViewBag.Id" });
+                    this.$.contact_datasource.generateRequest();
+                },
+            });
+        });
+    </script>
+</dom-module>

@@ -40,7 +40,7 @@
             </style>
         </custom-style>
 
-        <iron-ajax url="/Contratos/GetListContractsByArea"
+        <iron-ajax url="/Contratos/GetListOportunitiesByArea"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -73,7 +73,7 @@
                     <vaadin-grid-filter path="startDate" />
                 </template>
                 <template>
-                    {{item.startDate}}
+                    <vaadin-date-picker label="Data Inicial" id="mStartData" name="startData" value="{{data.startData}}" disabled></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px">
@@ -82,7 +82,7 @@
                     <vaadin-grid-filter path="endDate" />
                 </template>
                 <template>
-                    {{item.endDate}}
+                    <vaadin-date-picker label="Data Inicial" id="mEndData" name="EndData" value="{{data.endData}}" disabled></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="200px">
@@ -202,9 +202,11 @@
                     }
                 },
                 ready: function () {
+                    debugger;
                     if (this._archived == 1) {
                         this._disabledCreate = true;
                     }
+                    
                     this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
                 },

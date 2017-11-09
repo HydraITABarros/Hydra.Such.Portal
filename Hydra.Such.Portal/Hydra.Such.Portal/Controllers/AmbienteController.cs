@@ -110,6 +110,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.Archived = archived == null ? 0 : 1;
                 ViewBag.ContractNo = contractNo ?? "";
+                ViewBag.UPermissions = UPerm;
                 return View();
             }
             else
@@ -153,5 +154,23 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+
+        #region Folha De Horas
+        public IActionResult FolhaDeHoras(int? archived, string folhaDeHoraNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Archived = archived == null ? 0 : 1;
+                ViewBag.FolhaDeHorasNo = folhaDeHoraNo ?? "";
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        #endregion
     }
 }

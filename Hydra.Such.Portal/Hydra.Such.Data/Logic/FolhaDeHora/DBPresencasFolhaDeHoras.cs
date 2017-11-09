@@ -1,5 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
-using Hydra.Such.Data.ViewModel.FolhasDeHoras;
+using Hydra.Such.Data.ViewModel.FH;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -100,27 +100,27 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
         }
         #endregion
 
-        public static List<PresencasFolhaDeHorasListItemViewModel> GetAllByPresencaToList(string FolhaHoraNo)
+        public static List<PresencasFolhaDeHorasViewModel> GetAllByPresencaToList(string FolhaHoraNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.PresençasFolhaDeHoras.Where(x => x.NºFolhaDeHoras == FolhaHoraNo).Select(x => new PresencasFolhaDeHorasListItemViewModel()
+                    return ctx.PresençasFolhaDeHoras.Where(Presenca => Presenca.NºFolhaDeHoras == FolhaHoraNo).Select(Presenca => new PresencasFolhaDeHorasViewModel()
                     {
-                        FolhaDeHorasNo = x.NºFolhaDeHoras,
-                        Date = x.Data,
-                        DateText = x.Data.ToShortDateString(),
-                        FirstHourEntry = Convert.ToString(x.Hora1ªEntrada),
-                        FirstHourDeparture = Convert.ToString(x.Hora1ªSaída),
-                        SecondHourEntry = Convert.ToString(x.Hora2ªEntrada),
-                        SecondHourDeparture = Convert.ToString(x.Hora2ªSaída),
-                        DateTimeCreation = x.DataHoraCriação,
-                        DateTimeCreationText = x.DataHoraCriação.Value.ToShortDateString(),
-                        UserCreation = x.UtilizadorCriação,
-                        DateTimeModification = x.DataHoraModificação,
-                        DateTimeModificationText = x.DataHoraModificação.Value.ToShortDateString(),
-                        UserModification = x.UtilizadorModificação
+                        FolhaDeHorasNo = Presenca.NºFolhaDeHoras,
+                        Data = Presenca.Data,
+                        DataTexto = Presenca.Data.ToShortDateString(),
+                        Hora1Entrada = Presenca.Hora1ªEntrada.ToString(),
+                        Hora1Saida = Presenca.Hora1ªSaída.ToString(),
+                        Hora2Entrada = Presenca.Hora2ªEntrada.ToString(),
+                        Hora2Saida = Presenca.Hora2ªSaída.ToString(),
+                        DataHoraCriacao = Presenca.DataHoraCriação,
+                        DataHoraCriacaoTexto = Presenca.DataHoraCriação.Value.ToShortDateString(),
+                        UtilizadorCriacao = Presenca.UtilizadorCriação,
+                        DataHoraModificacao = Presenca.DataHoraModificação,
+                        DataHoraModificacaoTexto = Presenca.DataHoraModificação.Value.ToShortDateString(),
+                        UtilizadorModificacao = Presenca.UtilizadorModificação
                     }).ToList(); ;
                 }
             }

@@ -22,6 +22,7 @@
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
     </environment>
+
 </head>
 <body>
     <div class="container-fluid">
@@ -41,8 +42,8 @@
                             <li>@Html.ActionLink("Contratos", "Contratos", "Engenharia")</li>
                             @*<li>@Html.ActionLink("Requisições", "Requisicoes", "Engenharia")</li>*@
                             <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos")</li>
+                            <li>@Html.ActionLink("Folha de Horas", "FolhaDeHoras", "Engenharia")</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "Engenharia")</li>
-                            <li>@Html.ActionLink("Folha de Horas", "Index", "FolhasDeHoras")</li>
                         </ul>
 
 
@@ -56,6 +57,7 @@
                             <li>@Html.ActionLink("Propostas", "Propostas", "Ambiente")</li>
                             <li>@Html.ActionLink("Contratos", "Contratos", "Ambiente")</li>
                             <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos")</li>
+                            <li>@Html.ActionLink("Folha de Horas", "FolhaDeHoras", "Ambiente")</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "Ambiente")</li>
                         </ul>
 
@@ -66,10 +68,11 @@
                         <ul class="sub-menu collapse" id="Nutricao">
                             <li>@Html.ActionLink("Projetos", "Projetos", "Nutricao")</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Nutricao")</li>
-                            <li>@Html.ActionLink("Autorizção Faturação", "AutorizacaoFaturacao", "Nutricao")</li>
+                            <li>@Html.ActionLink("Autorização Faturação", "AutorizacaoFaturacao", "Nutricao")</li>
                             @*<li>@Html.ActionLink("Contratos", "Contratos", "Nutricao")</li>
                                 <li>@Html.ActionLink("Requisições", "Requisicoes", "Nutricao")</li>
                                 <li>@Html.ActionLink("Fichas Técnicas de Pratos", "FichasTecnicasPratos", "Nutricao")</li>*@
+                            <li>@Html.ActionLink("Folha de Horas", "FolhaDeHoras", "Nutricao")</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "Nutricao")</li>
                         </ul>
 
@@ -92,6 +95,8 @@
                         <ul class="sub-menu collapse" id="Apoio">
                             @*<li>@Html.ActionLink("Viaturas", "Viaturas", "Apoio")</li>
                                 <li>@Html.ActionLink("Importação de Custos", "ImportacaoCustos", "Apoio")</li>*@
+                            <li>@Html.ActionLink("Projetos", "Projetos", "Apoio")</li>
+                            <li>@Html.ActionLink("Folha de Horas", "FolhaDeHoras", "Apoio")</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "Apoio")</li>
                         </ul>
 
@@ -101,7 +106,8 @@
                         <ul class="sub-menu collapse" id="PO">
                             <li>@Html.ActionLink("Projetos", "Projetos", "PO")</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos")</li>
-                            <li>@Html.ActionLink("Autorizção Faturação", "AutorizacaoFaturacao", "PO")</li>
+                            <li>@Html.ActionLink("Autorização Faturação", "AutorizacaoFaturacao", "PO")</li>
+                            <li>@Html.ActionLink("Folha de Horas", "FolhaDeHoras", "PO")</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "PO")</li>
                         </ul>
 
@@ -111,7 +117,8 @@
                         <ul class="sub-menu collapse" id="NovasAreas">
                             <li>@Html.ActionLink("Projetos", "Projetos", "NovasAreas")</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Projetos")</li>
-                            <li>@Html.ActionLink("Autorizção Faturação", "AutorizacaoFaturacao", "NovasAreas")</li>
+                            <li>@Html.ActionLink("Autorização Faturação", "AutorizacaoFaturacao", "NovasAreas")</li>
+                            <li>@Html.ActionLink("Folha de Horas", "FolhaDeHoras", "NovasAreas")</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "NovasAreas")</li>
                         </ul>
 
@@ -124,8 +131,9 @@
                             <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Internacionalizacoes")</li>
                             <li>@Html.ActionLink("Propostas", "Propostas", "Internacionalizacoes")</li>
                             <li>@Html.ActionLink("Contratos", "Contratos", "Internacionalizacoes")</li>
-                            <li>@Html.ActionLink("Autorizção Faturação", "AutorizacaoFaturacao", "Internacionalizacoes")</li>
+                            <li>@Html.ActionLink("Autorização Faturação", "AutorizacaoFaturacao", "Internacionalizacoes")</li>
                             <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos")</li>
+                            <li>@Html.ActionLink("Folha de Horas", "FolhaDeHoras", "Internacionalizacoes")</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "Internacionalizacoes")</li>
                         </ul>
 
@@ -184,6 +192,7 @@
         </div>
 
 
+
         <environment include="Development">
             <script src="~/lib/jquery/dist/jquery.js"></script>
             <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
@@ -207,6 +216,10 @@
             </script>
             <script src="~/js/site.min.js" asp-append-version="true"></script>
         </environment>
+
+
+
+
 
         @RenderSection("Scripts", required: false)
     </div>

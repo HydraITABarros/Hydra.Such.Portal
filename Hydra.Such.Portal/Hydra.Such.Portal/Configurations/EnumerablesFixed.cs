@@ -420,7 +420,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 7,
-                Value = "Em vigo"
+                Value = "Em vigor"
             }
         };
 
@@ -772,6 +772,20 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 1,
                 Value = "Sim"
+            }
+        };
+
+        public static readonly List<EnumData> FolhaDeHoraAjudaTipoCusto = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 0,
+                Value = "Ajuda de Custo"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Despesa"
             }
         };
 
