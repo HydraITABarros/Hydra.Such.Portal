@@ -48,11 +48,14 @@ namespace Hydra.Such.Portal.Controllers
             //Apply User Dimensions Validations
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            if (CUserDimensions.Where(y => y.Dimensão == 1).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
             //FunctionalAreas
-            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            if (CUserDimensions.Where(y => y.Dimensão == 2).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
             //ResponsabilityCenter
-            result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.ResponsabilityCenterCode));
+            if (CUserDimensions.Where(y => y.Dimensão == 3).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.ResponsabilityCenterCode));
             
             return Json(result);
         }
@@ -707,7 +710,6 @@ namespace Hydra.Such.Portal.Controllers
         #region InvoiceAutorization
         public IActionResult AutorizacaoFaturacao(String id)
         {
-
             return View();
         }
 
@@ -740,23 +742,33 @@ namespace Hydra.Such.Portal.Controllers
                     UnitValueToInvoice = x.ValorUnitárioAFaturar,
                     Currency = x.Moeda,
                     Billable = x.Faturável,
+                    Billed = (bool)x.Faturada,
+                    Registered = x.Registado,
                     InvoiceToClientNo = x.FaturaANºCliente,
                     CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
                     ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
                     ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
                 }).OrderBy(x => x.ClientName).ToList();
 
-                foreach(var lst in result)
+                if (result.Count > 0)
                 {
-                    if(lst.MovementType == 3)
+                    var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                    foreach (var lst in result)
                     {
-                        lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
-                    }
+                        if (lst.MovementType == 3)
+                        {
+                            lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
+                        }
 
-                    if(!String.IsNullOrEmpty(lst.Currency))
-                    {
-                        lst.UnitPrice = lst.UnitValueToInvoice;
+                        if (!String.IsNullOrEmpty(lst.Currency))
+                        {
+                            lst.UnitPrice = lst.UnitValueToInvoice;
+                        }
                     }
+                    List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
+                    result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
+                    result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
+                    result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
                 }
                 return Json(result);
             }
