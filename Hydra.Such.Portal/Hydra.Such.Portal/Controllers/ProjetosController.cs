@@ -710,7 +710,6 @@ namespace Hydra.Such.Portal.Controllers
         #region InvoiceAutorization
         public IActionResult AutorizacaoFaturacao(String id)
         {
-
             return View();
         }
 
@@ -744,6 +743,7 @@ namespace Hydra.Such.Portal.Controllers
                     Currency = x.Moeda,
                     Billable = x.Faturável,
                     Billed = (bool)x.Faturada,
+                    Registered = x.Registado,
                     InvoiceToClientNo = x.FaturaANºCliente,
                     CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
                     ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
@@ -764,19 +764,11 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             lst.UnitPrice = lst.UnitValueToInvoice;
                         }
-
-                        if (userDimensions != null)
-                        {
-                            foreach(var dim in userDimensions)
-                            {
-                                if(dim.ValorDimensão != lst.RegionCode || dim.ValorDimensão != lst.ResponsabilityCenterCode || dim.ValorDimensão != lst.FunctionalAreaCode)
-                                {
-                                    result.Remove(lst);
-                                }
-                            }
-
-                        }
                     }
+                    List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
+                    result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
+                    result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
+                    result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
                 }
                 return Json(result);
             }
