@@ -191,7 +191,14 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 22,
                 Value = "Autorizaçãp Faturação"
-            }
+            },
+
+             // zpgm. identify users that can be appointed Elementos Juri in ProcedimentosCcp
+             new EnumData()
+             {
+                 Id = 23,
+                 Value = "Elemento Juri CCP"
+             }
         };
 
         public static readonly List<EnumData> ProposalStatus = new List<EnumData>(){
@@ -265,7 +272,7 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 3,
                 Value = "Comum"
             }};
-        
+
         public static readonly List<EnumData> ProjectDiaryMovements = new List<EnumData>()
         {
              new EnumData()
@@ -500,7 +507,7 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Nenhum"
             }
         };
-        
+
         public static readonly List<EnumData> ContractInvoiceGroups = new List<EnumData>(){
             new EnumData()
             {
