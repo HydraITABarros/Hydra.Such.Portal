@@ -664,6 +664,16 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+
+        [HttpPost]
+        public JsonResult GetNutritionCoffeShopTypes()
+        {
+            List<EnumData> BoolValues = EnumerablesFixed.NutritionCoffeShopTypes;
+
+            return Json(BoolValues);
+        }
+
+        
     }
 
     public class DDMessage

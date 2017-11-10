@@ -1266,6 +1266,8 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Cód. Localização")
                     .HasMaxLength(10);
 
+                entity.Property(e => e.CódServiçoCliente).HasColumnName("Cód Serviço Cliente");
+
                 entity.Property(e => e.CódUnidadeMedida)
                     .HasColumnName("Cód. Unidade Medida")
                     .HasMaxLength(10);
@@ -2191,15 +2193,15 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.GrupoFatura).HasColumnName("Grupo Fatura");
 
-                entity.Property(e => e.NºLinha)
-                    .HasColumnName("Nº Linha")
-                    .ValueGeneratedOnAdd();
+                entity.Property(e => e.NºLinha).HasColumnName("Nº Linha");
 
                 entity.Property(e => e.CódUnidadeMedida)
                     .HasColumnName("Cód. Unidade Medida")
                     .HasMaxLength(10);
 
-                entity.Property(e => e.Código).HasMaxLength(20);
+                entity.Property(e => e.Código)
+                    .IsRequired()
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.CódigoCentroResponsabilidade)
                     .HasColumnName("Código Centro Responsabilidade")
