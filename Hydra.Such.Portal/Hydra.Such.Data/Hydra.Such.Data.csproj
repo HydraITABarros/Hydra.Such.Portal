@@ -20,8 +20,5 @@
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="Microsoft.NETCore.App" Version="1.0.5" />
-  </ItemGroup>
 
 </Project>

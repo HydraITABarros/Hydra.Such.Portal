@@ -144,8 +144,10 @@ namespace Hydra.Such.Portal.Controllers
                             item = newItem;
                             item.eReasonCode = 1;
                             item.eMessage = "Contacto criado com sucesso.";
+                            WSContacts.WSContact x = new WSContacts.WSContact();
+                            x.No = "";
 
-                            //Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(data, _configws);
+                            //Task<WSContacts.Create_Result> TCreateNavProj = WSContacts.Create();//.CreateNavProject(data, _configws);
                             //try
                             //{
                             //    TCreateNavProj.Wait();

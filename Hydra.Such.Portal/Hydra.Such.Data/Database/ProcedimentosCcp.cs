@@ -9,10 +9,8 @@ namespace Hydra.Such.Data.Database
         {
             ElementosJuri = new HashSet<ElementosJuri>();
             EmailsProcedimentosCcp = new HashSet<EmailsProcedimentosCcp>();
-            FluxoTrabalhoListaControlo = new HashSet<FluxoTrabalhoListaControlo>();
             LinhasPEncomendaProcedimentosCcp = new HashSet<LinhasPEncomendaProcedimentosCcp>();
             NotasProcedimentosCcp = new HashSet<NotasProcedimentosCcp>();
-            RegistoDeAtas = new HashSet<RegistoDeAtas>();
             WorkflowProcedimentosCcp = new HashSet<WorkflowProcedimentosCcp>();
         }
 
@@ -136,13 +134,12 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
 
-        public TemposPaCcp TemposPaCcp { get; set; }
+        public TemposPaCcp Nº1 { get; set; }
+        public RegistoDeAtas NºNavigation { get; set; }
         public ICollection<ElementosJuri> ElementosJuri { get; set; }
         public ICollection<EmailsProcedimentosCcp> EmailsProcedimentosCcp { get; set; }
-        public ICollection<FluxoTrabalhoListaControlo> FluxoTrabalhoListaControlo { get; set; }
         public ICollection<LinhasPEncomendaProcedimentosCcp> LinhasPEncomendaProcedimentosCcp { get; set; }
         public ICollection<NotasProcedimentosCcp> NotasProcedimentosCcp { get; set; }
-        public ICollection<RegistoDeAtas> RegistoDeAtas { get; set; }
         public ICollection<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
     }
 }

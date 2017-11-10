@@ -19,7 +19,7 @@ namespace Hydra.Such.Data.Database
         public string NºRecurso { get; set; }
         public string CódUnidadeMedida { get; set; }
         public int? CódigoTipoOm { get; set; }
-        public TimeSpan? NºDeHoras { get; set; }
+        public TimeSpan? NºDeHotas { get; set; }
         public decimal? CustoUnitárioDireto { get; set; }
         public decimal? PreçoDeCusto { get; set; }
         public decimal? PreçoDeVenda { get; set; }
@@ -28,8 +28,6 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
-        public string CodigoCentroResponsabilidade { get; set; }
-        public string Descricao { get; set; }
 
         public CatálogoManutenção CódigoTipoOmNavigation { get; set; }
         public FolhasDeHoras NºFolhaDeHorasNavigation { get; set; }

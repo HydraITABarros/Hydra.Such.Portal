@@ -6,6 +6,21 @@ using System.Threading.Tasks;
 
 namespace Hydra.Such.Portal.Configurations
 {
+    public class EnumData
+    {
+        public EnumData()
+        { }
+
+        public EnumData(int id, string value)
+        {
+            Id = id;
+            Value = value;
+        }
+
+        public int Id { get; set; }
+        public string Value { get; set; }
+    }
+
     public class EnumerablesFixed
     {
         public static readonly List<EnumData> Areas = new List<EnumData>(){
@@ -64,6 +79,13 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 11,
                 Value = "Administração"
             },
+
+            // zpgm. Generic Area to allow features to be applied to all Areas
+            new EnumData()
+            {
+                Id = 99,
+                Value = "Genérica"
+            }
         };
 
         public static readonly List<EnumData> Features = new List<EnumData>(){
@@ -157,6 +179,33 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 18,
                 Value = "Administração"
             },
+            new EnumData()
+            {
+                Id = 19,
+                Value = "Diário de Projeto"
+            },
+            new EnumData()
+            {
+                Id = 20,
+                Value = "Oportunidades"
+            },
+             new EnumData()
+            {
+                Id = 21,
+                Value = "Propostas"
+            },
+             new EnumData()
+            {
+                Id = 22,
+                Value = "Autorizaçãp Faturação"
+            },
+
+             // zpgm. identify users that can be appointed Elementos Juri in ProcedimentosCcp
+             new EnumData()
+             {
+                 Id = 23,
+                 Value = "Elemento Juri CCP"
+             }
         };
 
         public static readonly List<EnumData> ProposalStatus = new List<EnumData>(){
@@ -231,7 +280,6 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Comum"
             }};
 
-
         public static readonly List<EnumData> ProjectDiaryMovements = new List<EnumData>()
         {
              new EnumData()
@@ -243,6 +291,11 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 2,
                 Value = "Venda"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Devolução"
             }
         };
 
@@ -264,6 +317,325 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Conta CG"
             }
         };
+
+        public static readonly List<EnumData> FeeUnits = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Nutrição"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Tratamento de roupa"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Tratamento de resíduos"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Limpeza Hospitalar"
+            },
+            new EnumData()
+            {
+                Id = 5,
+                Value = "Manutenção"
+            },
+            new EnumData()
+            {
+                Id = 6,
+                Value = "Segurança e controlo Técnico"
+            },
+            new EnumData()
+            {
+                Id = 7,
+                Value = "Projeto e Obras"
+            },
+            new EnumData()
+            {
+                Id = 8,
+                Value = "Energia"
+            },
+            new EnumData()
+            {
+                Id = 9,
+                Value = "Manutenção e Segurança e Controlo Técnico"
+            },
+            new EnumData()
+            {
+                Id = 10,
+                Value = "Manutenção"
+            },
+            new EnumData()
+            {
+                Id = 11,
+                Value = "Segurança e Controlo Técnico e Energia"
+            },
+            new EnumData()
+            {
+                Id = 12,
+                Value = "Manutenção e Energia"
+            },
+            new EnumData()
+            {
+                Id = 13,
+                Value = "Segurança e Controlo Técnico e Energia"
+            },
+            new EnumData()
+            {
+                Id = 14,
+                Value = "Tratamento de Roupa e Tratamento de Resíduos"
+            },
+            new EnumData()
+            {
+                Id = 15,
+                Value = "Tratamento de Resíduos e Limpeza Hospitalar"
+            },
+            new EnumData()
+            {
+                Id = 16,
+                Value = "Outra"
+            }};
+
+        public static readonly List<EnumData> ContractStatus = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "A enviar"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Enviado"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Pendente"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Assinado"
+            },
+            new EnumData()
+            {
+                Id = 5,
+                Value = "Cancelado"
+            },
+            new EnumData()
+            {
+                Id = 6,
+                Value = "Perdido"
+            },
+            new EnumData()
+            {
+                Id = 7,
+                Value = "Em vigor"
+            }
+        };
+
+        public static readonly List<EnumData> ContractChangeStatus = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Aberto"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Bloqueado"
+            }
+        };
+
+        public static readonly List<EnumData> ContractBillingTypes = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Mensal"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Consumo"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Fase"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Mensal+Consumo"
+            }
+        };
+
+        public static readonly List<EnumData> ContractMaintenanceTypes = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "MP"
+            }
+        };
+
+        public static readonly List<EnumData> ContractInvoicePeriods = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Mensal"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Bimensal"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Trimestral"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Semestral"
+            },
+            new EnumData()
+            {
+                Id = 5,
+                Value = "Anual"
+            },
+            new EnumData()
+            {
+                Id = 6,
+                Value = "Nenhum"
+            }
+        };
+
+        public static readonly List<EnumData> ContractInvoiceGroups = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "1"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "2"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "3"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "4"
+            },
+            new EnumData()
+            {
+                Id = 5,
+                Value = "5"
+            },
+            new EnumData()
+            {
+                Id = 6,
+                Value = "6"
+            },
+            new EnumData()
+            {
+                Id = 7,
+                Value = "7"
+            },
+            new EnumData()
+            {
+                Id = 8,
+                Value = "8"
+            },
+            new EnumData()
+            {
+                Id = 9,
+                Value = "9"
+            },
+            new EnumData()
+            {
+                Id = 10,
+                Value = "10"
+            },
+            new EnumData()
+            {
+                Id = 11,
+                Value = "11"
+            },
+            new EnumData()
+            {
+                Id = 12,
+                Value = "12"
+            },
+            new EnumData()
+            {
+                Id = 13,
+                Value = "13"
+            },
+            new EnumData()
+            {
+                Id = 14,
+                Value = "14"
+            },
+            new EnumData()
+            {
+                Id = 15,
+                Value = "15"
+            },
+            new EnumData()
+            {
+                Id = 16,
+                Value = "16"
+            },
+            new EnumData()
+            {
+                Id = 17,
+                Value = "17"
+            },
+            new EnumData()
+            {
+                Id = 18,
+                Value = "18"
+            },
+            new EnumData()
+            {
+                Id = 19,
+                Value = "19"
+            },
+            new EnumData()
+            {
+                Id = 20,
+                Value = "20"
+            }
+        };
+
+        public static readonly List<EnumData> ContractLineTypes = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Produto"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Recurso"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Conta CG"
+            }
+        };
+
 
         public static readonly List<EnumData> ContabGroupTypesOM_Type = new List<EnumData>(){
             new EnumData()
@@ -384,21 +756,21 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
-        public static readonly List<EnumData> FolhaDeHoraCodeTypeKms = new List<EnumData>()
+        public static readonly List<EnumDataString> FolhaDeHoraCodeTypeKms = new List<EnumDataString>()
         {
-            new EnumData()
+            new EnumDataString()
             {
-                Id = 0,
+                Id = "KM",
                 Value = "Kilometros"
             },
-            new EnumData()
+            new EnumDataString()
             {
-                Id = 1,
+                Id = "KMC",
                 Value = "Kilometros (Coimbra)"
             },
-            new EnumData()
+            new EnumDataString()
             {
-                Id = 2,
+                Id = "KMP",
                 Value = "Kilometros (Porto)"
             }
         };
@@ -416,10 +788,273 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Sim"
             }
         };
+
+        public static readonly List<EnumData> FolhaDeHoraAjudaTipoCusto = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 0,
+                Value = "Ajuda de Custo"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Despesa"
+            }
+        };
+
+        // zpgm.< Enumerable types for Procedimentos CCP
+        public static readonly List<EnumData> ProcedimentosCcpProcedimentoType = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Procedimento Aquisição"
+            },
+
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Procedimento Simplificado"
+            }
+        };
+
+        public static readonly List<EnumData> ProcedimentosCcpType = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 0,
+                Value = ""
+            },
+
+            new EnumData()
+            {
+                Id = 1,
+                Value = "AD"
+            },
+
+            new EnumData()
+            {
+                Id = 2,
+                Value = "CP"
+            },
+
+            new EnumData()
+            {
+                Id = 3,
+                Value = "CLPQ"
+            },
+
+            new EnumData()
+            {
+                Id = 4,
+                Value = "PN"
+            },
+
+            new EnumData()
+            {
+                Id = 5,
+                Value = "PN"
+            },
+
+            new EnumData()
+            {
+                Id = 6,
+                Value = "DC"
+            },
+
+            new EnumData()
+            {
+                Id = 7,
+                Value = "CPI"
+            }
+        };
+
+        public static readonly List<EnumData> ProcedimentosCcpStates = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 0,
+                Value = "0 - Inicial"
+            },
+
+            new EnumData()
+            {
+                Id = 1,
+                Value = "1 - Cabimento"
+            },
+
+            new EnumData()
+            {
+                Id = 2,
+                Value = "2 - Avaliação Imobilizado"
+            },
+
+            new EnumData()
+            {
+                Id = 3,
+                Value = "3 - Autorização CA Imobilizado"
+            },
+
+            new EnumData()
+            {
+                Id = 4,
+                Value = "4 - Fundamento Processual"
+            },
+
+            new EnumData()
+            {
+                Id = 5,
+                Value = "5 - Fundamento Financeiro"
+            },
+
+            new EnumData()
+            {
+                Id = 6,
+                Value = "6 - Fundamento Jurídico"
+            },
+
+            new EnumData()
+            {
+                Id = 7,
+                Value = "7 - Pedido Aberto"
+            },
+
+            new EnumData()
+            {
+                Id = 8,
+                Value = "8 - Autorização em Aberto"
+            },
+
+            new EnumData()
+            {
+                Id = 9,
+                Value = "9 - Publicação Plataforma"
+            },
+
+            new EnumData()
+            {
+                Id = 10,
+                Value = "10 - Recolha Proposta"
+            },
+
+            new EnumData()
+            {
+                Id = 11,
+                Value = "11 - Relatório Preliminar Júri"
+            },
+
+            new EnumData()
+            {
+                Id = 12,
+                Value = "12 - Audição Prévia"
+            },
+
+            new EnumData()
+            {
+                Id = 13,
+                Value = "13 - Relatório Final"
+            },
+
+            new EnumData()
+            {
+                Id = 14,
+                Value = "14 - Avaliação Jurídico Contrato"
+            },
+
+            new EnumData()
+            {
+                Id = 15,
+                Value = "15 - Valor Adjudicado"
+            },
+
+            new EnumData()
+            {
+                Id = 16,
+                Value = "16 - Pedido Adjudicado"
+            },
+
+            new EnumData()
+            {
+                Id = 17,
+                Value = "17 - Autorização Adjudicação"
+            },
+
+            new EnumData()
+            {
+                Id = 18,
+                Value = "18 - Adjudicação Fornecedor"
+            },
+
+            new EnumData()
+            {
+                Id = 19,
+                Value = "19 - Final Processo"
+            },
+
+            new EnumData()
+            {
+                Id = 20,
+                Value = "20 - Fechado"
+            }
+        };
+
+        public static readonly List<EnumBoolValues> BoolValues = new List<EnumBoolValues>()
+        {
+            new EnumBoolValues
+            {
+                BooleanValue = true,
+                StringValue = "Sim"
+            },
+
+            new EnumBoolValues
+            {
+                BooleanValue = false,
+                StringValue = "Não"
+            },
+
+            new EnumBoolValues
+            {
+                BooleanValue = null,
+                StringValue =""
+            }
+        };
+        // zpgm.>
+
+        public static readonly List<EnumData> Dimension = new List<EnumData>() {
+            new EnumData(1, "Região"),
+            new EnumData(2, "Área Funcional"),
+            new EnumData(3, "Centro Responsabilidade")
+        };
+
+        public static readonly List<EnumData> NutritionCoffeShopTypes = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Cafetaria"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Refeitório"
+            }
+        };
+
+
+
+
     }
-    public class EnumData
+
+    public class EnumDataString
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Value { get; set; }
+    }
+
+    public class EnumBoolValues
+    {
+        public bool? BooleanValue { get; set; }
+        public string StringValue { get; set; }
     }
 }
