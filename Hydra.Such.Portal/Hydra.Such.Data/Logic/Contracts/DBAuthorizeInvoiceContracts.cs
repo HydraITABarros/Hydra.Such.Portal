@@ -44,6 +44,37 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
+        public static bool DeleteAllAllowedInvoiceAndLines()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    List<AutorizarFaturaçãoContratos> all = GetAll();
+                    foreach (var item in all)
+                    {
+                        if (item.NãoFaturar != true)
+                        {
+                            ctx.Remove(item);
+                        }
+
+                        List<LinhasFaturaçãoContrato> lines = DBInvoiceContractLines.GetById(item.NºContrato);
+                        foreach (var line in lines)
+                        {
+                            DBInvoiceContractLines.DeleteById(line);
+                        }
+                    }
+                    ctx.SaveChanges();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
         public static List<AutorizarFaturaçãoContratos> GetAll()
         {
             try

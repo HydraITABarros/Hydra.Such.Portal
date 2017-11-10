@@ -1,0 +1,10 @@
+﻿
+@{
+    ViewData["Title"] = "Folha De Horas - P&O - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="title">Folha De Horas P&O</h1>
+<link rel="import" href="~/elements/folhasdehoras/folhadehora_list.html">
+
+<x-folhadehoralist _areaid="6" _archived="@ViewBag.Archived" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _folhadehoraid="@ViewBag.FolhaDeHorasNo"></x-folhadehoralist>

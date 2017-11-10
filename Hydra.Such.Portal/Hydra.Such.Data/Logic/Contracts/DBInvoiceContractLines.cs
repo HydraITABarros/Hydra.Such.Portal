@@ -44,6 +44,23 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return false;
             }
         }
+        
+        public static bool DeleteById(LinhasFaturaçãoContrato line)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.LinhasFaturaçãoContrato.Remove(line);
+                    ctx.SaveChanges();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
 
         #endregion
 

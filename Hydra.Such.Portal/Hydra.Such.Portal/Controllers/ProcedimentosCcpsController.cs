@@ -64,6 +64,7 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        #region Read functions
         [HttpPost]
         public JsonResult GetAllProcedimentos()
         {
@@ -93,6 +94,11 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         ProcedimentoCCPView result = CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(proc);
 
+                        if(proc.ElementosJuri != null && proc.ElementosJuri.Count > 0)
+                        {
+                            result.ElementosJuri = DBProcedimentosCCP.GetElementosJuriViewProcedimento(proc);
+                        }
+                        
                         return Json(result);
                     }
 
@@ -106,6 +112,11 @@ namespace Hydra.Such.Portal.Controllers
             
             return Json(false);
         }
+
+        //public JsonResult GetUsersWhoAreElementosJuri()
+        //{
+
+        //}
 
         public JsonResult CreateProcedimento([FromBody] ProcedimentoCCPView data)
         {
@@ -168,6 +179,7 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             if(data != null)
             {
+                
                 if (DBProcedimentosCCP.__DeleteProcedimento(data.No))
                 {
                     result = new ErrorHandler()
@@ -188,5 +200,6 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(false);
         }
+        #endregion
     }
 }
