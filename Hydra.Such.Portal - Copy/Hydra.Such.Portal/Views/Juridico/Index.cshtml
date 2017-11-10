@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewData["Title"] = "Jurídico - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="title">Jurídico</h1>
+
+<link rel="import" href="/elements/submenu/subMenuItemView.html">
+
+<ul class="list-unstyled">
+    @*<x-submenu link="@Url.Action("ProcessosDisciplinares", "Juridico")" image="disciplinares.png" title="Processos Disciplinares"></x-submenu>
+    <x-submenu link="@Url.Action("ProcessosInquerito", "Juridico")" image="inquerito.png" title="Processos de Inquérito"></x-submenu>*@
+    <x-submenu link="@Url.Action("Administracao", "Juridico")" image="auxiliary1.png" title="Administração"></x-submenu>
+</ul>
+

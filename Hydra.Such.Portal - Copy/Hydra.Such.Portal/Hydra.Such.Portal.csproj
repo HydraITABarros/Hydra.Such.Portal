@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\lib\paper-input-money-master\**" />
+    <Content Remove="wwwroot\lib\paper-input-money-master\**" />
+    <EmbeddedResource Remove="wwwroot\lib\paper-input-money-master\**" />
+    <None Remove="wwwroot\lib\paper-input-money-master\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hydra.Such.Data\Hydra.Such.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Nutricao\Data\" />
+    <Folder Include="Areas\Nutricao\Models\" />
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
+</Project>

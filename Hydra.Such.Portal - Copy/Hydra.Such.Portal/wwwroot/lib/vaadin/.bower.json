@@ -1,0 +1,36 @@
+{
+  "name": "vaadin",
+  "description": "Bundle containing all elements which are part of the Vaadin platform",
+  "homepage": "https://github.com/vaadin/vaadin",
+  "authors": [
+    "Artur Signell <artur@vaadin.com>"
+  ],
+  "main": "",
+  "license": [
+    "Apache-2.0",
+    "http://vaadin.com/license/cval"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "vaadin-board": "1.1.0-alpha1",
+    "vaadin-charts": "5.0.0",
+    "vaadin-core": "2.0.0-alpha3"
+  },
+  "version": "2.0.0-alpha3",
+  "_release": "2.0.0-alpha3",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.0-alpha3",
+    "commit": "5964f4e81489af0819c5dfbe2583f552b4dae1f9"
+  },
+  "_source": "https://github.com/vaadin/vaadin.git",
+  "_target": "^2.0.0-alpha3",
+  "_originalSource": "vaadin",
+  "_direct": true
+}

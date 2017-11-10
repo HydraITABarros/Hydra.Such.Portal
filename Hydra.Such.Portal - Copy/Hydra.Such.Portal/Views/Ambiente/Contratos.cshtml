@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewData["Title"] = "Contratos - Ambiente - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="separator">Contratos Ambiente</h2>
+<link rel="import" href="~/elements/contracts/contract_list.html">
+
+<x-contractlist _areaid="2" _archived="@ViewBag.Archived" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'  _contractno="@ViewBag.ContractNo"></x-contractlist>
+
+

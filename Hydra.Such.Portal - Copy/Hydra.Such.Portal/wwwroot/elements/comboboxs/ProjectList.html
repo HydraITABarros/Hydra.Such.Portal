@@ -1,0 +1,56 @@
+﻿<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+
+<dom-module id="cb-projectlist">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            :host {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+        </style>
+
+        <iron-ajax url="/PopulateDropdowns/GetProjectList"
+                   last-response="{{response}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <vaadin-combo-box id="projectList" items="[[response]]"  on-value-changed="_valueChange" item-value-path="id" item-label-path="value" label="Nº Projeto" disabled="{{disabledvalue}}" value="{{indexvalue}}">
+            <template>
+                <paper-icon-item>
+                    <paper-item-body two-line>
+                        <div>[[item.value]]</div>
+                    </paper-item-body>
+                </paper-icon-item>
+            </template>
+        </vaadin-combo-box>
+
+    </template>
+
+    <script>
+        class CBProjectListView extends Polymer.Element {
+            static get is() { return 'cb-projectlist' }
+            static get properties() {
+                return {
+                    indexvalue: {
+                        type: Number,
+                        notify: true,
+                        reflectToAttribute: true
+                    },
+                    disabledvalue: {
+                        type: Boolean,
+                        notify: true,
+                        reflectToAttribute: true
+                    }
+                }
+            }
+        }
+
+        customElements.define(CBProjectListView.is, CBProjectListView);
+    </script>
+</dom-module>

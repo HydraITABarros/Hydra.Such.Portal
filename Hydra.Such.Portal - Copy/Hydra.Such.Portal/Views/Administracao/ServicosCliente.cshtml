@@ -1,0 +1,351 @@
+﻿
+@{
+    ViewData["Title"] = "ServicosCliente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*grid*@
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
+@*textfield*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+@*combobox*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html" />
+@*toast*@
+<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
+@*layout*@
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+@*mixin*@
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+@*button*@
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+@*ironform*@
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+@*paperinput*@
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
+@*checkbox*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+
+<h1 class="title">Serviços Cliente</h1>
+
+<x-client-services></x-client-services>
+
+<dom-module id="x-client-services">
+<template>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+
+    <custom-style>
+        <style is="custom-style">
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            input {
+                font: inherit;
+            }
+
+            paper-input {
+                max-width: 450px !important;
+            }
+        </style>
+    </custom-style>
+
+    @*POPULATE GRID*@
+    <iron-ajax url="/Administracao/GetClientServices"
+               last-response="{{result}}"
+               method="post"
+               auto
+               handle-as="json"
+               id="page_databound_ajax"
+               content-type="application/json">
+    </iron-ajax>
+
+    @*CRUD*@
+    <iron-ajax url="/Administracao/CreateClientServices"
+               last-response="{{exist}}"
+               method="post"
+               handle-as="json"
+               id="page_create_ajax"
+               on-response="_CreateResponse"
+               content-type="application/json">
+    </iron-ajax>
+    <iron-ajax url="/Administracao/DeleteClientServices"
+               last-response="{{result}}"
+               method="post"
+               handle-as="json"
+               id="page_delete_ajax"
+               on-response="_DeleteResponse"
+               content-type="application/json">
+    </iron-ajax>
+    <iron-ajax url="/Administracao/UpdateClientServices"
+               last-response="{{result}}"
+               method="post"
+               handle-as="json"
+               id="page_update_ajax"
+               on-response="_UpdateResponse"
+               content-type="application/json">
+    </iron-ajax>
+
+    @*CRUD - Populate Combos*@
+    <iron-ajax url="/PopulateDropdowns/GetAllClients"
+               last-response="{{Clients}}"
+               auto
+               method="post"
+               handle-as="json"
+               content-type="application/json">
+    </iron-ajax>
+    <iron-ajax url="/PopulateDropdowns/GetServices"
+               last-response="{{Services}}"
+               auto
+               method="post"
+               handle-as="json"
+               content-type="application/json">
+    </iron-ajax>
+        
+        
+    <div class="row">
+        <div class="col-lg-2">
+            <h2 class="separator">Novo Registo</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-2">
+            <vaadin-combo-box id="cboClients" items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{ddClients}}" label="Cliente" disabled="{{ _permissionsCreate }}">
+                <template>
+                    <table width="280px">
+                        <tr>
+                            <td width="30%">[[item.id]]</td>
+                            <td width="70%"> <b>[[item.value]]</b></td>
+                        </tr>
+                    </table>
+                </template>
+            </vaadin-combo-box>
+        </div>
+        <div class="col-lg-2 ">
+            <vaadin-combo-box id="cboServices" items="[[Services]]" item-value-path="id" item-label-path="value" value="{{ddServices}}" label="Serviço" disabled="{{ _permissionsCreate }}">
+                <template>
+                    <table width="160px">
+                        <tr>
+                            <td width="40%">[[item.id]]</td>
+                            <td width="60%"> <b>[[item.value]]</b></td>
+                        </tr>
+                    </table>
+                </template>
+            </vaadin-combo-box>
+        </div>
+        <div class="col-lg-2 alignPoga">
+            <vaadin-checkbox id="chkServiceGroup" checked="{{chkServiceGroup}}"  disabled="{{ _permissionsCreate }}"> Grupo Serviços </vaadin-checkbox>
+        </div>
+        <div class="col-lg-1 alignPoga">
+            <paper-button class="btnSave" on-tap="_createClientService"  disabled="{{ _permissionsCreate }}">Criar</paper-button>
+        </div>
+    </div><br />
+     
+    <vaadin-grid id="gridClientServices" aria-label="gridClientServices" items="[[result]]" class="grid" multi-sort="true">
+        <vaadin-grid-column resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="clientNumber">Cliente</vaadin-grid-sorter>
+            </template>
+            <template>
+                <vaadin-combo-box items="[[Clients]]" item-value-path="id" item-label-path="value" value="{{item.clientNumber}}" disabled>
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.name]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="serviceCode">Serviço</vaadin-grid-sorter>
+            </template>
+            <template>
+                <vaadin-combo-box items="[[Services]]" item-value-path="id" item-label-path="value" value="{{item.serviceCode}}" disabled>
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column resizable>
+            <template class="header">
+                <p>
+                    <vaadin-grid-filter path="serviceGroup" value="[[_filterActive]]">
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>
+                    Grupo Serviços
+                </p>
+            </template>
+            <template>
+                <vaadin-checkbox checked="{{item.serviceGroup}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="10%" resizable>
+            <template class="header">
+            </template>
+            <template>
+                <center>
+                    <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                </center>
+            </template>
+        </vaadin-grid-column>
+    </vaadin-grid>
+    <div class="marginSpace">
+        <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+    </div>
+    <paper-toast id="ToastError" style="background-color:red" duration="4000" text="Este Serviço Cliente já existe." horizontalAlign="right"></paper-toast>
+    <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+</template>
+
+<script>
+    var CreateValue = true, UpdateValue = true, DeleteValue = true;
+    if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' =="false") {
+        CreateValue = false;
+    }
+    if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' =="false") {
+        UpdateValue = false;
+    }
+    if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' =="false") {
+        DeleteValue = false;
+    }
+    document.addEventListener('WebComponentsReady', function () {
+        Polymer({
+            is: 'x-client-services',
+            properties: {
+                _permissionsUpdate: {
+                    type: Boolean,
+                    value: UpdateValue
+                },
+                _permissionsCreate: {
+                    type: Boolean,
+                    value: CreateValue
+                },
+                _permissionsDelete: {
+                    type: Boolean,
+                    value: DeleteValue
+                },
+                ddClients: {
+                    type: Number,
+                    notify: true,
+                    value: ""
+                },
+
+                ddServices: {
+                    type: Number,
+                    notify: true,
+                    value: ""
+                },
+                _filterActive: {
+                    type: Boolean,
+                    value: true
+                }
+            },
+
+            openToast: function (message) {
+                this.$.ToastMessage.text = message;
+                this.$.ToastMessage.open();
+            },
+
+            _update: function () {
+                    
+                this.$.page_update_ajax.body = JSON.stringify(this.result);
+                this.$.page_update_ajax.generateRequest();
+                this.$.gridClientServices.clearCache();
+            },
+                
+            _CreateResponse: function (e) {
+                var self = this;
+                if (this.exist === false) {
+                    this.openToast('Criado com sucesso');
+                    this.$.page_databound_ajax.generateRequest();
+                }
+                else if (this.exist === true) {
+
+                    this.$.ToastError.open();
+                    this.$.page_databound_ajax.generateRequest();
+                } else {
+                    this.openToast('Ocorreu um erro ao Criar o Serviço Cliente.');
+
+                }
+            },
+
+            _UpdateResponse: function (e) {
+                var self = this;
+                if (e.detail.status === 200) {
+                    this.openToast('Atualizado com sucesso');
+                    this.$.page_databound_ajax.generateRequest();
+                }
+                else {
+                    this.openToast('Ocorreu um erro ao atualizar o Serviço Cliente.');
+                }
+            },
+
+            _DeleteResponse: function (e) {
+                var self = this;
+                if (e.detail.status === 200) {
+                    this.openToast('Eliminado com sucesso');
+                    this.$.page_databound_ajax.generateRequest();
+                }
+                else {
+                    this.openToast('Ocorreu um erro ao atualizar o Serviço Cliente.');
+                }
+            },
+
+            _cancel: function () {
+                this.$.page_databound_ajax.generateRequest();
+                this.$.gridClientServices.clearCache();
+            },
+
+            _createClientService: function () {
+
+                if (this.result == null)
+                {
+                    this.result.unshift({
+                        ClientNumber: this.ddClients,
+                        ServiceCode: this.ddServices,
+                        ServiceGroup: this.chkServiceGroup
+                    });
+                }
+                else
+                {
+                    this.result.unshift({
+                        ClientNumber: this.ddClients,
+                        ServiceCode: this.ddServices,
+                        ServiceGroup: this.chkServiceGroup
+                    });
+                }
+                this.$.page_create_ajax.body = JSON.stringify(this.result);
+                this.$.page_create_ajax.generateRequest();
+                this.$.gridClientServices.clearCache();
+            },
+
+            _deleteAccessProfile: function (data) {
+                var index = this.result.indexOf(data.model.item);
+                this.result.splice(index, 1);
+                this.$.page_delete_ajax.body = JSON.stringify(this.result);
+                this.$.page_delete_ajax.generateRequest();
+                this.$.gridClientServices.clearCache();
+            }
+
+        });
+    });
+</script>
+</dom-module>
