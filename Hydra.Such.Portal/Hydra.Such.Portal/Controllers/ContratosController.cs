@@ -589,7 +589,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.DataInícioVersão = x.VersionStartDate != null ? DateTime.Parse(x.VersionStartDate) : (DateTime?)null;
                             CLine.DataFimVersão = x.VersionEndDate != null ? DateTime.Parse(x.VersionEndDate) : (DateTime?)null;
                             CLine.NºResponsável = x.ResponsibleNo;
-                            CLine.CódServiçoCliente = x.ServiceClientNo;
+                            CLine.CódServiçoCliente = x.ServiceClientNo == 0 ? null : x.ServiceClientNo;
                             CLine.GrupoFatura = x.InvoiceGroup;
                             CLine.CriaContrato = x.CreateContract;
                             CLine.UtilizadorModificação = User.Identity.Name;

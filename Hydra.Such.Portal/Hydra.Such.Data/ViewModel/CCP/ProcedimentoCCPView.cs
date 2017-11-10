@@ -127,12 +127,12 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public DateTime? DataHoraModificacao { get; set; }
         public string UtilizadorModificacao { get; set; }
 
-        public TemposPaCcp No1 { get; set; }
-        public RegistoDeAtas NoNavigation { get; set; }
-        public ICollection<ElementosJuri> ElementosJuri { get; set; }
-        public ICollection<EmailsProcedimentosCcp> EmailsProcedimentosCcp { get; set; }
-        public ICollection<LinhasPEncomendaProcedimentosCcp> LinhasPEncomendaProcedimentosCcp { get; set; }
-        public ICollection<NotasProcedimentosCcp> NotasProcedimentosCcp { get; set; }
-        public ICollection<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
+        public TemposPACCPView No1 { get; set; }
+        public RegistoActasView NoNavigation { get; set; }
+        public ICollection<ElementosJuriView> ElementosJuri { get; set; }
+        public ICollection<EmailsProcedimentoCCPView> EmailsProcedimentosCcp { get; set; }
+        public ICollection<LinhasParaEncomendaCCPView> LinhasPEncomendaProcedimentosCcp { get; set; }
+        public ICollection<NotasProcedimentoCCPView> NotasProcedimentosCcp { get; set; }
+        public ICollection<WorkflowProcedimentosCCPView> WorkflowProcedimentosCcp { get; set; }
     }
 }
