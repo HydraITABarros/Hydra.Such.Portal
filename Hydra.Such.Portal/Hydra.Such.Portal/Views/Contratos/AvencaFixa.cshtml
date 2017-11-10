@@ -258,6 +258,8 @@
                         this.$.ajax_count.body = JSON.stringify(this.result);
                         this.$.ajax_count.generateRequest();
                         this.$.avencaFixaTable.clearCache();
+                        this.openToastSuccess("Tabela de faturas atualizada com sucesso.");
+
                     } 
                     else {
                         this.openToastError("Não existem linhas disponiíveis para contabilizar.");
