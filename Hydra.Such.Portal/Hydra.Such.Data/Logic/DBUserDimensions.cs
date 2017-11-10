@@ -130,31 +130,6 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
-        
-        //public static List<AcessosDimensões> Update(string userId, List<AcessosDimensões> items)
-        //{
-        //    try
-        //    {
-        //        using (var ctx = new SuchDBContext())
-        //        {
-        //            //Update existing
-        //            items.ForEach(x =>
-        //            {
-        //                x.DataHoraModificação = DateTime.Now;
-        //                ctx.AcessosDimensões.Update(x);
-        //            });
-        //            //delete unexisting
-        //            var itemsToDelete
-        //            ctx.SaveChanges();
-        //        }
-        //        return items;
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        return null;
-        //    }
-        //}
 
         public static bool Delete(string userId, int dimension, string dimensionValue)
         {
@@ -236,45 +211,55 @@ namespace Hydra.Such.Data.Logic
 
         public static UserDimensionsViewModel ParseToViewModel(this AcessosDimensões item)
         {
-            return new UserDimensionsViewModel()
+            if (item != null)
             {
-                UserId = item.IdUtilizador,
-                Dimension = item.Dimensão,
-                DimensionValue = item.ValorDimensão,
-                CreateDate = item.DataHoraCriação.HasValue ? item.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
-                UpdateDate = item.DataHoraModificação.HasValue ? item.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
-                CreateUser = item.UtilizadorCriação,
-                UpdateUser = item.UtilizadorModificação
-            };
+                return new UserDimensionsViewModel()
+                {
+                    UserId = item.IdUtilizador,
+                    Dimension = item.Dimensão,
+                    DimensionValue = item.ValorDimensão,
+                    CreateDate = item.DataHoraCriação.HasValue ? item.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
+                    UpdateDate = item.DataHoraModificação.HasValue ? item.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
+                    CreateUser = item.UtilizadorCriação,
+                    UpdateUser = item.UtilizadorModificação
+                };
+            }
+            return null;
         }
 
         public static List<UserDimensionsViewModel> ParseToViewModel(this List<AcessosDimensões> items)
         {
             List<UserDimensionsViewModel> userDimensions = new List<UserDimensionsViewModel>();
-            items.ForEach(x =>
-                userDimensions.Add(x.ParseToViewModel()));
+            if (items != null)
+                items.ForEach(x =>
+                    userDimensions.Add(x.ParseToViewModel()));
             return userDimensions;
         }
 
         public static AcessosDimensões ParseToDB(this UserDimensionsViewModel item)
         {
-            return new AcessosDimensões()
+            if (item != null)
             {
-                IdUtilizador = item.UserId,
-                Dimensão = item.Dimension,
-                ValorDimensão = item.DimensionValue,
-                DataHoraCriação = string.IsNullOrEmpty(item.CreateDate) ? (DateTime?)null : DateTime.Parse(item.CreateDate),
-                DataHoraModificação = string.IsNullOrEmpty(item.UpdateDate) ? (DateTime?)null : DateTime.Parse(item.UpdateDate),
-                UtilizadorCriação = item.CreateUser,
-                UtilizadorModificação = item.UpdateUser
-            };
+                return new AcessosDimensões()
+                {
+                    IdUtilizador = item.UserId,
+                    Dimensão = item.Dimension,
+                    ValorDimensão = item.DimensionValue,
+                    DataHoraCriação = string.IsNullOrEmpty(item.CreateDate) ? (DateTime?)null : DateTime.Parse(item.CreateDate),
+                    DataHoraModificação = string.IsNullOrEmpty(item.UpdateDate) ? (DateTime?)null : DateTime.Parse(item.UpdateDate),
+                    UtilizadorCriação = item.CreateUser,
+                    UtilizadorModificação = item.UpdateUser
+                };
+            }
+            return null;
         }
 
         public static List<AcessosDimensões> ParseToDB(this List<UserDimensionsViewModel> items)
         {
             List<AcessosDimensões> dimensionAccess = new List<AcessosDimensões>();
-            items.ForEach(x =>
-                dimensionAccess.Add(x.ParseToDB()));
+            if (items != null)
+                items.ForEach(x =>
+                    dimensionAccess.Add(x.ParseToDB()));
             return dimensionAccess;
         }
     }

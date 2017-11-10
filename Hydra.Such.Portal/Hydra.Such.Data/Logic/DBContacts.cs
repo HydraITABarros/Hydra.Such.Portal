@@ -145,15 +145,19 @@ namespace Hydra.Such.Data.Logic
 
         public static ContactViewModel ParseToViewModel(this Contactos item)
         {
-            return new ContactViewModel()
+            if (item != null)
             {
-                Id = item.Nº,
-                Name = item.Nome,
-                CreateDate = item.DataHoraCriação.HasValue ? item.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
-                UpdateDate = item.DataHoraModificação.HasValue ? item.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
-                CreateUser = item.UtilizadorCriação,
-                UpdateUser = item.UtilizadorModificação
-            };
+                return new ContactViewModel()
+                {
+                    Id = item.Nº,
+                    Name = item.Nome,
+                    CreateDate = item.DataHoraCriação.HasValue ? item.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
+                    UpdateDate = item.DataHoraModificação.HasValue ? item.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
+                    CreateUser = item.UtilizadorCriação,
+                    UpdateUser = item.UtilizadorModificação
+                };
+            }
+            return null;
         }
 
         public static List<ContactViewModel> ParseToViewModel(this List<Contactos> items)
@@ -167,15 +171,19 @@ namespace Hydra.Such.Data.Logic
 
         public static Contactos ParseToDB(this ContactViewModel item)
         {
-            return new Contactos()
+            if (item != null)
             {
-                Nº = item.Id,
-                Nome = item.Name,
-                DataHoraCriação = string.IsNullOrEmpty(item.CreateDate) ? (DateTime?)null : DateTime.Parse(item.CreateDate),
-                DataHoraModificação = string.IsNullOrEmpty(item.UpdateDate) ? (DateTime?)null : DateTime.Parse(item.UpdateDate),
-                UtilizadorCriação = item.CreateUser,
-                UtilizadorModificação = item.UpdateUser
-            };
+                return new Contactos()
+                {
+                    Nº = item.Id,
+                    Nome = item.Name,
+                    DataHoraCriação = string.IsNullOrEmpty(item.CreateDate) ? (DateTime?)null : DateTime.Parse(item.CreateDate),
+                    DataHoraModificação = string.IsNullOrEmpty(item.UpdateDate) ? (DateTime?)null : DateTime.Parse(item.UpdateDate),
+                    UtilizadorCriação = item.CreateUser,
+                    UtilizadorModificação = item.UpdateUser
+                };
+            }
+            return null;
         }
 
         public static List<Contactos> ParseToDB(this List<ContactViewModel> items)
