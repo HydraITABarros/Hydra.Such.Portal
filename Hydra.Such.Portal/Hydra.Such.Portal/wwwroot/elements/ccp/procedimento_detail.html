@@ -126,14 +126,12 @@
                         </template>
                     </vaadin-combo-box>
                 </div>
-                <div class="col-sm-3">
-                    <div class="col-sm-6">
-                        <vaadin-text-field type="text" value="{{data.ano}}" id="ano" name="ano" label="Ano"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-6">
-                        <vaadin-text-field type="text" value="{{data.referencia}}" id="referencia" name="referencia" label="Referência"> </vaadin-text-field>
-                    </div>
-                </div>             
+                <div class="col-sm-1">
+                    <vaadin-text-field type="text" value="{{data.ano}}" id="ano" name="ano" label="Ano"> </vaadin-text-field>
+                </div>
+                <div class="col-sm-1">
+                    <vaadin-text-field type="text" value="{{data.referencia}}" id="referencia" name="referencia" label="Referência"> </vaadin-text-field>
+                </div>            
             </div>
         </div>
         <div>
@@ -166,22 +164,20 @@
             <!-- Tab Unidade Produtiva-->
             <div>    
                 <div class="row break_clear">
-                    <div class="col-sm-12">
-                        <div class="col-sm-6">
-                            <vaadin-text-field type="text" value="{{data.informacaoTecnica}}" id="informacaoTecnica" name="informacaoTecnica" label="Informação Técnica"> </vaadin-text-field>
-                        </div>
-                        <div class="col-sm-6">
-                            <br><i>Descrição da prestação de serviços ou bem a adquirir</i>
-                        </div>    
+                    <div class="col-sm-6">
+                        <vaadin-text-field type="text" value="{{data.informacaoTecnica}}" id="informacaoTecnica" name="informacaoTecnica" label="Informação Técnica"> </vaadin-text-field>
+                    </div>
+                    <div class="col-sm-6">
+                        <br><i>Descrição da prestação de serviços ou bem a adquirir</i>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-sm-3">
+                    <div class="col-sm-6">
                         <vaadin-text-field type="text" value="{{data.fundamentacaoAquisicao}}" id="fundamentacaoAquisicao" name="fundamentacaoAquisicao" label="Fundamentação Aquisição"> </vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
-                    <div class="col-sm-3">
+                    <div class="col-sm-2">
                         <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.precoBase}}" label="Preço Base?">
                             <template>
                                 <paper-icon-item>
@@ -193,6 +189,11 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-sm-3">
+                        <vaadin-text-field type="text" value="{{data.valorPrecoBase}}" id="valorPrecoBase" name="valorPrecoBase" label="Valor Preço Base"> </vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-2">
                         <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.negociacao}}" label="Negociação?">
                             <template>
                                 <paper-icon-item>
@@ -204,6 +205,31 @@
                         </vaadin-combo-box>
                     </div>
                 </div>
+                <!-- Elementos Juri section.b -->
+                <h2 class="separator">Elementos Juri</h2>
+                <vaadin-grid id="gridElementosJuri" aria-label="gridElementosJuri" items="{{data.elementosJuri}}" class="grid">
+                    <!-- replace with combo-box. b -->
+                    <vaadin-grid-column width="20%">
+                        <template class="header">
+                            Utilizador
+                        </template>
+                        <template>
+                            <vaadin-text-field type="text" value="{{ item.utilizador }}"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="20%">
+                        <template class="header">
+                            Utilizador
+                        </template>
+                        <template>
+                            <vaadin-text-field type="text" value="{{ item.noEmpregado }}"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+                    <!-- replace with combo-box.e -->
+                </vaadin-grid>
+
+                
+                <!-- Elementos Juri section.e -->
             </div>
 
             <!-- Tab Imobilizado -->
@@ -391,6 +417,12 @@
                                 function () {
                                     window.location.replace("/");
                                 }, 2500);
+                            if (this._procedimentotypeid == 1) {
+                                this._executeRequest("/ProcedimentosCcps/PedidoAquisicao/");
+                            }
+                            else {
+                                this._executeRequest("/ProcedimentosCcps/PedidoSimplificado/");
+                            }
                         }
                     }
                 },

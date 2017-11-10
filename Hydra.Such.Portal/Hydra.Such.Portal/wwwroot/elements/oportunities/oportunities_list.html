@@ -73,7 +73,7 @@
                     <vaadin-grid-filter path="startDate" />
                 </template>
                 <template>
-                    {{item.startDate}}
+                    <vaadin-date-picker label="Data Inicial" id="mStartData" name="startData" value="{{data.startData}}" disabled></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px">
@@ -82,7 +82,7 @@
                     <vaadin-grid-filter path="endDate" />
                 </template>
                 <template>
-                    {{item.endDate}}
+                    <vaadin-date-picker label="Data Inicial" id="mEndData" name="EndData" value="{{data.endData}}" disabled></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="200px">

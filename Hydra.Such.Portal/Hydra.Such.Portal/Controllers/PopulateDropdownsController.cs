@@ -142,6 +142,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetFolhaDeHoraAjudaTipoCusto()
+        {
+            List<EnumData> result = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetFeeUnits()
         {
             List<EnumData> result = EnumerablesFixed.FeeUnits;
