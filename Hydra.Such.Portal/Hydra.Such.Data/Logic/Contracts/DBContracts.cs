@@ -180,13 +180,18 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
-        public static List<Contratos> GetAllFixedAndArquived(bool fixedRate, bool arquived)
+        public static List<Contratos> GetAllAvencaFixa()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.ContratoAvençaFixa == fixedRate && x.Arquivado == arquived).ToList();
+                    return ctx.Contratos.Where(x =>
+                    x.ContratoAvençaFixa == true && 
+                    x.Arquivado == false && 
+                    x.Estado == 4 && // Assinado 
+                    x.EstadoAlteração == 2 && // Bloqueado
+                    (x.TipoFaturação == 1 || x.TipoFaturação == 4)).ToList(); // Mensal / Mensal + Consumo
                 }
             }
             catch (Exception ex)
@@ -208,8 +213,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 NºVersão = x.VersionNo,
                 Área = x.Area,
                 Descrição = x.Description,
-                Estado = x.Status - 1,
-                EstadoAlteração = x.ChangeStatus - 1,
+                Estado = x.Status,
+                EstadoAlteração = x.ChangeStatus,
                 NºCliente = x.ClientNo,
                 CódigoRegião = x.CodeRegion,
                 CódigoÁreaFuncional = x.CodeFunctionalArea,
@@ -219,7 +224,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 EnvioAEndereço = x.ShippingAddress,
                 EnvioACódPostal = x.ShippingZipCode,
                 EnvioALocalidade = x.ShippingLocality,
-                PeríodoFatura = x.InvocePeriod - 1,
+                PeríodoFatura = x.InvocePeriod,
                 ÚltimaDataFatura = x.LastInvoiceDate != null ? DateTime.Parse(x.LastInvoiceDate) : (DateTime?)null,
                 PróximaDataFatura = x.NextInvoiceDate != null ? DateTime.Parse(x.NextInvoiceDate) : (DateTime?)null,
                 DataInicial = x.StartData != null ? DateTime.Parse(x.StartData) : (DateTime?)null,
@@ -229,8 +234,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 LinhasContratoEmFact = x.ContractLinesInBilling,
                 CódTermosPagamento = x.CodePaymentTerms,
                 TipoProposta = x.ProposalType,
-                TipoFaturação = x.BillingType - 1,
-                TipoContratoManut = x.MaintenanceContractType - 1,
+                TipoFaturação = x.BillingType,
+                TipoContratoManut = x.MaintenanceContractType,
                 NºRequisiçãoDoCliente = x.ClientRequisitionNo,
                 DataReceçãoRequisição = x.ReceiptDateRequisition != null ? DateTime.Parse(x.ReceiptDateRequisition) : (DateTime?)null,
                 NºCompromisso = x.PromiseNo,
@@ -296,7 +301,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 Area = x.Área,
                 Description = x.Descrição,
                 Status = x.Estado + 1,
-                ChangeStatus = x.EstadoAlteração + 1,
+                ChangeStatus = x.EstadoAlteração,
                 ClientNo = x.NºCliente,
                 CodeRegion = x.CódigoRegião,
                 CodeFunctionalArea = x.CódigoÁreaFuncional,
@@ -306,7 +311,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 ShippingAddress = x.EnvioAEndereço,
                 ShippingZipCode = x.EnvioACódPostal,
                 ShippingLocality = x.EnvioALocalidade,
-                InvocePeriod = x.PeríodoFatura + 1,
+                InvocePeriod = x.PeríodoFatura,
                 LastInvoiceDate = x.ÚltimaDataFatura.HasValue ? x.ÚltimaDataFatura.Value.ToString("yyyy-MM-dd") : "",
                 NextInvoiceDate = x.PróximaDataFatura.HasValue ? x.PróximaDataFatura.Value.ToString("yyyy-MM-dd") : "",
                 StartData = x.DataInicial.HasValue ? x.DataInicial.Value.ToString("yyyy-MM-dd") : "",
@@ -316,8 +321,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 ContractLinesInBilling = x.LinhasContratoEmFact,
                 CodePaymentTerms = x.CódTermosPagamento,
                 ProposalType = x.TipoProposta,
-                BillingType = x.TipoFaturação + 1,
-                MaintenanceContractType = x.TipoContratoManut + 1,
+                BillingType = x.TipoFaturação,
+                MaintenanceContractType = x.TipoContratoManut,
                 ClientRequisitionNo = x.NºRequisiçãoDoCliente,
                 ReceiptDateRequisition = x.DataReceçãoRequisição.HasValue ? x.DataReceçãoRequisição.Value.ToString("yyyy-MM-dd") : "",
                 PromiseNo = x.NºCompromisso,

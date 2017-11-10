@@ -11,11 +11,7 @@ using Hydra.Such.Data.Logic.Project;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.NAV;
-using System.Net.Http;
-using System.Net;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
-using Hydra.Such.Data.Logic.ProjectDiary;
 
 namespace Hydra.Such.Portal.Controllers
 {

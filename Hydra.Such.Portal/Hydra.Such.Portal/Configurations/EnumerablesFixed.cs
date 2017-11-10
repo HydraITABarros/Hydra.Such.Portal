@@ -1026,6 +1026,24 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData(2, "Área Funcional"),
             new EnumData(3, "Centro Responsabilidade")
         };
+
+        public static readonly List<EnumData> NutritionCoffeShopTypes = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Cafetaria"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Refeitório"
+            }
+        };
+
+
+
+
     }
 
     public class EnumDataString
