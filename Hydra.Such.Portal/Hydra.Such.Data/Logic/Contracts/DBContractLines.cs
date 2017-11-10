@@ -195,7 +195,6 @@ namespace Hydra.Such.Data.Logic.Contracts
 
         public static LinhasContratos ParseToDB(ContractLineViewModel x)
         {
-
             return new LinhasContratos()
             {
                 TipoContrato = x.ContractType,
@@ -217,8 +216,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 NºHorasIntervenção = x.InterventionHours,
                 NºTécnicos = x.TotalTechinicians,
                 TipoProposta = x.ProposalType,
-                DataInícioVersão = x.VersionStartDate != null ? DateTime.Parse(x.VersionStartDate) : (DateTime?)null,
-                DataFimVersão = x.VersionEndDate != null ? DateTime.Parse(x.VersionEndDate) : (DateTime?)null,
+                DataInícioVersão = x.VersionStartDate != null && x.VersionStartDate != "" ? DateTime.Parse(x.VersionStartDate) : (DateTime?)null,
+                DataFimVersão = x.VersionEndDate != null && x.VersionEndDate != "" ? DateTime.Parse(x.VersionEndDate) : (DateTime?)null,
                 NºResponsável = x.ResponsibleNo,
                 CódServiçoCliente = x.ServiceClientNo,
                 GrupoFatura = x.InvoiceGroup,

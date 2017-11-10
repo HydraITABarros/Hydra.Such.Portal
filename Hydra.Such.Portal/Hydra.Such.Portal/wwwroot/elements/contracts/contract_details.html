@@ -223,7 +223,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-textarea value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </vaadin-textarea>
+                                            <vaadin-text-field value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                     </div>
 
@@ -1489,6 +1489,7 @@
                     this.$.ToastError.open();
                 },
                 _validateData: function () {
+                    debugger;;
                     if (this.$.contractNo.validate() &
                         this.$.Description.validate() &
                         this.$.mClients.validate() &
@@ -1601,6 +1602,7 @@
                     if (this.data.contractNo == "" || this.data.contractNo == null) {
                         this.data.area = this._areaid;
                         this.$.versionNo.value = "1";
+                        this.data.filed = 0
                     } else {
                         this._showContractLines = "";
                         this._CLRegion = this.data.codeRegion;

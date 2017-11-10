@@ -79,6 +79,13 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 11,
                 Value = "Administração"
             },
+
+            // zpgm. Generic Area to allow features to be applied to all Areas
+            new EnumData()
+            {
+                Id = 99,
+                Value = "Genérica"
+            }
         };
 
         public static readonly List<EnumData> Features = new List<EnumData>(){

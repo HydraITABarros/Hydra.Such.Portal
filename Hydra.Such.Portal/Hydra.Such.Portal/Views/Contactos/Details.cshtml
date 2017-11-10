@@ -9,54 +9,193 @@
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <h1>Detalhes de Contacto</h1>
-<x-contact-details></x-contact-details>
+<x-contact-details _permissions='@Html.Raw(Json.Serialize(ViewBag.UserPermissions))'></x-contact-details>
 <dom-module id="x-contact-details">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{contact}}" id="contact_datasource" url="/Contactos/GetById"></iron-ajax>
-
-        @if (ViewBag.Id != "0")
-        {
-            <div class="marginSpace">
-                <paper-button class="btnSave" raised on-tap="_redirectToNewContactForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+        <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{contact}}" id="contact_datasource" url="/Contactos/GetById" on-response="_onGetContactByIdResponse"></iron-ajax>
+        <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{contact}}" id="create_contact_request" url="/Contactos/CreateContact" on-response="_onContactResponse"></iron-ajax>
+        <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{numValidationResponse}}" id="numValidation_contact_request" url="/Contactos/ValidateNumeration" on-response="_onNumValidationResponse"></iron-ajax>
+        <template is="dom-if" if="{{ !_isCreate }}">
+            <div class="row">
+                <div class="col-lg-12">
+                    <template is="dom-if" if="{{ _permissions.create }}">
+                        <paper-button class="" raised on-tap="_redirectToNewContactForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                    </template>
+                </div>
             </div>
-        }
+        </template>
         <div class="row">
             <div class="col-lg-3">
-                <vaadin-text-field id="contactId" name="contactId" label="Nº" value="{{contact.id}}"></vaadin-text-field>
+                <vaadin-text-field id="contactId" name="contactId" label="Nº" value="{{contact.id}}" disabled="{{ !_isCreate }}"></vaadin-text-field>
             </div>
             <div class="col-lg-3">
-                <vaadin-text-field id="contactName" name="contactName" label="Nome Utilizador" value="{{contact.name}}"></vaadin-text-field>
+                <vaadin-text-field id="contactName" name="contactName" label="Nome" value="{{contact.name}}" disabled="{{ !_permissions.update }}"
+                                   required error-message="Este campo é obrigatório"></vaadin-text-field>
             </div>
         </div>
-
         <div class="marginSpace">
-            @if (ViewBag.Id == "0")
-            {
-                <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
-            }
-            else
-            {
-                <paper-button class="btnEdit" raised on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
-                <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-            }
+            <template is="dom-if" if="{{ _isCreate }}">
+                <paper-button raised id="btnCreate" class="btnSave" on-tap="_createContact"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </template>
+            <template is="dom-if" if="{{ !_isCreate }}">
+                <template is="dom-if" if="{{ _permissions.update }}">
+                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_updateContact"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                </template>
+                <template is="dom-if" if="{{ _permissions.delete }}">
+                    <paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteContact"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                </template>
+            </template>    
         </div>
-
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="MessageContainer" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ErrorMessageContainer" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-contact-details',
                 properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _contactId: {
+                        type: String,
+                        notify: true,
+                        value: "@ViewBag.ContactId"
+                    }
                 },
                 ready: function () {
-                    debugger;;
-                    this.$.contact_datasource.body = JSON.stringify({ "Id": "@ViewBag.Id" });
+                    this.$.contact_datasource.body = JSON.stringify({ "Id": this._contactId });
                     this.$.contact_datasource.generateRequest();
+
+                    if (this._contactId == "")
+                        this._isCreate = true;
+                },
+                _showMessage: function (message) {
+                    this.$.MessageContainer.text = message;
+                    this.$.MessageContainer.open();
+                },
+                _showErrorMessage: function (message) {
+                    this.$.ErrorMessageContainer.text = message;
+                    this.$.ErrorMessageContainer.open();
+                },
+                _onGetContactByIdResponse: function (e) {
+                    if (this.contact == undefined && this._contactId != "") {
+                        this._showMessage('Contacto não encontrado');
+                    }
+                },
+                _redirectToNewContactForm: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Contactos/Detalhes";
+                    }
+                },
+                _validateUserImput() {
+                    if (this.$.contactName.validate()) {
+                        return true;
+                    }
+                    this._showErrorMessage("Verifique os dados inseridos.");
+                    return false;
+                },
+                _createContact: function () {
+                    if (this._validateUserImput()) {
+                        this.$.numValidation_contact_request.body = JSON.stringify(this.contact);
+                        this.$.numValidation_contact_request.generateRequest();
+                    }
+                },
+                _onNumValidationResponse: function (data) {
+                    if (data.detail.status === 200) {
+                        if (this.numValidationResponse == "") {
+                            this.$.create_contact_request.url = "/Contactos/CreateContact";
+                            this.$.create_contact_request.body = JSON.stringify(this.contact);
+                            this.$.create_contact_request.generateRequest();
+                        }
+                        else {
+                            this._showErrorMessage(this.numValidationResponse);
+                        }
+                    }
+                },
+                _onContactResponse: function (e) {
+                    if (e.detail.status === 200)
+                    {
+                        if (e.detail.url.indexOf("Create") !== -1) {
+                            if (this.contact.eReasonCode == 1) {
+                                this._contactId = this.contact.Id;
+                                this._isCreate = false;
+                                this._showMessage(this.contact.eMessage);
+                            }
+                            else {
+                                this._showErrorMessage(this.contact.eMessage);
+                            }
+                        }
+                        else if (e.detail.url.indexOf("Delete") !== -1) {
+                            //On delete action contact is a boolean
+                            if (this.contact) {
+                                this._showMessage("Contacto eliminado com sucesso.");
+                                setTimeout(function () {
+                                        window.location.href = "/Contactos";
+                                    }, 2500);
+                            }
+                            else {
+                                this._showErrorMessage("Ocorreu um erro ao remover o contacto.");
+                            }
+                        }
+                        else {
+                            this.$.contact_datasource.generateRequest();
+                            this._showMessage("O contacto foi atualizado com sucesso!");
+                        }
+                    } else {
+                        if (e.detail.url.indexOf("Create") !== -1) {
+                            this._showErrorMessage("Ocorreu um erro ao criar o contacto.");
+                        }
+                        else if (e.detail.url.indexOf("Delete") !== -1) {
+                            this._showErrorMessage("Ocorreu um erro ao remover o contacto!");
+                        }
+                        else {
+                            this._showErrorMessage("Ocorreu um erro ao atualizar o contacto.");
+                        }
+                    }
+                },
+                _updateContact: function () {
+                    if (this._validateUserImput()) {
+                        this.$.create_contact_request.url = "/Contactos/UpdateContact";
+                        this.$.create_contact_request.body = JSON.stringify(this.contact);
+                        this.$.create_contact_request.generateRequest();
+                    }
+                },
+                _deleteContact: function () {
+                    this.$.create_contact_request.url = "/Contactos/DeleteContact";
+                    var ajax_request = this.$.create_contact_request;
+
+                    var contactToDelete = this.contact;
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o contacto " + this.contact.id + "?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(contactToDelete);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+
+
                 },
             });
         });

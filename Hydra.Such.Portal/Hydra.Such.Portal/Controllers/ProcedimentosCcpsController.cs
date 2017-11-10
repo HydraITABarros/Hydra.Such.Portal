@@ -64,6 +64,7 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        #region Read functions
         [HttpPost]
         public JsonResult GetAllProcedimentos()
         {
@@ -111,6 +112,11 @@ namespace Hydra.Such.Portal.Controllers
             
             return Json(false);
         }
+
+        //public JsonResult GetUsersWhoAreElementosJuri()
+        //{
+
+        //}
 
         public JsonResult CreateProcedimento([FromBody] ProcedimentoCCPView data)
         {
@@ -194,5 +200,6 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(false);
         }
+        #endregion
     }
 }

@@ -312,7 +312,7 @@ namespace Hydra.Such.Portal.Controllers
                             ContratoDB.DataInicial = data.StartData == ""
                                 ? null
                                 : (DateTime?)DateTime.Parse(data.StartData);
-                            ContratoDB.Estado = data.Status - 1;
+                            ContratoDB.Estado = data.Status;
                             ContratoDB.DataReceçãoRequisição = data.ReceiptDateRequisition == ""
                                 ? null
                                 : (DateTime?)DateTime.Parse(data.ReceiptDateRequisition);
@@ -320,22 +320,22 @@ namespace Hydra.Such.Portal.Controllers
                             ContratoDB.DataExpiração = data.DueDate == ""
                                 ? null
                                 : (DateTime?)DateTime.Parse(data.DueDate);
-                            ContratoDB.EstadoAlteração = data.ChangeStatus - 1;
+                            ContratoDB.EstadoAlteração = data.ChangeStatus;
                             ContratoDB.CódEndereçoEnvio = data.CodeShippingAddress;
                             ContratoDB.EnvioAEndereço = data.ShippingAddress;
                             ContratoDB.EnvioALocalidade = data.ShippingLocality;
                             ContratoDB.EnvioACódPostal = data.ShippingZipCode;
                             ContratoDB.EnvioANome = data.ShippingName;
-                            ContratoDB.TipoFaturação = data.BillingType - 1;
+                            ContratoDB.TipoFaturação = data.BillingType;
                             ContratoDB.Mc = data.Mc;
                             ContratoDB.ContratoAvençaFixa = data.FixedVowsAgreement;
                             ContratoDB.JuntarFaturas = data.BatchInvoices;
-                            ContratoDB.TipoContratoManut = data.MaintenanceContractType - 1;
+                            ContratoDB.TipoContratoManut = data.MaintenanceContractType;
                             ContratoDB.TaxaDeslocação = data.DisplacementFee;
                             ContratoDB.ContratoAvençaVariável = data.VariableAvengeAgrement;
                             ContratoDB.LinhasContratoEmFact = data.ContractLinesInBilling;
                             ContratoDB.TaxaAprovisionamento = data.ProvisioningFee;
-                            ContratoDB.PeríodoFatura = data.InvocePeriod - 1;
+                            ContratoDB.PeríodoFatura = data.InvocePeriod;
                             ContratoDB.UtilizadorModificação = User.Identity.Name;
                             ContratoDB = DBContracts.Update(ContratoDB);
 
@@ -683,26 +683,24 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GenerateInvoice([FromBody] List<FaturacaoContratosViewModel> data)
         {
-            DateTime current = DateTime.Now;
-            DateTime lastDay = (new DateTime(current.Year, current.Month, 1)).AddMonths(1).AddDays(-1);
-
             // Delete All lines From "Autorizar Faturação Contratos" & "Linhas Faturação Contrato"
-            DBAuthorizeInvoiceContracts.DeleteAll();
-            DBInvoiceContractLines.DeleteAll();
+            DBAuthorizeInvoiceContracts.DeleteAllAllowedInvoiceAndLines();
 
-            // Cycle for "Contratos" filtered by "Avença Fixa" = SIM && "Arquivado" = NAO
-            List<Contratos> contractList = DBContracts.GetAllFixedAndArquived(true, false);
+            List<Contratos> contractList = DBContracts.GetAllAvencaFixa();
             foreach (var item in contractList)
             {
-                // Cycle for "Linha Contratos" filtered by "Tipo Contrato", "Nº Contrato", "Versão" = Cycle Item, "Faturavel" = SIM, ordered by "Nº Contrato", "Grupo Fatura"
-                List<LinhasContratos> contractLinesList = DBContractLines.GetAllByNoTypeVersion(item.NºContrato, item.TipoContrato, item.NºVersão, true);
+                List<LinhasContratos> contractLinesList = DBContractLines.GetAllByNoTypeVersion(item.NºDeContrato, item.TipoContrato, item.NºVersão, true);
                 contractLinesList.OrderBy(x => x.NºContrato).ThenBy(y => y.GrupoFatura);
 
                 String ContractNoDuplicate = "";
                 int InvoiceGroupDuplicate = -1;
+                DateTime current = DateTime.Now;
+                DateTime lastDay = (new DateTime(current.Year, current.Month, 1)).AddMonths(1).AddDays(-1);
 
                 foreach (var line in contractLinesList)
                 {
+                    Decimal lineQuantity = 1;
+
                     if (ContractNoDuplicate != line.NºContrato || InvoiceGroupDuplicate != line.GrupoFatura)
                     {
                         ContractNoDuplicate = line.NºContrato;
@@ -720,15 +718,81 @@ namespace Hydra.Such.Portal.Controllers
                             contractVal = Math.Round((NumMeses * contractLinesList.Sum(x => x.PreçoUnitário.Value)), 2);
                         }
 
-                        List<NAVSalesInvoiceLinesViewModel> salesList = DBNAV2017SalesInvoiceLine.GetSalesInvoiceLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.DataInicial.Value, item.DataExpiração.Value);
+                        List<NAVSalesInvoiceLinesViewModel> salesList = null;
+                        List<NAVSalesCrMemoLinesViewModel> crMemo = null;
+                        if (item.DataInicial != null && item.DataExpiração != null)
+                        {
+                            salesList = DBNAV2017SalesInvoiceLine.GetSalesInvoiceLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, item.DataInicial.Value, item.DataExpiração.Value);
+                            crMemo = DBNAV2017SalesCrMemo.GetSalesCrMemoLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, item.DataInicial.Value, item.DataExpiração.Value);
+                        }
                         Decimal invoicePeriod = salesList != null ? salesList.Sum(x => x.Amount) : 0;
-
-                        List<NAVSalesCrMemoLinesViewModel> crMemo = DBNAV2017SalesCrMemo.GetSalesCrMemoLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.DataInicial.Value, item.DataExpiração.Value);
                         Decimal creditPeriod = crMemo != null ? crMemo.Sum(x => x.Amount) : 0;
+
+                        DateTime nextInvoice = lastDay;
+                        int lastInvoice = 0;
+                        int invoiceNumber = 0;
+
+                        if (line.Quantidade != 0)
+                        {
+                            lineQuantity = line.Quantidade.Value;
+                        }
+
+                        if (item.ÚltimaDataFatura == null)
+                        {
+                            if (item.DataInicial != null)
+                            {
+                                nextInvoice = item.ÚltimaDataFatura.Value;
+                                lastInvoice = item.DataInicial.Value.Month;
+                            }
+                        }
+                        else
+                        {
+                            nextInvoice = item.ÚltimaDataFatura.Value;
+                            lastInvoice = item.ÚltimaDataFatura.Value.Month;
+                        }
+
+
+                        
+                        if (item.PeríodoFatura != null || item.PeríodoFatura != 0)
+                        {
+                            switch (item.PeríodoFatura)
+                            {
+                                case 1:
+                                    nextInvoice = nextInvoice.AddMonths(1);
+                                    invoiceNumber = (GetMonthDiff(nextInvoice, current)) / 1;
+                                    lineQuantity = lineQuantity * 1;
+                                    break;
+                                case 2:
+                                    nextInvoice = nextInvoice.AddMonths(2);
+                                    invoiceNumber = (GetMonthDiff(nextInvoice, current)) / 2;
+                                    lineQuantity = lineQuantity * 2;
+                                    break;
+                                case 3:
+                                    nextInvoice = nextInvoice.AddMonths(3);
+                                    invoiceNumber = (GetMonthDiff(nextInvoice, current)) / 3;
+                                    lineQuantity = lineQuantity * 3;
+                                    break;
+                                case 4:
+                                    nextInvoice = nextInvoice.AddMonths(6);
+                                    invoiceNumber = (GetMonthDiff(nextInvoice, current)) / 6;
+                                    lineQuantity = lineQuantity * 6;
+                                    break;
+                                case 5:
+                                    nextInvoice = nextInvoice.AddMonths(12);
+                                    invoiceNumber = (GetMonthDiff(nextInvoice, current)) / 12;
+                                    lineQuantity = lineQuantity * 12;
+                                    break;
+                                case 6:
+                                    //
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
 
                         AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
                         {
-                            NºContrato = item.NºContrato,
+                            NºContrato = item.NºDeContrato,
                             GrupoFatura = line.GrupoFatura.Value,
                             Descrição = item.Descrição,
                             NºCliente = item.NºCliente,
@@ -738,7 +802,8 @@ namespace Hydra.Such.Portal.Controllers
                             ValorDoContrato = contractVal,
                             ValorFaturado = (invoicePeriod - creditPeriod),
                             ValorPorFaturar = (contractVal - (invoicePeriod - creditPeriod)),
-                            DataPróximaFatura = item.PróximaDataFatura,
+                            NºDeFaturasAEmitir = invoiceNumber,
+                            DataPróximaFatura = nextInvoice,
                             DataDeRegisto = lastDay,
                             Estado = item.Estado,
                             DataHoraCriação = DateTime.Now,
@@ -755,32 +820,6 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     //Create Contract Lines
-                    Decimal lineQuantity = 1;
-                    if (line.Quantidade != 0)
-                    {
-                        lineQuantity = line.Quantidade.Value;
-                    }
-                    switch (item.PeríodoFatura)
-                    {
-                        case 1:
-                            lineQuantity = lineQuantity * 1;
-                            break;
-                        case 2:
-                            lineQuantity = lineQuantity * 2;
-                            break;
-                        case 3:
-                            lineQuantity = lineQuantity * 3;
-                            break;
-                        case 4:
-                            lineQuantity = lineQuantity * 6;
-                            break;
-                        case 5:
-                            lineQuantity = lineQuantity * 12;
-                            break;
-                        default:
-                            break;
-                    }
-
                     LinhasFaturaçãoContrato newInvoiceLine = new LinhasFaturaçãoContrato
                     {
                         NºContrato = line.NºContrato,
@@ -958,6 +997,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(true);
         }
+
         
         private static int GetNumeration(int type)
         {
@@ -981,6 +1021,11 @@ namespace Hydra.Such.Portal.Controllers
                     break;
             }
             return ProjectNumerationConfigurationId;
+        }
+        
+        private static int GetMonthDiff(DateTime NewDate, DateTime OldDate)
+        {
+            return ((NewDate.Year - OldDate.Year) * 12) + NewDate.Month - OldDate.Month;
         }
     }
 }
