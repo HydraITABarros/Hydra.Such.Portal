@@ -270,141 +270,141 @@ namespace Hydra.Such.Data.ViewModel.CCP
             });
         }
 
-        public static RegistoDeAtas CastRegistoActasViewToRegistoActas(RegistoActasView ActaView)
-        {
-            return (new RegistoDeAtas
-            {
-                NºProcedimento = ActaView.NumProcedimento,
-                NºAta = ActaView.NumActa,
-                DataDaAta = ActaView.DataDaActa,
-                Observações = ActaView.Observacoes,
-                DataHoraCriação = ActaView.DataHoraCriacao,
-                UtilizadorCriação = ActaView.UtilizadorCriacao,
-                DataHoraModificação = ActaView.DataHoraModificacao,
-                UtilizadorModificação = ActaView.UtilizadorModificacao
-            });
-        }
-        public static RegistoActasView CastRegistoActasToRegistoActasView(RegistoDeAtas Acta)
-        {
-            return (new RegistoActasView
-            {
-                NumProcedimento = Acta.NºProcedimento,
-                NumActa = Acta.NºAta,
-                DataDaActa = Acta.DataDaAta,
-                Observacoes = Acta.Observações,
-                DataHoraCriacao = Acta.DataHoraCriação,
-                UtilizadorCriacao = Acta.UtilizadorCriação,
-                DataHoraModificacao = Acta.DataHoraModificação,
-                UtilizadorModificacao = Acta.UtilizadorModificação
-            });
-        }
+        //public static RegistoDeAtas CastRegistoActasViewToRegistoActas(RegistoActasView ActaView)
+        //{
+        //    return (new RegistoDeAtas
+        //    {
+        //        NºProcedimento = ActaView.NumProcedimento,
+        //        NºAta = ActaView.NumActa,
+        //        DataDaAta = ActaView.DataDaActa,
+        //        Observações = ActaView.Observacoes,
+        //        DataHoraCriação = ActaView.DataHoraCriacao,
+        //        UtilizadorCriação = ActaView.UtilizadorCriacao,
+        //        DataHoraModificação = ActaView.DataHoraModificacao,
+        //        UtilizadorModificação = ActaView.UtilizadorModificacao
+        //    });
+        //}
+        //public static RegistoActasView CastRegistoActasToRegistoActasView(RegistoDeAtas Acta)
+        //{
+        //    return (new RegistoActasView
+        //    {
+        //        NumProcedimento = Acta.NºProcedimento,
+        //        NumActa = Acta.NºAta,
+        //        DataDaActa = Acta.DataDaAta,
+        //        Observacoes = Acta.Observações,
+        //        DataHoraCriacao = Acta.DataHoraCriação,
+        //        UtilizadorCriacao = Acta.UtilizadorCriação,
+        //        DataHoraModificacao = Acta.DataHoraModificação,
+        //        UtilizadorModificacao = Acta.UtilizadorModificação
+        //    });
+        //}
 
-        public static TemposPaCcp CastTemposCCPViewToTemposPaCcp(TemposPACCPView TemposView)
-        {
-            return (new TemposPaCcp()
-            {
-                NºProcedimento = TemposView.NumProcedimento,
-                Estado0 = TemposView.Estado0,
-                Estado1 = TemposView.Estado1,
-                Estado2 = TemposView.Estado2,
-                Estado3 = TemposView.Estado3,
-                Estado4 = TemposView.Estado4,
-                Estado5 = TemposView.Estado5,
-                Estado6 = TemposView.Estado6,
-                Estado7 = TemposView.Estado7,
-                Estado8 = TemposView.Estado8,
-                Estado9 = TemposView.Estado9,
-                Estado10 = TemposView.Estado10,
-                Estado11 = TemposView.Estado11,
-                Estado12 = TemposView.Estado12,
-                Estado13 = TemposView.Estado13,
-                Estado14 = TemposView.Estado14,
-                Estado15 = TemposView.Estado15,
-                Estado16 = TemposView.Estado16,
-                Estado17 = TemposView.Estado17,
-                Estado18 = TemposView.Estado18,
-                Estado19 = TemposView.Estado19,
-                Estado20 = TemposView.Estado20,
-                Estado0Tg = TemposView.Estado0Tg,
-                Estado1Tg = TemposView.Estado1Tg,
-                Estado2Tg = TemposView.Estado2Tg,
-                Estado3Tg = TemposView.Estado3Tg,
-                Estado4Tg = TemposView.Estado4Tg,
-                Estado5Tg = TemposView.Estado5Tg,
-                Estado6Tg = TemposView.Estado6Tg,
-                Estado7Tg = TemposView.Estado7Tg,
-                Estado8Tg = TemposView.Estado8Tg,
-                Estado9Tg = TemposView.Estado9Tg,
-                Estado10Tg = TemposView.Estado10Tg,
-                Estado11Tg = TemposView.Estado11Tg,
-                Estado12Tg = TemposView.Estado12Tg,
-                Estado13Tg = TemposView.Estado13Tg,
-                Estado14Tg = TemposView.Estado14Tg,
-                Estado15Tg = TemposView.Estado15Tg,
-                Estado16Tg = TemposView.Estado16Tg,
-                Estado17Tg = TemposView.Estado17Tg,
-                Estado18Tg = TemposView.Estado18Tg,
-                Estado19Tg = TemposView.Estado19Tg,
-                Estado20Tg = TemposView.Estado20Tg,
-                DataHoraCriação = TemposView.DataHoraCriacao,
-                UtilizadorCriação = TemposView.UtilizadorCriacao,
-                DataHoraModificação = TemposView.DataHoraModificacao,
-                UtilizadorModificação = TemposView.UtilizadorModificacao
-            });
-        }
-        public static TemposPACCPView CastTemposPaCcpToTemposCCPView(TemposPaCcp Tempos)
-        {
-            return (new TemposPACCPView()
-            {
-                NumProcedimento = Tempos.NºProcedimento,
-                Estado0 = Tempos.Estado0,
-                Estado1 = Tempos.Estado1,
-                Estado2 = Tempos.Estado2,
-                Estado3 = Tempos.Estado3,
-                Estado4 = Tempos.Estado4,
-                Estado5 = Tempos.Estado5,
-                Estado6 = Tempos.Estado6,
-                Estado7 = Tempos.Estado7,
-                Estado8 = Tempos.Estado8,
-                Estado9 = Tempos.Estado9,
-                Estado10 = Tempos.Estado10,
-                Estado11 = Tempos.Estado11,
-                Estado12 = Tempos.Estado12,
-                Estado13 = Tempos.Estado13,
-                Estado14 = Tempos.Estado14,
-                Estado15 = Tempos.Estado15,
-                Estado16 = Tempos.Estado16,
-                Estado17 = Tempos.Estado17,
-                Estado18 = Tempos.Estado18,
-                Estado19 = Tempos.Estado19,
-                Estado20 = Tempos.Estado20,
-                Estado0Tg = Tempos.Estado0Tg,
-                Estado1Tg = Tempos.Estado1Tg,
-                Estado2Tg = Tempos.Estado2Tg,
-                Estado3Tg = Tempos.Estado3Tg,
-                Estado4Tg = Tempos.Estado4Tg,
-                Estado5Tg = Tempos.Estado5Tg,
-                Estado6Tg = Tempos.Estado6Tg,
-                Estado7Tg = Tempos.Estado7Tg,
-                Estado8Tg = Tempos.Estado8Tg,
-                Estado9Tg = Tempos.Estado9Tg,
-                Estado10Tg = Tempos.Estado10Tg,
-                Estado11Tg = Tempos.Estado11Tg,
-                Estado12Tg = Tempos.Estado12Tg,
-                Estado13Tg = Tempos.Estado13Tg,
-                Estado14Tg = Tempos.Estado14Tg,
-                Estado15Tg = Tempos.Estado15Tg,
-                Estado16Tg = Tempos.Estado16Tg,
-                Estado17Tg = Tempos.Estado17Tg,
-                Estado18Tg = Tempos.Estado18Tg,
-                Estado19Tg = Tempos.Estado19Tg,
-                Estado20Tg = Tempos.Estado20Tg,
-                DataHoraCriacao = Tempos.DataHoraCriação,
-                UtilizadorCriacao = Tempos.UtilizadorCriação,
-                DataHoraModificacao = Tempos.DataHoraModificação,
-                UtilizadorModificacao = Tempos.UtilizadorModificação
-            });
-        }
+        //public static TemposPaCcp CastTemposCCPViewToTemposPaCcp(TemposPACCPView TemposView)
+        //{
+        //    return (new TemposPaCcp()
+        //    {
+        //        NºProcedimento = TemposView.NumProcedimento,
+        //        Estado0 = TemposView.Estado0,
+        //        Estado1 = TemposView.Estado1,
+        //        Estado2 = TemposView.Estado2,
+        //        Estado3 = TemposView.Estado3,
+        //        Estado4 = TemposView.Estado4,
+        //        Estado5 = TemposView.Estado5,
+        //        Estado6 = TemposView.Estado6,
+        //        Estado7 = TemposView.Estado7,
+        //        Estado8 = TemposView.Estado8,
+        //        Estado9 = TemposView.Estado9,
+        //        Estado10 = TemposView.Estado10,
+        //        Estado11 = TemposView.Estado11,
+        //        Estado12 = TemposView.Estado12,
+        //        Estado13 = TemposView.Estado13,
+        //        Estado14 = TemposView.Estado14,
+        //        Estado15 = TemposView.Estado15,
+        //        Estado16 = TemposView.Estado16,
+        //        Estado17 = TemposView.Estado17,
+        //        Estado18 = TemposView.Estado18,
+        //        Estado19 = TemposView.Estado19,
+        //        Estado20 = TemposView.Estado20,
+        //        Estado0Tg = TemposView.Estado0Tg,
+        //        Estado1Tg = TemposView.Estado1Tg,
+        //        Estado2Tg = TemposView.Estado2Tg,
+        //        Estado3Tg = TemposView.Estado3Tg,
+        //        Estado4Tg = TemposView.Estado4Tg,
+        //        Estado5Tg = TemposView.Estado5Tg,
+        //        Estado6Tg = TemposView.Estado6Tg,
+        //        Estado7Tg = TemposView.Estado7Tg,
+        //        Estado8Tg = TemposView.Estado8Tg,
+        //        Estado9Tg = TemposView.Estado9Tg,
+        //        Estado10Tg = TemposView.Estado10Tg,
+        //        Estado11Tg = TemposView.Estado11Tg,
+        //        Estado12Tg = TemposView.Estado12Tg,
+        //        Estado13Tg = TemposView.Estado13Tg,
+        //        Estado14Tg = TemposView.Estado14Tg,
+        //        Estado15Tg = TemposView.Estado15Tg,
+        //        Estado16Tg = TemposView.Estado16Tg,
+        //        Estado17Tg = TemposView.Estado17Tg,
+        //        Estado18Tg = TemposView.Estado18Tg,
+        //        Estado19Tg = TemposView.Estado19Tg,
+        //        Estado20Tg = TemposView.Estado20Tg,
+        //        DataHoraCriação = TemposView.DataHoraCriacao,
+        //        UtilizadorCriação = TemposView.UtilizadorCriacao,
+        //        DataHoraModificação = TemposView.DataHoraModificacao,
+        //        UtilizadorModificação = TemposView.UtilizadorModificacao
+        //    });
+        //}
+        //public static TemposPACCPView CastTemposPaCcpToTemposCCPView(TemposPaCcp Tempos)
+        //{
+        //    return (new TemposPACCPView()
+        //    {
+        //        NumProcedimento = Tempos.NºProcedimento,
+        //        Estado0 = Tempos.Estado0,
+        //        Estado1 = Tempos.Estado1,
+        //        Estado2 = Tempos.Estado2,
+        //        Estado3 = Tempos.Estado3,
+        //        Estado4 = Tempos.Estado4,
+        //        Estado5 = Tempos.Estado5,
+        //        Estado6 = Tempos.Estado6,
+        //        Estado7 = Tempos.Estado7,
+        //        Estado8 = Tempos.Estado8,
+        //        Estado9 = Tempos.Estado9,
+        //        Estado10 = Tempos.Estado10,
+        //        Estado11 = Tempos.Estado11,
+        //        Estado12 = Tempos.Estado12,
+        //        Estado13 = Tempos.Estado13,
+        //        Estado14 = Tempos.Estado14,
+        //        Estado15 = Tempos.Estado15,
+        //        Estado16 = Tempos.Estado16,
+        //        Estado17 = Tempos.Estado17,
+        //        Estado18 = Tempos.Estado18,
+        //        Estado19 = Tempos.Estado19,
+        //        Estado20 = Tempos.Estado20,
+        //        Estado0Tg = Tempos.Estado0Tg,
+        //        Estado1Tg = Tempos.Estado1Tg,
+        //        Estado2Tg = Tempos.Estado2Tg,
+        //        Estado3Tg = Tempos.Estado3Tg,
+        //        Estado4Tg = Tempos.Estado4Tg,
+        //        Estado5Tg = Tempos.Estado5Tg,
+        //        Estado6Tg = Tempos.Estado6Tg,
+        //        Estado7Tg = Tempos.Estado7Tg,
+        //        Estado8Tg = Tempos.Estado8Tg,
+        //        Estado9Tg = Tempos.Estado9Tg,
+        //        Estado10Tg = Tempos.Estado10Tg,
+        //        Estado11Tg = Tempos.Estado11Tg,
+        //        Estado12Tg = Tempos.Estado12Tg,
+        //        Estado13Tg = Tempos.Estado13Tg,
+        //        Estado14Tg = Tempos.Estado14Tg,
+        //        Estado15Tg = Tempos.Estado15Tg,
+        //        Estado16Tg = Tempos.Estado16Tg,
+        //        Estado17Tg = Tempos.Estado17Tg,
+        //        Estado18Tg = Tempos.Estado18Tg,
+        //        Estado19Tg = Tempos.Estado19Tg,
+        //        Estado20Tg = Tempos.Estado20Tg,
+        //        DataHoraCriacao = Tempos.DataHoraCriação,
+        //        UtilizadorCriacao = Tempos.UtilizadorCriação,
+        //        DataHoraModificacao = Tempos.DataHoraModificação,
+        //        UtilizadorModificacao = Tempos.UtilizadorModificação
+        //    });
+        //}
 
         public static ElementosJuri CastElementosJuriViewToElementosJuri(ElementosJuriView ElementosView)
         {
