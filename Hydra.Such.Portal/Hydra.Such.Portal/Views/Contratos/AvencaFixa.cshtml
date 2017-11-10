@@ -226,7 +226,7 @@
                 _gridListResponse: function()
                 {
                     if (this.result == null || this.result == undefined || this.result.length == 0) {
-                        this.openToastSuccess("Não existem aprovações pendentes.");
+                        this.openToastSuccess("Não existem linhas passiveis a faturar pendentes.");
                     }               
                 },
 
@@ -235,7 +235,6 @@
                     //{
                         this.$.ajax_generate.body = JSON.stringify(this.result);
                         this.$.ajax_generate.generateRequest();
-                        this.$.avencaFixaTable.clearCache();
                     //}
                     //else {
                     //    this.openToastError("Não existem linhas disponiíveis para faturar.");
@@ -245,7 +244,8 @@
                 _invoiceGenResponse: function (e) {
                     if (e.returnValue == true)
                     {
-                        this.openToastSuccess("Faturas geradas com sucesso.");
+                        this.$.ajax_getall.generateRequest();
+                        this.$.avencaFixaTable.clearCache();
                     }
                     else {
                         this.openToastError("Ocorreu um erro ao tentar gerar faturas.");
