@@ -7,16 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 
 
-//using Hydra.Such.Data.ViewModel;
-//using Hydra.Such.Data.Logic;
-//using Hydra.Such.Data.Database;
-//using Hydra.Such.Data.Logic.Project;
-//using Hydra.Such.Data.Logic.ProjectDiary;
-//using Hydra.Such.Data.ViewModel.ProjectDiary;
-//using Hydra.Such.Data.ViewModel.ProjectView;
-//using Microsoft.AspNetCore.Authorization;
-//using Microsoft.CodeAnalysis.CSharp.Syntax;
-
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
@@ -29,13 +19,6 @@ namespace Hydra.Such.Portal.Controllers
 {
     public class ContactosController : Controller
     {
-        private UserAccessesViewModel userPermissions = new UserAccessesViewModel()
-        {
-            Create = true,
-            Delete = true,
-            Update = true,
-            Read = true,
-        };
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
 
@@ -48,7 +31,7 @@ namespace Hydra.Such.Portal.Controllers
         // GET: Contactos
         public ActionResult Index()
         {
-            //UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 1);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 99, 24);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UserPermissions = userPermissions;
@@ -64,7 +47,7 @@ namespace Hydra.Such.Portal.Controllers
         [Route("Contactos/Detalhes/{id}")]
         public ActionResult Details(string id)
         {
-            //UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 1);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 99, 24);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.ContactId = string.IsNullOrEmpty(id) ? string.Empty : id;
@@ -119,13 +102,17 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
+                string entityId = "";
+                bool autoGenId = false;
+
                 //Get Numeration
                 Configuração conf = DBConfigurations.GetById(1);
                 int entityNumerationConfId = conf.NumeraçãoContactos.Value;
-                string entityId = "";
+                
                 if (item.Id == "" || item.Id == null)
                 {
-                    entityId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, true);
+                    autoGenId = true;
+                    entityId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
                     item.Id = entityId;
                 }
 
@@ -142,8 +129,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             //Inserted, update item to return
                             item = newItem;
-                            item.eReasonCode = 1;
-                            item.eMessage = "Contacto criado com sucesso.";
+                            
 
                             Task<WSContacts.Create_Result> createContactTask = NAVContactsService.CreateAsync(item, _configws);
                             try
@@ -169,10 +155,13 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 //Update Last Numeration Used
                                 ConfiguraçãoNumerações configNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
-                                configNumerations.ÚltimoNºUsado = item.Id;
-                                DBNumerationConfigurations.Update(configNumerations);
-
+                                if (configNumerations != null && autoGenId)
+                                {
+                                    configNumerations.ÚltimoNºUsado = item.Id;
+                                    DBNumerationConfigurations.Update(configNumerations);
+                                }
                                 item.eReasonCode = 1;
+                                item.eMessage = "Contacto criado com sucesso.";
                             }
                         }
                         else
