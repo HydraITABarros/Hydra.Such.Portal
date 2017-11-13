@@ -68,6 +68,14 @@ namespace Hydra.Such.Portal.Controllers
                 ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(FolhaDeHorasNumerationConfigurationId);
                 ConfigNumerations.ÚltimoNºUsado = id;
                 DBNumerationConfigurations.Update(ConfigNumerations);
+
+                FolhasDeHoras FH = new FolhasDeHoras()
+                {
+                    NºFolhaDeHoras = id
+                };
+
+                DBFolhasDeHoras.Create(FH);
+
             }
 
             ViewBag.FolhaDeHorasNo = id == null ? "" : id;
