@@ -15,7 +15,7 @@
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-
+<link rel="import" href="/lib/iron-autogrow-textarea/iron-autogrow-textarea.html">
 <!--<h1 class="title">Autorização Faturação</h1>-->
 
 <dom-module id="x-invoice-autorization">
@@ -82,7 +82,10 @@
         <paper-button raised id="btnConfirm" class="btnSave" on-tap="_confirm">Faturar</paper-button>
     </div>
 </div>
-
+    <div class="row">
+            <iron-autogrow-textarea style="height: 50px;"></iron-autogrow-textarea>
+    </div>
+   
 <br />
 <vaadin-grid id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result]]" class="editGrid">
     <vaadin-grid-selection-column auto-select>
