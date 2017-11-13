@@ -144,36 +144,36 @@ namespace Hydra.Such.Portal.Controllers
                             item = newItem;
                             item.eReasonCode = 1;
                             item.eMessage = "Contacto criado com sucesso.";
-                            WSContacts.WSContact x = new WSContacts.WSContact();
-                            x.No = "";
 
-                            //Task<WSContacts.Create_Result> TCreateNavProj = WSContacts.Create();//.CreateNavProject(data, _configws);
-                            //try
-                            //{
-                            //    TCreateNavProj.Wait();
-                            //}
-                            //catch (Exception ex)
-                            //{
-                            //    item.eReasonCode = 3;
-                            //    item.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
-                            //}
-                            //if (!TCreateNavProj.IsCompletedSuccessfully)
-                            //{
-                            //    //Delete Created Project on Database
-                            //    DBContacts.Delete(item.Id);
+                            Task<WSContacts.Create_Result> createContactTask = NAVContactsService.CreateAsync(item, _configws);
+                            try
+                            {
+                                createContactTask.Wait();
+                            }
+                            catch (Exception ex)
+                            {
+                                item.eReasonCode = 3;
+                                item.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
+                            }
 
-                            //    item.eReasonCode = 3;
-                            //    item.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
-                            //}
-                            //else
-                            //{
-                            //    //Update Last Numeration Used
-                            //    ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
-                            //    ConfigNumerations.ÚltimoNºUsado = data.ProjectNo;
-                            //    DBNumerationConfigurations.Update(ConfigNumerations);
 
-                            //    item.eReasonCode = 1;
-                            //}
+                            if (!createContactTask.IsCompletedSuccessfully)
+                            {
+                                //Delete Created Project on Database
+                                DBContacts.Delete(item.Id);
+
+                                item.eReasonCode = 3;
+                                item.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
+                            }
+                            else
+                            {
+                                //Update Last Numeration Used
+                                ConfiguraçãoNumerações configNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                                configNumerations.ÚltimoNºUsado = item.Id;
+                                DBNumerationConfigurations.Update(configNumerations);
+
+                                item.eReasonCode = 1;
+                            }
                         }
                         else
                         {

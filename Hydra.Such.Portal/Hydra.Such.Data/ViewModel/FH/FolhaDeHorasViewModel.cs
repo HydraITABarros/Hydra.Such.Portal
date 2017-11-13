@@ -33,7 +33,6 @@ namespace Hydra.Such.Data.ViewModel.FH
         public DateTime? DataHoraUltimoEstado { get; set; }
         public string DataUltimoEstadoTexto { get; set; }
         public string HoraUltimoEstadoTexto { get; set; }
-        public string UtilizadorCriacao { get; set; }
         public DateTime? DataHoraModificacao { get; set; }
         public string DataModificacaoTexto { get; set; }
         public string HoraModificacaoTexto { get; set; }
