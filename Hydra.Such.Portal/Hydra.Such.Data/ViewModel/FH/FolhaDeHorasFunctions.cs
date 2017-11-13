@@ -41,7 +41,8 @@ namespace Hydra.Such.Data.ViewModel.FH
                 DataHoraUltimoEstado = FH.DataHoraÚltimoEstado,
                 DataUltimoEstadoTexto = FH.DataHoraÚltimoEstado.Value.ToShortDateString(),
                 HoraUltimoEstadoTexto = FH.DataHoraÚltimoEstado.Value.ToShortTimeString(),
-                UtilizadorCriacao = FH.UtilizadorCriação,
+                //abarros_
+                //UtilizadorCriacao = FH.UtilizadorCriação,
                 DataHoraModificacao = FH.DataHoraModificação,
                 DataModificacaoTexto = FH.DataHoraModificação.Value.ToShortDateString(),
                 HoraModificacaoTexto = FH.DataHoraModificação.Value.ToShortTimeString(),
@@ -100,7 +101,8 @@ namespace Hydra.Such.Data.ViewModel.FH
                 CriadoPor = FH.CriadoPor,
                 DataHoraCriação = DateTime.Parse(FH.DataCriacaoTexto + " " + FH.HoraCriacaoTexto),
                 DataHoraÚltimoEstado = DateTime.Parse(FH.DataUltimoEstadoTexto + " " + FH.HoraUltimoEstadoTexto),
-                UtilizadorCriação = FH.UtilizadorCriacao,
+                //abarros_
+                //UtilizadorCriação = FH.UtilizadorCriacao,
                 DataHoraModificação = DateTime.Parse(FH.DataModificacaoTexto + " " + FH.HoraModificacaoTexto),
                 UtilizadorModificação = FH.UtilizadorModificacao,
                 NomeEmpregado = FH.EmpregadoNome,
@@ -255,8 +257,9 @@ namespace Hydra.Such.Data.ViewModel.FH
                 RecursoNo = MaoDeObra.NºRecurso,
                 CodigoUnidadeMedida = MaoDeObra.CódUnidadeMedida,
                 CodigoTipoOM = MaoDeObra.CódigoTipoOm,
-                HorasNo = Convert.ToDateTime("1753-01-01 " + MaoDeObra.NºDeHotas),
-                HorasNoTexto = MaoDeObra.NºDeHotas.ToString(),
+                //abarros_
+                //HorasNo = Convert.ToDateTime("1753-01-01 " + MaoDeObra.NºDeHotas),
+                //HorasNoTexto = MaoDeObra.NºDeHotas.ToString(),
                 CustoUnitarioDireto = Convert.ToDecimal(MaoDeObra.CustoUnitárioDireto),
                 PrecoDeCusto = Convert.ToDecimal(MaoDeObra.PreçoDeCusto),
                 PrecoDeVenda = Convert.ToDecimal(MaoDeObra.PreçoDeVenda),
@@ -288,7 +291,8 @@ namespace Hydra.Such.Data.ViewModel.FH
                 NºRecurso = MaoDeObra.RecursoNo,
                 CódUnidadeMedida = MaoDeObra.CodigoUnidadeMedida,
                 CódigoTipoOm = MaoDeObra.CodigoTipoOM,
-                NºDeHotas = TimeSpan.Parse(MaoDeObra.HorasNoTexto),
+                //abarros_
+                //NºDeHotas = TimeSpan.Parse(MaoDeObra.HorasNoTexto),
                 CustoUnitárioDireto = MaoDeObra.CustoUnitarioDireto,
                 PreçoDeCusto = MaoDeObra.PrecoDeCusto,
                 PreçoDeVenda = MaoDeObra.PrecoDeVenda,

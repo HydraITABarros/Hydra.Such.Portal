@@ -60,7 +60,7 @@ namespace Hydra.Such.Data.Logic.CCP
                               Workflow Procedimentos CCP
                     */
 
-                    Procedimento.Nº1 = context.TemposPaCcp.Where(t => t.NºProcedimento == Procedimento.Nº).FirstOrDefault();
+                    //Procedimento.Nº1 = context.TemposPaCcp.Where(t => t.NºProcedimento == Procedimento.Nº).FirstOrDefault();
 
                     // zpgm. Registo de Actas is missing while the data model isn't updated
 
@@ -132,7 +132,9 @@ namespace Hydra.Such.Data.Logic.CCP
                 proc.Nº = DBNumerationConfigurations.GetNextNumeration(NumeracaoProcedimento, true);
                 proc.DataHoraCriação = DateTime.Now;
                 proc.Estado = 0;
-                proc.Nº1 = new TemposPaCcp()
+
+                //abarros_
+                /*proc.Nº1 = new TemposPaCcp()
                 {
                     NºProcedimento = proc.Nº,
                     Estado0 = 1,
@@ -145,7 +147,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 context.Add(proc.NºNavigation);
                 context.SaveChanges();
 
-                context.Add(proc.Nº1);
+                context.Add(proc.Nº1);*/
                 context.SaveChanges();
 
                 context.Add(proc);
@@ -399,7 +401,7 @@ namespace Hydra.Such.Data.Logic.CCP
             return CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(GetProcedimentoById(id));
         }
         #endregion
-<<<<<<< HEAD
+
 
         #region Users settings related to Procedimentos CCP
         public static List<ConfigUtilizadores> GetAllUsersElementosJuri()
@@ -424,7 +426,6 @@ namespace Hydra.Such.Data.Logic.CCP
             }
         }
         #endregion
-=======
->>>>>>> c124b6572912df3a41dc74ccd215f239618c98b0
+
     }
 }
