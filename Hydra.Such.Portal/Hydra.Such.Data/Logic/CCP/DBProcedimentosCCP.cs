@@ -9,6 +9,8 @@ namespace Hydra.Such.Data.Logic.CCP
 {
     public static class DBProcedimentosCCP
     {
+        // zpgm. const
+        private const int _ElementoJuriFeatureID = 23;
 
         #region parse ProcedimentosCcp
         public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoTypeToList(int type)
@@ -397,5 +399,32 @@ namespace Hydra.Such.Data.Logic.CCP
             return CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(GetProcedimentoById(id));
         }
         #endregion
+<<<<<<< HEAD
+
+        #region Users settings related to Procedimentos CCP
+        public static List<ConfigUtilizadores> GetAllUsersElementosJuri()
+        {
+            SuchDBContext _context = new SuchDBContext();
+            List<ConfigUtilizadores> ConfigUsers = new List<ConfigUtilizadores>();
+
+            try
+            {
+                var Acessos = _context.AcessosUtilizador.Where(au => au.Funcionalidade == _ElementoJuriFeatureID);
+                foreach (AcessosUtilizador au in Acessos)
+                {
+                    ConfigUtilizadores CU = _context.ConfigUtilizadores.Where(c => c.IdUtilizador == au.IdUtilizador).FirstOrDefault();
+                    ConfigUsers.Add(CU);
+                }
+
+                return ConfigUsers;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+        #endregion
+=======
+>>>>>>> c124b6572912df3a41dc74ccd215f239618c98b0
     }
 }

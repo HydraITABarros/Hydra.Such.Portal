@@ -62,11 +62,35 @@
         </style>
 
         <!-- Dropdowns populate-->
-        <iron-ajax url="/PopulateDropdowns/GetPocedimentosCcpProcedimentoType" last-response="{{LProcedimentoType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpType" last-response="{{LType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpStates" last-response="{{LProcedimentoState}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetBoolValues" last-response="{{LBoolValues}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPocedimentosCcpProcedimentoType" 
+                   last-response="{{LProcedimentoType}}" 
+                   auto method="post" 
+                   handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpType" 
+                   last-response="{{LType}}" 
+                   auto method="post" 
+                   handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpStates" 
+                   last-response="{{LProcedimentoState}}" 
+                   auto method="post" handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetBoolValues" 
+                   last-response="{{LBoolValues}}" 
+                   auto method="post" handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/GetUsersWhoAreElementosJuri" 
+                   last-response="{{LUsers}}" 
+                   auto method="post" handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
 
+        <!-- Controller functions -->
         <iron-ajax url="/ProcedimentosCcps/GetProcedimentoDetails"
                    last-response="{{data}}"
                    method="post"
@@ -204,6 +228,49 @@
                         </vaadin-combo-box>
                     </div>
                 </div>
+<<<<<<< HEAD
+                <!-- Elementos Juri section.b -->
+                <h2 class="separator">Elementos Juri</h2>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-combo-box items="[[LUsers]]" id="users" item-value-path="id" value="{{_userName }}" item-label-path="id" label="Possiveis Elementos">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <br />
+                        <paper-button class="btnEdit" raised on-tap="_createElementoJuri"><i class="fa fa-plus" aria-hidden="true"></i>Adicionar Elemento</paper-button>
+                    </div>
+                </div>
+                <vaadin-grid id="gridElementosJuri" aria-label="gridElementosJuri" items="{{data.elementosJuri}}" class="grid">
+                    <vaadin-grid-column width="20%">
+                        <template class="header">
+                            Utilizador
+                        </template>
+                        <template>
+                            <vaadin-text-field type="text" value="{{ item.utilizador }}"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="20%">
+                        <template class="header">
+                            Num
+                        </template>
+                        <template>
+                            <vaadin-text-field type="text" value="{{ item.noEmpregado }}"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+
+                
+                <!-- Elementos Juri section.e -->
+=======
+>>>>>>> c124b6572912df3a41dc74ccd215f239618c98b0
             </div>
 
             <!-- Tab Imobilizado -->
@@ -250,6 +317,11 @@
                     _procedimentotypeid: {
                         type: Number,
                         value: 0
+                    },
+                    _userName: {
+                        type: String,
+                        notify: true,
+                        value: ""
                     },
                     selected: {
                         type: Number,
