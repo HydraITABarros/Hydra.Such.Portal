@@ -399,7 +399,6 @@ namespace Hydra.Such.Data.Logic.CCP
             return CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(GetProcedimentoById(id));
         }
         #endregion
-<<<<<<< HEAD
 
         #region Users settings related to Procedimentos CCP
         public static List<ConfigUtilizadores> GetAllUsersElementosJuri()
@@ -424,7 +423,6 @@ namespace Hydra.Such.Data.Logic.CCP
             }
         }
         #endregion
-=======
->>>>>>> c124b6572912df3a41dc74ccd215f239618c98b0
+
     }
 }
