@@ -57,6 +57,19 @@ namespace Hydra.Such.Portal.Controllers
         #region Details
         public IActionResult Detalhes(String id)
         {
+            if (id == null || id == "")
+            {
+                //Get Project Numeration
+                Configuração Configs = DBConfigurations.GetById(1);
+                int FolhaDeHorasNumerationConfigurationId = Configs.NumeraçãoFolhasDeHoras.Value;
+                id = DBNumerationConfigurations.GetNextNumeration(FolhaDeHorasNumerationConfigurationId, true);
+
+                //Update Last Numeration Used
+                ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(FolhaDeHorasNumerationConfigurationId);
+                ConfigNumerations.ÚltimoNºUsado = id;
+                DBNumerationConfigurations.Update(ConfigNumerations);
+            }
+
             ViewBag.FolhaDeHorasNo = id == null ? "" : id;
             return View();
         }
