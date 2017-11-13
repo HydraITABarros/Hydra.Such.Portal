@@ -79,6 +79,13 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 11,
                 Value = "Administração"
             },
+
+            // zpgm. Generic Area to allow features to be applied to all Areas
+            new EnumData()
+            {
+                Id = 99,
+                Value = "Genérica"
+            }
         };
 
         public static readonly List<EnumData> Features = new List<EnumData>(){
@@ -786,12 +793,12 @@ namespace Hydra.Such.Portal.Configurations
         {
             new EnumData()
             {
-                Id = 0,
+                Id = 2,
                 Value = "Ajuda de Custo"
             },
             new EnumData()
             {
-                Id = 1,
+                Id = 3,
                 Value = "Despesa"
             }
         };
@@ -1019,6 +1026,24 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData(2, "Área Funcional"),
             new EnumData(3, "Centro Responsabilidade")
         };
+
+        public static readonly List<EnumData> NutritionCoffeShopTypes = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Cafetaria"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Refeitório"
+            }
+        };
+
+
+
+
     }
 
     public class EnumDataString
