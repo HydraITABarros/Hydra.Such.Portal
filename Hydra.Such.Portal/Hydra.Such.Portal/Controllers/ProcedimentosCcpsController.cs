@@ -113,10 +113,17 @@ namespace Hydra.Such.Portal.Controllers
             return Json(false);
         }
 
-        //public JsonResult GetUsersWhoAreElementosJuri()
-        //{
+        public JsonResult GetUsersWhoAreElementosJuri()
+        {
 
-        //}
+            List<DDMessageString> result = DBProcedimentosCCP.GetAllUsersElementosJuri().Select(cu => new DDMessageString()
+            {
+                id = cu.IdUtilizador,
+                value = cu.Nome
+            }).ToList();
+
+            return Json(result);
+        }
 
         public JsonResult CreateProcedimento([FromBody] ProcedimentoCCPView data)
         {
