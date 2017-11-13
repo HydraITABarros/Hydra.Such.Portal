@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewData["Title"] = "Perfis Modelo - Administraçao - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
+<link rel="import" href="~/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+
+<h1 class="title">Perfis Modelo</h1>
+
+<x-profile-models></x-profile-models>
+<dom-module id="x-profile-models">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+            @*POPULATE GRID*@
+            <iron-ajax url="/Administracao/GetListProfileModels"
+                       last-response="{{result}}"
+                       auto
+                       method="post"
+                       handle-as="json"
+                       id="grid_databound"
+                       content-type="application/json"></iron-ajax>
+
+        <div class="marginSpace">
+            <paper-button class="btnSave" raised on-tap="_create">Criar Novo</paper-button>
+        </div>
+        <vaadin-grid aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="10%">
+                <template class="header">
+                    <vaadin-grid-sorter path="id">ID</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="id" />
+                </template>
+                <template>
+                    {{item.id}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="90%">
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description"/>
+                </template>
+                <template>
+                    {{item.description}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+        
+</template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-profile-models',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Administracao/PerfisModeloDetalhes/"+item.id;
+                    }
+                },
+                _create: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Administracao/PerfisModeloDetalhes/0";
+                    }
+                }
+            });
+        });
+    </script>
+
+</dom-module>
+
+
+
+

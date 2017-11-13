@@ -793,12 +793,12 @@ namespace Hydra.Such.Portal.Configurations
         {
             new EnumData()
             {
-                Id = 0,
+                Id = 2,
                 Value = "Ajuda de Custo"
             },
             new EnumData()
             {
-                Id = 1,
+                Id = 3,
                 Value = "Despesa"
             }
         };

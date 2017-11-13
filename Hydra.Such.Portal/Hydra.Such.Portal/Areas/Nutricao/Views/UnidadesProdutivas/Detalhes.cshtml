@@ -92,7 +92,10 @@
 
         @*EXTRAS*@
         <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectBillingInfo" last-response="{{PBInfo}}" id="projectBillingData_Ajax" on-response="_projectBillingDataResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        
+        <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PKInfo}}" id="projectKitchenData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PWInfo}}" id="projectWasteData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PSInfo}}" id="projectWasteData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         
         
         <div class="marginSpace">

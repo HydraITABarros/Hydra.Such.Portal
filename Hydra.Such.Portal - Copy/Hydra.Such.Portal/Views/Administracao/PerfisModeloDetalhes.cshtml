@@ -1,0 +1,361 @@
+﻿
+@{
+    ViewData["Title"] = "Detalhes Perfis Modelo - Administração - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html" />
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html" />
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html" />
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html" />
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<h1 class="title">Perfis Modelo</h1>
+
+<x-profile-models></x-profile-models>
+<dom-module id="x-profile-models">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+
+        @*POPULATE GRID*@
+        <iron-ajax url="/Administracao/GetProfileModelData"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
+
+        <h2 class="separator">Geral</h2>
+        <div class="row">
+            <div class="col-lg-3">
+                <vaadin-text-field id="piDescription" name="piDescription" label="Descrição" value="{{data.description}}" maxlength="50"></vaadin-text-field>
+            </div>
+        </div>
+
+        @*CRUD NEW PROFILEMODEL*@
+        <iron-ajax url="/Administracao/CreateProfileModel"
+                   id="ajax_create"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   on-response="_responseProcessor"
+                   content-type="application/json; charset=utf-8"></iron-ajax>
+
+
+        <iron-ajax url="/PopulateDropdowns/GetAreas"
+                   last-response="{{AreasData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetFeatures"
+                   last-response="{{FeaturesData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <h2 class="separator">Acessos Perfil</h2>
+        <div class="row">
+            <div class="col-lg-3">
+                <vaadin-combo-box items="[[AreasData]]" item-value-path="id" item-label-path="value" value="{{ddArea}}" label="Área">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-combo-box items="[[FeaturesData]]" item-value-path="id" item-label-path="value" value="{{ddFeature}}" label="Funcionalidade">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-lg-1 alignPoga"><vaadin-checkbox checked="{{chkCreate}}"> Inserção</vaadin-checkbox></div>
+            <div class="col-lg-1 alignPoga"><vaadin-checkbox checked="{{chkRead}}"> Leitura</vaadin-checkbox></div>
+            <div class="col-lg-1 alignPoga"><vaadin-checkbox checked="{{chkUpdate}}"> Modificação</vaadin-checkbox></div>
+            <div class="col-lg-1 alignPoga"><vaadin-checkbox checked="{{chkDelete}}"> Eliminação</vaadin-checkbox></div>
+            <div class="col-lg-2 alignPoga"><paper-button class="btnSave" raised on-tap="_createAccessProfile">Criar</paper-button></div>
+            </div>
+
+                <vaadin-grid id="gridAccesses" aria-label="ProfileModelsTabel" items="{{ data.profileModelAccesses }}" class="grid">
+                    <vaadin-grid-column width="20%">
+                        <template class="header">
+                            Área
+                        </template>
+                        <template>
+                            <vaadin-combo-box items="[[AreasData]]" item-value-path="id" item-label-path="value" value="{{item.area}}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="20%">
+                        <template class="header">
+                            Funcionalidade
+                        </template>
+                        <template>
+                            <vaadin-combo-box items="[[FeaturesData]]" item-value-path="id" item-label-path="value" value="{{item.feature}}">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="12%">
+                        <template class="header">
+                            <center>
+                                Inserção
+                            </center>
+                        </template>
+                        <template>
+                            <center>
+                                <vaadin-checkbox checked="{{item.create}}"></vaadin-checkbox>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="12%">
+                        <template class="header">
+                            <center>
+                                Leitura
+                            </center>
+                        </template>
+                        <template>
+                            <center>
+                                <vaadin-checkbox checked="{{item.read}}"></vaadin-checkbox>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="12%">
+                        <template class="header">
+                            <center>
+                                Modificação
+                            </center>
+                        </template>
+                        <template>
+                            <center>
+                                <vaadin-checkbox checked="{{item.update}}"></vaadin-checkbox>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="12%">
+                        <template class="header">
+                            <center>
+                                Eliminação
+                            </center>
+                        </template>
+                        <template>
+                            <center>
+                                <vaadin-checkbox checked="{{item.delete}}"></vaadin-checkbox>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="12%">
+                        <template class="header">
+                        </template>
+                        <template>
+                            <center>
+                                <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile">Eliminar</paper-button>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+
+                <div class="marginSpace">
+                    @if (ViewBag.ProfileModelId == 0)
+            {
+                        <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+                    }
+                    else
+                    {
+                        <paper-button class="btnEdit" raised on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
+                        <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                    }
+                </div>
+
+
+                <paper-toast id="ToastMessage" duration="4000" text="ola" horizontalAlign="right"></paper-toast>
+
+
+</template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-profile-models',
+                properties: {
+                    _description: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ddArea: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    ddFeature: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    chkCreate: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
+                    chkRead: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
+                    chkUpdate: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
+                    chkDelete: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    }
+                },
+                ready: function () {
+                    this.$.page_databound_ajax.body = JSON.stringify({ "id": @ViewBag.ProfileModelId });
+                    this.$.page_databound_ajax.generateRequest();
+
+                },
+                openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+                _create: function () {
+                    if (this.data.description !== '' && this.data.description != null) {
+                        this.$.ajax_create.url = "/Administracao/CreateProfileModel";
+                        this.$.ajax_create.body = JSON.stringify(this.data);
+                        this.$.ajax_create.generateRequest();
+                        this.openToast("Perfil modelo criado com sucesso!");
+                    } else {
+                        this.openToast('É obrigatório preencher o campo Descrição.');
+                    }
+                },
+                _update: function () {
+
+                    if (this.data.description !== '' && this.data.description != null) {
+                        this.$.ajax_create.url = "/Administracao/UpdateProfileModel";
+                        this.$.ajax_create.body = JSON.stringify(this.data);
+                        this.$.ajax_create.generateRequest();
+                        this.openToast("Perfil modelo atualizado com sucesso!");
+                    } else {
+                        this.openToast('É obrigatório preencher o campo Descrição.');
+                    }
+                },
+                _delete: function () {
+                    this.$.ajax_create.url = "/Administracao/DeleteProfileModel";
+                    this.$.ajax_create.body = JSON.stringify(this.data);
+                    this.$.ajax_create.generateRequest();
+                },
+                _ResponseProcessor: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        if (e.detail.url.indexOf("Create") !== -1) {
+                            window.location.href = "/Administracao/PerfisModeloDetalhes/" + this.data.id;
+                        }
+                        else if (e.detail.url.indexOf("Delete") !== -1) {
+                            if (this.data.id == 0) {
+                                window.location.href = "/Administracao/PerfisModelo";
+                            } else {
+                                this.openToast('Ocorreu um erro ao remover o Perfil Modelo');
+                            }
+                        }
+                        else
+                        {
+                            this.openToast('O perfil foi atualizado com sucesso!');
+                        }
+                    } else {
+                        if (e.detail.url.indexOf("Create") !== -1) {
+                            this.openToast('Ocorreu um erro ao criar o perfil modelo.');
+                        }
+                        else if (e.detail.url.indexOf("Delete") !== -1) {
+                            this.openToast('Ocorreu um erro ao remover o Perfil Modelo');
+                        }
+                        else {
+                            this.$.grid_databound.generateRequest();
+                            this.openToast('Ocorreu um erro ao atualizar o perfil modelo.');
+                        }
+                    }
+                },
+                _createAccessProfile: function () {
+                    if (this.ddArea == "") {
+                        this.openToast('É obrigatório preencher a area.');
+                    } else if (this.ddFeature == null) {
+                        this.openToast('É obrigatório preencher a Funcionalidade.');
+                    } else {
+                        this.data.profileModelAccesses.unshift({
+                            idProfile: @ViewBag.ProfileModelId,
+                            area: this.ddArea,
+                            feature: this.ddFeature,
+                            read: this.chkRead,
+                            create: this.chkCreate,
+                            update: this.chkUpdate,
+                            delete: this.chkDelete
+                        });
+                        this.$.gridAccesses.clearCache();
+                    }
+
+                },
+                _deleteAccessProfile: function (data) {
+                    var index = this.data.profileModelAccesses.indexOf(data.model.item);
+                    this.data.profileModelAccesses.splice(index, 1);
+
+                    this.$.gridAccesses.clearCache();
+                }
+
+            });
+        });
+    </script>
+
+</dom-module>
+
+
+
