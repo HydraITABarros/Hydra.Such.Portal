@@ -303,13 +303,13 @@ namespace Hydra.Such.Portal.Configurations
         {
              new EnumData()
             {
-                Id = 1,
-                Value = "Recurso"
+                Id = 2,
+                Value = "Produto"
             },
             new EnumData()
             {
-                Id = 2,
-                Value = "Produto"
+                Id = 1,
+                Value = "Recurso"
             },
             new EnumData()
             {
