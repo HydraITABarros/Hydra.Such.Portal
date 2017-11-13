@@ -27,7 +27,6 @@ namespace Hydra.Such.Data.Database
         public string CriadoPor { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public DateTime? DataHoraÚltimoEstado { get; set; }
-        public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
         public string NomeEmpregado { get; set; }
@@ -51,6 +50,13 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataIntegraçãoEmRh { get; set; }
         public string IntegradorEmRhKm { get; set; }
         public DateTime? DataIntegraçãoEmRhKm { get; set; }
+        public string ProjetoDescricao { get; set; }
+        public string IntegradoresEmRh { get; set; }
+        public string IntegradoresEmRhkm { get; set; }
+        public decimal? CustoTotalAjudaCusto { get; set; }
+        public decimal? CustoTotalHoras { get; set; }
+        public decimal? CustoTotalKm { get; set; }
+        public decimal? NumTotalKm { get; set; }
 
         public Projetos NºProjetoNavigation { get; set; }
         public ICollection<DistribuiçãoCustoFolhaDeHoras> DistribuiçãoCustoFolhaDeHoras { get; set; }

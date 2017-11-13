@@ -6,7 +6,7 @@ namespace Hydra.Such.Data.Database
     public partial class PercursosEAjudasCustoDespesasFolhaDeHoras
     {
         public string NºFolhaDeHoras { get; set; }
-        public int TipoCusto { get; set; }
+        public int CodPercursoAjuda { get; set; }
         public int NºLinha { get; set; }
         public string Descrição { get; set; }
         public string Origem { get; set; }
@@ -23,6 +23,12 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
+        public int? TipoCusto { get; set; }
+        public int? CodTipoCusto { get; set; }
+        public string OrigemDescricao { get; set; }
+        public string DestinoDescricao { get; set; }
+        public decimal? DistanciaPrevista { get; set; }
+        public decimal? PrecoVenda { get; set; }
 
         public FolhasDeHoras NºFolhaDeHorasNavigation { get; set; }
     }

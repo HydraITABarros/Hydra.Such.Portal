@@ -120,6 +120,8 @@ namespace Hydra.Such.Portal.Controllers
                         DataHoraUltimoEstado = FH.DataHoraÚltimoEstado,
                         DataUltimoEstadoTexto = FH.DataHoraÚltimoEstado.Value.ToString("yyyy-MM-dd"),
                         HoraUltimoEstadoTexto = FH.DataHoraÚltimoEstado.Value.ToShortTimeString(),
+                        //abarros_
+                        //UtilizadorCriacao = FH.UtilizadorCriação,
                         DataHoraModificacao = FH.DataHoraModificação,
                         DataModificacaoTexto = FH.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
                         HoraModificacaoTexto = FH.DataHoraModificação.Value.ToShortTimeString(),
@@ -329,6 +331,8 @@ namespace Hydra.Such.Portal.Controllers
                         CriadoPor = User.Identity.Name,
                         DataHoraCriação = DateTime.Now,
                         DataHoraÚltimoEstado = DateTime.Now,
+                        //abarros_
+                        //UtilizadorCriação = User.Identity.Name,
                         DataHoraModificação = DateTime.Now,
                         UtilizadorModificação = User.Identity.Name,
                         NomeEmpregado = data.EmpregadoNome,
@@ -428,6 +432,8 @@ namespace Hydra.Such.Portal.Controllers
                 FHUpdate.Terminada = data.Terminada;
                 FHUpdate.TerminadoPor = data.TerminadoPor;
                 FHUpdate.TipoDeslocação = data.TipoDeslocacao;
+                //abarros_
+                //FHUpdate.UtilizadorCriação = data.UtilizadorCriacao;
                 FHUpdate.UtilizadorModificação = User.Identity.Name;
                 FHUpdate.Validado = data.Validado;
                 FHUpdate.Validador = data.Validador;

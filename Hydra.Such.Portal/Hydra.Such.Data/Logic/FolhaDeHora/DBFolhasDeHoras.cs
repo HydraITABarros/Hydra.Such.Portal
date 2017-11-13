@@ -148,6 +148,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DataHoraUltimoEstado = FH.DataHoraÚltimoEstado,
                         DataUltimoEstadoTexto = FH.DataHoraÚltimoEstado.Value.ToShortDateString(),
                         HoraUltimoEstadoTexto = FH.DataHoraÚltimoEstado.Value.ToShortTimeString(),
+                        //abarros_
+                        //UtilizadorCriacao = FH.UtilizadorCriação,
                         DataHoraModificacao = FH.DataHoraModificação,
                         DataModificacaoTexto = FH.DataHoraModificação.Value.ToShortDateString(),
                         HoraModificacaoTexto = FH.DataHoraModificação.Value.ToShortTimeString(),
