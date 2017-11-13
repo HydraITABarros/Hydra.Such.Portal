@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+
+<link rel="import" href="/elements/submenu/subMenuItemView.html">
+
+@ViewBag.Error
+
+<ul class="list-unstyled">
+    <x-submenu link="@Url.Action("", "Engenharia")" image="engineer1.png" title="Engenharia"></x-submenu>
+    <x-submenu link="@Url.Action("", "Ambiente")" image="environment3.png" title="Ambiente"></x-submenu>
+    <x-submenu link="@Url.Action("", "Nutricao")" image="nutricion4.png" title="Nutrição"></x-submenu>
+    <x-submenu link="@Url.Action("", "Vendas")" image="sales2.png" title="Vendas"></x-submenu>
+    <x-submenu link="@Url.Action("", "Apoio")" image="support2.png" title="Apoio"></x-submenu>
+    <x-submenu link="@Url.Action("", "PO")" image="po2.png" title="P&O"></x-submenu>
+    <x-submenu link="@Url.Action("", "NovasAreas")" image="newareas1.png" title="Novas Areas"></x-submenu>
+    <x-submenu link="@Url.Action("", "Internacionalizacoes")" image="international1.png" title="Internacionalizações"></x-submenu>
+    <x-submenu link="@Url.Action("", "Juridico")" image="juridico.png" title="Jurídico"></x-submenu>
+    <x-submenu link="@Url.Action("", "Compras")" image="compras.png" title="Compras"></x-submenu>
+    <x-submenu link="@Url.Action("", "Administracao")" image="admin2.png" title="Administração"></x-submenu>
+</ul>

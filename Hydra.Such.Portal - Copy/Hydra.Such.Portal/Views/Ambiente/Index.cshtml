@@ -1,0 +1,22 @@
+﻿
+@{
+    ViewData["Title"] = "Ambiente - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="title">Ambiente</h1>
+
+<link rel="import" href="/elements/submenu/subMenuItemView.html">
+
+<ul class="list-unstyled">
+    <x-submenu link="@Url.Action("Oportunidades", "Ambiente")" image="contracts1.png" title="Oportunidades"></x-submenu>
+    <x-submenu link="@Url.Action("Propostas", "Ambiente")" image="contracts1.png" title="Propostas"></x-submenu>
+    <x-submenu link="@Url.Action("Contratos", "Ambiente")" image="contracts1.png" title="Contratos"></x-submenu>
+    <x-submenu link="@Url.Action("AvencaFixa", "Contratos")" image="contracts1.png" title="Faturação Contratos Avença Fixa"></x-submenu>
+    @*<x-submenu link="@Url.Action("Projetos", "Ambiente")" image="projects1.png" title="Projetos"></x-submenu>
+    <x-submenu link="@Url.Action("Requisicoes", "Ambiente")" image="requirement2.png" title="Requisições"></x-submenu>*@
+    <x-submenu link="@Url.Action("FolhaDeHoras", "Ambiente")" image="folhadehoras.png" title="Folhas De Horas"></x-submenu>
+    <x-submenu link="@Url.Action("Administracao", "Ambiente")" image="auxiliary1.png" title="Administração"></x-submenu>
+</ul>
+
+

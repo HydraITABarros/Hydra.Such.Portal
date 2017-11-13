@@ -1,0 +1,154 @@
+﻿
+@{
+    ViewData["Title"] = "Unidades Produtivas - Nutrição - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+
+<h1 class="title">Unidades Produtivas</h1>
+
+<x-productivityunits></x-productivityunits>
+<dom-module id="x-productivityunits">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        @*POPULATE GRID*@
+        <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProductivityUnits"
+                   last-response="{{result}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound"
+                   content-type="application/json"></iron-ajax>
+
+
+        <div class="marginSpace">
+            <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+        </div>
+        <vaadin-grid aria-label="ProductivityUnitsTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="10%">
+                <template class="header">
+                    <vaadin-grid-sorter path="productivityUnitNo">Nº Unidade Produtiva</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="productivityUnitNo" />
+                </template>
+                <template>
+                    {{item.productivityUnitNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" />
+                </template>
+                <template>
+                    {{item.description}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="startDateExploration">Data Inicio Exploração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="startDateExploration" />
+                </template>
+                <template>
+                    {{item.startDateExploration}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="endDateExploration">Data Fim Exploração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="endDateExploration" />
+                </template>
+                <template>
+                    {{item.endDateExploration}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeRegion" />
+                </template>
+                <template>
+                    {{item.codeRegion}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="nome">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nome" />
+                </template>
+                <template>
+                    {{item.codeFunctionalArea}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Area Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeResponsabilityCenter" />
+                </template>
+                <template>
+                    {{item.codeResponsabilityCenter}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="projectKitchen">Proj. Cozinha</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projectKitchen" />
+                </template>
+                <template>
+                    {{item.projectKitchen}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="projectSubsidiaries">Proj. Mat. Subsidiárias</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projectSubsidiaries" />
+                </template>
+                <template>
+                    {{item.projectSubsidiaries}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-productivityunits',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _filterActive: {
+                        type: Boolean,
+                        value:true
+                    }
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Nutricao/UnidadesProdutivas/Detalhes/" + item.idUtilizador;
+                    }
+                },
+                _create: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Nutricao/UnidadesProdutivas/Detalhes/";
+                    }
+                }
+            });
+        });
+    </script>
+
+</dom-module>

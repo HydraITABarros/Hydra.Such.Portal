@@ -1,0 +1,13 @@
+﻿@model IEnumerable<Hydra.Such.Data.Database.ProcedimentosCcp>
+
+@{
+    ViewData["Title"] = "PedidoSimplificado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<h2>Lista Pedidos Simplificados</h2>
+<link rel="import" href="~/elements/ccp/procedimentos_list.html" />
+
+<x-procedimentoslist _procedimentotypeid="2"></x-procedimentoslist>
