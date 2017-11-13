@@ -119,13 +119,17 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
+                string entityId = "";
+                bool autoGenId = false;
+
                 //Get Numeration
                 Configuração conf = DBConfigurations.GetById(1);
                 int entityNumerationConfId = conf.NumeraçãoContactos.Value;
-                string entityId = "";
+                
                 if (item.Id == "" || item.Id == null)
                 {
-                    entityId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, true);
+                    autoGenId = true;
+                    entityId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
                     item.Id = entityId;
                 }
 
@@ -142,8 +146,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             //Inserted, update item to return
                             item = newItem;
-                            item.eReasonCode = 1;
-                            item.eMessage = "Contacto criado com sucesso.";
+                            
 
                             Task<WSContacts.Create_Result> createContactTask = NAVContactsService.CreateAsync(item, _configws);
                             try
@@ -169,10 +172,13 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 //Update Last Numeration Used
                                 ConfiguraçãoNumerações configNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
-                                configNumerations.ÚltimoNºUsado = item.Id;
-                                DBNumerationConfigurations.Update(configNumerations);
-
+                                if (configNumerations != null && autoGenId)
+                                {
+                                    configNumerations.ÚltimoNºUsado = item.Id;
+                                    DBNumerationConfigurations.Update(configNumerations);
+                                }
                                 item.eReasonCode = 1;
+                                item.eMessage = "Contacto criado com sucesso.";
                             }
                         }
                         else
