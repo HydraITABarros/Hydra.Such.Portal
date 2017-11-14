@@ -90,6 +90,7 @@
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRequestOrigin" last-response="{{CBRequestOrigin}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsStatus" last-response="{{CBProposalsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContacts" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
         <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -166,9 +167,21 @@
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Âmbito do Serviço" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field id="contactNo" name="contactNo" label="Nº Contacto" value="{{data.contactNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                        <div class="col-md-3 ">
+                                            <vaadin-combo-box items="[[CBContacts]]" id="contactNo" item-value-path="id" item-label-path="value" value="{{data.contactNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                                <template>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
                                         </div>
+                                        <!--<div class="col-lg-3">
+                                            <vaadin-text-field id="contactNo" name="contactNo" label="Nº Contacto" value="{{data.contactNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                        </div>-->
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
@@ -570,18 +583,19 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" label="Envio-a Endereço" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
-                                        </div>
-                                        <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.shippingName}}" id="ShippingName" name="ShippingName" label="Envio-a Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" label="Envio-a Endereço" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                         </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field value="{{data.shippingZipCode}}" id="shippingZipCode" name="shippingZipCode" label="Envio-a Cód. Postal" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                        </div>
+                                        
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingZipCode}}" id="shippingZipCode" name="shippingZipCode" label="Envio-a Cód. Postal" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.clientRequisitionNo}}" id="mClientRequisitionNo" label="Nº Requisição Cliente" name="mClientRequisitionNo" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
@@ -605,7 +619,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBMaintenanceTypes]]" id="mMaintenanceTypes" item-value-path="id" item-label-path="value" value="{{data.maintenanceContractType}}" label="Tipo Contrato Manut." disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <vaadin-combo-box items="[[CBMaintenanceTypes]]" id="mMaintenanceTypes" item-value-path="id" item-label-path="value" value="{{data.maintenanceContractType}}" label="Tipo Contrato Manut." disabled="{{ !_permissions.update }}">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -647,10 +661,10 @@
                                         </div>
                                     </div>
                                     <div class="row break_clear">
-                                        <div class="col-md-3 alignPoga">
+                                        <div class="col-md-3">
                                             <vaadin-checkbox checked="{{data.batchInvoices}}" disabled="{{ !_permissions.update }}">Juntar Faturas</vaadin-checkbox>
                                         </div>
-                                        <div class="col-md-3 alignPoga">
+                                        <div class="col-md-3">
                                             <vaadin-checkbox checked="{{data.contractLinesInBilling}}" disabled="{{ !_permissions.update }}">Linhas Contrato em Fact.</vaadin-checkbox>
                                         </div>
                                         <!--<div class="col-md-3  alignPoga">
@@ -660,7 +674,7 @@
                                             <vaadin-checkbox checked="{{data.variableAvengeAgrement}}" disabled="{{ !_permissions.update }}">Contrato Avença Variável</vaadin-checkbox>
                                         </div>-->
                                         </div>
-                                    <div class="row break_clear">
+                                    <!--<div class="row break_clear">
                                             <div class="panel panel-default">
                                                 <div class="panel-heading">Textos Fatura</div>
                                                 <div class="panel-body">
@@ -698,7 +712,7 @@
                                                         </div>
                                                     </template>
 
-                                                    <!-- VAADIN GRID  Textos Fatura -->
+                                                     VAADIN GRID  Textos Fatura 
                                                     <vaadin-grid aria-label="InvoiceTexts" id="grid_invoiceTexts" items="[[data.invoiceTexts]]" class="grid" multi-sort="true">
                                                         <vaadin-grid-column>
                                                             <template class="header">
@@ -758,7 +772,7 @@
                                                     </vaadin-grid>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>-->
                                 </div>
                             </iron-pages>
                             <div class="marginSpace">
@@ -1532,6 +1546,10 @@
                         observer: '_lineSelected'
                     },
                     contactNo: {
+                        type: Number,
+                        value: ""
+                    },
+                    limitClarificationDate: {
                         type: String,
                         notify: true,
                         value: ""
@@ -1644,7 +1662,7 @@
                     var _dataContract = this.data;
                     var ajax_request = this.$.ajax_delete_contract;
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende remover o contrato " + this.data.contractNo + "?",
+                        message: "Tem a certeza que pretende remover a Oportunidade " + this.data.contractNo + "?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -1667,7 +1685,7 @@
                     var _dataContract = this.data;
                     var ajax_request = this.$.page_databound_ajax;
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende arquivar o contrato " + this.data.contractNo + "?",
+                        message: "Tem a certeza que pretende arquivar a Oportunidade " + this.data.contractNo + "?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -1725,7 +1743,7 @@
                         }
                         else if (data.detail.url.indexOf("Update") !== -1) {
                             if (this.data.eReasonCode == 1) {
-                                this._openToast("Contrato atualizado com sucesso.")
+                                this._openToast("Oportunidade atualizada com sucesso.")
                             } else {
                                 this._openToast(this.data.eMessage);
                             }
@@ -1740,7 +1758,7 @@
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
-                        this._openToast("Projeto criado com sucesso.");
+                        this._openToast("Oportunidade criada com sucesso.");
                         window.location.href = "../DetalhesOportunidade/" + item.contractNo;
                     } else {
                         this._openToastError(this.data.eMessage);
@@ -1751,7 +1769,7 @@
                     if (data.detail.status === 200) {
                         if (this.validateResponse == "") {
                             debugger;;
-                            this._executeRequest("/Contratos/CreateContract", this.data)
+                            this._executeRequest("/Contratos/CreateContract")
                         } else {
                             this._openToastError("Ocorreu um erro desconhecido.");
                         }
