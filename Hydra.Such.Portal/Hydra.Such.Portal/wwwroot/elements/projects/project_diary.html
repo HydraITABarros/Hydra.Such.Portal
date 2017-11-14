@@ -808,22 +808,21 @@
                     '_onCacheLoaded(response2, response3, CBContractLineCodesGrid, ContabGroupData, MeasureUnit, Locations, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData)'
                 ],
 
-                _onCacheLoaded: function (typemovement, type, code, contabgroup, unitcode, localcode, regioncode, funcareacode, respcentercode)
-                {
+                _onCacheLoaded: function (typemovement, type, code, contabgroup, unitcode, localcode, regioncode, funcareacode, respcentercode) {
                     if (this.paramprojno != "") {
                         this.$.ajax_getall.body = JSON.stringify(this.paramprojno);
-                        this.$.ajax_getall.generateRequest();   
+                        this.$.ajax_getall.generateRequest();
                     }
                     else {
-                        this.$.ajax_getall.generateRequest();   
-                    }                    
+                        this.$.ajax_getall.generateRequest();
+                    }
                 },
 
                 ready: function () {
                     if (this.paramprojno != "") {
                         this.$.projectList.value = this.paramprojno;
                         this.disabledProjectNo = true;
-                    }          
+                    }
                 },
 
                 openToastSuccess: function (message) {
