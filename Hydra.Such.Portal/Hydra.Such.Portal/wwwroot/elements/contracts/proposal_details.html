@@ -1431,6 +1431,7 @@
                 },
                 ready: function () {
                     //GET CONTRACT DATA
+                    debugger;;
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
                     this.$.page_databound_ajax.generateRequest();
@@ -1853,17 +1854,19 @@
                 },
 
                 _parseToContract: function (param) {
+                    debugger;;
                     if (param != null)
                     {
-                        this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "OriginType": 2, "HeaderType": 3 });
+                        this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3 });
                         this.$.parseToContract_ajax.generateRequest();
                     }
                 },
 
                 _responseParseToContract: function (e) {
                     var self = this;
+                    debugger;;
                     if (e.detail.status === 200) {
-                        this.openToastSuccess("Contrato criado com sucesso.");
+                        this.openToastSuccess("Contrato criado com sucesso." + e.detail.response);
                     }
                     else {
                         this.openToastError("Erro na criação do contracto.");
