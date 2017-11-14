@@ -50,8 +50,10 @@
                 </template>
             </template>    
         </div>
-        <paper-toast id="MessageContainer" duration="4000" horizontalAlign="right"></paper-toast>
-        <paper-toast id="ErrorMessageContainer" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -79,12 +81,12 @@
                         this._isCreate = true;
                 },
                 _showMessage: function (message) {
-                    this.$.MessageContainer.text = message;
-                    this.$.MessageContainer.open();
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
                 },
                 _showErrorMessage: function (message) {
-                    this.$.ErrorMessageContainer.text = message;
-                    this.$.ErrorMessageContainer.open();
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
                 },
                 _onGetContactByIdResponse: function (e) {
                     if (this.contact == undefined && this._contactId != "") {
