@@ -948,41 +948,46 @@ namespace Hydra.Such.Portal.Controllers
         {
             // Parse Header
             String contractNo = requestParams["HeaderNo"].ToString();
+            String versionNo = requestParams["VersionNo"].ToString();
             int originType = int.Parse(requestParams["OriginType"].ToString());
             int contractType = int.Parse(requestParams["HeaderType"].ToString());
 
-            if (contractNo != null && originType != 0 && contractType != 0)
-            {
-                List<Contratos> thisHeader = DBContracts.GetByNo(contractNo, false);
+            String newNumeration = "";
 
-                foreach (var item in thisHeader)
+            if (contractNo != null && contractNo != "" &&
+                versionNo != null && versionNo != "" &&
+                originType != 0 && contractType != 0)
+            {
+                Contratos thisHeader = DBContracts.GetByIdAndVersion(contractNo, int.Parse(versionNo));
+
+                if  (thisHeader != null)
                 {
                     String oldNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(originType), true);
-                    String newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), true);
+                    newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), true);
                     try
                     {
-                        item.TipoContrato = contractType;
-                        item.Arquivado = false;
+                        thisHeader.TipoContrato = contractType;
+                        thisHeader.Arquivado = false;
 
                         if (originType == 2)
                         {
-                            item.NºProposta = oldNumeration;
-                            item.NºDeContrato = newNumeration;
+                            thisHeader.NºProposta = oldNumeration;
+                            thisHeader.NºDeContrato = newNumeration;
                         }
                         else if (originType == 1)
                         {
-                            item.NºOportunidade = oldNumeration;
-                            item.NºProposta = newNumeration;
+                            thisHeader.NºOportunidade = oldNumeration;
+                            thisHeader.NºProposta = newNumeration;
                         }
 
-                        DBContracts.Create(item);
+                        DBContracts.Create(thisHeader);
                     }
                     catch (Exception ex)
                     {
-                        return Json(false);
+                        return Json("Erro ao criar cabeçalho do contrato.");
                     }
                     // Parse Lines
-                    List<LinhasContratos> relatedLines = DBContractLines.GetAllByActiveContract(contractNo, item.NºVersão);
+                    List<LinhasContratos> relatedLines = DBContractLines.GetAllByActiveContract(contractNo, thisHeader.NºVersão);
                     foreach (var line in relatedLines)
                     {
                         try
@@ -992,13 +997,17 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         catch (Exception ex)
                         {
-                            return Json(false);
+                            return Json("Erro a criar linhas de contrato.");
                         }
                     }
+                    return Json(newNumeration);
+                }
+                else
+                {
+                    return Json("Erro ao tentar aceder à informação do presente proposta.");
                 }
             }
-
-            return Json(true);
+            return Json("Informação em falta para converter para contrato.");
         }
 
         
