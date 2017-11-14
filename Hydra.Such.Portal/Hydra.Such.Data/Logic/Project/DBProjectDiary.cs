@@ -24,6 +24,20 @@ namespace Hydra.Such.Data.Logic.Project
                 return null;
             }
         }
+        public static DiárioDeProjeto GetAllByCode(string user, string code)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Código == code && x.Registado != true).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         public static List<DiárioDeProjeto> GetAllTable(string user)
         {

@@ -74,7 +74,7 @@ namespace Hydra.Such.Data.Logic.Project
                     if (result.Count > 0)
                     {
                         List<UserDimensionsViewModel> UDimensions = DBUserDimensions.GetByUserId(UserId);
-                        UDimensions.RemoveAll(x => x.Dimension == NAVDimType);
+                        UDimensions.RemoveAll(x => x.Dimension != NAVDimType);
 
                         result.RemoveAll(x => !UDimensions.Any(y => y.DimensionValue == x.Code));
                     }
