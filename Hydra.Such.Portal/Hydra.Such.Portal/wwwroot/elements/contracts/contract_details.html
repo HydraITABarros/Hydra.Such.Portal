@@ -504,18 +504,18 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
+                                            <vaadin-text-field value="{{data.shippingName}}" id="ShippingName" name="ShippingName" label="Envio-a Nome" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" label="Envio-a Endereço" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingName}}" id="ShippingName" name="ShippingName" label="Envio-a Nome" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingZipCode}}" id="shippingZipCode" name="shippingZipCode" label="Envio-a Cód. Postal" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingZipCode}}" id="shippingZipCode" name="shippingZipCode" label="Envio-a Cód. Postal" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -1252,17 +1252,17 @@
                                         </center>
                                     </template>
                                 </vaadin-grid-column>
-                                <!--<vaadin-grid-column>
+                                <vaadin-grid-column>
                                     <template class="header">
                                     </template>
                                     <template>
                                         <center>
-                                            <template is="dom-if" if="{{ !_permissions.update }}">
-                                                <paper-button class="btnRemove" raised on-tap="_deleteInvoiceText">Eliminar</paper-button>
+                                            <template is="dom-if" if="{{ _permissions.update }}">
+                                                <paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>
                                             </template>
                                         </center>
                                     </template>
-                                </vaadin-grid-column>-->
+                                </vaadin-grid-column>
                             </vaadin-grid>
                         </div>
                         
@@ -1276,8 +1276,8 @@
             </div>
         </div>
 
-        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
 
@@ -1482,12 +1482,12 @@
                     this.$.page_databound_ajax.generateRequest();
                 },
                 _openToast: function (message) {
-                    this.$.ToastMessage.text = message;
-                    this.$.ToastMessage.open();
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
                 },
                 _openToastError: function (message) {
-                    this.$.ToastError.text = message;
-                    this.$.ToastError.open();
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
                     debugger;;
@@ -1641,7 +1641,7 @@
                             if (this.data.eReasonCode == 1) {
                                 this._openToast("Contrato atualizado com sucesso.")
                             } else {
-                                this._openToast(this.data.eMessage);
+                                this._openToastError(this.data.eMessage);
                             }
                         }
                         else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
@@ -1794,6 +1794,16 @@
                     this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
                     this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
                     this.$.contractLines_databound_ajax.generateRequest();
+                },
+                _deleteContractLine: function (e) {
+                    var index = this.dataLines.lines.indexOf(e.model.item);
+                    this.dataLines.lines.splice(index, 1);
+
+                    this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
+                    this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                    this.$.contractLines_databound_ajax.generateRequest();
+                    
+                    //this.$.gridUserAccesses.clearCache();
                 },
                 _clResponseProcessor: function (data) {
                     if (data.detail.status === 200) {
