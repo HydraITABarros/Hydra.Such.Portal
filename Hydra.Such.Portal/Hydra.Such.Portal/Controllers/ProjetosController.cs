@@ -787,7 +787,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null)
                 {
                     List<ProjectDiaryViewModel> NewList = new List<ProjectDiaryViewModel>();
-                    
+
                     foreach (var lines in data)
                     {
                         if (num_cliente != lines.InvoiceToClientNo)
@@ -795,7 +795,7 @@ namespace Hydra.Such.Portal.Controllers
                             if (NewList.Count() > 0)
                             {
                                 //update to Invoiced = true
-                                foreach(var lst in NewList)
+                                foreach (var lst in NewList)
                                 {
                                     DiárioDeProjeto upDate = DBProjectDiary.GetByLineNo(lst.LineNo, User.Identity.Name).FirstOrDefault();
                                     upDate.Faturada = true;
@@ -844,7 +844,7 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     num_cliente = lines.InvoiceToClientNo;
                                     NewList.Add(lines);
-                                    if(data.Count() == lineNo)
+                                    if (data.Count() == lineNo)
                                     {
                                         //update to Invoiced = true
                                         foreach (var lst in NewList)

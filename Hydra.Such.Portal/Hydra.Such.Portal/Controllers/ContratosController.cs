@@ -752,7 +752,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
 
 
-                        
+
                         if (item.PeríodoFatura != null || item.PeríodoFatura != 0)
                         {
                             switch (item.PeríodoFatura)
@@ -849,6 +849,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
             }
+            DBAuthorizeInvoiceContracts.DeleteAllAllowedInvoiceAndLines();
             return Json(true);
         }
 
@@ -862,22 +863,22 @@ namespace Hydra.Such.Portal.Controllers
                 Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws);
                 InvoiceHeader.Wait();
 
-                if (InvoiceHeader.IsCompletedSuccessfully)
+                if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null)
                 {
                     String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
                     List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato && x.GrupoFatura == item.GrupoFatura).ToList();
-                    
+
                     if (itemList.Count > 0)
                     {
-                        Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);                        
+                        Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
                         InvoiceLines.Wait();
 
-                        if (InvoiceLines.IsCompletedSuccessfully)
+                        if (InvoiceLines.IsCompletedSuccessfully && InvoiceLines != null)
                         {
                             Task<WSGenericCodeUnit.FxPostInvoice_Result> postNAV = WSGeneric.CreatePreInvoiceLineList(InvoiceHeaderNo, _configws);
                             postNAV.Wait();
 
-                            if (!postNAV.IsCompletedSuccessfully)
+                            if (!postNAV.IsCompletedSuccessfully || postNAV == null)
                             {
                                 return Json(false);
                             }
@@ -886,13 +887,15 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             return Json(false);
                         }
-                    }                   
+                    }
                 }
                 else
                 {
                     return Json(false);
                 }
             }
+            // Delete Lines
+
             return Json(true);
         }
         #endregion
