@@ -205,6 +205,12 @@ namespace Hydra.Such.Portal.Configurations
              {
                  Id = 23,
                  Value = "Elemento Juri CCP"
+             },
+
+             new EnumData()
+             {
+                 Id = 24,
+                 Value = "Contactos"
              }
         };
 
@@ -409,13 +415,13 @@ namespace Hydra.Such.Portal.Configurations
         {
              new EnumData()
             {
-                Id = 1,
-                Value = "Recurso"
+                Id = 2,
+                Value = "Produto"
             },
             new EnumData()
             {
-                Id = 2,
-                Value = "Produto"
+                Id = 1,
+                Value = "Recurso"
             },
             new EnumData()
             {

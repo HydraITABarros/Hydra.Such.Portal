@@ -401,9 +401,15 @@ namespace Hydra.Such.Portal.Controllers
                     TotalPrice = x.PreçoTotal,
                     Billable = x.Faturável,
                     Registered = x.Registado,
-                    Billed = (bool)x.Faturada,
+                    Billed = x.Faturada == null ? false : (bool)x.Faturada,
                     Currency = x.Moeda,
-                    UnitValueToInvoice = x.ValorUnitárioAFaturar
+                    UnitValueToInvoice = x.ValorUnitárioAFaturar,
+                    MealType = x.TipoRefeição,
+                    ServiceGroupCode = x.CódGrupoServiço,
+                    ResidueGuideNo = x.NºGuiaResíduos,
+                    ExternalGuideNo = x.NºGuiaExterna,
+                    ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
+                    InvoiceToClientNo = x.FaturaANºCliente,
                 }).ToList();
                 return Json(dp);
             }
@@ -434,7 +440,13 @@ namespace Hydra.Such.Portal.Controllers
                     Registered = x.Registado,
                     Billed = (bool)x.Faturada,
                     Currency = x.Moeda,
-                    UnitValueToInvoice = x.ValorUnitárioAFaturar
+                    UnitValueToInvoice = x.ValorUnitárioAFaturar,
+                    MealType = x.TipoRefeição,
+                    ServiceGroupCode = x.CódGrupoServiço,
+                    ResidueGuideNo = x.NºGuiaResíduos,
+                    ExternalGuideNo = x.NºGuiaExterna,
+                    ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
+                    InvoiceToClientNo = x.FaturaANºCliente,
                 }).ToList();
                 return Json(dp);
             }
@@ -492,8 +504,13 @@ namespace Hydra.Such.Portal.Controllers
                     Registado = false,
                     FaturaANºCliente = x.InvoiceToClientNo,
                     Moeda = x.Currency,
-                    ValorUnitárioAFaturar = x.UnitValueToInvoice
-                    
+                    ValorUnitárioAFaturar = x.UnitValueToInvoice,
+                    TipoRefeição  = x.MealType,
+                    CódGrupoServiço = x.ServiceGroupCode,
+                    NºGuiaResíduos = x.ResidueGuideNo,
+                    NºGuiaExterna = x.ExternalGuideNo,
+                    DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate)
+
                 };
 
                 if (x.LineNo > 0)
@@ -556,15 +573,24 @@ namespace Hydra.Such.Portal.Controllers
             //TRegisterNavDiaryLine.Wait();
 
             //SET INTEGRATED IN DB
-            dp.ForEach(x =>
+            if (dp != null)
             {
-                DiárioDeProjeto newdp = new DiárioDeProjeto()
+                dp.ForEach(x =>
                 {
-                    Registado = true
-                };
-
-                DBProjectDiary.Update(newdp);
-            });
+                    if (x.Code != null)
+                    {
+                        DiárioDeProjeto newdp = DBProjectDiary.GetAllByCode(User.Identity.Name, x.Code);
+                        if (newdp != null)
+                        {
+                            newdp.Registado = true;
+                            newdp.UtilizadorModificação = User.Identity.Name;
+                            newdp.DataHoraModificação = DateTime.Now;
+                            DBProjectDiary.Update(newdp);
+                        }
+                    }
+                });
+            }
+            
 
             return Json(dp);
         }
@@ -573,18 +599,20 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetMovements([FromBody] string projectNo)
         {
             //Get Contract from Project
+            List<ProjectDiaryViewModel> dp = new List<ProjectDiaryViewModel>();
             if (projectNo != null && projectNo != "")
             {
                 Projetos proj = DBProjects.GetById(projectNo);
                 if (proj != null)
                 {
+                   
                     Contratos cont = Data.Logic.Contracts.DBContracts.GetActiveContractById(proj.NºContrato);
                     if (cont != null)
                     {
                         List<LinhasContratos> allLines = Data.Logic.Contracts.DBContractLines.GetAllByActiveContract(cont.NºContrato, cont.NºVersão);
-                        if (allLines != null)
+                        if (allLines != null && allLines.Count > 0)
                         {
-                            List<ProjectDiaryViewModel> dp = allLines.Select(x => new ProjectDiaryViewModel()
+                            dp = allLines.Select(x => new ProjectDiaryViewModel()
                             {
                                 ProjectNo = projectNo,
                                 Type = x.Tipo,
@@ -604,23 +632,23 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
-                            return null;
+                            return Json(dp);
                         }
                     }
                     else
                     {
-                        return null;
+                        return Json(dp);
                     }
 
                 }
                 else
                 {
-                    return null;
+                    return Json(dp);
                 }
             }
             else
             {
-                return null;
+                return Json(dp);
             }
 
             //contract lines by contract id and version

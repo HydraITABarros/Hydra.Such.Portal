@@ -327,13 +327,13 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Projetos/RegisterDiaryLines"
+        @*<iron-ajax url="/Projetos/RegisterDiaryLines"
                    last-response="{{data}}"
                    id="ajax_register"
                    method="post"
                    on-response="_updateRegisterResponse"
                    handle-as="json"
-                   content-type="application/json"></iron-ajax>
+                   content-type="application/json"></iron-ajax>*@
 
         <iron-ajax url="/Projetos/RegisterDiaryLines"
                    last-response="{{data}}"
@@ -1025,6 +1025,7 @@
 
                 _getMovements: function () {
                     //Request
+                    debugger;; 
                     if (this.$.projectList.value != null && this.$.projectList.value != "")
                     {
                         this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);

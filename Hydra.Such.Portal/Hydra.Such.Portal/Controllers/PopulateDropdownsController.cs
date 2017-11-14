@@ -29,6 +29,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetServiceGroup([FromBody]string invoiceClientNo, bool allProjs)
+        {
+            List<ClientServicesViewModel> result = DBClientServices.GetAllServiceGroup(invoiceClientNo, allProjs);
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetNumerations()
         {
             List<DDMessage> result = DBNumerationConfigurations.GetAll().Select(x => new DDMessage()

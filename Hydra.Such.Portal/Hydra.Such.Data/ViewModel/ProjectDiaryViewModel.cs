@@ -27,8 +27,8 @@ namespace Hydra.Such.Data.ViewModel
         public decimal? UnitPrice { get; set; }
         public decimal? TotalPrice { get; set; }
         public bool? Billable { get; set; }
-        //public string ResidueGuideNo { get; set; }
-        //public string ExternalGuideNo { get; set; }
+        public string ResidueGuideNo { get; set; }
+        public string ExternalGuideNo { get; set; }
         public string InvoiceToClientNo { get; set; }
         public string ClientName { get; set; }
         public string ClientVATReg { get; set; }
@@ -39,7 +39,7 @@ namespace Hydra.Such.Data.ViewModel
         //public string RequisitionNo { get; set; }
         //public int? RequisitionLineNo { get; set; }
         //public string Driver { get; set; }
-        //public int? MealType { get; set; }
+        public int? MealType { get; set; }
         //public int? FinalDestintyResidueCode { get; set; }
         //public string OriginalDocument { get; set; }
         //public string CorrectedDocument { get; set; }
@@ -47,13 +47,13 @@ namespace Hydra.Such.Data.ViewModel
         //public DateTime? CorrectedDocumentDate { get; set; }
         //public bool? AuthorizedInvoice { get; set; }
         //public DateTime? AuthorizedInvoiceDate { get; set; }
-        //public int? ServiceGroupCode { get; set; }
+        public int? ServiceGroupCode { get; set; }
         //public int? ResourceType { get; set; }
         //public string TimeSheetNo { get; set; }
         //public string InternalRequisition { get; set; }
         //public string EmployeeNo { get; set; }
         //public decimal? ReturnedQuantity { get; set; }
-        //public DateTime? ConsumptionDate { get; set; }
+        public string ConsumptionDate { get; set; }
         public bool? Registered { get; set; }
         public string TypeDescription { get; set; }
         //public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }
@@ -61,5 +61,6 @@ namespace Hydra.Such.Data.ViewModel
         //public Projetos NºProjetoNavigation { get; set; }
         //public Requisição NºRequisiçãoNavigation { get; set; }
         //public TiposRefeição TipoRefeiçãoNavigation { get; set; }
+        public bool Selected { get; set; }
     }
 }

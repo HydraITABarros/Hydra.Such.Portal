@@ -84,7 +84,7 @@
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenters}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetClients" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllClients" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBWarehouses}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNutritionCoffeShopTypes" last-response="{{CBCoffeShopTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -207,7 +207,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBProjects]]" id="projectKitchen" item-value-path="id" item-label-path="value" value="{{data.projectKitchen}}" label="Projeto Cozinha" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[CBProjects]]" id="projectKitchen" item-value-path="id" item-label-path="value" value="{{data.projectKitchen}}" label="Projeto Cozinha" disabled="{{ !_permissions.update }}"  on-value-changed="_projectKitchenChange">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -225,7 +225,7 @@
 
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBProjects]]" id="projectWaste" item-value-path="id" item-label-path="value" value="{{data.projectWaste}}" label="Projeto Desperdicios" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[CBProjects]]" id="projectWaste" item-value-path="id" item-label-path="value" value="{{data.projectWaste}}" label="Projeto Desperdicios" disabled="{{ !_permissions.update }}" on-value-changed="_projectWasteChange">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -240,7 +240,7 @@
                                             <vaadin-text-field value="{{data.projectWasteTotalMovs}}" id="projectWasteTotalMovs" name="projectWasteTotalMovs" label="Mov. Projeto Desperdicios" disabled> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBProjects]]" id="projectSubsidiaries" item-value-path="id" item-label-path="value" value="{{data.projectSubsidiaries}}" label="Projeto Mat. Subsidiárias" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[CBProjects]]" id="projectSubsidiaries" item-value-path="id" item-label-path="value" value="{{data.projectSubsidiaries}}" label="Projeto Mat. Subsidiárias" disabled="{{ !_permissions.update }}" on-value-changed="_projectSubsidiariesChange">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -363,7 +363,7 @@
                                             <div class="panel-heading">Cafetarias / Refeitórios</div>
                                             <div class="panel-body">
                                                 <!-- VAADIN GRID  Projetos de Faturação -->
-                                                <vaadin-grid aria-label="BillingProjectsGrid" id="grid_ClientRequisitions" items="[[data.billingProjects]]" class="grid" multi-sort="true" disabled="{{ !_permissions.update }}">
+                                                <vaadin-grid aria-label="BillingProjectsGrid" id="grid_ClientRequisitions" items="[[data.coffeeShops]]" class="grid" multi-sort="true" disabled="{{ !_permissions.update }}">
                                                     <vaadin-grid-column>
                                                         <template class="header">
                                                             <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
@@ -525,11 +525,11 @@
                 _createBillingProject: function (message) {
                     this.data.billingProjects.unshift({
                         productivityUnitNo: this.data.productivityUnitNo,
-                        projectNo: this._CRStartDate,
-                        active: this._CREndDate,
-                        clientNo: this._CRRequisitionNo,
-                        clientName: this._CRRequisitionDate,
-                        totalSales: this._CRPromiseNo
+                        projectNo: this.$.BPProjectNo.value,
+                        active: true,
+                        clientNo: this.$.BPClientNo.value,
+                        clientName: this.$.BPClientName.value,
+                        totalSales: this.$.BPTotalSales.value
                     });
                     this.$.grid_BillingProjectsGrid.clearCache();
                 },
@@ -541,10 +541,29 @@
                     }
                 },
                 _projectBillingDataResponse: function (e) {
-                    if (data.detail.status === 200) { 
-                        PBInfo
+                    if (e.detail.status === 200) {
+                        this.$.BPClientNo.value = this.PBInfo.clientNo;
+                        this.$.BPClientName.value = this.PBInfo.clientName;
+                        this.$.BPTotalSales.value = this.PBInfo.totalSales;
                     }
-                }
+                },
+
+                //CHANGE PROJECTS
+                _projectKitchenChange: function (e) {
+                    if (e.detail.value != "") {
+
+                    }
+                },
+                _projectWasteChange: function (e) {
+                    if (e.detail.value != "") {
+
+                    }
+                },
+                _projectSubsidiariesChange: function (e) {
+                    if (e.detail.value != "") {
+
+                    }
+                },
             });
         });
     </script>
