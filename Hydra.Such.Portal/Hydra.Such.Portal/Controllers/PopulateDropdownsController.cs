@@ -131,6 +131,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetRequestOrigin()
+        {
+            List<EnumData> result = EnumerablesFixed.RequestOrigin;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetFolhaDeHoraPercursoOrigemDestino()
         {
             List<DDMessageString> result = DBOrigemDestinoFh.GetAll().Select(x => new DDMessageString()
@@ -170,6 +177,13 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetContractStatus()
         {
             List<EnumData> result = EnumerablesFixed.ContractStatus;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProposalsStatus()
+        {
+            List<EnumData> result = EnumerablesFixed.ProposalsStatus;
             return Json(result);
         }
 

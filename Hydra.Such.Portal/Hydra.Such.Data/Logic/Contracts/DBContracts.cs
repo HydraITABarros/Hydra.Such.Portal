@@ -371,6 +371,14 @@ namespace Hydra.Such.Data.Logic.Contracts
                 UpdateUser = x.UtilizadorModificação,
                 Filed = x.Arquivado,
                 RelatedContract = x.NºContrato
+                //RequestOrigin = x.OrigemDoPedido,
+                //RequestOriginDescription = x.DescOrigemDoPedido,
+                //EndData = x.DataExpiração.HasValue ? x.DataExpiração.Value.ToString("yyyy-MM-dd") : "",
+                //SentData = x.DataEnvioCliente.HasValue ? x.DataEnvioCliente.Value.ToString("yyyy-MM-dd") : "",
+                //UpdateData = x.DataAlteraçãoProposta.HasValue ? x.DataAlteraçãoProposta.Value.ToString("yyyy-MM-dd") : "",
+                //TotalValue = x.ValorTotalProposta,
+                //ClarificationLimite = x.DataHoraLimiteEsclarecimentos.HasValue ? x.DataHoraLimiteEsclarecimentos.Value.ToString("yyyy-MM-dd HH:mm:ss") : "",
+                //NextInvoicePeriod = x.PróximoPeríodoFact
             };
 
             result.ClientName = DBNAV2017Clients.GetClientNameByNo(x.NºCliente, NAVDatabaseName, NAVCompanyName);

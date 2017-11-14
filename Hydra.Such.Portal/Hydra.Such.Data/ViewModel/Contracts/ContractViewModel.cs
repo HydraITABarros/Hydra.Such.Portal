@@ -27,6 +27,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string LastInvoiceDate { get; set; }
         public string NextInvoiceDate { get; set; }
         public string StartData { get; set; }
+        public string EndData { get; set; }
         public string DueDate { get; set; }
         public bool? BatchInvoices { get; set; }
         public string NextBillingPeriod { get; set; }
@@ -83,6 +84,16 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string CreateUser { get; set; }
         public string UpdateUser { get; set; }
         public bool? Filed { get; set; }
+        public int? RequestOrigin { get; set; }
+        public string RequestOriginDescription { get; set; }
+        public string SentData { get; set; }
+        public string UpdateData { get; set; }
+        public decimal? TotalValue { get; set; }
+        public string ClarificationLimite { get; set; }
+        public string ProposalDelivery { get; set; }
+        public string LastReport { get; set; }
+        public string NextInvoicePeriod { get; set; }
+        
 
         public List<ContractClientRequisitionViewModel> ClientRequisitions { get; set; }
         public List<ContractInvoiceTextViewModel> InvoiceTexts { get; set; }
