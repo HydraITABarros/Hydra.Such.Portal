@@ -154,7 +154,7 @@
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field rows="10" id="contractNo" name="contractNo" label="Nº Contrato" value="{{data.contractNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                            <vaadin-text-field id="contractNo" name="contractNo" label="Nº Contrato" value="{{data.contractNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" > </vaadin-text-field>
@@ -1476,6 +1476,7 @@
                 },
                 ready: function () {
                     //GET CONTRACT DATA
+                    debugger;
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
                     this.$.page_databound_ajax.generateRequest();

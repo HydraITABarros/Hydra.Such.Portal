@@ -58,7 +58,8 @@ namespace Hydra.Such.Data.Logic.CCP
                               Workflow Procedimentos CCP
                     */
 
-                    Procedimento.Nº1 = _context.TemposPaCcp.Where(t => t.NºProcedimento == Procedimento.Nº).FirstOrDefault();
+                    // zpgm.13-11-2017 - XXX TEMPOS PA CCP is missing 
+                    //Procedimento.Nº1 = _context.TemposPaCcp.Where(t => t.NºProcedimento == Procedimento.Nº).FirstOrDefault();
 
                     // zpgm. REGISTO DE ACTAS is missing until the data model is updated
 
@@ -118,21 +119,24 @@ namespace Hydra.Such.Data.Logic.CCP
                 proc.Nº = DBNumerationConfigurations.GetNextNumeration(NumeracaoProcedimento, true);
                 proc.DataHoraCriação = DateTime.Now;
                 proc.Estado = 0;
-                proc.Nº1 = new TemposPaCcp()
-                {
-                    NºProcedimento = proc.Nº,
-                    Estado0 = 1,
-                    DataHoraCriação = proc.DataHoraCriação,
-                    UtilizadorCriação = proc.UtilizadorCriação
-                };
 
-                proc.NºNavigation = __CreateRegistoDeAtas(proc, false);
+                // zpgm.12-11-2017 XXX
+                //proc.Nº1 = new TemposPaCcp()
+                //{
+                //    NºProcedimento = proc.Nº,
+                //    Estado0 = 1,
+                //    DataHoraCriação = proc.DataHoraCriação,
+                //    UtilizadorCriação = proc.UtilizadorCriação
+                //};
 
-                _context.Add(proc.NºNavigation);
-                _context.SaveChanges();
+                // zpgm.12-11-2017 XXX
+                //proc.NºNavigation = __CreateRegistoDeAtas(proc, false);
 
-                _context.Add(proc.Nº1);
-                _context.SaveChanges();
+                //_context.Add(proc.NºNavigation);
+                //_context.SaveChanges();
+
+                //_context.Add(proc.Nº1);
+                //_context.SaveChanges();
 
                 _context.Add(proc);
                 _context.SaveChanges();
@@ -200,6 +204,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 __DeleteAllNotasProcedimentoRelatedToProcedimento(ProcedimentoID);
                 __DeleteAllRegistoDeAtasRelatedToProcedimento(ProcedimentoID);
                 __DeleteAllWorkflowsRelatedToProcedimento(ProcedimentoID);
+                __DeleteTemposPaCcp(ProcedimentoID);
                 
                 return true;
             }
@@ -351,7 +356,23 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return ElementosView;
         }
+        public static ElementosJuri __CreateElementoJuri(ElementosJuriView ElementoView)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            ElementosJuri Elemento = CCPFunctions.CastElementosJuriViewToElementosJuri(ElementoView);
 
+            try
+            {
+                _context.Add(Elemento);
+                _context.SaveChanges();
+
+                return Elemento;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
         public static bool __DeleteAllElementosJuriRelatedToProcedimento(string ProcedimentoID)
         {
             SuchDBContext _context = new SuchDBContext();
@@ -408,23 +429,6 @@ namespace Hydra.Such.Data.Logic.CCP
             return NotasView;
         }
 
-        public static ElementosJuri __CreateElementoJuri(ElementosJuriView ElementoView)
-        {
-            SuchDBContext _context = new SuchDBContext();
-            ElementosJuri Elemento = CCPFunctions.CastElementosJuriViewToElementosJuri(ElementoView);
-
-            try
-            {
-                _context.Add(Elemento);
-                _context.SaveChanges();
-
-                return Elemento;
-            }
-            catch(Exception e)
-            {
-                return null;
-            }
-        }
         public static bool __DeleteAllNotasProcedimentoRelatedToProcedimento(string ProcedimentoID)
         {
             SuchDBContext _context = new SuchDBContext();

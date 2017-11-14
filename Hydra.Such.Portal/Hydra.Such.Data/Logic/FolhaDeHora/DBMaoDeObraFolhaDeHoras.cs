@@ -139,8 +139,9 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         RecursoNo = MaoDeObra.NºRecurso,
                         CodigoUnidadeMedida = MaoDeObra.CódUnidadeMedida,
                         CodigoTipoOM = MaoDeObra.CódigoTipoOm,
-                        HorasNo = Convert.ToDateTime("1753-01-01 " + MaoDeObra.NºDeHotas),
-                        HorasNoTexto = MaoDeObra.NºDeHotas.ToString(),
+                        //abarros_
+                        //HorasNo = Convert.ToDateTime("1753-01-01 " + MaoDeObra.NºDeHotas),
+                        //HorasNoTexto = MaoDeObra.NºDeHotas.ToString(),
                         CustoUnitarioDireto = Convert.ToDecimal(MaoDeObra.CustoUnitárioDireto),
                         PrecoDeCusto = Convert.ToDecimal(MaoDeObra.PreçoDeCusto),
                         PrecoDeVenda = Convert.ToDecimal(MaoDeObra.PreçoDeVenda),
