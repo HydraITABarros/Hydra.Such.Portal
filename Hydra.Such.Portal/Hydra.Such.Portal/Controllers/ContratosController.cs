@@ -133,11 +133,11 @@ namespace Hydra.Such.Portal.Controllers
             ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
 
             //Validate if ProjectNo is valid
-            if (!(data.ContactNo == "" || data.ContactNo == null) && !CfgNumeration.Manual.Value)
+            if (!(data.ContractNo == "" || data.ContractNo == null) && !CfgNumeration.Manual.Value)
             {
                 return Json("A numeração configurada para contratos não permite inserção manual.");
             }
-            else if (data.ContactNo == "" && !CfgNumeration.Automático.Value)
+            else if (data.ContractNo == "" && !CfgNumeration.Automático.Value)
             {
                 return Json("É obrigatório inserir o Nº de Contrato.");
             }
