@@ -282,8 +282,8 @@
         </template>
     </vaadin-grid-column>
 </vaadin-grid>
-<paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
-<paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
+    <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+    <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 </template>
     
 
@@ -316,13 +316,14 @@
                 //this.$.page_databound_ajax.generateRequest();
             },
             openToast: function (message) {
-                debugger;
-                this.$.ToastMessage.text = message;
-                this.$.ToastMessage.open();
+                this.$.ToastMessageSuccess.text = message;
+                this.$.ToastMessageSuccess.open();
             },
-                 
+            openToastError: function (message) {
+                this.$.ToastMessageError.text = message;
+                this.$.ToastMessageError.open();
+            },
             _confirm: function (selectedItem, selectedItems) {
-                debugger;
                 this.$.page_createlines_ajax.body = JSON.stringify(this.selectedItems);
                 this.$.page_createlines_ajax.generateRequest();
                 //console.log(this.selectedItems);
@@ -334,22 +335,22 @@
                 debugger;
                 switch (message) {
                          
-                case 1: this.$.ToastMessage.text = 'Faturas criadas com sucesso';
-                    this.$.ToastMessage.open();
-                    break;
-                case 2: this.$.ToastError.text = 'Ocorreu um erro ao criar Linhas de Fatura no NAV';
-                    this.$.ToastError.open();
-                    break;
-                case 3: this.$.ToastError.text = 'Ocorreu um erro ao criar o Cabeçalho das Faturas no NAV.';
-                    this.$.ToastError.open();
-                    break;
-                case 4: this.$.ToastError.text = 'Ocorreu um erro ao criar Pré Fatura';
-                    this.$.ToastError.open();
+                    case 1: this.$.ToastMessageSuccess.text = 'Faturas criadas com sucesso';
+                        this.$.ToastMessageSuccess.open();
+                        break;
+                    case 2: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar Linhas de Fatura no NAV';
+                        this.$.ToastMessageError.open();
+                        break;
+                    case 3: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar o Cabeçalho das Faturas no NAV.';
+                        this.$.ToastMessageError.open();
+                        break;
+                    case 4: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar Pré Fatura';
+                        this.$.ToastMessageError.open();
                 }
                      
                 this.$.page_databound_ajax.generateRequest();
-                this.$.ToastMessage.text = 'Faturas criadas com sucesso';
-                this.$.ToastMessage.open();
+                this.$.ToastMessageSuccess.text = 'Faturas criadas com sucesso';
+                this.$.ToastMessageSuccess.open();
             }
         });
     });

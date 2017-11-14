@@ -226,6 +226,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (data.ContractNo != null)
                     {
+                        data.Filed = false;
                         Contratos cContract = DBContracts.ParseToDB(data);
                         cContract.TipoContrato = data.ContractType;
                         cContract.UtilizadorCriação = User.Identity.Name;
@@ -242,7 +243,7 @@ namespace Hydra.Such.Portal.Controllers
                             //Create Client Contract Requisitions
                             data.ClientRequisitions.ForEach(r =>
                             {
-                                r.ContractNo = cContract.NºContrato;
+                                r.ContractNo = cContract.NºDeContrato;
                                 r.CreateUser = User.Identity.Name;
                                 DBContractClientRequisition.Create(DBContractClientRequisition.ParseToDB(r));
                             });
@@ -250,7 +251,7 @@ namespace Hydra.Such.Portal.Controllers
                             //Create Contract Invoice Texts
                             data.InvoiceTexts.ForEach(r =>
                             {
-                                r.ContractNo = cContract.NºContrato;
+                                r.ContractNo = cContract.NºDeContrato;
                                 r.CreateUser = User.Identity.Name;
                                 DBContractInvoiceText.Create(DBContractInvoiceText.ParseToDB(r));
                             });
@@ -966,21 +967,42 @@ namespace Hydra.Such.Portal.Controllers
                     newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), true);
                     try
                     {
+                        
+                        item.Arquivado = false;
                         thisHeader.TipoContrato = contractType;
                         thisHeader.Arquivado = false;
 
                         if (originType == 2)
                         {
-                            thisHeader.NºProposta = oldNumeration;
-                            thisHeader.NºDeContrato = newNumeration;
+                            item.TipoContrato = originType;
+                            item.NºDeContrato = oldNumeration;
+                            item.NºProposta = oldNumeration;
+                            DBContracts.Create(item);
+
+                            item.TipoContrato = contractType;
+                            item.NºProposta = oldNumeration;
+                            item.NºDeContrato = newNumeration;
+                            DBContracts.Create(item);
+
                         }
                         else if (originType == 1)
                         {
+                            item.TipoContrato = originType;
+                            item.NºOportunidade = oldNumeration;
+                            item.NºProposta = newNumeration;
+                            item.NºDeContrato = oldNumeration;
+                            DBContracts.Update(item);
+
+                            item.TipoContrato = contractType;
+                            item.NºOportunidade = oldNumeration;
+                            item.NºProposta = newNumeration;
+                            item.NºDeContrato = newNumeration;
+                            DBContracts.Create(item);
                             thisHeader.NºOportunidade = oldNumeration;
                             thisHeader.NºProposta = newNumeration;
                         }
 
-                        DBContracts.Create(thisHeader);
+                        DBContracts.Create(item);
                     }
                     catch (Exception ex)
                     {

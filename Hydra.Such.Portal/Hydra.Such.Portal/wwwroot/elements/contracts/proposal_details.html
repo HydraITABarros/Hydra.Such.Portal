@@ -494,19 +494,18 @@
 
                                     </div>
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" required label="Envio-a Endereço" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" required label="Envio-a Localidade" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                    </div>
-                                    <div class="col-lg-3">
                                         <vaadin-text-field value="{{data.shippingName}}" id="ShippingName" name="ShippingName" required label="Envio-a Nome" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" required label="Envio-a Endereço" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{data.shippingZipCode}}" id="shippingZipCode" name="shippingZipCode" required label="Envio-a Cód. Postal" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
                                 </div>
                                 <div class="row break_clear">
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.shippingZipCode}}" id="shippingZipCode" name="shippingZipCode" required label="Envio-a Cód. Postal" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" required label="Envio-a Localidade" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
                                 </div>
                             </div>
