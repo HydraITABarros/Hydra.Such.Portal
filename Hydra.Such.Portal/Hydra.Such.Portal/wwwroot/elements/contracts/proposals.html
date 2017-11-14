@@ -11,14 +11,12 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 
-<h1 class="title">Propostas</h1>
-
 <x-proposals></x-proposals>
 <dom-module id="x-proposals">
     <template>
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="~/css/main.css" />
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
 
         <iron-ajax url="/Contratos/GetListContractsProposals"
                    last-response="{{result}}"
@@ -31,7 +29,7 @@
         <template is="dom-if" if="{{ _permissions.create }}">
             <template is="dom-if" if="{{ !_disabledCreate }}">
                 <div class="marginSpace">
-                    <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
+                    <paper-button class="btnSave" raised on-tap="_create">Criar Novo</paper-button>
                 </div>
             </template>
         </template>
@@ -170,12 +168,12 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesContrato/" + item.contractNo;
+                        window.location.href = "DetalhesProposta/" + item.contractNo;
                     }
                 },
                 _create: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesContrato/";
+                        window.location.href = "DetalhesProposta/";
                     }
                 },
                 ready: function () {

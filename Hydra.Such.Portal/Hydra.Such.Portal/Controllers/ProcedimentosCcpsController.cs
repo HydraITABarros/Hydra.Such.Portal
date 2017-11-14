@@ -91,7 +91,7 @@ namespace Hydra.Such.Portal.Controllers
                     ProcedimentosCcp proc = DBProcedimentosCCP.GetProcedimentoById(data.No);
                     if (proc != null)
                     {
-                        ProcedimentoCCPView result = CCPFunctions.CastProcCcpToProcCcpView(proc);
+                        ProcedimentoCCPView result = CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(proc);
 
                         return Json(result);
                     }
@@ -106,7 +106,19 @@ namespace Hydra.Such.Portal.Controllers
             
             return Json(false);
         }
+        
+        public JsonResult GetUsersWhoAreElementosJuri()
+        {
 
+            List<DDMessageString> result = DBProcedimentosCCP.GetAllUsersElementosJuri().Select(cu => new DDMessageString()
+            {
+                id = cu.IdUtilizador,
+                value = cu.Nome
+            }).ToList();
+
+            return Json(result);
+        }
+        
         public JsonResult CreateProcedimento([FromBody] ProcedimentoCCPView data)
         {
             try

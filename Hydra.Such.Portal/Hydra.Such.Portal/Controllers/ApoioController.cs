@@ -17,15 +17,37 @@ namespace Hydra.Such.Portal.Controllers
             return View();
         }
 
-        public IActionResult Viaturas()
+        #region Projetos
+        public IActionResult Projetos()
         {
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 5, 1);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
-        public IActionResult ImportacaoCustos()
+        public IActionResult DetalhesProjeto(string id)
         {
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 5, 1);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id == null ? "" : id;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
+        #endregion
+
 
         public IActionResult Administracao()
         {
@@ -39,5 +61,23 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+
+        #region Folha De Horas
+        public IActionResult FolhaDeHoras(int? archived, string folhaDeHoraNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Archived = archived == null ? 0 : 1;
+                ViewBag.FolhaDeHorasNo = folhaDeHoraNo ?? "";
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        #endregion
     }
 }

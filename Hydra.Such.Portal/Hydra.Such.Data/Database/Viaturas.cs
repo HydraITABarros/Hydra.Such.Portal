@@ -38,6 +38,30 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
+        public DateTime? DataAquisição { get; set; }
+        public DateTime? DataEntradaFuncionamento { get; set; }
+        public DateTime? DataAbate { get; set; }
+        public string LocalParqueamento { get; set; }
+        public string Observações { get; set; }
+        public int? Potência { get; set; }
+        public int? DistânciaEntreEixos { get; set; }
+        public string PneumáticosFrente { get; set; }
+        public string PneumáticosRetaguarda { get; set; }
+        public decimal? ConsumoIndicativo { get; set; }
+        public string CartaVerde { get; set; }
+        public DateTime? ValidadeCartaVerde { get; set; }
+        public string NºViaVerde { get; set; }
+        public DateTime? DataUltimaInspeção { get; set; }
+        public DateTime? ProximaInspeçãoAté { get; set; }
+        public decimal? ValorAquisição { get; set; }
+        public decimal? ValorVenda { get; set; }
+        public DateTime? ValidadeApólice { get; set; }
+        public DateTime? ValidadeCartãoCombustivel { get; set; }
+        public byte[] Imagem { get; set; }
+        public DateTime? DataUltimaRevisão { get; set; }
+        public int? KmUltimaRevisão { get; set; }
+        public int? IntervaloRevisões { get; set; }
+        public int? DuraçãoPneus { get; set; }
 
         public Modelos CódigoM { get; set; }
         public Marcas CódigoMarcaNavigation { get; set; }

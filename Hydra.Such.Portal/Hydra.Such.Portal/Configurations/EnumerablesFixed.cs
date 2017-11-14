@@ -79,6 +79,13 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 11,
                 Value = "Administração"
             },
+
+            // zpgm. Generic Area to allow features to be applied to all Areas
+            new EnumData()
+            {
+                Id = 99,
+                Value = "Genérica"
+            }
         };
 
         public static readonly List<EnumData> Features = new List<EnumData>(){
@@ -186,7 +193,25 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 21,
                 Value = "Propostas"
-            }
+            },
+             new EnumData()
+            {
+                Id = 22,
+                Value = "Autorizaçãp Faturação"
+            },
+
+             // zpgm. identify users that can be appointed Elementos Juri in ProcedimentosCcp
+             new EnumData()
+             {
+                 Id = 23,
+                 Value = "Elemento Juri CCP"
+             },
+
+             new EnumData()
+             {
+                 Id = 24,
+                 Value = "Contactos"
+             }
         };
 
         public static readonly List<EnumData> ProposalStatus = new List<EnumData>(){
@@ -260,7 +285,7 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 3,
                 Value = "Comum"
             }};
-        
+
         public static readonly List<EnumData> ProjectDiaryMovements = new List<EnumData>()
         {
              new EnumData()
@@ -284,13 +309,13 @@ namespace Hydra.Such.Portal.Configurations
         {
              new EnumData()
             {
-                Id = 1,
-                Value = "Recurso"
+                Id = 2,
+                Value = "Produto"
             },
             new EnumData()
             {
-                Id = 2,
-                Value = "Produto"
+                Id = 1,
+                Value = "Recurso"
             },
             new EnumData()
             {
@@ -415,7 +440,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 7,
-                Value = "Em vigo"
+                Value = "Em vigor"
             }
         };
 
@@ -495,7 +520,7 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Nenhum"
             }
         };
-        
+
         public static readonly List<EnumData> ContractInvoiceGroups = new List<EnumData>(){
             new EnumData()
             {
@@ -770,6 +795,20 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> FolhaDeHoraAjudaTipoCusto = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Ajuda de Custo"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Despesa"
+            }
+        };
+
         // zpgm.< Enumerable types for Procedimentos CCP
         public static readonly List<EnumData> ProcedimentosCcpProcedimentoType = new List<EnumData>()
         {
@@ -993,6 +1032,24 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData(2, "Área Funcional"),
             new EnumData(3, "Centro Responsabilidade")
         };
+
+        public static readonly List<EnumData> NutritionCoffeShopTypes = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Cafetaria"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Refeitório"
+            }
+        };
+
+
+
+
     }
 
     public class EnumDataString

@@ -73,10 +73,16 @@ namespace Hydra.Such.Data.Logic.Project
 
                     if (result.Count > 0)
                     {
-                        List<UserDimensionsViewModel> UDimensions = DBUserDimensions.GetByUserId(UserId);
-                        UDimensions.RemoveAll(x => x.Dimension != NAVDimType);
-
-                        result.RemoveAll(x => !UDimensions.Any(y => y.DimensionValue == x.Code));
+                        var userDimensions = DBUserDimensions.GetByUserId(UserId);
+                        if (userDimensions != null)
+                        {
+                            List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
+                            userDimensionsViewModel.RemoveAll(x => x.Dimension != NAVDimType);
+                            if (userDimensionsViewModel.Count > 0)
+                            {
+                                result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.Code));
+                            }
+                        }
                     }
                 }
 

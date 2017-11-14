@@ -12,8 +12,8 @@
 }
 else
 {
-    <h2 class="separator">Contrato @ViewBag.ContractNo</h2>
+    <h1 class="title">Proposta @ViewBag.ContractNo</h1>
 }
 
 
-<x-proposalsdetails _contractno="@ViewBag.ContractNo" _versionno="@ViewBag.VersionNo" _areaid="1" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-proposalsdetails>
+<x-proposalsdetails _contractno="@ViewBag.ContractNo" _versionno="@ViewBag.VersionNo" _areaid="2" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-proposalsdetails>
