@@ -610,20 +610,34 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="totalPrice">Preço Total</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="totalPrice"></vaadin-grid-filter>
+        <vaadin-grid-column width="160px" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="totalPrice">Preço Total</vaadin-grid-sorter>
+                <vaadin-grid-filter path="totalPrice"></vaadin-grid-filter>
+            </template>
+            <template>
+                <template is="dom-if" if="{{ item.selected }}">
+                    <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                 </template>
-                <template>
-                    <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.totalPrice}}€
-                    </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    {{item.totalPrice}}€
                 </template>
-            </vaadin-grid-column>
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="160px" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="unitValueToInvoice">Valor Unitário a Faturar</vaadin-grid-sorter>
+                <vaadin-grid-filter path="unitValueToInvoice"></vaadin-grid-filter>
+            </template>
+            <template>
+                <template is="dom-if" if="{{ item.selected }}">
+                    <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
+                </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    {{item.unitValueToInvoice}}€
+                </template>
+            </template>
+        </vaadin-grid-column>
         <vaadin-grid-column width="75px" resizable>
             <template class="header">
                 <p class="alignCenter">Faturável</p>
@@ -1027,6 +1041,7 @@
                         totalCost: this.totalCost,
                         unitPrice: this.unitPrice,
                         totalPrice: this.totalPrice,
+                        unitValueToInvoice: this.unitValueToInvoice,
                         billable: this.billable,
                         invoiceToClientNo: this.invoiceClientNo,
                         mealType: this.ddMealTypes,
@@ -1217,6 +1232,7 @@
                             totalCost: e.totalCost,
                             unitPrice: e.unitPrice,
                             totalPrice: e.totalPrice,
+                            unitValueToInvoice: e.unitValueToInvoice,
                             billable: e.billable,
                             invoiceToClientNo: e.invoiceClientNo,
                             mealType: e.ddMealTypes,
@@ -1224,7 +1240,7 @@
                             residueGuideNo: e.residueguide,
                             ExternalGuideNo: e.externalguide,
                             consumptionDate: e.consumptionDate,
-                            serviceClientCode: this.ddServiceClientCode
+                            serviceClientCode: e.ddServiceClientCode
                         });
                     });
                     this.$.projectDiaryProject.clearCache();
