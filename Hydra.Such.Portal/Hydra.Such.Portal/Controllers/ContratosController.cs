@@ -494,6 +494,14 @@ namespace Hydra.Such.Portal.Controllers
                         cContract.NºVersão = cContract.NºVersão + 1;
                         cContract.UtilizadorCriação = User.Identity.Name;
                         cContract.UtilizadorModificação = "";
+                        if(cContract.TipoContrato == 1)
+                        {
+                            cContract.NºProposta = "";
+                        }else if(cContract.TipoContrato == 2 )
+                        {
+                            cContract.NºContrato = "";
+                        }
+                        
                         cContract.DataHoraModificação = null;
                         cContract.Arquivado = false;
                         DBContracts.Create(cContract);
@@ -950,6 +958,7 @@ namespace Hydra.Such.Portal.Controllers
             // Parse Header
             String contractNo = requestParams["HeaderNo"].ToString();
             String versionNo = requestParams["VersionNo"].ToString();
+
             int originType = int.Parse(requestParams["OriginType"].ToString());
             int contractType = int.Parse(requestParams["HeaderType"].ToString());
 
@@ -963,46 +972,52 @@ namespace Hydra.Such.Portal.Controllers
 
                 if  (thisHeader != null)
                 {
-                    String oldNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(originType), true);
+                    //String oldNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(originType), true);
                     newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), true);
                     try
                     {
-                        
-                        item.Arquivado = false;
-                        thisHeader.TipoContrato = contractType;
                         thisHeader.Arquivado = false;
 
                         if (originType == 2)
                         {
-                            item.TipoContrato = originType;
-                            item.NºDeContrato = oldNumeration;
-                            item.NºProposta = oldNumeration;
-                            DBContracts.Create(item);
+                            thisHeader.TipoContrato = originType;
+                            thisHeader.NºDeContrato = contractNo;
+                            thisHeader.NºProposta = contractNo;
+                            DBContracts.Update(thisHeader);
 
-                            item.TipoContrato = contractType;
-                            item.NºProposta = oldNumeration;
-                            item.NºDeContrato = newNumeration;
-                            DBContracts.Create(item);
+                            thisHeader.TipoContrato = contractType;
+                            thisHeader.NºProposta = contractNo;
+                            thisHeader.NºDeContrato = newNumeration;
+                            DBContracts.Create(thisHeader);
+
+                            //Update Last Numeration Used
+                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(GetNumeration(contractType));
+                            ConfigNumerations.ÚltimoNºUsado = newNumeration;
+                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                            DBNumerationConfigurations.Update(ConfigNumerations);
+
 
                         }
                         else if (originType == 1)
                         {
-                            item.TipoContrato = originType;
-                            item.NºOportunidade = oldNumeration;
-                            item.NºProposta = newNumeration;
-                            item.NºDeContrato = oldNumeration;
-                            DBContracts.Update(item);
-
-                            item.TipoContrato = contractType;
-                            item.NºOportunidade = oldNumeration;
-                            item.NºProposta = newNumeration;
-                            item.NºDeContrato = newNumeration;
-                            DBContracts.Create(item);
-                            thisHeader.NºOportunidade = oldNumeration;
+                            thisHeader.TipoContrato = originType;
+                            thisHeader.NºOportunidade = contractNo;
                             thisHeader.NºProposta = newNumeration;
-                        }
+                            thisHeader.NºDeContrato = contractNo;
+                            DBContracts.Update(thisHeader);
 
-                        DBContracts.Create(item);
+                            thisHeader.TipoContrato = contractType;
+                            thisHeader.NºOportunidade = contractNo;
+                            thisHeader.NºProposta = newNumeration;
+                            thisHeader.NºDeContrato = newNumeration;
+                            DBContracts.Create(thisHeader);
+
+                            //Update Last Numeration Used
+                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(GetNumeration(contractType));
+                            ConfigNumerations.ÚltimoNºUsado = newNumeration;
+                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                            DBNumerationConfigurations.Update(ConfigNumerations);
+                        }
                     }
                     catch (Exception ex)
                     {
