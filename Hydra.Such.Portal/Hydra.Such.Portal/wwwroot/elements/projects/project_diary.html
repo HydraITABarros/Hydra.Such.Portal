@@ -32,6 +32,9 @@
 <link rel="import" href="/lib/iron-flex-layout/iron-flex-layout-classes.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+
 <dom-module id="x-projectdiary">
     <template>
 
@@ -50,8 +53,11 @@
         </style>
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-check-square" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
+            <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
             <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
+            <!--<paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>-->
+
+
         </div>
         <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -69,12 +75,13 @@
         <iron-ajax url="/PopulateDropdowns/GetContabGroup" last-response="{{ContabGroupData}}" auto method="post"  handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Administracao/GetMealTypesData" last-response="{{MealTypesData}}" method="post" auto handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetServiceGroup" last-response="{{ServiceGroupData}}" on-response="_ServiceGroupResponse"  id="ajax_ServiceGroup" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetServiceGroup" last-response="{{ServiceGroupData}}" id="ajax_ServiceGroup" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetClientService" last-response="{{ServiceClientData}}"  id="ajax_SServiceClient" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <div>
             <div class="row">
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="projectList" name="projectList" items="[[response]]" on-value-changed="_projectChange" item-value-path="id" item-label-path="value" label="Nº Projeto" disabled="{{disabledProjectNo}}" value="{{projectNumber}}">
+                    <vaadin-combo-box id="projectList" name="projectList" items="[[response]]" on-value-changed="_projectChange" item-value-path="id" item-label-path="id" label="Nº Projeto" disabled="{{disabledProjectNo}}" value="{{projectNumber}}">
                         <template>
                                 <table>
                                     <tr>
@@ -86,10 +93,10 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{consumptionDate}}"></vaadin-date-picker>
+                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="projectMovementList" name="projectMovementList" items="[[response2]]" item-value-path="id" item-label-path="value" label="Tipo Movimento" value="{{projectMovementNumber}}">
+                    <vaadin-combo-box id="projectMovementList" name="projectMovementList" items="[[response2]]" item-value-path="id" item-label-path="value" label="Tipo Movimento" value="{{projectMovementNumber}}" disabled="{{ !_permissions.create }}">
                         <template>
                                 <table width="200px">
                                     <tr>
@@ -101,7 +108,7 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="projectTypeList" name="projectTypeList" items="[[response3]]" on-value-changed="_projectTypeChange" item-value-path="id" item-label-path="value" label="Tipo" value="{{projectTypeNumber}}">
+                    <vaadin-combo-box id="projectTypeList" name="projectTypeList" items="[[response3]]" on-value-changed="_projectTypeChange" item-value-path="id" item-label-path="value" label="Tipo" value="{{projectTypeNumber}}" disabled="{{ !_permissions.create }}">
                         <template>
                                 <table width="200px">
                                     <tr>
@@ -113,7 +120,7 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piCode" name="piCode" items="[[codeOptions]]" item-value-path="id" on-value-changed="_codeChange" item-label-path="id" label="Código" value="{{codeNumber}}">
+                    <vaadin-combo-box id="piCode" name="piCode" items="[[codeOptions]]" item-value-path="id" on-value-changed="_codeChange" item-label-path="id" label="Código" value="{{codeNumber}}" disabled="{{ !_permissions.create }}">
                         <template>
                                 <table width="200px">
                                     <tr>
@@ -125,12 +132,12 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piDescription" label="Descrição" value="{{description}}"></vaadin-text-field>
+                    <vaadin-text-field id="piDescription" label="Descrição" value="{{description}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piContabGroup" name="piContabGroup" items="[[ContabGroupData]]" item-value-path="id" value="{{codeProjectContabGroup}}" item-label-path="value" label="Grupo Contab">
+                    <vaadin-combo-box id="piContabGroup" name="piContabGroup" items="[[ContabGroupData]]" item-value-path="id" value="{{codeProjectContabGroup}}" item-label-path="value" label="Grupo Contab" disabled="{{ !_permissions.create }}">
                         <template>
                                 <table width="200px">
                                     <tr>
@@ -142,10 +149,10 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piQuantity" pattern="[0-9]*" prevent-invalid-input label="Quantidade" value="{{quantity}}" on-changed="_calcTotals"></vaadin-text-field>
+                    <vaadin-text-field id="piQuantity" pattern="[0-9]+([\.,][0-9]+)?" label="Quantidade" value="{{quantity}}"  on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"></vaadin-text-field >
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[MeasureUnit]]" item-value-path="id" value="{{codeMeasurementUnit}}" item-label-path="value" label="Cód. Unidade Medida">
+                    <vaadin-combo-box id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[MeasureUnit]]" item-value-path="id" value="{{codeMeasurementUnit}}" item-label-path="value" label="Cód. Unidade Medida" disabled="{{ !_permissions.create }}">
                         <template>
                                 <table width="200px">
                                     <tr>
@@ -157,7 +164,7 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piCodeLocation" name="piCodeLocation" items="[[Locations]]" item-value-path="id" value="{{codeLocation}}" item-label-path="value" label="Cód. Localização">
+                    <vaadin-combo-box id="piCodeLocation" name="piCodeLocation" items="[[Locations]]" item-value-path="id" value="{{codeLocation}}" item-label-path="value" label="Cód. Localização" disabled="{{ !_permissions.create }}">
                         <template>
                                 <table width="200px">
                                     <tr>
@@ -169,7 +176,7 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piCodeRegion" name="piCodeRegion" items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{codeRegion}}" label="Cód. Região">
+                    <vaadin-combo-box id="piCodeRegion" name="piCodeRegion" items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.create }}">
                         <template>
                                 <table width="200px">
                                     <tr>
@@ -181,7 +188,7 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piFuncArea" name="piFuncArea" items="[[FunctionalAreaCodeData]]" item-value-path="id" value="{{codeFuncArea}}" item-label-path="value" label="Cód. Área Funcional">
+                    <vaadin-combo-box id="piFuncArea" name="piFuncArea" items="[[FunctionalAreaCodeData]]" item-value-path="id" value="{{codeFuncArea}}" item-label-path="value" label="Cód. Área Funcional" disabled="{{ !_permissions.create }}">
                         <template>
                                 <table width="200px">
                                     <tr>
@@ -195,7 +202,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" items="[[ResponsabilityCenterData]]" value="{{codeResponsabilityCenter}}" item-value-path="id" item-label-path="value" label="Cód. Centro Respon.">
+                    <vaadin-combo-box id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" items="[[ResponsabilityCenterData]]" value="{{codeResponsabilityCenter}}" item-value-path="id" item-label-path="value" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}">
                         <template>
                             <table width="200px">
                                 <tr>
@@ -207,28 +214,28 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitCost" label="Custo Uniário" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitCost" label="Custo Uniário" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{totalCost}}" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitPrice" label="Preço Uniário" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitPrice}}" on-value-changed="_calcTotals"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitPrice" label="Preço Uniário" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitPrice}}" on-value-changed="_calcTotals"  disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{totalPrice}}" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitValueToInvoice}}" disabled="{{ !_permissions.create }}"><div slot="suffix" >€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
                 </div>
                 <div class="col-lg-2 alignPoga">
-                    <vaadin-checkbox id="pcInvoice" checked="{{billable}}"> Faturável</vaadin-checkbox>
+                    <vaadin-checkbox id="pcInvoice" checked="{{billable}}" disabled="{{ !_permissions.create }}"> Faturável</vaadin-checkbox>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="MealTypesCode" items="[[MealTypesData]]" item-value-path="code" item-label-path="description" value="{{ddMealTypes}}" label="Tipo Refeição">
+                    <vaadin-combo-box id="MealTypesCode" items="[[MealTypesData]]" item-value-path="code" item-label-path="description" value="{{ddMealTypes}}" label="Tipo Refeição" disabled="{{ !_permissions.create }}">
                         <template>
                             <table width="250px">
                                 <tr>
@@ -240,8 +247,8 @@
                         </template>
                     </vaadin-combo-box>
                 </div>
-                <div class="col-lg-2">
-                    <vaadin-combo-box id="ServiceGroupCod" items="[[ServiceGroupData]]" item-value-path="serviceCode" item-label-path="serviceDescription" value="{{ddServiceGroupCode}}" label="Cód. Grupo Serviço">
+                <div class="col-lg-2" >
+                    <vaadin-combo-box id="ServiceGroupCod" items="[[ServiceGroupData]]" item-value-path="serviceCode" item-label-path="serviceDescription" value="{{ddServiceGroupCode}}" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}">
                         <template>
                             <table width="200px">
                                 <tr>
@@ -252,19 +259,31 @@
                         </template>
                     </vaadin-combo-box>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-2" disabled="{{ !_permissions.create }}">
                     <vaadin-text-field id="piResidueGuideNo" label="Nº Guia Resíduo" value="{{residueguide}}"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piExternalGuideNo" label="Nº Guia Externa" value="{{externalguide}}"></vaadin-text-field>
+                    <vaadin-text-field id="piExternalGuideNo" label="Nº Guia Externa" value="{{externalguide}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{date}}"></vaadin-date-picker>
+                    <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{date}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-combo-box id="ServiceClientCode" items="[[ServiceClientData]]" item-value-path="serviceCode" item-label-path="serviceDescription" value="{{ddServiceClientCode}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}">
+                        <template>
+                            <table width="200px">
+                                <tr>
+                                    <td width="40%">[[item.serviceCode]]</td>
+                                    <td width="60%"> <b>[[item.serviceDescription]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" hidden="{{ !_permissions.create }}">
                 <div class="col-lg-2 alignPoga">
-                    <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_add">Criar</paper-button>
+                    <paper-button class="btnSave" disabled="{{ !_permissions.create }}"  raised on-tap="_add">Criar</paper-button>
                 </div>
             </div>
             <vaadin-text-field id="piInvoiceClientNo" disabled value="{{invoiceClientNo}}" hidden></vaadin-text-field>
@@ -427,7 +446,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field pattern="[0-9]" id="lineQuantity" disabled="{{ !_permissions.update }}" value="{{item.quantity}}" on-value-changed="_lineCalcTotals"></vaadin-text-field>
+                        <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" id="lineQuantity" disabled="{{ !_permissions.update }}" value="{{item.quantity}}" on-value-changed="_lineCalcTotals"></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.quantity}}
@@ -591,20 +610,34 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="totalPrice">Preço Total</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="totalPrice"></vaadin-grid-filter>
+        <vaadin-grid-column width="160px" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="totalPrice">Preço Total</vaadin-grid-sorter>
+                <vaadin-grid-filter path="totalPrice"></vaadin-grid-filter>
+            </template>
+            <template>
+                <template is="dom-if" if="{{ item.selected }}">
+                    <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                 </template>
-                <template>
-                    <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.totalPrice}}€
-                    </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    {{item.totalPrice}}€
                 </template>
-            </vaadin-grid-column>
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="160px" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="unitValueToInvoice">Valor Unitário a Faturar</vaadin-grid-sorter>
+                <vaadin-grid-filter path="unitValueToInvoice"></vaadin-grid-filter>
+            </template>
+            <template>
+                <template is="dom-if" if="{{ item.selected }}">
+                    <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
+                </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    {{item.unitValueToInvoice}}€
+                </template>
+            </template>
+        </vaadin-grid-column>
         <vaadin-grid-column width="75px" resizable>
             <template class="header">
                 <p class="alignCenter">Faturável</p>
@@ -642,8 +675,8 @@
         </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="ServiceGroupCode">Cód. Grupo Serviço</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="ServiceGroupCode"></vaadin-grid-filter>
+                    <vaadin-grid-sorter path="serviceGroupCode">Cód. Grupo Serviço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="serviceGroupCode"></vaadin-grid-filter>
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
@@ -691,21 +724,44 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="consumptionDate">Data Consumo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="consumptionDate"></vaadin-grid-filter>
-                </template>
-                <template>
-                    <template is="dom-if" if="{{ item.selected }}">
+        <vaadin-grid-column width="160px" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="consumptionDate">Data Consumo</vaadin-grid-sorter>
+                <vaadin-grid-filter path="consumptionDate"></vaadin-grid-filter>
+            </template>
+            <template>
+                <template is="dom-if" if="{{ item.selected }}">
                       
-                        <vaadin-date-picker id="dpcompDate" name="dpcompDate" disabled="{{ !_permissions.update }}" value="{{item.consumptionDate}}"></vaadin-date-picker>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        [[ _parseDateFormat(item.consumptionDate) ]] 
-                    </template>
+                    <vaadin-date-picker id="dpcompDate" name="dpcompDate" disabled="{{ !_permissions.update }}" value="{{item.consumptionDate}}"></vaadin-date-picker>
                 </template>
-            </vaadin-grid-column>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    [[ _parseDateFormat(item.consumptionDate) ]] 
+                </template>
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="160px" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="serviceClientCode">Cód. Serviço Cliente</vaadin-grid-sorter>
+                <vaadin-grid-filter path="serviceClientCode"></vaadin-grid-filter>
+            </template>
+            <template>
+                <template is="dom-if" if="{{ item.selected }}">
+                    <vaadin-combo-box items="[[ServiceClientData]]" disabled="{{ !_permissions.update }}" item-value-path="serviceCode" item-label-path="serviceDescription" value="{{item.serviceClientCode}}">
+                        <template>
+                            <table width="200px">
+                                <tr>
+                                    <td width="40%">[[item.serviceCode]]</td>
+                                    <td width="60%"> <b>[[item.serviceDescription]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    [[ _parseServiceClient(item.serviceClientCode, item.invoiceToClientNo )]]
+                </template>
+            </template>
+        </vaadin-grid-column>
             <vaadin-grid-column hidden>
                 <template>
                     <vaadin-text-field id="invoiceToClientNo" value="{{item.invoiceToClientNo}}" disabled></vaadin-text-field>
@@ -719,13 +775,24 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-        <div class="marginSpace">
+        <div class="marginSpace"  hidden="{{ !_permissions.update }}">
             <paper-button raised id="btnAddNew" disabled="{{ !_permissions.update }}" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
             <paper-button raised id="btnCancel" disabled="{{ !_permissions.update }}" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
         </div>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+        
+        
+        <!-- Paper Dialog -->
+    <!--<paper-dialog id="dialog">
+            <p>Lorem ipsum dolore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exerliquip ex ea commodo consequat. Duis aute
+                pa qui officia deserunt mollit anim id est laborum.</p>
+        <div class="buttons">
+            <paper-button dialog-dismiss>Cancel</paper-button>
+            <paper-button dialog-confirm autofocus>OK</paper-button>
+        </div>
+    </paper-dialog>-->
 
     </template>
 
@@ -740,6 +807,11 @@
                     value: ""
                 },
                 ddServiceGroupCode: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                ddServiceClientCode: {
                     type: String,
                     notify: true,
                     value: ""
@@ -890,7 +962,7 @@
             },
 
             observers: [
-                '_onCacheLoaded(response2, response3, CBContractLineCodesGrid, ContabGroupData, MeasureUnit, Locations, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, MealTypesData, ServiceGroupData)'
+                '_onCacheLoaded(response2, response3, CBContractLineCodesGrid, ContabGroupData, MeasureUnit, Locations, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, MealTypesData, ServiceGroupData, ServiceClientData)'
             ],
 
             _onCacheLoaded: function(typemovement,
@@ -903,7 +975,8 @@
                 funcareacode,
                 respcentercode,
                 mealtypescode,
-                serviceGroupCod) {
+                serviceGroupCod,
+                serviceClientCode) {
              
                 if (!this.Flag) {
                     if (this.paramprojno != "") {
@@ -922,12 +995,17 @@
                 if (this.paramprojno != "") {
                     this.$.projectList.value = this.paramprojno;
                     this.disabledProjectNo = true;
+                } else {
+                    this.disabledProjectNo = !this._permissions.create;
                 }
-                
                 this.$.ajax_ServiceGroup.body = JSON.stringify("");
                 this.$.ajax_ServiceGroup.params = { "allProjs": true };
                 this.$.ajax_ServiceGroup.generateRequest();
 
+                this.$.ajax_SServiceClient.body = JSON.stringify("");
+                this.$.ajax_SServiceClient.params = { "allProjs": true };
+                this.$.ajax_SServiceClient.generateRequest();
+                
             },
 
             openToastSuccess: function(message) {
@@ -940,10 +1018,10 @@
             },
 
             _add() {
-                debugger;
                 if (true)
                 //Validações
                 {
+                    debugger;
                     this.result.unshift({
                         projectNo: this.projectNumber,
                         date: this.date,
@@ -963,13 +1041,15 @@
                         totalCost: this.totalCost,
                         unitPrice: this.unitPrice,
                         totalPrice: this.totalPrice,
+                        unitValueToInvoice: this.unitValueToInvoice,
                         billable: this.billable,
                         invoiceToClientNo: this.invoiceClientNo,
                         mealType: this.ddMealTypes,
                         serviceGroupCode: this.ddServiceGroupCode,
                         residueGuideNo: this.residueguide,
                         externalGuideNo: this.externalguide,
-                        consumptionDate: this.consumptionDate
+                        consumptionDate: this.consumptionDate,
+                        serviceClientCode: this.ddServiceClientCode
                     });
 
                     // Save to DB
@@ -982,7 +1062,6 @@
             },
 
             _update: function () {
-                debugger;;
                 this.$.ajax_update.body = JSON.stringify(this.result);
                 this.$.ajax_update.generateRequest();
             },
@@ -1007,7 +1086,33 @@
 
                     this.$.ajax_getall.generateRequest();
                     this.$.projectDiaryProject.clearCache();
-
+                   
+                    this.projectNumber = "";
+                    this.date = "";
+                    this.projectMovementNumber = "";
+                    this.projectTypeNumber = "";
+                    this.codeNumber = "";
+                    this.description = "";
+                    this.quantity = "";
+                    this.codeMeasurementUnit = "";
+                    this.codeLocation = "";
+                    this.codeProjectContabGroup = "";
+                    this.codeRegion = "";
+                    this.codeFuncArea = "";
+                    this.codeResponsabilityCenter = "";
+                    this.unitCost = "";
+                    this.totalCost = "";
+                    this.unitPrice = "";
+                    this.totalPrice = "";
+                    this.billable = true;
+                    this.invoiceClientNo = "";
+                    this.ddMealTypes = "";
+                    this.ddServiceGroupCode = "";
+                    this.residueguide = "";
+                    this.externalguide = "";
+                    this.consumptionDate = "";
+                    this.ddServiceClientCode = "";
+                    this.unitValueToInvoice = "";
                     this.openToastSuccess("Diário de Projeto atualizado.");
 
                     this.$.piCodeLocation.value = "";
@@ -1031,10 +1136,7 @@
                 }
             },
            
-
-
             _projectChange: function (e) {
-              
                 if (e.detail.value) {
                     this.$.ajax_related.body = JSON.stringify(e.detail.value);
                     this.$.ajax_related.generateRequest();
@@ -1074,11 +1176,15 @@
                     this.codeResponsabilityCenter = this.related.responsabilityCenter;
                     this.invoiceClientNo = this.related.invoiceClientNo;
                 }
-                debugger;
                 if (this.invoiceClientNo != null) {
                     this.$.ajax_ServiceGroup.body = JSON.stringify(this.invoiceClientNo);
                     this.$.ajax_ServiceGroup.params = { "allProjs": false };
                     this.$.ajax_ServiceGroup.generateRequest();
+
+                    this.$.ajax_SServiceClient.body = JSON.stringify(this.invoiceClientNo);
+                    this.$.ajax_SServiceClient.params = { "allProjs": false };
+                    this.$.ajax_SServiceClient.generateRequest();
+                    
                 }
             },
 
@@ -1117,7 +1223,10 @@
                 }
 
             },
+            _getMovementsProject: function () {
+                this.$.dialog.open();
 
+            },
             _movementLinesResponse: function () {
                 if (this.movementLines.length > 0) {
                     this.movementLines.forEach(function(e) {
@@ -1140,13 +1249,15 @@
                             totalCost: e.totalCost,
                             unitPrice: e.unitPrice,
                             totalPrice: e.totalPrice,
+                            unitValueToInvoice: e.unitValueToInvoice,
                             billable: e.billable,
                             invoiceToClientNo: e.invoiceClientNo,
                             mealType: e.ddMealTypes,
                             serviceGroupCode: e.ddServiceGroupCode,
                             residueGuideNo: e.residueguide,
                             ExternalGuideNo: e.externalguide,
-                            consumptionDate: e.consumptionDate
+                            consumptionDate: e.consumptionDate,
+                            serviceClientCode: e.ddServiceClientCode
                         });
                     });
                     this.$.projectDiaryProject.clearCache();
@@ -1157,23 +1268,22 @@
             },
 
             _calcTotals: function (e) {
+                debugger;
                 switch (e.target.id) {
                 case "piQuantity":
-                    this.quantity = e.detail.value;
+                        this.quantity = e.detail.value.replace(",", ".");
                     break;
                 case "piUnitCost":
-                    this.unitCost = e.detail.value;
+                        this.unitCost = e.detail.value.replace(",", ".");
                     break;
                 case "piUnitPrice":
-                    this.unitPrice = e.detail.value;
+                        this.unitPrice = e.detail.value.replace(",", ".");
                     break;
                 default:
                     break;
                 }
-
                 if (this.quantity != null && this.quantity != "" &&
-                    this.unitPrice != null && this.unitPrice != "")
-                {
+                    this.unitPrice != null && this.unitPrice != "") {
                     this.totalPrice = this.unitPrice * this.quantity;
                 }
                 if (this.quantity != null && this.quantity != "" &&
@@ -1309,10 +1419,33 @@
                 return "";
             },
 
+            _parseServiceClient: function (param1, param2) {
+                //refinar array c/ param2
+                //retornar valor c/ param1
+                if (param2 != undefined) {
+
+                    if (this.ServiceClientData != null)
+                    {
+                        var array = this.ServiceClientData;
+
+                        array = array.filter(function (obj) {
+                            return obj.clientNumber == param2;
+                        });
+                        this.$.ajax_SServiceClient.body = JSON.stringify(param2);
+                        this.$.ajax_SServiceClient.params = { "allProjs": false };
+                        this.$.ajax_SServiceClient.generateRequest();
+                        if (param1 != undefined) {
+                            return array.find(x => x.serviceCode == param1).serviceDescription;
+                        }
+                    }                   
+                }
+                return "";
+                
+            },
             _parseServiceGroup: function (param1, param2) {
                 //refinar array c/ param2
                 //retornar valor c/ param1
-                if (param1 != undefined && param2 != undefined) {
+                if (param2 != undefined) {
 
                     if (this.ServiceGroupData != null)
                     {
@@ -1321,19 +1454,19 @@
                         array = array.filter(function (obj) {
                             return obj.clientNumber == param2;
                         });
-
-                        return array.find(x => x.serviceCode == param1).serviceDescription;
+                        this.$.ajax_ServiceGroup.body = JSON.stringify(param2);
+                        this.$.ajax_ServiceGroup.params = { "allProjs": false };
+                        this.$.ajax_ServiceGroup.generateRequest();
+                        if (param1 != undefined) {
+                            return array.find(x => x.serviceCode == param1).serviceDescription;
+                        }
                     }                   
                 }
                     return "";
-                
             },
-
-            _ServiceGroupResponse: function (param) {
-                debugger;
-            },
-
+            
             _lineCalcTotals: function (param) {
+                debugger;
                 var qnt = this.result.find(x => x == this._SelectedLine).quantity;
                 var unitCost = this.result.find(x => x == this._SelectedLine).unitCost;
                 var unitPrice = this.result.find(x => x == this._SelectedLine).unitPrice;
@@ -1377,14 +1510,6 @@
                     if (sel != undefined) {
                         this.result.find(x => x == item).selected = true;
 
-                        if (this.paramprojno != "") {
-                           // this.ServiceGroupCod = this.                           
-                        }
-                        else {
-                            //ajax body = sel.projectNo
-                            //generate
-                        }
-
                         this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
                         this.$.contractlinecodesgrid_ajax.generateRequest();
                         this.$.projectDiaryProject.clearCache();
@@ -1393,7 +1518,6 @@
             },
             _parseDateFormat: function (date)
             {
-                debugger;
                 if (date != null && date != "") {
                     var x = date.split("-");
                     return x[2] + "-" + x[1] + "-" + x[0];
