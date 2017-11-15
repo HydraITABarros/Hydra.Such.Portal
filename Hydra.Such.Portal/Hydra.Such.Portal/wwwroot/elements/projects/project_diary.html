@@ -1009,6 +1009,23 @@
                     this.$.projectDiaryProject.clearCache();
 
                     this.openToastSuccess("Diário de Projeto atualizado.");
+
+                    this.$.piCodeLocation.value = "";
+                    this.$.piCodeRegion.value = "";
+                    this.$.piFuncArea.value = "";
+                    this.$.piCodeResponsabilityCenter.value = "";
+                    this.$.piUnitCost.value = "";
+                    this.$.piTotalCost.value = "";
+                    this.$.piUnitPrice.value = "";
+                    this.$.piTotalPrice.value = "";
+                    this.$.piUnitValueToInvoice.value = "";
+                    this.$.piCoin.value = "";
+                    this.$.pcInvoice.value = true;
+                    this.$.MealTypesCode.value = "";
+                    this.$.ServiceGroupCod.value = "";
+                    this.$.piResidueGuideNo.value = "";
+                    this.$.piExternalGuideNo.value = "";
+                    this.$.dpcompDate.value = "";
                 } else {
                     this.openToastError("Occorreu um erro ao atualizar as o Diário de Projeto.");
                 }
