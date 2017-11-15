@@ -242,6 +242,112 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> RequestOrigin = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Pedidio do Cliente"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Ajuste Direto"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Concurso Público"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Concurso Limitado por Previa Qualificação"
+            },
+            new EnumData()
+            {
+                Id = 5,
+                Value = "Procedimento de Negociação"
+            },
+            new EnumData()
+            {
+                Id = 6,
+                Value = "Diálogo Concorrencial"
+            },
+            new EnumData()
+            {
+                Id = 7,
+                Value = "Consulta ao Mercado"
+            },
+            new EnumData()
+            {
+                Id = 8,
+                Value = "Renovação de Contrato"
+            },
+            new EnumData()
+            {
+                Id = 9,
+                Value = "Iniciativa SUCH"
+            },
+            new EnumData()
+            {
+                Id = 10,
+                Value = "Adenda"
+            },
+            new EnumData()
+            {
+                Id = 11,
+                Value = "Outros"
+            }
+        };
+
+        public static readonly List<EnumData> ProposalsStatus = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Enviada"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Revista"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Perdida"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Cancelada"
+            },
+            new EnumData()
+            {
+                Id = 5,
+                Value = "Renovada"
+            },
+            new EnumData()
+            {
+                Id = 6,
+                Value = "Adjudicada"
+            },
+            new EnumData()
+            {
+                Id = 7,
+                Value = "Parcialmente Aceite, "
+            },
+            new EnumData()
+            {
+                Id = 8,
+                Value = "Oportunidade"
+            },
+            new EnumData()
+            {
+                Id = 9,
+                Value = "Oportunidade Não Respondida"
+            }
+        };
+
         public static readonly List<EnumData> ProjectStatus = new List<EnumData>(){
             new EnumData()
             {

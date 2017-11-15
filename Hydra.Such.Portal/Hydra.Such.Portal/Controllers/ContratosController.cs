@@ -133,11 +133,11 @@ namespace Hydra.Such.Portal.Controllers
             ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
 
             //Validate if ProjectNo is valid
-            if (!(data.ContactNo == "" || data.ContactNo == null) && !CfgNumeration.Manual.Value)
+            if (!(data.ContractNo == "" || data.ContractNo == null) && !CfgNumeration.Manual.Value)
             {
                 return Json("A numeração configurada para contratos não permite inserção manual.");
             }
-            else if (data.ContactNo == "" && !CfgNumeration.Automático.Value)
+            else if (data.ContractNo == "" && !CfgNumeration.Automático.Value)
             {
                 return Json("É obrigatório inserir o Nº de Contrato.");
             }
@@ -226,6 +226,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (data.ContractNo != null)
                     {
+                        data.Filed = false;
                         Contratos cContract = DBContracts.ParseToDB(data);
                         cContract.TipoContrato = data.ContractType;
                         cContract.UtilizadorCriação = User.Identity.Name;
@@ -242,7 +243,7 @@ namespace Hydra.Such.Portal.Controllers
                             //Create Client Contract Requisitions
                             data.ClientRequisitions.ForEach(r =>
                             {
-                                r.ContractNo = cContract.NºContrato;
+                                r.ContractNo = cContract.NºDeContrato;
                                 r.CreateUser = User.Identity.Name;
                                 DBContractClientRequisition.Create(DBContractClientRequisition.ParseToDB(r));
                             });
@@ -250,7 +251,7 @@ namespace Hydra.Such.Portal.Controllers
                             //Create Contract Invoice Texts
                             data.InvoiceTexts.ForEach(r =>
                             {
-                                r.ContractNo = cContract.NºContrato;
+                                r.ContractNo = cContract.NºDeContrato;
                                 r.CreateUser = User.Identity.Name;
                                 DBContractInvoiceText.Create(DBContractInvoiceText.ParseToDB(r));
                             });
@@ -752,7 +753,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
 
 
-                        
+
                         if (item.PeríodoFatura != null || item.PeríodoFatura != 0)
                         {
                             switch (item.PeríodoFatura)
@@ -849,6 +850,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
             }
+            DBAuthorizeInvoiceContracts.DeleteAllAllowedInvoiceAndLines();
             return Json(true);
         }
 
@@ -862,22 +864,22 @@ namespace Hydra.Such.Portal.Controllers
                 Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws);
                 InvoiceHeader.Wait();
 
-                if (InvoiceHeader.IsCompletedSuccessfully)
+                if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null)
                 {
                     String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
                     List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato && x.GrupoFatura == item.GrupoFatura).ToList();
-                    
+
                     if (itemList.Count > 0)
                     {
-                        Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);                        
+                        Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
                         InvoiceLines.Wait();
 
-                        if (InvoiceLines.IsCompletedSuccessfully)
+                        if (InvoiceLines.IsCompletedSuccessfully && InvoiceLines != null)
                         {
                             Task<WSGenericCodeUnit.FxPostInvoice_Result> postNAV = WSGeneric.CreatePreInvoiceLineList(InvoiceHeaderNo, _configws);
                             postNAV.Wait();
 
-                            if (!postNAV.IsCompletedSuccessfully)
+                            if (!postNAV.IsCompletedSuccessfully || postNAV == null)
                             {
                                 return Json(false);
                             }
@@ -886,13 +888,15 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             return Json(false);
                         }
-                    }                   
+                    }
                 }
                 else
                 {
                     return Json(false);
                 }
             }
+            // Delete Lines
+
             return Json(true);
         }
         #endregion
@@ -945,41 +949,67 @@ namespace Hydra.Such.Portal.Controllers
         {
             // Parse Header
             String contractNo = requestParams["HeaderNo"].ToString();
+            String versionNo = requestParams["VersionNo"].ToString();
             int originType = int.Parse(requestParams["OriginType"].ToString());
             int contractType = int.Parse(requestParams["HeaderType"].ToString());
 
-            if (contractNo != null && originType != 0 && contractType != 0)
-            {
-                List<Contratos> thisHeader = DBContracts.GetByNo(contractNo, false);
+            String newNumeration = "";
 
-                foreach (var item in thisHeader)
+            if (contractNo != null && contractNo != "" &&
+                versionNo != null && versionNo != "" &&
+                originType != 0 && contractType != 0)
+            {
+                Contratos thisHeader = DBContracts.GetByIdAndVersion(contractNo, int.Parse(versionNo));
+
+                if (thisHeader != null)
                 {
                     String oldNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(originType), true);
-                    String newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), true);
+                    newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), true);
                     try
                     {
-                        item.TipoContrato = contractType;
-                        item.Arquivado = false;
+
+                        thisHeader.Arquivado = false;
+                        thisHeader.TipoContrato = contractType;
+                        thisHeader.Arquivado = false;
 
                         if (originType == 2)
                         {
-                            item.NºProposta = oldNumeration;
-                            item.NºDeContrato = newNumeration;
+                            thisHeader.TipoContrato = originType;
+                            thisHeader.NºDeContrato = oldNumeration;
+                            thisHeader.NºProposta = oldNumeration;
+                            DBContracts.Create(thisHeader);
+
+                            thisHeader.TipoContrato = contractType;
+                            thisHeader.NºProposta = oldNumeration;
+                            thisHeader.NºDeContrato = newNumeration;
+                            DBContracts.Create(thisHeader);
+
                         }
                         else if (originType == 1)
                         {
-                            item.NºOportunidade = oldNumeration;
-                            item.NºProposta = newNumeration;
+                            thisHeader.TipoContrato = originType;
+                            thisHeader.NºOportunidade = oldNumeration;
+                            thisHeader.NºProposta = newNumeration;
+                            thisHeader.NºDeContrato = oldNumeration;
+                            DBContracts.Update(thisHeader);
+
+                            thisHeader.TipoContrato = contractType;
+                            thisHeader.NºOportunidade = oldNumeration;
+                            thisHeader.NºProposta = newNumeration;
+                            thisHeader.NºDeContrato = newNumeration;
+                            DBContracts.Create(thisHeader);
+                            thisHeader.NºOportunidade = oldNumeration;
+                            thisHeader.NºProposta = newNumeration;
                         }
 
-                        DBContracts.Create(item);
+                        DBContracts.Create(thisHeader);
                     }
                     catch (Exception ex)
                     {
-                        return Json(false);
+                        return Json("Erro ao criar cabeçalho do contrato.");
                     }
                     // Parse Lines
-                    List<LinhasContratos> relatedLines = DBContractLines.GetAllByActiveContract(contractNo, item.NºVersão);
+                    List<LinhasContratos> relatedLines = DBContractLines.GetAllByActiveContract(contractNo, thisHeader.NºVersão);
                     foreach (var line in relatedLines)
                     {
                         try
@@ -989,16 +1019,20 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         catch (Exception ex)
                         {
-                            return Json(false);
+                            return Json("Erro a criar linhas de contrato.");
                         }
                     }
+                    return Json(newNumeration);
+                }
+                else
+                {
+                    return Json("Erro ao tentar aceder à informação do presente proposta.");
                 }
             }
-
-            return Json(true);
+            return Json("Informação em falta para converter para contrato.");
         }
 
-        
+
         private static int GetNumeration(int type)
         {
             //Get Contract Numeration

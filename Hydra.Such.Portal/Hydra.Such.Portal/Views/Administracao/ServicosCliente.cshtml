@@ -211,8 +211,8 @@
         <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
         <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
     </div>
-    <paper-toast id="ToastError" style="background-color:red" duration="4000" text="Este Serviço Cliente já existe." horizontalAlign="right"></paper-toast>
-    <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+    <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true" text="Este Serviço Cliente já existe."></i></paper-toast>
+    <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 </template>
 
 <script>
@@ -260,8 +260,8 @@
             },
 
             openToast: function (message) {
-                this.$.ToastMessage.text = message;
-                this.$.ToastMessage.open();
+                this.$.ToastMessageSuccess.text = message;
+                this.$.ToastMessageSuccess.open();
             },
 
             _update: function () {

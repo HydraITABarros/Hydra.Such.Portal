@@ -140,6 +140,10 @@ namespace WSCreatePreInvoice
         
         private string responsabilityCenterCode20Field;
         
+        private System.DateTime shipment_Start_TimeField;
+        
+        private bool shipment_Start_TimeFieldSpecified;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string Key
@@ -643,6 +647,34 @@ namespace WSCreatePreInvoice
                 this.responsabilityCenterCode20Field = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time", Order=31)]
+        public System.DateTime Shipment_Start_Time
+        {
+            get
+            {
+                return this.shipment_Start_TimeField;
+            }
+            set
+            {
+                this.shipment_Start_TimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Shipment_Start_TimeSpecified
+        {
+            get
+            {
+                return this.shipment_Start_TimeFieldSpecified;
+            }
+            set
+            {
+                this.shipment_Start_TimeFieldSpecified = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -780,6 +812,9 @@ namespace WSCreatePreInvoice
         
         /// <remarks/>
         ResponsabilityCenterCode20,
+        
+        /// <remarks/>
+        Shipment_Start_Time,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -1366,8 +1401,7 @@ namespace WSCreatePreInvoice
         {
             if ((endpointConfiguration == EndpointConfiguration.WSPreInvoice_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:7047/DynamicsNAV100/WS/CRONUS Portugal Ltd./Page/WSPreInvoice?" +
-                        "wsdl");
+                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:7047/DynamicsNAV100/WS/CRONUS Portugal Ltd./Page/WSPreInvoice");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

@@ -145,6 +145,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetRequestOrigin()
+        {
+            List<EnumData> result = EnumerablesFixed.RequestOrigin;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetFolhaDeHoraPercursoOrigemDestino()
         {
             List<DDMessageString> result = DBOrigemDestinoFh.GetAll().Select(x => new DDMessageString()
@@ -181,9 +188,27 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetContacts()
+        {
+            List<DDMessageString> result = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.No_,
+                value = x.Name
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetContractStatus()
         {
             List<EnumData> result = EnumerablesFixed.ContractStatus;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProposalsStatus()
+        {
+            List<EnumData> result = EnumerablesFixed.ProposalsStatus;
             return Json(result);
         }
 
