@@ -797,9 +797,12 @@ namespace Hydra.Such.Portal.Controllers
                         }
                     }
                     List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
-                    result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
-                    result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
-                    result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
+                    if (userDimensionsViewModel.Where(x => x.Dimension == 1).Count() > 0)
+                        result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
+                    if (userDimensionsViewModel.Where(x => x.Dimension == 2).Count() > 0)
+                        result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
+                    if (userDimensionsViewModel.Where(x => x.Dimension == 3).Count() > 0)
+                        result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
                 }
                 return Json(result);
             }
