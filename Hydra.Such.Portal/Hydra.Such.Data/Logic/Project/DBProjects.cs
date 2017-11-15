@@ -108,7 +108,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Projetos.Where(x => x.Área == AreaId-1 && x.Estado != 3).ToList();
+                    return ctx.Projetos.Where(x => x.Área == AreaId && x.Estado != 3).ToList();
                 }
             }
             catch (Exception ex)
@@ -140,11 +140,11 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Projetos.Where(x => x.Área == AreaId - 1).Select(x => new ProjectListItemViewModel()
+                    return ctx.Projetos.Where(x => x.Área == AreaId).Select(x => new ProjectListItemViewModel()
                     {
                         ProjectNo = x.NºProjeto,
                         Date = x.Data,
-                        DateText = x.Data.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        DateText = x.Data.HasValue ? x.Data.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) : "",
                         Status = x.Estado,
                         Description = x.Descrição,
                         ClientNo = x.NºCliente,

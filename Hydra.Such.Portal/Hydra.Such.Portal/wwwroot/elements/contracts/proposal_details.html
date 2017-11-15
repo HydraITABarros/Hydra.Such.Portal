@@ -1571,6 +1571,13 @@
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
                         this._openToast("Projeto criado com sucesso.");
+
+                        var contractNo = this.data.contractNo;
+                        setTimeout(
+                            function () {
+                                window.location.href = "../DetalhesProposta/" + contractNo;
+                            }, 1000);
+                        
                     } else {
                         this._openToast(this.data.eMessage);
                     }
@@ -1630,6 +1637,8 @@
                         lastInvoiceDate: this._CRLastInvoiceDate
                     });
                     this.$.grid_ClientRequisitions.clearCache();
+
+                    
                 },
                 _deleteClientRequisition: function (data) {
                     var index = this.data.clientRequisitions.indexOf(data.model.item);

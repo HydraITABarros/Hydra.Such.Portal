@@ -1200,28 +1200,30 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CreateClientServices([FromBody] List<ClientServicesViewModel> data)
         {
-            foreach (var dt in data)
+            if (data != null)
             {
-                int param = 1;
-                bool exist = CheckIfExist(dt.ClientNumber, dt.ServiceCode, dt.ServiceGroup, param);
-                if (exist == false)
+                foreach (var dt in data)
                 {
-                    ServiçosCliente tpval = new ServiçosCliente();
-                    tpval.UtilizadorCriação = User.Identity.Name;
-                    tpval.DataHoraCriação = DateTime.Now;
-                    tpval.GrupoServiços = dt.ServiceGroup;
-                    tpval.CódServiço = dt.ServiceCode;
-                    tpval.NºCliente = dt.ClientNumber;
+                    int param = 1;
+                    bool exist = CheckIfExist(dt.ClientNumber, dt.ServiceCode, dt.ServiceGroup, param);
+                    if (exist == false)
+                    {
+                        ServiçosCliente tpval = new ServiçosCliente();
+                        tpval.UtilizadorCriação = User.Identity.Name;
+                        tpval.DataHoraCriação = DateTime.Now;
+                        tpval.GrupoServiços = dt.ServiceGroup;
+                        tpval.CódServiço = dt.ServiceCode;
+                        tpval.NºCliente = dt.ClientNumber;
 
-                    DBClientServices.Create(tpval);
-                    return Json(exist);
-                }
-                else
-                {
-                    return Json(exist);
+                        DBClientServices.Create(tpval);
+                        return Json(exist);
+                    }
+                    else
+                    {
+                        return Json(exist);
+                    }
                 }
             }
-
             return Json(data);
         }
 

@@ -620,8 +620,23 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<DDMessageString> result = DBContracts.GetAll().Where(x => x.Área == areaId).Select(x => new DDMessageString()
             {
-                id = x.NºContrato,
-                value = x.NºContrato
+                id = x.NºDeContrato,
+                value = x.NºDeContrato
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProjectContractsByArea(int areaId)
+        {
+            List<Contratos> lcontracts = DBContracts.GetAll().Where(x => x.TipoContrato == 3 && x.Área == areaId).ToList();
+            lcontracts.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+
+            List<DDMessageString> result = lcontracts.Select(x => new DDMessageString()
+            {
+                id = x.NºDeContrato,
+                value = x.Descrição
             }).ToList();
 
             return Json(result);

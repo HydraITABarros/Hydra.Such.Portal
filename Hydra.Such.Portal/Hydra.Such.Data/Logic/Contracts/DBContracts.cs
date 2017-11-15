@@ -170,7 +170,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.Área == AreaId-1 && x.TipoContrato == ContractType).ToList();
+                    return ctx.Contratos.Where(x => x.Área == AreaId && x.TipoContrato == ContractType).ToList();
                 }
             }
             catch (Exception ex)
