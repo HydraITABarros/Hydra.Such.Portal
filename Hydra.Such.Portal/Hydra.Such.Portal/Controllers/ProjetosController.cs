@@ -410,6 +410,7 @@ namespace Hydra.Such.Portal.Controllers
                     ExternalGuideNo = x.NºGuiaExterna,
                     ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                     InvoiceToClientNo = x.FaturaANºCliente,
+                    ServiceClientCode = x.CódServiçoCliente
                 }).ToList();
                 return Json(dp);
             }
@@ -447,6 +448,7 @@ namespace Hydra.Such.Portal.Controllers
                     ExternalGuideNo = x.NºGuiaExterna,
                     ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                     InvoiceToClientNo = x.FaturaANºCliente,
+                    ServiceClientCode = x.CódServiçoCliente
                 }).ToList();
                 return Json(dp);
             }
@@ -465,6 +467,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 previousList = DBProjectDiary.GetByProjectNo(projectNo, User.Identity.Name);
             }
+            
 
             //previousList.RemoveAll(x => !dp.Any(u => u.LineNo == x.NºLinha));
             //previousList.ForEach(x => DBProjectDiary.Delete(x));
@@ -509,7 +512,8 @@ namespace Hydra.Such.Portal.Controllers
                     CódGrupoServiço = x.ServiceGroupCode,
                     NºGuiaResíduos = x.ResidueGuideNo,
                     NºGuiaExterna = x.ExternalGuideNo,
-                    DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate)
+                    DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
+                    CódServiçoCliente = x.ServiceClientCode
 
                 };
 
