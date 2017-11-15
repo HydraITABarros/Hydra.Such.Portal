@@ -270,6 +270,10 @@
                         this.openToast("Tabela atualizada.");
                         this.$.ajax_create.generateRequest();
                         this.$.gridserviceobjects.clearCache();
+
+                        this.$.piDescription.value = "";
+                        this.$.cboreaCode.value = "";
+                        this.$.pcBlocked.value = false;
                     }
                     else {
                         this.openToastError("Occorreu um erro ao atualizar a Tabela.");

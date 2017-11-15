@@ -100,7 +100,7 @@
     </div>
     <div class="row">
         <div class="col-lg-2"><vaadin-text-field id="ddDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
-        <div class="col-lg-2"> <vaadin-combo-box items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{ddRegion}}" label="Código Região" disabled="{{ _permissionsCreate }}">
+        <div class="col-lg-2"> <vaadin-combo-box items="[[RegionData]]" id="ddRegions" item-value-path="id" item-label-path="value" value="{{ddRegion}}" label="Código Região" disabled="{{ _permissionsCreate }}">
             <template>
                 <table width="180px">
                     <tr>
@@ -112,7 +112,7 @@
         </vaadin-combo-box>
         </div>
         <div class="col-lg-2">  
-            <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" value="{{ddFunctionalArea}}" label="Código Area Funcional" disabled="{{ _permissionsCreate }}">
+            <vaadin-combo-box items="[[FunctionalAreaCodeData]]" id="ddFunctionalAreas" item-value-path="id" item-label-path="value" value="{{ddFunctionalArea}}" label="Código Area Funcional" disabled="{{ _permissionsCreate }}">
                 <template>
                     <table width="200px">
                         <tr>
@@ -124,7 +124,7 @@
             </vaadin-combo-box>
         </div>
         <div class="col-lg-2 ">  
-            <vaadin-combo-box items="[[ResponsabilityCenterData]]" item-value-path="id" item-label-path="value" value="{{ddResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ _permissionsCreate }}">
+            <vaadin-combo-box items="[[ResponsabilityCenterData]]" id="ddResponsabilityCenters" item-value-path="id" item-label-path="value" value="{{ddResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ _permissionsCreate }}">
                 <template>
                     <table width="160px">
                         <tr>
@@ -135,7 +135,7 @@
                 </template>
             </vaadin-combo-box>
         </div>
-        <div class="col-lg-1 alignPoga"><paper-button class="btnSave" on-tap="_createContabGroupType"disabled="{{ _permissionsCreate }}">Criar</paper-button> </div>
+        <div class="col-lg-1 alignPoga"><paper-button class="btnSave" on-tap="_createContabGroupType" disabled="{{ _permissionsCreate }}">Criar</paper-button> </div>
     </div><br />
     <vaadin-grid id="gridContabGroupTypes" aria-label="gridContabGroupTypesTable" items="[[result]]" class="grid" multi-sort="true">
         <vaadin-grid-column width="200px" resizable>
@@ -304,7 +304,10 @@
                         this.openToast('Atualizado com sucesso!');
                         this.$.page_databound_ajax.url = "/Administracao/GetTiposGrupoContabProjeto";
                         this.$.page_databound_ajax.generateRequest();
-
+                        this.$.ddDescription.value = "";
+                        this.$.ddRegions.value = "";
+                        this.$.ddFunctionalAreas.value = "";
+                        this.$.ddResponsabilityCenters.value = "";
                     }
                     else {
                         this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');

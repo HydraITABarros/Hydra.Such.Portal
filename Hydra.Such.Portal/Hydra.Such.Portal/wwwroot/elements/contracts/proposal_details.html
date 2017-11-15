@@ -1846,6 +1846,8 @@
                         lastInvoiceDate: this._CRLastInvoiceDate
                     });
                     this.$.grid_ClientRequisitions.clearCache();
+
+                    
                 },
                 _deleteClientRequisition: function (data) {
                     var index = this.data.clientRequisitions.indexOf(data.model.item);
