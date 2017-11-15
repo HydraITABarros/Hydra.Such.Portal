@@ -395,10 +395,28 @@
             _updateResponse: function (e) {
                 var self = this;
                 if (e.detail.status === 200) {
-
+                    debugger;;
                     this.openToast('Atualizado com sucesso!');
                     this.$.page_databound_ajax.generateRequest();
                     this.$.gridContabGroupTypesOM.clearCache();
+
+                    this.$.ddDescription.value = "";
+                    this.$.ddCGTOM_Types.value = "";
+                    this.$.chkCorrectiveMaintenance.value = false;
+                    this.$.chkPreventiveMaintenance.value = false;
+                    this.$.ddCGTOM_FailTypes.value = "";
+                    this.$.chkResponseTimeIndicator.value = false;
+                    this.$.chkStopTimeIndicator.value = false;
+                    this.$.chkRepairEffectiveTimeIndicator.value = false;
+                    this.$.chkClosingWorksTimeIndicator.value = false;
+                    this.$.chkBillingTimeIndicator.value = false;
+                    this.$.chkEmployeesOccupationTimeIndicator.value = false;
+                    this.$.chkCostSaleValueIndicator.value = false;
+                    this.$.chkCATCoverageRateIndicator.value = false;
+                    this.$.chkCATComplianceRateIndicator.value = false;
+                    this.$.chkMPRoutineFulfillmentRateIndicator.value = false;
+                    this.$.chkBreakoutIncidentsIndicator.value = false;
+                    this.$.chkOrdernInProgressIndicator.value = false;
                 }
                 else {
                     this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');

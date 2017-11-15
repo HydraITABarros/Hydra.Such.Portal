@@ -23,7 +23,7 @@ namespace Hydra.Such.Data.NAV
         }
 
         public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(ProjectDiaryViewModel PreInvoiceToCreate, NAVWSConfigurations WSConfigurations)
-        {           
+        {
             WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
@@ -53,14 +53,18 @@ namespace Hydra.Such.Data.NAV
 
         public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations)
         {
+            DateTime now = DateTime.Now;
             WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
                 {
-                    Sell_to_Customer_No = "01121212",//PreInvoiceToCreate.InvoiceToClientNo,
-                    VAT_Registration_No = "123456789",//PreInvoiceToCreate.ClientVATReg,
+                    Sell_to_Customer_No = CreateInvoice.NºCliente,
                     Document_Date = DateTime.Today,
                     Document_DateSpecified = true,
+                    Shipment_Date = now,
+                    Shipment_DateSpecified = true,
+                    Shipment_Start_Time = now.AddHours(1),
+                    Shipment_Start_TimeSpecified = true
                 }
             };
 
@@ -86,7 +90,7 @@ namespace Hydra.Such.Data.NAV
         {
             WSCreatePreInvoice.WSPreInvoice[] parsedList = CreateList.Select(
                 x => new WSCreatePreInvoice.WSPreInvoice
-                {             
+                {
                     Sell_to_Customer_No = x.NºCliente,
                     Document_Date = x.DataDeRegisto.Value,
                     Due_Date = x.DataDeExpiração.Value
@@ -110,7 +114,7 @@ namespace Hydra.Such.Data.NAV
                 return null;
             }
         }
-        
+
 
         public static async Task<WSCreatePreInvoice.Delete_Result> DeletePreInvoiceLineList(String HeaderNo, NAVWSConfigurations WSConfigurations)
         {

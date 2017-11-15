@@ -106,7 +106,7 @@ namespace Hydra.Such.Portal.Controllers
             
             return Json(false);
         }
-        
+
         //public JsonResult GetUsersWhoAreElementosJuri()
         //{
 
@@ -118,7 +118,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //    return Json(result);
         //}
-        
+
         public JsonResult CreateProcedimento([FromBody] ProcedimentoCCPView data)
         {
             try

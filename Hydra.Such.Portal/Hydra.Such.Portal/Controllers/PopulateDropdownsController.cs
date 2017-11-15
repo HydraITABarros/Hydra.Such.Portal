@@ -36,6 +36,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetClientService([FromBody]string invoiceClientNo, bool allProjs)
+        {
+            List<ClientServicesViewModel> result = DBClientServices.GetAllClientService(invoiceClientNo, allProjs);
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetNumerations()
         {
             List<DDMessage> result = DBNumerationConfigurations.GetAll().Select(x => new DDMessage()
@@ -176,6 +183,17 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = x.Code,
                 value = x.Description
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContacts()
+        {
+            List<DDMessageString> result = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.No_,
+                value = x.Name
             }).ToList();
             return Json(result);
         }
@@ -546,7 +564,7 @@ namespace Hydra.Such.Portal.Controllers
             List<DDMessageString> result = DBProjects.GetAll().Select(x => new DDMessageString()
             {
                 id = x.NºProjeto,
-                value = x.NºProjeto
+                value = x.Descrição
             }).ToList();
 
             return Json(result);

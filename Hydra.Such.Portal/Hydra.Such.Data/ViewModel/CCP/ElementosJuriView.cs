@@ -11,6 +11,9 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public int NoLinha { get; set; }
         public string Utilizador { get; set; }
         public string NoEmpregado { get; set; }
+
+        public string NomeEmpregado { get; set; }   // zpgm. this field doesn't exist in the RegistoDeAtas table. Is used to display the employee name
+
         public bool? Presidente { get; set; }
         public bool? Vogal { get; set; }
         public bool? Suplente { get; set; }

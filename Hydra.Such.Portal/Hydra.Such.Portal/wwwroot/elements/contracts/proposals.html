@@ -10,6 +10,7 @@
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
 <x-proposals></x-proposals>
 <dom-module id="x-proposals">
@@ -34,8 +35,118 @@
             </template>
         </template>
 
-
         <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contractNo" />
+                </template>
+                <template>
+                    {{item.contractNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="startData" />
+                </template>
+                <template>
+                    {{item.startData}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    <vaadin-grid-sorter path="dueDate">Data Fim</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dueDate" />
+                </template>
+                <template>
+                    {{item.dueDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="contactNo">Nº Contacto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contactNo" />
+                </template>
+                <template>
+                    {{item.contactNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientNo" />
+                </template>
+                <template>
+                    {{item.clientNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientName" />
+                </template>
+                <template>
+                    {{item.clientName}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" />
+                </template>
+                <template>
+                    {{item.description}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="status" />
+                </template>
+                <template>
+                    {{item.status}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeRegion" />
+                </template>
+                <template>
+                    {{item.codeRegion}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeFunctionalArea">Cód. Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeFunctionalArea" />
+                </template>
+                <template>
+                    {{item.codeFunctionalArea}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeResponsabilityCenter" />
+                </template>
+                <template>
+                    {{item.codeResponsabilityCenter}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="10%" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnRemove" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <!--<vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px">
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
@@ -135,7 +246,9 @@
                     {{item.codeResponsabilityCenter}}
                 </template>
             </vaadin-grid-column>
-        </vaadin-grid>
+        </vaadin-grid>-->
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -159,7 +272,7 @@
                     },
                     _contractno: {
                         type: String,
-                        value: false
+                        //value: false
                     },
                     _disabledCreate: {
                         type: Boolean,
@@ -168,7 +281,7 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesProposta/" + item.contractNo;
+                        window.location.href = "DetalhesProposta/" + item.contractNo +"?version="+item.versionNo;
                     }
                 },
                 _create: function (item) {
@@ -183,6 +296,39 @@
                     this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
                 },
+
+                _responseDeleteProcessor: function (data) {
+                    debugger;
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        this._openToast(this.deletedData.eMessage);
+                        if (this.deletedData.eReasonCode == 1) {
+                            setTimeout(
+                                function () {
+                                    window.location.href = "/";
+                                }, 2500);
+                        } else if (this.deletedData.eReasonCode == 2) {
+                            this._openToastError(this.deletedData.eMessage);
+                        }
+                    }
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _deleteOprotunity: function (data) {
+                    debugger;
+                    var index = this.result.indexOf(data.model.item);
+                    this.result.splice(index, 1);
+                    this.$.ajax_delete_contract.body = JSON.stringify(data.model.item);
+                    this.$.ajax_delete_contract.generateRequest();
+                }
             });
         });
     </script>

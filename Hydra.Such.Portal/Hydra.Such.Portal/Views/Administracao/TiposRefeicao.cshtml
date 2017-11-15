@@ -85,7 +85,7 @@
                 <vaadin-text-field id="piDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
             </div>
             <div class="col-lg-2">
-                <vaadin-combo-box items="[[GroupContProductData]]" item-value-path="id" item-label-path="value" value="{{ddgroupcontprod}}" label="Grupos Contab. Produto" disabled="{{ _permissionsCreate }}">
+                <vaadin-combo-box items="[[GroupContProductData]]" id="ddgroupcontprods" item-value-path="id" item-label-path="value" value="{{ddgroupcontprod}}" label="Grupos Contab. Produto" disabled="{{ _permissionsCreate }}">
                     <template>
                         <table width="220px">
                             <tr>
@@ -240,6 +240,9 @@
                         if (e.detail.status === 200) {
                             this.$.ajax_GetAll.generateRequest();
                             this.openToast("Tabela atualizada.");
+
+                            this.$.piDescription.value = "";
+                            this.$.ddgroupcontprods.value = "";
                         }
                         else {
                             this.openToastError("Occorreu um erro ao atualizar a Tabela.");

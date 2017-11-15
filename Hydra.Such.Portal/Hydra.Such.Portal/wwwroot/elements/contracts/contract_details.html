@@ -1442,7 +1442,6 @@
                 },
                 ready: function () {
                     //GET CONTRACT DATA
-                    debugger;
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
                     this.$.page_databound_ajax.generateRequest();
@@ -1628,9 +1627,9 @@
                             }, 1000);
 
                     } else {
-                        this._openToastError(this.data.eMessage);
+                        this._openToast(this.data.eMessage);
                     }
-                },
+                }, 
                 _responseValidatorProcessor: function (data) {
                     var self = this;
                     if (data.detail.status === 200) {

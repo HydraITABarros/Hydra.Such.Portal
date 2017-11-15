@@ -246,7 +246,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 1,
-                Value = "Pedidio do Cliente"
+                Value = "Pedido do Cliente"
             },
             new EnumData()
             {
@@ -261,7 +261,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 4,
-                Value = "Concurso Limitado por Previa Qualificação"
+                Value = "Concurso Limitado por Prévia Qualificação"
             },
             new EnumData()
             {

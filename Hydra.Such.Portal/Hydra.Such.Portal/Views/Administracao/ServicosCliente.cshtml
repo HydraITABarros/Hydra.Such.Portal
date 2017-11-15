@@ -144,7 +144,7 @@
             </vaadin-combo-box>
         </div>
         <div class="col-lg-2 alignPoga">
-            <vaadin-checkbox id="chkServiceGroup" checked="{{chkServiceGroup}}"  disabled="{{ _permissionsCreate }}"> Grupo Serviços </vaadin-checkbox>
+            <vaadin-checkbox id="chkServiceGroup" checked="{{chkServiceGroup}}" disabled="{{ _permissionsCreate }}"> Grupo Serviços </vaadin-checkbox>
         </div>
         <div class="col-lg-1 alignPoga">
             <paper-button class="btnSave" on-tap="_createClientService"  disabled="{{ _permissionsCreate }}">Criar</paper-button>
@@ -278,7 +278,11 @@
                 var self = this;
                 if (this.exist === false) {
                     this.openToast('Criado com sucesso');
-                    this.$.page_databound_ajax.generateRequest();
+                    this.$.cboClients.value = "";
+                    this.$.cboServices.value = "";
+                    this.$.chkServiceGroup.value = false;
+
+                    this.$.page_databound_ajax.generateRequest();                    
                 }
                 else if (this.exist === true) {
 
