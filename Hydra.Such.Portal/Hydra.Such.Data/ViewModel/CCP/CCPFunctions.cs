@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic.CCP;
 using Hydra.Such.Data.ViewModel.CCP;
 using System;
 using System.Collections.Generic;
@@ -267,6 +268,45 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 UtilizadorModificacao = Procedimento.UtilizadorModificação
             };
 
+            if(Procedimento.TemposPaCcp != null)
+            {
+                ProcedimentoView.TemposPaCcp = CCPFunctions.CastTemposPaCcpToTemposCCPView(Procedimento.TemposPaCcp);
+            }
+
+            if(Procedimento.RegistoDeAtas != null && Procedimento.RegistoDeAtas.Count > 0)
+            {
+                ProcedimentoView.RegistoDeAtas = DBProcedimentosCCP.GetRegistosActasViewProcedimento(Procedimento);
+            }
+
+            if(Procedimento.ElementosJuri != null && Procedimento.ElementosJuri.Count > 0)
+            {
+                ProcedimentoView.ElementosJuri = DBProcedimentosCCP.GetAllElementosJuriViewProcedimento(Procedimento);
+            }
+            
+            if(Procedimento.EmailsProcedimentosCcp != null && Procedimento.EmailsProcedimentosCcp.Count > 0)
+            {
+                ProcedimentoView.EmailsProcedimentosCcp = DBProcedimentosCCP.GetAllEmailsView(Procedimento);
+            }
+
+            if(Procedimento.LinhasPEncomendaProcedimentosCcp != null && Procedimento.LinhasPEncomendaProcedimentosCcp.Count > 0)
+            {
+                ProcedimentoView.LinhasPEncomendaProcedimentosCcp = DBProcedimentosCCP.GetAllLinhasParaEncomendaView(Procedimento);
+            }
+
+            if(Procedimento.NotasProcedimentosCcp != null && Procedimento.NotasProcedimentosCcp.Count > 0)
+            {
+                ProcedimentoView.NotasProcedimentosCcp = DBProcedimentosCCP.GetAllNotasProcedimentoView(Procedimento);
+            }
+
+            if(Procedimento.WorkflowProcedimentosCcp != null && Procedimento.WorkflowProcedimentosCcp.Count > 0)
+            {
+                ProcedimentoView.WorkflowProcedimentosCcp = DBProcedimentosCCP.GetAllWorkflowsView(Procedimento);
+            }
+
+            if(Procedimento.FluxoTrabalhoListaControlo != null && Procedimento.FluxoTrabalhoListaControlo.Count > 0)
+            {
+                ProcedimentoView.FluxoTrabalhoListaControlo = DBProcedimentosCCP.GetAllCheklistControloProcedimento(Procedimento.Nº);
+            }
             return ProcedimentoView;
         }
 

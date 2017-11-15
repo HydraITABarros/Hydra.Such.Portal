@@ -230,8 +230,8 @@
                 </div>
                 <!-- Elementos Juri section.b -->
                 <h2 class="separator">Elementos Juri</h2>
-                <div class="row break_clear">
-                    <div class="col-lg-3">
+                <div class="table inlineForm">
+                    <div class="col-sm-3">
                         <vaadin-combo-box items="[[LUsers]]" id="users" item-value-path="id" value="{{_userName }}" item-label-path="id" label="Possiveis Elementos">
                             <template>
                                 <paper-icon-item>
@@ -242,9 +242,18 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
+                    
+                    <div class="col-sm-4">
+                        <p>Responsabilidades</p>
+                        <br />
+                        <vaadin-checkbox id="_presidente" checked="{{chkPresidente}}">Presidente</vaadin-checkbox>
+                        <vaadin-checkbox id="_vogal" checked="{{chkVogal}}">Vogal</vaadin-checkbox>
+                        <vaadin-checkbox id="_suplente" checked="{{chkSuplente}}">Suplente</vaadin-checkbox>
+                        <vaadin-checkbox id="_sendMail" checked="{{chkSendMail}}">Enviar Email</vaadin-checkbox>
+                    </div>
                     <div class="col-lg-3">
                         <br />
-                        <paper-button class="btnEdit" raised on-tap="_createElementoJuri"><i class="fa fa-plus" aria-hidden="true"></i>Adicionar Elemento</paper-button>
+                        <paper-button class="btnSave" raised on-tap="_createElementoJuri"><i class="fa fa-plus" aria-hidden="true"></i>Criar</paper-button>
                     </div>
                 </div>
                 <vaadin-grid id="gridElementosJuri" aria-label="gridElementosJuri" items="{{data.elementosJuri}}" class="grid">
@@ -258,18 +267,17 @@
                     </vaadin-grid-column>
                     <vaadin-grid-column width="20%">
                         <template class="header">
-                            Num
+                            Nome
                         </template>
                         <template>
-                            <vaadin-text-field type="text" value="{{ item.noEmpregado }}"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{ item.nomeEmpregado }}"></vaadin-text-field>
                         </template>
                     </vaadin-grid-column>
                 </vaadin-grid>
 
                 
                 <!-- Elementos Juri section.e -->
-=======
->>>>>>> c124b6572912df3a41dc74ccd215f239618c98b0
+
             </div>
 
             <!-- Tab Imobilizado -->
@@ -329,17 +337,34 @@
                     _isCreate: {
                         type: Boolean,
                         value: false
+                    },
+                    chkPresidente: {
+                        type: boolean,
+                        notify: true,
+                        value: false
+                    },
+                    chkVogal: {
+                        type: boolean,
+                        notify: true,
+                        value: false
+                    },
+                    chkSuplente: {
+                        type: boolean,
+                        notify: true,
+                        value: true
+                    },
+                    chkSendMail: {
+                        type: boolean,
+                        notify: true,
+                        value: true
                     }
                 },
 
                 ready: function () {
                     debugger;;
 
-                    //this.data.tipoProcedimento = this._procedimentotypeid;
-
                     this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
                     this.$.page_databound_ajax.generateRequest();
-
 
                     if (this._procedimentoid == "") {
                         this._isCreate = true;
@@ -408,11 +433,6 @@
                     debugger;;
                     var self = this;
 
-                    //Set AreaId
-                    //if (this.data.folhaDeHorasNo == "") {
-                    //    this.data.area = this._areaid;
-                    //}
-
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetProcedimento") !== -1) {
                             if (this.data.No == "") {
@@ -465,7 +485,23 @@
                         }
                     }
                 },
+                // Elemento Juri responsabilities
+                _createElementoJuri: function () {
+                    if (this._userName == "") {
+                        this._openToast("Não escolheu um utilizador!")
+                    } else if (!this.chkPresidente && !this.chkVogal && !this.chkSuplente) {
+                        this._openToast("Não escolheu qual a responsabilidade do utilizador!");
+                    } else if ((this.chkPresidente && (this.chkVogal || this.chkSuplente)) ||
+                        (this.chkVogal && (this.chkPresidente || this.chkSuplente)) ||
+                        (this.chkSuplente && (this.chkPresidente || this.chkVogal))) {
+                        this._openToast("Apenas pode escolher uma das opções: Presidente, Vogal ou Suplente!")
+                    }
 
+
+                },
+                //_showErrorMessage: function (message) {
+                //    this.$._openToast.message = message;
+                //},
                 //Helpers
                 _executeRequest: function (url, data) {
                     //debugger;;

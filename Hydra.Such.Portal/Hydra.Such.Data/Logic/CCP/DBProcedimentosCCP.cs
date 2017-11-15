@@ -9,6 +9,7 @@ namespace Hydra.Such.Data.Logic.CCP
 {
     public static class DBProcedimentosCCP
     {
+        private const int _ElementoJuriFeature = 23;
 
         #region CRUD Procedimentos
         public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoTypeToList(int type)
@@ -48,7 +49,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 if(Procedimento != null)
                 {
                     /*
-                        Every time a Procedimento is retrieved from the database every other entity related to it must be also retrieved:
+                        Every time a Procedimento CCP is retrieved from the database every other entity related to it must be also retrieved:
                               Tempos PA CCP
                               Registo de Actas
                               Elementos Juri
@@ -182,6 +183,8 @@ namespace Hydra.Such.Data.Logic.CCP
                 __DeleteAllRegistoDeAtasRelatedToProcedimento(ProcedimentoID);
                 __DeleteAllWorkflowsRelatedToProcedimento(ProcedimentoID);
                 __DeleteAllEmailsRelatedToProcedimento(ProcedimentoID);
+                __DeleteAllLinhasParaEncomendaRelatedToProcedimento(ProcedimentoID);
+                __DeleteAllCheklistControloRelatedToProcedimento(ProcedimentoID);
                 __DeleteTemposPaCcp(ProcedimentoID);
                 
                 return true;
@@ -194,6 +197,7 @@ namespace Hydra.Such.Data.Logic.CCP
         #endregion
 
         #region CRUD TemposPaCcp
+        //public static TemposPACCPView GetTemposPACcpView()
         public static bool __DeleteTemposPaCcp(string ProcedimentoID)
         {
             SuchDBContext _context = new SuchDBContext();
@@ -240,8 +244,10 @@ namespace Hydra.Such.Data.Logic.CCP
         public static List<RegistoActasView> GetRegistosActasViewProcedimento(ProcedimentosCcp Procedimento)
         {
             List<RegistoActasView> RegistoView = new List<RegistoActasView>();
-
-            // zpgm this code must be updated after the data model update
+            foreach(var ra in Procedimento.RegistoDeAtas)
+            {
+                RegistoView.Add(CCPFunctions.CastRegistoActasToRegistoActasView(ra));
+            }
 
             return RegistoView;
         }
@@ -342,7 +348,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
         }
-        public static List<ElementosJuriView> GetElementosJuriViewProcedimento(ProcedimentosCcp Procedimento)
+        public static List<ElementosJuriView> GetAllElementosJuriViewProcedimento(ProcedimentosCcp Procedimento)
         {
             List<ElementosJuriView> ElementosView = new List<ElementosJuriView>();
 
@@ -534,7 +540,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
         }
-        public static List<NotasProcedimentoCCPView> GetNotasProcedimentoView(ProcedimentosCcp Procedimento)
+        public static List<NotasProcedimentoCCPView> GetAllNotasProcedimentoView(ProcedimentosCcp Procedimento)
         {
             List<NotasProcedimentoCCPView> NotasView = new List<NotasProcedimentoCCPView>();
 
@@ -755,11 +761,20 @@ namespace Hydra.Such.Data.Logic.CCP
             }
 
         }
-        public static List<AcessosUtilizador> GetAllUsersElementosJuri()
+        public static List<ConfigUtilizadores> GetAllUsersElementosJuri()
         {
+            SuchDBContext _context = new SuchDBContext();
+            List<AcessosUtilizador> UsersAccess = _context.AcessosUtilizador.Where(a => a.Funcionalidade == _ElementoJuriFeature).ToList();            
+
+            List<ConfigUtilizadores> UsersElementosJuri = new List<ConfigUtilizadores>();
+
             try
             {
-                return null;
+                foreach(var au in UsersAccess)
+                {
+                    UsersElementosJuri.Add(_context.ConfigUtilizadores.Where(u => u.IdUtilizador == au.IdUtilizador).FirstOrDefault());
+                }
+                return UsersElementosJuri;
             }
             catch(Exception e)
             {
