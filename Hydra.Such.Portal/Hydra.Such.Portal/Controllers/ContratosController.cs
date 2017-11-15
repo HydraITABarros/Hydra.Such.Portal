@@ -305,6 +305,7 @@ namespace Hydra.Such.Portal.Controllers
                             ContratoDB.Descrição = data.Description;
                             ContratoDB.CódigoRegião = data.CodeRegion;
                             ContratoDB.Notas = data.Notes;
+                            
                             ContratoDB.DataInício1ºContrato = data.StartDateFirstContract == ""
                                 ? null
                                 : (DateTime?)DateTime.Parse(data.StartDateFirstContract);
@@ -338,6 +339,35 @@ namespace Hydra.Such.Portal.Controllers
                             ContratoDB.TaxaAprovisionamento = data.ProvisioningFee;
                             ContratoDB.PeríodoFatura = data.InvocePeriod;
                             ContratoDB.UtilizadorModificação = User.Identity.Name;
+                            ContratoDB.OrigemDoPedido = data.OrderOrigin;
+                            ContratoDB.DescOrigemDoPedido = data.OrdOrderSource;
+                            ContratoDB.DataEnvioCliente = data.CustomerShipmentDate == ""
+                                ? null
+                                : (DateTime?)DateTime.Parse(data.CustomerShipmentDate);
+                            ContratoDB.DataAlteraçãoProposta = data.ProposalChangeDate == ""
+                                ? null
+                                : (DateTime?)DateTime.Parse(data.ProposalChangeDate);
+                            ContratoDB.NumeraçãoInterna = data.InternalNumeration;
+                            ContratoDB.ValorTotalProposta = data.TotalProposalValue;
+                            ContratoDB.DataHoraLimiteEsclarecimentos = data.LimitClarificationDate == ""
+                                ? null
+                                : (DateTime?)DateTime.Parse(data.LimitClarificationDate);
+
+                            ContratoDB.DataHoraErrosEOmissões = data.ErrorsOmissionsDate == ""
+                                ? null
+                                : (DateTime?)DateTime.Parse(data.ErrorsOmissionsDate);
+
+                            ContratoDB.DataHoraRelatórioFinal = data.FinalReportDate == ""
+                                ? null
+                                : (DateTime?)DateTime.Parse(data.FinalReportDate);
+                            ContratoDB.DataHoraHabilitaçãoDocumental = data.DocumentationHabilitationDate == ""
+                                ? null
+                                : (DateTime?)DateTime.Parse(data.DocumentationHabilitationDate);
+                            ContratoDB.PróximaDataFatura = data.NextInvoiceDate == ""
+                                ? null
+                                : (DateTime?)DateTime.Parse(data.NextInvoiceDate);
+                            ContratoDB.PróximoPeríodoFact = data.NextBillingPeriod;
+                            ContratoDB.NºContato = data.ContactNo;
                             ContratoDB = DBContracts.Update(ContratoDB);
 
                             //Create/Update Contract Client Requests
@@ -494,6 +524,14 @@ namespace Hydra.Such.Portal.Controllers
                         cContract.NºVersão = cContract.NºVersão + 1;
                         cContract.UtilizadorCriação = User.Identity.Name;
                         cContract.UtilizadorModificação = "";
+                        if(cContract.TipoContrato == 1)
+                        {
+                            cContract.NºProposta = "";
+                        }else if(cContract.TipoContrato == 2 )
+                        {
+                            cContract.NºContrato = "";
+                        }
+                        
                         cContract.DataHoraModificação = null;
                         cContract.Arquivado = false;
                         DBContracts.Create(cContract);
@@ -509,20 +547,20 @@ namespace Hydra.Such.Portal.Controllers
 
                         data.VersionNo = cContract.NºVersão;
                         data.eReasonCode = 1;
-                        data.eMessage = "Contrato arquivado com sucesso.";
+                        data.eMessage = "Arquivado com sucesso.";
                         return Json(data);
                     }
                     catch (Exception)
                     {
                         data.eReasonCode = 2;
-                        data.eMessage = "Ocorreu um erro ao arquivar o contrato.";
+                        data.eMessage = "Ocorreu um erro ao arquivar.";
                     }
                 }
             }
             else
             {
                 data.eReasonCode = 2;
-                data.eMessage = "Ocorreu um erro ao arquivar o contrato.";
+                data.eMessage = "Ocorreu um erro ao arquivar.";
             }
             return Json(data);
         }
@@ -627,7 +665,7 @@ namespace Hydra.Such.Portal.Controllers
 
             if (Archived == 0 || ContractNo == "")
             {
-                ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId+1, 1);
+                ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId , 1);
                 ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
             }
             else
@@ -918,7 +956,7 @@ namespace Hydra.Such.Portal.Controllers
 
             if (Archived == 0 || ContractNo == "")
             {
-                ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId+1, 2);
+                ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 2);
                 ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
             }
             else
@@ -950,6 +988,7 @@ namespace Hydra.Such.Portal.Controllers
             // Parse Header
             String contractNo = requestParams["HeaderNo"].ToString();
             String versionNo = requestParams["VersionNo"].ToString();
+
             int originType = int.Parse(requestParams["OriginType"].ToString());
             int contractType = int.Parse(requestParams["HeaderType"].ToString());
 
@@ -963,46 +1002,53 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (thisHeader != null)
                 {
-                    String oldNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(originType), true);
+                    //String oldNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(originType), true);
                     newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), true);
                     try
                     {
-
-                        thisHeader.Arquivado = false;
-                        thisHeader.TipoContrato = contractType;
                         thisHeader.Arquivado = false;
 
                         if (originType == 2)
                         {
                             thisHeader.TipoContrato = originType;
-                            thisHeader.NºDeContrato = oldNumeration;
-                            thisHeader.NºProposta = oldNumeration;
-                            DBContracts.Create(thisHeader);
+                            thisHeader.NºDeContrato = contractNo;
+                            thisHeader.NºContrato = newNumeration;
+                            thisHeader.NºProposta = contractNo;
+                            DBContracts.Update(thisHeader);
 
                             thisHeader.TipoContrato = contractType;
-                            thisHeader.NºProposta = oldNumeration;
+                            thisHeader.NºProposta = contractNo;
                             thisHeader.NºDeContrato = newNumeration;
                             DBContracts.Create(thisHeader);
+
+                            //Update Last Numeration Used
+                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(GetNumeration(contractType));
+                            ConfigNumerations.ÚltimoNºUsado = newNumeration;
+                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                            DBNumerationConfigurations.Update(ConfigNumerations);
+
 
                         }
                         else if (originType == 1)
                         {
                             thisHeader.TipoContrato = originType;
-                            thisHeader.NºOportunidade = oldNumeration;
+                            thisHeader.NºOportunidade = contractNo;
                             thisHeader.NºProposta = newNumeration;
-                            thisHeader.NºDeContrato = oldNumeration;
+                            thisHeader.NºDeContrato = contractNo;
                             DBContracts.Update(thisHeader);
 
                             thisHeader.TipoContrato = contractType;
-                            thisHeader.NºOportunidade = oldNumeration;
+                            thisHeader.NºOportunidade = contractNo;
                             thisHeader.NºProposta = newNumeration;
                             thisHeader.NºDeContrato = newNumeration;
                             DBContracts.Create(thisHeader);
-                            thisHeader.NºOportunidade = oldNumeration;
-                            thisHeader.NºProposta = newNumeration;
-                        }
 
-                        DBContracts.Create(thisHeader);
+                            //Update Last Numeration Used
+                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(GetNumeration(contractType));
+                            ConfigNumerations.ÚltimoNºUsado = newNumeration;
+                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                            DBNumerationConfigurations.Update(ConfigNumerations);
+                        }
                     }
                     catch (Exception ex)
                     {

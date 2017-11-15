@@ -174,6 +174,8 @@
                         this.openToast('Atualizado com sucesso!');
                         this.$.page_databound_ajax.generateRequest();
                         this.$.gridServices.clearCache();
+
+                        this.$.ddDescription.value = "";
                     }
                     else {
                         this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');

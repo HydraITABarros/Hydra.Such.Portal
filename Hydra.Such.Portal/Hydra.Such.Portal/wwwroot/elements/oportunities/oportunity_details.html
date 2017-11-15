@@ -93,7 +93,7 @@
         <iron-ajax url="/PopulateDropdowns/GetContacts" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
-        <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" last-response="{{numeration}}" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
         <!-- PROJECT CRUDS -->
@@ -168,7 +168,7 @@
                                             <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Âmbito do Serviço" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBContacts]]" id="contactNo" item-value-path="id" item-label-path="value" value="{{data.contactNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <vaadin-combo-box items="[[CBContacts]]" id="contactNo" item-value-path="id" item-label-path="value" value="{{data.contactNo}}" label="Nº Contato" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -1353,8 +1353,9 @@
             </div>
         </div>
 
-        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
     </template>
 
 
@@ -1701,6 +1702,7 @@
                                 ajax_request.url = "/Contratos/ArchiveContract";
                                 ajax_request.body = JSON.stringify(_dataContract);
                                 ajax_request.generateRequest();
+
                             }
                         }
                     });
@@ -1709,7 +1711,7 @@
                 //Responses Processors
                 _responseProcessor: function (data) {
                     var self = this;
-
+                    debugger;
                     //Set AreaId
                     if (this.data.contractNo == "" || this.data.contractNo == null) {
                         this.data.area = this._areaid;
@@ -1744,32 +1746,57 @@
                         else if (data.detail.url.indexOf("Update") !== -1) {
                             if (this.data.eReasonCode == 1) {
                                 this._openToast("Oportunidade atualizada com sucesso.")
+                                var contractNo = this.data.contractNo;
+                                var versionNo = this.data.versionNo;
+                                setTimeout(
+                                    function () {
+                                        window.location.href = "../DetalhesOportunidade/" + contractNo + "?version=" + versionNo;
+                                    }, 1000);
                             } else {
                                 this._openToast(this.data.eMessage);
                             }
                         }
                         else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
+                            debugger;
                             this._openToast(this.data.eMessage);
+                            var contractNo = this.data.contractNo;
+                            var versionNo = this.data.versionNo;
+                            setTimeout(
+                                function () {
+                                    window.location.href = "../DetalhesOportunidade/" + contractNo + "?version=" + versionNo;
+                                }, 1000);
                         }
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
                 },
-                _createResponseProcessor: function () {
+
+                _createResponseProcessor: function (data) {
+                    debugger;
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
-                        this._openToast("Oportunidade criada com sucesso.");
-                        window.location.href = "../DetalhesOportunidade/" + item.contractNo;
+                        this._openToast("Oportunidade guardada com sucesso.");
+
+                        var contractNo = this.data.contractNo;
+                        var versionNo = this.data.versionNo;
+                        setTimeout(
+                            function () {
+                                window.location.href = "../DetalhesOportunidade/" + contractNo + "?version=" + versionNo;
+                            }, 1000);
+
                     } else {
-                        this._openToastError(this.data.eMessage);
+                        this._openToast(this.data.eMessage);
                     }
                 },
+
+
+
                 _responseValidatorProcessor: function (data) {
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.validateResponse == "") {
                             debugger;;
-                            this._executeRequest("/Contratos/CreateContract")
+                            this._executeRequest("/Contratos/CreateContract", this.data)
                         } else {
                             this._openToastError("Ocorreu um erro desconhecido.");
                         }
@@ -2049,8 +2076,13 @@
                 //Parse To Proposal
                 _parseToContract: function (param) {
                     if (param != null) {
-                        this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "OriginType": 1, "HeaderType": 2 });
-                        this.$.parseToContract_ajax.generateRequest();
+                        if (this.$.mProposalNo.value != null) {
+                            this._openToastError("Esta versão de oportunidade já tem proposta associada");
+                        } else {
+                            debugger;
+                            this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 1, "HeaderType": 2 });
+                            this.$.parseToContract_ajax.generateRequest();
+                        }
                     }
                 },
                 
@@ -2059,7 +2091,8 @@
                     var self = this;
                     if (e.detail.status === 200) {
                         debugger;
-                        this._openToast("Proposta criada com sucesso.");
+                        this._openToast("Proposta " + this.numeration + " criada com sucesso");
+                        this.$.mProposalNo.value = this.numeration;
                     }
                     else {
                         this._openToastError("Erro na criação da proposta.");

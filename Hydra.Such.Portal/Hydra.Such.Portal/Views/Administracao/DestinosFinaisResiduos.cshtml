@@ -199,6 +199,8 @@
                         if (e.detail.status === 200) {
                             this.$.ajax_GetAll.generateRequest();
                             this.openToast("Tabela atualizada.");
+
+                            this.$.piDescription.value = "";
                         }
                         else {
                             this.openToastError("Occorreu um erro ao atualizar a Tabela.");
