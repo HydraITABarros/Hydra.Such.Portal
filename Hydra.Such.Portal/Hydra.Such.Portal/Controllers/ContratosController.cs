@@ -970,7 +970,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 Contratos thisHeader = DBContracts.GetByIdAndVersion(contractNo, int.Parse(versionNo));
 
-                if  (thisHeader != null)
+                if (thisHeader != null)
                 {
                     //String oldNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(originType), true);
                     newNumeration = DBNumerationConfigurations.GetNextNumeration(GetNumeration(contractType), true);
@@ -1047,7 +1047,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json("Informação em falta para converter para contrato.");
         }
 
-        
+
         private static int GetNumeration(int type)
         {
             //Get Contract Numeration
