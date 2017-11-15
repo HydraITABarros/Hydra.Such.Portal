@@ -53,119 +53,74 @@
             <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-check-square" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
             <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
         </div>
-
         <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{codeOptions}}" id="ajax_code_options" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractDiaryLineCodes" last-response="{{CBContractLineCodesGrid}}" id="contractlinecodesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{response}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements" last-response="{{response2}}" auto method="post" handle-as="json"  content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectDiaryTypes" last-response="{{response3}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{MeasureUnit}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{Locations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json"content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContabGroup" last-response="{{ContabGroupData}}" auto method="post"  handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Administracao/GetMealTypesData" last-response="{{MealTypesData}}" method="post" auto handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetProjectList"
-                   last-response="{{response}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements"
-                   last-response="{{response2}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectDiaryTypes"
-                   last-response="{{response3}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetMeasureUnits"
-                   last-response="{{MeasureUnit}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetLocations"
-                   last-response="{{Locations}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetRegionCode"
-                   last-response="{{RegionData}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
-                   last-response="{{FunctionalAreaCodeData}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode"
-                   last-response="{{ResponsabilityCenterData}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetContabGroup"
-                   last-response="{{ContabGroupData}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetServiceGroup" last-response="{{ServiceGroupData}}" on-response="_ServiceGroupResponse"  id="ajax_ServiceGroup" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <div>
             <div class="row">
                 <div class="col-lg-2">
                     <vaadin-combo-box id="projectList" name="projectList" items="[[response]]" on-value-changed="_projectChange" item-value-path="id" item-label-path="value" label="Nº Projeto" disabled="{{disabledProjectNo}}" value="{{projectNumber}}">
                         <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
+                                <table>
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                         </template>
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{date}}"></vaadin-date-picker>
+                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{consumptionDate}}"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-combo-box id="projectMovementList" name="projectMovementList" items="[[response2]]" item-value-path="id" item-label-path="value" label="Tipo Movimento" value="{{projectMovementNumber}}">
                         <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                         </template>
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-combo-box id="projectTypeList" name="projectTypeList" items="[[response3]]" on-value-changed="_projectTypeChange" item-value-path="id" item-label-path="value" label="Tipo" value="{{projectTypeNumber}}">
                         <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                         </template>
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-combo-box id="piCode" name="piCode" items="[[codeOptions]]" item-value-path="id" on-value-changed="_codeChange" item-label-path="id" label="Código" value="{{codeNumber}}">
                         <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.id]]</div>
-                                    <div secundary>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%"><b>[[item.id]]</b></td>
+                                        <td width="60%">[[item.value]]</td>
+                                    </tr>
+                                </table>
                         </template>
                     </vaadin-combo-box>
                 </div>
@@ -177,11 +132,12 @@
                 <div class="col-lg-2">
                     <vaadin-combo-box id="piContabGroup" name="piContabGroup" items="[[ContabGroupData]]" item-value-path="id" value="{{codeProjectContabGroup}}" item-label-path="value" label="Grupo Contab">
                         <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.id]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                         </template>
                     </vaadin-combo-box>
                 </div>
@@ -191,44 +147,48 @@
                 <div class="col-lg-2">
                     <vaadin-combo-box id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[MeasureUnit]]" item-value-path="id" value="{{codeMeasurementUnit}}" item-label-path="value" label="Cód. Unidade Medida">
                         <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                         </template>
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-combo-box id="piCodeLocation" name="piCodeLocation" items="[[Locations]]" item-value-path="id" value="{{codeLocation}}" item-label-path="value" label="Cód. Localização">
                         <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                         </template>
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-combo-box id="piCodeRegion" name="piCodeRegion" items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{codeRegion}}" label="Cód. Região">
                         <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                         </template>
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-combo-box id="piFuncArea" name="piFuncArea" items="[[FunctionalAreaCodeData]]" item-value-path="id" value="{{codeFuncArea}}" item-label-path="value" label="Cód. Área Funcional">
                         <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                         </template>
                     </vaadin-combo-box>
                 </div>
@@ -237,11 +197,12 @@
                 <div class="col-lg-2">
                     <vaadin-combo-box id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" items="[[ResponsabilityCenterData]]" value="{{codeResponsabilityCenter}}" item-value-path="id" item-label-path="value" label="Cód. Centro Respon.">
                         <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
+                            <table width="200px">
+                                <tr>
+                                    <td width="40%">[[item.id]]</td>
+                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
                         </template>
                     </vaadin-combo-box>
                 </div>
@@ -266,7 +227,40 @@
                 <div class="col-lg-2 alignPoga">
                     <vaadin-checkbox id="pcInvoice" checked="{{billable}}"> Faturável</vaadin-checkbox>
                 </div>
-
+                <div class="col-lg-2">
+                    <vaadin-combo-box id="MealTypesCode" items="[[MealTypesData]]" item-value-path="code" item-label-path="description" value="{{ddMealTypes}}" label="Tipo Refeição">
+                        <template>
+                            <table width="250px">
+                                <tr>
+                                    <td width="20%">[[item.code]]</td>
+                                    <td width="40%"> <b>[[item.description]]</b></td>
+                                    <td width="40%"> [[item.grupoContabProduto]]</td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-combo-box id="ServiceGroupCod" items="[[ServiceGroupData]]" item-value-path="serviceCode" item-label-path="serviceDescription" value="{{ddServiceGroupCode}}" label="Cód. Grupo Serviço">
+                        <template>
+                            <table width="200px">
+                                <tr>
+                                    <td width="40%">[[item.serviceCode]]</td>
+                                    <td width="60%"> <b>[[item.serviceDescription]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piResidueGuideNo" label="Nº Guia Resíduo" value="{{residueguide}}"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="piExternalGuideNo" label="Nº Guia Externa" value="{{externalguide}}"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{date}}"></vaadin-date-picker>
+                </div>
             </div>
             <div class="row">
                 <div class="col-lg-2 alignPoga">
@@ -278,53 +272,11 @@
 
         <h2 class="separator">Linhas de Diário</h2>
 
-        <iron-ajax url="/Projetos/GetAllProjectDiary"
-                   last-response="{{result}}"
-                   id="ajax_getall"
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-
-        <iron-ajax url="/Projetos/UpdateProjectDiary"
-                   last-response="{{result}}"
-                   id="ajax_update"
-                   method="post"
-                   on-response="_updateResponse"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-
-        <iron-ajax url="/Projetos/GetRelatedProjectInfo"
-                   last-response="{{related}}"
-                   id="ajax_related"
-                   method="post"
-                   on-response="_updateRelatedResponse"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-
-        <iron-ajax url="/Projetos/RegisterDiaryLines"
-                   last-response="{{data}}"
-                   id="ajax_register"
-                   method="post"
-                   on-response="_updateRegisterResponse"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-
-        <iron-ajax url="/Projetos/RegisterDiaryLines"
-                   last-response="{{data}}"
-                   id="ajax_register"
-                   method="post"
-                   on-response="_updateRegisterResponse"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-
-        <iron-ajax url="/Projetos/GetMovements"
-                   last-response="{{movementLines}}"
-                   id="ajax_movementLines"
-                   method="post"
-                   handle-as="json"
-                   loading="{{isloading}}"
-                   on-response="_movementLinesResponse"
-                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/GetAllProjectDiary" last-response="{{result}}" id="ajax_getall" method="post" on-response="_getAllResponse" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/UpdateProjectDiary" last-response="{{result}}" id="ajax_update" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
+       <iron-ajax url="/Projetos/RegisterDiaryLines" last-response="{{data}}" id="ajax_register" method="post" on-response="_updateRegisterResponse" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/GetMovements" last-response="{{movementLines}}" id="ajax_movementLines" method="post"dle-as="json" loading="{{isloading}}" on-response="_movementLinesResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/GetRelatedProjectInfo" last-response="{{related}}" id="ajax_related" method="post" on-response="_updateRelatedResponse" handle-as="json" content-type="application/json"></iron-ajax>
 
         <vaadin-grid id="projectDiaryProject" aria-label="Tabela Numerações" items="[[result]]" class="editGrid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="160px" resizable>
@@ -336,11 +288,12 @@
                     <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box items="[[response]]" item-value-path="id" item-label-path="value" disabled value="{{item.projectNo}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                             </template>
                         </vaadin-combo-box>
                     </template>
@@ -359,7 +312,7 @@
                         <vaadin-date-picker id="dpDate" name="dpDate" disabled="{{ !_permissions.update }}" value="{{item.date}}"></vaadin-date-picker>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.date}}
+                        [[ _parseDateFormat(item.date) ]] 
                     </template>
                 </template>
             </vaadin-grid-column>
@@ -371,11 +324,12 @@
                     <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box items="[[response2]]" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{item.movementType}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                             </template>
                         </vaadin-combo-box>
                     </template>
@@ -392,11 +346,12 @@
                     <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box id="type[[index]]" items="[[response3]]" disabled="{{ !_permissions.update }}" on-value-changed="_lineProjectTypeChange" item-value-path="id" item-label-path="value" value="{{item.type}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                             </template>
                         </vaadin-combo-box>
                     </template>
@@ -414,12 +369,12 @@
                     <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box id="_CLGridContractLineType" name="_CLGridContractLineType" disabled="{{ !_permissions.update }}" items="[[CBContractLineCodesGrid]]" on-value-changed="_lineCodeChange" item-value-path="id" item-label-path="id" value="{{item.code}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.id]]</div>
-                                        <div secundary>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%"><b>[[item.id]]</b></td>
+                                            <td width="60%"> [[item.value]]</td>
+                                        </tr>
+                                    </table>
                             </template>
                         </vaadin-combo-box>
                     </template>
@@ -451,11 +406,12 @@
                     <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box items="[[ContabGroupData]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="id" value="{{item.projectContabGroup}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.id]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                             </template>
                         </vaadin-combo-box>
                     </template>
@@ -487,11 +443,12 @@
                     <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box items="[[MeasureUnit]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{item.measurementUnitCode}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                             </template>
                         </vaadin-combo-box>
                     </template>
@@ -509,12 +466,13 @@
                     <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box items="[[Locations]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{item.locationCode}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
                         </vaadin-combo-box>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
@@ -531,11 +489,12 @@
                     <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box items="[[RegionData]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{item.regionCode}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                             </template>
                         </vaadin-combo-box>
                     </template>
@@ -553,11 +512,12 @@
                     <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box items="[[FunctionalAreaCodeData]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{item.functionalAreaCode}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                             </template>
                         </vaadin-combo-box>
                     </template>
@@ -575,11 +535,12 @@
                     <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box items="[[ResponsabilityCenterData]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </template>
@@ -644,15 +605,105 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="75px" resizable>
+        <vaadin-grid-column width="75px" resizable>
+            <template class="header">
+                <p class="alignCenter">Faturável</p>
+                <vaadin-grid-filter path="billable" value="[[_filterActive]]">
+                    <vaadin-checkbox checked="{{_filterActive}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                </vaadin-grid-filter>
+            </template>
+            <template>
+                <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="160px" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="MealType">Tipo Refeição</vaadin-grid-sorter>
+                <vaadin-grid-filter path="MealType"></vaadin-grid-filter>
+            </template>
+            <template>
+                <template is="dom-if" if="{{ item.selected }}">
+                    <vaadin-combo-box items="[[MealTypesData]]" disabled="{{ !_permissions.update }}" item-value-path="code" item-label-path="description" value="{{item.mealType}}">
+                        <template>
+                            <table width="250px">
+                                <tr>
+                                    <td width="20%">[[item.code]]</td>
+                                    <td width="40%"> <b>[[item.description]]</b></td>
+                                    <td width="40%"> [[item.grupoContabProduto]]</td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    [[ _parseMealType(item.mealType) ]]
+                </template>
+            </template>
+        </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <p class="alignCenter">Faturável</p>
-                    <vaadin-grid-filter path="billable" value="[[_filterActive]]">
-                        <vaadin-checkbox checked="{{_filterActive}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
+                    <vaadin-grid-sorter path="ServiceGroupCode">Cód. Grupo Serviço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="ServiceGroupCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-combo-box items="[[ServiceGroupData]]" disabled="{{ !_permissions.update }}" item-value-path="serviceCode" item-label-path="serviceDescription" value="{{item.serviceGroupCode}}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.serviceCode]]</td>
+                                        <td width="60%"> <b>[[item.serviceDescription]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseServiceGroup(item.serviceGroupCode, item.invoiceToClientNo )]]
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="residueGuideNo">Nº Guia Resíduo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="residueGuideNo"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="residueGuideNo" disabled="{{ !_permissions.update }}" value="{{item.residueGuideNo}}"></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.residueGuideNo}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="externalGuideNo">Nº Guia Externa</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="externalGuideNo"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="externalGuideNo" disabled="{{ !_permissions.update }}" value="{{item.externalGuideNo}}"></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.externalGuideNo}}
+                    </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="consumptionDate">Data Consumo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="consumptionDate"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                      
+                        <vaadin-date-picker id="dpcompDate" name="dpcompDate" disabled="{{ !_permissions.update }}" value="{{item.consumptionDate}}"></vaadin-date-picker>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseDateFormat(item.consumptionDate) ]] 
+                    </template>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column hidden>
@@ -678,531 +729,660 @@
 
     </template>
 
-    <script>
-        document.addEventListener('WebComponentsReady', function () {
-            Polymer({
-                is: 'x-projectdiary',
-                properties: {
-                    paramprojno: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    _permissions: {
-                        type: Array
-                    },
-                    projectNo: {
-                        type: String,
-                        notifiy: true,
-                        value: ""
-                    },
-                    disabledProjectNo: {
-                        type: Boolean,
-                        notify: true,
-                        value: false
-                    },
-                    date: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    movementType: {
-                        type: String,
-                        notifiy: true,
-                        value: ""
-                    },
-                    type: {
-                        type: String,
-                        notifiy: true,
-                        value: ""
-                    },
-                    code: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    description: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    codeProjectContabGroup: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    quantity: {
-                        type: Number,
-                        notify: true,
-                        value: ""
-                    },
-                    codeMeasurementUnit: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    codeLocation: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    codeRegion: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    codeFuncArea: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    codeResponsabilityCenter: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    unitCost: {
-                        type: Number,
-                        notify: true,
-                        value: ""
-                    },
-                    totalCost: {
-                        type: Number,
-                        notify: true,
-                        value: ""
-                    },
-                    unitPrice: {
-                        type: Number,
-                        notify: true,
-                        value: ""
-                    },
-                    totalPrice: {
-                        type: Number,
-                        notify: true,
-                        value: ""
-                    },
-                    billable: {
-                        type: Boolean,
-                        notify: true,
-                        value: true
-                    },
-                    invoiceClientNo: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    _filterActive: {
-                        type: Boolean,
-                        value: true
-                    },
-                    _SelectedLine: {
-                        observer: '_lineSelected'
-                    },
-                    selected: {
-                        type: Number,
-                        value: 0
-                    },
+<script>
+    document.addEventListener('WebComponentsReady', function () {
+        Polymer({
+            is: 'x-projectdiary',
+            properties: {
+                ddMealTypes: {
+                    type: String,
+                    notify: true,
+                    value: ""
                 },
+                ddServiceGroupCode: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                paramprojno: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                _permissions: {
+                    type: Array
+                },
+                projectNo: {
+                    type: String,
+                    notifiy: true,
+                    value: ""
+                },
+                disabledProjectNo: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
+                date: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                consumptionDate: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                movementType: {
+                    type: String,
+                    notifiy: true,
+                    value: ""
+                },
+                type: {
+                    type: String,
+                    notifiy: true,
+                    value: ""
+                },
+                code: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                description: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                residueguide: {
+                    type: String,
+                    notify: true,
+                    value:""
+                },
+                externalguide: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                codeProjectContabGroup: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                quantity: {
+                    type: Number,
+                    notify: true,
+                    value: ""
+                },
+                codeMeasurementUnit: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                codeLocation: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                codeRegion: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                codeFuncArea: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                codeResponsabilityCenter: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                unitCost: {
+                    type: Number,
+                    notify: true,
+                    value: ""
+                },
+                totalCost: {
+                    type: Number,
+                    notify: true,
+                    value: ""
+                },
+                unitPrice: {
+                    type: Number,
+                    notify: true,
+                    value: ""
+                },
+                totalPrice: {
+                    type: Number,
+                    notify: true,
+                    value: ""
+                },
+                unitValueToInvoice: {
+                    type: Number,
+                    notify: true,
+                    value: ""
+                },
+                billable: {
+                    type: Boolean,
+                    notify: true,
+                    value: true
+                },
+                invoiceClientNo: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                _filterActive: {
+                    type: Boolean,
+                    value: true
+                },
+                _SelectedLine: {
+                    observer: '_lineSelected'
+                },
+                selected: {
+                    type: Number,
+                    value: 0
+                },
+                Flag: {
+                    type: Boolean,
+                    value: false
+                }
+            },
 
-                observers: [
-                    '_onCacheLoaded(response2, response3, CBContractLineCodesGrid, ContabGroupData, MeasureUnit, Locations, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData)'
-                ],
+            observers: [
+                '_onCacheLoaded(response2, response3, CBContractLineCodesGrid, ContabGroupData, MeasureUnit, Locations, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, MealTypesData, ServiceGroupData)'
+            ],
 
-                _onCacheLoaded: function (typemovement, type, code, contabgroup, unitcode, localcode, regioncode, funcareacode, respcentercode)
-                {
+            _onCacheLoaded: function(typemovement,
+                type,
+                code,
+                contabgroup,
+                unitcode,
+                localcode,
+                regioncode,
+                funcareacode,
+                respcentercode,
+                mealtypescode,
+                serviceGroupCod) {
+             
+                if (!this.Flag) {
                     if (this.paramprojno != "") {
                         this.$.ajax_getall.body = JSON.stringify(this.paramprojno);
-                        this.$.ajax_getall.generateRequest();   
+                        this.$.ajax_getall.generateRequest();
+
+                    } else {
+                        this.$.ajax_getall.generateRequest();
                     }
-                    else {
-                        this.$.ajax_getall.generateRequest();   
-                    }                    
-                },
+                    
+                    this.Flag = true;
+                }
+            },
 
-                ready: function () {
-                    if (this.paramprojno != "") {
-                        this.$.projectList.value = this.paramprojno;
-                        this.disabledProjectNo = true;
-                    }          
-                },
+            ready: function() {
+                if (this.paramprojno != "") {
+                    this.$.projectList.value = this.paramprojno;
+                    this.disabledProjectNo = true;
+                }
+                
+                this.$.ajax_ServiceGroup.body = JSON.stringify("");
+                this.$.ajax_ServiceGroup.params = { "allProjs": true };
+                this.$.ajax_ServiceGroup.generateRequest();
 
-                openToastSuccess: function (message) {
-                    this.$.ToastMessageSuccess.text = message;
-                    this.$.ToastMessageSuccess.open();
-                },
-                openToastError: function (message) {
-                    this.$.ToastMessageError.text = message;
-                    this.$.ToastMessageError.open();
-                },
+            },
 
-                _add() {
-                    debugger;;
-                    if (true)
-                    //Validações
-                    {
-                        this.result.unshift({
-                            projectNo: this.projectNumber,
-                            date: this.date,
-                            movementType: this.projectMovementNumber,
-                            type: this.projectTypeNumber,
-                            code: this.codeNumber,
-                            description: this.description,
-                            quantity: this.quantity,
-                            measurementUnitCode: this.codeMeasurementUnit,
-                            locationCode: this.codeLocation,
-                            projectContabGroup: this.codeProjectContabGroup,
-                            regionCode: this.codeRegion,
-                            functionalAreaCode: this.codeFuncArea,
-                            responsabilityCenterCode: this.codeResponsabilityCenter,
-                            user: "", //set logged user
-                            unitCost: this.unitCost,
-                            totalCost: this.totalCost,
-                            unitPrice: this.unitPrice,
-                            totalPrice: this.totalPrice,
-                            billable: this.billable,
-                            invoiceToClientNo: this.invoiceClientNo
-                        });
+            openToastSuccess: function(message) {
+                this.$.ToastMessageSuccess.text = message;
+                this.$.ToastMessageSuccess.open();
+            },
+            openToastError: function(message) {
+                this.$.ToastMessageError.text = message;
+                this.$.ToastMessageError.open();
+            },
 
-                        // Save to DB
-                        this.$.ajax_update.body = JSON.stringify(this.result);
-                        this.$.ajax_update.generateRequest();
-                        this.$.projectDiaryProject.clearCache();
-                    }
-                    else {
-                        alert("Tem de preencher todos os campos.");
-                    }
-                },
+            _add() {
+                debugger;
+                if (true)
+                //Validações
+                {
+                    this.result.unshift({
+                        projectNo: this.projectNumber,
+                        date: this.date,
+                        movementType: this.projectMovementNumber,
+                        type: this.projectTypeNumber,
+                        code: this.codeNumber,
+                        description: this.description,
+                        quantity: this.quantity,
+                        measurementUnitCode: this.codeMeasurementUnit,
+                        locationCode: this.codeLocation,
+                        projectContabGroup: this.codeProjectContabGroup,
+                        regionCode: this.codeRegion,
+                        functionalAreaCode: this.codeFuncArea,
+                        responsabilityCenterCode: this.codeResponsabilityCenter,
+                        user: "", //set logged user
+                        unitCost: this.unitCost,
+                        totalCost: this.totalCost,
+                        unitPrice: this.unitPrice,
+                        totalPrice: this.totalPrice,
+                        billable: this.billable,
+                        invoiceToClientNo: this.invoiceClientNo,
+                        mealType: this.ddMealTypes,
+                        serviceGroupCode: this.ddServiceGroupCode,
+                        residueGuideNo: this.residueguide,
+                        externalGuideNo: this.externalguide,
+                        consumptionDate: this.consumptionDate
+                    });
 
-                _update: function () {
-                    this.$.ajax_update.body = JSON.stringify(this.result);
-                    this.$.ajax_update.generateRequest();
-                },
-
-                _delete: function (e) {
-                    var index = this.result.indexOf(e.model.item);
-                    this.result.splice(index, 1);
                     // Save to DB
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
                     this.$.projectDiaryProject.clearCache();
-                },
+                } else {
+                    alert("Tem de preencher todos os campos.");
+                }
+            },
 
-                _cancel: function () {
+            _update: function () {
+                debugger;;
+                this.$.ajax_update.body = JSON.stringify(this.result);
+                this.$.ajax_update.generateRequest();
+            },
+
+            _delete: function(e) {
+                var index = this.result.indexOf(e.model.item);
+                this.result.splice(index, 1);
+                // Save to DB
+                this.$.ajax_update.body = JSON.stringify(this.result);
+                this.$.ajax_update.generateRequest();
+                this.$.projectDiaryProject.clearCache();
+            },
+
+            _cancel: function() {
+                this.$.ajax_getall.generateRequest();
+                this.$.projectDiaryProject.clearCache();
+            },
+
+            _updateResponse: function(e) {
+                var self = this;
+                if (e.detail.status === 200) {
+
                     this.$.ajax_getall.generateRequest();
                     this.$.projectDiaryProject.clearCache();
-                },
 
-                _updateResponse: function (e) {
-                    var self = this;
+                    this.openToastSuccess("Diário de Projeto atualizado.");
+                } else {
+                    this.openToastError("Occorreu um erro ao atualizar as o Diário de Projeto.");
+                }
+            },
+           
+
+
+            _projectChange: function (e) {
+              
+                if (e.detail.value) {
+                    this.$.ajax_related.body = JSON.stringify(e.detail.value);
+                    this.$.ajax_related.generateRequest();
+                } else {
+                    this.$.piDescription = "";
+                    this.$.piCodeRegion = "";
+                    this.$.piFuncArea = "";
+                    this.$.piCodeResponsabilityCenter = "";
+                }
+            },
+         
+            _projectTypeChange: function (e) {
+                var type = e.detail.value;
+                if (type == "1") {
+                    this.$.ajax_code_options.url = "/PopulateDropdowns/GetResourcesCode";
+                    this.$.ajax_code_options.generateRequest();
+                }
+                else if (type == "2") {
+                    this.$.ajax_code_options.url = "/PopulateDropdowns/GetProductsCode";
+                    this.$.ajax_code_options.generateRequest();
+                }
+                else if (type == "3") {
+                    this.$.ajax_code_options.url = "/PopulateDropdowns/GetCGAccountCode";
+                    this.$.ajax_code_options.generateRequest();
+                }
+                else {
+                    this.description = "";
+                    this.codeMeasurementUnit = "";
+                }
+            },
+
+            _updateRelatedResponse: function (related) {
+                if (related != null) {
+                    this.codeRegion = this.related.regionCode;
+                    this.codeFuncArea = this.related.funcAreaCode;
+                    this.codeProjectContabGroup = this.related.contabGroup;
+                    this.codeResponsabilityCenter = this.related.responsabilityCenter;
+                    this.invoiceClientNo = this.related.invoiceClientNo;
+                }
+                debugger;
+                if (this.invoiceClientNo != null) {
+                    this.$.ajax_ServiceGroup.body = JSON.stringify(this.invoiceClientNo);
+                    this.$.ajax_ServiceGroup.params = { "allProjs": false };
+                    this.$.ajax_ServiceGroup.generateRequest();
+                }
+            },
+
+            _updateRegisterResponse: function (e) {
+                if (this.data == null || this.data.length == 0) {
+                    this.openToastError("Não existe linhas de Diário para Registar.");
+                } else {
+                       
                     if (e.detail.status === 200) {
-
                         this.$.ajax_getall.generateRequest();
                         this.$.projectDiaryProject.clearCache();
-
-                        this.openToastSuccess("Diário de Projeto atualizado.");
+                        this.openToastSuccess("Linhas do Diário registadas com sucesso.");
                     }
                     else {
-                        this.openToastError("Occorreu um erro ao atualizar as o Diário de Projeto.");
+                        this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
                     }
-                },
+                }
+                    
+            },
 
-                _projectChange: function (e) {
-                    if (e.detail.value) {
-                        this.$.ajax_related.body = JSON.stringify(e.detail.value);
-                        this.$.ajax_related.generateRequest();
-                    }
-                    else {
-                        this.$.piDescription = "";
-                        this.$.piCodeRegion = "";
-                        this.$.piFuncArea = "";
-                        this.$.piCodeResponsabilityCenter = "";
-                    }
-                },
+            _registerDiary: function () {
+                this.$.ajax_register.body = JSON.stringify(this.result);
+                this.$.ajax_register.generateRequest();
+                this.$.projectDiaryProject.clearCache();
+            },
 
-                _projectTypeChange: function (e) {
-                    var type = e.detail.value;
-                    if (type == "1") {
-                        this.$.ajax_code_options.url = "/PopulateDropdowns/GetResourcesCode";
-                        this.$.ajax_code_options.generateRequest();
-                    }
-                    else if (type == "2") {
-                        this.$.ajax_code_options.url = "/PopulateDropdowns/GetProductsCode";
-                        this.$.ajax_code_options.generateRequest();
-                    }
-                    else if (type == "3") {
-                        this.$.ajax_code_options.url = "/PopulateDropdowns/GetCGAccountCode";
-                        this.$.ajax_code_options.generateRequest();
-                    }
-                    else {
-                        this.description = "";
-                        this.codeMeasurementUnit = "";
-                    }
-                },
+            _getMovements: function () {
+                //Request
+                if (this.$.projectList.value != null && this.$.projectList.value != "") {
+                    this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
+                    this.$.ajax_movementLines.generateRequest();
+                    //Update List
+                }
+                else {
+                    this.openToastError("Precisa de selecionar um projeto.");
+                }
 
-                _updateRelatedResponse: function (related) {
-                    if (related != null) {
-                        this.codeRegion = this.related.regionCode;
-                        this.codeFuncArea = this.related.funcAreaCode;
-                        this.codeProjectContabGroup = this.related.contabGroup;
-                        this.codeResponsabilityCenter = this.related.responsabilityCenter;
-                        this.invoiceClientNo = this.related.invoiceClientNo;
-                    }
-                },
+            },
 
-                _updateRegisterResponse: function (e) {
-                    var self = this;
-                    if (this.$.ajax_update.url == "/Projetos/RegisterDiaryLines") {
-                        if (e.detail.status === 200) {
-                            this.openToastSuccess("Linhas do Diário registadas com sucesso.");
+            _movementLinesResponse: function () {
+                if (this.movementLines.length > 0) {
+                    this.movementLines.forEach(function(e) {
+
+                        this.result.unshift({
+                            projectNo: e.projectNumber,
+                            date: e.date,
+                            movementType: e.projectMovementNumber,
+                            type: e.projectTypeNumber,
+                            code: e.codeNumber,
+                            description: e.description,
+                            quantity: 0,
+                            measurementUnitCode: e.codeMeasurementUnit,
+                            locationCode: e.codeLocation,
+                            projectContabGroup: e.codeProjectContabGroup,
+                            regionCode: e.codeRegion,
+                            functionalAreaCode: e.codeFuncArea,
+                            responsabilityCenterCode: e.codeResponsabilityCenter,
+                            unitCost: e.unitCost,
+                            totalCost: e.totalCost,
+                            unitPrice: e.unitPrice,
+                            totalPrice: e.totalPrice,
+                            billable: e.billable,
+                            invoiceToClientNo: e.invoiceClientNo,
+                            mealType: e.ddMealTypes,
+                            serviceGroupCode: e.ddServiceGroupCode,
+                            residueGuideNo: e.residueguide,
+                            ExternalGuideNo: e.externalguide,
+                            consumptionDate: e.consumptionDate
+                        });
+                    });
+                    this.$.projectDiaryProject.clearCache();
+                    this.openToastSuccess("Movimentos adicionados com sucesso.");
+                } else {
+                    this.openToastError("O projeto selecionado não tem movimentos.");
+                }
+            },
+
+            _calcTotals: function (e) {
+                switch (e.target.id) {
+                case "piQuantity":
+                    this.quantity = e.detail.value;
+                    break;
+                case "piUnitCost":
+                    this.unitCost = e.detail.value;
+                    break;
+                case "piUnitPrice":
+                    this.unitPrice = e.detail.value;
+                    break;
+                default:
+                    break;
+                }
+
+                if (this.quantity != null && this.quantity != "" &&
+                    this.unitPrice != null && this.unitPrice != "")
+                {
+                    this.totalPrice = this.unitPrice * this.quantity;
+                }
+                if (this.quantity != null && this.quantity != "" &&
+                    this.unitCost != null && this.unitCost != "") {
+                    this.totalCost = this.unitCost * this.quantity;
+                }
+            },
+
+            _lineProjectTypeChange: function (e) {
+                this.$.contractlinecodesgrid_ajax.body = JSON.stringify(e.detail.value);
+                this.$.contractlinecodesgrid_ajax.generateRequest();
+
+                this.result.find(x => x == this._SelectedLine).code = "";
+                this.result.find(x => x == this._SelectedLine).type = e.detail.value;
+                this.$.projectDiaryProject.clearCache();
+            },
+
+            _lineCodeChange: function (e) {
+                if (e.detail.value != null && e.detail.value != "") {
+                    var index = this.CBContractLineCodesGrid.findIndex(i => i.id === e.detail.value);
+                    this.result.find(x => x == this._SelectedLine).code = e.detail.value;
+                    this.result.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
+                    this.result.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
+                    this.$.projectDiaryProject.clearCache();
+                }
+            },
+
+            _codeChange: function (e) {
+                if (e.detail.value != null && e.detail.value != "") {
+                    var index = this.codeOptions.findIndex(i => i.id === e.detail.value);
+                    this.code = this.codeOptions[index].id;
+                    this.description = this.codeOptions[index].value;
+                    this.codeMeasurementUnit = this.codeOptions[index].extra;
+                }
+            },
+
+            // PARSING FUNCTIONS -> GRID LINES
+            _parseMovementType: function (param) {
+                if (param != undefined) {
+                    var sel = this.response2.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
+            _parseType: function (param) {
+                if (param != undefined) {
+                    var sel = this.response3.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
+            _parseCode: function (param1, param2) {
+                if (param1 != undefined && param2 != undefined) {
+                    var sel;
+                    if (param2 == 1) {
+                        sel = this.CBResourceCode.find(x => x.id == param1);
+                    } else if (param2 == 2) {
+                        sel = this.CBCodeProducts.find(x => x.id == param1);
+                    } else {
+                        sel = this.CBCGAccountCode.find(x => x.id == param1);
+                    }
+                    if (sel != undefined) {
+                        return sel.id;
+                    }
+                }
+                return "";
+            },
+            _parseContabGroup: function (param) {
+                if (param != undefined) {
+                    var sel = this.ContabGroupData.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
+            _parseMeasurementUnit: function (param) {
+                if (param != undefined) {
+                    var sel = this.MeasureUnit.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
+            _parseLocation: function (param) {
+                if (param != undefined) {
+                    var sel = this.Locations.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
+            _parseRegion: function (param) {
+                if (param != undefined) {
+                    var sel = this.RegionData.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
+            _parseFuncArea: function (param) {
+                if (param != undefined) {
+                    var sel = this.FunctionalAreaCodeData.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
+            _parseResponsabilityCenter: function (param) {
+                if (param != undefined) {
+                    var sel = this.ResponsabilityCenterData.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
+            _parseMealType: function (param) {
+                if (param != undefined) {
+                    var sel = this.MealTypesData.find(x => x.code == param);
+                    if (sel != undefined) {
+                        return sel.description;
+                    }
+                }
+                return "";
+            },
+
+            _parseServiceGroup: function (param1, param2) {
+                //refinar array c/ param2
+                //retornar valor c/ param1
+                if (param1 != undefined && param2 != undefined) {
+
+                    if (this.ServiceGroupData != null)
+                    {
+                        var array = this.ServiceGroupData;
+
+                        array = array.filter(function (obj) {
+                            return obj.clientNumber == param2;
+                        });
+
+                        return array.find(x => x.serviceCode == param1).serviceDescription;
+                    }                   
+                }
+                    return "";
+                
+            },
+
+            _ServiceGroupResponse: function (param) {
+                debugger;
+            },
+
+            _lineCalcTotals: function (param) {
+                var qnt = this.result.find(x => x == this._SelectedLine).quantity;
+                var unitCost = this.result.find(x => x == this._SelectedLine).unitCost;
+                var unitPrice = this.result.find(x => x == this._SelectedLine).unitPrice;
+
+                switch (param.target.id) {
+                case "lineQuantity":
+                    var qnt = param.detail.value;
+                    this.result.find(x => x == this._SelectedLine).quantity = qnt;
+                    break;
+                case "lineUnitCost":
+                    var unitCost = param.detail.value;
+                    unitCost = this.result.find(x => x == this._SelectedLine).unitCost = unitCost;
+                    break;
+                case "lineUnitPrice":
+                    var unitPrice = param.detail.value;
+                    this.result.find(x => x == this._SelectedLine).unitPrice = unitPrice;
+                    break;
+                default:
+                    break;
+                }
+
+                if (qnt != "" && qnt != null && unitCost != "" && unitCost != null)
+                {
+                    this.result.find(x => x == this._SelectedLine).totalCost = qnt * unitCost;
+                }
+                if (qnt != "" && qnt != null && unitPrice != "" && unitPrice != null)
+                {
+                    this.result.find(x => x == this._SelectedLine).totalPrice = qnt * unitPrice;
+                }
+                this.$.projectDiaryProject.clearCache();
+            },
+
+            _lineSelected: function (item) {
+             
+                if (item != null) {
+                    var oSel = this.result.find(x => x.selected);
+                    if (oSel != undefined) {
+                        oSel.selected = false;
+                    }
+                    var sel = this.result.find(x => x == item);
+                    if (sel != undefined) {
+                        this.result.find(x => x == item).selected = true;
+
+                        if (this.paramprojno != "") {
+                           // this.ServiceGroupCod = this.                           
                         }
                         else {
-                            this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
+                            //ajax body = sel.projectNo
+                            //generate
                         }
-                        this.$.ajax_update.url == "/Projetos/RegisterDiaryLines";
-                    }
-                },
 
-                _registerDiary: function () {
-                    this.$.ajax_register.body = JSON.stringify(this.result);
-                    this.$.ajax_register.generateRequest();
-                    this.$.projectDiaryProject.clearCache();
-                },
-
-                _getMovements: function () {
-                    //Request
-                    if (this.$.projectList.value != null && this.$.projectList.value != "") {
-                        this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
-                        this.$.ajax_movementLines.generateRequest();
-                        //Update List
-                    }
-                    else {
-                        this.openToastError("Precisa de selecionar um projeto.");
-                    }
-
-                },
-
-                _movementLinesResponse: function () {
-                    if (this.movementLines != null) {
-                        this.movementLines.forEach(function (e) {
-
-                            this.result.unshift({
-                                projectNo: e.projectNumber,
-                                date: e.date,
-                                movementType: e.projectMovementNumber,
-                                type: e.projectTypeNumber,
-                                code: e.codeNumber,
-                                description: e.description,
-                                quantity: 0,
-                                measurementUnitCode: e.codeMeasurementUnit,
-                                locationCode: e.codeLocation,
-                                projectContabGroup: e.codeProjectContabGroup,
-                                regionCode: e.codeRegion,
-                                functionalAreaCode: e.codeFuncArea,
-                                responsabilityCenterCode: e.codeResponsabilityCenter,
-                                unitCost: e.unitCost,
-                                totalCost: e.totalCost,
-                                unitPrice: e.unitPrice,
-                                totalPrice: e.totalPrice,
-                                billable: e.billable,
-                                invoiceToClientNo: e.invoiceClientNo
-                            });
-                        });
-                        this.$.projectDiaryProject.clearCache();
-                        this.openToastSuccess("Movimentos adicionados com sucesso.");
-
-                    }
-                },
-
-                _calcTotals: function (e) {
-                    switch (e.target.id) {
-                        case "piQuantity":
-                            this.quantity = e.detail.value;
-                            break;
-                        case "piUnitCost":
-                            this.unitCost = e.detail.value;
-                            break;
-                        case "piUnitPrice":
-                            this.unitPrice = e.detail.value;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    if (this.quantity != null && this.quantity != "" &&
-                        this.unitPrice != null && this.unitPrice != "") {
-                        this.totalPrice = this.unitPrice * this.quantity;
-                    }
-                    if (this.quantity != null && this.quantity != "" &&
-                        this.unitCost != null && this.unitCost != "") {
-                        this.totalCost = this.unitCost * this.quantity;
-                    }
-                },
-
-                _lineProjectTypeChange: function (e) {
-                    this.$.contractlinecodesgrid_ajax.body = JSON.stringify(e.detail.value);
-                    this.$.contractlinecodesgrid_ajax.generateRequest();
-
-                    this.result.find(x => x == this._SelectedLine).code = "";
-                    this.result.find(x => x == this._SelectedLine).type = e.detail.value;
-                    this.$.projectDiaryProject.clearCache();
-                },
-
-                _lineCodeChange: function (e) {
-                    if (e.detail.value != null && e.detail.value != "") {
-                        var index = this.CBContractLineCodesGrid.findIndex(i => i.id === e.detail.value);
-                        this.result.find(x => x == this._SelectedLine).code = e.detail.value;
-                        this.result.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
-                        this.result.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
+                        this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
+                        this.$.contractlinecodesgrid_ajax.generateRequest();
                         this.$.projectDiaryProject.clearCache();
                     }
-                },
-
-                _codeChange: function (e) {
-                    if (e.detail.value != null && e.detail.value != "") {
-                        var index = this.codeOptions.findIndex(i => i.id === e.detail.value);
-                        this.code = this.codeOptions[index].id;
-                        this.description = this.codeOptions[index].value;
-                        this.codeMeasurementUnit = this.codeOptions[index].extra;
-                    }
-                },
-
-                // PARSING FUNCTIONS -> GRID LINES
-                _parseMovementType: function (param) {
-                    if (param != undefined) {
-                        var sel = this.response2.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _parseType: function (param) {
-                    if (param != undefined) {
-                        var sel = this.response3.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _parseCode: function (param1, param2) {
-                    if (param1 != undefined && param2 != undefined) {
-                        var sel;
-                        if (param2 == 1) {
-                            sel = this.CBResourceCode.find(x => x.id == param1);
-                        } else if (param2 == 2) {
-                            sel = this.CBCodeProducts.find(x => x.id == param1);
-                        } else {
-                            sel = this.CBCGAccountCode.find(x => x.id == param1);
-                        }
-                        if (sel != undefined) {
-                            return sel.id;
-                        }
-                    }
-                    return "";
-                },
-                _parseContabGroup: function (param) {
-                    if (param != undefined) {
-                        var sel = this.ContabGroupData.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _parseMeasurementUnit: function (param) {
-                    if (param != undefined) {
-                        var sel = this.MeasureUnit.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _parseLocation: function (param) {
-                    if (param != undefined) {
-                        var sel = this.Locations.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _parseRegion: function (param) {
-                    if (param != undefined) {
-                        var sel = this.RegionData.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _parseFuncArea: function (param) {
-                    if (param != undefined) {
-                        var sel = this.FunctionalAreaCodeData.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _parseResponsabilityCenter: function (param) {
-                    if (param != undefined) {
-                        var sel = this.ResponsabilityCenterData.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-
-                _lineCalcTotals: function (param) {
-                    var qnt = this.result.find(x => x == this._SelectedLine).quantity;
-                    var unitCost = this.result.find(x => x == this._SelectedLine).unitCost;
-                    var unitPrice = this.result.find(x => x == this._SelectedLine).unitPrice;
-
-                    switch (param.target.id) {
-                        case "lineQuantity":
-                            var qnt = param.detail.value;
-                            this.result.find(x => x == this._SelectedLine).quantity = qnt;
-                            break;
-                        case "lineUnitCost":
-                            var unitCost = param.detail.value;
-                            unitCost = this.result.find(x => x == this._SelectedLine).unitCost = unitCost;
-                            break;
-                        case "lineUnitPrice":
-                            var unitPrice = param.detail.value;
-                            this.result.find(x => x == this._SelectedLine).unitPrice = unitPrice;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    if (qnt != "" && qnt != null && unitCost != "" && unitCost != null) {
-                        this.result.find(x => x == this._SelectedLine).totalCost = qnt * unitCost;
-                    }
-                    if (qnt != "" && qnt != null && unitPrice != "" && unitPrice != null) {
-                        this.result.find(x => x == this._SelectedLine).totalPrice = qnt * unitPrice;
-                    }
-                    this.$.projectDiaryProject.clearCache();
-                },
-
-                _lineSelected: function (item) {
-                    if (item != null) {
-                        var oSel = this.result.find(x => x.selected);
-                        if (oSel != undefined) {
-                            oSel.selected = false;
-                        }
-                        var sel = this.result.find(x => x == item);
-                        if (sel != undefined) {
-                            this.result.find(x => x == item).selected = true;
-                            this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
-                            this.$.contractlinecodesgrid_ajax.generateRequest();
-                            this.$.projectDiaryProject.clearCache();
-                        }
-                    }
-                },
-            });
+                }
+            },
+            _parseDateFormat: function (date)
+            {
+                debugger;
+                if (date != null && date != "") {
+                    var x = date.split("-");
+                    return x[2] + "-" + x[1] + "-" + x[0];
+                } 
+            }
         });
-    </script>
+    });
+</script>
 </dom-module>

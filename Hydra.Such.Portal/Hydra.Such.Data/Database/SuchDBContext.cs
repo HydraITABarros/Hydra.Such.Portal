@@ -5397,9 +5397,15 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Atribuída a")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.CartaVerde)
+                    .HasColumnName("Carta Verde")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.CartãoCombustível)
                     .HasColumnName("Cartão Combustível")
                     .HasMaxLength(20);
+
+                entity.Property(e => e.ConsumoIndicativo).HasColumnName("Consumo Indicativo");
 
                 entity.Property(e => e.Cor).HasMaxLength(20);
 
@@ -5421,6 +5427,18 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Código Área Funcional")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.DataAbate)
+                    .HasColumnName("Data Abate")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataAquisição)
+                    .HasColumnName("Data Aquisição")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataEntradaFuncionamento)
+                    .HasColumnName("Data Entrada Funcionamento")
+                    .HasColumnType("date");
+
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
                     .HasColumnType("datetime");
@@ -5433,6 +5451,28 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data Matrícula")
                     .HasColumnType("date");
 
+                entity.Property(e => e.DataUltimaInspeção)
+                    .HasColumnName("Data Ultima Inspeção")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataUltimaRevisão)
+                    .HasColumnName("Data Ultima Revisão")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DistânciaEntreEixos).HasColumnName("Distância Entre Eixos");
+
+                entity.Property(e => e.DuraçãoPneus).HasColumnName("Duração Pneus");
+
+                entity.Property(e => e.Imagem).HasColumnType("image");
+
+                entity.Property(e => e.IntervaloRevisões).HasColumnName("Intervalo Revisões");
+
+                entity.Property(e => e.KmUltimaRevisão).HasColumnName("Km Ultima Revisão");
+
+                entity.Property(e => e.LocalParqueamento)
+                    .HasColumnName("Local Parqueamento")
+                    .HasMaxLength(80);
+
                 entity.Property(e => e.NºImobilizado)
                     .HasColumnName("Nº Imobilizado")
                     .HasMaxLength(20);
@@ -5443,7 +5483,25 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nº Quadro")
                     .HasMaxLength(25);
 
+                entity.Property(e => e.NºViaVerde)
+                    .HasColumnName("Nº Via Verde")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Observações).HasColumnType("text");
+
                 entity.Property(e => e.PesoBruto).HasColumnName("Peso Bruto");
+
+                entity.Property(e => e.PneumáticosFrente)
+                    .HasColumnName("Pneumáticos Frente")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.PneumáticosRetaguarda)
+                    .HasColumnName("Pneumáticos Retaguarda")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ProximaInspeçãoAté)
+                    .HasColumnName("Proxima Inspeção Até")
+                    .HasColumnType("date");
 
                 entity.Property(e => e.TipoCombustível).HasColumnName("Tipo Combustível");
 
@@ -5456,6 +5514,22 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.ValidadeApólice)
+                    .HasColumnName("Validade Apólice")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.ValidadeCartaVerde)
+                    .HasColumnName("Validade Carta Verde")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.ValidadeCartãoCombustivel)
+                    .HasColumnName("Validade Cartão Combustivel")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.ValorAquisição).HasColumnName("Valor Aquisição");
+
+                entity.Property(e => e.ValorVenda).HasColumnName("Valor Venda");
 
                 entity.HasOne(d => d.CódigoMarcaNavigation)
                     .WithMany(p => p.Viaturas)

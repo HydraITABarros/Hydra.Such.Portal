@@ -94,7 +94,8 @@
                     </form>
                 </iron-form>
 
-                <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+                <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+                <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
             </template>
             <script>
@@ -103,10 +104,13 @@
                         is: 'x-configurations',
 
                         openToast: function (message) {
-                            this.$.ToastMessage.text = message;
-                            this.$.ToastMessage.open();
+                            this.$.ToastMessageSuccess.text = message;
+                            this.$.ToastMessageSuccess.open();
                         },
-
+                        openToastError: function (message) {
+                            this.$.ToastMessageError.text = message;
+                            this.$.ToastMessageError.open();
+                        },
                         _update: function () {
 
                             if (this.ownerDocument.activeElement.$.nProject.indexvalue != "" &&
@@ -122,7 +126,7 @@
                                 this.$.ajax_create.generateRequest();
                             }
                             else {
-                                this.openToast("Todos os campos devem ser preenchidos.");
+                                this.openToastError("Todos os campos devem ser preenchidos.");
                             }
                         },
 
@@ -132,7 +136,7 @@
                                 this.openToast("Configurações atualizadas.");
                             }
                             else {
-                                this.openToast("Occorreu um erro ao atualizar as configurações.");
+                                this.openToastError("Occorreu um erro ao atualizar as configurações.");
                             }
                         },
 

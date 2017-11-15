@@ -110,7 +110,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         public JsonResult GetProjectBillingInfo([FromBody] string ProjectNo )
         {
             Projetos CProject = DBProjects.GetById(ProjectNo);
-            List<DiárioDeProjeto> CPRojectLines = DBProjectDiary.GetByProjectNo(ProjectNo, User.Identity.Name).Where(x => x.Faturada.HasValue && x.Faturada.Value && x.PreçoTotal.HasValue).ToList();
+            List<DiárioDeProjeto> CPRojectLines = DBProjectDiary.GetByProjectNo(ProjectNo).Where(x => x.Faturada.HasValue && x.Faturada.Value && x.PreçoTotal.HasValue).ToList();
 
             return Json(new DBProjectBillingViewModel()
             {
