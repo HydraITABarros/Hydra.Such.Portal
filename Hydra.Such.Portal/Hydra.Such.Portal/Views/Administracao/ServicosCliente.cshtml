@@ -144,7 +144,7 @@
             </vaadin-combo-box>
         </div>
         <div class="col-lg-2 alignPoga">
-            <vaadin-checkbox id="chkServiceGroup" checked="{{chkServiceGroup}}"  disabled="{{ _permissionsCreate }}"> Grupo Serviços </vaadin-checkbox>
+            <vaadin-checkbox id="chkServiceGroup" checked="{{chkServiceGroup}}" disabled="{{ _permissionsCreate }}"> Grupo Serviços </vaadin-checkbox>
         </div>
         <div class="col-lg-1 alignPoga">
             <paper-button class="btnSave" on-tap="_createClientService"  disabled="{{ _permissionsCreate }}">Criar</paper-button>
@@ -263,7 +263,10 @@
                 this.$.ToastMessageSuccess.text = message;
                 this.$.ToastMessageSuccess.open();
             },
-
+            openToastError: function (message) {
+                this.$.ToastError.text = message;
+                this.$.ToastError.open();
+            },
             _update: function () {
                     
                 this.$.page_update_ajax.body = JSON.stringify(this.result);
@@ -275,15 +278,18 @@
                 var self = this;
                 if (this.exist === false) {
                     this.openToast('Criado com sucesso');
-                    this.$.page_databound_ajax.generateRequest();
+                    this.ddClients = "";
+                    this.ddServices = "";
+                    this.chkServiceGroup = false;
+
+                    this.$.page_databound_ajax.generateRequest();                    
                 }
                 else if (this.exist === true) {
 
-                    this.$.ToastError.open();
+                    this.openToastError("Este serviço cliente já existe.");
                     this.$.page_databound_ajax.generateRequest();
                 } else {
-                    this.openToast('Ocorreu um erro ao Criar o Serviço Cliente.');
-
+                    this.openToastError('Ocorreu um erro ao Criar o Serviço Cliente.');
                 }
             },
 
@@ -294,7 +300,7 @@
                     this.$.page_databound_ajax.generateRequest();
                 }
                 else {
-                    this.openToast('Ocorreu um erro ao atualizar o Serviço Cliente.');
+                    this.openToastError('Ocorreu um erro ao atualizar o Serviço Cliente.');
                 }
             },
 
@@ -305,7 +311,7 @@
                     this.$.page_databound_ajax.generateRequest();
                 }
                 else {
-                    this.openToast('Ocorreu um erro ao atualizar o Serviço Cliente.');
+                    this.openToastError('Ocorreu um erro ao atualizar o Serviço Cliente.');
                 }
             },
 
@@ -316,25 +322,30 @@
 
             _createClientService: function () {
 
-                if (this.result == null)
-                {
-                    this.result.unshift({
-                        ClientNumber: this.ddClients,
-                        ServiceCode: this.ddServices,
-                        ServiceGroup: this.chkServiceGroup
-                    });
+                if (this.ddClients != "" && this.ddServices != "") {
+                    if (this.result == null)
+                    {
+                        this.result.unshift({
+                            ClientNumber: this.ddClients,
+                            ServiceCode: this.ddServices,
+                            ServiceGroup: this.chkServiceGroup
+                        });
+                    }
+                    else
+                    {
+                        this.result.unshift({
+                            ClientNumber: this.ddClients,
+                            ServiceCode: this.ddServices,
+                            ServiceGroup: this.chkServiceGroup
+                        });
+                    }
+                    this.$.page_create_ajax.body = JSON.stringify(this.result);
+                    this.$.page_create_ajax.generateRequest();
+                    this.$.gridClientServices.clearCache();
+                } else {
+                    this.openToastError('Preencha os campos antes de criar.');
+
                 }
-                else
-                {
-                    this.result.unshift({
-                        ClientNumber: this.ddClients,
-                        ServiceCode: this.ddServices,
-                        ServiceGroup: this.chkServiceGroup
-                    });
-                }
-                this.$.page_create_ajax.body = JSON.stringify(this.result);
-                this.$.page_create_ajax.generateRequest();
-                this.$.gridClientServices.clearCache();
             },
 
             _deleteAccessProfile: function (data) {

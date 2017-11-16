@@ -1200,29 +1200,42 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CreateClientServices([FromBody] List<ClientServicesViewModel> data)
         {
-            foreach (var dt in data)
+            try
             {
-                int param = 1;
-                bool exist = CheckIfExist(dt.ClientNumber, dt.ServiceCode, dt.ServiceGroup, param);
-                if (exist == false)
-                {
-                    ServiçosCliente tpval = new ServiçosCliente();
-                    tpval.UtilizadorCriação = User.Identity.Name;
-                    tpval.DataHoraCriação = DateTime.Now;
-                    tpval.GrupoServiços = dt.ServiceGroup;
-                    tpval.CódServiço = dt.ServiceCode;
-                    tpval.NºCliente = dt.ClientNumber;
 
-                    DBClientServices.Create(tpval);
-                    return Json(exist);
-                }
-                else
+                int totalExists = 0;
+                if (data != null)
                 {
-                    return Json(exist);
+                    foreach (var dt in data)
+                    {
+                        int param = 1;
+                        bool exist = CheckIfExist(dt.ClientNumber, dt.ServiceCode, dt.ServiceGroup, param);
+                        if (exist == false)
+                        {
+                            ServiçosCliente tpval = new ServiçosCliente();
+                            tpval.UtilizadorCriação = User.Identity.Name;
+                            tpval.DataHoraCriação = DateTime.Now;
+                            tpval.GrupoServiços = dt.ServiceGroup;
+                            tpval.CódServiço = dt.ServiceCode;
+                            tpval.NºCliente = dt.ClientNumber;
+
+                            DBClientServices.Create(tpval);
+                        } else
+                        {
+                            totalExists++;
+                        }
+                    }
                 }
+                if (totalExists == data.Count())
+                {
+                    return Json(true);
+                }
+                return Json(false);
             }
-
-            return Json(data);
+            catch (Exception)
+            {
+                return Json(false);
+            }
         }
 
         [HttpPost]

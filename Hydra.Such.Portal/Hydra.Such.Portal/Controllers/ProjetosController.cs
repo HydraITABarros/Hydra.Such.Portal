@@ -38,7 +38,10 @@ namespace Hydra.Such.Portal.Controllers
 
             result.ForEach(x =>
             {
-                x.StatusDescription = EnumerablesFixed.ProjectStatus.Where(y => y.Id == x.Status).FirstOrDefault().Value;
+                if (x.Status.HasValue)
+                {
+                    x.StatusDescription = EnumerablesFixed.ProjectStatus.Where(y => y.Id == x.Status).FirstOrDefault().Value;
+                }
                 x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
             });
 
@@ -490,7 +493,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     NºLinha = x.LineNo,
                     NºProjeto = x.ProjectNo,
-                    Data = x.Date == "" || x.Date == String.Empty ? (DateTime?)null : DateTime.Parse(x.Date),
+                    Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date),
                     TipoMovimento = x.MovementType,
                     Tipo = x.Type,
                     Código = x.Code,
@@ -516,7 +519,7 @@ namespace Hydra.Such.Portal.Controllers
                     CódGrupoServiço = x.ServiceGroupCode,
                     NºGuiaResíduos = x.ResidueGuideNo,
                     NºGuiaExterna = x.ExternalGuideNo,
-                    DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
+                    DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
                     CódServiçoCliente = x.ServiceClientCode
 
                 };
@@ -895,9 +898,12 @@ namespace Hydra.Such.Portal.Controllers
                         }
                     }
                     List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
-                    result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
-                    result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
-                    result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
+                    if (userDimensionsViewModel.Where(x => x.Dimension == 1).Count() > 0)
+                        result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
+                    if (userDimensionsViewModel.Where(x => x.Dimension == 2).Count() > 0)
+                        result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
+                    if (userDimensionsViewModel.Where(x => x.Dimension == 3).Count() > 0)
+                        result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
                 }
                 return Json(result);
             }

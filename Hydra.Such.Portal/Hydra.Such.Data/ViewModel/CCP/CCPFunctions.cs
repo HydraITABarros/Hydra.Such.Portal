@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic.CCP;
 using Hydra.Such.Data.ViewModel.CCP;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
         // this function receives an ProcedimentosCcpView object and maps it to a ProcedimentosCcp object
         public static ProcedimentosCcp CastProcedimentoCcpViewToProcedimentoCcp(ProcedimentoCCPView ProcedimentoView)
         {
-            return (new ProcedimentosCcp
+            ProcedimentosCcp Procedimento = new ProcedimentosCcp
             {
                 Nº = ProcedimentoView.No,
                 Tipo = ProcedimentoView.Tipo,
@@ -139,7 +140,26 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 UtilizadorCriação = ProcedimentoView.UtilizadorCriacao,
                 DataHoraModificação = ProcedimentoView.DataHoraModificacao,
                 UtilizadorModificação = ProcedimentoView.UtilizadorModificacao
-            });
+            };
+
+            //if(ProcedimentoView.TemposPaCcp != null)
+            //{
+            //    Procedimento.TemposPaCcp = CCPFunctions.CastTemposCCPViewToTemposPaCcp(ProcedimentoView.TemposPaCcp);
+            //}
+
+            //if(ProcedimentoView.RegistoDeAtas != null && ProcedimentoView.RegistoDeAtas.Count > 0)
+            //{
+            //    List<RegistoDeAtas> RegistoDeAtasList = new List<RegistoDeAtas>();
+            //    foreach(var ra in ProcedimentoView.RegistoDeAtas)
+            //    {
+            //        RegistoDeAtasList.Add(CastRegistoActasViewToRegistoActas(ra));
+            //    }
+
+            //    Procedimento.RegistoDeAtas = RegistoDeAtasList;
+            //}
+
+            return Procedimento;
+
         }
         // this function receives an ProcedimentosCcp objet and maps it to a ProcedimentosCccpView object
         public static ProcedimentoCCPView CastProcedimentoCcpToProcedimentoCcpView(ProcedimentosCcp Procedimento)
@@ -267,6 +287,56 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 UtilizadorModificacao = Procedimento.UtilizadorModificação
             };
 
+            if(Procedimento.TemposPaCcp != null)
+            {
+                ProcedimentoView.TemposPaCcp = CCPFunctions.CastTemposPaCcpToTemposCCPView(Procedimento.TemposPaCcp);
+            }
+
+            if(Procedimento.RegistoDeAtas != null && Procedimento.RegistoDeAtas.Count > 0)
+            {
+                List<RegistoActasView> ActasList = new List<RegistoActasView>();
+                foreach(var ra in Procedimento.RegistoDeAtas)
+                {
+                    ActasList.Add(CastRegistoActasToRegistoActasView(ra));
+                }
+
+                ProcedimentoView.RegistoDeAtas = ActasList;
+            }
+
+            if(Procedimento.ElementosJuri != null && Procedimento.ElementosJuri.Count > 0)
+            {
+                List<ElementosJuriView> ElementosList = new List<ElementosJuriView>();
+                foreach(var ej in Procedimento.ElementosJuri)
+                {
+                    ElementosList.Add(CastElementosJuriToElementosJuriView(ej));
+                }
+                ProcedimentoView.ElementosJuri = ElementosList;
+            }
+            
+            if(Procedimento.EmailsProcedimentosCcp != null && Procedimento.EmailsProcedimentosCcp.Count > 0)
+            {
+                ProcedimentoView.EmailsProcedimentosCcp = DBProcedimentosCCP.GetAllEmailsView(Procedimento);
+            }
+
+            if(Procedimento.LinhasPEncomendaProcedimentosCcp != null && Procedimento.LinhasPEncomendaProcedimentosCcp.Count > 0)
+            {
+                ProcedimentoView.LinhasPEncomendaProcedimentosCcp = DBProcedimentosCCP.GetAllLinhasParaEncomendaView(Procedimento);
+            }
+
+            if(Procedimento.NotasProcedimentosCcp != null && Procedimento.NotasProcedimentosCcp.Count > 0)
+            {
+                ProcedimentoView.NotasProcedimentosCcp = DBProcedimentosCCP.GetAllNotasProcedimentoView(Procedimento);
+            }
+
+            if(Procedimento.WorkflowProcedimentosCcp != null && Procedimento.WorkflowProcedimentosCcp.Count > 0)
+            {
+                ProcedimentoView.WorkflowProcedimentosCcp = DBProcedimentosCCP.GetAllWorkflowsView(Procedimento);
+            }
+
+            if(Procedimento.FluxoTrabalhoListaControlo != null && Procedimento.FluxoTrabalhoListaControlo.Count > 0)
+            {
+                ProcedimentoView.FluxoTrabalhoListaControlo = DBProcedimentosCCP.GetAllCheklistControloProcedimento(Procedimento.Nº);
+            }
             return ProcedimentoView;
         }
 

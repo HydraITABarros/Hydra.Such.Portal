@@ -147,7 +147,7 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piQuantity" pattern="[0-9]+([\.,][0-9]+)?" label="Quantidade" value="{{quantity}}"  on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"></vaadin-text-field >
+                    <vaadin-text-field id="piQuantity" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" label="Quantidades" value="{{quantity}}"  on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"></vaadin-text-field >
                 </div>
                 <div class="col-lg-2">
                     <vaadin-combo-box id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[MeasureUnit]]" item-value-path="id" value="{{codeMeasurementUnit}}" item-label-path="value" label="Cód. Unidade Medida" disabled="{{ !_permissions.create }}">
@@ -176,12 +176,12 @@
                 <div class="col-lg-2">
                     <vaadin-combo-box id="piCodeRegion" name="piCodeRegion" items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.create }}">
                         <template>
-                                <table width="200px">
-                                    <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
+                            <table width="180px">
+                                <tr>
+                                    <td width="20%">[[item.id]]</td>
+                                    <td width="80%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
                         </template>
                     </vaadin-combo-box>
                 </div>
@@ -212,19 +212,19 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitCost" label="Custo Uniário" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitCost" label="Custo Uniário" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{totalCost}}" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{totalCost}}" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitPrice" label="Preço Uniário" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitPrice}}" on-value-changed="_calcTotals"  disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitPrice" label="Preço Uniário" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitPrice}}" on-value-changed="_calcTotals"  disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{totalPrice}}" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{totalPrice}}" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{unitValueToInvoice}}" disabled="{{ !_permissions.create }}"><div slot="suffix" >€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitValueToInvoice}}" disabled="{{ !_permissions.create }}"><div slot="suffix" >€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
@@ -444,7 +444,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" id="lineQuantity" disabled="{{ !_permissions.update }}" value="{{item.quantity}}" on-value-changed="_lineCalcTotals"></vaadin-text-field>
+                        <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$"  id="lineQuantity" disabled="{{ !_permissions.update }}" value="{{item.quantity}}" on-value-changed="_lineCalcTotals"></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.quantity}}
@@ -573,7 +573,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field id="lineUnitCost" on-value-changed="_lineCalcTotals" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{item.unitCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                        <vaadin-text-field id="lineUnitCost" on-value-changed="_lineCalcTotals" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{item.unitCost}}"><div slot="suffix">€</div></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.unitCost}}€
@@ -587,7 +587,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                        <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$"  disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.totalCost}}€
@@ -601,7 +601,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" disabled="{{ !_permissions.update }}" id="lineUnitPrice" on-value-changed="_lineCalcTotals" class="alignRight" value="{{item.unitPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                        <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$"  disabled="{{ !_permissions.update }}" id="lineUnitPrice" on-value-changed="_lineCalcTotals" class="alignRight" value="{{item.unitPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.unitPrice}}€
@@ -615,7 +615,7 @@
             </template>
             <template>
                 <template is="dom-if" if="{{ item.selected }}">
-                    <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$"  disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                 </template>
                 <template is="dom-if" if="{{ !item.selected }}">
                     {{item.totalPrice}}€
@@ -629,7 +629,7 @@
             </template>
             <template>
                 <template is="dom-if" if="{{ item.selected }}">
-                    <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$"  disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
                 </template>
                 <template is="dom-if" if="{{ !item.selected }}">
                     {{item.unitValueToInvoice}}€
@@ -1393,6 +1393,23 @@
                     this.ddServiceClientCode = "";
                     this.unitValueToInvoice = "";
                     this.openToastSuccess("Diário de Projeto atualizado.");
+
+                    this.$.piCodeLocation.value = "";
+                    this.$.piCodeRegion.value = "";
+                    this.$.piFuncArea.value = "";
+                    this.$.piCodeResponsabilityCenter.value = "";
+                    this.$.piUnitCost.value = "";
+                    this.$.piTotalCost.value = "";
+                    this.$.piUnitPrice.value = "";
+                    this.$.piTotalPrice.value = "";
+                    this.$.piUnitValueToInvoice.value = "";
+                    this.$.piCoin.value = "";
+                    this.$.pcInvoice.value = true;
+                    this.$.MealTypesCode.value = "";
+                    this.$.ServiceGroupCod.value = "";
+                    this.$.piResidueGuideNo.value = "";
+                    this.$.piExternalGuideNo.value = "";
+                    this.$.dpcompDate.value = "";
                 } else {
                     this.openToastError("Occorreu um erro ao atualizar as o Diário de Projeto.");
                 }

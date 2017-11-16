@@ -12,13 +12,35 @@
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
-<x-proposals></x-proposals>
 <dom-module id="x-proposals">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+            </style>
+        </custom-style>
         <iron-ajax url="/Contratos/GetListContractsProposals"
                    last-response="{{result}}"
                    method="post"
@@ -26,6 +48,13 @@
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/DeleteContract"
+                   last-response="{{deletedData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_contract"
+                   on-response="_responseDeleteProcessor"
+                   content-type="application/json"></iron-ajax>
 
         <template is="dom-if" if="{{ _permissions.create }}">
             <template is="dom-if" if="{{ !_disabledCreate }}">
@@ -145,108 +174,6 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
-        <!--<vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="120px">
-                <template class="header">
-                    <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contractNo" />
-                </template>
-                <template>
-                    {{item.contractNo}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="110px">
-                <template class="header">
-                    <vaadin-grid-sorter path="startDate">Data Inicio</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="startDate" />
-                </template>
-                <template>
-                    {{item.startDate}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="110px">
-                <template class="header">
-                    <vaadin-grid-sorter path="endDate">Data Fim</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="endDate" />
-                </template>
-                <template>
-                    {{item.endDate}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="110px">
-                <template class="header">
-                    <vaadin-grid-sorter path="clientNo">Nº Contact</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="clientNo" />
-                </template>
-                <template>
-                    {{item.contactNo}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
-                <template class="header">
-                    <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="clientNo" />
-                </template>
-                <template>
-                    {{item.clientNo}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="110px">
-                <template class="header">
-                    <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="clientName" />
-                </template>
-                <template>
-                    {{item.clientName}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="160px">
-                <template class="header">
-                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="description" />
-                </template>
-                <template>
-                    {{item.description}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="status" />
-                </template>
-                <template>
-                    {{item.status}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
-                <template class="header">
-                    <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codeRegion" />
-                </template>
-                <template>
-                    {{item.codeRegion}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
-                <template class="header">
-                    <vaadin-grid-sorter path="codeFunctionalArea">Cód. Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codeFunctionalArea" />
-                </template>
-                <template>
-                    {{item.codeFunctionalArea}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
-                <template class="header">
-                    <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codeResponsabilityCenter" />
-                </template>
-                <template>
-                    {{item.codeResponsabilityCenter}}
-                </template>
-            </vaadin-grid-column>
-        </vaadin-grid>-->
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>

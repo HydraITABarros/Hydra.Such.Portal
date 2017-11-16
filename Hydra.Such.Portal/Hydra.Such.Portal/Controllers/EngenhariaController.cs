@@ -125,6 +125,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.Archived = archived == null ? 0 : 1;
                 ViewBag.ContractNo = contractNo ?? "";
+                ViewBag.UPermissions = UPerm;
                 return View();
             }
             else

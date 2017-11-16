@@ -605,3 +605,11 @@ paper-tab.iron-selected, paper-tab:hover {
     background-color: #71BCC1;
 }
 /* Polymer Elements Defautls */
+
+
+input::-webkit-datetime-edit {
+    color: transparent;
+}
+input:focus::-webkit-datetime-edit {
+    color: #000;
+}

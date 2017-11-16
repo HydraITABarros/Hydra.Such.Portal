@@ -93,7 +93,7 @@
         <iron-ajax url="/PopulateDropdowns/GetContacts" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
-        <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" last-response="{{numeration}}" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
         <!-- PROJECT CRUDS -->
@@ -247,7 +247,7 @@
                                             <vaadin-text-field value="{{data.internalNumeration}}" id="mInternalNumeration" name="mInternalNumeration" label="Numeração Interna" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.totalProposalValue}}" auto-validate pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$" error-message="Valor inválido" id="mTotalProposalValue" name="mTotalProposalValue" label="Valor Total" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.totalProposalValue}}" auto-validate pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" id="mTotalProposalValue" name="mTotalProposalValue" label="Valor Total" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBRegions]]" id="mCodeRegion" item-value-path="id" item-label-path="value" value="{{data.codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
@@ -631,7 +631,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.provisioningFee}}" id="mProvisioningFee" auto-validate pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$" error-message="Valor inválido" name="provisioningFee" label="Taxa Aprovisionamento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.provisioningFee}}" id="mProvisioningFee" auto-validate pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" name="provisioningFee" label="Taxa Aprovisionamento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.mc}}" id="mc" name="mc" label="% MC" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
@@ -639,7 +639,7 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.displacementFee}}" auto-validate pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$" error-message="Valor inválido" id="mDisplacementFee" name="mDisplacementFee" label="Taxa Deslocação" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.displacementFee}}" auto-validate pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" id="mDisplacementFee" name="mDisplacementFee" label="Taxa Deslocação" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBInvoicePeriods]]" id="mInvoicePeriods" item-value-path="id" item-label-path="value" value="{{data.invocePeriod}}" label="Período Fatura" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
@@ -843,7 +843,7 @@
                             </div>
 
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" label="Quantidade" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" label="Quantidade" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                             </div>
 
                             <div class="col-lg-2">
@@ -859,14 +859,14 @@
                             </div>
 
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$" />
+                                <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" />
                             </div>
                         </div>
 
 
                         <div class="row">
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                             </div>
 
                             <div class="col-lg-2 alignPoga">
@@ -910,18 +910,18 @@
                             </div>
 
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periocidade" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periocidade" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                             </div>
 
                         </div>
 
                         <div class="row">
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLInterventionHours}}" id="_CLInterventionHours" name="_CLInterventionHours" label="Nº Horas Intervenção" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$" ~ />
+                                <vaadin-text-field value="{{_CLInterventionHours}}" id="_CLInterventionHours" name="_CLInterventionHours" label="Nº Horas Intervenção" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" ~ />
                             </div>
 
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$" />
+                                <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" />
                             </div>
 
                             <div class="col-lg-2">
@@ -1047,7 +1047,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.quantity}}" id="_CLGridQuantity" name="_CLGridQuantity" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.quantity}}" id="_CLGridQuantity" name="_CLGridQuantity" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                                         </template>
 
                                         <template is="dom-if" if="{{ !item.selected }}">
@@ -1084,7 +1084,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> <div slot="suffix">€</div></vaadin-text-field>
+                                            <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> <div slot="suffix">€</div></vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.unitPrice}} €
@@ -1098,7 +1098,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.lineDiscount}}" id="_CLGridDiscountLine" name="_CLGridDiscountLine" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.lineDiscount}}" id="_CLGridDiscountLine" name="_CLGridDiscountLine" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.lineDiscount}}%
@@ -1190,7 +1190,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.frequency}}" id="_CLGridFrequency" name="_CLGridFrequency" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.frequency}}" id="_CLGridFrequency" name="_CLGridFrequency" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.frequency}}
@@ -1204,7 +1204,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.interventionHours}}" id="_CLGridInterventionHours" name="_CLGridInterventionHours" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.interventionHours}}" id="_CLGridInterventionHours" name="_CLGridInterventionHours" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.interventionHours}}
@@ -1218,7 +1218,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.totalTechinicians}}" id="_CLGridTotalTechnicians" name="_CLGridTotalTechnicians" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.totalTechinicians}}" id="_CLGridTotalTechnicians" name="_CLGridTotalTechnicians" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.totalTechinicians}}
@@ -1353,8 +1353,9 @@
             </div>
         </div>
 
-        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
     </template>
 
 
@@ -1745,6 +1746,12 @@
                         else if (data.detail.url.indexOf("Update") !== -1) {
                             if (this.data.eReasonCode == 1) {
                                 this._openToast("Oportunidade atualizada com sucesso.")
+                                var contractNo = this.data.contractNo;
+                                var versionNo = this.data.versionNo;
+                                setTimeout(
+                                    function () {
+                                        window.location.href = "../DetalhesOportunidade/" + contractNo + "?version=" + versionNo;
+                                    }, 1000);
                             } else {
                                 this._openToast(this.data.eMessage);
                             }
@@ -1752,21 +1759,29 @@
                         else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
                             debugger;
                             this._openToast(this.data.eMessage);
+                            var contractNo = this.data.contractNo;
+                            var versionNo = this.data.versionNo;
+                            setTimeout(
+                                function () {
+                                    window.location.href = "../DetalhesOportunidade/" + contractNo + "?version=" + versionNo;
+                                }, 1000);
                         }
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
                 },
 
-                _createResponseProcessor: function () {
+                _createResponseProcessor: function (data) {
+                    debugger;
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
-                        this._openToast("Oportunidade criado com sucesso.");
+                        this._openToast("Oportunidade guardada com sucesso.");
 
                         var contractNo = this.data.contractNo;
+                        var versionNo = this.data.versionNo;
                         setTimeout(
                             function () {
-                                window.location.href = "../DetalhesOportunidade/" + contractNo + "?version=" + item.versionNo;
+                                window.location.href = "../DetalhesOportunidade/" + contractNo + "?version=" + versionNo;
                             }, 1000);
 
                     } else {
@@ -2060,10 +2075,17 @@
 
                 //Parse To Proposal
                 _parseToContract: function (param) {
+                    debugger;
                     if (param != null) {
-                        debugger;
-                        this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 1, "HeaderType": 2 });
-                        this.$.parseToContract_ajax.generateRequest();
+                        if (this.$.mProposalNo.value != null && this.$.mProposalNo.value == "") {
+                            this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 1, "HeaderType": 2 });
+                            this.$.parseToContract_ajax.generateRequest();
+                        } else if (this.$.mProposalNo.value != "" && this.$.mProposalNo.value == null) {
+                            this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 1, "HeaderType": 2 });
+                            this.$.parseToContract_ajax.generateRequest();
+                        } else {
+                            this._openToastError("Esta versão de oportunidade já tem proposta associada");
+                        }
                     }
                 },
                 
@@ -2072,10 +2094,11 @@
                     var self = this;
                     if (e.detail.status === 200) {
                         debugger;
-                        this._openToast("Oportunidade criada com sucesso.");
+                        this._openToast("Proposta " + this.numeration + " criada com sucesso");
+                        this.$.mProposalNo.value = this.numeration;
                     }
                     else {
-                        this._openToastError("Erro na criação da oportunidade.");
+                        this._openToastError("Erro na criação da proposta.");
                     }
                 }
             });
