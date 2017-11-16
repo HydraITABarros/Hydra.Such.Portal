@@ -264,7 +264,7 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBFunctionalAreas]]" id="mFunctionalArea" item-value-path="id" item-label-path="value" value="{{data.codeFunctionalArea}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <vaadin-combo-box items="[[CBFunctionalAreas]]" id="mFunctionalArea" item-value-path="id" item-label-path="value" value="{{data.codeFunctionalArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -1330,17 +1330,17 @@
                                         </center>
                                     </template>
                                 </vaadin-grid-column>
-                                <!--<vaadin-grid-column>
+                                <vaadin-grid-column>
                                     <template class="header">
                                     </template>
                                     <template>
                                         <center>
                                             <template is="dom-if" if="{{ !_permissions.update }}">
-                                                <paper-button class="btnRemove" raised on-tap="_deleteInvoiceText">Eliminar</paper-button>
+                                                <paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>
                                             </template>
                                         </center>
                                     </template>
-                                </vaadin-grid-column>-->
+                                </vaadin-grid-column>
                             </vaadin-grid>
                         </div>
                         <div class="marginSpace">
@@ -2073,6 +2073,17 @@
                     return "";
                 },
 
+                _deleteContractLine: function (e) {
+                    var index = this.dataLines.lines.indexOf(e.model.item);
+                    this.dataLines.lines.splice(index, 1);
+
+                    this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
+                    this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                    this.$.contractLines_databound_ajax.generateRequest();
+
+                    //this.$.gridUserAccesses.clearCache();
+                },
+
                 //Parse To Proposal
                 _parseToContract: function (param) {
                     debugger;
@@ -2088,7 +2099,6 @@
                         }
                     }
                 },
-                
 
                 _responseParseToContract: function (e) {
                     var self = this;
