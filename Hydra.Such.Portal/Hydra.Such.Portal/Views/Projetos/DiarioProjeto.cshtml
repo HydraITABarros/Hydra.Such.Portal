@@ -209,7 +209,7 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piQuantity" auto-validate pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"   label="Quantidade" value="{{quantity}}" on-changed="_calcTotals"></vaadin-text-field>
+                    <vaadin-text-field id="piQuantity" pattern="^[1-9]\d*(\.\d+)?$"  error-message="Valor inválido" label="Quantidade" value="{{quantity}}" on-changed="_calcTotals"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-combo-box id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[MeasureUnit]]" item-value-path="id" value="{{codeMeasurementUnit}}" item-label-path="value" label="Cód. Unidade Medida">
@@ -272,22 +272,22 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitCost" label="Custo Uniário" auto-validate pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"  class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitCost" label="Custo Uniário" pattern="^[1-9]\d*(\.\d+)?$"  error-message="Valor inválido"  class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piTotalCost" label="Custo Total" auto-validate pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"  class="alignRight" value="{{totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="^[1-9]\d*(\.\d+)?$"  error-message="Valor inválido"  class="alignRight" value="{{totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitPrice" label="Preço Uniário" auto-validate pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"  class="alignRight" value="{{unitPrice}}" on-value-changed="_calcTotals"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitPrice" label="Preço Uniário" pattern="^[1-9]\d*(\.\d+)?$"  error-message="Valor inválido"  class="alignRight" value="{{unitPrice}}" on-value-changed="_calcTotals"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piTotalPrice" label="Preço Total" auto-validate pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"  class="alignRight" value="{{totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="^[1-9]\d*(\.\d+)?$"  error-message="Valor inválido"  class="alignRight" value="{{totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-text-field id="piCurrency" label="Moeda" value="{{currency}}" disabled></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="[0-9]+([\.,][0-9]+)?" value="{{unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="^[1-9]\d*(\.\d+)?$"  value="{{unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2 alignPoga">
                     <vaadin-checkbox id="pcInvoice" checked="{{billable}}"> Faturável</vaadin-checkbox>
@@ -385,7 +385,9 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-date-picker id="dpDate" name="dpDate" value="{{item.date}}"></vaadin-date-picker>
+                        <input type="date" id="dpDate" name="dpDate" value="{{item.date}}">
+
+                        @*<vaadin-date-picker id="dpDate" name="dpDate" value="{{item.date}}"></vaadin-date-picker>*@
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.date}}
@@ -500,7 +502,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field auto-validate pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"  error-message="Valor inválido" id="lineQuantity" value="{{item.quantity}}" on-value-changed="_lineCalcTotals"></vaadin-text-field>
+                        <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$"  error-message="Valor inválido"  error-message="Valor inválido" id="lineQuantity" value="{{item.quantity}}" on-value-changed="_lineCalcTotals"></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.quantity}}
@@ -627,7 +629,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field id="lineUnitCost" on-value-changed="_lineCalcTotals" auto-validate pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"  class="alignRight" value="{{item.unitCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                        <vaadin-text-field id="lineUnitCost" on-value-changed="_lineCalcTotals" pattern="^[1-9]\d*(\.\d+)?$"  error-message="Valor inválido"  class="alignRight" value="{{item.unitCost}}"><div slot="suffix">€</div></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.unitCost}}€
@@ -641,7 +643,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field auto-validate pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"  class="alignRight" value="{{item.totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                        <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$"  error-message="Valor inválido"  class="alignRight" value="{{item.totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.totalCost}}€
@@ -655,7 +657,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field auto-validate pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"  id="lineUnitPrice" on-value-changed="_lineCalcTotals" class="alignRight" value="{{item.unitPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                        <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$"  error-message="Valor inválido"  id="lineUnitPrice" on-value-changed="_lineCalcTotals" class="alignRight" value="{{item.unitPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.unitPrice}}€
@@ -669,7 +671,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field auto-validate pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"  class="alignRight" value="{{item.totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                        <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$"  error-message="Valor inválido"  class="alignRight" value="{{item.totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.totalPrice}}€
@@ -699,7 +701,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field pattern="[0-9]+([\.,][0-9]+)?" class="alignRight" value="{{item.unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
+                        <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{item.unitValueToInvoice}}"><div slot="suffix">€</div></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.unitValueToInvoice}}€
@@ -893,7 +895,7 @@
                 },
 
                 _add() {
-
+                    debugger;;
                     if (true)
                     //Validações
                     {
@@ -960,6 +962,30 @@
                         this.$.projectDiaryProject.clearCache();
 
                         this.openToastSuccess("Diário de Projeto atualizado.");
+
+
+                        //Clear Fields
+                        //this.projectNumber = "";
+                        //this.codeProjectContabGroup = "";
+                        //this.codeRegion = "";
+                        //this.codeFuncArea = "";
+                        //this.codeResponsabilityCenter = "";
+                        this.date = "";
+                        this.projectMovementNumber = "";
+                        this.projectTypeNumber = "";
+                        this.codeNumber = "";
+                        this.description = "";
+                        this.quantity = "";
+                        this.codeMeasurementUnit = "";
+                        this.codeLocation = "";
+                        this.unitCost = "";
+                        this.totalCost = "";
+                        this.unitPrice = "";
+                        this.totalPrice = "";
+                        this.unitValueToInvoice = "";
+                        this.billable = true;
+                        this.invoiceClientNo = "";
+                        //this.currency
                     }
                     else {
                         this.openToastError("Occorreu um erro ao atualizar as o Diário de Projeto.");
@@ -1076,6 +1102,7 @@
                         });
                         this.$.projectDiaryProject.clearCache();
                         this.openToastSuccess("Movimentos adicionados com sucesso.");
+
 
                     }
                 },
