@@ -61,7 +61,7 @@
             }
         </style>
 
-        <!-- Dropdowns populate-->
+        <!-- Dropdowns populate.b -->
         <iron-ajax url="/PopulateDropdowns/GetPocedimentosCcpProcedimentoType" 
                    last-response="{{LProcedimentoType}}" 
                    auto method="post" 
@@ -89,8 +89,9 @@
                    auto method="post" handle-as="json" 
                    content-type="application/json">
         </iron-ajax>
+        <!-- Dropdowns populate.e -->
 
-        <!-- Controller functions -->
+        <!-- Controller actions.b -->
         <iron-ajax url="/ProcedimentosCcps/GetProcedimentoDetails"
                    last-response="{{data}}"
                    method="post"
@@ -107,6 +108,16 @@
                    on-response="_responseDeleteProcessor"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/CreateElementoJuri"
+                   last-response="{{ElementoCreated}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_createelementojuri"
+                   on-response="_createElementoJuriResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <!-- Controller actions.e -->
+
         
         <!-- Header section of the Procedimento details -->
         <div>
@@ -190,17 +201,15 @@
             <!-- Tab Unidade Produtiva-->
             <div>    
                 <div class="row break_clear">
-                    <div class="col-sm-12">
-                        <div class="col-sm-6">
-                            <vaadin-text-field type="text" value="{{data.informacaoTecnica}}" id="informacaoTecnica" name="informacaoTecnica" label="Informação Técnica"> </vaadin-text-field>
-                        </div>
-                        <div class="col-sm-6">
-                            <br><i>Descrição da prestação de serviços ou bem a adquirir</i>
-                        </div>    
+                    <div class="col-sm-6">
+                        <vaadin-text-field type="text" value="{{data.informacaoTecnica}}" id="informacaoTecnica" name="informacaoTecnica" label="Informação Técnica"> </vaadin-text-field>
                     </div>
+                    <div class="col-sm-6">
+                        <br><i>Descrição da prestação de serviços ou bem a adquirir</i>
+                    </div>    
                 </div>
                 <div class="row break_clear">
-                    <div class="col-sm-3">
+                    <div class="col-sm-6">
                         <vaadin-text-field type="text" value="{{data.fundamentacaoAquisicao}}" id="fundamentacaoAquisicao" name="fundamentacaoAquisicao" label="Fundamentação Aquisição"> </vaadin-text-field>
                     </div>
                 </div>
@@ -231,7 +240,7 @@
                 <!-- Elementos Juri section.b -->
                 <h2 class="separator">Elementos Juri</h2>
                 <div class="table inlineForm">
-                    <div class="col-sm-3">
+                    <div class="col-sm-3" style="padding-left:0;">
                         <vaadin-combo-box items="[[LUsers]]" id="users" item-value-path="id" value="{{_userName }}" item-label-path="id" label="Possiveis Elementos">
                             <template>
                                 <paper-icon-item>
@@ -245,15 +254,15 @@
                     
                     <div class="col-sm-4">
                         <p>Responsabilidades</p>
-                        <br />
-                        <vaadin-checkbox id="_presidente" checked="{{chkPresidente}}">Presidente</vaadin-checkbox>
-                        <vaadin-checkbox id="_vogal" checked="{{chkVogal}}">Vogal</vaadin-checkbox>
-                        <vaadin-checkbox id="_suplente" checked="{{chkSuplente}}">Suplente</vaadin-checkbox>
-                        <vaadin-checkbox id="_sendMail" checked="{{chkSendMail}}">Enviar Email</vaadin-checkbox>
+                        
+                        <vaadin-checkbox id="_chkPresidente" checked="{{chkPresidente}}">Presidente</vaadin-checkbox>
+                        <vaadin-checkbox id="_chkVogal" checked="{{chkVogal}}">Vogal</vaadin-checkbox>
+                        <vaadin-checkbox id="_chkSuplente" checked="{{chkSuplente}}">Suplente</vaadin-checkbox>
+                        <vaadin-checkbox id="_chkSendMail" checked="{{chkSendMail}}">Enviar Email</vaadin-checkbox>
                     </div>
                     <div class="col-lg-3">
                         <br />
-                        <paper-button class="btnSave" raised on-tap="_createElementoJuri"><i class="fa fa-plus" aria-hidden="true"></i>Criar</paper-button>
+                        <paper-button class="btnSave" raised on-tap="_createElementoJuri"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                     </div>
                 </div>
                 <vaadin-grid id="gridElementosJuri" aria-label="gridElementosJuri" items="{{data.elementosJuri}}" class="grid">
@@ -271,6 +280,71 @@
                         </template>
                         <template>
                             <vaadin-text-field type="text" value="{{ item.nomeEmpregado }}"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="8%">
+                        <template class="header">
+                            <center>
+                                Presidente
+                            </center>
+                        </template>
+                        <template>
+                            <center>
+                                <vaadin-checkbox checked="{{item.presidente}}"></vaadin-checkbox>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="8%">
+                        <template class="header">
+                            <center>
+                                Vogal
+                            </center>
+                        </template>
+                        <template>
+                            <center>
+                                <vaadin-checkbox checked="{{item.vogal}}"></vaadin-checkbox>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="6%">
+                        <template class="header">
+                            <center>
+                                Suplente
+                            </center>
+                        </template>
+                        <template>
+                            <center>
+                                <vaadin-checkbox checked="{{item.suplente}}"></vaadin-checkbox>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="8%">
+                        <template class="header">
+                            <center>
+                                Enviar Email?
+                            </center>
+                        </template>
+                        <template>
+                            <center>
+                                <vaadin-checkbox checked="{{item.enviarEmail}}"></vaadin-checkbox>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="20%">
+                        <template class="header">
+                            Endereço Email
+                        </template>
+                        <template>
+                            <vaadin-text-field type="text" value="{{ item.email }}"></vaadin-text-field>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="10%">
+                        <template class="header">
+                        </template>
+                        <template>
+                            <!--<center>-->
+                                <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                            <!--</center>-->
                         </template>
                     </vaadin-grid-column>
                 </vaadin-grid>
@@ -339,25 +413,25 @@
                         value: false
                     },
                     chkPresidente: {
-                        type: boolean,
+                        type: Boolean,
                         notify: true,
                         value: false
                     },
                     chkVogal: {
-                        type: boolean,
+                        type: Boolean,
                         notify: true,
                         value: false
                     },
                     chkSuplente: {
-                        type: boolean,
+                        type: Boolean,
                         notify: true,
-                        value: true
+                        value: false
                     },
                     chkSendMail: {
-                        type: boolean,
+                        type: Boolean,
                         notify: true,
-                        value: true
-                    }
+                        value: false
+                    },
                 },
 
                 ready: function () {
@@ -485,8 +559,9 @@
                         }
                     }
                 },
-                // Elemento Juri responsabilities
+                // Create Elemento Juri
                 _createElementoJuri: function () {
+                    debugger;;
                     if (this._userName == "") {
                         this._openToast("Não escolheu um utilizador!")
                     } else if (!this.chkPresidente && !this.chkVogal && !this.chkSuplente) {
@@ -495,13 +570,30 @@
                         (this.chkVogal && (this.chkPresidente || this.chkSuplente)) ||
                         (this.chkSuplente && (this.chkPresidente || this.chkVogal))) {
                         this._openToast("Apenas pode escolher uma das opções: Presidente, Vogal ou Suplente!")
+                    } else {
+                        this.$.ajax_createelementojuri.body = JSON.stringify({
+                            noProcedimento: this.data.no, 
+                            utilizador: this._userName,
+                            presidente: this.chkPresidente,
+                            vogal: this.chkVogal,
+                            suplente: this.chkSuplente,
+                            enviarEmail: this.chkSendMail
+                        });
+                        this.$.ajax_createelementojuri.generateRequest();
+                        this.gridElementosJuri.clearCache();
                     }
-
-
                 },
-                //_showErrorMessage: function (message) {
-                //    this.$._openToast.message = message;
-                //},
+                _createElementoJuriResponse: function (e) {
+                    if (this.ElementoCreated) {
+                        this._openToast('Elemento Júri adicionado com sucesso');
+                        this.$.page_databound_ajax.generateRequest();
+                        this.$.users.value = "";
+                    } else {
+                        this._openToast('Não foi possível criar o Elemento do Juri');
+                        
+                    }
+                },
+                
                 //Helpers
                 _executeRequest: function (url, data) {
                     //debugger;;
