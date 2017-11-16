@@ -257,7 +257,7 @@
                         <vaadin-text-field id="percursoDistanciaEfetuada" label="Distância Efectuada" maxlength="18" pattern="[0-9]*" required error-message="Este campo é obrigatório" style="text-align:right;"><div slot="suffix">KM</div></vaadin-text-field>
                     </div>
                     <div class="col-sm-2" style="text-align:right">
-                        <vaadin-text-field id="percursoCustoUnitario" label="Custo Unitário" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" required error-message="Este campo é obrigatório" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        <vaadin-text-field id="percursoCustoUnitario" label="Custo Unitário" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$"  required error-message="Este campo é obrigatório" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                         <paper-button class="btnSave" raised on-tap="_addPercurso">Criar</paper-button>
                     </div>
                 </div>
@@ -367,7 +367,7 @@
                             <vaadin-grid-filter path="custoUnitario" />
                         </template>
                         <template>
-                            <vaadin-text-field name="tabPercursoCustoUnitario" value="{{item.custoUnitario}}" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                            <vaadin-text-field name="tabPercursoCustoUnitario" value="{{item.custoUnitario}}" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$"  style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                         </template>
                     </vaadin-grid-column>
 
@@ -377,7 +377,7 @@
                             <vaadin-grid-filter path="custoTotal" />
                         </template>
                         <template>
-                            <vaadin-text-field name="tabPercursoCustoTotal" value="{{item.custoTotal}}" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                            <vaadin-text-field name="tabPercursoCustoTotal" value="{{item.custoTotal}}" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$"  style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                         </template>
                     </vaadin-grid-column>
 
@@ -419,13 +419,13 @@
                         <vaadin-text-field id="ajudaQuantidade" label="Quantidade" required error-message="Este campo é obrigatório" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
                     </div>
                     <div class="col-sm-1">
-                        <vaadin-text-field id="ajudaCustoUnitario" label="Custo Unitário" required error-message="Este campo é obrigatório" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        <vaadin-text-field id="ajudaCustoUnitario" label="Custo Unitário" required error-message="Este campo é obrigatório" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$"  style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                     </div>
                     <div class="col-sm-1">
-                        <vaadin-text-field id="ajudaPrecoUnitario" label="Preço Unitário" required error-message="Este campo é obrigatório" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        <vaadin-text-field id="ajudaPrecoUnitario" label="Preço Unitário" required error-message="Este campo é obrigatório" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$"  style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                     </div>
                     <div class="col-sm-1">
-                        <vaadin-text-field id="ajudaPrecoVenda" label="Preço Venda" required error-message="Este campo é obrigatório" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        <vaadin-text-field id="ajudaPrecoVenda" label="Preço Venda" required error-message="Este campo é obrigatório" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$"  style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                     </div>
                     <div class="col-sm-2">
                         <vaadin-date-picker id="ajudaDataDespesa" label="Data Despesa" name="ajudaDataDespesa" required error-message="Este campo é obrigatório" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}"></vaadin-date-picker>
@@ -493,7 +493,7 @@
                             <vaadin-grid-filter path="custoUnitario" />
                         </template>
                         <template>
-                            <vaadin-text-field name="tabAjudaCustoUnitario" value="{{item.custoUnitario}}" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                            <vaadin-text-field name="tabAjudaCustoUnitario" value="{{item.custoUnitario}}" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$"  style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                         </template>
                     </vaadin-grid-column>
 
@@ -503,7 +503,7 @@
                             <vaadin-grid-filter path="custoTotal" />
                         </template>
                         <template>
-                            <vaadin-text-field name="tabAjudaCustoTotal" value="{{item.custoTotal}}" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" disabled="true" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                            <vaadin-text-field name="tabAjudaCustoTotal" value="{{item.custoTotal}}" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$"  disabled="true" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                         </template>
                     </vaadin-grid-column>
 
@@ -513,7 +513,7 @@
                             <vaadin-grid-filter path="precoUnitario" />
                         </template>
                         <template>
-                            <vaadin-text-field name="tabAjudaPrecoUnitario" value="{{item.precoUnitario}}" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                            <vaadin-text-field name="tabAjudaPrecoUnitario" value="{{item.precoUnitario}}" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$"  style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                         </template>
                     </vaadin-grid-column>
 
@@ -523,7 +523,7 @@
                             <vaadin-grid-filter path="" />
                         </template>
                         <template>
-                            <vaadin-text-field name="tabAjudaPrecoVenda" value="" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                            <vaadin-text-field name="tabAjudaPrecoVenda" value="" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$"  style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                         </template>
                     </vaadin-grid-column>
 
@@ -619,13 +619,13 @@
                         <vaadin-text-field id="maoDeObraCodigoFamiliaRecurso" label="Nº Famíl Recur" maxlength="200" required error-message="Este campo é obrigatório"></vaadin-text-field>
                     </div>
                     <div class="col-sm-1">
-                        <vaadin-text-field id="maoDeObraCustoUnitarioDireto" label="Cus Unit Diret" pattern="[0-9]+([\.,][0-9]+)?" maxlength="18" required error-message="Este campo é obrigatório" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        <vaadin-text-field id="maoDeObraCustoUnitarioDireto" label="Cus Unit Diret" pattern="^[1-9]\d*(\.\d+)?$"  maxlength="18" required error-message="Este campo é obrigatório" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                     </div>
                     <div class="col-sm-1">
                         <vaadin-text-field id="maoDeObraCodigoCentroResponsabilidade" label="Cresp" maxlength="200" required error-message="Este campo é obrigatório"></vaadin-text-field>
                     </div>
                     <div class="col-sm-1" style="text-align:right">
-                        <vaadin-text-field id="maoDeObraPrecoTotal" label="Preço Total" pattern="[0-9]+([\.,][0-9]+)?" maxlength="18" required error-message="Este campo é obrigatório" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                        <vaadin-text-field id="maoDeObraPrecoTotal" label="Preço Total" pattern="^[1-9]\d*(\.\d+)?$"  maxlength="18" required error-message="Este campo é obrigatório" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                         <paper-button class="btnSave" raised on-tap="_addMaoDeObra">Criar</paper-button>
                     </div>
                 </div>
@@ -747,7 +747,7 @@
                             <vaadin-grid-filter path="custoUnitarioDireto" />
                         </template>
                         <template>
-                            <vaadin-text-field name="tabMaoDeObraCustoUnitarioDireto" value="{{item.custoUnitarioDireto}}" pattern="[0-9]+([\.,][0-9]+)?" maxlength="18" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                            <vaadin-text-field name="tabMaoDeObraCustoUnitarioDireto" value="{{item.custoUnitarioDireto}}" pattern="^[1-9]\d*(\.\d+)?$"  maxlength="18" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                         </template>
                     </vaadin-grid-column>
 
@@ -767,7 +767,7 @@
                             <vaadin-grid-filter path="precoTotal" />
                         </template>
                         <template>
-                            <vaadin-text-field name="tabMaoDeObraPrecoTotal" value="{{item.precoTotal}}" pattern="[0-9]+([\.,][0-9]+)?" maxlength="18" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                            <vaadin-text-field name="tabMaoDeObraPrecoTotal" value="{{item.precoTotal}}" pattern="^[1-9]\d*(\.\d+)?$"  maxlength="18" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                         </template>
                     </vaadin-grid-column>
 

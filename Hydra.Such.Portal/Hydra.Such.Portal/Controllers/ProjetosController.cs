@@ -489,7 +489,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     NºLinha = x.LineNo,
                     NºProjeto = x.ProjectNo,
-                    Data = x.Date == "" || x.Date == String.Empty ? (DateTime?)null : DateTime.Parse(x.Date),
+                    Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date),
                     TipoMovimento = x.MovementType,
                     Tipo = x.Type,
                     Código = x.Code,
@@ -515,7 +515,7 @@ namespace Hydra.Such.Portal.Controllers
                     CódGrupoServiço = x.ServiceGroupCode,
                     NºGuiaResíduos = x.ResidueGuideNo,
                     NºGuiaExterna = x.ExternalGuideNo,
-                    DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
+                    DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
                     CódServiçoCliente = x.ServiceClientCode
 
                 };
