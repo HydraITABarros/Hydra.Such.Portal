@@ -642,7 +642,6 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
-
         public static readonly List<EnumData> ContabGroupTypesOM_Type = new List<EnumData>(){
             new EnumData()
             {
@@ -1047,8 +1046,91 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> ViaturasEstado = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Activo"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Bloqueado"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Abatido"
+            },
+            new EnumData
+            {
+                Id = 4,
+                Value = "Cedido"
+            }
+        };
 
+        public static readonly List<EnumData> ViaturasTipoCombustivel = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Gasolina"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Gasoleo"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Gas"
+            },
+            new EnumData
+            {
+                Id = 4,
+                Value = "Eletrico"
+            },
+            new EnumData
+            {
+                Id = 5,
+                Value = "Hibrido"
+            }
+        };
 
+        public static readonly List<EnumData> ViaturasTipoPropriedade = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "SUCH"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Renting"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Leasing"
+            }
+        };
+
+        public static readonly List<EnumData> TipoCartoesEApolices = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Apólices"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Cartões"
+            }
+        };
 
     }
 

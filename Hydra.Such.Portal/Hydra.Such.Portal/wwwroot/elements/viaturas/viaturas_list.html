@@ -1,0 +1,231 @@
+﻿
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+
+<dom-module id="x-viaturaslist">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+            </style>
+        </custom-style>
+
+        <iron-ajax url="/Viaturas/GetList"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="marginSpace">
+            <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
+        </div>
+
+        <vaadin-grid aria-label="ViaturasGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="matricula">Matrícula</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="matricula" />
+                </template>
+                <template>
+                    {{item.matricula}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="130px">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataMatricula">Data Matrícula</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataMatricula" />
+                </template>
+                <template>
+                    {{item.dataMatricula}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="90px">
+                <template class="header">
+                    <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="estado" />
+                </template>
+                <template>
+                    {{item.estadoDescricao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="tipoViatura">Tipo Viatura</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipoViatura" />
+                </template>
+                <template>
+                    {{item.tipoViatura.descricao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="130px">
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoMarca">Código Marca</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoMarca" />
+                </template>
+                <template>
+                    {{item.codigoMarca}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="marca">Marca</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="marca" />
+                </template>
+                <template>
+                    {{item.marca.descricao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoModelo">Código Modelo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoModelo" />
+                </template>
+                <template>
+                    {{item.codigoModelo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="modelo">Modelo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="modelo" />
+                </template>
+                <template>
+                    {{item.modelo.descricao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="130px">
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoRegiao" />
+                </template>
+                <template>
+                    {{item.codigoRegiao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="180px">
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoAreaFuncional">Código Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoAreaFuncional" />
+                </template>
+                <template>
+                    {{item.codigoAreaFuncional}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="240px">
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoCentroResponsabilidade" />
+                </template>
+                <template>
+                    {{item.codigoCentroResponsabilidade}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizadorCriacao">Utilizador Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorCriacao" />
+                </template>
+                <template>
+                    {{item.utilizadorCriacao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="190px">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataHoraModificacao">Data/Hora Modificação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataHoraModificacao" />
+                </template>
+                <template>
+                    {{item.dataHoraModificacao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="190px">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizadorModificacao">Utilizador Modificação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorModificacao" />
+                </template>
+                <template>
+                    {{item.utilizadorModificacao}}
+                </template>
+            </vaadin-grid-column>
+
+        </vaadin-grid>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-viaturaslist',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    }
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "DetalhesViatura/" + item.matricula;
+                    }
+                },
+                _create: function (item) {
+                    if (item != null) {
+                        window.location.href = "DetalhesViatura/";
+                    }
+                },
+                ready: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
+                    this.$.grid_databound_ajax.generateRequest();
+                },
+            });
+        });
+    </script>
+</dom-module>
