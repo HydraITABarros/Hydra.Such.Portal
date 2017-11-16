@@ -366,8 +366,11 @@ namespace Hydra.Such.Data.Logic.CCP
         public static ElementosJuri __CreateElementoJuri(ElementosJuriView ElementoView)
         {
             SuchDBContext _context = new SuchDBContext();
-            ElementosJuri Elemento = CCPFunctions.CastElementosJuriViewToElementosJuri(ElementoView);
 
+            if (ElementoView == null)
+                return null;
+
+            ElementosJuri Elemento = CCPFunctions.CastElementosJuriViewToElementosJuri(ElementoView);
             try
             {
                 _context.Add(Elemento);
@@ -780,7 +783,7 @@ namespace Hydra.Such.Data.Logic.CCP
             {
                 return null;
             }
-        }
+        }        
         #endregion
     }
 }
