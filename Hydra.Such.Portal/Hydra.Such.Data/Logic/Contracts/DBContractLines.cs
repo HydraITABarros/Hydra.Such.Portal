@@ -117,10 +117,6 @@ namespace Hydra.Such.Data.Logic.Contracts
         }
         #endregion
 
-
-
-
-
         public static List<LinhasContratos> GetAllByActiveContract(string contractNo, int versionNo)
         {
             try
@@ -136,7 +132,6 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
-
 
         public static bool DeleteAllFromContract(string contractNo)
         {

@@ -2076,12 +2076,15 @@
                 _parseToContract: function (param) {
                     if (param != null) {
                         debugger;
-                        if (this.$.mProposalNo.value != null)
+                        if (this.$.mProposalNo.value != null && this.$.mProposalNo.value == "")
                         {
-                            this._openToastError("Esta versão de proposta já tem contrato associado");
-                        } else {
                             this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3 });
                             this.$.parseToContract_ajax.generateRequest();
+                        } else if (this.$.mProposalNo.value != "" && this.$.mProposalNo.value == null){
+                            this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3 });
+                            this.$.parseToContract_ajax.generateRequest();
+                        } else {
+                            this._openToastError("Esta versão de proposta já tem contrato associado");
                         }
                         
                     }
