@@ -174,7 +174,8 @@
     </div>
 
 
-    <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+    <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+    <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 </template>
 
 <script>
@@ -219,13 +220,17 @@
                     this.$.ajax_create.generateRequest();
                 },
                 openToast: function (message) {
-                    this.$.ToastMessage.text = message;
-                    this.$.ToastMessage.open();
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
                 },
                 _createAccessProfile: function () {
 
                     if (this.$.piDescription.value == "" || this.$.piDescription.value == null) {
-                        this.openToast('É obrigatório preencher a Descrição.');
+                        this.openToastError('É obrigatório preencher a Descrição.');
                     } else {
                         var thisLine = {
                             description: this.$.piDescription.value,
@@ -265,9 +270,13 @@
                         this.openToast("Tabela atualizada.");
                         this.$.ajax_create.generateRequest();
                         this.$.gridserviceobjects.clearCache();
+
+                        this.$.piDescription.value = "";
+                        this.$.cboreaCode.value = "";
+                        this.$.pcBlocked.value = false;
                     }
                     else {
-                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        this.openToastError("Occorreu um erro ao atualizar a Tabela.");
                     }
                 }
             });

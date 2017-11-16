@@ -357,12 +357,12 @@
                 <th>
                     @Html.DisplayNameFor(model => model.NãoAdjudicaçãoESuspensão)
                 </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.Nº1)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.NºNavigation)
-            </th>
+            </th>*@
             <th></th>
         </tr>
     </thead>
@@ -711,12 +711,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.NãoAdjudicaçãoESuspensão)
             </td>
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.Nº1.NºProcedimento)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.NºNavigation.NºProcedimento)
-            </td>
+            </td>*@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Nº">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Nº">Details</a> |

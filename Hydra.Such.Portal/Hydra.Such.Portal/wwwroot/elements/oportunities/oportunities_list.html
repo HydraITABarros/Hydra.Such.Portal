@@ -10,6 +10,7 @@
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
 <dom-module id="x-oportunitieslist">
     <template>
@@ -47,11 +48,18 @@
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/DeleteContract"
+                   last-response="{{deletedData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_contract"
+                   on-response="_responseDeleteProcessor"
+                   content-type="application/json"></iron-ajax>
 
         <template is="dom-if" if="{{ _permissions.create }}">
             <template is="dom-if" if="{{ !_disabledCreate }}">
                 <div class="marginSpace">
-                    <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
+                    <paper-button class="btnSave" raised on-tap="_create">Criar Novo</paper-button>
                 </div>
             </template>
         </template>
@@ -69,20 +77,20 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    <vaadin-grid-sorter path="startDate">Data Inicio</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="startDate" />
+                    <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="startData" />
                 </template>
                 <template>
-                    <vaadin-date-picker label="Data Inicial" id="mStartData" name="startData" value="{{data.startData}}" disabled></vaadin-date-picker>
+                    {{item.startData}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    <vaadin-grid-sorter path="endDate">Data Fim</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="endDate" />
+                    <vaadin-grid-sorter path="dueDate">Data Fim</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dueDate" />
                 </template>
                 <template>
-                    <vaadin-date-picker label="Data Inicial" id="mEndData" name="EndData" value="{{data.endData}}" disabled></vaadin-date-picker>
+                    {{item.dueDate}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="200px">
@@ -157,7 +165,18 @@
                     {{item.codeResponsabilityCenter}}
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="10%" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnRemove" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
 
     </template>
@@ -193,7 +212,7 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "DetalhesOportunidade/" + item.contractNo;
+                        window.location.href = "DetalhesOportunidade/" + item.contractNo + "?version=" + item.versionNo;
                     }
                 },
                 _create: function (item) {
@@ -210,6 +229,39 @@
                     this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
                     this.$.grid_databound_ajax.generateRequest();
                 },
+
+                _responseDeleteProcessor: function (data) {
+                    debugger;
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        this._openToast(this.deletedData.eMessage);
+                        if (this.deletedData.eReasonCode == 1) {
+                            setTimeout(
+                                function () {
+                                    window.location.href = "/";
+                                }, 2500);
+                        } else if (this.deletedData.eReasonCode == 2) {
+                            this._openToastError(this.deletedData.eMessage);
+                        }
+                    }
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _deleteOprotunity: function (data) {
+                    debugger;
+                    var index = this.result.indexOf(data.model.item);
+                    this.result.splice(index, 1);
+                    this.$.ajax_delete_contract.body = JSON.stringify(data.model.item);
+                    this.$.ajax_delete_contract.generateRequest();
+                }
             });
         });
     </script>

@@ -30,64 +30,65 @@
 <x-details-config-users></x-details-config-users>
 <dom-module id="x-details-config-users">
     <template>
-        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/css/main.css" />
 
-        @*POPULATE GRID*@
-        <iron-ajax url="/Administracao/GetUserConfigData"
-                   last-response="{{data}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_databound_ajax"
-                   content-type="application/json"></iron-ajax>
+    @*POPULATE GRID*@
+    <iron-ajax url="/Administracao/GetUserConfigData"
+               last-response="{{data}}"
+               method="post"
+               handle-as="json"
+               id="page_databound_ajax"
+               content-type="application/json"></iron-ajax>
 
-        @if (ViewBag.UserId != "0")
-        {
-            <div class="marginSpace">
+    @if (ViewBag.UserId != "0")
+    {
+        <div class="row">
+            <div class="col-lg-12">
                 <paper-button class="btnSave" raised on-tap="_redirectToNewUserConfigForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </div>
-        }
-
-        <h2 class="separator">Geral</h2>
-        <div class="row">
-            <div class="col-lg-3">
-                <vaadin-text-field id="idUser" name="idUser" label="Id Utilizador" value="{{data.idUser}}"></vaadin-text-field>
-            </div>
-            <div class="col-lg-3">
-                <vaadin-text-field id="UserName" name="UserName" label="Nome Utilizador" value="{{data.name}}"></vaadin-text-field>
-            </div>
-            <div class="col-lg-3 alignPoga">
-                <vaadin-checkbox checked="{{data.administrator}}"> Administrador</vaadin-checkbox>
-
-            </div>
-            <div class="col-lg-3 alignPoga">
-                <vaadin-checkbox checked="{{data.active}}"> Ativo</vaadin-checkbox>
-            </div>
         </div>
+    }
 
-        @*CREATE NEW PROFILEMODEL*@
-        <iron-ajax url="/Administracao/CreateUserConfig" id="ajax_create" last-response="{{data}}" method="post" handle-as="json" on-response="_responseProcessor" content-type="application/json; charset=utf-8"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{AreasData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFeatures" last-response="{{FeaturesData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetUserProfileModels" last-response="{{UserProfileModelsData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetDimensions" last-response="{{DimensionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValue_ajax" last-response="{{DimensionValueData}}" auto method="post" params='{"dimensionId": ""}' handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetDimensionValuesFromLines" id="dimensionValueInGrid_ajax" last-response="{{DimensionValueGridData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+    <h2 class="separator">Geral</h2>
+    <div class="row">
+        <div class="col-lg-3">
+            <vaadin-text-field id="idUser" name="idUser" label="Id Utilizador" value="{{data.idUser}}"></vaadin-text-field>
+        </div>
+        <div class="col-lg-3">
+            <vaadin-text-field id="UserName" name="UserName" label="Nome Utilizador" value="{{data.name}}"></vaadin-text-field>
+        </div>
+        <div class="col-lg-3 alignPoga">
+            <vaadin-checkbox checked="{{data.administrator}}"> Administrador</vaadin-checkbox>
+        </div>
+        <div class="col-lg-3 alignPoga">
+            <vaadin-checkbox checked="{{data.active}}"> Ativo</vaadin-checkbox>
+        </div>
+    </div>
 
-        <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGridOPT1_ajax" auto last-response="{{DimensionValuesForRegion}}" method="post" params='{"dimensionId": 1}' handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGridOPT2_ajax" auto last-response="{{DimensionValuesForArea}}" method="post" params='{"dimensionId": 2}' handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGridOPT3_ajax" auto last-response="{{DimensionValuesForResponsability}}" method="post" params='{"dimensionId": 3}' handle-as="json" content-type="application/json"></iron-ajax>
+    @*CREATE NEW PROFILEMODEL*@
+    <iron-ajax url="/Administracao/CreateUserConfig" id="ajax_create" last-response="{{data}}" method="post" handle-as="json" on-response="_responseProcessor" content-type="application/json; charset=utf-8"></iron-ajax>
+    <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{AreasData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/PopulateDropdowns/GetFeatures" last-response="{{FeaturesData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/PopulateDropdowns/GetUserProfileModels" last-response="{{UserProfileModelsData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/PopulateDropdowns/GetDimensions" last-response="{{DimensionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValue_ajax" last-response="{{DimensionValueData}}" auto method="post" params='{"dimensionId": ""}' handle-as="json" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/PopulateDropdowns/GetDimensionValuesFromLines" id="dimensionValueInGrid_ajax" last-response="{{DimensionValueGridData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Administracao/DeleteUserDimension" last-response="{{UserDimensionDeleted}}" method="post" handle-as="json" id="page_deleteuserdimension_ajax" on-response="_deleteUserDimensionResponse" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Administracao/CreateUserDimension" last-response="{{UserDimensionCreated}}" method="post" handle-as="json" id="page_createuserdimension_ajax" on-response="_createUserDimensionResponse" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Administracao/DeleteUserAccess" last-response="{{UserAccessDeleted}}" method="post" handle-as="json" id="page_deleteuseraccess_ajax" on-response="_deleteUserAccessResponse" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Administracao/CreateUserAccess" last-response="{{UserAccessCreated}}" method="post" handle-as="json" id="page_createuseraccess_ajax" on-response="_createUserAccessResponse" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Administracao/DeleteUserProfile" last-response="{{UserProfileDeleted}}" method="post" handle-as="json" id="page_deleteuserprofile_ajax" on-response="_deleteUserProfileResponse" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Administracao/CreateUserProfile" last-response="{{UserProfileCreated}}" method="post" handle-as="json" id="page_createuserprofile_ajax" on-response="_createUserProfileResponse" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGridOPT1_ajax" auto last-response="{{DimensionValuesForRegion}}" method="post" params='{"dimensionId": 1}' handle-as="json" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGridOPT2_ajax" auto last-response="{{DimensionValuesForArea}}" method="post" params='{"dimensionId": 2}' handle-as="json" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGridOPT3_ajax" auto last-response="{{DimensionValuesForResponsability}}" method="post" params='{"dimensionId": 3}' handle-as="json" content-type="application/json"></iron-ajax>
 
-        @if (ViewBag.UserId != "0")
-        {
+    <iron-ajax url="/Administracao/DeleteUserDimension" last-response="{{UserDimensionDeleted}}" method="post" handle-as="json" id="page_deleteuserdimension_ajax" on-response="_deleteUserDimensionResponse" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/Administracao/CreateUserDimension" last-response="{{UserDimensionCreated}}" method="post" handle-as="json" id="page_createuserdimension_ajax" on-response="_createUserDimensionResponse" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/Administracao/DeleteUserAccess" last-response="{{UserAccessDeleted}}" method="post" handle-as="json" id="page_deleteuseraccess_ajax" on-response="_deleteUserAccessResponse" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/Administracao/CreateUserAccess" last-response="{{UserAccessCreated}}" method="post" handle-as="json" id="page_createuseraccess_ajax" on-response="_createUserAccessResponse" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/Administracao/DeleteUserProfile" last-response="{{UserProfileDeleted}}" method="post" handle-as="json" id="page_deleteuserprofile_ajax" on-response="_deleteUserProfileResponse" content-type="application/json"></iron-ajax>
+    <iron-ajax url="/Administracao/CreateUserProfile" last-response="{{UserProfileCreated}}" method="post" handle-as="json" id="page_createuserprofile_ajax" on-response="_createUserProfileResponse" content-type="application/json"></iron-ajax>
+
+    @if (ViewBag.UserId != "0")
+    {
         <h2 class="separator">Perfis Utilizadores</h2>
         <div class="row">
             <div class="col-lg-3">
@@ -105,8 +106,6 @@
                 <paper-button class="btnEdit" raised on-tap="_createUserProfile"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Associar</paper-button>
             </div>
         </div>
-
-        
         <vaadin-grid id="gridUserProfiles" aria-label="gridUserProfiles" items="{{ data.userProfiles }}" class="grid">
             <vaadin-grid-column width="20%">
                 <template class="header">
@@ -132,40 +131,51 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-        <h2 class="separator">Acessos Utilizador</h2>
-        <table class="table inlineForm">
-            <tr>
-                <td width="20$">
-                    <vaadin-combo-box items="[[AreasData]]" id="_Areas" item-value-path="id" item-label-path="value" value="{{ddArea}}" label="Àrea">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </td>
-                <td width="20%">
-                    <vaadin-combo-box items="[[FeaturesData]]" id="_Features" item-value-path="id" item-label-path="value" value="{{ddFeature}}" label="Funcionalidade">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </td>
-                <td width="12%"><vaadin-checkbox id="_chkCreate" checked="{{chkCreate}}"> Inserção</vaadin-checkbox></td>
-                <td width="12%"><vaadin-checkbox id="_chkRead" checked="{{chkRead}}"> Leitura</vaadin-checkbox></td>
-                <td width="12%"><vaadin-checkbox id="_chkUpdate" checked="{{chkUpdate}}"> Modificação</vaadin-checkbox></td>
-                <td width="12%"><vaadin-checkbox id="_chkDelete" checked="{{chkDelete}}"> Eliminação</vaadin-checkbox></td>
-                <td width="12%">
-                    <paper-button class="btnSave" raised on-tap="_createUserAccess"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                </td>
-            </tr>
-        </table>
+        <div class="row">
+            <div class="col-lg-2">
+                <h2 class="separator">Acessos Utilizador</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2">
+                <vaadin-combo-box items="[[AreasData]]" id="_Areas" item-value-path="id" item-label-path="value" value="{{ddArea}}" label="Àrea">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-combo-box items="[[FeaturesData]]" id="_Features" item-value-path="id" item-label-path="value" value="{{ddFeature}}" label="Funcionalidade">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-lg-1 alignPoga">
+                <vaadin-checkbox id="_chkCreate" checked="{{chkCreate}}"> Inserção</vaadin-checkbox>
+            </div>
+            <div class="col-lg-1 alignPoga">
+                <vaadin-checkbox id="_chkRead" checked="{{chkRead}}"> Leitura</vaadin-checkbox>
+            </div>
+            <div class="col-lg-1 alignPoga">
+                <vaadin-checkbox id="_chkUpdate" checked="{{chkUpdate}}"> Modificação</vaadin-checkbox>
+            </div>
+            <div class="col-lg-1 alignPoga">
+                <vaadin-checkbox id="_chkDelete" checked="{{chkDelete}}"> Eliminação</vaadin-checkbox>
+            </div>
+            <div class="col-lg-1 alignPoga">
+                <paper-button class="btnSave" raised on-tap="_createUserAccess"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </div>
+        </div>
+        <br />
         <vaadin-grid id="gridUserAccesses" aria-label="gridUserAccesses" items="{{ data.userAccesses }}" class="grid">
             <vaadin-grid-column width="20%">
                 <template class="header">
@@ -258,36 +268,39 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-        <h2 class="separator">Acessos Dimensões</h2>
-        <table class="table inlineForm">
-            <tr>
-                <td width="20%">
-                    <vaadin-combo-box items="[[DimensionData]]" id="_Dimension" name="_Dimension" item-value-path="id" item-label-path="value" label="Dimensão" value="{{ddDimension}}" on-value-changed="_onDimensionChanged">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </td>
-                <td width="20%">
-                    <vaadin-combo-box items="[[DimensionValueData]]" id="_DimensionValue" item-value-path="id" item-label-path="value" label="Valor Dimensão" value="{{ddDimensionValue}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </td>
-                <td width="60%">
-                    <paper-button class="btnSave" raised on-tap="_createUserDimensionAccess"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                </td>
-            </tr>
-        </table>
+        <div class="row">
+            <div class="col-lg-2">
+                <h2 class="separator">Acessos Dimensões</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2">
+                <vaadin-combo-box items="[[DimensionData]]" id="_Dimension" name="_Dimension" item-value-path="id" item-label-path="value" label="Dimensão" value="{{ddDimension}}" on-value-changed="_onDimensionChanged">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-combo-box items="[[DimensionValueData]]" id="_DimensionValue" item-value-path="id" item-label-path="value" label="Valor Dimensão" value="{{ddDimensionValue}}">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-lg-1 alignPoga">
+                <paper-button class="btnSave" raised on-tap="_createUserDimensionAccess"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </div>
+        </div>
+        <br />
         <vaadin-grid id="gridAllowedUserDimensions" aria-label="gridAllowedUserDimensions" items="{{ data.allowedUserDimensions }}" class="grid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="20%">
                 <template class="header">
@@ -341,20 +354,21 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-        }
-        <div class="marginSpace">
-            @if (ViewBag.UserId == "0")
-            {
-                <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
-            }
-            else
-            {
-                <paper-button class="btnEdit" raised on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
-                <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-            }
-        </div>
+      }
+    <div class="marginSpace">
+    @if (ViewBag.UserId == "0")
+    {
+        <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+    }
+    else
+    {
+        <paper-button class="btnEdit" raised on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
+        <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+    }
+    </div>
 
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+    <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+    <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
     </template>
     <script>
@@ -424,9 +438,13 @@
                 ready: function () {
 
                 },
-                openToast: function (message) {
-                    this.$.ToastMessage.text = message;
-                    this.$.ToastMessage.open();
+                _showMessage: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _showErrorMessage: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
                 },
                 _formatDimension: function (param) {
                     if (param != undefined) {
@@ -491,9 +509,8 @@
                         this.$.ajax_create.url = "/Administracao/CreateUserConfig";
                         this.$.ajax_create.body = JSON.stringify(this.data);
                         this.$.ajax_create.generateRequest();
-                        //this.openToast("Utilizador criado com sucesso!");
                     } else {
-                        this.openToast(validate);
+                        this._showErrorMessage(validate);
                     }
                 },
                 _update: function () {
@@ -502,9 +519,8 @@
                         this.$.ajax_create.url = "/Administracao/UpdateUserConfig";
                         this.$.ajax_create.body = JSON.stringify(this.data);
                         this.$.ajax_create.generateRequest();
-                        //this.openToast("Perfil modelo atualizado com sucesso!");
                     } else {
-                        this.openToast(validate);
+                        this._showErrorMessage(validate);
                     }
                 },
                 _delete: function () {
@@ -521,23 +537,23 @@
                             if (this.data.id == 0) {
                                 window.location.href = "/Administracao/PerfisModelo";
                             } else {
-                                this.openToast("Ocorreu um erro ao remover o Perfil Modelo.");
+                                this._showErrorMessage("Ocorreu um erro ao remover o Perfil Modelo.");
                             }
                         }
                         else {
                             this.$.page_databound_ajax.generateRequest();
-                            this.openToast("O perfil foi atualizado com sucesso!");
+                            this._showMessage("O perfil foi atualizado com sucesso!");
                         }
                     } else {
                         if (e.detail.url.indexOf("Create") !== -1) {
-                            this.openToast("Ocorreu um erro ao criar o perfil modelo.");
+                            this._showErrorMessage("Ocorreu um erro ao criar o perfil modelo.");
                         }
                         else if (e.detail.url.indexOf("Delete") !== -1) {
-                            this.openToast("Ocorreu um erro ao remover o Perfil Modelo!");
+                            this._showErrorMessage("Ocorreu um erro ao remover o Perfil Modelo!");
                         }
                         else {
                             this.$.grid_databound.generateRequest();
-                            this.openToast("Ocorreu um erro ao atualizar o perfil modelo.");
+                            this._showErrorMessage("Ocorreu um erro ao atualizar o perfil modelo.");
                         }
                     }
                 },
@@ -545,7 +561,7 @@
                 //User Profiles Functions
                 _createUserProfile: function () {
                     if (this.ddUserProfile == "") {
-                        this.openToast("É obrigatório escolher o perfil.");
+                        this._showErrorMessage("É obrigatório escolher o perfil.");
                     } else {
                         this.$.page_createuserprofile_ajax.body = JSON.stringify({ userId: this.data.idUser, id: this.ddUserProfile });
                         this.$.page_createuserprofile_ajax.generateRequest();
@@ -563,9 +579,9 @@
                 //User Accesses Functions
                 _createUserAccess: function () {
                     if (this.ddArea == "") {
-                        this.openToast("É obrigatório preencher a àrea.");
+                        this._showErrorMessage("É obrigatório preencher a àrea.");
                     } else if (this.ddFeature == null) {
-                        this.openToast("É obrigatório preencher a Funcionalidade.");
+                        this._showErrorMessage("É obrigatório preencher a Funcionalidade.");
                     } else {
                         this.$.page_createuseraccess_ajax.body = JSON.stringify({
                             idUser: this.data.idUser, area: this.ddArea, feature: this.ddFeature,
@@ -603,9 +619,9 @@
                 },
                 _createUserDimensionAccess: function () {
                     if (this.ddDimension == "") {
-                        this.openToast("É obrigatório preencher a dimensão.");
+                        this._showErrorMessage("É obrigatório preencher a dimensão.");
                     } else if (this.ddFeature == null) {
-                        this.openToast("É obrigatório preencher o valor dimensão.");
+                        this._showErrorMessage("É obrigatório preencher o valor dimensão.");
                     } else {
                         this.$.page_createuserdimension_ajax.body = JSON.stringify({ userId: this.data.idUser, dimension: this.ddDimension, dimensionValue: this.ddDimensionValue });
                         this.$.page_createuserdimension_ajax.generateRequest();
@@ -614,58 +630,58 @@
                 },
                 _deleteUserDimensionResponse: function (e) {
                     if (this.UserDimensionDeleted) {
-                        this.openToast('Eliminado com sucesso');
+                        this._showMessage('Eliminado com sucesso');
                     }
                     else {
-                        this.openToast('Ocorreu um erro ao eliminar acesso a dimensão.');
+                        this._showErrorMessage('Ocorreu um erro ao eliminar acesso a dimensão.');
                     }
                 },
                 _createUserDimensionResponse: function (e) {
                     if (this.UserDimensionCreated) {
-                        this.openToast('Adicionado com sucesso');
+                        this._showMessage('Adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
                         this.$._Dimension.value = ""
                         this.$._DimensionValue.value = "";
                     }
                     else {
-                        this.openToast('Ocorreu um erro ao adicionar acesso a dimensão.');
+                        this._showErrorMessage('Ocorreu um erro ao adicionar acesso a dimensão.');
                     }
                 },
                 _deleteUserAccessResponse: function (e) {
                     if (this.UserAccessDeleted) {
-                        this.openToast('Eliminado com sucesso');
+                        this._showMessage('Eliminado com sucesso');
                     }
                     else {
-                        this.openToast('Ocorreu um erro ao eliminar.');
+                        this._showErrorMessage('Ocorreu um erro ao eliminar.');
                     }
                 },
                 _createUserAccessResponse: function (e) {
                     if (this.UserAccessCreated) {
-                        this.openToast('Adicionado com sucesso');
+                        this._showMessage('Adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
                         this.$._Areas.value = ""
                         this.$._Features.value = "";
                     }
                     else {
-                        this.openToast('Ocorreu um erro ao adicionar.');
+                        this._showErrorMessage('Ocorreu um erro ao adicionar.');
                     }
                 },
                 _deleteUserProfileResponse: function (e) {
                     if (this.UserProfileDeleted) {
-                        this.openToast('Eliminado com sucesso');
+                        this._showMessage('Eliminado com sucesso');
                     }
                     else {
-                        this.openToast('Ocorreu um erro ao eliminar.');
+                        this._showErrorMessage('Ocorreu um erro ao eliminar.');
                     }
                 },
                 _createUserProfileResponse: function (e) {
                     if (this.UserProfileCreated) {
-                        this.openToast('Adicionado com sucesso');
+                        this._showMessage('Adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
                         this.$._Profiles.value = ""
                     }
                     else {
-                        this.openToast('Ocorreu um erro ao adicionar.');
+                        this._showErrorMessage('Ocorreu um erro ao adicionar.');
                     }
                 },
                 _redirectToNewUserConfigForm: function (item) {

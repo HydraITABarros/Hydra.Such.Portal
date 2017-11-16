@@ -170,7 +170,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Contratos.Where(x => x.Área == AreaId-1 && x.TipoContrato == ContractType).ToList();
+                    return ctx.Contratos.Where(x => x.Área == AreaId && x.TipoContrato == ContractType).ToList();
                 }
             }
             catch (Exception ex)
@@ -240,7 +240,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 DataReceçãoRequisição = x.ReceiptDateRequisition != null ? DateTime.Parse(x.ReceiptDateRequisition) : (DateTime?)null,
                 NºCompromisso = x.PromiseNo,
                 TaxaAprovisionamento = x.ProvisioningFee,
-                Mc=x.Mc,
+                Mc = x.Mc,
                 TaxaDeslocação = x.DisplacementFee,
                 ContratoAvençaFixa = x.FixedVowsAgreement,
                 ObjetoServiço = x.ServiceObject,
@@ -253,7 +253,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 Referência1ºContrato = x.FirstContractReference,
                 DuraçãoMáxContrato = x.ContractMaxDuration != null ? DateTime.Parse(x.ContractMaxDuration) : (DateTime?)null,
                 RescisãoPrazoAviso = x.TerminationTermNotice,
-                CondiçõesParaRenovação =x.RenovationConditions,
+                CondiçõesParaRenovação = x.RenovationConditions,
                 CondiçõesRenovaçãoOutra = x.RenovationConditionsAnother,
                 CondiçõesPagamento = x.PaymentTerms,
                 CondiçõesPagamentoOutra = x.PaymentTermsAnother,
@@ -262,7 +262,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 DataDaAssinatura = x.SignatureDate != null ? DateTime.Parse(x.SignatureDate) : (DateTime?)null,
                 DataEnvioCliente = x.CustomerShipmentDate != null ? DateTime.Parse(x.CustomerShipmentDate) : (DateTime?)null,
                 UnidadePrestação = x.ProvisionUnit,
-                ReferênciaContrato  = x.ContractReference,
+                ReferênciaContrato = x.ContractReference,
                 ValorTotalProposta = x.TotalProposalValue,
                 LocalArquivoFísico = x.PhysicalFileLocation,
                 NºOportunidade = x.OportunityNo,
@@ -275,7 +275,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 DataAlteraçãoProposta = x.ProposalChangeDate != null ? DateTime.Parse(x.ProposalChangeDate) : (DateTime?)null,
                 DataHoraLimiteEsclarecimentos = x.LimitClarificationDate != null ? DateTime.Parse(x.LimitClarificationDate) : (DateTime?)null,
                 DataHoraErrosEOmissões = x.ErrorsOmissionsDate != null ? DateTime.Parse(x.ErrorsOmissionsDate) : (DateTime?)null,
-                DataHoraRelatórioFinal = x.FinalReportDate != null ? DateTime.Parse(x.FinalReportDate) : (DateTime?)null, 
+                DataHoraRelatórioFinal = x.FinalReportDate != null ? DateTime.Parse(x.FinalReportDate) : (DateTime?)null,
                 DataHoraHabilitaçãoDocumental = x.DocumentationHabilitationDate != null ? DateTime.Parse(x.DocumentationHabilitationDate) : (DateTime?)null,
                 NºComprimissoObrigatório = x.CompulsoryCompulsoryNo,
                 DataHoraCriação = x.CreateDate != null ? DateTime.Parse(x.CreateDate) : (DateTime?)null,
@@ -284,9 +284,6 @@ namespace Hydra.Such.Data.Logic.Contracts
                 UtilizadorModificação = x.UpdateUser,
                 Arquivado = x.Filed
             };
-
-
-
             return result;
 
         }
@@ -370,7 +367,15 @@ namespace Hydra.Such.Data.Logic.Contracts
                 CreateUser = x.UtilizadorCriação,
                 UpdateUser = x.UtilizadorModificação,
                 Filed = x.Arquivado,
-                RelatedContract = x.NºContrato
+                RelatedContract = x.NºContrato,
+                //RequestOrigin = x.OrigemDoPedido,
+                //RequestOriginDescription = x.DescOrigemDoPedido,
+                //EndData = x.DataExpiração.HasValue ? x.DataExpiração.Value.ToString("yyyy-MM-dd") : "",
+                //SentData = x.DataEnvioCliente.HasValue ? x.DataEnvioCliente.Value.ToString("yyyy-MM-dd") : "",
+                //UpdateData = x.DataAlteraçãoProposta.HasValue ? x.DataAlteraçãoProposta.Value.ToString("yyyy-MM-dd") : "",
+                //TotalValue = x.ValorTotalProposta,
+                //ClarificationLimite = x.DataHoraLimiteEsclarecimentos.HasValue ? x.DataHoraLimiteEsclarecimentos.Value.ToString("yyyy-MM-dd HH:mm:ss") : "",
+                //NextInvoicePeriod = x.PróximoPeríodoFact
             };
 
             result.ClientName = DBNAV2017Clients.GetClientNameByNo(x.NºCliente, NAVDatabaseName, NAVCompanyName);

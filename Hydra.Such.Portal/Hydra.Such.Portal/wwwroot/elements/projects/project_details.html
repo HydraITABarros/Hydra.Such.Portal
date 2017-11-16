@@ -54,7 +54,7 @@
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetContractsByArea" last-response="{{LProjectContracts}}" auto method="post" handle-as="json" content-type="application/json" id="contracts_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectContracts" last-response="{{LProjectContracts}}" auto method="post" handle-as="json" content-type="application/json" id="contracts_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetGroupContProject" last-response="{{LProjectGroupContab}}" auto method="post" handle-as="json" content-type="application/json" id="groupcontab_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddresses" last-response="{{LProjectShippingAddresses}}" auto method="post" handle-as="json" content-type="application/json" id="shippinhAddress_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{LProjectEmployees}}" auto method="post" handle-as="json" content-type="application/json" id="employees_ajax"></iron-ajax>
@@ -128,10 +128,10 @@
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectClients]]" id="ProjectClient" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
-                                <table width="200px">
+                                <table width="350px">
                                     <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"><b>[[item.value]]</b></td>
                                     </tr>
                                 </table>
                             </template>
@@ -194,13 +194,14 @@
                             <vaadin-checkbox checked="{{data.billable}}" disabled="{{ !_permissions.update }}">Faturável</vaadin-checkbox>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectContracts]]" id="ContractNo" item-value-path="id" item-label-path="value" value="{{data.contractNo}}" label="Nº Contrato" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <vaadin-combo-box items="[[LProjectContracts]]" id="ContractNo" item-value-path="id" item-label-path="id" value="{{data.contractNo}}" label="Nº Contrato" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </div>
@@ -279,24 +280,14 @@
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectCountabGroupTypes]]" item-value-path="id" item-label-path="value" value="{{data.groupContabProjectType}}" label="Tipo Grupo Contab. Projeto" disabled="{{ !_permissions.update }}">
                             <template>
-                                <table width="200px">
-                                    <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
+                                <b>[[item.value]]</b>
                             </template>
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectCountabGroupTypesOM]]" item-value-path="id" item-label-path="value" value="{{data.groupContabOMProjectType}}" label="Tipo Grupo Contab. OM Projeto" disabled="{{ !_permissions.update }}">
                             <template>
-                                <table width="200px">
-                                    <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
+                                <b>[[item.value]]</b>
                             </template>
                         </vaadin-combo-box>
 
@@ -381,11 +372,12 @@
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectContracts]]" item-value-path="id" item-label-path="value" value="{{data.budgetContractNo}}" label="Nº Contrato Orçamento" disabled="{{ !_permissions.update }}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                    <table width="350px">
+                                        <tr>
+                                            <td width="20%">[[item.id]]</td>
+                                            <td width="80%"><b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                             </template>
                         </vaadin-combo-box>
                     </div>
@@ -411,8 +403,8 @@
             </template>
         </div>
 
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
-        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
     <script>
@@ -448,8 +440,8 @@
                     this.$.page_databound_ajax.generateRequest();
 
 
-                    this.$.contracts_ajax.body = JSON.stringify({ "areaId": this._areaid });
-                    this.$.contracts_ajax.generateRequest();
+                    //this.$.contracts_ajax.body = JSON.stringify({ "areaId": this._areaid });
+                    //this.$.contracts_ajax.generateRequest();
 
                     if (this._projectid == "") {
                         this._isCreate = true;
@@ -457,12 +449,12 @@
                     }
                 },
                 _openToast: function (message) {
-                    this.$.ToastMessage.text = message;
-                    this.$.ToastMessage.open();
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
                 },
                 _openToastError: function (message) {
-                    this.$.ToastError.text = message;
-                    this.$.ToastError.open();
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
                 },       
                 _validateData: function() {
                     if (this.$.Description.validate() &

@@ -72,7 +72,6 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
-
         [HttpPost]
         public JsonResult GetProcedimentosByProcedimentoType([FromBody] int id)
         {
@@ -80,7 +79,6 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
-
         [HttpPost]
         public JsonResult GetProcedimentoDetails([FromBody] ProcedimentoCCPView data)
         {
@@ -106,19 +104,6 @@ namespace Hydra.Such.Portal.Controllers
             
             return Json(false);
         }
-        
-        public JsonResult GetUsersWhoAreElementosJuri()
-        {
-
-            List<DDMessageString> result = DBProcedimentosCCP.GetAllUsersElementosJuri().Select(cu => new DDMessageString()
-            {
-                id = cu.IdUtilizador,
-                value = cu.Nome
-            }).ToList();
-
-            return Json(result);
-        }
-        
         public JsonResult CreateProcedimento([FromBody] ProcedimentoCCPView data)
         {
             try
@@ -148,7 +133,6 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(data);
         }
-
         [HttpPost]
         public JsonResult UpdateProcedimento([FromBody] ProcedimentoCCPView data)
         {
@@ -173,7 +157,6 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(data);
         }
-
         [HttpPost]
         public JsonResult DeleteProcedimento([FromBody] ProcedimentoCCPView data)
         {
@@ -199,6 +182,35 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(result);
             }
             return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult GetUsersWhoAreElementosJuri()
+        {
+            List<ConfigUtilizadores> Users = DBProcedimentosCCP.GetAllUsersElementosJuri().GroupBy(u => new { u.IdUtilizador, u.Nome }).Select(u => u.First()).ToList();
+            List<DDMessageString> result = Users.Select(cu => new DDMessageString()
+            {
+                id = cu.IdUtilizador,
+                value = cu.Nome
+            }).ToList();
+
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult CreateElementoJuri([FromBody] ElementosJuriView data)
+        {
+            bool result = false;
+
+            if(data.EnviarEmail.HasValue && data.EnviarEmail.Value)
+                data.Email = data.Utilizador;
+
+            data.UtilizadorCriacao = User.Identity.Name;
+            data.DataHoraCriacao = DateTime.Now;
+            ElementosJuri NewElemento = DBProcedimentosCCP.__CreateElementoJuri(data);
+
+            result = NewElemento != null ? true : false;
+
+            return Json(result);
         }
     }
 }

@@ -31,6 +31,20 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetServiceGroup([FromBody]string invoiceClientNo, bool allProjs)
+        {
+            List<ClientServicesViewModel> result = DBClientServices.GetAllServiceGroup(invoiceClientNo, allProjs);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetClientService([FromBody]string invoiceClientNo, bool allProjs)
+        {
+            List<ClientServicesViewModel> result = DBClientServices.GetAllClientService(invoiceClientNo, allProjs);
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetNumerations()
         {
             List<DDMessage> result = DBNumerationConfigurations.GetAll().Select(x => new DDMessage()
@@ -133,6 +147,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetRequestOrigin()
+        {
+            List<EnumData> result = EnumerablesFixed.RequestOrigin;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetFolhaDeHoraPercursoOrigemDestino()
         {
             List<DDMessageString> result = DBOrigemDestinoFh.GetAll().Select(x => new DDMessageString()
@@ -169,9 +190,27 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetContacts()
+        {
+            List<DDMessageString> result = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.No_,
+                value = x.Name
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetContractStatus()
         {
             List<EnumData> result = EnumerablesFixed.ContractStatus;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProposalsStatus()
+        {
+            List<EnumData> result = EnumerablesFixed.ProposalsStatus;
             return Json(result);
         }
 
@@ -530,7 +569,7 @@ namespace Hydra.Such.Portal.Controllers
             List<DDMessageString> result = DBProjects.GetAll().Select(x => new DDMessageString()
             {
                 id = x.NºProjeto,
-                value = x.NºProjeto
+                value = x.Descrição
             }).ToList();
 
             return Json(result);
@@ -604,8 +643,38 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<DDMessageString> result = DBContracts.GetAll().Where(x => x.Área == areaId).Select(x => new DDMessageString()
             {
-                id = x.NºContrato,
-                value = x.NºContrato
+                id = x.NºDeContrato,
+                value = x.NºDeContrato
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProjectContractsByArea(int areaId)
+        {
+            List<Contratos> lcontracts = DBContracts.GetAll().Where(x => x.TipoContrato == 3 && x.Área == areaId).ToList();
+            lcontracts.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+
+            List<DDMessageString> result = lcontracts.Select(x => new DDMessageString()
+            {
+                id = x.NºDeContrato,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProjectContracts()
+        {
+            List<Contratos> lcontracts = DBContracts.GetAll().Where(x => x.TipoContrato == 3).ToList();
+            lcontracts.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+
+            List<DDMessageString> result = lcontracts.Select(x => new DDMessageString()
+            {
+                id = x.NºDeContrato,
+                value = x.Descrição
             }).ToList();
 
             return Json(result);

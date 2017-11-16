@@ -226,8 +226,11 @@
                 _gridListResponse: function()
                 {
                     if (this.result == null || this.result == undefined || this.result.length == 0) {
-                        this.openToastSuccess("Não existem linhas passiveis a faturar pendentes.");
-                    }               
+                        this.openToastSuccess("Não existem linhas para faturar.");
+                    }
+                    else {
+                        this.openToastSuccess("Tabela de faturas atualizada com sucesso.");
+                    }
                 },
 
                 _generateInvoice: function () {
@@ -253,13 +256,10 @@
                 },
 
                 _count: function () {
-                    debugger;;
                     if (this.result != null || this.result != undefined || this.result.length != 0) {
                         this.$.ajax_count.body = JSON.stringify(this.result);
                         this.$.ajax_count.generateRequest();
-                        this.$.avencaFixaTable.clearCache();
-                        this.openToastSuccess("Tabela de faturas atualizada com sucesso.");
-
+                        //this.$.avencaFixaTable.clearCache();
                     } 
                     else {
                         this.openToastError("Não existem linhas disponiíveis para contabilizar.");
@@ -268,6 +268,7 @@
 
                 _invoiceCountResponse: function (e) {
                     if (e.returnValue == true) {
+                        this.$.avencaFixaTable.clearCache();
                         this.openToastSuccess("Faturas contabilizadas com sucesso.");
                     }
                     else {

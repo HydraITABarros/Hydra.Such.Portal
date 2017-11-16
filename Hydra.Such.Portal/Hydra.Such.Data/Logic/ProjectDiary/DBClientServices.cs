@@ -135,5 +135,74 @@ namespace Hydra.Such.Data.Logic.ProjectDiary
                 return null;
             }
         }
+        
+        public static List<ClientServicesViewModel> GetAllServiceGroup(string NCliente, bool AllProjs)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    if (AllProjs)
+                    {
+                        return ctx.ServiçosCliente.Where(x => x.GrupoServiços == true).Select(x => new ClientServicesViewModel()
+                        {
+                            ServiceCode = x.CódServiço,
+                            ServiceDescription = x.CódServiçoNavigation.Descrição,
+                            ServiceGroup = x.GrupoServiços,
+                            ClientNumber = x.NºCliente
+                        }).ToList();
+                    }
+                    else
+                    {
+                        return ctx.ServiçosCliente.Where(x => x.NºCliente == NCliente && x.GrupoServiços == true).Select(x => new ClientServicesViewModel()
+                        {
+                            ServiceCode = x.CódServiço,
+                            ServiceDescription = x.CódServiçoNavigation.Descrição,
+                            ServiceGroup = x.GrupoServiços,
+                            ClientNumber = x.NºCliente
+                        }).ToList();
+                    }                                
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+        public static List<ClientServicesViewModel> GetAllClientService(string NCliente, bool AllProjs)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    if (AllProjs)
+                    {
+                        return ctx.ServiçosCliente.Where(x => x.GrupoServiços == false).Select(x => new ClientServicesViewModel()
+                        {
+                            ServiceCode = x.CódServiço,
+                            ServiceDescription = x.CódServiçoNavigation.Descrição,
+                            ServiceGroup = x.GrupoServiços,
+                            ClientNumber = x.NºCliente
+                        }).ToList();
+                    }
+                    else
+                    {
+                        return ctx.ServiçosCliente.Where(x => x.NºCliente == NCliente && x.GrupoServiços == false).Select(x => new ClientServicesViewModel()
+                        {
+                            ServiceCode = x.CódServiço,
+                            ServiceDescription = x.CódServiçoNavigation.Descrição,
+                            ServiceGroup = x.GrupoServiços,
+                            ClientNumber = x.NºCliente
+                        }).ToList();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
     }
 }

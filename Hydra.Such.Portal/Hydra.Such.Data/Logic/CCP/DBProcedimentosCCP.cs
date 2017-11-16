@@ -9,6 +9,7 @@ namespace Hydra.Such.Data.Logic.CCP
 {
     public static class DBProcedimentosCCP
     {
+        private const int _ElementoJuriFeature = 23;
 
         #region CRUD Procedimentos
         public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoTypeToList(int type)
@@ -48,7 +49,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 if(Procedimento != null)
                 {
                     /*
-                        Every time a Procedimento is retrieved from the database every other entity related to it must be also retrieved:
+                        Every time a Procedimento CCP is retrieved from the database every other entity related to it must be also retrieved:
                               Tempos PA CCP
                               Registo de Actas
                               Elementos Juri
@@ -56,34 +57,17 @@ namespace Hydra.Such.Data.Logic.CCP
                               Linhas Para Encomenda Procedimentos CCP
                               Notas Procedimento CCP
                               Workflow Procedimentos CCP
-                    */
-
-                    // zpgm.13-11-2017 - XXX TEMPOS PA CCP is missing 
-                    //Procedimento.Nº1 = _context.TemposPaCcp.Where(t => t.NºProcedimento == Procedimento.Nº).FirstOrDefault();
-
-                    // zpgm. REGISTO DE ACTAS is missing until the data model is updated
-
-                    Procedimento.ElementosJuri = GetElementosJuriProcedimento(Procedimento.Nº);
-
-                    var emailsProcedimento = _context.EmailsProcedimentosCcp.Where(e => e.NºProcedimento == Procedimento.Nº);
-                    foreach(EmailsProcedimentosCcp em in emailsProcedimento)
-                    {
-                        Procedimento.EmailsProcedimentosCcp.Add(em);
-                    }
-
-                    var linhasEncomendaProc = _context.LinhasPEncomendaProcedimentosCcp.Where(l => l.NºProcedimento == Procedimento.Nº);
-                    foreach(LinhasPEncomendaProcedimentosCcp ln in linhasEncomendaProc)
-                    {
-                        Procedimento.LinhasPEncomendaProcedimentosCcp.Add(ln);
-                    }
+                              Fluxo de Trabalho Lista Controlo
+                    */ 
                     
-                    Procedimento.NotasProcedimentosCcp = GetNotasProcedimento(Procedimento.Nº);
-                    
-                    var workflowsProcedimento = _context.WorkflowProcedimentosCcp.Where(w => w.NºProcedimento == Procedimento.Nº);
-                    foreach(WorkflowProcedimentosCcp wf in workflowsProcedimento)
-                    {
-                        Procedimento.WorkflowProcedimentosCcp.Add(wf);
-                    }
+                    Procedimento.TemposPaCcp = _context.TemposPaCcp.Where(t => t.NºProcedimento == Procedimento.Nº).FirstOrDefault();
+                    Procedimento.RegistoDeAtas = GetAllRegistoDeActasProcedimento(Procedimento.Nº);
+                    Procedimento.ElementosJuri = GetAllElementosJuriProcedimento(Procedimento.Nº);
+                    Procedimento.EmailsProcedimentosCcp = GetAllEmailsProcedimento(Procedimento.Nº);
+                    Procedimento.LinhasPEncomendaProcedimentosCcp = GetAllLinhasParaEncomenda(Procedimento.Nº);
+                    Procedimento.NotasProcedimentosCcp = GetAllNotasProcedimento(Procedimento.Nº);
+                    Procedimento.WorkflowProcedimentosCcp = GetAllWorkflowsProcedimento(Procedimento.Nº);
+                    Procedimento.FluxoTrabalhoListaControlo = GetAllCheklistControloProcedimento(Procedimento.Nº);
                 }
                 
                 return Procedimento;
@@ -120,23 +104,17 @@ namespace Hydra.Such.Data.Logic.CCP
                 proc.DataHoraCriação = DateTime.Now;
                 proc.Estado = 0;
 
-                // zpgm.12-11-2017 XXX
-                //proc.Nº1 = new TemposPaCcp()
-                //{
-                //    NºProcedimento = proc.Nº,
-                //    Estado0 = 1,
-                //    DataHoraCriação = proc.DataHoraCriação,
-                //    UtilizadorCriação = proc.UtilizadorCriação
-                //};
+               
+                proc.TemposPaCcp = new TemposPaCcp()
+                {
+                    NºProcedimento = proc.Nº,
+                    Estado0 = 1,
+                    DataHoraCriação = proc.DataHoraCriação,
+                    UtilizadorCriação = proc.UtilizadorCriação
+                };
 
-                // zpgm.12-11-2017 XXX
-                //proc.NºNavigation = __CreateRegistoDeAtas(proc, false);
-
-                //_context.Add(proc.NºNavigation);
-                //_context.SaveChanges();
-
-                //_context.Add(proc.Nº1);
-                //_context.SaveChanges();
+                _context.Add(proc.TemposPaCcp);
+                _context.SaveChanges();
 
                 _context.Add(proc);
                 _context.SaveChanges();
@@ -204,8 +182,31 @@ namespace Hydra.Such.Data.Logic.CCP
                 __DeleteAllNotasProcedimentoRelatedToProcedimento(ProcedimentoID);
                 __DeleteAllRegistoDeAtasRelatedToProcedimento(ProcedimentoID);
                 __DeleteAllWorkflowsRelatedToProcedimento(ProcedimentoID);
+                __DeleteAllEmailsRelatedToProcedimento(ProcedimentoID);
+                __DeleteAllLinhasParaEncomendaRelatedToProcedimento(ProcedimentoID);
+                __DeleteAllCheklistControloRelatedToProcedimento(ProcedimentoID);
                 __DeleteTemposPaCcp(ProcedimentoID);
                 
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        #endregion
+
+        #region CRUD TemposPaCcp
+        //public static TemposPACCPView GetTemposPACcpView()
+        public static bool __DeleteTemposPaCcp(string ProcedimentoID)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                _context.TemposPaCcp.RemoveRange(_context.TemposPaCcp.Where(t => t.NºProcedimento == ProcedimentoID));
+
+                _context.SaveChanges();
+
                 return true;
             }
             catch (Exception e)
@@ -226,7 +227,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return num.ToString().PadLeft(4, '0');
         }
-        public static List<RegistoDeAtas> GetRegistoDeActasProcedimento(string ProcedimentoID)
+        public static List<RegistoDeAtas> GetAllRegistoDeActasProcedimento(string ProcedimentoID)
         {
             SuchDBContext _context = new SuchDBContext();
 
@@ -243,8 +244,10 @@ namespace Hydra.Such.Data.Logic.CCP
         public static List<RegistoActasView> GetRegistosActasViewProcedimento(ProcedimentosCcp Procedimento)
         {
             List<RegistoActasView> RegistoView = new List<RegistoActasView>();
-
-            // zpgm this code must be updated after the data model update
+            foreach(var ra in Procedimento.RegistoDeAtas)
+            {
+                RegistoView.Add(CCPFunctions.CastRegistoActasToRegistoActasView(ra));
+            }
 
             return RegistoView;
         }
@@ -333,7 +336,7 @@ namespace Hydra.Such.Data.Logic.CCP
         #endregion
 
         #region CRUD ElementosJuri
-        public static List<ElementosJuri> GetElementosJuriProcedimento(string ProcedimentoID)
+        public static List<ElementosJuri> GetAllElementosJuriProcedimento(string ProcedimentoID)
         {
             SuchDBContext _context = new SuchDBContext();
             try
@@ -345,13 +348,17 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
         }
-        public static List<ElementosJuriView> GetElementosJuriViewProcedimento(ProcedimentosCcp Procedimento)
+        public static List<ElementosJuriView> GetAllElementosJuriViewProcedimento(ProcedimentosCcp Procedimento)
         {
             List<ElementosJuriView> ElementosView = new List<ElementosJuriView>();
 
             foreach(var e in Procedimento.ElementosJuri)
             {
-                ElementosView.Add(CCPFunctions.CastElementosJuriToElementosJuriView(e));
+                ElementosJuriView ElemJuriV = CCPFunctions.CastElementosJuriToElementosJuriView(e);
+                if(e.Utilizador != null && e.Utilizador != "")
+                    ElemJuriV.NomeEmpregado = GetUserName(ElemJuriV.Utilizador);
+
+                ElementosView.Add(ElemJuriV);
             }
 
             return ElementosView;
@@ -359,8 +366,11 @@ namespace Hydra.Such.Data.Logic.CCP
         public static ElementosJuri __CreateElementoJuri(ElementosJuriView ElementoView)
         {
             SuchDBContext _context = new SuchDBContext();
-            ElementosJuri Elemento = CCPFunctions.CastElementosJuriViewToElementosJuri(ElementoView);
 
+            if (ElementoView == null)
+                return null;
+
+            ElementosJuri Elemento = CCPFunctions.CastElementosJuriViewToElementosJuri(ElementoView);
             try
             {
                 _context.Add(Elemento);
@@ -404,8 +414,124 @@ namespace Hydra.Such.Data.Logic.CCP
         }
         #endregion
 
+        #region CRUD Emails Procedimentos CCP
+        public static List<EmailsProcedimentosCcp> GetAllEmailsProcedimento(string ProcedimentoID)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                return _context.EmailsProcedimentosCcp.Where(ep => ep.NºProcedimento == ProcedimentoID).ToList();
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+        public static List<EmailsProcedimentoCCPView> GetAllEmailsView(ProcedimentosCcp Procedimento)
+        {
+            List<EmailsProcedimentoCCPView> EmailsView = new List<EmailsProcedimentoCCPView>();
+            foreach (var ep in Procedimento.EmailsProcedimentosCcp)
+            {
+                EmailsView.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ep));
+            }
+
+            return EmailsView;
+        }
+
+        public static bool __DeleteAllEmailsRelatedToProcedimento(string ProcedimentoID)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                _context.EmailsProcedimentosCcp.RemoveRange(_context.EmailsProcedimentosCcp.Where(ep => ep.NºProcedimento == ProcedimentoID));
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        public static bool __DeleteEmailProcedimento(string ProcedimentoID, int LineNo)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                _context.EmailsProcedimentosCcp.RemoveRange(_context.EmailsProcedimentosCcp.Where(ep => ep.NºProcedimento == ProcedimentoID && ep.NºLinha == LineNo));
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        #endregion
+
+        #region CRUD Linhas Para Encomenda CCP
+        public static List<LinhasPEncomendaProcedimentosCcp> GetAllLinhasParaEncomenda(string ProcedimentoID)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                return _context.LinhasPEncomendaProcedimentosCcp.Where(le => le.NºProcedimento == ProcedimentoID).ToList();
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+        public static List<LinhasParaEncomendaCCPView> GetAllLinhasParaEncomendaView(ProcedimentosCcp Procedimento)
+        {
+            List<LinhasParaEncomendaCCPView> LinhasParaEncView = new List<LinhasParaEncomendaCCPView>();
+            foreach (var le in Procedimento.LinhasPEncomendaProcedimentosCcp)
+            {
+                LinhasParaEncView.Add(CCPFunctions.CastLinhaParaEncomendaProcediementoToLinhaEncomendaCCPView(le));
+            }
+
+            return LinhasParaEncView;
+        }
+
+        public static bool __DeleteAllLinhasParaEncomendaRelatedToProcedimento(string ProcedimentoID)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                _context.LinhasPEncomendaProcedimentosCcp.RemoveRange(_context.LinhasPEncomendaProcedimentosCcp.Where(le => le.NºProcedimento == ProcedimentoID));
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        public static bool __DeleteLinhaParaEncomenda(string ProcedimentoID, int LineNo)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                _context.LinhasPEncomendaProcedimentosCcp.RemoveRange(_context.LinhasPEncomendaProcedimentosCcp.Where(le => le.NºProcedimento == ProcedimentoID && le.NºLinha == LineNo));
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception e)
+            {
+
+                return false;
+            }
+        }
+        #endregion
+
         #region CRUD Notas Procedimentos CCP
-        public static List<NotasProcedimentosCcp> GetNotasProcedimento(string ProcedimentoID)
+        public static List<NotasProcedimentosCcp> GetAllNotasProcedimento(string ProcedimentoID)
         {
             SuchDBContext _context = new SuchDBContext();
             try
@@ -417,7 +543,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
         }
-        public static List<NotasProcedimentoCCPView> GetNotasProcedimentoView(ProcedimentosCcp Procedimento)
+        public static List<NotasProcedimentoCCPView> GetAllNotasProcedimentoView(ProcedimentosCcp Procedimento)
         {
             List<NotasProcedimentoCCPView> NotasView = new List<NotasProcedimentoCCPView>();
 
@@ -463,7 +589,7 @@ namespace Hydra.Such.Data.Logic.CCP
         #endregion
 
         #region CRUD Workflow Procedimentos CCP
-        public static List<WorkflowProcedimentosCcp> GetWorkflowsProcedimento(string ProcedimentoID)
+        public static List<WorkflowProcedimentosCcp> GetAllWorkflowsProcedimento(string ProcedimentoID)
         {
             SuchDBContext _context = new SuchDBContext();
 
@@ -476,7 +602,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
         }
-        public static List<WorkflowProcedimentosCCPView> GetWorkflowsView(ProcedimentosCcp Procedimento)
+        public static List<WorkflowProcedimentosCCPView> GetAllWorkflowsView(ProcedimentosCcp Procedimento)
         {
             List<WorkflowProcedimentosCCPView> WorkflowsView = new List<WorkflowProcedimentosCCPView>();
 
@@ -504,7 +630,6 @@ namespace Hydra.Such.Data.Logic.CCP
                 return false;
             }
         }
-
         public static bool __DeleteWorkflowsProcedimento(string ProcedimentoID, int State, DateTime DateTimeProc)
         {
             SuchDBContext _context = new SuchDBContext();
@@ -523,30 +648,54 @@ namespace Hydra.Such.Data.Logic.CCP
         }
         #endregion
 
-        #region CRUD Emails Procedimentos CCP
-        #endregion
-
-        #region CRUD Linhas Para Encomenda CCP
-        #endregion
-
-        #region CRUD TemposPaCcp
-        public static bool __DeleteTemposPaCcp(string ProcedimentoID)
+        #region CRUD Fluxo de Trabalho Lista Controlo
+        public static List<FluxoTrabalhoListaControlo> GetAllCheklistControloProcedimento(string ProcedimentoID)
         {
             SuchDBContext _context = new SuchDBContext();
             try
             {
-                _context.TemposPaCcp.RemoveRange(_context.TemposPaCcp.Where(t => t.NºProcedimento == ProcedimentoID));
+                return _context.FluxoTrabalhoListaControlo.Where(f => f.No == ProcedimentoID).ToList();
+            }
+            catch (Exception e)
+            {
+                return null;
+                throw;
+            }
+        }
 
+        public static bool __DeleteAllCheklistControloRelatedToProcedimento(string ProcedimentoID)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                _context.FluxoTrabalhoListaControlo.RemoveRange(_context.FluxoTrabalhoListaControlo.Where(f => f.No == ProcedimentoID));
                 _context.SaveChanges();
-
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
+
                 return false;
             }
         }
-        #endregion
+        public static bool __DeleteChecklistControlo(string ProcedimentoID, int State, DateTime Date, TimeSpan Time)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                _context.FluxoTrabalhoListaControlo.RemoveRange(_context.FluxoTrabalhoListaControlo.Where(f => f.No == ProcedimentoID && f.Estado == State && f.Data == Date && f.Hora == Time));
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception e)
+            {
+
+                return false;
+            }
+        }
+        #endregion 
+        
 
         #region parse ProcedimentosCCPView
         public static List<ProcedimentoCCPView> GetAllProcedimentosViewByProcedimentoTypeToList(int type)
@@ -601,7 +750,40 @@ namespace Hydra.Such.Data.Logic.CCP
         #endregion
 
         #region Users settings related to Procedimentos CCP
-        //public static List<AcessosUtilizador> GetAllUsersElementosJuri()
+        public static string GetUserName(string UserID)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                var CU = _context.ConfigUtilizadores.Where(cu => cu.IdUtilizador == UserID).FirstOrDefault();
+                return CU.Nome;
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
+
+        }
+        public static List<ConfigUtilizadores> GetAllUsersElementosJuri()
+        {
+            SuchDBContext _context = new SuchDBContext();
+            List<AcessosUtilizador> UsersAccess = _context.AcessosUtilizador.Where(a => a.Funcionalidade == _ElementoJuriFeature).ToList();            
+
+            List<ConfigUtilizadores> UsersElementosJuri = new List<ConfigUtilizadores>();
+
+            try
+            {
+                foreach(var au in UsersAccess)
+                {
+                    UsersElementosJuri.Add(_context.ConfigUtilizadores.Where(u => u.IdUtilizador == au.IdUtilizador).FirstOrDefault());
+                }
+                return UsersElementosJuri;
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
+        }        
         #endregion
     }
 }

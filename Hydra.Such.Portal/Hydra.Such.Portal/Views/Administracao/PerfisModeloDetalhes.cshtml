@@ -46,6 +46,9 @@
                    id="page_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
+        <div class="marginSpace">
+            <paper-button class="btnSave" raised on-tap="_createNew">Criar Novo</paper-button>
+        </div>
 
         <h2 class="separator">Geral</h2>
         <div class="row">
@@ -215,7 +218,8 @@
                 </div>
 
 
-                <paper-toast id="ToastMessage" duration="4000" text="ola" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
 
 </template>
@@ -266,8 +270,12 @@
 
                 },
                 openToast: function (message) {
-                    this.$.ToastMessage.text = message;
-                    this.$.ToastMessage.open();
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
                 },
                 _create: function () {
                     if (this.data.description !== '' && this.data.description != null) {
@@ -276,7 +284,7 @@
                         this.$.ajax_create.generateRequest();
                         this.openToast("Perfil modelo criado com sucesso!");
                     } else {
-                        this.openToast('É obrigatório preencher o campo Descrição.');
+                        this.openToastError('É obrigatório preencher o campo Descrição.');
                     }
                 },
                 _update: function () {
@@ -287,7 +295,7 @@
                         this.$.ajax_create.generateRequest();
                         this.openToast("Perfil modelo atualizado com sucesso!");
                     } else {
-                        this.openToast('É obrigatório preencher o campo Descrição.');
+                        this.openToastError('É obrigatório preencher o campo Descrição.');
                     }
                 },
                 _delete: function () {
@@ -305,7 +313,7 @@
                             if (this.data.id == 0) {
                                 window.location.href = "/Administracao/PerfisModelo";
                             } else {
-                                this.openToast('Ocorreu um erro ao remover o Perfil Modelo');
+                                this.openToastError('Ocorreu um erro ao remover o Perfil Modelo');
                             }
                         }
                         else
@@ -314,23 +322,24 @@
                         }
                     } else {
                         if (e.detail.url.indexOf("Create") !== -1) {
-                            this.openToast('Ocorreu um erro ao criar o perfil modelo.');
+                            this.openToastError('Ocorreu um erro ao criar o perfil modelo.');
                         }
                         else if (e.detail.url.indexOf("Delete") !== -1) {
-                            this.openToast('Ocorreu um erro ao remover o Perfil Modelo');
+                            this.openToastError('Ocorreu um erro ao remover o Perfil Modelo');
                         }
                         else {
                             this.$.grid_databound.generateRequest();
-                            this.openToast('Ocorreu um erro ao atualizar o perfil modelo.');
+                            this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
                         }
                     }
                 },
                 _createAccessProfile: function () {
                     if (this.ddArea == "") {
-                        this.openToast('É obrigatório preencher a area.');
+                        this.openToastError('É obrigatório preencher a area.');
                     } else if (this.ddFeature == null) {
-                        this.openToast('É obrigatório preencher a Funcionalidade.');
+                        this.openToastError('É obrigatório preencher a Funcionalidade.');
                     } else {
+
                         this.data.profileModelAccesses.unshift({
                             idProfile: @ViewBag.ProfileModelId,
                             area: this.ddArea,
@@ -340,7 +349,21 @@
                             update: this.chkUpdate,
                             delete: this.chkDelete
                         });
+                        
+                        this.ddArea = null;
+                        this.ddFeature = null;
+                        this.chkRead = true;
+                        this.chkCreate = true;
+                        this.chkUpdate = true;
+                        this.chkDelete = true;
                         this.$.gridAccesses.clearCache();
+
+
+                        this.$.ajax_create.url = "/Administracao/UpdateProfileModel";
+                        this.$.ajax_create.body = JSON.stringify(this.data);
+                        this.$.ajax_create.generateRequest();
+                        this.openToast("Acesso perfil criado com sucesso!");
+
                     }
 
                 },
@@ -349,6 +372,11 @@
                     this.data.profileModelAccesses.splice(index, 1);
 
                     this.$.gridAccesses.clearCache();
+                },
+                _createNew: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Administracao/PerfisModeloDetalhes/0";
+                    }
                 }
 
             });

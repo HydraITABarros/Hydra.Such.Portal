@@ -98,15 +98,18 @@ namespace Hydra.Such.Data.NAV
                    Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
                    Document_TypeSpecified = true,
                    No = x.Código,
-                   Type = ConvertType(x.Tipo.Replace(" ", String.Empty)),
+                   TypeSpecified = true,
+                   Type = ConvertType((x.Tipo.Replace(" ", String.Empty))),
                    Description = x.Descrição,
-                   Quantity = x.Quantidade.Value,
+                   //Quantity = x.Quantidade.Value,
+                   Quantity = 4,
                    QuantitySpecified = true,
                    Unit_of_Measure = x.CódUnidadeMedida,
-                   Unit_Price = x.PreçoUnitário.Value,
+                   Unit_Price = new decimal(12.25),
+                   //Unit_Price = x.PreçoUnitário.Value,
                    Unit_PriceSpecified = true,
-                   Amount = x.ValorVenda.Value,
-                   AmountSpecified = true,
+                   //Amount = x.ValorVenda.Value,
+                   //AmountSpecified = true,
                    RegionCode20 = x.CódigoRegião,
                    FunctionAreaCode20 = x.CódigoÁreaFuncional,
                    ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade
@@ -137,9 +140,9 @@ namespace Hydra.Such.Data.NAV
             switch (type)
             {
                 case "1":
-                    return WSCreatePreInvoiceLine.Type.Resource;
-                case "2":
                     return WSCreatePreInvoiceLine.Type.Item;
+                case "2":
+                    return WSCreatePreInvoiceLine.Type.Resource;
                 case "3":
                     return WSCreatePreInvoiceLine.Type.G_L_Account;
                 case "4":

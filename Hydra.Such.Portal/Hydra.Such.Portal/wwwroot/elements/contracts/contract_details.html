@@ -154,18 +154,18 @@
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field rows="10" id="contractNo" name="contractNo" label="Nº Contrato" value="{{data.contractNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                            <vaadin-text-field id="contractNo" name="contractNo" maxlength="20" label="Nº Contrato" value="{{data.contractNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" > </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.description}}" maxlength="100" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" > </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <table width="180px">
+                                                    <table width="350px">
                                                         <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                            <td width="20%">[[item.id]]</td>
+                                                            <td width="80%"> <b>[[item.value]]</b></td>
                                                         </tr>
                                                     </table>
                                                 </template>
@@ -174,12 +174,7 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBFeeUnits]]" id="mFeeUnits" item-value-path="id" item-label-path="value" value="{{data.provisionUnit}}" label="Unidade Prestação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
+                                                    <b>[[item.value]]</b>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
@@ -188,22 +183,22 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBRegions]]" id="mCodeRegion" item-value-path="id" item-label-path="value" value="{{data.codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <table width="180px">
+                                                    <table width="250px">
                                                         <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                            <td width="20%">[[item.id]]</td>
+                                                            <td width="80%"> <b>[[item.value]]</b></td>
                                                         </tr>
                                                     </table>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBFunctionalAreas]]" id="mFunctionalArea" item-value-path="id" item-label-path="value" value="{{data.codeFunctionalArea}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <vaadin-combo-box items="[[CBFunctionalAreas]]" id="mFunctionalArea" item-value-path="id" item-label-path="value" value="{{data.codeFunctionalArea}}" label="Cód. Àrea Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <table width="180px">
+                                                    <table width="250px">
                                                         <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                            <td width="30%">[[item.id]]</td>
+                                                            <td width="70%"> <b>[[item.value]]</b></td>
                                                         </tr>
                                                     </table>
                                                 </template>
@@ -229,15 +224,15 @@
 
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.proposalNo}}" id="mProposalNo" name="proposalNo" label="Nº Proposta" disabled="true"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.proposalNo}}"  maxlength="20" id="mProposalNo" name="proposalNo" label="Nº Proposta" disabled="true"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBPaymentTerms]]" id="mPaymentTerms" item-value-path="id" item-label-path="value" value="{{data.codePaymentTerms}}" label="Cód. Termos Pagamento" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <table width="180px">
+                                                    <table width="250px">
                                                         <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                            <td width="30%">[[item.id]]</td>
+                                                            <td width="70%"> <b>[[item.value]]</b></td>
                                                         </tr>
                                                     </table>
                                                 </template>
@@ -310,12 +305,7 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBServiceObjects]]" id="mServiceObject" item-value-path="id" item-label-path="value" value="{{data.serviceObject}}" label="Objeto Serviço" disabled="{{ !_permissions.update }}">
                                                 <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
+                                                    <b>[[item.value]]</b>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
@@ -344,12 +334,7 @@
                                                         <div class="col-lg-2">
                                                             <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ !_permissions.update }}">
                                                                 <template>
-                                                                    <table width="180px">
-                                                                        <tr>
-                                                                            <td width="40%">[[item.id]]</td>
-                                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                                        </tr>
-                                                                    </table>
+                                                                    <b>[[item.value]]</b>
                                                                 </template>
                                                             </vaadin-combo-box>
                                                         </div>
@@ -495,27 +480,23 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBShippingAddresses]]" item-value-path="id" item-label-path="value" value="{{data.codeShippingAddress}}" label="Cód. Endereço Envio" on-value-changed="_getAddressByCode" disabled="{{ !_permissions.update }}">
                                                 <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
+                                                    <b>[[item.value]]</b>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" label="Envio-a Endereço" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingName}}"  maxlength="100" id="ShippingName" name="ShippingName" label="Envio-a Nome" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingAddress}}" maxlength="100" id="ShippingAddress"  name="ShippingAddress" label="Envio-a Endereço" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingName}}" id="ShippingName" name="ShippingName" label="Envio-a Nome" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingZipCode}}" maxlength="20" id="shippingZipCode" name="shippingZipCode" label="Envio-a Cód. Postal" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingZipCode}}" id="shippingZipCode" name="shippingZipCode" label="Envio-a Cód. Postal" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.shippingLocality}}" maxlength="30" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -526,29 +507,19 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBBillingTypes]]" id="mBillingTypes" item-value-path="id" item-label-path="value" value="{{data.billingType}}" label="Tipo Faturação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
+                                                    <b>[[item.value]]</b>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBMaintenanceTypes]]" id="mMaintenanceTypes" item-value-path="id" item-label-path="value" value="{{data.maintenanceContractType}}" label="Tipo Contrato Manut." disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <vaadin-combo-box items="[[CBMaintenanceTypes]]" id="mMaintenanceTypes" item-value-path="id" item-label-path="value" value="{{data.maintenanceContractType}}" label="Tipo Contrato Manut." disabled="{{ !_permissions.update }}">
                                                 <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
+                                                    <b>[[item.value]]</b>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.provisioningFee}}" id="mProvisioningFee" auto-validate pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$" error-message="Valor inválido" name="provisioningFee" label="Taxa Aprovisionamento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.provisioningFee}}" id="mProvisioningFee" pattern="^[1-9]\d*(\.\d+)?$"  error-message="Valor inválido" name="provisioningFee" label="Taxa Aprovisionamento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.mc}}" id="mc" name="mc" label="% MC" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
@@ -556,17 +527,12 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.displacementFee}}" hidden auto-validate pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$" error-message="Valor inválido" id="mDisplacementFee" name="mDisplacementFee" label="Taxa Deslocação" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.displacementFee}}" pattern="^[1-9]\d*(\.\d+)?$"  error-message="Valor inválido" id="mDisplacementFee" name="mDisplacementFee" label="Taxa Deslocação" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBInvoicePeriods]]" id="mInvoicePeriods" item-value-path="id" item-label-path="value" value="{{data.invocePeriod}}" label="Período Fatura" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
+                                                    <b>[[item.value]]</b>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
@@ -763,7 +729,7 @@
                             </div>
 
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" label="Quantidade" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" label="Quantidade" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                             </div>
 
                             <div class="col-lg-2">
@@ -779,13 +745,13 @@
                             </div>
 
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$" />
+                                <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" />
                             </div>
                         </div>
 
                         <div class="row" style="display: {{ _showContractLinesForm }};">
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                             </div>
 
                             <div class="col-lg-2 alignPoga">
@@ -829,18 +795,18 @@
                             </div>
 
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periocidade" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periocidade" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                             </div>
 
                         </div>
 
                         <div class="row" style="display: {{ _showContractLinesForm }};">
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLInterventionHours}}" id="_CLInterventionHours" name="_CLInterventionHours" label="Nº Horas Intervenção" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$" ~ />
+                                <vaadin-text-field value="{{_CLInterventionHours}}" id="_CLInterventionHours" name="_CLInterventionHours" label="Nº Horas Intervenção" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" ~ />
                             </div>
 
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$" />
+                                <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" />
                             </div>
 
                             <div class="col-lg-2">
@@ -965,7 +931,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.quantity}}" id="_CLGridQuantity" name="_CLGridQuantity" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.quantity}}" id="_CLGridQuantity" name="_CLGridQuantity" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                                         </template>
 
                                         <template is="dom-if" if="{{ !item.selected }}">
@@ -1002,7 +968,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> <div slot="suffix">€</div></vaadin-text-field>
+                                            <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> <div slot="suffix">€</div></vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.unitPrice}} €
@@ -1016,7 +982,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.lineDiscount}}" id="_CLGridDiscountLine" name="_CLGridDiscountLine" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.lineDiscount}}" id="_CLGridDiscountLine" name="_CLGridDiscountLine" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.lineDiscount}}%
@@ -1108,7 +1074,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.frequency}}" id="_CLGridFrequency" name="_CLGridFrequency" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.frequency}}" id="_CLGridFrequency" name="_CLGridFrequency" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.frequency}}
@@ -1122,7 +1088,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.interventionHours}}" id="_CLGridInterventionHours" name="_CLGridInterventionHours" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.interventionHours}}" id="_CLGridInterventionHours" name="_CLGridInterventionHours" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.interventionHours}}
@@ -1136,7 +1102,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.totalTechinicians}}" id="_CLGridTotalTechnicians" name="_CLGridTotalTechnicians" disabled="{{ !_permissions.update }}" pattern="^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:(\.|,)\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.totalTechinicians}}" id="_CLGridTotalTechnicians" name="_CLGridTotalTechnicians" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.totalTechinicians}}
@@ -1252,17 +1218,17 @@
                                         </center>
                                     </template>
                                 </vaadin-grid-column>
-                                <!--<vaadin-grid-column>
+                                <vaadin-grid-column>
                                     <template class="header">
                                     </template>
                                     <template>
                                         <center>
-                                            <template is="dom-if" if="{{ !_permissions.update }}">
-                                                <paper-button class="btnRemove" raised on-tap="_deleteInvoiceText">Eliminar</paper-button>
+                                            <template is="dom-if" if="{{ _permissions.update }}">
+                                                <paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>
                                             </template>
                                         </center>
                                     </template>
-                                </vaadin-grid-column>-->
+                                </vaadin-grid-column>
                             </vaadin-grid>
                         </div>
                         
@@ -1276,8 +1242,8 @@
             </div>
         </div>
 
-        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
 
@@ -1481,15 +1447,14 @@
                     this.$.page_databound_ajax.generateRequest();
                 },
                 _openToast: function (message) {
-                    this.$.ToastMessage.text = message;
-                    this.$.ToastMessage.open();
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
                 },
                 _openToastError: function (message) {
-                    this.$.ToastError.text = message;
-                    this.$.ToastError.open();
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
-                    debugger;;
                     if (this.$.contractNo.validate() &
                         this.$.Description.validate() &
                         this.$.mClients.validate() &
@@ -1530,8 +1495,7 @@
                 _createNewContract: function () {
                     window.location.href = "../DetalhesContrato";
                 },
-
-
+                
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
@@ -1546,7 +1510,6 @@
                     }
                 },
                 _delete: function () {
-                    debugger;;
                     var _dataContract = this.data;
                     var ajax_request = this.$.ajax_delete_contract;
                     bootbox.confirm({
@@ -1638,9 +1601,11 @@
                         }
                         else if (data.detail.url.indexOf("Update") !== -1) {
                             if (this.data.eReasonCode == 1) {
+
+
                                 this._openToast("Contrato atualizado com sucesso.")
                             } else {
-                                this._openToast(this.data.eMessage);
+                                this._openToastError(this.data.eMessage);
                             }
                         }
                         else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
@@ -1653,16 +1618,22 @@
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
-                        this._openToast("Projeto criado com sucesso.");
+                        this._openToast("Contrato criado com sucesso.");
+
+                        var contractNo = this.data.contractNo;
+                        setTimeout(
+                            function () {
+                                window.location.href = "../DetalhesContrato/" + contractNo;
+                            }, 1000);
+
                     } else {
-                        this._openToastError(this.data.eMessage);
+                        this._openToast(this.data.eMessage);
                     }
-                },
+                }, 
                 _responseValidatorProcessor: function (data) {
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.validateResponse == "") {
-                            debugger;;
                             this._executeRequest("/Contratos/CreateContract", this.data)
                         } else {
                             this._openToastError("Ocorreu um erro desconhecido.");
@@ -1697,7 +1668,7 @@
                         this.$.ShippingAddress.value = this.addressData.address;
                         this.$.shippingZipCode.value = this.addressData.zipCode;
                         this.$.ShippingLocality.value = this.addressData.city;
-                        this.$.ShippingContact.value = this.addressData.contact;
+                        //this.$.ShippingContact.value = this.addressData.contact;
                     }
                 },
 
@@ -1715,7 +1686,23 @@
                         projectNo: this._CRProjectNo,
                         lastInvoiceDate: this._CRLastInvoiceDate
                     });
+
+                    this._CRStartDate = "";
+                    this._CREndDate = "";
+                    this._CRRequisitionNo = "";
+                    this._CRRequisitionDate = "";
+                    this._CRPromiseNo = "";
+                    this._CRInvoiceGroup = "";
+                    this._CRProjectNo = "";
+                    this._CRLastInvoiceDate = "";
+
                     this.$.grid_ClientRequisitions.clearCache();
+
+                    if (!this._isCreate) {
+                        if (this._validateData()) {
+                            this._executeRequest("/Contratos/UpdateContract", this.data)
+                        }
+                    }
                 },
                 _deleteClientRequisition: function (data) {
                     var index = this.data.clientRequisitions.indexOf(data.model.item);
@@ -1732,6 +1719,11 @@
                         projectNo: this._IRProjectNo,
                         invoiceText: this._IRInvoiceText
                     });
+
+                    this._IRInvoiceGroup = "";
+                    this._IRProjectNo = "";
+                    this._IRInvoiceText = "";
+
                     this.$.grid_invoiceTexts.clearCache();
                 },
                 _deleteInvoiceText: function (data) {
@@ -1743,7 +1735,6 @@
 
                 //Helpers
                 _executeRequest: function (url, data) {
-                    debugger;;
                     this.data.contractType = 3;
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
@@ -1794,9 +1785,42 @@
                     this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
                     this.$.contractLines_databound_ajax.generateRequest();
                 },
+                _deleteContractLine: function (e) {
+                    var index = this.dataLines.lines.indexOf(e.model.item);
+                    this.dataLines.lines.splice(index, 1);
+
+                    this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
+                    this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                    this.$.contractLines_databound_ajax.generateRequest();
+                    
+                    //this.$.gridUserAccesses.clearCache();
+                },
                 _clResponseProcessor: function (data) {
+                    debugger;;
                     if (data.detail.status === 200) {
                         if (!(data.detail.url.indexOf("GetContractLines") !== -1)) {
+                            this._CLContractLineType = "";
+                            this._CLMeasureUnit = "";
+                            this._CLFrequency = "";
+                            this._CLServiceClient = "";
+                            this._CLCode = "";
+                            this._CLUnitPrice = "";
+                            this._CLInterventionHours = "";
+                            this._CLInvoiceGroup = "";
+                            this._CLDescription = "";
+                            this._CLDiscountLine = "";
+                            this._CLTotalTechnicians = "";
+                            this._CLResponsible = "";
+                            this._CLCreateContract = "";
+                            this._CLQuantity = "";
+                            this._CLBillable = true;
+
+                            this._CLRegion = this.data.codeRegion;
+                            this._CLFunctionalArea = this.data.codeFunctionalArea;
+                            this._CLResponsabilityCenter = this.data.codeResponsabilityCenter;
+                            this._CLVersionStartDate = this.data.startData;
+                            this._CLVersionEndDate = this.data.dueDate;
+
                             this._openToast(this.dataLines.eMessage);
                         }
                     }
