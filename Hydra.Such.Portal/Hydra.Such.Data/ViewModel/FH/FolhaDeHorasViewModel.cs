@@ -78,8 +78,8 @@ namespace Hydra.Such.Data.ViewModel.FH
 
 
 
-        public List<PercursosEAjudasCustoDespesasFolhaDeHorasViewModel> FolhaDeHorasPercurso { get; set; }
-        public List<PercursosEAjudasCustoDespesasFolhaDeHorasViewModel> FolhaDeHorasAjuda { get; set; }
+        public List<LinhasFolhaHorasViewModel> FolhaDeHorasPercurso { get; set; }
+        public List<LinhasFolhaHorasViewModel> FolhaDeHorasAjuda { get; set; }
         public List<MaoDeObraFolhaDeHorasViewModel> FolhaDeHorasMaoDeObra { get; set; }
         public List<PresencasFolhaDeHorasViewModel> FolhaDeHorasPresenca { get; set; }
     }
