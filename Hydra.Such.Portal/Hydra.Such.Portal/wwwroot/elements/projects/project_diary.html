@@ -55,8 +55,8 @@
         <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
 
 
-    </div>
-    <iron-ajax url="/Projetos/GetProjectMovementsDp" last-response="{{resultMovements}}" method="post" handle-as="json" id="grid_databound_ajax" on-response="_gridListResponse" content-type="application/json"></iron-ajax>
+    </div><!--on-response="_gridListResponse"-->
+    <iron-ajax url="/Projetos/GetProjectMovementsDp" last-response="{{resultMovements}}" method="post" handle-as="json" id="grid_databound_ajax"  content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -1278,14 +1278,14 @@
                 this.$.ToastMessageError.text = message;
                 this.$.ToastMessageError.open();
             },
-            _gridListResponse: function ()
-            {
-                if (this.resultMovements == null || this.resultMovements == undefined || this.resultMovements.length == 0)
-                {
-                    this.openToastError("Não existem movimentos associados a este projeto.");                        
-                }
+            //_gridListResponse: function ()
+            //{
+            //    //if (this.resultMovements == null || this.resultMovements == undefined || this.resultMovements.length == 0)
+            //    //{
+            //    //    this.openToastError("Não existem movimentos associados a este projeto.");                        
+            //    //}
 
-            },
+            //},
             _add() {
                 if (true)
                 //Validações
@@ -1415,14 +1415,18 @@
                 }
             },
             _confirm: function (selectedItem, selectedItems) {
-               
-                var selItms = this.selectedItems;
-                for (var i = 0; i < selItms.length; i++) {
-                    selItms[i].lineNo = 0;
+                if (this.selectedItems != null && this.selectedItems != "") {
+                    var selItms = this.selectedItems;
+                    for (var i = 0; i < selItms.length; i++) {
+                        selItms[i].lineNo = 0;
+                    }
+                    this.$.ajax_createmovproj.body = JSON.stringify(selItms);
+                    this.$.ajax_createmovproj.generateRequest();
+                    this.$.projectDiaryProject.clearCache();
+                } else {
+                    this.openToastError("Não foi selecionada nenhuma linha.");
                 }
-                this.$.ajax_createmovproj.body = JSON.stringify(selItms);
-                this.$.ajax_createmovproj.generateRequest();
-                this.$.projectDiaryProject.clearCache();
+             
             },
            
             _projectChange: function (e) {
@@ -1513,7 +1517,12 @@
 
             },
             _getMovementsProject: function () {
+                debugger;
                 this.$.dialog.open();
+                if (this.resultMovements == null || this.resultMovements == undefined || this.resultMovements.length == 0)
+                {
+                    this.openToastError("Não existem movimentos associados a este projeto.");                        
+                }
 
             },
             _movementLinesResponse: function () {
