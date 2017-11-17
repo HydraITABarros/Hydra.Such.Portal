@@ -84,6 +84,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="projetoDescricao">Projecto Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projetoDescricao" />
+                </template>
+                <template>
+                    {{item.projetoDescricao}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="130px">
                 <template class="header">
                     <vaadin-grid-sorter path="empregadoNo">Empregado Nº</vaadin-grid-sorter>
@@ -164,6 +174,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="100px">
+                <template class="header">
+                    <vaadin-grid-sorter path="matricula">Matrícula</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="matricula" />
+                </template>
+                <template>
+                    {{item.matricula}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="200px">
                 <template class="header">
                     <vaadin-grid-sorter path="deslocacaoForaConcelhoTexto">Desloc. Fora do Concelho</vaadin-grid-sorter>
@@ -174,13 +194,23 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px">
+            <vaadin-grid-column width="170px">
                 <template class="header">
-                    <vaadin-grid-sorter path="validadores">Validadores</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validadores" />
+                    <vaadin-grid-sorter path="deslocacaoPlaneadaTexto">Deslocação Planeada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="deslocacaoPlaneadaTexto" />
                 </template>
                 <template>
-                    {{item.validadores}}
+                    {{item.deslocacaoPlaneadaTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="terminadaTexto">Terminado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="terminadaTexto" />
+                </template>
+                <template>
+                    {{item.terminadaTexto}}
                 </template>
             </vaadin-grid-column>
 
@@ -224,73 +254,33 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px">
+            <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataUltimoEstadoTexto">Data Último Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataUltimoEstadoTexto" />
+                    <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoRegiao" />
                 </template>
                 <template>
-                    {{item.dataUltimoEstadoTexto}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px">
-                <template class="header">
-                    <vaadin-grid-sorter path="horaUltimoEstadoTexto">Hora Último Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="horaUltimoEstadoTexto" />
-                </template>
-                <template>
-                    {{item.horaUltimoEstadoTexto}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="180px">
-                <template class="header">
-                    <vaadin-grid-sorter path="dataModificacaoTexto">Data Última Alteração</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataModificacaoTexto" />
-                </template>
-                <template>
-                    {{item.dataModificacaoTexto}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="180px">
-                <template class="header">
-                    <vaadin-grid-sorter path="horaModificacaoTexto">Hora Última Alteração</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="horaModificacaoTexto" />
-                </template>
-                <template>
-                    {{item.horaModificacaoTexto}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="210px">
-                <template class="header">
-                    <vaadin-grid-sorter path="utilizadorModificacao">Utilizador Última Alteração</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizadorModificacao" />
-                </template>
-                <template>
-                    {{item.utilizadorModificacao}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="100px">
-                <template class="header">
-                    <vaadin-grid-sorter path="matricula">Matrícula</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="matricula" />
-                </template>
-                <template>
-                    {{item.matricula}}
+                    {{item.codigoRegiao}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="terminadaTexto">Terminado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="terminadaTexto" />
+                    <vaadin-grid-sorter path="codigoAreaFuncional">Código Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoAreaFuncional" />
                 </template>
                 <template>
-                    {{item.terminadaTexto}}
+                    {{item.codigoAreaFuncional}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Respon.</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoCentroResponsabilidade" />
+                </template>
+                <template>
+                    {{item.codigoCentroResponsabilidade}}
                 </template>
             </vaadin-grid-column>
 
@@ -334,93 +324,13 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="170px">
+            <vaadin-grid-column width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="deslocacaoPlaneadaTexto">Deslocação Planeada</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="deslocacaoPlaneadaTexto" />
+                    <vaadin-grid-sorter path="validadores">Validadores</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="validadores" />
                 </template>
                 <template>
-                    {{item.deslocacaoPlaneadaTexto}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="250px">
-                <template class="header">
-                    <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="observacoes" />
-                </template>
-                <template>
-                    {{item.observacoes}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="120px">
-                <template class="header">
-                    <vaadin-grid-sorter path="responsavel1No">Responsável 1</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="responsavel1No" />
-                </template>
-                <template>
-                    {{item.responsavel1No}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="120px">
-                <template class="header">
-                    <vaadin-grid-sorter path="responsavel2No">Responsável 2</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="responsavel2No" />
-                </template>
-                <template>
-                    {{item.responsavel2No}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="120px">
-                <template class="header">
-                    <vaadin-grid-sorter path="responsavel3No">Responsável 3</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="responsavel3No" />
-                </template>
-                <template>
-                    {{item.responsavel3No}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="120px">
-                <template class="header">
-                    <vaadin-grid-sorter path="validadoresRHKM">Integrador KMs RH</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validadoresRHKM" />
-                </template>
-                <template>
-                    {{item.validadoresRHKM}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="120px">
-                <template class="header">
-                    <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoRegiao" />
-                </template>
-                <template>
-                    {{item.codigoRegiao}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="120px">
-                <template class="header">
-                    <vaadin-grid-sorter path="codigoAreaFuncional">Código Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoAreaFuncional" />
-                </template>
-                <template>
-                    {{item.codigoAreaFuncional}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="120px">
-                <template class="header">
-                    <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Respon.</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoCentroResponsabilidade" />
-                </template>
-                <template>
-                    {{item.codigoCentroResponsabilidade}}
+                    {{item.validadores}}
                 </template>
             </vaadin-grid-column>
 
@@ -496,6 +406,16 @@
 
             <vaadin-grid-column width="120px">
                 <template class="header">
+                    <vaadin-grid-sorter path="integradoresEmRHKM">Integradores KMs RH</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="integradoresEmRHKM" />
+                </template>
+                <template>
+                    {{item.integradoresEmRHKM}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
                     <vaadin-grid-sorter path="dataIntegracaoEmRHKMTexto">Data Integração KMs RH</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataIntegracaoEmRHKMTexto" />
                 </template>
@@ -511,6 +431,146 @@
                 </template>
                 <template>
                     {{item.horaIntegracaoEmRHKMTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="custoTotalAjudaCusto">Custo Total Ajuda Custo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="custoTotalAjudaCusto" />
+                </template>
+                <template>
+                    {{item.custoTotalAjudaCusto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="custoTotalHoras">Custo Total Horas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="custoTotalHoras" />
+                </template>
+                <template>
+                    {{item.custoTotalHoras}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="custoTotalKM">Custo Total KM</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="custoTotalKM" />
+                </template>
+                <template>
+                    {{item.custoTotalKM}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="numTotalKM">Nº Total KM</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="numTotalKM" />
+                </template>
+                <template>
+                    {{item.numTotalKM}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px">
+                <template class="header">
+                    <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="observacoes" />
+                </template>
+                <template>
+                    {{item.observacoes}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsavel1No">Responsável 1</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsavel1No" />
+                </template>
+                <template>
+                    {{item.responsavel1No}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsavel2No">Responsável 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsavel2No" />
+                </template>
+                <template>
+                    {{item.responsavel2No}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsavel3No">Responsável 3</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsavel3No" />
+                </template>
+                <template>
+                    {{item.responsavel3No}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="validadoresRHKM">Validadores RH KM</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="validadoresRHKM" />
+                </template>
+                <template>
+                    {{item.validadoresRHKM}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataUltimoEstadoTexto">Data Último Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataUltimoEstadoTexto" />
+                </template>
+                <template>
+                    {{item.dataUltimoEstadoTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="horaUltimoEstadoTexto">Hora Último Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="horaUltimoEstadoTexto" />
+                </template>
+                <template>
+                    {{item.horaUltimoEstadoTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="210px">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizadorModificacao">Utilizador Última Alteração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorModificacao" />
+                </template>
+                <template>
+                    {{item.utilizadorModificacao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="180px">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataModificacaoTexto">Data Última Alteração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataModificacaoTexto" />
+                </template>
+                <template>
+                    {{item.dataModificacaoTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="180px">
+                <template class="header">
+                    <vaadin-grid-sorter path="horaModificacaoTexto">Hora Última Alteração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="horaModificacaoTexto" />
+                </template>
+                <template>
+                    {{item.horaModificacaoTexto}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>

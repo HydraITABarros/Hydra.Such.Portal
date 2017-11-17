@@ -59,6 +59,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<NotasProcedimentosCcp> NotasProcedimentosCcp { get; set; }
         public virtual DbSet<ObjetosDeServiço> ObjetosDeServiço { get; set; }
         public virtual DbSet<OrigemDestinoFh> OrigemDestinoFh { get; set; }
+        public virtual DbSet<LinhasFolhaHoras> LinhasFolhaHoras { get; set; }
         public virtual DbSet<PercursosEAjudasCustoDespesasFolhaDeHoras> PercursosEAjudasCustoDespesasFolhaDeHoras { get; set; }
         public virtual DbSet<PerfisModelo> PerfisModelo { get; set; }
         public virtual DbSet<PerfisUtilizador> PerfisUtilizador { get; set; }
@@ -100,7 +101,7 @@ namespace Hydra.Such.Data.Database
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH_TST;user id=such_portal_user;password=SuchPW.2K17;");
+                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;");
                 
             }
         }
@@ -3373,6 +3374,136 @@ namespace Hydra.Such.Data.Database
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.Descrição).HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<LinhasFolhaHoras>(entity =>
+            {
+                entity.HasKey(e => new { e.NoFolhaHoras, e.NoLinha });
+
+                entity.ToTable("Linhas Folha Horas");
+
+                entity.Property(e => e.NoFolhaHoras)
+                    .HasColumnName("No_Folha_Horas")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NoLinha)
+                    .HasColumnName("No_Linha")
+                    .HasColumnType("int")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.TipoCusto)
+                    .HasColumnName("Tipo_Custo")
+                    .HasColumnType("int");
+
+                entity.Property(e => e.CodTipoCusto)
+                    .HasColumnName("Cod_Tipo_Custo")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DescricaoTipoCusto)
+                    .HasColumnName("Descricao_Tipo_Custo")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Quantidade)
+                    .HasColumnName("Quantidade")
+                    .HasColumnType("decimal(, 20)");
+
+                entity.Property(e => e.CustoUnitario)
+                    .HasColumnName("Custo_Unitario")
+                    .HasColumnType("decimal(, 20)");
+
+                entity.Property(e => e.CustoTotal)
+                    .HasColumnName("Custo_Total")
+                    .HasColumnType("decimal(, 20)");
+
+                entity.Property(e => e.PrecoUnitario)
+                    .HasColumnName("Preco_Unitario")
+                    .HasColumnType("decimal(, 20)");
+
+                entity.Property(e => e.PrecoVenda)
+                    .HasColumnName("Preco_Venda")
+                    .HasColumnType("decimal(, 20)");
+
+                entity.Property(e => e.CodOrigem)
+                    .HasColumnName("Cod_Origem")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DescricaoOrigem)
+                    .HasColumnName("Descricao_Origem")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.CodDestino)
+                    .HasColumnName("Cod_Destino")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DescricaoDestino)
+                    .HasColumnName("Descricao_Destino")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Distancia)
+                    .HasColumnName("Distancia")
+                    .HasColumnType("decimal(, 20)");
+
+                entity.Property(e => e.DistanciaPrevista)
+                    .HasColumnName("Distancia_Prevista")
+                    .HasColumnType("decimal(, 20)");
+
+                entity.Property(e => e.RubricaSalarial)
+                    .HasColumnName("Rubrica_Salarial")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.RegistarSubsidiosPremios)
+                    .HasColumnName("Registar_Subsidios_Premios");
+
+                entity.Property(e => e.Observacao)
+                    .HasColumnName("Observacao")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.RubricaSalarial2)
+                    .HasColumnName("Rubrica_Salarial2")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DataDespesa)
+                    .HasColumnName("Data_Despesa")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Funcionario)
+                    .HasColumnName("Funcionario")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodRegiao)
+                    .HasColumnName("Cod_Regiao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodArea)
+                    .HasColumnName("Cod_Area")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodCresp)
+                    .HasColumnName("Cod_Cresp")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CalculoAutomatico)
+                    .HasColumnName("Calculo_Automatico");
+
+                entity.Property(e => e.Matricula)
+                    .HasColumnName("Matricula")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("Utilizador_Criacao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DataHoraCriacao)
+                    .HasColumnName("Data_Hora_Criacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("Utilizador_Modificacao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DataHoraModificacao)
+                    .HasColumnName("Data_Hora_Modificacao")
+                    .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<PercursosEAjudasCustoDespesasFolhaDeHoras>(entity =>
