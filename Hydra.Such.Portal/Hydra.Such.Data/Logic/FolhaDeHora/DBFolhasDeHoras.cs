@@ -96,7 +96,6 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 return false;
             }
         }
-        #endregion
 
         public static List<FolhasDeHoras> GetAllByArea(int AreaId)
         {
@@ -112,6 +111,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 return null;
             }
         }
+        
+        #endregion
 
         public static List<FolhaDeHorasViewModel> GetAllByAreaToList(int AreaId)
         {
@@ -125,68 +126,72 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Area = FH.Área,
                         AreaTexto = FH.Área.ToString(),
                         ProjetoNo = FH.NºProjeto,
-                        ProjetoDescricao = "",
+                        ProjetoDescricao = FH.ProjetoDescricao,
                         EmpregadoNo = FH.NºEmpregado,
+                        EmpregadoNome = FH.NomeEmpregado,
                         DataHoraPartida = FH.DataHoraPartida,
-                        DataPartidaTexto = FH.DataHoraPartida.Value.ToShortDateString(),
-                        HoraPartidaTexto = FH.DataHoraPartida.Value.ToShortTimeString(),
+                        DataPartidaTexto = FH.DataHoraPartida.Value.ToString("yyyy-MM-dd"),
+                        HoraPartidaTexto = FH.DataHoraPartida.Value.ToString("HH:mm:ss"),
                         DataHoraChegada = FH.DataHoraChegada,
-                        DataChegadaTexto = FH.DataHoraChegada.Value.ToShortDateString(),
-                        HoraChegadaTexto = FH.DataHoraChegada.Value.ToShortTimeString(),
+                        DataChegadaTexto = FH.DataHoraChegada.Value.ToString("yyyy-MM-dd"),
+                        HoraChegadaTexto = FH.DataHoraChegada.Value.ToString("HH:mm:ss"),
                         TipoDeslocacao = FH.TipoDeslocação,
                         TipoDeslocacaoTexto = FH.TipoDeslocação.ToString(),
                         CodigoTipoKms = FH.CódigoTipoKmS,
+                        Matricula = FH.Matrícula,
                         DeslocacaoForaConcelho = FH.DeslocaçãoForaConcelho,
                         DeslocacaoForaConcelhoTexto = FH.DeslocaçãoForaConcelho.ToString(),
-                        Validadores = FH.Validadores,
+                        DeslocacaoPlaneada = FH.DeslocaçãoPlaneada,
+                        DeslocacaoPlaneadaTexto = FH.DeslocaçãoPlaneada.ToString(),
+                        Terminada = FH.Terminada,
+                        TerminadaTexto = FH.Terminada.ToString(),
                         Estado = FH.Estado,
                         Estadotexto = FH.Estado.ToString(),
                         CriadoPor = FH.CriadoPor,
                         DataHoraCriacao = FH.DataHoraCriação,
-                        DataCriacaoTexto = FH.DataHoraCriação.Value.ToShortDateString(),
-                        HoraCriacaoTexto = FH.DataHoraCriação.Value.ToShortTimeString(),
-                        DataHoraUltimoEstado = FH.DataHoraÚltimoEstado,
-                        DataUltimoEstadoTexto = FH.DataHoraÚltimoEstado.Value.ToShortDateString(),
-                        HoraUltimoEstadoTexto = FH.DataHoraÚltimoEstado.Value.ToShortTimeString(),
-                        //abarros_
-                        //UtilizadorCriacao = FH.UtilizadorCriação,
-                        DataHoraModificacao = FH.DataHoraModificação,
-                        DataModificacaoTexto = FH.DataHoraModificação.Value.ToShortDateString(),
-                        HoraModificacaoTexto = FH.DataHoraModificação.Value.ToShortTimeString(),
-                        UtilizadorModificacao = FH.UtilizadorModificação,
-                        EmpregadoNome = FH.NomeEmpregado,
-                        Matricula = FH.Matrícula,
-                        Terminada = FH.Terminada,
-                        TerminadaTexto = FH.Terminada.ToString(),
+                        DataCriacaoTexto = FH.DataHoraCriação.Value.ToString("yyyy-MM-dd"),
+                        HoraCriacaoTexto = FH.DataHoraCriação.Value.ToString("HH:mm:ss"),
+                        CodigoRegiao = FH.CódigoRegião,
+                        CodigoAreaFuncional = FH.CódigoÁreaFuncional,
+                        CodigoCentroResponsabilidade = FH.CódigoCentroResponsabilidade,
                         TerminadoPor = FH.TerminadoPor,
                         DataHoraTerminado = FH.DataHoraTerminado,
-                        DataTerminadoTexto = FH.DataHoraTerminado.Value.ToShortDateString(),
-                        HoraTerminadoTexto = FH.DataHoraTerminado.Value.ToShortTimeString(),
+                        DataTerminadoTexto = FH.DataHoraTerminado.Value.ToString("yyyy-MM-dd"),
+                        HoraTerminadoTexto = FH.DataHoraTerminado.Value.ToString("HH:mm:ss"),
                         Validado = FH.Validado,
                         ValidadoTexto = FH.Validado.ToString(),
-                        DeslocacaoPlaneada = FH.DeslocaçãoPlaneada,
-                        DeslocacaoPlaneadaTexto = FH.DeslocaçãoPlaneada.ToString(),
+                        Validadores = FH.Validadores,
+                        Validador = FH.Validador,
+                        DataHoraValidacao = FH.DataHoraValidação,
+                        DataValidacaoTexto = FH.DataHoraValidação.Value.ToString("yyyy-MM-dd"),
+                        HoraValidacaoTexto = FH.DataHoraValidação.Value.ToString("HH:mm:ss"),
+                        IntegradorEmRH = FH.IntegradorEmRh,
+                        IntegradoresEmRH = FH.IntegradoresEmRh,
+                        DataIntegracaoEmRH = FH.DataIntegraçãoEmRh,
+                        DataIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh.Value.ToString("yyyy-MM-dd"),
+                        HoraIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh.Value.ToString("HH:mm:ss"),
+                        IntegradorEmRHKM = FH.IntegradorEmRhKm,
+                        IntegradoresEmRHKM = FH.IntegradoresEmRhkm,
+                        DataIntegracaoEmRHKM = FH.DataIntegraçãoEmRhKm,
+                        DataIntegracaoEmRHKMTexto = FH.DataIntegraçãoEmRhKm.Value.ToString("yyyy-MM-dd"),
+                        HoraIntegracaoEmRHKMTexto = FH.DataIntegraçãoEmRhKm.Value.ToString("HH:mm:ss"),
+                        CustoTotalAjudaCusto = Convert.ToDecimal(FH.CustoTotalAjudaCusto),
+                        CustoTotalHoras = Convert.ToDecimal(FH.CustoTotalHoras),
+                        CustoTotalKM = Convert.ToDecimal(FH.CustoTotalKm),
+                        NumTotalKM = Convert.ToDecimal(FH.NumTotalKm),
                         Observacoes = FH.Observações,
                         Responsavel1No = FH.NºResponsável1,
                         Responsavel2No = FH.NºResponsável2,
                         Responsavel3No = FH.NºResponsável3,
                         ValidadoresRHKM = FH.ValidadoresRhKm,
-                        CodigoRegiao = FH.CódigoRegião,
-                        CodigoAreaFuncional = FH.CódigoÁreaFuncional,
-                        CodigoCentroResponsabilidade = FH.CódigoCentroResponsabilidade,
-                        Validador = FH.Validador,
-                        DataHoraValidacao = FH.DataHoraValidação,
-                        DataValidacaoTexto = FH.DataHoraValidação.Value.ToShortDateString(),
-                        HoraValidacaoTexto = FH.DataHoraValidação.Value.ToShortTimeString(),
-                        IntegradorEmRH = FH.IntegradorEmRh,
-                        DataIntegracaoEmRH = FH.DataIntegraçãoEmRh,
-                        DataIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh.Value.ToShortDateString(),
-                        HoraIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh.Value.ToShortTimeString(),
-                        IntegradorEmRHKM = FH.IntegradorEmRhKm,
-                        DataIntegracaoEmRHKM = FH.DataIntegraçãoEmRhKm,
-                        DataIntegracaoEmRHKMTexto = FH.DataIntegraçãoEmRhKm.Value.ToShortDateString(),
-                        HoraIntegracaoEmRHKMTexto = FH.DataIntegraçãoEmRhKm.Value.ToShortTimeString()
-                    }).ToList(); ;
+                        DataHoraUltimoEstado = FH.DataHoraÚltimoEstado,
+                        DataUltimoEstadoTexto = FH.DataHoraÚltimoEstado.Value.ToString("yyyy-MM-dd"),
+                        HoraUltimoEstadoTexto = FH.DataHoraÚltimoEstado.Value.ToString("HH:mm:ss"),
+                        UtilizadorModificacao = FH.UtilizadorModificação,
+                        DataHoraModificacao = FH.DataHoraModificação,
+                        DataModificacaoTexto = FH.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
+                        HoraModificacaoTexto = FH.DataHoraModificação.Value.ToString("HH:mm:ss")
+                    }).ToList();
                 }
             }
             catch (Exception ex)
@@ -194,8 +199,5 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 return null;
             }
         }
-
-        #region PERCURSO
-        #endregion
     }
 }

@@ -126,38 +126,39 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         FolhaDeHorasNo = MaoDeObra.NºFolhaDeHoras,
                         LinhaNo = MaoDeObra.NºLinha,
                         Date = MaoDeObra.Date,
-                        EmpregadoNo = MaoDeObra.NºEmpregado,
+                        DateTexto = MaoDeObra.Date.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
                         ProjetoNo = MaoDeObra.NºProjeto,
+                        EmpregadoNo = MaoDeObra.NºEmpregado,
                         CodigoTipoTrabalho = MaoDeObra.CódigoTipoTrabalho,
-                        HoraInicio = Convert.ToDateTime("1753-01-01 " + MaoDeObra.HoraInício),
+                        HoraInicio = Convert.ToDateTime(DateTime.Now.Date + " " + MaoDeObra.HoraInício).ToShortTimeString(),
                         HoraInicioTexto = MaoDeObra.HoraInício.ToString(),
-                        HoraFim = Convert.ToDateTime("1753-01-01 " + MaoDeObra.HoraFim),
-                        HoraFimTexto = MaoDeObra.HoraFim.ToString(),
                         HorarioAlmoco = MaoDeObra.HorárioAlmoço,
+                        HoraFim = Convert.ToDateTime(DateTime.Now.Date + " " + MaoDeObra.HoraFim).ToShortTimeString(),
+                        HoraFimTexto = MaoDeObra.HoraFim.ToString(),
                         HorarioJantar = MaoDeObra.HorárioJantar,
                         CodigoFamiliaRecurso = MaoDeObra.CódigoFamíliaRecurso,
+                        CodigoTipoOM = MaoDeObra.CódigoTipoOm,
+                        HorasNo = Convert.ToDateTime(DateTime.Now.Date + " " + MaoDeObra.NºDeHoras).ToShortTimeString(),
+                        HorasNoTexto = MaoDeObra.NºDeHoras.ToString(),
+                        CustoUnitarioDireto = Convert.ToDecimal(MaoDeObra.CustoUnitárioDireto),
+                        CodigoCentroResponsabilidade = MaoDeObra.CodigoCentroResponsabilidade,
+                        PrecoTotal = Convert.ToDecimal(MaoDeObra.PreçoTotal),
+                        Descricao = MaoDeObra.Descricao,
                         RecursoNo = MaoDeObra.NºRecurso,
                         CodigoUnidadeMedida = MaoDeObra.CódUnidadeMedida,
-                        CodigoTipoOM = MaoDeObra.CódigoTipoOm,
-                        //abarros_
-                        //HorasNo = Convert.ToDateTime("1753-01-01 " + MaoDeObra.NºDeHotas),
-                        //HorasNoTexto = MaoDeObra.NºDeHotas.ToString(),
-                        CustoUnitarioDireto = Convert.ToDecimal(MaoDeObra.CustoUnitárioDireto),
                         PrecoDeCusto = Convert.ToDecimal(MaoDeObra.PreçoDeCusto),
                         PrecoDeVenda = Convert.ToDecimal(MaoDeObra.PreçoDeVenda),
-                        PrecoTotal = Convert.ToDecimal(MaoDeObra.PreçoTotal),
-                        DataHoraCriacao = MaoDeObra.DataHoraCriação,
-                        DataHoraCriacaoTexto = MaoDeObra.DataHoraCriação.Value.ToShortDateString(),
                         UtilizadorCriacao = MaoDeObra.UtilizadorCriação,
+                        DataHoraCriacao = MaoDeObra.DataHoraCriação,
+                        DataHoraCriacaoTexto = MaoDeObra.DataHoraCriação.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        UtilizadorModificacao = MaoDeObra.UtilizadorModificação,
                         DataHoraModificacao = MaoDeObra.DataHoraModificação,
-                        DataHoraModificacaoTexto = MaoDeObra.DataHoraModificação.Value.ToShortDateString(),
-                        UtilizadorModificacao = MaoDeObra.UtilizadorModificação
-                    }).ToList(); ;
+                        DataHoraModificacaoTexto = MaoDeObra.DataHoraModificação.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                    }).ToList();
                 }
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
