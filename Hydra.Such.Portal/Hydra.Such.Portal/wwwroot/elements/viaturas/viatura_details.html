@@ -14,6 +14,8 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html" />
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html" />
 
 <dom-module id="x-viaturadetails">
     <template>
@@ -48,6 +50,20 @@
             paper-button {
                 margin-top: 10px;
             }
+
+            vaadin-upload {
+                padding: 0px;
+            }
+
+            .grey {
+                color: rgba(48, 64, 84, 0.61);
+            }
+
+            vaadin-upload {
+                --primary-color: rgba(48, 64, 84, 0.06);
+                --paper-font-button_-_font-size: 13px;
+                --primary-font-color: rgba(48, 64, 84, 0.91);
+            }
         </style>
 
 
@@ -57,6 +73,8 @@
         <iron-ajax url="/PopulateDropdowns/GetViaturasTiposPropriedade" last-response="{{LTiposPropriedade}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturasEstado" last-response="{{LEstado}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturasCombustivel" last-response="{{LCombustivel}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturasCartaoCombustivel" last-response="{{LCartaoCombustivel}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturasApolices" last-response="{{LApolice}}" aut auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/GetViaturasModelosByMarca"
                    last-response="{{LModelos}}"
@@ -289,7 +307,16 @@
                                     </div>
 
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.cartaoCombustivel}}" id="CartaoCombustivel" name="CartaoCombustivel" label="Cartão Combustível" maxlength="20"></vaadin-text-field>
+                                        <vaadin-combo-box items="[[LCartaoCombustivel]]" id="CartaoCombustivel" name="CartaoCombustivel" item-value-path="id" item-label-path="value" value="{{data.cartaoCombustivel}}" label="Cartão Combustível">
+                                            <template>
+                                                <table width="200px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"><b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
                                     </div>
 
                                     <div class="col-lg-3">
@@ -299,7 +326,17 @@
 
                                 <div class="row break_clear">
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.apolice}}" id="Apolice" name="Apolice" label="Apólice" maxlength="20"></vaadin-text-field>
+
+                                        <vaadin-combo-box items="[[LApolice]]" id="Apolice" name="Apolice" item-value-path="id" item-label-path="value" value="{{data.apolice}}" label="Apólice">
+                                            <template>
+                                                <table width="200px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"><b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
                                     </div>
 
                                     <div class="col-lg-3">
@@ -328,8 +365,9 @@
                                         </vaadin-text-field>
                                     </div>
 
-                                    <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.imagem}}" id="Imagem" name="Imagem" label="Imagem"></vaadin-text-field>
+                                    <div class="col-lg-6">
+                                        <label part="label" id="vaadin-text-field-label" class="grey">Imagem</label>
+                                        <vaadin-upload value="{{data.imagem}}" id="Imagem" name="Imagem" label="Imagem" nodrop max-files="1" accept='image/*'></vaadin-upload>
                                     </div>
                                 </div>
 

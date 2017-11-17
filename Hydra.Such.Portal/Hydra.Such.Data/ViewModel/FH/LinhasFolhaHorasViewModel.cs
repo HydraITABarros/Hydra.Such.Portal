@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace Hydra.Such.Data.Database
+namespace Hydra.Such.Data.ViewModel.FH
 {
-    public partial class LinhasFolhaHoras
+    public class LinhasFolhaHorasViewModel
     {
         public string NoFolhaHoras { get; set; }
         public int NoLinha { get; set; }
@@ -26,6 +27,7 @@ namespace Hydra.Such.Data.Database
         public string Observacao { get; set; }
         public string RubricaSalarial2 { get; set; }
         public DateTime? DataDespesa { get; set; }
+        public string DataDespesaTexto { get; set; }
         public string Funcionario { get; set; }
         public string CodRegiao { get; set; }
         public string CodArea { get; set; }
@@ -34,7 +36,9 @@ namespace Hydra.Such.Data.Database
         public string Matricula { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataHoraCriacao { get; set; }
+        public string DataHoraCriacaoTexto { get; set; }
         public string UtilizadorModificacao { get; set; }
         public DateTime? DataHoraModificacao { get; set; }
+        public string DataHoraModificacaoTexto { get; set; }
     }
 }

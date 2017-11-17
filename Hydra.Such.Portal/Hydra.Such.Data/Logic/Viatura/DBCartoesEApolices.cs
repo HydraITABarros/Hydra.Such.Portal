@@ -43,6 +43,21 @@ namespace Hydra.Such.Data.Logic.Viatura
             }
         }
 
+        public static List<CartõesEApólices> GetAllByType(int type)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.CartõesEApólices.Where(c => c.Tipo == type).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static CartõesEApólices Create(CartõesEApólices ObjectToCreate)
         {
             try

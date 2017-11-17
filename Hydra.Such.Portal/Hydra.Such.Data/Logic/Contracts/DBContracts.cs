@@ -297,7 +297,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 VersionNo = x.NºVersão,
                 Area = x.Área,
                 Description = x.Descrição,
-                Status = x.Estado + 1,
+                Status = x.Estado,
                 ChangeStatus = x.EstadoAlteração,
                 ClientNo = x.NºCliente,
                 CodeRegion = x.CódigoRegião,
