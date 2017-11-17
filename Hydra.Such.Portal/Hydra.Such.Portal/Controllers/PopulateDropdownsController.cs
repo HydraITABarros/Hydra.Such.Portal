@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authorization;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.Logic.Contracts;
 using Hydra.Such.Data.Logic.FolhaDeHora;
+using Hydra.Such.Data.Logic.Viatura;
+using Hydra.Such.Data.ViewModel.Viaturas;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -266,7 +268,7 @@ namespace Hydra.Such.Portal.Controllers
                     result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name, extra = x.MeasureUnit }).ToList();
                     break;
                 case 2:
-                    result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName,"", "", 0, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name, extra = x.MeasureUnit }).ToList();
+                    result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name, extra = x.MeasureUnit }).ToList();
                     break;
                 case 3:
                     result = DBNAV2017CGAccounts.GetAllCGAccounts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name }).ToList();
@@ -298,7 +300,8 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetClientServices([FromBody] string ClientNo)
         {
-            List<DDMessage> result = DBClientServices.GetAllFromClientWithDescription(ClientNo).Select(x => new DDMessage() {
+            List<DDMessage> result = DBClientServices.GetAllFromClientWithDescription(ClientNo).Select(x => new DDMessage()
+            {
                 id = x.ServiceCode,
                 value = x.ServiceDescription
             }).ToList();
@@ -349,7 +352,8 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetRegionCode()
         {
-            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1,User.Identity.Name).Select(x => new DDMessageString() {
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name).Select(x => new DDMessageString()
+            {
                 id = x.Code,
                 value = x.Name
             }).ToList();
@@ -394,7 +398,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetLocations()
         {
-            List<DDMessageString> result = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Select( x => new DDMessageString()
+            List<DDMessageString> result = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
             {
                 id = x.Code,
                 value = x.Name
@@ -416,7 +420,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetEmployees()
         {
-            List<DDMessageString> result = DBNAV2009Employees.GetAll("",_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            List<DDMessageString> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
             {
                 id = x.No,
                 value = x.Name
@@ -483,7 +487,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = x.Code,
                 value = x.Name,
-                extra = x.MeasureUnit                
+                extra = x.MeasureUnit
             }).ToList(); return Json(result);
         }
 
@@ -499,7 +503,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
         #endregion
-        
+
 
         public JsonResult GetProjectType()
         {
@@ -525,7 +529,8 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetNAVShippingAddresses()
         {
 
-            List<DDMessageString> result = DBNAV2017ShippingAddresses.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString() {
+            List<DDMessageString> result = DBNAV2017ShippingAddresses.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
+            {
                 id = X.Code,
                 value = X.Name
             }).ToList();
@@ -707,7 +712,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(BoolValues);
         }
         // zpgm.>
-        
+
         [HttpPost]
         public JsonResult GetDimensions()
         {
@@ -749,7 +754,81 @@ namespace Hydra.Such.Portal.Controllers
             return Json(BoolValues);
         }
 
-        
+        [HttpPost]
+        public JsonResult GetViaturasTipos()
+        {
+            List<DDMessageString> result = DBTiposViaturas.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.CódigoTipo.ToString(),
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+
+        [HttpPost]
+        public JsonResult GetViaturasMarcas()
+        {
+            List<DDMessageString> result = DBMarcas.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.CódigoMarca.ToString(),
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturasModelos()
+        {
+            List<DDMessageString> result = DBModelos.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.CódigoModelo.ToString(),
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+
+        [HttpPost]
+        public JsonResult GetViaturasModelosByMarca([FromBody]DDMessage marca)
+        {
+
+            List<DDMessageString> result = DBModelos.GetAllByMarca(marca.id).Select(x => new DDMessageString()
+            {
+                id = x.CódigoModelo.ToString(),
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturasTiposPropriedade()
+        {
+            List<EnumData> result = EnumerablesFixed.ViaturasTipoPropriedade;
+            return Json(result);
+        }
+
+
+        [HttpPost]
+        public JsonResult GetViaturasEstado()
+        {
+            List<EnumData> result = EnumerablesFixed.ViaturasEstado;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturasCombustivel()
+        {
+            List<EnumData> result = EnumerablesFixed.ViaturasTipoCombustivel;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetTipoCartoesEApolices()
+        {
+            List<EnumData> result = EnumerablesFixed.TipoCartoesEApolices;
+            return Json(result);
+        }
     }
 
     public class DDMessage

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Hydra.Such.Data.ViewModel.Projects;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Options;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.NAV;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -449,7 +451,7 @@ namespace Hydra.Such.Portal.Controllers
                     ServiceGroupCode = x.CódGrupoServiço,
                     ResidueGuideNo = x.NºGuiaResíduos,
                     ExternalGuideNo = x.NºGuiaExterna,
-                    ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
+                    ConsumptionDate =x.DataConsumo == null ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                     InvoiceToClientNo = x.FaturaANºCliente,
                     ServiceClientCode = x.CódServiçoCliente
                 }).ToList();
@@ -483,7 +485,9 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             //Update or Create
-            dp.ForEach(x =>
+            try
+            {
+ dp.ForEach(x =>
             {
                 DiárioDeProjeto newdp = new DiárioDeProjeto()
                 {
@@ -535,7 +539,72 @@ namespace Hydra.Such.Portal.Controllers
                     DBProjectDiary.Create(newdp);
                 }
             });
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+           
 
+            return Json(dp);
+        }
+
+        public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo)
+        {
+            //Create
+                dp.ForEach(x =>
+                {
+                    DiárioDeProjeto newdp = new DiárioDeProjeto()
+                    {
+                        NºLinha = x.LineNo,
+                        NºProjeto = x.ProjectNo,
+                        Data = x.Date == "" || x.Date == String.Empty ? (DateTime?)null : DateTime.Parse(x.Date),
+                        TipoMovimento = x.MovementType,
+                        Tipo = x.Type,
+                        Código = x.Code,
+                        Descrição = x.Description,
+                        Quantidade = x.Quantity,
+                        CódUnidadeMedida = x.MeasurementUnitCode,
+                        CódLocalização = x.LocationCode,
+                        GrupoContabProjeto = x.ProjectContabGroup,
+                        CódigoRegião = x.RegionCode,
+                        CódigoÁreaFuncional = x.FunctionalAreaCode,
+                        CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
+                        Utilizador = User.Identity.Name,
+                        CustoUnitário = x.UnitCost,
+                        CustoTotal = x.TotalCost,
+                        PreçoUnitário = x.UnitPrice,
+                        PreçoTotal = x.TotalPrice,
+                        Faturável = x.Billable,
+                        Registado = false,
+                        FaturaANºCliente = x.InvoiceToClientNo,
+                        Moeda = x.Currency,
+                        ValorUnitárioAFaturar = x.UnitValueToInvoice,
+                        TipoRefeição = x.MealType,
+                        CódGrupoServiço = x.ServiceGroupCode,
+                        NºGuiaResíduos = x.ResidueGuideNo,
+                        NºGuiaExterna = x.ExternalGuideNo,
+                        DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
+                        CódServiçoCliente = x.ServiceClientCode
+
+                    };
+
+                    if (x.LineNo > 0)
+                    {
+                        newdp.Faturada = x.Billed;
+                        newdp.DataHoraModificação = DateTime.Now;
+                        newdp.UtilizadorModificação = User.Identity.Name;
+                        DBProjectDiary.Update(newdp);
+                    }
+                    else
+                    {
+                        newdp.Faturada = false;
+                        newdp.DataHoraCriação = DateTime.Now;
+                        newdp.UtilizadorCriação = User.Identity.Name;
+                        DBProjectDiary.Create(newdp);
+                    }
+                });
+            
             return Json(dp);
         }
 
@@ -728,10 +797,42 @@ namespace Hydra.Such.Portal.Controllers
             return Json(dp);
         }
 
+        [HttpPost]
+        public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo , bool allProjs)
+        {
+            List<ProjectDiaryViewModel> dp = DBProjectDiary.GetRegisteredDiaryDp(ProjectNo, User.Identity.Name, allProjs).Select(x => new ProjectDiaryViewModel()
+            {
+                LineNo = x.NºLinha,
+                ProjectNo = x.NºProjeto,
+                Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                MovementType = x.TipoMovimento,
+                Type = x.Tipo,
+                Code = x.Código,
+                Description = x.Descrição,
+                Quantity = x.Quantidade,
+                MeasurementUnitCode = x.CódUnidadeMedida,
+                LocationCode = x.CódLocalização,
+                ProjectContabGroup = x.GrupoContabProjeto,
+                RegionCode = x.CódigoRegião,
+                FunctionalAreaCode = x.CódigoÁreaFuncional,
+                ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
+                User = x.Utilizador,
+                UnitCost = x.CustoUnitário,
+                TotalCost = x.CustoTotal,
+                UnitPrice = x.PreçoUnitário,
+                TotalPrice = x.PreçoTotal,
+                Billable = x.Faturável,
+                Registered = x.Registado,
+                ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd")
+            }).ToList();
+
+            return Json(dp);
+        }
+
         //[HttpPost]
         //public JsonResult GetJobLedgerEntries([FromBody] string ProjectNo)
         //{
-            //List<NAVJobLedgerEntryViewModel> result = DBNAV2017JobLedgerEntries.GetFiltered(ProjectNo, null, _config.NAVDatabaseName, _config.NAVCompanyName);
+        //List<NAVJobLedgerEntryViewModel> result = DBNAV2017JobLedgerEntries.GetFiltered(ProjectNo, null, _config.NAVDatabaseName, _config.NAVCompanyName);
 
         //    return Json(result);
         //}

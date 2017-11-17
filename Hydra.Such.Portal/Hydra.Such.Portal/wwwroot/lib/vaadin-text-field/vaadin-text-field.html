@@ -121,6 +121,7 @@ This program is available under Apache License Version 2.0, available at https:/
           aria-describedby$="[[_getActiveErrorId(invalid, errorMessage, _errorId)]]"
           aria-labelledby$="[[_getActiveLabelId(label, _labelId)]]"
           aria-invalid$="[[invalid]]"
+          type="[[type]]"
         >
 
         <slot name="suffix"></slot>
@@ -249,6 +250,13 @@ This program is available under Apache License Version 2.0, available at https:/
              * The pattern must match the entire value, not just some subset.
              */
             pattern: {
+              type: String
+            },
+
+            /**
+            * Type of input.
+            */
+            type: {
               type: String
             },
 
