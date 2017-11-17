@@ -54,11 +54,17 @@
         <!-- DROPDOWNS POPULATE -->
         <iron-ajax url="/PopulateDropdowns/GetViaturasTipos" last-response="{{LTiposViatura}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturasMarcas" last-response="{{LMarcas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetViaturasModelos" last-response="{{LModelos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturasTiposPropriedade" last-response="{{LTiposPropriedade}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturasEstado" last-response="{{LEstado}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturasCombustivel" last-response="{{LCombustivel}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetViaturasModelosByMarca"
+                   last-response="{{LModelos}}"
+                   method="post"
+                   handle-as="json"
+                   id="get_modelos"
+                   on-response="_setModelosResponse"
+                   content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Viaturas/GetViaturaDetails"
                    last-response="{{data}}"
@@ -99,15 +105,15 @@
                             <div>
                                 <div class="row">
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.matricula}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" id="Matricula" name="Matricula" label="Matrícula"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.matricula}}" maxlength="10" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" id="Matricula" name="Matricula" label="Matrícula"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-3">
-                                        <vaadin-date-picker label="Data Matrícula" id="DataMatricula" name="DataMatricula" required value="{{data.dataMatricula}}"></vaadin-date-picker>
+                                        <vaadin-date-picker label="Data Matrícula" id="DataMatricula" name="DataMatricula" value="{{data.dataMatricula}}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                     </div>
 
                                     <div class="col-lg-3">
-                                        <vaadin-combo-box items="[[LTiposViatura]]" id="TipoViatura" item-value-path="id" item-label-path="value" value="{{data.codigoTipoViatura}}" label="Tipo Viatura">
+                                        <vaadin-combo-box items="[[LTiposViatura]]" id="TipoViatura" item-value-path="id" item-label-path="value" value="{{data.codigoTipoViatura}}" label="Tipo Viatura" required error-message="Este campo é obrigatório">
                                             <template>
                                                 <table width="200px">
                                                     <tr>
@@ -120,7 +126,7 @@
                                     </div>
 
                                     <div class="col-lg-3">
-                                        <vaadin-combo-box items="[[LMarcas]]" id="Marca" item-value-path="id" item-label-path="value" value="{{data.codigoMarca}}" label="Marca">
+                                        <vaadin-combo-box items="[[LMarcas]]" id="Marca" item-value-path="id" item-label-path="value" value="{{data.codigoMarca}}" label="Marca" required error-message="Este campo é obrigatório" on-change="_getModelos">
                                             <template>
                                                 <table width="200px">
                                                     <tr>
@@ -135,7 +141,7 @@
 
                                 <div class="row break_clear">
                                     <div class="col-lg-3">
-                                        <vaadin-combo-box items="[[LModelos]]" id="Modelo" item-value-path="id" item-label-path="value" value="{{data.codigoModelo}}" label="Modelo">
+                                        <vaadin-combo-box items="[[LModelos]]" id="Modelo" item-value-path="id" item-label-path="value" value="{{data.codigoModelo}}" label="Modelo" required error-message="Este campo é obrigatório">
                                             <template>
                                                 <table width="200px">
                                                     <tr>
@@ -174,11 +180,11 @@
                                     </div>
 
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.atribuidaA}}" id="AtribuiaA" name="AtribuidaA" label="Atribuida a"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.atribuidaA}}" id="AtribuiaA" name="AtribuidaA" label="Atribuida a" maxlength="20"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.localParqueamento}}" id="LocalParqueamento" name="LocalParqueamento" label="Local Parqueamento"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.localParqueamento}}" id="LocalParqueamento" name="LocalParqueamento" label="Local Parqueamento" maxlength="80"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-3">
@@ -212,36 +218,42 @@
                                     </div>
 
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.nLugares}}" type="number" id="NLugares" name="NLugares" label="Nº Lugares"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.nLugares}}" type="number" id="NLugares" name="NLugares" label="Nº Lugares" pattern="[0-9]*"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.cor}}" id="Cor" name="Cor" label="Cor"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.cor}}" id="Cor" name="Cor" label="Cor" maxlength="20"></vaadin-text-field>
                                     </div>
                                 </div>
 
                                 <div class="row break_clear">
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.pesoBruto}}" type="number" id="PesoBruto" name="PesoBruto" label="Peso Bruto"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.pesoBruto}}" type="number" id="PesoBruto" name="PesoBruto" label="Peso Bruto" pattern="[0-9]*">
+                                            <div slot="suffix">kg</div>
+                                        </vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.tara}}" type="number" id="Tara" name="Tara" label="Tara"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.tara}}" type="number" id="Tara" name="Tara" label="Tara" pattern="[0-9]*"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.cilindrada}}" type="number" id="Cilindrada" name="Cilindrada" label="Cilindrada"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.cilindrada}}" type="number" id="Cilindrada" name="Cilindrada" label="Cilindrada" pattern="[0-9]*"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.potencia}}" type="number" id="Potencia" name="Potencia" label="Potência"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.potencia}}" type="number" id="Potencia" name="Potencia" label="Potência" pattern="[0-9]*">
+                                            <div slot="suffix"></div>
+                                        </vaadin-text-field>
                                     </div>
                                 </div>
 
 
                                 <div class="row break_clear">
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.distanciaEntreEixos}}" type="number" id="DistanciaEntreEixos" name="DistanciaEntreEixos" label="Distancia Entre Eixos"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.distanciaEntreEixos}}" type="number" id="DistanciaEntreEixos" name="DistanciaEntreEixos" label="Distancia Entre Eixos" pattern="[0-9]*">
+                                            <div slot="suffix"></div>
+                                        </vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-3">
@@ -253,13 +265,13 @@
                                     </div>
 
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.nQuadro}}" id="NQuadro" name="NQuadro" label="Nº Quadro"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.nQuadro}}" id="NQuadro" name="NQuadro" label="Nº Quadro" maxlength="25"></vaadin-text-field>
                                     </div>
                                 </div>
 
                                 <div class="row break_clear">
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.consumoIndicativo}}" type="number" id="ConsumoIndicativo" name="ConsumoIndicativo" label="Consumo Indicativo"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.consumoIndicativo}}" type="number" id="ConsumoIndicativo" name="ConsumoIndicativo" label="Consumo Indicativo" pattern="[0-9]*"></vaadin-text-field>
                                     </div>
                                 </div>
 
@@ -269,7 +281,7 @@
                             <div>
                                 <div class="row break_clear">
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.cartaVerde}}" id="CartaVerde" name="CartaVerde" label="Carta Verde"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.cartaVerde}}" id="CartaVerde" name="CartaVerde" label="Carta Verde" maxlength="80"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-3">
@@ -277,7 +289,7 @@
                                     </div>
 
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.cartaoCombustivel}}" id="CartaoCombustivel" name="CartaoCombustivel" label="Cartão Combustível"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.cartaoCombustivel}}" id="CartaoCombustivel" name="CartaoCombustivel" label="Cartão Combustível" maxlength="20"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-3">
@@ -287,7 +299,7 @@
 
                                 <div class="row break_clear">
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.apolice}}" id="Apolice" name="Apolice" label="Apólice"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.apolice}}" id="Apolice" name="Apolice" label="Apólice" maxlength="20"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-3">
@@ -295,7 +307,7 @@
                                     </div>
 
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.nViaVerde}}" id="NViaVerde" name="NViaVerde" label="Nº Via Verde"></vaadin-text-field>
+                                        <vaadin-text-field value="{{data.nViaVerde}}" id="NViaVerde" name="NViaVerde" label="Nº Via Verde" maxlength="50"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-3">
@@ -305,13 +317,13 @@
 
                                 <div class="row break_clear">
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.valorAquisicao}}" type="number" id="ValorAquisicao" name="ValorAquisicao" label="Valor Aquisição">
+                                        <vaadin-text-field value="{{data.valorAquisicao}}" type="number" id="ValorAquisicao" name="ValorAquisicao" label="Valor Aquisição" pattern="[0-9]*">
                                             <div slot="suffix">€</div>
                                         </vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-3">
-                                        <vaadin-text-field value="{{data.valorVenda}}" type="number" id="ValorVenda" name="ValorVenda" label="Valor Venda">
+                                        <vaadin-text-field value="{{data.valorVenda}}" type="number" id="ValorVenda" name="ValorVenda" label="Valor Venda" pattern="[0-9]*">
                                             <div slot="suffix">€</div>
                                         </vaadin-text-field>
                                     </div>
@@ -452,6 +464,8 @@
                     var self = this;
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetViatura") !== -1) {
+                            this._getModelos();
+                            window.data = this.data;
                             if (this.data.matricula == "") {
                                 this._isCreate = true;
                             }
@@ -498,10 +512,24 @@
                 },
                 _goToNewViatura: function () {
                     window.location.href = "../DetalhesViatura/";
+                },
+                _getModelos: function (e) {
+                    this.$.get_modelos.body = JSON.stringify({ id: this.data.codigoMarca || 0 });
+                    this.$.get_modelos.generateRequest();
+                    if (typeof e != 'undefined') {
+                        this.$.Modelo.value = "";
+                    }
+
+                },
+                _setModelosResponse: function (data) {
+                    if (this.LModelos.length > 0) {
+                        this.$.Modelo.disabled = false;
+                    } else {
+                        this.$.Modelo.disabled = true;
+                    }
                 }
             });
         });
     </script>
 
 </dom-module>
-

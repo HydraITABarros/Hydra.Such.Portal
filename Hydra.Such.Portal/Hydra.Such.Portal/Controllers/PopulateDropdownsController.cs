@@ -788,6 +788,19 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+
+        [HttpPost]
+        public JsonResult GetViaturasModelosByMarca([FromBody]DDMessage marca)
+        {
+
+            List<DDMessageString> result = DBModelos.GetAllByMarca(marca.id).Select(x => new DDMessageString()
+            {
+                id = x.CódigoModelo.ToString(),
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
         [HttpPost]
         public JsonResult GetViaturasTiposPropriedade()
         {

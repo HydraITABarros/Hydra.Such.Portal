@@ -43,6 +43,21 @@ namespace Hydra.Such.Data.Logic.Viatura
             }
         }
 
+        public static List<Modelos> GetAllByMarca(int marca)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Modelos.Where(m => m.CódigoMarca == marca).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static Modelos Create(Modelos ObjectToCreate)
         {
             try
