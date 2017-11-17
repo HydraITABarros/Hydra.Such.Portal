@@ -3388,8 +3388,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NoLinha)
                     .HasColumnName("No_Linha")
-                    .HasColumnType("int")
-                    .ValueGeneratedOnAdd();
+                    .HasColumnType("int");
 
                 entity.Property(e => e.TipoCusto)
                     .HasColumnName("Tipo_Custo")
