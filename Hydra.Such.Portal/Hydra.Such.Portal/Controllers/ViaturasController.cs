@@ -142,5 +142,13 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(false);
         }
+
+        [HttpPost]
+        public JsonResult UploadImage([FromBody] Object data)
+        {
+            return Json(data);
+        }
+
+
     }
 }
