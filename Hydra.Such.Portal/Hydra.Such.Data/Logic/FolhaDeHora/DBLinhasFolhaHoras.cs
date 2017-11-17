@@ -42,21 +42,21 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static List<LinhasFolhaHoras> GetMaxPercursoByFolhaHoraNo(string FolhaHoraNo)
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    //TipoCusto = 1 = KM = PERCURSO
-                    return ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 1).Max
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
+        //public static List<LinhasFolhaHoras> GetMaxPercursoByFolhaHoraNo(string FolhaHoraNo)
+        //{
+        //    try
+        //    {
+        //        using (var ctx = new SuchDBContext())
+        //        {
+        //            //TipoCusto = 1 = KM = PERCURSO
+        //            //return ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 1).Max
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return null;
+        //    }
+        //}
 
         public static List<LinhasFolhaHoras> GetAll()
         {

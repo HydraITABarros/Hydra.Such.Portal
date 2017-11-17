@@ -32,7 +32,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ObjectToCreate.DataHoraCriação = DateTime.Now;
+                    ObjectToCreate.DataHoraCriacao = DateTime.Now;
                     ctx.ConfiguracaoAjudaCusto.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
@@ -52,7 +52,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ObjectToUpdate.DataHoraModificação = DateTime.Now;
+                    ObjectToUpdate.DataHoraModificacao = DateTime.Now;
                     ctx.ConfiguracaoAjudaCusto.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
