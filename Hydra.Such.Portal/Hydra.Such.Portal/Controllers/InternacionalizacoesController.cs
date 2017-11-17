@@ -113,11 +113,22 @@ namespace Hydra.Such.Portal.Controllers {
             }
         }
 
-        public IActionResult DetalhesOportunidade(string id, string version)
+        public IActionResult DetalhesOportunidade(string id, string version = "")
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 8, 20);
             if (UPerm != null && UPerm.Read.Value)
             {
+                Contratos cContract = null;
+                if (version != "")
+                    cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
+                else
+                    cContract = DBContracts.GetByIdLastVersion(id);
+
+                if (cContract != null && cContract.Arquivado == true)
+                {
+                    UPerm.Update = false;
+                }
+
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
                 ViewBag.UPermissions = UPerm;
@@ -148,11 +159,22 @@ namespace Hydra.Such.Portal.Controllers {
             }
         }
 
-        public IActionResult DetalhesProposta(string id, string version)
+        public IActionResult DetalhesProposta(string id, string version = "")
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 8, 20);
             if (UPerm != null && UPerm.Read.Value)
             {
+                Contratos cContract = null;
+                if (version != "")
+                    cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
+                else
+                    cContract = DBContracts.GetByIdLastVersion(id);
+
+                if (cContract != null && cContract.Arquivado == true)
+                {
+                    UPerm.Update = false;
+                }
+
                 ViewBag.ContractNo = id ?? "";
                 ViewBag.VersionNo = version ?? "";
                 ViewBag.UPermissions = UPerm;
