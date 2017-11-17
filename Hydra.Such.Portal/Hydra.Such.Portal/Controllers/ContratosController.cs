@@ -627,8 +627,8 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.NºHorasIntervenção = x.InterventionHours;
                             CLine.NºTécnicos = x.TotalTechinicians;
                             CLine.TipoProposta = x.ProposalType;
-                            CLine.DataInícioVersão = x.VersionStartDate != null ? DateTime.Parse(x.VersionStartDate) : (DateTime?)null;
-                            CLine.DataFimVersão = x.VersionEndDate != null ? DateTime.Parse(x.VersionEndDate) : (DateTime?)null;
+                            CLine.DataInícioVersão = x.VersionStartDate != null && x.VersionStartDate != "" ? DateTime.Parse(x.VersionStartDate) : (DateTime?)null;
+                            CLine.DataFimVersão = x.VersionEndDate != null && x.VersionStartDate != "" ? DateTime.Parse(x.VersionEndDate) : (DateTime?)null;
                             CLine.NºResponsável = x.ResponsibleNo;
                             CLine.CódServiçoCliente = x.ServiceClientNo == 0 ? null : x.ServiceClientNo;
                             CLine.GrupoFatura = x.InvoiceGroup;
@@ -745,7 +745,7 @@ namespace Hydra.Such.Portal.Controllers
                     if (ContractNoDuplicate != line.NºContrato || InvoiceGroupDuplicate != line.GrupoFatura)
                     {
                         ContractNoDuplicate = line.NºContrato;
-                        InvoiceGroupDuplicate = line.GrupoFatura.Value;
+                        InvoiceGroupDuplicate = line.GrupoFatura == null ? 0 : line.GrupoFatura.Value;
 
                         Decimal contractVal = 0;
                         if (item.TipoContrato == 1 || item.TipoContrato == 4)
@@ -775,7 +775,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (line.Quantidade != 0)
                         {
-                            lineQuantity = line.Quantidade.Value;
+                            lineQuantity = line.Quantidade == null ? 0 : line.Quantidade.Value;
                         }
 
                         if (item.ÚltimaDataFatura == null)
@@ -834,7 +834,7 @@ namespace Hydra.Such.Portal.Controllers
                         AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
                         {
                             NºContrato = item.NºDeContrato,
-                            GrupoFatura = line.GrupoFatura.Value,
+                            GrupoFatura = line.GrupoFatura == null ? 0 : line.GrupoFatura.Value,
                             Descrição = item.Descrição,
                             NºCliente = item.NºCliente,
                             CódigoRegião = item.CódigoRegião,
@@ -864,7 +864,7 @@ namespace Hydra.Such.Portal.Controllers
                     LinhasFaturaçãoContrato newInvoiceLine = new LinhasFaturaçãoContrato
                     {
                         NºContrato = line.NºContrato,
-                        GrupoFatura = line.GrupoFatura.Value,
+                        GrupoFatura = line.GrupoFatura == null ? -1 : line.GrupoFatura.Value,
                         NºLinha = line.NºLinha,
                         Tipo = line.Tipo.ToString(),
                         Código = line.Código,
@@ -890,7 +890,6 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
             }
-            DBAuthorizeInvoiceContracts.DeleteAllAllowedInvoiceAndLines();
             return Json(true);
         }
 
