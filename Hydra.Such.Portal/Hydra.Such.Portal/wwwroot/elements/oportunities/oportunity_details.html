@@ -252,10 +252,10 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBRegions]]" id="mCodeRegion" item-value-path="id" item-label-path="value" value="{{data.codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <table width="180px">
+                                                    <table width="300px">
                                                         <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                            <td width="15%">[[item.id]]</td>
+                                                            <td width="85%"> <b>[[item.value]]</b></td>
                                                         </tr>
                                                     </table>
                                                 </template>
@@ -266,10 +266,10 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBFunctionalAreas]]" id="mFunctionalArea" item-value-path="id" item-label-path="value" value="{{data.codeFunctionalArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <table width="180px">
+                                                    <table width="400px">
                                                         <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                            <td width="20%">[[item.id]]</td>
+                                                            <td width="80%"> <b>[[item.value]]</b></td>
                                                         </tr>
                                                     </table>
                                                 </template>
@@ -278,10 +278,10 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="mResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <table width="180px">
+                                                    <table width="350px">
                                                         <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                            <td width="10%">[[item.id]]</td>
+                                                            <td width="90%"> <b>[[item.value]]</b></td>
                                                         </tr>
                                                     </table>
                                                 </template>
@@ -290,22 +290,17 @@
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBFeeUnits]]" id="mFeeUnits" item-value-path="id" item-label-path="value" value="{{data.provisionUnit}}" label="Unidade Prestação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
+                                                    <b>[[item.value]]</b>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBPaymentTerms]]" id="mPaymentTerms" item-value-path="id" item-label-path="value" value="{{data.codePaymentTerms}}" label="Cód. Termos Pagamento" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                                 <template>
-                                                    <table width="180px">
+                                                    <table width="300px">
                                                         <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                            <td width="30%">[[item.id]]</td>
+                                                            <td width="70%"> <b>[[item.value]]</b></td>
                                                         </tr>
                                                     </table>
                                                 </template>
@@ -1335,8 +1330,10 @@
                                     </template>
                                     <template>
                                         <center>
-                                            <template is="dom-if" if="{{ !_permissions.update }}">
-                                                <paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>
+                                            <template is="dom-if" if="{{ _permissions.delete }}">
+                                                <paper-button class="btnRemove" raised disabled="{{ !_permissions.delete }}" on-tap="_deleteContractLine">Eliminar</paper-button>
+
+                                                <!--<paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>-->
                                             </template>
                                         </center>
                                     </template>
@@ -1632,7 +1629,10 @@
                         this.$.mProvisioningFee.validate() &
                         this.$.mc.validate() &
                         this.$.mDisplacementFee.validate() &
-                        this.$.mInvoicePeriods.validate()) {
+                        this.$.mInvoicePeriods.validate() &
+                        this.$.mTotalProposalValue.validate() 
+
+                    ) {
                         return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");
@@ -1931,6 +1931,28 @@
                 _clResponseProcessor: function (data) {
                     if (data.detail.status === 200) {
                         if (!(data.detail.url.indexOf("GetContractLines") !== -1)) {
+                            this._CLContractLineType = "";
+                            this._CLMeasureUnit = "";
+                            this._CLFrequency = "";
+                            this._CLServiceClient = "";
+                            this._CLCode = "";
+                            this._CLUnitPrice = "";
+                            this._CLInterventionHours = "";
+                            this._CLInvoiceGroup = "";
+                            this._CLDescription = "";
+                            this._CLDiscountLine = "";
+                            this._CLTotalTechnicians = "";
+                            this._CLResponsible = "";
+                            this._CLCreateContract = "";
+                            this._CLQuantity = "";
+                            this._CLBillable = true;
+
+                            this._CLRegion = this.data.codeRegion;
+                            this._CLFunctionalArea = this.data.codeFunctionalArea;
+                            this._CLResponsabilityCenter = this.data.codeResponsabilityCenter;
+                            this._CLVersionStartDate = this.data.startData;
+                            this._CLVersionEndDate = this.data.dueDate;
+
                             this._openToast(this.dataLines.eMessage);
                         }
                     }

@@ -304,8 +304,9 @@ namespace Hydra.Such.Portal.Controllers
                             ContratoDB.CódTermosPagamento = data.CodePaymentTerms;
                             ContratoDB.Descrição = data.Description;
                             ContratoDB.CódigoRegião = data.CodeRegion;
+                            ContratoDB.CódigoÁreaFuncional = data.CodeFunctionalArea;
                             ContratoDB.Notas = data.Notes;
-                            
+                            ContratoDB.ObjetoServiço = data.ServiceObject;
                             ContratoDB.DataInício1ºContrato = data.StartDateFirstContract == ""
                                 ? null
                                 : (DateTime?)DateTime.Parse(data.StartDateFirstContract);

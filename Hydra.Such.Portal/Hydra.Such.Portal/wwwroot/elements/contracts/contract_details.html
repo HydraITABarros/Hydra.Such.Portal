@@ -317,7 +317,7 @@
                                                 <template is="dom-if" if="{{ _permissions.update }}">
                                                     <div class="row">
                                                         <div class="col-lg-2">
-                                                            <vaadin-date-picker label="Inicio Compromisso" id="_CRStartDate" name="_CRStartDate" value="{{_CRStartDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                            <vaadin-date-picker label="Inicio Compromisso" id="_CRStartDate" name="_CRStartDate" value="{{_CRStartDate}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" ></vaadin-date-picker>
                                                         </div>
                                                         <div class="col-lg-2">
                                                             <vaadin-date-picker label="Fim Compromisso" id="_CREndDate" name="_CREndDate" value="{{_CREndDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
@@ -332,7 +332,7 @@
                                                             <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-2">
-                                                            <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ !_permissions.update }}">
+                                                            <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" >
                                                                 <template>
                                                                     <b>[[item.value]]</b>
                                                                 </template>
@@ -341,7 +341,7 @@
                                                     </div>
                                                     <div class="row break_frm">
                                                         <div class="col-lg-2">
-                                                            <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRProjectNo" name="_CRProjectNo" value="{{_CRProjectNo}}" label="Nº Projeto" disabled="{{ !_permissions.update }}">
+                                                            <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRProjectNo" name="_CRProjectNo" value="{{_CRProjectNo}}" label="Nº Projeto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" >
                                                                 <template>
                                                                     <paper-icon-item>
                                                                         <paper-item-body two-line>

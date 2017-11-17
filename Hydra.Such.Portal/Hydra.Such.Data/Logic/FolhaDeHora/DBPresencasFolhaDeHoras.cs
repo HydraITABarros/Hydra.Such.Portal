@@ -110,23 +110,23 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                     {
                         FolhaDeHorasNo = Presenca.NºFolhaDeHoras,
                         Data = Presenca.Data,
-                        DataTexto = Presenca.Data.ToShortDateString(),
-                        Hora1Entrada = Presenca.Hora1ªEntrada.ToString(),
-                        Hora1Saida = Presenca.Hora1ªSaída.ToString(),
-                        Hora2Entrada = Presenca.Hora2ªEntrada.ToString(),
-                        Hora2Saida = Presenca.Hora2ªSaída.ToString(),
-                        DataHoraCriacao = Presenca.DataHoraCriação,
-                        DataHoraCriacaoTexto = Presenca.DataHoraCriação.Value.ToShortDateString(),
+                        DataTexto = Presenca.Data.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        Hora1Entrada = Presenca.Hora1ªEntrada.Value.ToString(),
+                        Hora1Saida = Presenca.Hora1ªSaída.Value.ToString(),
+                        Hora2Entrada = Presenca.Hora2ªEntrada.Value.ToString(),
+                        Hora2Saida = Presenca.Hora2ªSaída.Value.ToString(),
+                        Observacoes = Presenca.Observacoes,
                         UtilizadorCriacao = Presenca.UtilizadorCriação,
+                        DataHoraCriacao = Presenca.DataHoraCriação,
+                        DataHoraCriacaoTexto = Presenca.DataHoraCriação.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        UtilizadorModificacao = Presenca.UtilizadorModificação,
                         DataHoraModificacao = Presenca.DataHoraModificação,
-                        DataHoraModificacaoTexto = Presenca.DataHoraModificação.Value.ToShortDateString(),
-                        UtilizadorModificacao = Presenca.UtilizadorModificação
-                    }).ToList(); ;
+                        DataHoraModificacaoTexto = Presenca.DataHoraModificação.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                    }).ToList();
                 }
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
