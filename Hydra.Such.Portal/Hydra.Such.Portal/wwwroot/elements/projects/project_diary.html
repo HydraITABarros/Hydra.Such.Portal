@@ -215,16 +215,16 @@
                     <vaadin-text-field id="piUnitCost" label="Custo Uniário" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{totalCost}}" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{totalCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-text-field id="piUnitPrice" label="Preço Uniário" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitPrice}}" on-value-changed="_calcTotals"  disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{totalPrice}}" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{totalPrice}}"  on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitValueToInvoice}}" disabled="{{ !_permissions.create }}"><div slot="suffix" >€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitValueToInvoice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix" >€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
@@ -1576,6 +1576,15 @@
                     break;
                 case "piUnitPrice":
                         this.unitPrice = e.detail.value.replace(",", ".");
+                        break;
+                case "piTotalCost":
+                        this.totalCost = e.detail.value.replace(",", ".");
+                    break;
+                case "piTotalPrice":
+                        this.totalPrice = e.detail.value.replace(",", ".");
+                        break;
+                case "piUnitValueToInvoice":
+                        this.unitValueToInvoice = e.detail.value.replace(",", ".");
                     break;
                 default:
                     break;
