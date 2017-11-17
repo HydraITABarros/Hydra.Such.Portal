@@ -140,6 +140,18 @@ ul.nav li:hover {
         padding-left: 5px;
     }
 
+.editDialogGrid {
+    /*margin: 10px 20px;*/
+    font-size: 13px;
+    max-height: 80%;
+    min-height: 10%;
+    /*height: 80%;*/
+}
+
+    .editDialogGrid input {
+        border: none;
+        padding-left: 5px;
+    }
 .alignPoga {
     margin-top: 40px;
 }
@@ -425,6 +437,16 @@ ul.nav li:hover {
 
 
 /* DialogBoxes */
+.dialgoBox {
+    position: fixed;
+    left: 10%;
+    top: 10%;
+    width: 75%;
+    height: 75%;
+    padding: 10px;
+    box-shadow: 4px 8px 14px 8px #888888;
+}
+
 .dialogTitle {
     text-align: left;
     font-size: 20px;
@@ -585,9 +607,9 @@ paper-tab.iron-selected, paper-tab:hover {
 /* Polymer Elements Defautls */
 
 
-input::-webkit-datetime-edit {
+/*input::-webkit-datetime-edit {
     color: transparent;
 }
 input:focus::-webkit-datetime-edit {
     color: #000;
-}
+}*/
