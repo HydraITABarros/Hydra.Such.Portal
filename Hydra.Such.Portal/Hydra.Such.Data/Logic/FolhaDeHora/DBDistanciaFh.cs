@@ -8,17 +8,22 @@ using System.Text;
 
 namespace Hydra.Such.Data.Logic.FolhaDeHora
 {
-    public class DBOrigemDestinoFh
+    public class DBDistanciaFh
     {
         #region CRUD
 
-        public static OrigemDestinoFh GetById(string id)
+        public static DistanciaFh GetById(string id)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.OrigemDestinoFh.FirstOrDefault(x => x.Código == id);
+                    DistanciaFh Distancia = ctx.DistanciaFh.FirstOrDefault(x => x.CódigoOrigem == id);
+
+                    if (Distancia == null)
+                        return ctx.DistanciaFh.FirstOrDefault(x => x.CódigoDestino == id);
+                    else
+                        return Distancia;
                 }
             }
             catch (Exception ex)
@@ -28,13 +33,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static List<OrigemDestinoFh> GetAll()
+        public static List<DistanciaFh> GetAll()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.OrigemDestinoFh.ToList();
+                    return ctx.DistanciaFh.ToList();
                 }
             }
             catch (Exception ex)
@@ -43,14 +48,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static OrigemDestinoFh Create(OrigemDestinoFh ObjectToCreate)
+        public static DistanciaFh Create(DistanciaFh ObjectToCreate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToCreate.DataHoraCriação = DateTime.Now;
-                    ctx.OrigemDestinoFh.Add(ObjectToCreate);
+                    ctx.DistanciaFh.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
@@ -63,14 +68,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static OrigemDestinoFh Update(OrigemDestinoFh ObjectToUpdate)
+        public static DistanciaFh Update(DistanciaFh ObjectToUpdate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToUpdate.DataHoraÚltimaAlteração = DateTime.Now;
-                    ctx.OrigemDestinoFh.Update(ObjectToUpdate);
+                    ctx.DistanciaFh.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
 
@@ -83,13 +88,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static bool Delete(OrigemDestinoFh ObjectToDelete)
+        public static bool Delete(DistanciaFh ObjectToDelete)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.OrigemDestinoFh.Remove(ObjectToDelete);
+                    ctx.DistanciaFh.Remove(ObjectToDelete);
                     ctx.SaveChanges();
                 }
 
@@ -102,22 +107,29 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static string GetOrigemDestinoDescricao(string Origem)
+        public static decimal GetDistanciaPrevista(string Origem, string Destino)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    OrigemDestinoFh OrigemDestinhoFH;
+                    DistanciaFh distancia;
 
-                    OrigemDestinhoFH = ctx.OrigemDestinoFh.FirstOrDefault(x => x.Código == Origem);
-                    return OrigemDestinhoFH.Descrição;
+                    distancia = ctx.DistanciaFh.FirstOrDefault(x => x.CódigoOrigem == Origem && x.CódigoDestino == Destino);
+
+                    if (distancia == null)
+                        distancia = ctx.DistanciaFh.FirstOrDefault(x => x.CódigoOrigem == Destino && x.CódigoDestino == Origem);
+
+                    if (distancia != null)
+                        return Convert.ToDecimal(distancia.Distância);
+                    else
+                        return 0;
                 }
             }
             catch (Exception ex)
             {
 
-                return null;
+                return 0;
             }
         }
 
