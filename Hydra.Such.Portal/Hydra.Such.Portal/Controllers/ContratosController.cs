@@ -303,6 +303,7 @@ namespace Hydra.Such.Portal.Controllers
                             ContratoDB.CódigoCentroResponsabilidade = data.CodeResponsabilityCenter;
                             ContratoDB.CódTermosPagamento = data.CodePaymentTerms;
                             ContratoDB.Descrição = data.Description;
+                            ContratoDB.NºCliente = data.ClientNo;
                             ContratoDB.CódigoRegião = data.CodeRegion;
                             ContratoDB.CódigoÁreaFuncional = data.CodeFunctionalArea;
                             ContratoDB.Notas = data.Notes;
@@ -393,11 +394,11 @@ namespace Hydra.Such.Portal.Controllers
                                     RCCO.GrupoFatura = y.InvoiceGroup;
                                     RCCO.NºProjeto = y.ProjectNo;
                                     RCCO.DataInícioCompromisso = DateTime.Parse(y.StartDate);
-                                    RCCO.DataFimCompromisso = DateTime.Parse(y.EndDate);
+                                    RCCO.DataFimCompromisso = y.EndDate != "" ? DateTime.Parse(y.EndDate) : (DateTime?)null;
                                     RCCO.NºRequisiçãoCliente = y.ClientRequisitionNo;
-                                    RCCO.DataRequisição = DateTime.Parse(y.RequisitionDate);
+                                    RCCO.DataRequisição = y.RequisitionDate != "" ? DateTime.Parse(y.RequisitionDate) : (DateTime?)null;
                                     RCCO.NºCompromisso = y.PromiseNo;
-                                    RCCO.DataÚltimaFatura = DateTime.Parse(y.LastInvoiceDate);
+                                    RCCO.DataÚltimaFatura = y.LastInvoiceDate != "" ? DateTime.Parse(y.LastInvoiceDate) : (DateTime?)null;
                                     RCCO.NºFatura = y.InvoiceNo;
                                     RCCO.ValorFatura = y.InvoiceValue;
                                     RCCO.UtilizadorModificação = User.Identity.Name;

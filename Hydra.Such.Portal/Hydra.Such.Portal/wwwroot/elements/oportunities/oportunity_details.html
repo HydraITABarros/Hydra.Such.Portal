@@ -1227,7 +1227,9 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-date-picker id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                            <input type="date" id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}">
+
+                                            <!--<vaadin-date-picker id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.versionStartDate}}
@@ -1241,7 +1243,9 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-date-picker id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionEndDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                            <input type="date" id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}">
+
+                                            <!--<vaadin-date-picker id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionEndDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.versionEndDate}}
@@ -1330,8 +1334,10 @@
                                     </template>
                                     <template>
                                         <center>
-                                            <template is="dom-if" if="{{ !_permissions.update }}">
-                                                <paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>
+                                            <template is="dom-if" if="{{ _permissions.delete }}">
+                                                <paper-button class="btnRemove" raised disabled="{{ !_permissions.delete }}" on-tap="_deleteContractLine">Eliminar</paper-button>
+
+                                                <!--<paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>-->
                                             </template>
                                         </center>
                                     </template>
@@ -1929,6 +1935,28 @@
                 _clResponseProcessor: function (data) {
                     if (data.detail.status === 200) {
                         if (!(data.detail.url.indexOf("GetContractLines") !== -1)) {
+                            this._CLContractLineType = "";
+                            this._CLMeasureUnit = "";
+                            this._CLFrequency = "";
+                            this._CLServiceClient = "";
+                            this._CLCode = "";
+                            this._CLUnitPrice = "";
+                            this._CLInterventionHours = "";
+                            this._CLInvoiceGroup = "";
+                            this._CLDescription = "";
+                            this._CLDiscountLine = "";
+                            this._CLTotalTechnicians = "";
+                            this._CLResponsible = "";
+                            this._CLCreateContract = "";
+                            this._CLQuantity = "";
+                            this._CLBillable = true;
+
+                            this._CLRegion = this.data.codeRegion;
+                            this._CLFunctionalArea = this.data.codeFunctionalArea;
+                            this._CLResponsabilityCenter = this.data.codeResponsabilityCenter;
+                            this._CLVersionStartDate = this.data.startData;
+                            this._CLVersionEndDate = this.data.dueDate;
+
                             this._openToast(this.dataLines.eMessage);
                         }
                     }

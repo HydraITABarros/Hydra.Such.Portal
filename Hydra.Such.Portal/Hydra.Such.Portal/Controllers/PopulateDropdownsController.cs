@@ -829,6 +829,30 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.TipoCartoesEApolices;
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetViaturasCartaoCombustivel()
+        {
+            List<DDMessageString> result = DBCartoesEApolices.GetAllByType(2).Select(x => new DDMessageString()
+            {
+                id = x.Número,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturasApolices()
+        {
+            List<DDMessageString> result = DBCartoesEApolices.GetAllByType(1).Select(x => new DDMessageString()
+            {
+                id = x.Número,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+
     }
 
     public class DDMessage
