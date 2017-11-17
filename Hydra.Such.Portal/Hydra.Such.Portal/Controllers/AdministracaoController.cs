@@ -12,6 +12,8 @@ using Hydra.Such.Data.ViewModel.ProjectDiary;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Hydra.Such.Data.ViewModel.Viaturas;
+using Hydra.Such.Data.Logic.Viatura;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -308,7 +310,7 @@ namespace Hydra.Such.Portal.Controllers
 
             //Remover os acessos os acessos
             DBUserAccesses.DeleteAllFromUser(data.IdUser);
-            
+
             //Remover os acessos às dimensões
             DBUserDimensions.DeleteAllFromUser(data.IdUser);
 
@@ -621,7 +623,7 @@ namespace Hydra.Such.Portal.Controllers
                 Description = x.Descrição,
                 TotalDigitIncrement = x.NºDígitosIncrementar,
                 IncrementQuantity = x.NºDígitosIncrementar,
-                LastNumerationUsed = x.ÚltimoNºUsado                
+                LastNumerationUsed = x.ÚltimoNºUsado
             }).ToList();
             return Json(result);
         }
@@ -668,7 +670,7 @@ namespace Hydra.Such.Portal.Controllers
                     CN.DataHoraCriação = DateTime.Now;
                     DBNumerationConfigurations.Create(CN);
                 }
-            });            
+            });
 
             return Json(data);
         }
@@ -679,10 +681,10 @@ namespace Hydra.Such.Portal.Controllers
         #region TiposDeProjeto
         public IActionResult TiposProjetoDetalhes(string id)
         {
-          
+
             UserAccessesViewModel UPerm = GetPermissions(id);
             if (UPerm != null && UPerm.Read.Value)
-            { 
+            {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
                 ViewBag.UpdatePermissions = !UPerm.Update.Value;
                 ViewBag.DeletePermissions = !UPerm.Delete.Value;
@@ -1200,31 +1202,42 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CreateClientServices([FromBody] List<ClientServicesViewModel> data)
         {
-            if (data != null)
+            try
             {
-                foreach (var dt in data)
-                {
-                    int param = 1;
-                    bool exist = CheckIfExist(dt.ClientNumber, dt.ServiceCode, dt.ServiceGroup, param);
-                    if (exist == false)
-                    {
-                        ServiçosCliente tpval = new ServiçosCliente();
-                        tpval.UtilizadorCriação = User.Identity.Name;
-                        tpval.DataHoraCriação = DateTime.Now;
-                        tpval.GrupoServiços = dt.ServiceGroup;
-                        tpval.CódServiço = dt.ServiceCode;
-                        tpval.NºCliente = dt.ClientNumber;
 
-                        DBClientServices.Create(tpval);
-                        return Json(exist);
-                    }
-                    else
+                int totalExists = 0;
+                if (data != null)
+                {
+                    foreach (var dt in data)
                     {
-                        return Json(exist);
+                        int param = 1;
+                        bool exist = CheckIfExist(dt.ClientNumber, dt.ServiceCode, dt.ServiceGroup, param);
+                        if (exist == false)
+                        {
+                            ServiçosCliente tpval = new ServiçosCliente();
+                            tpval.UtilizadorCriação = User.Identity.Name;
+                            tpval.DataHoraCriação = DateTime.Now;
+                            tpval.GrupoServiços = dt.ServiceGroup;
+                            tpval.CódServiço = dt.ServiceCode;
+                            tpval.NºCliente = dt.ClientNumber;
+
+                            DBClientServices.Create(tpval);
+                        } else
+                        {
+                            totalExists++;
+                        }
                     }
                 }
+                if (totalExists == data.Count())
+                {
+                    return Json(true);
+                }
+                return Json(false);
             }
-            return Json(data);
+            catch (Exception)
+            {
+                return Json(false);
+            }
         }
 
         [HttpPost]
@@ -1278,13 +1291,255 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        #region TiposViaturas
+        public IActionResult TiposViaturas(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetTiposViaturas()
+        {
+            List<TiposViaturaViewModel> result = DBTiposViaturas.ParseListToViewModel(DBTiposViaturas.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateTiposViaturas([FromBody] TiposViaturaViewModel data)
+        {
+            TiposViatura tiposViatura = DBTiposViaturas.ParseToDB(data);
+            tiposViatura.UtilizadorCriação = User.Identity.Name;
+            DBTiposViaturas.Create(tiposViatura);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteTiposViaturas([FromBody] TiposViaturaViewModel data)
+        {
+            var result = DBTiposViaturas.Delete(DBTiposViaturas.ParseToDB(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateTiposViaturas([FromBody] List<TiposViaturaViewModel> data)
+        {
+            List<TiposViatura> results = DBTiposViaturas.GetAll();
+            data.RemoveAll(x => results.Any(u => u.CódigoTipo == x.CodigoTipo && u.Descrição == x.Descricao));
+
+            data.ForEach(x =>
+            {
+                TiposViatura tiposViatura = DBTiposViaturas.ParseToDB(x);
+                tiposViatura.UtilizadorModificação = User.Identity.Name;
+                DBTiposViaturas.Update(tiposViatura);
+            });
+            return Json(data);
+        }
+
+
+        #endregion
+
+        #region Marcas
+        public IActionResult Marcas(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetMarcas()
+        {
+            List<MarcasViewModel> result = DBMarcas.ParseListToViewModel(DBMarcas.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateMarca([FromBody] MarcasViewModel data)
+        {
+            Marcas toCreate = DBMarcas.ParseToDB(data);
+            toCreate.UtilizadorCriação = User.Identity.Name;
+            DBMarcas.Create(toCreate);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteMarca([FromBody] MarcasViewModel data)
+        {
+            var result = DBMarcas.Delete(DBMarcas.ParseToDB(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateMarcas([FromBody] List<MarcasViewModel> data)
+        {
+            List<Marcas> results = DBMarcas.GetAll();
+            data.RemoveAll(x => results.Any(u => u.CódigoMarca == x.CodigoMarca && u.Descrição == x.Descricao));
+
+            data.ForEach(x =>
+            {
+                Marcas toUpdate = DBMarcas.ParseToDB(x);
+                toUpdate.UtilizadorModificação = User.Identity.Name;
+                DBMarcas.Update(toUpdate);
+            });
+            return Json(data);
+        }
+
+        #endregion
+
+        #region Modelos
+        public IActionResult Modelos(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetModelos()
+        {
+            List<ModelosViewModel> result = DBModelos.ParseListToViewModel(DBModelos.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateModelo([FromBody] ModelosViewModel data)
+        {
+            Modelos toCreate = DBModelos.ParseToDB(data);
+            toCreate.UtilizadorCriação = User.Identity.Name;
+            DBModelos.Create(toCreate);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteModelo([FromBody] ModelosViewModel data)
+        {
+            var result = DBModelos.Delete(DBModelos.ParseToDB(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateModelos([FromBody] List<ModelosViewModel> data)
+        {
+            List<Modelos> results = DBModelos.GetAll();
+            data.RemoveAll(x => results.Any(u => u.CódigoModelo == x.CodigoModelo && u.Descrição == x.Descricao));
+
+            data.ForEach(x =>
+            {
+                Modelos toUpdate = DBModelos.ParseToDB(x);
+                toUpdate.UtilizadorModificação = User.Identity.Name;
+                DBModelos.Update(toUpdate);
+            });
+            return Json(data);
+        }
+
+        #endregion
+
+        #region Cartoes E Apolices
+        public IActionResult CartoesEApolices(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetCartoesEApolices()
+        {
+            List<CartoesEApolicesViewModel> result = DBCartoesEApolices.ParseListToViewModel(DBCartoesEApolices.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateCartoesEApolices([FromBody] CartoesEApolicesViewModel data)
+        {
+            CartõesEApólices toCreate = DBCartoesEApolices.ParseToDB(data);
+            toCreate.UtilizadorCriação = User.Identity.Name;
+            DBCartoesEApolices.Create(toCreate);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteCartoesEApolices([FromBody] CartoesEApolicesViewModel data)
+        {
+            var result = DBCartoesEApolices.Delete(DBCartoesEApolices.ParseToDB(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateCArtoesEApolices([FromBody] List<CartoesEApolicesViewModel> data)
+        {
+            List<CartõesEApólices> results = DBCartoesEApolices.GetAll();
+
+            data.RemoveAll(x => DBCartoesEApolices.ParseListToViewModel(results).Any(
+                u =>
+                    u.Tipo == x.Tipo &&
+                    u.Numero == x.Numero &&
+                    u.Descricao == x.Descricao &&
+                    u.DataInicio == x.DataInicio &&
+                    u.DataFim == x.DataFim &&
+                    u.Fornecedor == x.Fornecedor
+            ));
+
+            data.ForEach(x =>
+            {
+                CartõesEApólices toUpdate = DBCartoesEApolices.ParseToDB(x);
+                toUpdate.UtilizadorModificação = User.Identity.Name;
+                DBCartoesEApolices.Update(toUpdate);
+            });
+            return Json(data);
+        }
+
+
+        #endregion
 
         #endregion
 
         public UserAccessesViewModel GetPermissions(string id)
         {
             UserAccessesViewModel UPerm = new UserAccessesViewModel();
-            if (id== "Engenharia")
+            if (id == "Engenharia")
             {
                 UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 18);
             }
@@ -1324,7 +1579,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 18);
             }
-            
+
             return UPerm;
         }
     }

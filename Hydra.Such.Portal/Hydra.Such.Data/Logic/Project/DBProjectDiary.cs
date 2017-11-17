@@ -191,6 +191,28 @@ namespace Hydra.Such.Data.Logic.Project
                 return null;
             }
         }
+        public static List<DiárioDeProjeto> GetRegisteredDiaryDp(string ProjectNo, string user, bool AllProjs)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    if (AllProjs)
+                    {
+                        return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado == true).ToList();
+                    }
+                    else
+                    {
+                       return ctx.DiárioDeProjeto.Where(x => x.NºProjeto == ProjectNo && x.Utilizador == user && x.Registado == true).ToList();
+                    }
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
     }
 }

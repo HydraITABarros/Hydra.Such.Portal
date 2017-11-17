@@ -278,19 +278,18 @@
                 var self = this;
                 if (this.exist === false) {
                     this.openToast('Criado com sucesso');
-                    this.$.cboClients.value = "";
-                    this.$.cboServices.value = "";
-                    this.$.chkServiceGroup.value = false;
+                    this.ddClients = "";
+                    this.ddServices = "";
+                    this.chkServiceGroup = false;
 
                     this.$.page_databound_ajax.generateRequest();                    
                 }
                 else if (this.exist === true) {
 
-                    this.$.ToastError.open();
+                    this.openToastError("Este serviço cliente já existe.");
                     this.$.page_databound_ajax.generateRequest();
                 } else {
                     this.openToastError('Ocorreu um erro ao Criar o Serviço Cliente.');
-
                 }
             },
 

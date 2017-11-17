@@ -54,7 +54,7 @@
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectContractsByArea" last-response="{{LProjectContracts}}" auto method="post" handle-as="json" content-type="application/json" id="contracts_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectContracts" last-response="{{LProjectContracts}}" auto method="post" handle-as="json" content-type="application/json" id="contracts_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetGroupContProject" last-response="{{LProjectGroupContab}}" auto method="post" handle-as="json" content-type="application/json" id="groupcontab_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddresses" last-response="{{LProjectShippingAddresses}}" auto method="post" handle-as="json" content-type="application/json" id="shippinhAddress_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{LProjectEmployees}}" auto method="post" handle-as="json" content-type="application/json" id="employees_ajax"></iron-ajax>
@@ -440,8 +440,8 @@
                     this.$.page_databound_ajax.generateRequest();
 
 
-                    this.$.contracts_ajax.body = JSON.stringify({ "areaId": this._areaid });
-                    this.$.contracts_ajax.generateRequest();
+                    //this.$.contracts_ajax.body = JSON.stringify({ "areaId": this._areaid });
+                    //this.$.contracts_ajax.generateRequest();
 
                     if (this._projectid == "") {
                         this._isCreate = true;

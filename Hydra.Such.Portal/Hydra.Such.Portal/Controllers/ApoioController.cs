@@ -79,5 +79,37 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
         #endregion
+
+        public IActionResult Viaturas()
+        {
+            return View();
+
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 5, 11);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult DetalhesViatura(string id)
+        {
+            //return View();
+
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 5, 1);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Matricula = id == null ? "" : id;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
     }
 }
