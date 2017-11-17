@@ -3,13 +3,18 @@
     ViewData["Title"] = "DiarioProjeto";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<h1 class="title">Diário de Projeto</h1>
 
+
+<link rel="import" href="~/elements/projects/project_diary.html">
+
+<x-projectdiary paramprojno="@ViewBag.ProjectNo" _areaid="3" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-projectdiary>
 @*Themes*@
 @*<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />*@
 @*<link rel="import" href="~/lib/vaadin-material-theme/vaadin-date-picker.html" />*@
 @*Themes*@
 
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+@*<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
@@ -60,10 +65,10 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-check-square" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
             <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
-        </div>
+        </div>*@
 
         @*Populate Dropdown*@
-        <iron-ajax url="/PopulateDropdowns/GetProjectList"
+        @*<iron-ajax url="/PopulateDropdowns/GetProjectList"
                    last-response="{{response}}"
                    auto
                    method="post"
@@ -82,23 +87,23 @@
                    auto
                    method="post"
                    handle-as="json"
-                   content-type="application/json"></iron-ajax>
+                   content-type="application/json"></iron-ajax>*@
 
         @*CODE OPTIONS*@
-        <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        @*<iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>        
+        <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>*@        
         @*CODE OPTIONS*@
 
         @*Code in Form*@
-        <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{codeOptions}}" id="ajax_code_options" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        @*<iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{codeOptions}}" id="ajax_code_options" method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
         @*Code in Form*@
 
         @*Code in Lines*@
-        <iron-ajax url="/PopulateDropdowns/GetContractDiaryLineCodes" last-response="{{CBContractLineCodesGrid}}" id="contractlinecodesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        @*<iron-ajax url="/PopulateDropdowns/GetContractDiaryLineCodes" last-response="{{CBContractLineCodesGrid}}" id="contractlinecodesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
         @*Code in Lines*@
 
-        <iron-ajax url="/PopulateDropdowns/GetMeasureUnits"
+        @*<iron-ajax url="/PopulateDropdowns/GetMeasureUnits"
                    last-response="{{MeasureUnit}}"
                    auto
                    method="post"
@@ -139,10 +144,10 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json">
-        </iron-ajax>
+        </iron-ajax>*@
         @*Populate Dropdown*@
 
-        <div>
+        @*<div>
             <div class="row">
                 <div class="col-lg-2">
                     <vaadin-combo-box id="projectList" name="projectList" items="[[response]]" on-value-changed="_projectChange" item-value-path="id" item-label-path="value" label="Nº Projeto" disabled="{{disabledProjectNo}}" value="{{projectNumber}}">
@@ -300,9 +305,9 @@
                 </div>
             </div>
             <vaadin-text-field id="piInvoiceClientNo" disabled value="{{invoiceClientNo}}" hidden></vaadin-text-field>
-        </div>
+        </div>*@
 
-        <h2 class="separator">Linhas de Diário</h2>
+        @*<h2 class="separator">Linhas de Diário</h2>
 
         <iron-ajax url="/Projetos/GetAllProjectDiary"
                    last-response="{{result}}"
@@ -328,7 +333,7 @@
                    method="post"
                    on-response="_updateRelatedResponse"
                    handle-as="json"
-                   content-type="application/json"></iron-ajax>
+                   content-type="application/json"></iron-ajax>*@
 
         @*<iron-ajax url="/Projetos/RegisterDiaryLines"
                    last-response="{{data}}"
@@ -338,7 +343,7 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>*@
 
-        <iron-ajax url="/Projetos/RegisterDiaryLines"
+        @*<iron-ajax url="/Projetos/RegisterDiaryLines"
                    last-response="{{data}}"
                    id="ajax_register"
                    method="post"
@@ -385,10 +390,10 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <input type="date" id="dpDate" name="dpDate" value="{{item.date}}">
+                        <input type="date" id="dpDate" name="dpDate" value="{{item.date}}">*@
 
                         @*<vaadin-date-picker id="dpDate" name="dpDate" value="{{item.date}}"></vaadin-date-picker>*@
-                    </template>
+                    @*</template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.date}}
                     </template>
@@ -742,9 +747,9 @@
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
-    </template>
+    </template>*@
 
-    <script>
+    @*<script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-projdiary',
@@ -1312,5 +1317,5 @@
                 },
             });
         });
-    </script>
-</dom-module>
+    </script>*@
+@*</dom-module>*@
