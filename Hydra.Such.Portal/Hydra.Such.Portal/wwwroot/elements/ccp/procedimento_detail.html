@@ -116,6 +116,14 @@
                    on-response="_createElementoJuriResponse"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/DeleteElementoJuri"
+                   last-response="{{ElementoDeleted}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_deleteelementojuri"
+                   on-response="_deleteElementoJuriResponse"
+                   content-type="application/json">
+        </iron-ajax>
         <!-- Controller actions.e -->
 
         
@@ -386,7 +394,7 @@
 
     <script>
         document.addEventListener('WebComponentsReady', function () {
-            debugger;;
+            //debugger;;
             Polymer({
                 is: 'x-procedimentodetails',
                 properties: {
@@ -435,7 +443,7 @@
                 },
 
                 ready: function () {
-                    debugger;;
+                    //debugger;;
 
                     this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
                     this.$.page_databound_ajax.generateRequest();
@@ -446,13 +454,13 @@
                 },
 
                 _openToast: function (message) {
-                    debugger;;
+                    //debugger;;
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
 
                 _validateData: function () {
-                    debugger;;
+                    //debugger;;
                     if (false) {
                         this._openToast(validate);
                         return false;
@@ -462,7 +470,7 @@
 
                 //CRUDS
                 _create: function () {
-                    debugger;;
+                    //debugger;;
                     this.data.tipoProcedimento = this._procedimentotypeid;
 
                     if (this._validateData()) {
@@ -471,14 +479,14 @@
                 },
 
                 _update: function () {
-                    debugger;;
+                    //debugger;;
                     if (this._validateData()) {
                         this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data)
                     }
                 },
 
                 _delete: function () {
-                    debugger;;
+                    //debugger;;
                     var Procedimento = this.data;
                     var ajax_request = this.$.ajax_delete_procedimento;
                     bootbox.confirm({
@@ -504,7 +512,7 @@
 
                 //Responses Processors
                 _responseProcessor: function (data) {
-                    debugger;;
+                    //debugger;;
                     var self = this;
 
                     if (data.detail.status === 200) {
@@ -523,7 +531,7 @@
                 },
 
                 _createResponseProcessor: function () {
-                    debugger;;
+                    //debugger;;
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
                         this._openToast("Procedimento criado com sucesso.");
@@ -533,7 +541,7 @@
                 },
 
                 _responseValidatorProcessor: function (data) {
-                    //debugger;;
+                    ////debugger;;
                     var self = this;
                     //if (data.detail.status === 200) {
                     //    if (this.validateResponse == "") {
@@ -545,7 +553,7 @@
                 },
 
                 _responseDeleteProcessor: function (data) {
-                    debugger;;
+                    //debugger;;
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.deletedData.eReasonCode == 4) {
@@ -561,7 +569,7 @@
                 },
                 // Create Elemento Juri
                 _createElementoJuri: function () {
-                    debugger;;
+                    //debugger;;
                     if (this._userName == "") {
                         this._openToast("Não escolheu um utilizador!")
                     } else if (!this.chkPresidente && !this.chkVogal && !this.chkSuplente) {
@@ -580,23 +588,53 @@
                             enviarEmail: this.chkSendMail
                         });
                         this.$.ajax_createelementojuri.generateRequest();
+                        
                         this.gridElementosJuri.clearCache();
                     }
                 },
                 _createElementoJuriResponse: function (e) {
-                    if (this.ElementoCreated) {
+                    //debugger;;
+                    if (this.ElementoCreated.eReasonCode == 0) {
                         this._openToast('Elemento Júri adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
                         this.$.users.value = "";
+                        this.$.chkPresidente.value = false;
+                        this.chkVogal.value = false;
+                        this.chkSuplente.value = false;
+                        this.chkSendMail.value = false;
                     } else {
-                        this._openToast('Não foi possível criar o Elemento do Juri');
-                        
+                        if (this.ElementoCreated.eReasonCode == 3 || this.ElementoCreated.eReasonCode == 4)
+                            this._openToast(this.ElementoCreated.eMessage);
+                        else
+                            this._openToast('Não foi possível criar o Elemento do Juri');                       
                     }
                 },
-                
+                _deleteElementoJuri: function (e) {
+                    //debugger;;
+                    var index = this.data.elementosJuri.indexOf(e.model.item);
+                    this.data.elementosJuri.splice(index, 1);
+                    this.$.ajax_deleteelementojuri.body = JSON.stringify({
+                        noProcedimento: this.data.no,
+                        noLinha: e.model.item.noLinha
+                    });
+                    this.$.ajax_deleteelementojuri.generateRequest();                  
+                    this.$.gridElementosJuri.clearCache();
+                    
+                },
+                _deleteElementoJuriResponse: function (e) {
+                    //debugger;;
+                    if (this.ElementoDeleted) {
+                        this._openToast('Elemento Juri eliminado com sucesso');
+                        
+                    } else {
+                        this._openToast('Não foi possível eliminar o Elemento do Juri!')
+                    }
+                    
+                    
+                },
                 //Helpers
                 _executeRequest: function (url, data) {
-                    //debugger;;
+                    ////debugger;;
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
