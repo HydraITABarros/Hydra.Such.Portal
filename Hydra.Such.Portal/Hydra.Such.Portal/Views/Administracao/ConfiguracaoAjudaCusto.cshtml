@@ -328,6 +328,7 @@
 
 
         <div class="marginSpace">
+            <paper-button raised id="btnGoBack" class="btnDefault" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
             <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
             <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
         </div>
@@ -470,6 +471,9 @@
                         else {
                             this.openToast("Occorreu um erro ao atualizar a Tabela.");
                         }
+                    },
+                    _goBack: function (e) {
+                        window.location = "../";
                     }
                 });
             });
