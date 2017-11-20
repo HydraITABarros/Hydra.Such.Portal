@@ -1,6 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel.CCP;
-//using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,16 +104,16 @@ namespace Hydra.Such.Data.Logic.CCP
                 proc.Estado = 0;
 
                
-                proc.TemposPaCcp = new TemposPaCcp()
-                {
-                    NºProcedimento = proc.Nº,
-                    Estado0 = 1,
-                    DataHoraCriação = proc.DataHoraCriação,
-                    UtilizadorCriação = proc.UtilizadorCriação
-                };
+                //proc.TemposPaCcp = new TemposPaCcp()
+                //{
+                //    NºProcedimento = proc.Nº,
+                //    Estado0 = 1,
+                //    DataHoraCriação = proc.DataHoraCriação,
+                //    UtilizadorCriação = proc.UtilizadorCriação
+                //};
 
-                _context.Add(proc.TemposPaCcp);
-                _context.SaveChanges();
+                //_context.Add(proc.TemposPaCcp);
+                //_context.SaveChanges();
 
                 _context.Add(proc);
                 _context.SaveChanges();
@@ -149,6 +148,27 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
 
+        }
+        public static ProcedimentosCcp __CreateProcedimento(int ProcedimentoType, string UserID)
+        {
+            try
+            {
+                ProcedimentoCCPView ProcedimentoView = new ProcedimentoCCPView
+                {
+                    TipoProcedimento = ProcedimentoType,
+                    UtilizadorCriacao = UserID
+
+                };
+
+                ProcedimentosCcp Procedimento = __CreateProcedimento(ProcedimentoView);
+
+                return Procedimento;
+            }
+            catch (Exception e)
+            {
+
+                return null;
+            }
         }
         public static ProcedimentosCcp __UpdateProcedimento(ProcedimentoCCPView Procedimento)
         {
@@ -369,6 +389,11 @@ namespace Hydra.Such.Data.Logic.CCP
 
             if (ElementoView == null)
                 return null;
+
+            //ElementosJuri DuplicateElemento = _context.ElementosJuri.Where(ej => ej.NºProcedimento == ElementoView.NoProcedimento && ej.Utilizador == ElementoView.Utilizador).FirstOrDefault();
+
+            //if (DuplicateElemento != null)
+            //    return null;
 
             ElementosJuri Elemento = CCPFunctions.CastElementosJuriViewToElementosJuri(ElementoView);
             try

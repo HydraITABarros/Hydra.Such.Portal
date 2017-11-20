@@ -1480,7 +1480,6 @@
                     
                 }
             },
-
             _updateRegisterResponse: function (e) {
                 if (this.data == null || this.data.length == 0) {
                     this.openToastError("Não existe linhas de Diário para Registar.");
@@ -1525,41 +1524,51 @@
                 }
 
             },
-            _movementLinesResponse: function () {
+            _movementLinesResponse: function (e) {
                 if (this.movementLines.length > 0) {
-                    this.movementLines.forEach(function(e) {
-
-                        this.result.unshift({
-                            projectNo: e.projectNumber,
-                            date: e.date,
-                            movementType: e.projectMovementNumber,
-                            type: e.projectTypeNumber,
-                            code: e.codeNumber,
-                            description: e.description,
-                            quantity: 0,
-                            measurementUnitCode: e.codeMeasurementUnit,
-                            locationCode: e.codeLocation,
-                            projectContabGroup: e.codeProjectContabGroup,
-                            regionCode: e.codeRegion,
-                            functionalAreaCode: e.codeFuncArea,
-                            responsabilityCenterCode: e.codeResponsabilityCenter,
-                            unitCost: e.unitCost,
-                            totalCost: e.totalCost,
-                            unitPrice: e.unitPrice,
-                            totalPrice: e.totalPrice,
-                            unitValueToInvoice: e.unitValueToInvoice,
-                            billable: e.billable,
-                            invoiceToClientNo: e.invoiceClientNo,
-                            mealType: e.ddMealTypes,
-                            serviceGroupCode: e.ddServiceGroupCode,
-                            residueGuideNo: e.residueguide,
-                            ExternalGuideNo: e.externalguide,
-                            consumptionDate: e.consumptionDate,
-                            serviceClientCode: e.ddServiceClientCode
-                        });
-                    });
-                    this.$.projectDiaryProject.clearCache();
-                    this.openToastSuccess("Movimentos adicionados com sucesso.");
+                    //this.movementLines.forEach(function(e) {
+                        debugger;
+                        if (e.detail.status === 200) {
+                            this.$.ajax_getall.generateRequest();
+                            this.$.projectDiaryProject.clearCache();
+                            this.openToastSuccess("Linhas do Diário registadas com sucesso.");
+                        }
+                        else {
+                            this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
+                        }
+                            //this.openToastSuccess("Linhas do Diário registadas com sucesso.");
+                        
+                        //this.result.unshift({
+                        //    projectNo: e.projectNumber,
+                        //    date: e.date,
+                        //    movementType: e.projectMovementNumber,
+                        //    type: e.projectTypeNumber,
+                        //    code: e.codeNumber,
+                        //    description: e.description,
+                        //    quantity: 0,
+                        //    measurementUnitCode: e.codeMeasurementUnit,
+                        //    locationCode: e.codeLocation,
+                        //    projectContabGroup: e.codeProjectContabGroup,
+                        //    regionCode: e.codeRegion,
+                        //    functionalAreaCode: e.codeFuncArea,
+                        //    responsabilityCenterCode: e.codeResponsabilityCenter,
+                        //    unitCost: e.unitCost,
+                        //    totalCost: e.totalCost,
+                        //    unitPrice: e.unitPrice,
+                        //    totalPrice: e.totalPrice,
+                        //    unitValueToInvoice: e.unitValueToInvoice,
+                        //    billable: e.billable,
+                        //    invoiceToClientNo: e.invoiceClientNo,
+                        //    mealType: e.ddMealTypes,
+                        //    serviceGroupCode: e.ddServiceGroupCode,
+                        //    residueGuideNo: e.residueguide,
+                        //    ExternalGuideNo: e.externalguide,
+                        //    consumptionDate: e.consumptionDate,
+                        //    serviceClientCode: e.ddServiceClientCode
+                        //});
+                    //});
+                    //this.$.projectDiaryProject.clearCache();
+                    //this.openToastSuccess("Movimentos adicionados com sucesso.");
                 } else {
                     this.openToastError("O projeto selecionado não tem movimentos.");
                 }

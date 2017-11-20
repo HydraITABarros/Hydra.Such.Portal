@@ -56,9 +56,14 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Details
-        public IActionResult Detalhes(String id)
+        //public IActionResult Detalhes(string id)
+        public IActionResult Detalhes([FromQuery] string FHNo, [FromQuery] int area)
         {
-            if (id == null || id == "")
+            //String id = HttpContext.Request.Query["FHNo"].ToString();
+            //String area = HttpContext.Request.Query["area"].ToString();
+            string id="";
+
+            if (FHNo == null || FHNo == "")
             {
                 //Get Project Numeration
                 Configuração Configs = DBConfigurations.GetById(1);
@@ -75,11 +80,16 @@ namespace Hydra.Such.Portal.Controllers
                     NºFolhaDeHoras = id
                 };
 
-                DBFolhasDeHoras.Create(FH);
+                FH.Área = area;
+                FH.CriadoPor = User.Identity.Name;
+                FH.DataHoraCriação = DateTime.Now;
+                FH.UtilizadorModificação = User.Identity.Name;
+                FH.DataHoraModificação = DateTime.Now;
 
+                DBFolhasDeHoras.Create(FH);
             }
 
-            ViewBag.FolhaDeHorasNo = id == null ? "" : id;
+            ViewBag.FolhaDeHorasNo = FHNo == null ? "" : FHNo;
             return View();
         }
 
@@ -596,10 +606,10 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 int noPercursos;
-                noPercursos = DBLinhasFolhaHoras.GetAllByPercursoToList(data.NoFolhaHoras).Count;
+                noPercursos = DBLinhasFolhaHoras.GetPercursoByFolhaHoraNo(data.NoFolhaHoras).Count();
 
                 int noLinha;
-                noLinha = DBLinhasFolhaHoras.GetPercursoByFolhaHoraNo(data.NoFolhaHoras).Count;
+                noLinha = DBLinhasFolhaHoras.GetMaxPercursoByFolhaHoraNo(data.NoFolhaHoras);
 
                 if (noPercursos == 0)
                 {
@@ -782,7 +792,7 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 int noLinha;
-                noLinha = DBLinhasFolhaHoras.GetAjudaByFolhaHoraNo(data.NoFolhaHoras).Count;
+                noLinha = DBLinhasFolhaHoras.GetMaxAjudaByFolhaHoraNo(data.NoFolhaHoras);
 
                 LinhasFolhaHoras Ajuda = new LinhasFolhaHoras();
 
