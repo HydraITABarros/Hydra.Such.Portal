@@ -592,13 +592,18 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "/FolhasDeHoras/Detalhes/" + item.folhaDeHorasNo;
+                        //window.location.href = "/FolhasDeHoras/Detalhes/" + item.folhaDeHorasNo;
+                        window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + item.folhaDeHorasNo;
                     }
                 },
-                _create: function (item) {
-                    if (item != null) {
-                        window.location.href = "/FolhasDeHoras/Detalhes/";
-                    }
+                _create: function () {
+                    //debugger;
+                    //console.log(item.folhaDeHorasNo, this._areaid.value);
+                    window.location.href = "/FolhasDeHoras/Detalhes/?area=" + this._areaid;
+
+                    //if (item != null) {
+                    //    window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + item.folhaDeHorasNo + "&area=" + this._areaid.value;
+                    //}
                 },
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);

@@ -42,21 +42,30 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        //public static List<LinhasFolhaHoras> GetMaxPercursoByFolhaHoraNo(string FolhaHoraNo)
-        //{
-        //    try
-        //    {
-        //        using (var ctx = new SuchDBContext())
-        //        {
-        //            //TipoCusto = 1 = KM = PERCURSO
-        //            //return ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 1).Max
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return null;
-        //    }
-        //}
+        public static int GetMaxPercursoByFolhaHoraNo(string FolhaHoraNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    int max = 0;
+
+                    List<LinhasFolhaHorasViewModel> result = DBLinhasFolhaHoras.GetAllByPercursoToList(FolhaHoraNo);
+                    result.ForEach(x =>
+                    {
+                        if (x.NoLinha >= max) max = x.NoLinha;
+                    });
+
+                    max = max + 1;
+
+                    return max;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
 
         public static List<LinhasFolhaHoras> GetAll()
         {
@@ -162,6 +171,31 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             catch (Exception ex)
             {
                 return null;
+            }
+        }
+
+        public static int GetMaxAjudaByFolhaHoraNo(string FolhaHoraNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    int max = 0;
+
+                    List<LinhasFolhaHorasViewModel> result = DBLinhasFolhaHoras.GetAllByAjudaToList(FolhaHoraNo);
+                    result.ForEach(x =>
+                    {
+                        if (x.NoLinha >= max) max = x.NoLinha;
+                    });
+
+                    max = max + 1;
+
+                    return max;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
             }
         }
 

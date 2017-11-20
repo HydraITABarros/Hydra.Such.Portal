@@ -79,6 +79,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Serviços> Serviços { get; set; }
         public virtual DbSet<ServiçosCliente> ServiçosCliente { get; set; }
         public virtual DbSet<Tarifários> Tarifários { get; set; }
+        public virtual DbSet<TabelaConfRecursosFH> TabelaConfRecursosFH { get; set; }
         public virtual DbSet<Telefones> Telefones { get; set; }
         public virtual DbSet<Telemóveis> Telemóveis { get; set; }
         public virtual DbSet<TemposPaCcp> TemposPaCcp { get; set; }
@@ -4960,6 +4961,38 @@ namespace Hydra.Such.Data.Database
                     .HasForeignKey(d => d.CódServiço)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Serviços Cliente_Serviços");
+            });
+
+            modelBuilder.Entity<TabelaConfRecursosFH>(entity =>
+            {
+                entity.HasKey(e => new { e.Tipo, e.CodigoRecurso, e.Descricao });
+
+                entity.ToTable("Tabela_Conf_Recursos_FH");
+
+                entity.Property(e => e.Tipo)
+                    .HasColumnName("Tipo")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodigoRecurso)
+                    .HasColumnName("Cod_Recurso")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Descricao)
+                    .HasColumnName("Descricao")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.PrecoUnitarioCusto)
+                    .HasColumnName("Preco_Unitario_Custo")
+                    .HasColumnType("decimal(38, 20)");
+
+                entity.Property(e => e.PrecoUnitarioVenda)
+                    .HasColumnName("Preco_Unitario_Venda")
+                    .HasColumnType("decimal(38, 20)");
+
+                entity.Property(e => e.UnidMedida)
+                    .HasColumnName("Unid_Medida")
+                    .HasMaxLength(20);
+
             });
 
             modelBuilder.Entity<Tarifários>(entity =>

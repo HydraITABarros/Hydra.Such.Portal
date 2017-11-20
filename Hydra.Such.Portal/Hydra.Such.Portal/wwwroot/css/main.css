@@ -129,6 +129,16 @@ ul.nav li:hover {
     cursor: pointer;
 }
 
+
+.btnDefault {
+    max-width: 125px !important;
+    min-width: 50px !important;
+    height: 30px !important;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+
 .editGrid {
     /*margin: 10px 20px;*/
     font-size: 13px;
@@ -274,7 +284,7 @@ ul.nav li:hover {
         margin: 0px;
         line-height: 35px;
         cursor: pointer;
-        /*    
+        /*
     .collapsed{
        .arrow:before{
                  font-family: FontAwesome;
