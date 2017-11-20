@@ -15,6 +15,9 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button.html">
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button-group.html">
+
 <h1>Detalhes Procedimento</h1>
 
 <dom-module id="x-procedimentodetails">
@@ -62,52 +65,51 @@
         </style>
 
         <!-- Dropdowns populate.b -->
-        <iron-ajax url="/PopulateDropdowns/GetRegionCode" 
-                   last-response="{{CBRegions}}" 
-                   auto method="post" 
-                   handle-as="json" 
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode"
+                   last-response="{{CBRegions}}"
+                   auto method="post"
+                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" 
-                   last-response="{{CBFunctionalAreas}}" 
-                   auto method="post" handle-as="json" 
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
+                   last-response="{{CBFunctionalAreas}}"
+                   auto method="post" handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" 
-                   last-response="{{CBResponsabilityCenterCodes}}" 
-                   auto method="post" 
-                   handle-as="json" 
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode"
+                   last-response="{{CBResponsabilityCenterCodes}}"
+                   auto method="post"
+                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetPocedimentosCcpProcedimentoType" 
-                   last-response="{{LProcedimentoType}}" 
-                   auto method="post" 
-                   handle-as="json" 
+        <iron-ajax url="/PopulateDropdowns/GetPocedimentosCcpProcedimentoType"
+                   last-response="{{LProcedimentoType}}"
+                   auto method="post"
+                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpType" 
-                   last-response="{{LType}}" 
-                   auto method="post" 
-                   handle-as="json" 
+        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpType"
+                   last-response="{{LType}}"
+                   auto method="post"
+                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpStates" 
-                   last-response="{{LProcedimentoState}}" 
-                   auto method="post" handle-as="json" 
+        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpStates"
+                   last-response="{{LProcedimentoState}}"
+                   auto method="post" handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetBoolValues" 
-                   last-response="{{LBoolValues}}" 
-                   auto method="post" handle-as="json" 
+        <iron-ajax url="/PopulateDropdowns/GetBoolValues"
+                   last-response="{{LBoolValues}}"
+                   auto method="post" handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/ProcedimentosCcps/GetUsersWhoAreElementosJuri" 
-                   last-response="{{LUsers}}" 
-                   auto method="post" handle-as="json" 
+        <iron-ajax url="/ProcedimentosCcps/GetUsersWhoAreElementosJuri"
+                   last-response="{{LUsers}}"
+                   auto method="post" handle-as="json"
                    content-type="application/json">
         </iron-ajax>
         <!-- Dropdowns populate.e -->
-
         <!-- Controller actions.b -->
         <iron-ajax url="/ProcedimentosCcps/GetProcedimentoDetails"
                    last-response="{{data}}"
@@ -142,14 +144,12 @@
                    content-type="application/json">
         </iron-ajax>
         <!-- Controller actions.e -->
-
-        
         <!-- Header section of the Procedimento details -->
         <div>
             <div class="row break_clear">
                 <div class="col-sm-3">
                     <vaadin-text-field type="text" value="{{data.no}}" id="no" name="no" label="Nº Procedimento" disabled="true"> </vaadin-text-field>
-                </div>         
+                </div>
                 <div class="col-sm-3">
                     <vaadin-combo-box items="[[CBRegions]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                         <template>
@@ -187,7 +187,7 @@
                     </vaadin-combo-box>
                     <!--<vaadin-text-field type="text" value="{{data.codigoCentroResponsabilidade}}" id="codigoCentroResponsabilidade" name="codigoCentroResponsabilidade" label="Centro Resp."> </vaadin-text-field>-->
                 </div>
-                
+
             </div>
         </div>
         <div>
@@ -221,7 +221,7 @@
                     <div class="col-sm-6">
                         <vaadin-text-field type="text" value="{{data.referencia}}" id="referencia" name="referencia" label="Referência"> </vaadin-text-field>
                     </div>
-                </div>             
+                </div>
             </div>
         </div>
         <div>
@@ -230,7 +230,7 @@
                     <vaadin-checkbox checked="{{data.imobilizado}}" required>Imobilizado?</vaadin-checkbox>
                     <vaadin-checkbox checked="{{data.tratado}}" required>Tratado?</vaadin-checkbox>
                 </div>
-                
+
             </div>
         </div>
 
@@ -252,14 +252,14 @@
 
         <iron-pages selected="{{selected}}">
             <!-- Tab Unidade Produtiva-->
-            <div>    
+            <div>
                 <div class="row break_clear">
                     <div class="col-sm-6">
                         <vaadin-text-field type="text" value="{{data.informacaoTecnica}}" id="informacaoTecnica" name="informacaoTecnica" label="Informação Técnica"> </vaadin-text-field>
                     </div>
                     <div class="col-sm-6">
                         <br><i>Descrição da prestação de serviços ou bem a adquirir</i>
-                    </div>    
+                    </div>
                 </div>
                 <div class="row break_clear">
                     <div class="col-sm-6">
@@ -303,13 +303,18 @@
                                 </paper-icon-item>
                             </template>
                         </vaadin-combo-box>
-                    </div>                   
+                    </div>
                     <div class="col-sm-4" id="formAddElemento">
-                        <p>Responsabilidades</p>                      
-                        <vaadin-checkbox id="_chkPresidente" checked="{{chkPresidente}}">Presidente</vaadin-checkbox>
-                        <vaadin-checkbox id="_chkVogal" checked="{{chkVogal}}">Vogal</vaadin-checkbox>
-                        <vaadin-checkbox id="_chkSuplente" checked="{{chkSuplente}}">Suplente</vaadin-checkbox>
+                        <p>Responsabilidades</p>
+
+                        <vaadin-radio-button-group id="responsabilidades" name="responsabilidades" value="{{responsabilidade}}">
+                            <vaadin-radio-button id="_chkPresidente" checked="{{chkPresidente}}" value="presidente">Presidente</vaadin-radio-button>
+                            <vaadin-radio-button id="_chkVogal" checked="{{chkVogal}}" value="vogal">Vogal</vaadin-radio-button>
+                            <vaadin-radio-button id="_chkSuplente" checked="{{chkSuplente}}" value="suplente">Suplente</vaadin-radio-button>
+                        </vaadin-radio-button-group>
+
                         <vaadin-checkbox id="_chkSendMail" checked="{{chkSendMail}}">Enviar Email</vaadin-checkbox>
+
                     </div>
                     <div class="col-lg-3">
                         <br />
@@ -394,11 +399,11 @@
                         </template>
                         <template>
                             <!--<center>-->
-                                <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                            <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                             <!--</center>-->
                         </template>
                     </vaadin-grid-column>
-                </vaadin-grid>   
+                </vaadin-grid>
                 <h2 class="separator" style="border-bottom:1px dotted; padding:0;"></h2>
                 <!-- Elementos Juri section.e -->
                 <div class="row break_clear">
@@ -522,7 +527,7 @@
 
                     if (this._validateData()) {
                         this._executeRequest("/ProcedimentosCcps/CreateProcedimento", this.data)
-                    }  
+                    }
                 },
 
                 _update: function () {
@@ -672,8 +677,7 @@
                         });
 
                         this.$.ajax_createelementojuri.generateRequest();
-    
-                        this.gridElementosJuri.clearCache();
+                        //this.gridElementosJuri.clearCache();
                     }
                 },
                 _createElementoJuriResponse: function (e) {
@@ -690,7 +694,7 @@
                         if (this.ElementoCreated.eReasonCode == 3 || this.ElementoCreated.eReasonCode == 4)
                             this._openToast(this.ElementoCreated.eMessage);
                         else
-                            this._openToast('Não foi possível criar o Elemento do Juri');                       
+                            this._openToast('Não foi possível criar o Elemento do Juri');
                     }
                 },
                 _deleteElementoJuri: function (e) {
@@ -701,20 +705,20 @@
                         noProcedimento: this.data.no,
                         noLinha: e.model.item.noLinha
                     });
-                    this.$.ajax_deleteelementojuri.generateRequest();                  
+                    this.$.ajax_deleteelementojuri.generateRequest();
                     this.$.gridElementosJuri.clearCache();
-                    
+
                 },
                 _deleteElementoJuriResponse: function (e) {
                     //debugger;;
                     if (this.ElementoDeleted) {
                         this._openToast('Elemento Juri eliminado com sucesso');
-                        
+
                     } else {
                         this._openToast('Não foi possível eliminar o Elemento do Juri!')
                     }
-                    
-                    
+
+
                 },
                 //Helpers
                 _executeRequest: function (url, data) {
