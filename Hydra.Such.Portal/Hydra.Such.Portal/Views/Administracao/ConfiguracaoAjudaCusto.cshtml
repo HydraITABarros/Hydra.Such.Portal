@@ -406,17 +406,17 @@
                                 {
                                     codigoTipoCusto: this.$.codigoTipoCusto.value,
                                     codigoRefCusto: this.$.codigoRefCusto.value,
-                                    dataChegadaDataPartida: (this.$.dataChegadaDataPartida.value == "on" ? true : false),
+                                    dataChegadaDataPartida: this.$.dataChegadaDataPartida.checked,
                                     distanciaMinima: this.$.distanciaMinima.value,
                                     limiteHoraPartida: this.$.limiteHoraPartida.value,
                                     limiteHoraChegada: this.$.limiteHoraChegada.value,
-                                    prioritario: (this.$.prioritario.value == "on" ? true : false),
+                                    prioritario: this.$.prioritario.checked,
                                     tipoCusto: this.$.tipoCusto.value,
                                     sinalHoraPartida: this.$.sinalHoraPartida.value,
                                     horaPartida: this.$.horaPartida.value,
                                     sinalHoraChegada: this.$.sinalHoraChegada.value,
                                     horaChegada: this.$.horaChegada.value,
-                                    tipoEstadia: (this.$.tipoEstadia.value == "on" ? true : false)
+                                    tipoEstadia: this.$.tipoEstadia.checked
                                 }
                             );
                             this.$.ajax_create.generateRequest();
@@ -457,17 +457,17 @@
 
                             this.$.codigoTipoCusto.value = "";
                             this.$.codigoRefCusto.value = "";
-                            this.$.dataChegadaDataPartida.value = "";
+                            this.$.dataChegadaDataPartida.checked = false;
                             this.$.distanciaMinima.value = "";
                             this.$.limiteHoraPartida.value = "";
                             this.$.limiteHoraChegada.value = "";
-                            this.$.prioritario.value = "";
+                            this.$.prioritario.checked = false;
                             this.$.tipoCusto.value = "";
                             this.$.sinalHoraPartida.value = "";
                             this.$.horaPartida.value = "";
                             this.$.sinalHoraChegada.value = "";
                             this.$.horaChegada.value = "";
-                            this.$.tipoEstadia.value = "";
+                            this.$.tipoEstadia.checked = false;
 
                             this.$.ajax_GetAll.generateRequest();
                             this.openToast("Tabela atualizada.");
