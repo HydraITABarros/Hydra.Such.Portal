@@ -137,7 +137,7 @@
                     </template>
                 </vaadin-combo-box>
             </div>
-            <div class="col-lg-3"><vaadin-text-field id="distanciaMinima" value="{{distanciaMinima}}" label="Distância Minima" type="number" pattern="[0-9]*" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+            <div class="col-lg-3"><vaadin-text-field id="distanciaMinima" value="{{distanciaMinima}}" label="Distância Minima" type="number" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
             <div class="col-lg-3 alignPoga"><vaadin-checkbox id="dataChegadaDataPartida" checked="{{dataChegadaDataPartida}}" disabled="{{ _permissionsCreate }}">Data Chegada > Data Partida</vaadin-checkbox></div>
             <div class="col-lg-3"><vaadin-text-field id="limiteHoraPartida" value="{{limiteHoraPartida}}" label="Limite Hora Partida" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
             <div class="col-lg-3"><vaadin-text-field id="limiteHoraChegada" value="{{limiteHoraChegada}}" label="Limite Hora Chegada" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
@@ -401,6 +401,7 @@
                     _create: function () {
 
                         if (this._validateData("configuracaoAjudaCusto")) {
+
                             this.$.ajax_create.body = JSON.stringify(
                                 {
                                     codigoTipoCusto: this.$.codigoTipoCusto.value,
@@ -453,8 +454,21 @@
                     _createResponse: function (e) {
                         var self = this;
                         if (e.detail.status === 200) {
-                            this.description = "";
-                            this.codigoMarca = "";
+
+                            this.$.codigoTipoCusto.value = "";
+                            this.$.codigoRefCusto.value = "";
+                            this.$.dataChegadaDataPartida.value = "";
+                            this.$.distanciaMinima.value = "";
+                            this.$.limiteHoraPartida.value = "";
+                            this.$.limiteHoraChegada.value = "";
+                            this.$.prioritario.value = "";
+                            this.$.tipoCusto.value = "";
+                            this.$.sinalHoraPartida.value = "";
+                            this.$.horaPartida.value = "";
+                            this.$.sinalHoraChegada.value = "";
+                            this.$.horaChegada.value = "";
+                            this.$.tipoEstadia.value = "";
+
                             this.$.ajax_GetAll.generateRequest();
                             this.openToast("Tabela atualizada.");
                         }

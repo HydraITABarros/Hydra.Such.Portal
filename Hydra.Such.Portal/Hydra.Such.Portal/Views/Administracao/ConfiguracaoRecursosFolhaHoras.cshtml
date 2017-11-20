@@ -275,8 +275,6 @@
                         var _self = this;
                         this.$.ajax_GetAll.generateRequest();
 
-                        console.log(this.$.codigoRecurso);
-                        window.teste = this.$.codigoRecurso
                         this.$.codigoRecurso.addEventListener('value-changed', function () {
                             _self.$.descricao.value = _self.$.codigoRecurso.__data.selectedItem.value;
                             _self.$.unidMedida.value = _self.$.codigoRecurso.__data.selectedItem.extra;
