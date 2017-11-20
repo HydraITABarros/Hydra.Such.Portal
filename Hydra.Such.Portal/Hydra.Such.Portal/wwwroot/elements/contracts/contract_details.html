@@ -1821,7 +1821,13 @@
                             this._CLVersionStartDate = this.data.startData;
                             this._CLVersionEndDate = this.data.dueDate;
 
-                            this._openToast(this.dataLines.eMessage);
+                            if (this.dataLines.eReasonCode != 1)
+                            {
+                                this._openToastError(this.dataLines.eMessage);
+                            }
+                            else {
+                                this._openToast(this.dataLines.eMessage);
+                            }
                         }
                     }
                 },

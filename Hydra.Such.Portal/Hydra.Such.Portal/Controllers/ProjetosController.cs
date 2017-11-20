@@ -387,7 +387,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     LineNo = x.NºLinha,
                     ProjectNo = x.NºProjeto,
-                    Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                    Date = !x.Data.HasValue ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
                     MovementType = x.TipoMovimento,
                     Type = x.Tipo,
                     Code = x.Código,
@@ -406,14 +406,14 @@ namespace Hydra.Such.Portal.Controllers
                     TotalPrice = x.PreçoTotal,
                     Billable = x.Faturável,
                     Registered = x.Registado,
-                    Billed = x.Faturada == null ? false : (bool)x.Faturada,
+                    Billed = x.Faturada.HasValue ? x.Faturada.Value : false,
                     Currency = x.Moeda,
                     UnitValueToInvoice = x.ValorUnitárioAFaturar,
                     MealType = x.TipoRefeição,
                     ServiceGroupCode = x.CódGrupoServiço,
                     ResidueGuideNo = x.NºGuiaResíduos,
                     ExternalGuideNo = x.NºGuiaExterna,
-                    ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
+                    ConsumptionDate = !x.DataConsumo.HasValue ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                     InvoiceToClientNo = x.FaturaANºCliente,
                     ServiceClientCode = x.CódServiçoCliente
                 }).ToList();
@@ -421,11 +421,16 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
+                //List<DiárioDeProjeto> dp1 = DBProjectDiary.GetByProjectNo(projectNo, User.Identity.Name).ToList();
+                //foreach (DiárioDeProjeto var in dp1)
+                //{
+                //    vae
+                //}
                 List<ProjectDiaryViewModel> dp = DBProjectDiary.GetByProjectNo(projectNo, User.Identity.Name).Select(x => new ProjectDiaryViewModel()
                 {
                     LineNo = x.NºLinha,
                     ProjectNo = x.NºProjeto,
-                    Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                    Date = !x.Data.HasValue ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
                     MovementType = x.TipoMovimento,
                     Type = x.Tipo,
                     Code = x.Código,
@@ -444,14 +449,14 @@ namespace Hydra.Such.Portal.Controllers
                     TotalPrice = x.PreçoTotal,
                     Billable = x.Faturável,
                     Registered = x.Registado,
-                    Billed = (bool)x.Faturada,
+                    Billed = x.Faturada.HasValue ? x.Faturada.Value : false,
                     Currency = x.Moeda,
                     UnitValueToInvoice = x.ValorUnitárioAFaturar,
                     MealType = x.TipoRefeição,
                     ServiceGroupCode = x.CódGrupoServiço,
                     ResidueGuideNo = x.NºGuiaResíduos,
                     ExternalGuideNo = x.NºGuiaExterna,
-                    ConsumptionDate =x.DataConsumo == null ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
+                    ConsumptionDate = !x.DataConsumo.HasValue ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                     InvoiceToClientNo = x.FaturaANºCliente,
                     ServiceClientCode = x.CódServiçoCliente
                 }).ToList();
@@ -675,60 +680,42 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetMovements([FromBody] string projectNo)
         {
             //Get Contract from Project
-            List<ProjectDiaryViewModel> dp = new List<ProjectDiaryViewModel>();
+            List<DiárioDeProjeto> dp = new List<DiárioDeProjeto>();
             if (projectNo != null && projectNo != "")
             {
-                Projetos proj = DBProjects.GetById(projectNo);
-                if (proj != null)
+                dp = DBProjectDiary.GetRegisteredDiary(projectNo, User.Identity.Name).Select(x => new DiárioDeProjeto()
                 {
-                   
-                    Contratos cont = Data.Logic.Contracts.DBContracts.GetActiveContractById(proj.NºContrato);
-                    if (cont != null)
-                    {
-                        List<LinhasContratos> allLines = Data.Logic.Contracts.DBContractLines.GetAllByActiveContract(cont.NºContrato, cont.NºVersão);
-                        if (allLines != null && allLines.Count > 0)
-                        {
-                            dp = allLines.Select(x => new ProjectDiaryViewModel()
-                            {
-                                ProjectNo = projectNo,
-                                Type = x.Tipo,
-                                Code = x.Código,
-                                Description = x.Descrição,
-                                MeasurementUnitCode = x.CódUnidadeMedida,
-                                UnitPrice = x.PreçoUnitário,
-                                Billable = x.Faturável,
-                                RegionCode = x.CódigoRegião,
-                                FunctionalAreaCode = x.CódigoÁreaFuncional,
-                                ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
-                                Quantity = 0,
-                                Registered = false
-                            }).ToList();
+                    NºProjeto = x.NºProjeto,
+                    Data = x.Data,
+                    TipoMovimento = x.TipoMovimento,
+                    Tipo = x.Tipo,
+                    Código = x.Código,
+                    Descrição = x.Descrição,
+                    Quantidade = x.Quantidade,
+                    CódUnidadeMedida = x.CódUnidadeMedida,
+                    CódLocalização = x.CódLocalização,
+                    GrupoContabProjeto = x.GrupoContabProjeto,
+                    CódigoRegião = x.CódigoRegião,
+                    CódigoÁreaFuncional = x.CódigoÁreaFuncional,
+                    CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
+                    Utilizador = x.Utilizador,
+                    CustoUnitário = x.CustoUnitário,
+                    CustoTotal = x.CustoTotal,
+                    PreçoUnitário = x.PreçoUnitário,
+                    PreçoTotal = x.PreçoTotal,
+                    Faturável = x.Faturável,
+                    Registado = false,
+                    DataConsumo = x.DataConsumo.ToString() == "" || x.DataConsumo.ToString() == String.Empty ? (DateTime?)null : DateTime.Parse(x.DataConsumo.ToString()),
 
-                            return Json(dp);
-                        }
-                        else
-                        {
-                            return Json(dp);
-                        }
-                    }
-                    else
-                    {
-                        return Json(dp);
-                    }
+                }).ToList();
 
-                }
-                else
+                foreach (var item in dp)
                 {
-                    return Json(dp);
+                    DBProjectDiary.Create(item);
                 }
-            }
-            else
-            {
                 return Json(dp);
             }
-
-            //contract lines by contract id and version
-
+            return Json(false);
         }
 
         public class ProjectInfo
