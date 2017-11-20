@@ -514,6 +514,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 UtilizadorModificacao = Elementos.UtilizadorModificação
             };
 
+            ElementoJuriV.NomeEmpregado = DBProcedimentosCCP.GetUserName(ElementoJuriV.Utilizador);
+
             return ElementoJuriV;
         }
 

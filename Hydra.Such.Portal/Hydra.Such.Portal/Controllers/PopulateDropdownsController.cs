@@ -154,6 +154,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetFolhaDeHoraViaturasMatriculas()
+        {
+            List<DDMessageString> result = DBViatura.GetAllToList().Select(x => new DDMessageString()
+            {
+                id = x.Matrícula,
+                value = x.Matrícula
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetFolhaDeHoraPercursoOrigemDestino()
         {
             List<DDMessageString> result = DBOrigemDestinoFh.GetAll().Select(x => new DDMessageString()
@@ -852,6 +863,26 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetAjudaCustoTipoCusto()
+        {
+            List<EnumData> result = EnumerablesFixed.AjudaCustoTipoCusto;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAjudaCustoRefCusto()
+        {
+            List<EnumData> result = EnumerablesFixed.AjudaCustoRefCusto;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAjudaCustoPartidaChegada()
+        {
+            List<EnumData> result = EnumerablesFixed.AjudaCustoPartidaChegada;
+            return Json(result);
+        }
 
     }
 
