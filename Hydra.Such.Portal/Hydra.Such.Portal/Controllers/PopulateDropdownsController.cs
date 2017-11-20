@@ -852,6 +852,26 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetAjudaCustoTipoCusto()
+        {
+            List<EnumData> result = EnumerablesFixed.AjudaCustoTipoCusto;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAjudaCustoRefCusto()
+        {
+            List<EnumData> result = EnumerablesFixed.AjudaCustoRefCusto;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAjudaCustoPartidaChegada()
+        {
+            List<EnumData> result = EnumerablesFixed.AjudaCustoPartidaChegada;
+            return Json(result);
+        }
 
     }
 
