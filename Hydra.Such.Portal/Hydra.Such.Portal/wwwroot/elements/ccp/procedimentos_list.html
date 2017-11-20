@@ -57,6 +57,15 @@
                    id="grid_databound_ajax"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/CreateProcedimentoByProcedimentoType"
+                   last-response="{{NewProcedimento}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_createprocedimento"
+                   on-response="_newProcedimentoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        
 
         <div class="marginSpace">
             <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
@@ -130,18 +139,37 @@
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
-                _create: function (item) {
+                _create: function (/*item*/) {
                     debugger;
 
-                    if (item != null) {
-                        if (this._procedimentotypeid == 1) {
-                            window.location.href = "/ProcedimentosCcps/DetalhePedidoAquisicao/";
-                        }
-                        else {
-                            window.location.href = "/ProcedimentosCcps/DetalhePedidoSimplificado/";
-                        }
-                        //window.location.href = "/ProcedimentosCcps/DetalhePedidoAquisicao/";
+                    // zpgm.20112017.b original code
+                    //if (item != null) {
+                    //    if (this._procedimentotypeid == 1) {
+                    //        window.location.href = "/ProcedimentosCcps/DetalhePedidoAquisicao/";
+                    //    }
+                    //    else {
+                    //        window.location.href = "/ProcedimentosCcps/DetalhePedidoSimplificado/";
+                    //    }
+                    //    //window.location.href = "/ProcedimentosCcps/DetalhePedidoAquisicao/";
+                    //}
+                    // zpgm.20112017.e
+                    if (this._procedimentotypeid == 1 || this._procedimentotypeid == 2) {
+                        this.$.ajax_createprocedimento.body = JSON.stringify( this._procedimentotypeid );
+                        this.$.ajax_createprocedimento.generateRequest();
+                    } else {
+                        this._openToast("Tipo de procedimento inválido!")
                     }
+                },
+                _newProcedimentoResponse: function (e) {
+                    debugger;;
+                    if (this.NewProcedimento == "") {
+                        this._openToast("Não é possível criar novo");
+                    } else {
+                        if (this._procedimentotypeid == 1)
+                            window.location.href = "/ProcedimentosCcps/DetalhePedidoAquisicao/" + this.NewProcedimento;
+                        else
+                            window.location.href = "/ProcedimentosCcps/DetalhePedidoSimplificado/" + this.NewProcedimento;
+                    };
                 }
             });
         });

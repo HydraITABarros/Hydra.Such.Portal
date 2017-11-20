@@ -181,6 +181,12 @@ namespace Hydra.Such.Data.Logic.CCP
                 _context.ProcedimentosCcp.Update(proc);
                 _context.SaveChanges();
 
+                //if(proc.ElementosJuri != null && proc.ElementosJuri.Count > 0)
+                //{
+                //    foreach(var ej in proc.ElementosJuri)
+
+                //}
+
                 return proc;
             }
             catch (Exception e)
@@ -407,6 +413,34 @@ namespace Hydra.Such.Data.Logic.CCP
             {
                 return null;
             }
+        }
+        public static ElementosJuri __UpdateElementoJuri(ElementosJuriView ElementoView)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                ElementosJuri Elemento = _context.ElementosJuri.Where(ej => ej.NºProcedimento == ElementoView.NoProcedimento && ej.NºLinha == ElementoView.NoLinha).FirstOrDefault();
+
+                Elemento.Presidente = ElementoView.Presidente;
+                Elemento.Vogal = ElementoView.Vogal;
+                Elemento.Suplente = ElementoView.Suplente;
+                Elemento.Email = ElementoView.Email;
+
+                Elemento.DataHoraModificação = ElementoView.DataHoraModificacao;
+                Elemento.UtilizadorModificação = ElementoView.UtilizadorModificacao;
+
+                _context.Add(Elemento);
+                _context.SaveChanges();
+
+                return Elemento;
+            }
+            catch (Exception e)
+            {
+
+                return null;
+            }
+
         }
         public static bool __DeleteAllElementosJuriRelatedToProcedimento(string ProcedimentoID)
         {
