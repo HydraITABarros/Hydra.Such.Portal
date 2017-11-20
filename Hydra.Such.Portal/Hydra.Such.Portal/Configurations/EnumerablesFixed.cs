@@ -1238,6 +1238,78 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> AjudaCustoTipoCusto = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Km"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Ajuda de Custo"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Despesa"
+            }
+        };
+
+        public static readonly List<EnumData> AjudaCustoRefCusto = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Almoço"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Jantar"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Estadia"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Alomço + Jantar"
+            }
+        };
+
+        public static readonly List<EnumData> AjudaCustoPartidaChegada = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "="
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = ">"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = ">="
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "<"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "<="
+            }
+        };
+
     }
 
     public class EnumDataString
