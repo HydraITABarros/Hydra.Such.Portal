@@ -154,6 +154,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetFolhaDeHoraViaturasMatriculas()
+        {
+            List<DDMessageString> result = DBViatura.GetAllToList().Select(x => new DDMessageString()
+            {
+                id = x.Matrícula,
+                value = x.Matrícula
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetFolhaDeHoraPercursoOrigemDestino()
         {
             List<DDMessageString> result = DBOrigemDestinoFh.GetAll().Select(x => new DDMessageString()

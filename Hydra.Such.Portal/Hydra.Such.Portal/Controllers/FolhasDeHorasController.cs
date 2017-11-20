@@ -880,6 +880,25 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult CalcularAjudasCusto()
+        {
+            bool result = false;
+            try
+            {
+
+
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+
+
+
         #endregion
 
         #region MÃO-DE-OBRA
