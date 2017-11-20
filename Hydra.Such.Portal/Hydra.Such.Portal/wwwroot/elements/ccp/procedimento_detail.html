@@ -291,7 +291,7 @@
                     </div>
                 </div>
                 <!-- Elementos Juri section.b -->
-                <h2 class="separator">Elementos Juri</h2>
+                <h2 class="separator" style="border-bottom:1px dotted; padding:0;">Elementos Juri</h2>
                 <div class="table inlineForm">
                     <div class="col-sm-3" style="padding-left:0;">
                         <vaadin-combo-box items="[[LUsers]]" id="users" item-value-path="id" value="{{_userName }}" item-label-path="id" label="Possiveis Elementos">
@@ -303,11 +303,9 @@
                                 </paper-icon-item>
                             </template>
                         </vaadin-combo-box>
-                    </div>
-                    
-                    <div class="col-sm-4">
-                        <p>Responsabilidades</p>
-                        
+                    </div>                   
+                    <div class="col-sm-4" id="formAddElemento">
+                        <p>Responsabilidades</p>                      
                         <vaadin-checkbox id="_chkPresidente" checked="{{chkPresidente}}">Presidente</vaadin-checkbox>
                         <vaadin-checkbox id="_chkVogal" checked="{{chkVogal}}">Vogal</vaadin-checkbox>
                         <vaadin-checkbox id="_chkSuplente" checked="{{chkSuplente}}">Suplente</vaadin-checkbox>
@@ -400,8 +398,14 @@
                             <!--</center>-->
                         </template>
                     </vaadin-grid-column>
-                </vaadin-grid>             
+                </vaadin-grid>   
+                <h2 class="separator" style="border-bottom:1px dotted; padding:0;"></h2>
                 <!-- Elementos Juri section.e -->
+                <div class="row break_clear">
+                    <div class="col-sm-6">
+                        <vaadin-text-field type="text" value="{{data.prazo}}" id="prazo" name="prazo" label="Prazo para a prestação do serviço (Até 3 anos)"> </vaadin-text-field>
+                    </div>
+                </div>
 
             </div>
 
@@ -666,8 +670,9 @@
                             suplente: this.chkSuplente,
                             enviarEmail: this.chkSendMail
                         });
-                        this.$.ajax_createelementojuri.generateRequest();
 
+                        this.$.ajax_createelementojuri.generateRequest();
+    
                         this.gridElementosJuri.clearCache();
                     }
                 },
@@ -677,10 +682,10 @@
                         this._openToast('Elemento Júri adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
                         this.$.users.value = "";
-                        this.$.chkPresidente.value = false;
-                        this.$.chkVogal.value = false;
-                        this.$.chkSuplente.value = false;
-                        this.$.chkSendMail.value = false;
+                        this.chkPresidente = false;
+                        this.chkVogal = false;
+                        this.chkSuplente = false;
+                        this.chkSendMail = false;
                     } else {
                         if (this.ElementoCreated.eReasonCode == 3 || this.ElementoCreated.eReasonCode == 4)
                             this._openToast(this.ElementoCreated.eMessage);
