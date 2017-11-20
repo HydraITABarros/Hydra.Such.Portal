@@ -304,17 +304,19 @@
                             </template>
                         </vaadin-combo-box>
                     </div>
-                    <div class="col-sm-4" id="formAddElemento">
-                        <p>Responsabilidades</p>
-
-                        <vaadin-radio-button-group id="responsabilidades" name="responsabilidades" value="{{responsabilidade}}">
-                            <vaadin-radio-button id="_chkPresidente" checked="{{chkPresidente}}" value="presidente">Presidente</vaadin-radio-button>
-                            <vaadin-radio-button id="_chkVogal" checked="{{chkVogal}}" value="vogal">Vogal</vaadin-radio-button>
-                            <vaadin-radio-button id="_chkSuplente" checked="{{chkSuplente}}" value="suplente">Suplente</vaadin-radio-button>
-                        </vaadin-radio-button-group>
-
-                        <vaadin-checkbox id="_chkSendMail" checked="{{chkSendMail}}">Enviar Email</vaadin-checkbox>
-
+                    <div id="formAddElemento">
+                        <div class="col-lg-3 col-sm-4">
+                            <p>Responsabilidades</p>
+                            <vaadin-radio-button-group id="responsabilidades" name="responsabilidades" value="{{responsabilidade}}">
+                                <vaadin-radio-button id="_chkPresidente" checked="{{chkPresidente}}" value="presidente">Presidente</vaadin-radio-button>
+                                <vaadin-radio-button id="_chkVogal" checked="{{chkVogal}}" value="vogal">Vogal</vaadin-radio-button>
+                                <vaadin-radio-button id="_chkSuplente" checked="{{chkSuplente}}" value="suplente">Suplente</vaadin-radio-button>
+                            </vaadin-radio-button-group>
+                        </div>
+                        <div class="col-sm-2">
+                            <p>&nbsp;</p>
+                            <vaadin-checkbox id="_chkSendMail" checked="{{chkSendMail}}">Enviar Email</vaadin-checkbox>
+                        </div>
                     </div>
                     <div class="col-lg-3">
                         <br />
