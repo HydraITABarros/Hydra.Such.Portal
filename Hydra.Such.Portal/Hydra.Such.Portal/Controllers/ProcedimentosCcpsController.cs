@@ -290,5 +290,26 @@ namespace Hydra.Such.Portal.Controllers
             return Json(DBProcedimentosCCP.__DeleteElementoJuri(data.NoProcedimento, data.NoLinha));
         }
 
+        [HttpPost]
+        public JsonResult GetChecklistFluxoTrabalho([FromBody] ProcedimentoCCPView data)
+        {
+            if(data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
+            {
+                return Json("");
+            }
+            else
+            {
+                if(data.Estado != 0)
+                {
+                    FluxoTrabalhoListaControlo Fluxo = data.FluxoTrabalhoListaControlo.Where(f => f.Estado == 0).FirstOrDefault();
+                    return Json("");
+                }
+                else
+                {
+                    return Json("");
+                }
+            }
+        }
+
     }
 }
