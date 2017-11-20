@@ -62,6 +62,23 @@
         </style>
 
         <!-- Dropdowns populate.b -->
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" 
+                   last-response="{{CBRegions}}" 
+                   auto method="post" 
+                   handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" 
+                   last-response="{{CBFunctionalAreas}}" 
+                   auto method="post" handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" 
+                   last-response="{{CBResponsabilityCenterCodes}}" 
+                   auto method="post" 
+                   handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPocedimentosCcpProcedimentoType" 
                    last-response="{{LProcedimentoType}}" 
                    auto method="post" 
@@ -134,13 +151,41 @@
                     <vaadin-text-field type="text" value="{{data.no}}" id="no" name="no" label="Nº Procedimento" disabled="true"> </vaadin-text-field>
                 </div>         
                 <div class="col-sm-3">
-                    <vaadin-text-field type="text" value="{{data.codigoRegiao}}" id="codigoRegiao" name="codigoRegiao" label="Região"> </vaadin-text-field>
+                    <vaadin-combo-box items="[[CBRegions]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <template>
+                            <table width="250px">
+                                <tr>
+                                    <td width="20%">[[item.id]]</td>
+                                    <td width="80%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
                 <div class="col-sm-3">
-                    <vaadin-text-field type="text" value="{{data.codigoAreaFuncional}}" id="codigoAreaFuncional" name="codigoAreaFuncional" label="Área Funcional"> </vaadin-text-field>
+                    <vaadin-combo-box items="[[CBFunctionalAreas]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" label="Àrea Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <template>
+                            <table width="250px">
+                                <tr>
+                                    <td width="30%">[[item.id]]</td>
+                                    <td width="70%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
                 <div class="col-sm-3">
-                    <vaadin-text-field type="text" value="{{data.codigoCentroResponsabilidade}}" id="codigoCentroResponsabilidade" name="codigoCentroResponsabilidade" label="Centro Resp."> </vaadin-text-field>
+                    <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" label="Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <template>
+                            <table width="180px">
+                                <tr>
+                                    <td width="40%">[[item.id]]</td>
+                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                    <!--<vaadin-text-field type="text" value="{{data.codigoCentroResponsabilidade}}" id="codigoCentroResponsabilidade" name="codigoCentroResponsabilidade" label="Centro Resp."> </vaadin-text-field>-->
                 </div>
                 
             </div>
@@ -355,9 +400,7 @@
                             <!--</center>-->
                         </template>
                     </vaadin-grid-column>
-                </vaadin-grid>
-
-                
+                </vaadin-grid>             
                 <!-- Elementos Juri section.e -->
 
             </div>
@@ -479,8 +522,8 @@
                 },
 
                 _update: function () {
-                    //debugger;;
-                    if (this._validateData()) {
+                    debugger;;
+                    if (this._onUpdateValidateElementoJuri()) {
                         this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data)
                     }
                 },
@@ -568,19 +611,55 @@
                     }
                 },
                 // Create Elemento Juri
-                _createElementoJuri: function () {
-                    //debugger;;
+                _onUpdateValidateElementoJuri: function () {
+                    debugger;;
+                    for (var i in this.data.elementosJuri) {
+                        if (!this.data.elementosJuri[i].presidente && !this.data.elementosJuri[i].vogal && !this.data.elementosJuri[i].suplente) {
+                            this._openToast("Não escolheu qual a responsabilidade do utilizador: " + this.data.elementosJuri[i].utilizador + ".");
+                            return false;
+                        }
+
+                        if ((this.data.elementosJuri[i].presidente && (this.data.elementosJuri[i].vogal || this.data.elementosJuri[i].suplente)) ||
+                            (this.data.elementosJuri[i].vogal && (this.data.elementosJuri[i].presidente || this.data.elementosJuri[i].suplente)) ||
+                            (this.data.elementosJuri[i].suplente && (this.data.elementosJuri[i].presidente || this.data.elementosJuri[i].vogal))) {
+
+                            this._openToast("Apenas pode escolher uma das opções: Presidente, Vogal ou Suplente: " + this.data.elementosJuri[i].utilizador + ".");
+                            return false;
+                        }
+
+                        if (this.data.elementosJuri[i].presidente) {
+                            for (var j in this.data.elementosJuri) {
+                                if ((this.data.elementosJuri[i].utilizador != this.data.elementosJuri[j].utilizador) && this.data.elementosJuri[j].presidente) {
+                                    this._openToast("Já existe um presidente: " + this.data.elementosJuri[j].utilizador);
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                    return true;
+                },
+                _validateElementoJuriData: function () {
+                    debugger;;
                     if (this._userName == "") {
-                        this._openToast("Não escolheu um utilizador!")
+                        this._openToast("Não escolheu um utilizador!");
+                        return false;
                     } else if (!this.chkPresidente && !this.chkVogal && !this.chkSuplente) {
                         this._openToast("Não escolheu qual a responsabilidade do utilizador!");
+                        return false;
                     } else if ((this.chkPresidente && (this.chkVogal || this.chkSuplente)) ||
                         (this.chkVogal && (this.chkPresidente || this.chkSuplente)) ||
                         (this.chkSuplente && (this.chkPresidente || this.chkVogal))) {
-                        this._openToast("Apenas pode escolher uma das opções: Presidente, Vogal ou Suplente!")
-                    } else {
+
+                        this._openToast("Apenas pode escolher uma das opções: Presidente, Vogal ou Suplente!");
+                        return false;
+                    } else
+                        return true;
+                },
+                _createElementoJuri: function () {
+                    debugger;;
+                    if (this._validateElementoJuriData()) {
                         this.$.ajax_createelementojuri.body = JSON.stringify({
-                            noProcedimento: this.data.no, 
+                            noProcedimento: this.data.no,
                             utilizador: this._userName,
                             presidente: this.chkPresidente,
                             vogal: this.chkVogal,
@@ -588,7 +667,7 @@
                             enviarEmail: this.chkSendMail
                         });
                         this.$.ajax_createelementojuri.generateRequest();
-                        
+
                         this.gridElementosJuri.clearCache();
                     }
                 },
@@ -599,9 +678,9 @@
                         this.$.page_databound_ajax.generateRequest();
                         this.$.users.value = "";
                         this.$.chkPresidente.value = false;
-                        this.chkVogal.value = false;
-                        this.chkSuplente.value = false;
-                        this.chkSendMail.value = false;
+                        this.$.chkVogal.value = false;
+                        this.$.chkSuplente.value = false;
+                        this.$.chkSendMail.value = false;
                     } else {
                         if (this.ElementoCreated.eReasonCode == 3 || this.ElementoCreated.eReasonCode == 4)
                             this._openToast(this.ElementoCreated.eMessage);

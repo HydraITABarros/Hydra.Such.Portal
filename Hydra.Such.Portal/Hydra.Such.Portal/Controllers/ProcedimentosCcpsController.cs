@@ -136,22 +136,25 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreateProcedimentoByProcedimentoType(int type)
+        public JsonResult CreateProcedimentoByProcedimentoType([FromBody] int id)
         {
             List<EnumData> ProcedimentoTypes = EnumerablesFixed.ProcedimentosCcpProcedimentoType;
             bool TypeFound = false;
             foreach(var pt in ProcedimentoTypes)
             {
-                if (pt.Id == type && !TypeFound)
+                if (pt.Id == id && !TypeFound)
                     TypeFound = true;
             }
 
-            ProcedimentosCcp Procedimento = DBProcedimentosCCP.__CreateProcedimento(type, User.Identity.Name);
+            if (!TypeFound)
+                return Json("");
+
+            ProcedimentosCcp Procedimento = DBProcedimentosCCP.__CreateProcedimento(id, User.Identity.Name);
 
             if (Procedimento == null || Procedimento.Nº == "")
                 return Json("");
-            else
-                return Json(Procedimento.Nº);
+            
+            return Json(Procedimento.Nº);
 
         }
         [HttpPost]
