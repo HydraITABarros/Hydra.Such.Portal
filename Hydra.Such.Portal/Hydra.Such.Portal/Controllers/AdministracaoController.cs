@@ -624,7 +624,7 @@ namespace Hydra.Such.Portal.Controllers
                 Prefix = x.Prefixo,
                 Description = x.Descrição,
                 TotalDigitIncrement = x.NºDígitosIncrementar,
-                IncrementQuantity = x.NºDígitosIncrementar,
+                IncrementQuantity = x.QuantidadeIncrementar,
                 LastNumerationUsed = x.ÚltimoNºUsado
             }).ToList();
             return Json(result);
@@ -1663,7 +1663,8 @@ namespace Hydra.Such.Portal.Controllers
                     u.Descricao == x.Descricao &&
                     u.UnidMedida == x.UnidMedida &&
                     u.PrecoUnitarioCusto == x.PrecoUnitarioCusto &&
-                    u.PrecoUnitarioVenda == x.PrecoUnitarioVenda
+                    u.PrecoUnitarioVenda == x.PrecoUnitarioVenda &&
+                    u.RubricaSalarial == x.RubricaSalarial
             ));
 
             data.ForEach(x =>

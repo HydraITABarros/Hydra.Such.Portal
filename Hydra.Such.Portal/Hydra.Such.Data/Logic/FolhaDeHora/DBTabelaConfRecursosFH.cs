@@ -95,7 +95,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 Descricao = x.Descricao,
                 PrecoUnitarioCusto = x.PrecoUnitarioCusto,
                 PrecoUnitarioVenda = x.PrecoUnitarioVenda,
-                UnidMedida = x.UnidMedida
+                UnidMedida = x.UnidMedida,
+                RubricaSalarial = x.RubricaSalarial
             };
         }
 
@@ -108,7 +109,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 Descricao = x.Descricao,
                 PrecoUnitarioCusto = x.PrecoUnitarioCusto,
                 PrecoUnitarioVenda = x.PrecoUnitarioVenda,
-                UnidMedida = x.UnidMedida
+                UnidMedida = x.UnidMedida,
+                RubricaSalarial = x.RubricaSalarial
             };
         }
 
@@ -119,6 +121,5 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             x.ForEach(y => result.Add(ParseToViewModel(y)));
             return result;
         }
-
     }
 }

@@ -62,8 +62,6 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         }
         #endregion
 
-
-
         #region Detalhes Unidades Produtivas
         [Area("Nutricao")]
         public IActionResult Detalhes(int id)

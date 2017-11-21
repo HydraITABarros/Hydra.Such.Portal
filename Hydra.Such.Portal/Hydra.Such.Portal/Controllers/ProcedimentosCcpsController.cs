@@ -328,5 +328,42 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public JsonResult GetChecklistImobilizado([FromBody] ProcedimentoCCPView data)
+        {
+            if (data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
+            {
+                if(data.Estado != 1)
+                {
+                    FluxoTrabalhoListaControlo Fluxo = data.FluxoTrabalhoListaControlo.Where(f => f.Estado == 1).LastOrDefault();
+                    if(Fluxo != null)
+                    {
+                        ElementosChecklist Checklist = new ElementosChecklist()
+                        {
+                            ProcedimentoID = Fluxo.No,
+                            Estado = Fluxo.Estado,
+                            DataChecklist = Fluxo.Data,
+                            HoraChecklist = Fluxo.Hora,
+                            ChecklistImobilizadoContabilidade = new ElementosChecklistImobilizadoContabilidade(Fluxo)
+                        };
+
+                        return Json(Checklist);
+                    }
+                    else
+                    {
+                        return Json(null);
+                    }
+                }
+                else
+                {
+                    return Json(null);
+                }
+
+            }
+            else
+            {
+                return Json(null);
+            }     
+        }
+
     }
 }
