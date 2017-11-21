@@ -77,9 +77,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
         #endregion
-
-
-
+        
         #region Oportunidades
         public IActionResult Oportunidades(int? archived, string contractNo)
         {
@@ -126,8 +124,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
         #endregion
-
-
+        
         #region Propostas
         public IActionResult Propostas(int? archived, string contractNo)
         {
@@ -173,6 +170,72 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
         #endregion
+
+        #region Projetos
+        public IActionResult Projetos()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 1);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult DetalhesProjeto(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 1);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id == null ? "" : id;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        #endregion
+
+        #region DiárioProjetos
+        public IActionResult DiarioProjeto(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 19);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                // UPerm.Update = false;
+
+                ViewBag.ProjectNo = id ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult AutorizacaoFaturacao(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 22);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        #endregion
+
 
 
         public IActionResult Requisicoes()

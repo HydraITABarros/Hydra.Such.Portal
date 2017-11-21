@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewData["Title"] = "Detalhes Proposta - Apoio - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/contracts/proposal_details.html">
+
+@if (ViewBag.ContractNo == "")
+{
+    <h1 class="title">Criar Proposta</h1>
+}
+else
+{
+    <h1 class="title">Proposta Apoio @ViewBag.ContractNo</h1>
+}
+
+
+<x-proposalsdetails _contractno="@ViewBag.ContractNo" _versionno="@ViewBag.VersionNo" _areaid="5" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-proposalsdetails>

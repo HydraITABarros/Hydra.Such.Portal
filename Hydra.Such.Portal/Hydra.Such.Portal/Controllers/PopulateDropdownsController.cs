@@ -691,6 +691,21 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetProjectContractsByClient([FromBody]string clientNo)
+        {
+            List<Contratos> lcontracts = DBContracts.GetAll().Where(x => x.TipoContrato == 3).ToList();
+            lcontracts.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+            lcontracts.RemoveAll(x => x.NºCliente != clientNo);
+            List<DDMessageString> result = lcontracts.Select(x => new DDMessageString()
+            {
+                id = x.NºDeContrato,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+
         // zpgm.<populate dropdowns to use in Procedimentos CCP 
         [HttpPost]
         public JsonResult GetPocedimentosCcpProcedimentoType()

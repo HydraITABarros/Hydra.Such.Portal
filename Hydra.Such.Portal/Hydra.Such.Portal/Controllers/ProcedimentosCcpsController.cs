@@ -136,22 +136,25 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreateProcedimentoByProcedimentoType(int type)
+        public JsonResult CreateProcedimentoByProcedimentoType([FromBody] int id)
         {
             List<EnumData> ProcedimentoTypes = EnumerablesFixed.ProcedimentosCcpProcedimentoType;
             bool TypeFound = false;
             foreach(var pt in ProcedimentoTypes)
             {
-                if (pt.Id == type && !TypeFound)
+                if (pt.Id == id && !TypeFound)
                     TypeFound = true;
             }
 
-            ProcedimentosCcp Procedimento = DBProcedimentosCCP.__CreateProcedimento(type, User.Identity.Name);
+            if (!TypeFound)
+                return Json("");
+
+            ProcedimentosCcp Procedimento = DBProcedimentosCCP.__CreateProcedimento(id, User.Identity.Name);
 
             if (Procedimento == null || Procedimento.Nº == "")
                 return Json("");
-            else
-                return Json(Procedimento.Nº);
+            
+            return Json(Procedimento.Nº);
 
         }
         [HttpPost]
@@ -285,6 +288,81 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteElementoJuri([FromBody] ElementosJuriView data)
         {
             return Json(DBProcedimentosCCP.__DeleteElementoJuri(data.NoProcedimento, data.NoLinha));
+        }
+
+        [HttpPost]
+        public JsonResult GetChecklistArea([FromBody] ProcedimentoCCPView data)
+        {
+            if(data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
+            {
+                if (data.Estado != 0)
+                {
+                    FluxoTrabalhoListaControlo Fluxo = data.FluxoTrabalhoListaControlo.Where(f => f.Estado == 0).LastOrDefault();
+
+                    if (Fluxo != null)
+                    {
+                        ElementosChecklist Checklist = new ElementosChecklist()
+                        {
+                            ProcedimentoID = Fluxo.No,
+                            Estado = Fluxo.Estado,
+                            DataChecklist = Fluxo.Data,
+                            HoraChecklist = Fluxo.Hora,
+                            ChecklistArea = new ElementosChecklistArea(Fluxo)
+                        };
+
+                        return Json(Checklist);
+                    }
+                    else
+                        return Json(null);
+                }
+                else
+                {
+                    return Json(null);
+                }
+
+                
+            }
+            else
+            {
+                return Json(null);
+            }
+        }
+
+        public JsonResult GetChecklistImobilizado([FromBody] ProcedimentoCCPView data)
+        {
+            if (data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
+            {
+                if(data.Estado != 1)
+                {
+                    FluxoTrabalhoListaControlo Fluxo = data.FluxoTrabalhoListaControlo.Where(f => f.Estado == 1).LastOrDefault();
+                    if(Fluxo != null)
+                    {
+                        ElementosChecklist Checklist = new ElementosChecklist()
+                        {
+                            ProcedimentoID = Fluxo.No,
+                            Estado = Fluxo.Estado,
+                            DataChecklist = Fluxo.Data,
+                            HoraChecklist = Fluxo.Hora,
+                            ChecklistImobilizadoContabilidade = new ElementosChecklistImobilizadoContabilidade(Fluxo)
+                        };
+
+                        return Json(Checklist);
+                    }
+                    else
+                    {
+                        return Json(null);
+                    }
+                }
+                else
+                {
+                    return Json(null);
+                }
+
+            }
+            else
+            {
+                return Json(null);
+            }     
         }
 
     }

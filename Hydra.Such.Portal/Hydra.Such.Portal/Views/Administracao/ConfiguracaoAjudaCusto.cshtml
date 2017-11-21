@@ -137,7 +137,7 @@
                     </template>
                 </vaadin-combo-box>
             </div>
-            <div class="col-lg-3"><vaadin-text-field id="distanciaMinima" value="{{distanciaMinima}}" label="Distância Minima" type="number" pattern="[0-9]*" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+            <div class="col-lg-3"><vaadin-text-field id="distanciaMinima" value="{{distanciaMinima}}" label="Distância Minima" type="number" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
             <div class="col-lg-3 alignPoga"><vaadin-checkbox id="dataChegadaDataPartida" checked="{{dataChegadaDataPartida}}" disabled="{{ _permissionsCreate }}">Data Chegada > Data Partida</vaadin-checkbox></div>
             <div class="col-lg-3"><vaadin-text-field id="limiteHoraPartida" value="{{limiteHoraPartida}}" label="Limite Hora Partida" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
             <div class="col-lg-3"><vaadin-text-field id="limiteHoraChegada" value="{{limiteHoraChegada}}" label="Limite Hora Chegada" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
@@ -401,21 +401,22 @@
                     _create: function () {
 
                         if (this._validateData("configuracaoAjudaCusto")) {
+
                             this.$.ajax_create.body = JSON.stringify(
                                 {
                                     codigoTipoCusto: this.$.codigoTipoCusto.value,
                                     codigoRefCusto: this.$.codigoRefCusto.value,
-                                    dataChegadaDataPartida: (this.$.dataChegadaDataPartida.value == "on" ? true : false),
+                                    dataChegadaDataPartida: this.$.dataChegadaDataPartida.checked,
                                     distanciaMinima: this.$.distanciaMinima.value,
                                     limiteHoraPartida: this.$.limiteHoraPartida.value,
                                     limiteHoraChegada: this.$.limiteHoraChegada.value,
-                                    prioritario: (this.$.prioritario.value == "on" ? true : false),
+                                    prioritario: this.$.prioritario.checked,
                                     tipoCusto: this.$.tipoCusto.value,
                                     sinalHoraPartida: this.$.sinalHoraPartida.value,
                                     horaPartida: this.$.horaPartida.value,
                                     sinalHoraChegada: this.$.sinalHoraChegada.value,
                                     horaChegada: this.$.horaChegada.value,
-                                    tipoEstadia: (this.$.tipoEstadia.value == "on" ? true : false)
+                                    tipoEstadia: this.$.tipoEstadia.checked
                                 }
                             );
                             this.$.ajax_create.generateRequest();
@@ -453,8 +454,21 @@
                     _createResponse: function (e) {
                         var self = this;
                         if (e.detail.status === 200) {
-                            this.description = "";
-                            this.codigoMarca = "";
+
+                            this.$.codigoTipoCusto.value = "";
+                            this.$.codigoRefCusto.value = "";
+                            this.$.dataChegadaDataPartida.checked = false;
+                            this.$.distanciaMinima.value = "";
+                            this.$.limiteHoraPartida.value = "";
+                            this.$.limiteHoraChegada.value = "";
+                            this.$.prioritario.checked = false;
+                            this.$.tipoCusto.value = "";
+                            this.$.sinalHoraPartida.value = "";
+                            this.$.horaPartida.value = "";
+                            this.$.sinalHoraChegada.value = "";
+                            this.$.horaChegada.value = "";
+                            this.$.tipoEstadia.checked = false;
+
                             this.$.ajax_GetAll.generateRequest();
                             this.openToast("Tabela atualizada.");
                         }

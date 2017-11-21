@@ -624,7 +624,7 @@ namespace Hydra.Such.Portal.Controllers
                 Prefix = x.Prefixo,
                 Description = x.Descrição,
                 TotalDigitIncrement = x.NºDígitosIncrementar,
-                IncrementQuantity = x.NºDígitosIncrementar,
+                IncrementQuantity = x.QuantidadeIncrementar,
                 LastNumerationUsed = x.ÚltimoNºUsado
             }).ToList();
             return Json(result);
