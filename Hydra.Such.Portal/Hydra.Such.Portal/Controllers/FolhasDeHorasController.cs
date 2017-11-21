@@ -280,7 +280,7 @@ namespace Hydra.Such.Portal.Controllers
                             CodigoFamiliaRecurso = MaoDeObra.CodigoFamiliaRecurso,
                             CodigoTipoOM = MaoDeObra.CodigoTipoOM,
                             HorasNo = MaoDeObra.HorasNo,
-                            HorasNoTexto = MaoDeObra.HorasNoTexto,
+                            HorasNoTexto = MaoDeObra.HorasNo,
                             CustoUnitarioDireto = Convert.ToDecimal(MaoDeObra.CustoUnitarioDireto),
                             CodigoCentroResponsabilidade = MaoDeObra.CodigoCentroResponsabilidade,
                             PrecoTotal = Convert.ToDecimal(MaoDeObra.PrecoTotal),
@@ -1069,7 +1069,6 @@ namespace Hydra.Such.Portal.Controllers
         {
             bool result = false;
 
-
             try
             {
                 data.FolhaDeHorasMaoDeObra.ForEach(x =>
@@ -1161,6 +1160,90 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult CreatePresenca([FromBody] PresencasFolhaDeHorasViewModel data)
+        {
+            bool result = false;
+            try
+            {
+                PresençasFolhaDeHoras Presenca = new PresençasFolhaDeHoras();
+
+                Presenca.NºFolhaDeHoras = data.FolhaDeHorasNo;
+                Presenca.Data = Convert.ToDateTime(data.Data);
+                Presenca.Hora1ªEntrada = TimeSpan.Parse(data.Hora1Entrada);
+                Presenca.Hora1ªSaída = TimeSpan.Parse(data.Hora1Saida);
+                Presenca.Hora2ªEntrada = TimeSpan.Parse(data.Hora2Entrada);
+                Presenca.Hora2ªSaída = TimeSpan.Parse(data.Hora2Saida);
+                Presenca.Observacoes = data.Observacoes;
+                Presenca.UtilizadorCriação = User.Identity.Name;
+                Presenca.DataHoraCriação = DateTime.Now;
+                Presenca.UtilizadorModificação = User.Identity.Name;
+                Presenca.DataHoraModificação = DateTime.Now;
+
+                var dbCreateResult = DBPresencasFolhaDeHoras.Create(Presenca);
+
+                if (dbCreateResult != null)
+                    result = true;
+                else
+                    result = false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdatePresenca([FromBody] FolhaDeHorasViewModel data)
+        {
+            bool result = false;
+
+            try
+            {
+                data.FolhaDeHorasPresenca.ForEach(x =>
+                {
+                    DBPresencasFolhaDeHoras.Update(new PresençasFolhaDeHoras()
+                    {
+                        NºFolhaDeHoras = x.FolhaDeHorasNo,
+                        Data = Convert.ToDateTime(x.Data),
+                        Hora1ªEntrada = TimeSpan.Parse(x.Hora1Entrada),
+                        Hora1ªSaída = TimeSpan.Parse(x.Hora1Saida),
+                        Hora2ªEntrada = TimeSpan.Parse(x.Hora2Entrada),
+                        Hora2ªSaída = TimeSpan.Parse(x.Hora2Saida),
+                        Observacoes = x.Observacoes,
+                        UtilizadorCriação = x.UtilizadorCriacao,
+                        DataHoraCriação = x.DataHoraCriacao,
+                        UtilizadorModificação = User.Identity.Name,
+                        DataHoraModificação = DateTime.Now,
+                    });
+                });
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeletePresenca([FromBody] PresencasFolhaDeHorasViewModel data)
+        {
+            bool result = false;
+            try
+            {
+                bool dbDeleteResult = DBPresencasFolhaDeHoras.Delete(data.FolhaDeHorasNo, data.Data.ToString());
+
+                result = dbDeleteResult;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
         #endregion
     }
 }
