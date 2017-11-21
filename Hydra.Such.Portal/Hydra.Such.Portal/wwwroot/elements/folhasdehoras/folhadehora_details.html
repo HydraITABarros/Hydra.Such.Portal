@@ -66,7 +66,12 @@
         <iron-ajax url="/PopulateDropdowns/GetEmployees_FH" last-response="{{LFolhaDeHoraEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraPercursoOrigemDestino" last-response="{{LFolhaDeHoraPercursoOrigemDestino}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraViaturasMatriculas" last-response="{{LFolhaDeHoraViaturaMatricula}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraAjudaTipoCusto" last-response="{{LFolhaDeHoraAjudaTipoCusto}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetCodTipoCustoByTipoCusto" last-response="{{LFolhaDeHoraAjudaCodTipoCusto}}" method="post" handle-as="json" id="get_codtipocusto" on-response="_setCodTipoCustoResponse" content-type="application/json"> </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraAjudaTipoCusto" last-response="{{LFolhaDeHoraAjudaTipoCusto_TAB}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetCodTipoCustoByTipoCusto" last-response="{{LFolhaDeHoraAjudaCodTipoCusto_TAB}}" method="post" handle-as="json" id="get_codtipocustotab" on-response="_setCodTipoCustoTabResponse" content-type="application/json"> </iron-ajax>
 
         <!-- FOLHADEHORA CRUDS -->
         <iron-ajax url="/FolhasDeHoras/GetFolhaDeHoraDetails"
@@ -175,6 +180,13 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetCodTipoCusto"
+                   last-response="{{CodTipoCustoUpdated}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
         
         
         <!--MAODEOBRA-->
@@ -530,7 +542,7 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
-                                    <vaadin-combo-box id="ajudaTipoCusto" items="[[LFolhaDeHoraAjudaTipoCusto]]" item-value-path="id" item-label-path="value" label="Tipo Custo" required error-message="Este campo é obrigatório">
+                                    <vaadin-combo-box id="ajudaTipoCusto" items="[[LFolhaDeHoraAjudaTipoCusto]]" item-value-path="id" item-label-path="value" label="Tipo Custo" on-change="_getAjudaCodTipoCusto" required error-message="Este campo é obrigatório">
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
@@ -541,7 +553,15 @@
                                     </vaadin-combo-box>
                                 </div>
                                 <div class="col-sm-2">
-                                    <vaadin-text-field id="ajudaCodigoTipoCusto" label="Cód Tipo Custo" required error-message="Este campo é obrigatório" maxlength="200"></vaadin-text-field>
+                                    <vaadin-combo-box id="ajudaCodigoTipoCusto" items="[[LFolhaDeHoraAjudaCodTipoCusto]]" item-value-path="id" item-label-path="value" label="Cód Tipo Custo" required error-message="Este campo é obrigatório">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
                                 </div>
                                 <div class="col-sm-1">
                                     <vaadin-text-field id="ajudaQuantidade" label="Quantidade" required error-message="Este campo é obrigatório" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
@@ -579,7 +599,7 @@
                                             <vaadin-grid-filter path="tipoCusto" />
                                         </template>
                                         <template>
-                                            <vaadin-combo-box id="tabAjudaTipoCusto" items="[[LFolhaDeHoraAjudaTipoCusto]]" item-value-path="id" item-label-path="value" value="{{item.tipoCusto}}">
+                                            <vaadin-combo-box id="tabAjudaTipoCusto" items="[[LFolhaDeHoraAjudaTipoCusto_TAB]]" item-value-path="id" item-label-path="value" value="{{item.tipoCusto}}" on-change="_getAjudaCodTipoCustoTAB">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -597,11 +617,19 @@
                                             <vaadin-grid-filter path="" />
                                         </template>
                                         <template>
-                                            <vaadin-text-field name="tabAjudaCodigoTipoCusto" value="{{item.codTipoCusto}}" maxlength="200"></vaadin-text-field>
+                                            <vaadin-combo-box id="tabAjudaCodigoTipoCusto" items="[[LFolhaDeHoraAjudaCodTipoCusto_TAB]]" item-value-path="id" item-label-path="value" value="{{item.codTipoCusto}}">
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.value]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>
                                         </template>
                                     </vaadin-grid-column>
 
-                                    <vaadin-grid-column width="200px">
+                                    <!--<vaadin-grid-column width="200px">
                                         <template class="header">
                                             <vaadin-grid-sorter path="">Descrição Tipo Custo</vaadin-grid-sorter>
                                             <vaadin-grid-filter path="" />
@@ -609,7 +637,7 @@
                                         <template>
                                             <vaadin-text-field name="tabAjudaDescricaoTipoCusto" value="{{item.observacao}}" maxlength="200" disabled="true"></vaadin-text-field>
                                         </template>
-                                    </vaadin-grid-column>
+                                    </vaadin-grid-column>-->
 
                                     <vaadin-grid-column width="200px">
                                         <template class="header">
@@ -1476,7 +1504,7 @@
                         this.$.page_createajuda_ajax.body = JSON.stringify({
                             noFolhaHoras: this.$.folhaDeHorasNo.value,
                             tipoCusto: parseInt(this.$.ajudaTipoCusto.value),
-                            codTipoCusto: parseInt(this.$.ajudaCodigoTipoCusto.value),
+                            codTipoCusto: this.$.ajudaCodigoTipoCusto.value,
                             quantidade: parseFloat(this.$.ajudaQuantidade.value),
                             custoUnitario: parseFloat(this.$.ajudaCustoUnitario.value),
                             precoUnitario: parseFloat(this.$.ajudaPrecoUnitario.value),
@@ -1502,9 +1530,9 @@
                     this.$.tabAjuda.clearCache();
                 },
 
-                //CALCULAR AJUDAS DE CUSTo
+                //CALCULAR AJUDAS DE CUSTO
                 _calcularAjudasCusto: function () {
-                    this.$.page_calcularajudascusto_ajax.body = JSON.stringify();
+                    this.$.page_calcularajudascusto_ajax.body = JSON.stringify(this.data);
                     this.$.page_calcularajudascusto_ajax.generateRequest();
                     this.$.tabAjuda.clearCache();
                 },
@@ -1513,37 +1541,35 @@
                 //MAODEOBRA
                 _createMaoDeObra: function () {
                     debugger;
-                    //if (this.$.maoDeObraDate.validate() &
-                    //    this.$.maoDeObraProjetoNo.validate() &
-                    //    this.$.maoDeObraCodigoTipoTrabalho.validate() &
-                    //    this.$.maoDeObraHoraInicio.validate() &
-                    //    this.$.maoDeObraHorarioAlmoco.validate() &
-                    //    this.$.maoDeObraHoraFim.validate() &
-                    //    this.$.maoDeObraHorarioJantar.validate() &
-                    //    this.$.maoDeObraCodigoFamiliaRecurso.validate() &
-                    //    this.$.maoDeObraCustoUnitarioDireto.validate() &
-                    //    this.$.maoDeObraCodigoCentroResponsabilidade.validate() &
-                    //    this.$.maoDeObraPrecoTotal.validate()) {
+                    if (this.$.maoDeObraDate.validate() &
+                        this.$.maoDeObraProjetoNo.validate() &
+                        this.$.maoDeObraCodigoTipoTrabalho.validate() &
+                        this.$.maoDeObraHoraInicio.validate() &
+                        this.$.maoDeObraHoraFim.validate() &
+                        this.$.maoDeObraCodigoFamiliaRecurso.validate() &
+                        this.$.maoDeObraCustoUnitarioDireto.validate() &
+                        this.$.maoDeObraCodigoCentroResponsabilidade.validate() &
+                        this.$.maoDeObraPrecoTotal.validate()) {
                         this.$.page_createmaodeobra_ajax.body = JSON.stringify({
                             folhaDeHorasNo: this.$.folhaDeHorasNo.value,
-                            Date: this.$.maoDeObraDate.value,
-                            ProjetoNo: this.$.maoDeObraProjetoNo.value,
-                            EmpregadoNo: this.$.empregadoNo.value,
-                            CodigoTipoTrabalho: parseInt(this.$.maoDeObraCodigoTipoTrabalho.value),
-                            HoraInicio: this.$.maoDeObraHoraInicio.value,
-                            HorarioAlmoco: this.$.maoDeObraHorarioAlmoco.value,
-                            HoraFim: this.$.maoDeObraHoraFim.value,
-                            HorarioJantar: this.$.maoDeObraHorarioJantar.value,
-                            CodigoFamiliaRecurso: this.$.maoDeObraCodigoFamiliaRecurso.value,
-                            CustoUnitarioDireto: parseFloat(this.$.maoDeObraCustoUnitarioDireto.value),
-                            CodigoCentroResponsabilidade: this.$.maoDeObraCodigoCentroResponsabilidade.value,
-                            PrecoTotal: parseFloat(this.$.maoDeObraPrecoTotal.value)
+                            date: this.$.maoDeObraDate.value,
+                            projetoNo: this.$.maoDeObraProjetoNo.value,
+                            empregadoNo: this.$.empregadoNo.value,
+                            codigoTipoTrabalho: parseInt(this.$.maoDeObraCodigoTipoTrabalho.value),
+                            horaInicio: this.$.maoDeObraHoraInicio.value,
+                            horarioAlmoco: (this.$.maoDeObraHorarioAlmoco.value == "on" ? true : false),
+                            horaFim: this.$.maoDeObraHoraFim.value,
+                            horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false),
+                            codigoFamiliaRecurso: this.$.maoDeObraCodigoFamiliaRecurso.value,
+                            custoUnitarioDireto: parseFloat(this.$.maoDeObraCustoUnitarioDireto.value),
+                            codigoCentroResponsabilidade: this.$.maoDeObraCodigoCentroResponsabilidade.value,
+                            precoTotal: parseFloat(this.$.maoDeObraPrecoTotal.value)
                         });
                         this.$.page_createmaodeobra_ajax.generateRequest();
                         this.$.tabMaoDeObra.clearCache();
-                    //} else {
-                    //    this._showErrorMessage("É obrigatório preencher todos os campos obrigatórios corretamente.");
-                    //}
+                    } else {
+                        this._showErrorMessage("É obrigatório preencher todos os campos obrigatórios corretamente.");
+                    }
                 },
 
                 _deleteMaoDeObra: function (e) {
@@ -1704,6 +1730,49 @@
                     }
                     else {
                         this._showErrorMessage('Ocorreu um erro ao actualizar a(s) Ajuda(s).');
+                    }
+                },
+
+                _updateCalcularAjudasCustoResponse: function (e) {
+                    if (this.CalcularAjudasCustoUpdated) {
+                        this._showMessage('Foi calculado a(s) Ajuda(s) de Custo com sucesso.');
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao calcular a(s) Ajuda(s) de Custo.');
+                    }
+                },
+
+                _getAjudaCodTipoCusto: function (e) {
+                    this.$.get_codtipocusto.body = JSON.stringify({ id: this.$.ajudaTipoCusto.value || 0 });
+                    this.$.get_codtipocusto.generateRequest();
+                    if (typeof e != 'undefined') {
+                        this.$.Modelo.value = "";
+                    }
+                },
+
+                _getAjudaCodTipoCustoTAB: function (e) {
+                    debugger;;
+                    this.$.get_codtipocustotab.body = JSON.stringify({ id: e.model.item.tabAjudaTipoCusto.id || 0 });
+                    this.$.get_codtipocustotab.generateRequest();
+                    if (typeof e != 'undefined') {
+                        this.$.Modelo.value = "";
+                    }
+                },
+
+                _setCodTipoCustoResponse: function (data) {
+                    if (this.LFolhaDeHoraAjudaCodTipoCusto.length > 0) {
+                        this.$.ajudaCodigoTipoCusto.disabled = false;
+                    } else {
+                        this.$.ajudaCodigoTipoCusto.disabled = true;
+                    }
+                },
+
+                _setCodTipoCustoTabResponse: function (e) {
+                    if (this.LFolhaDeHoraAjudaCodTipoCusto_TAB.length > 0) {
+                        this.$.tabAjudaTipoCusto.disabled = false;
+                    } else {
+                        this.$.tabAjudaTipoCusto.disabled = true;
                     }
                 },
 

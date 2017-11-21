@@ -884,7 +884,19 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetCodTipoCustoByTipoCusto([FromBody]DDMessage tipoCusto)
+        {
+
+            List<DDMessageString> result = DBTabelaConfRecursosFH.GetAll().Where(x => x.Tipo == tipoCusto.id.ToString()).Select(x => new DDMessageString()
+            {
+                id = x.CodigoRecurso,
+                value = x.CodigoRecurso + " - " + x.Descricao
+            }).ToList();
+            return Json(result);
+        }
     }
+
 
     public class DDMessage
     {

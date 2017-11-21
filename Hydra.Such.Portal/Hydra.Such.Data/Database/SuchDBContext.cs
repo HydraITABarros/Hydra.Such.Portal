@@ -4993,6 +4993,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Unid_Medida")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.RubricaSalarial)
+                    .HasColumnName("Rubrica_Salarial")
+                    .HasMaxLength(20);
             });
 
             modelBuilder.Entity<Tarifários>(entity =>

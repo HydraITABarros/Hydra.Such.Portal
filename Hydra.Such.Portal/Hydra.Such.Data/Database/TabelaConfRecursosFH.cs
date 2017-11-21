@@ -11,5 +11,6 @@ namespace Hydra.Such.Data.Database
         public decimal? PrecoUnitarioCusto { get; set; }
         public decimal? PrecoUnitarioVenda { get; set; }
         public string UnidMedida { get; set; }
+        public string RubricaSalarial { get; set; }
     }
 }

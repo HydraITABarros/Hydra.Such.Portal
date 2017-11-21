@@ -272,10 +272,10 @@ namespace Hydra.Such.Portal.Controllers
                             EmpregadoNo = MaoDeObra.EmpregadoNo,
                             CodigoTipoTrabalho = MaoDeObra.CodigoTipoTrabalho,
                             HoraInicio = MaoDeObra.HoraInicio,
-                            HoraInicioTexto = MaoDeObra.HoraInicio,
+                            HoraInicioTexto = MaoDeObra.HoraInicio == "00:00" ? "" : MaoDeObra.HoraInicio,
                             HorarioAlmoco = MaoDeObra.HorarioAlmoco,
                             HoraFim = MaoDeObra.HoraFim,
-                            HoraFimTexto = MaoDeObra.HoraFimTexto,
+                            HoraFimTexto = MaoDeObra.HoraFim == "00:00" ? "" : MaoDeObra.HoraFim,
                             HorarioJantar = MaoDeObra.HorarioJantar,
                             CodigoFamiliaRecurso = MaoDeObra.CodigoFamiliaRecurso,
                             CodigoTipoOM = MaoDeObra.CodigoTipoOM,
@@ -807,6 +807,7 @@ namespace Hydra.Such.Portal.Controllers
                 Ajuda.PrecoVenda = data.Quantidade * data.PrecoUnitario;
                 Ajuda.DataDespesa = data.DataDespesa;
                 Ajuda.Observacao = data.Observacao;
+                Ajuda.CalculoAutomatico = false;
                 Ajuda.UtilizadorCriacao = User.Identity.Name;
                 Ajuda.DataHoraCriacao = DateTime.Now;
                 Ajuda.UtilizadorModificacao = User.Identity.Name;
@@ -881,13 +882,81 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult CalcularAjudasCusto()
+        public JsonResult CalcularAjudasCusto([FromBody] FolhaDeHorasViewModel data)
         {
             bool result = false;
             try
             {
+                decimal NoDias = 0;
+                int noLinha;
+
+                //APAGAR TODOS OS REGISTOS DAS LINHAS DE FOLHAS DE HORAS ONDE Calculo_Automatico = true
+
+                List<LinhasFolhaHoras> LinhasFH = DBLinhasFolhaHoras.GetAjudaByFolhaHoraNo(data.FolhaDeHorasNo).Where(x => (x.NoFolhaHoras == data.FolhaDeHorasNo) && (x.CalculoAutomatico == true)).ToList();
+                LinhasFH.ForEach(x =>
+                {
+                    DBLinhasFolhaHoras.DeleteAjuda(x.NoLinha);
+                });
 
 
+
+
+
+                List<ConfiguracaoAjudaCusto> AjudaCusto = DBConfiguracaoAjudaCusto.GetAll().Where(x => 
+                    (x.DataChegadaDataPartida == false) && 
+                    (x.DistanciaMinima <= GetSUMDistancia(data.FolhaDeHorasNo)) &&
+                    (x.TipoCusto != 1)
+                    ).ToList();
+
+                NoDias = Convert.ToInt32((Convert.ToDateTime(data.DataHoraChegada) - Convert.ToDateTime(data.DataHoraPartida)).TotalDays);
+
+                AjudaCusto.ForEach(x =>
+                {
+                    if (x.CodigoRefCusto == 1) //ALMOCO
+                    {
+                        if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida) NoDias = NoDias + 1;
+
+                        if ((TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada) || data.DataPartidaTexto != data.DataChegadaTexto) NoDias = NoDias + 1;
+                    }
+
+                    if (x.CodigoRefCusto == 2) //JANTAR
+                    {
+                        if ((TimeSpan.Parse(data.HoraPartidaTexto) >= x.LimiteHoraPartida) || data.DataPartidaTexto != data.DataChegadaTexto) NoDias = NoDias + 1;
+
+                        if (TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada) NoDias = NoDias + 1;
+                    }
+
+                    noLinha = DBLinhasFolhaHoras.GetMaxAjudaByFolhaHoraNo(data.FolhaDeHorasNo);
+
+                    LinhasFolhaHoras Ajuda = new LinhasFolhaHoras();
+
+                    Ajuda.NoFolhaHoras = data.FolhaDeHorasNo;
+                    Ajuda.NoLinha = noLinha + 1;
+                    Ajuda.CodTipoCusto = x.CodigoTipoCusto.Trim();
+                    Ajuda.TipoCusto = x.TipoCusto;
+                    Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == x.TipoCusto).FirstOrDefault().Value;
+                    Ajuda.Quantidade = Convert.ToDecimal(NoDias);
+                    Ajuda.CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodigoRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                    Ajuda.PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodigoRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                    Ajuda.CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodigoRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                    Ajuda.PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodigoRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                    Ajuda.DataDespesa = data.DataHoraPartida;
+                    Ajuda.CalculoAutomatico = true;
+                    Ajuda.CodRegiao = data.CodigoRegiao;
+                    Ajuda.CodArea = data.CodigoAreaFuncional;
+                    Ajuda.CodCresp = data.CodigoCentroResponsabilidade;
+                    Ajuda.RubricaSalarial = DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodigoRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().RubricaSalarial;
+                    Ajuda.UtilizadorCriacao = User.Identity.Name;
+                    Ajuda.DataHoraCriacao = DateTime.Now;
+                    Ajuda.UtilizadorModificacao = User.Identity.Name;
+                    Ajuda.DataHoraModificacao = DateTime.Now;
+
+                    var dbCreateResult = DBLinhasFolhaHoras.CreateAjuda(Ajuda);
+                });
+
+                result = true;
+
+                return Json(result);
             }
             catch (Exception ex)
             {
@@ -896,6 +965,27 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+
+        public decimal GetSUMDistancia(string noFH)
+        {
+            decimal SUMDistancia = 0;
+            try
+            {
+                List<LinhasFolhaHoras> Linhas = DBLinhasFolhaHoras.GetPercursoByFolhaHoraNo(noFH).Where(x => x.TipoCusto == 1).ToList();
+
+                Linhas.ForEach(x =>
+                {
+                    SUMDistancia = SUMDistancia + Convert.ToDecimal(x.Distancia);
+                });
+
+                return SUMDistancia;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return SUMDistancia;
+        }
 
 
 
@@ -946,7 +1036,7 @@ namespace Hydra.Such.Portal.Controllers
                 MaoDeObra.HorárioJantar = data.HorarioJantar;
                 MaoDeObra.CódigoFamíliaRecurso = data.CodigoFamiliaRecurso;
                 MaoDeObra.CódigoTipoOm = data.CodigoTipoOM;
-                //MaoDeObra.NºDeHoras = TimeSpan.Parse(data.HoraFim) - TimeSpan.Parse(data.HoraInicio); //TimeSpan.Parse(data.HorasNo);
+                MaoDeObra.NºDeHoras = TimeSpan.Parse(data.HoraFim) - TimeSpan.Parse(data.HoraInicio);
                 MaoDeObra.CustoUnitárioDireto = data.CustoUnitarioDireto;
                 MaoDeObra.CodigoCentroResponsabilidade = data.CodigoCentroResponsabilidade;
                 MaoDeObra.PreçoTotal = data.PrecoTotal;
