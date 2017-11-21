@@ -71,7 +71,7 @@ namespace Hydra.Such.Portal.Controllers {
         #region Contratos
         public IActionResult Contratos(int? archived, string contractNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 9, 2);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 8, 2);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -88,7 +88,7 @@ namespace Hydra.Such.Portal.Controllers {
 
         public IActionResult DetalhesContrato(string id, string version = "")
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 9, 2);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 8, 2);
             if (UPerm != null && UPerm.Read.Value)
             {
                 Contratos cContract = null;

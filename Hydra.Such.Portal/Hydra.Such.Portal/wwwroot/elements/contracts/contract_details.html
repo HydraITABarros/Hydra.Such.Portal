@@ -157,7 +157,7 @@
                                             <vaadin-text-field id="contractNo" name="contractNo" maxlength="20" label="Nº Contrato" value="{{data.contractNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.description}}" maxlength="100" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" > </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.description}}" maxlength="100" id="Description" name="Description" label="Âmbito dos Serviços" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" > </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">

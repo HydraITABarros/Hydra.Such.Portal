@@ -1,0 +1,10 @@
+﻿
+@{
+    ViewData["Title"] = "Propostas - P&O - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="title">Propostas P&O</h1>
+<link rel="import" href="~/elements/contracts/proposals.html">
+
+<x-proposals _areaid="6" _archived="@ViewBag.Archived" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _contractno="@ViewBag.ContractNo"></x-proposals>
