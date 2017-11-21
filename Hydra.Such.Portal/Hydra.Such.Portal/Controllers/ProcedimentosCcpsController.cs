@@ -328,7 +328,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public JsonResult GetChecklistImobilizado([FromBody] ProcedimentoCCPView data)
+        public JsonResult GetChecklistImobilizadoContabilidade([FromBody] ProcedimentoCCPView data)
         {
             if (data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
             {
@@ -364,6 +364,8 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(null);
             }     
         }
+
+
 
     }
 }
