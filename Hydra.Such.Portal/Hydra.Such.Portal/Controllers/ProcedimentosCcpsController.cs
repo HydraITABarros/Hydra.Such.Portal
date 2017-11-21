@@ -291,23 +291,40 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetChecklistFluxoTrabalho([FromBody] ProcedimentoCCPView data)
+        public JsonResult GetChecklistArea([FromBody] ProcedimentoCCPView data)
         {
             if(data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
             {
-                return Json("");
-            }
-            else
-            {
-                if(data.Estado != 0)
+                if (data.Estado != 0)
                 {
-                    FluxoTrabalhoListaControlo Fluxo = data.FluxoTrabalhoListaControlo.Where(f => f.Estado == 0).FirstOrDefault();
-                    return Json("");
+                    FluxoTrabalhoListaControlo Fluxo = data.FluxoTrabalhoListaControlo.Where(f => f.Estado == 0).LastOrDefault();
+
+                    if (Fluxo != null)
+                    {
+                        ElementosChecklist Checklist = new ElementosChecklist()
+                        {
+                            ProcedimentoID = Fluxo.No,
+                            Estado = Fluxo.Estado,
+                            DataChecklist = Fluxo.Data,
+                            HoraChecklist = Fluxo.Hora,
+                            ChecklistArea = new ElementosChecklistArea(Fluxo)
+                        };
+
+                        return Json(Checklist);
+                    }
+                    else
+                        return Json(null);
                 }
                 else
                 {
-                    return Json("");
+                    return Json(null);
                 }
+
+                
+            }
+            else
+            {
+                return Json(null);
             }
         }
 

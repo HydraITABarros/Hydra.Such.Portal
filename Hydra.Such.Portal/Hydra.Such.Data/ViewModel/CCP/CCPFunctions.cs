@@ -395,7 +395,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
 
             if(Procedimento.FluxoTrabalhoListaControlo != null && Procedimento.FluxoTrabalhoListaControlo.Count > 0)
             {
-                ProcedimentoView.FluxoTrabalhoListaControlo = DBProcedimentosCCP.GetAllCheklistControloProcedimento(Procedimento.Nº);
+                ProcedimentoView.FluxoTrabalhoListaControlo = Procedimento.FluxoTrabalhoListaControlo;
             }
             return ProcedimentoView;
         }

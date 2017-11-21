@@ -751,7 +751,6 @@ namespace Hydra.Such.Data.Logic.CCP
             catch (Exception e)
             {
                 return null;
-                throw;
             }
         }
 

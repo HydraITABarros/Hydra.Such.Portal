@@ -106,10 +106,12 @@
         </iron-ajax>
         <iron-ajax url="/ProcedimentosCcps/GetUsersWhoAreElementosJuri"
                    last-response="{{LUsers}}"
-                   auto method="post" handle-as="json"
+                   auto method="post" 
+                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
         <!-- Dropdowns populate.e -->
+
         <!-- Controller actions.b -->
         <iron-ajax url="/ProcedimentosCcps/GetProcedimentoDetails"
                    last-response="{{data}}"
@@ -141,6 +143,14 @@
                    handle-as="json"
                    id="ajax_deleteelementojuri"
                    on-response="_deleteElementoJuriResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/GetChecklistArea"
+                   last-response="{{DisplayChecklist}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_checklist_estado0"
+                   on-response="_checklistResponseEstado0"
                    content-type="application/json">
         </iron-ajax>
         <!-- Controller actions.e -->
@@ -411,7 +421,13 @@
                         <vaadin-text-field type="text" value="{{data.prazo}}" id="prazo" name="prazo" label="Prazo para a prestação do serviço (Até 3 anos)"> </vaadin-text-field>
                     </div>
                 </div>
-
+                <!--Elementos Checklist - Estado 0 - .b -->
+                <div class="row break_clear">
+                    <div class="col-sm-6">
+                        <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.comentarioAreaApresentar}}" id="comentarioAreaApresentar" name="comentarioAreaApresentar" label="Comentário"> </vaadin-text-field>
+                    </div>
+                </div>
+                <!--Elementos Checklist - Estado 0 - .e -->
             </div>
 
             <!-- Tab Imobilizado -->
@@ -495,7 +511,7 @@
                 },
 
                 ready: function () {
-                    //debugger;;
+                    debugger;;
 
                     this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
                     this.$.page_databound_ajax.generateRequest();
@@ -564,14 +580,19 @@
 
                 //Responses Processors
                 _responseProcessor: function (data) {
-                    //debugger;;
+                    debugger;;
                     var self = this;
 
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetProcedimento") !== -1) {
                             if (this.data.No == "") {
                                 this._isCreate = true;
-                            }
+                                return;
+                            } 
+
+                            this.$.ajax_checklist_estado0.body = this.data;
+                            this.$.ajax_checklist_estado0.generateRequest();
+
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             this._createResponseProcessor();
                         } else if (data.detail.url.indexOf("Update") !== -1) {
@@ -719,6 +740,15 @@
                     }
 
 
+                },
+
+                // Checklist Fluxo Trabalho
+                _checklistResponseEstado0: function (e) {
+                    debugger;;
+                    
+                    if (this.DisplayChecklist != null) {
+                        this._openToast(this.DisplayChecklist.comentarioAreaApresentar);
+                    }
                 },
                 //Helpers
                 _executeRequest: function (url, data) {
