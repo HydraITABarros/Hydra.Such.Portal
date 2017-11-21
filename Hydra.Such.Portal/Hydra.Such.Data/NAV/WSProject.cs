@@ -80,5 +80,105 @@ namespace Hydra.Such.Data.NAV
             }
 
         }
+
+
+        public static async Task<WSCreateNAVProject.Update_Result> UpdateNavProject(string Key, ProjectDetailsViewModel ProjectToUpdate, NAVWSConfigurations WSConfigurations)
+        {
+            //Mapping WSJob Object
+            WSCreateNAVProject.Status StatusValue;
+            switch (ProjectToUpdate.Status)
+            {
+                case 1:
+                    StatusValue = WSCreateNAVProject.Status.Planning;
+                    break;
+                case 2:
+                    StatusValue = WSCreateNAVProject.Status.Quote;
+                    break;
+                case 3:
+                    StatusValue = WSCreateNAVProject.Status.Open;
+                    break;
+                default:
+                    StatusValue = WSCreateNAVProject.Status.Completed;
+                    break;
+
+            }
+
+            WSCreateNAVProject.Update NAVUpdate = new WSCreateNAVProject.Update()
+            {
+                WSJob = new WSCreateNAVProject.WSJob()
+                {
+                    Key = Key,
+                    No = ProjectToUpdate.ProjectNo,
+                    Description100 = ProjectToUpdate.Description,
+                    Bill_to_Customer_No = ProjectToUpdate.ClientNo,
+                    Status = StatusValue,
+                    RegionCode20 = ProjectToUpdate.RegionCode,
+                    FunctionAreaCode20 = ProjectToUpdate.FunctionalAreaCode,
+                    ResponsabilityCenterCode20 = ProjectToUpdate.ResponsabilityCenterCode,
+                    Job_Posting_Group = "",
+                    Project_Manager = ProjectToUpdate.ProjectLeader,
+                    Person_Responsible = ProjectToUpdate.ProjectResponsible
+                }
+            };
+
+
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_Job_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCreateNAVProject.WSJob_PortClient WS_Client = new WSCreateNAVProject.WSJob_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSCreateNAVProject.Update_Result result = await WS_Client.UpdateAsync(NAVUpdate);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
+        public static async Task<WSCreateNAVProject.Delete_Result> DeleteNavProject(string Key, NAVWSConfigurations WSConfigurations)
+        {
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_Job_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCreateNAVProject.WSJob_PortClient WS_Client = new WSCreateNAVProject.WSJob_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSCreateNAVProject.Delete_Result result = await WS_Client.DeleteAsync(Key);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
+        public static async Task<WSCreateNAVProject.Read_Result> GetNavProject(string ProjectNo, NAVWSConfigurations WSConfigurations)
+        {
+
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_Job_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCreateNAVProject.WSJob_PortClient WS_Client = new WSCreateNAVProject.WSJob_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSCreateNAVProject.Read_Result result = await WS_Client.ReadAsync(ProjectNo);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
     }
 }
