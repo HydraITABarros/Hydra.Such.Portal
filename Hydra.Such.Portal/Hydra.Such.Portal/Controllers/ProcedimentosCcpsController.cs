@@ -526,9 +526,9 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        // 6. Used in the "Juridicos" paper-tab returns a List of ElementosChecklist according to ProcedimentosCcp Estado (!= 6 or != 14)
+        // 6. Used in the "Juridicos" paper-tab returns a List of ElementosChecklist according to ProcedimentosCcp.Estado (!= 6 or != 14)
         [HttpPost]
-        public JsonResult GetChecklistJuridicos([FromBody] ProcedimentoCCPView data)
+        public JsonResult GetChecklistJuridicoAvaliacaoPecasOrContrato([FromBody] ProcedimentoCCPView data)
         {
             if (data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
             {
@@ -578,7 +578,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        // 7. Used in the "Fundamentos DEcisão" paper-tab in the "A preencher pela Área(...)" area 
+        // 7. Used in the "Fundamentos Decisão" paper-tab in the "A preencher pela Área(...)" area 
         [HttpPost]
         public JsonResult GetChecklistFundamentacaoArea([FromBody] ProcedimentoCCPView data)
         {
@@ -610,6 +610,110 @@ namespace Hydra.Such.Portal.Controllers
                 }
 
 
+            }
+            else
+            {
+                return Json(null);
+            }
+        }
+
+        // 8. Used in the "CA" paper-tab returns a List of ElementosChecklist according to ProcedimentosCcp.Estado (!= 8 or != 17)
+        [HttpPost]
+        public JsonResult GetChecklistAberturaOrAutorizacao([FromBody] ProcedimentoCCPView data)
+        {
+            if (data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
+            {
+                List<ElementosChecklist> ElementosCA = new List<ElementosChecklist>();
+                ElementosCA = null;
+
+                if (data.Estado != 8 || data.Estado != 17)
+                {
+                    if (data.Estado != 8)
+                    {
+                        FluxoTrabalhoListaControlo Fluxo8 = data.FluxoTrabalhoListaControlo.Where(f => f.Estado == 8).LastOrDefault();
+                        if (Fluxo8 != null)
+                        {
+                            ElementosCA.Add(new ElementosChecklist()
+                            {
+                                ProcedimentoID = Fluxo8.No,
+                                Estado = Fluxo8.Estado,
+                                DataChecklist = Fluxo8.Data,
+                                HoraChecklist = Fluxo8.Hora,
+                                ChecklistAberturaCA = new ElementosChecklistAberturaCA(Fluxo8)
+                            });
+                        }
+                    }
+
+                    if (data.Estado != 17)
+                    {
+                        FluxoTrabalhoListaControlo Fluxo17 = data.FluxoTrabalhoListaControlo.Where(f => f.Estado == 17).LastOrDefault();
+                        if (Fluxo17 != null)
+                        {
+                            ElementosCA.Add(new ElementosChecklist()
+                            {
+                                ProcedimentoID = Fluxo17.No,
+                                Estado = Fluxo17.Estado,
+                                DataChecklist = Fluxo17.Data,
+                                HoraChecklist = Fluxo17.Hora,
+                                ChecklistAberturaCA = new ElementosChecklistAberturaCA(Fluxo17)
+                            });
+                        }
+                    }
+                }
+
+                return Json(ElementosCA);
+            }
+            else
+            {
+                return Json(null);
+            }
+        }
+
+        // 9. Used in the "Valores Adjudicação" paper-tab returns a List of ElementosChecklist according to ProcedimentosCcp.Estado (!= 15 or != 16)
+        [HttpPost]
+        public JsonResult GetChecklistAdjudicacao([FromBody] ProcedimentoCCPView data)
+        {
+            if (data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
+            {
+                List<ElementosChecklist> ElementosAdjudicacao = new List<ElementosChecklist>();
+                ElementosAdjudicacao = null;
+
+                if (data.Estado != 15 || data.Estado != 16)
+                {
+                    if (data.Estado != 15)
+                    {
+                        FluxoTrabalhoListaControlo Fluxo15 = data.FluxoTrabalhoListaControlo.Where(f => f.Estado == 15).LastOrDefault();
+                        if (Fluxo15 != null)
+                        {
+                            ElementosAdjudicacao.Add(new ElementosChecklist()
+                            {
+                                ProcedimentoID = Fluxo15.No,
+                                Estado = Fluxo15.Estado,
+                                DataChecklist = Fluxo15.Data,
+                                HoraChecklist = Fluxo15.Hora,
+                                ChecklistAdjudicacao = new ElementosChecklistAdjudicacaoCompras(Fluxo15)
+                            });
+                        }
+                    }
+
+                    if (data.Estado != 16)
+                    {
+                        FluxoTrabalhoListaControlo Fluxo16 = data.FluxoTrabalhoListaControlo.Where(f => f.Estado == 16).LastOrDefault();
+                        if (Fluxo16 != null)
+                        {
+                            ElementosAdjudicacao.Add(new ElementosChecklist()
+                            {
+                                ProcedimentoID = Fluxo16.No,
+                                Estado = Fluxo16.Estado,
+                                DataChecklist = Fluxo16.Data,
+                                HoraChecklist = Fluxo16.Hora,
+                                ChecklistAdjudicacao = new ElementosChecklistAdjudicacaoCompras(Fluxo16)
+                            });
+                        }
+                    }
+                }
+
+                return Json(ElementosAdjudicacao);
             }
             else
             {

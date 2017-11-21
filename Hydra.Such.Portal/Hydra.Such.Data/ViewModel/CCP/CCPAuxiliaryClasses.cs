@@ -23,17 +23,11 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public ElementosChecklistFundamentoCompras ChecklistFundamentoCompras { get; set; }
         public ElementosChecklistFundamentoFinanceiros ChecklistFundamentoFinanceiros { get; set; }
         public ElementosChecklistJuridico ChecklistJuridico { get; set; }
+        public ElementosChecklistAberturaCA ChecklistAberturaCA { get; set; }
+        public ElementosChecklistAdjudicacaoCompras ChecklistAdjudicacao { get; set; }
 
     }
 
-    public class ElementosGeneric
-    {
-        public string Comentario { get; set; }
-        public string Responsavel { get; set; }
-        public string NomeResponsavel { get; set; }
-        public DateTime Data { get; set; }
-
-    }
     public class ElementosChecklistArea
     {
         public string ComentarioArea { get; set; }
@@ -157,6 +151,39 @@ namespace Hydra.Such.Data.ViewModel.CCP
             ResponsavelJuridico = fluxo.User;
             NomeResponsavelJuridico = fluxo.NomeUser;
             DataJuridico = fluxo.Data;
+        }
+    }
+
+    public class ElementosChecklistAberturaCA
+    {
+        public string ComentarioCA { get; set; }
+        public string ResponsavelCA { get; set; }
+        public string NomeResponsavelCA { get; set; }
+        public DateTime DataAberturaCA { get; set; }
+
+        public ElementosChecklistAberturaCA(FluxoTrabalhoListaControlo fluxo)
+        {
+            ComentarioCA = fluxo.Comentario;
+            ResponsavelCA = fluxo.User;
+            NomeResponsavelCA = fluxo.NomeUser;
+            DataAberturaCA = fluxo.Data;
+        }
+
+    }
+
+    public class ElementosChecklistAdjudicacaoCompras
+    {
+        public string ComentarioAdjudicacao { get; set; }
+        public string ResponsavelAdjudicacao { get; set; }
+        public string NomeResponsavelAdjudicacao { get; set; }
+        public DateTime DataAdjudicacao { get; set; }
+
+        public ElementosChecklistAdjudicacaoCompras(FluxoTrabalhoListaControlo fluxo)
+        {
+            ComentarioAdjudicacao = fluxo.Comentario;
+            ResponsavelAdjudicacao = fluxo.User;
+            NomeResponsavelAdjudicacao = fluxo.NomeUser;
+            DataAdjudicacao = fluxo.Data;
         }
     }
 
