@@ -104,6 +104,7 @@ namespace Hydra.Such.Portal.Controllers
             
             return Json(false);
         }
+        [HttpPost]
         public JsonResult CreateProcedimento([FromBody] ProcedimentoCCPView data)
         {
             try
@@ -132,6 +133,29 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult CreateProcedimentoByProcedimentoType([FromBody] int id)
+        {
+            List<EnumData> ProcedimentoTypes = EnumerablesFixed.ProcedimentosCcpProcedimentoType;
+            bool TypeFound = false;
+            foreach(var pt in ProcedimentoTypes)
+            {
+                if (pt.Id == id && !TypeFound)
+                    TypeFound = true;
+            }
+
+            if (!TypeFound)
+                return Json("");
+
+            ProcedimentosCcp Procedimento = DBProcedimentosCCP.__CreateProcedimento(id, User.Identity.Name);
+
+            if (Procedimento == null || Procedimento.Nº == "")
+                return Json("");
+            
+            return Json(Procedimento.Nº);
+
         }
         [HttpPost]
         public JsonResult UpdateProcedimento([FromBody] ProcedimentoCCPView data)
@@ -199,18 +223,110 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CreateElementoJuri([FromBody] ElementosJuriView data)
         {
-            bool result = false;
+            List<ElementosJuri> SearchForDuplicates = DBProcedimentosCCP.GetAllElementosJuriProcedimento(data.NoProcedimento);
+            foreach(var ej in SearchForDuplicates)
+            {
+                // search if is user is already an Elemento Juri
+                if(ej.NºProcedimento == data.NoProcedimento && ej.Utilizador == data.Utilizador)
+                {
+                    ErrorHandler DuplicatedUser = new ErrorHandler()
+                    {
+                        eReasonCode = 3,
+                        eMessage = "Utilizador já existe como Elemento do Juri!"
+                    };
+                    return Json(DuplicatedUser);
+                }
 
+                // search if there is already a Presidente
+                if(ej.Presidente.HasValue && ej.Presidente.Value && data.Presidente.HasValue && data.Presidente.Value)
+                {
+                    ErrorHandler PresidentInserted = new ErrorHandler()
+                    {
+                        eReasonCode = 4,
+                        eMessage = "Já existe um Presidente!"
+                    };
+
+                    return Json(PresidentInserted);
+                }   
+            }
+            
             if(data.EnviarEmail.HasValue && data.EnviarEmail.Value)
                 data.Email = data.Utilizador;
+
+            if (data.EnviarEmail.HasValue && !data.EnviarEmail.Value)
+                data.Email = "";
 
             data.UtilizadorCriacao = User.Identity.Name;
             data.DataHoraCriacao = DateTime.Now;
             ElementosJuri NewElemento = DBProcedimentosCCP.__CreateElementoJuri(data);
 
-            result = NewElemento != null ? true : false;
+            bool created = NewElemento != null ? true : false;
 
-            return Json(result);
+            if (created)
+            {
+                ErrorHandler Success = new ErrorHandler()
+                {
+                    eReasonCode = 0,
+                    eMessage = "Sucesso ao criar o utilizador!"
+                };
+
+                return Json(Success);
+            }
+            else
+            {
+                ErrorHandler UnknownError = new ErrorHandler()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Impossivel inserir Elemento Juri na Base de Dados"
+                };
+
+                return Json(UnknownError);
+            }
+
         }
+        [HttpPost]
+        public JsonResult DeleteElementoJuri([FromBody] ElementosJuriView data)
+        {
+            return Json(DBProcedimentosCCP.__DeleteElementoJuri(data.NoProcedimento, data.NoLinha));
+        }
+
+        [HttpPost]
+        public JsonResult GetChecklistArea([FromBody] ProcedimentoCCPView data)
+        {
+            if(data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
+            {
+                if (data.Estado != 0)
+                {
+                    FluxoTrabalhoListaControlo Fluxo = data.FluxoTrabalhoListaControlo.Where(f => f.Estado == 0).LastOrDefault();
+
+                    if (Fluxo != null)
+                    {
+                        ElementosChecklist Checklist = new ElementosChecklist()
+                        {
+                            ProcedimentoID = Fluxo.No,
+                            Estado = Fluxo.Estado,
+                            DataChecklist = Fluxo.Data,
+                            HoraChecklist = Fluxo.Hora,
+                            ChecklistArea = new ElementosChecklistArea(Fluxo)
+                        };
+
+                        return Json(Checklist);
+                    }
+                    else
+                        return Json(null);
+                }
+                else
+                {
+                    return Json(null);
+                }
+
+                
+            }
+            else
+            {
+                return Json(null);
+            }
+        }
+
     }
 }

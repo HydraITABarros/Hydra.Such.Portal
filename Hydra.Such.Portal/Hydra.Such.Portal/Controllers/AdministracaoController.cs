@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Hydra.Such.Data.ViewModel.Viaturas;
 using Hydra.Such.Data.Logic.Viatura;
+using Hydra.Such.Data.ViewModel.FH;
+using Hydra.Such.Data.Logic.FolhaDeHora;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1222,7 +1224,8 @@ namespace Hydra.Such.Portal.Controllers
                             tpval.NºCliente = dt.ClientNumber;
 
                             DBClientServices.Create(tpval);
-                        } else
+                        }
+                        else
                         {
                             totalExists++;
                         }
@@ -1530,8 +1533,147 @@ namespace Hydra.Such.Portal.Controllers
             });
             return Json(data);
         }
+        #endregion
+
+        #region Configuracao Ajuda De Custo
+        public IActionResult ConfiguracaoAjudaCusto(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetConfiguracaoAjudaCusto()
+        {
+            List<ConfiguracaoAjudaCustoViewModel> result = DBConfiguracaoAjudaCusto.ParseListToViewModel(DBConfiguracaoAjudaCusto.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateConfiguracaoAjudaCusto([FromBody] ConfiguracaoAjudaCustoViewModel data)
+        {
+
+            ConfiguracaoAjudaCusto toCreate = DBConfiguracaoAjudaCusto.ParseToDB(data);
+            toCreate.UtilizadorCriacao = User.Identity.Name;
+            var result = DBConfiguracaoAjudaCusto.Create(toCreate);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteConfiguracaoAjudaCusto([FromBody] ConfiguracaoAjudaCustoViewModel data)
+        {
+            var result = DBConfiguracaoAjudaCusto.Delete(DBConfiguracaoAjudaCusto.ParseToDB(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateConfiguracaoAjudaCusto([FromBody] List<ConfiguracaoAjudaCustoViewModel> data)
+        {
+            List<ConfiguracaoAjudaCusto> results = DBConfiguracaoAjudaCusto.GetAll();
+
+            data.RemoveAll(x => DBConfiguracaoAjudaCusto.ParseListToViewModel(results).Any(
+                u =>
+                    u.CodigoTipoCusto == x.CodigoTipoCusto &&
+                    u.DistanciaMinima == x.DistanciaMinima &&
+                    u.DataChegadaDataPartida == x.DataChegadaDataPartida &&
+                    u.LimiteHoraPartida == x.LimiteHoraPartida &&
+                    u.LimiteHoraChegada == x.LimiteHoraChegada &&
+                    u.Prioritario == x.Prioritario &&
+                    u.TipoCusto == x.TipoCusto &&
+                    u.CodigoRefCusto == x.CodigoRefCusto &&
+                    u.SinalHoraPartida == x.SinalHoraPartida &&
+                    u.HoraPartida == x.HoraPartida &&
+                    u.SinalHoraChegada == x.SinalHoraChegada &&
+                    u.HoraChegada == x.HoraChegada
+            ));
+
+            data.ForEach(x =>
+            {
+                ConfiguracaoAjudaCusto toUpdate = DBConfiguracaoAjudaCusto.ParseToDB(x);
+                toUpdate.UtilizadorModificacao = User.Identity.Name;
+                DBConfiguracaoAjudaCusto.Update(toUpdate);
+            });
+            return Json(data);
+        }
+        #endregion
 
 
+        #region Configuracao Recursos Folha Horas
+        public IActionResult ConfiguracaoRecursosFolhaHoras(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetConfiguracaoRecursosFolhaHoras()
+        {
+            List<TabelaConfRecursosFHViewModel> result = DBTabelaConfRecursosFH.ParseListToViewModel(DBTabelaConfRecursosFH.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateConfiguracaoRecursosFolhaHoras([FromBody] TabelaConfRecursosFHViewModel data)
+        {
+
+            TabelaConfRecursosFH toCreate = DBTabelaConfRecursosFH.ParseToDB(data);
+            //toCreate.UtilizadorCriacao = User.Identity.Name;
+            var result = DBTabelaConfRecursosFH.Create(toCreate);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteConfiguracaoRecursosFolhaHoras([FromBody] TabelaConfRecursosFHViewModel data)
+        {
+            var result = DBTabelaConfRecursosFH.Delete(DBTabelaConfRecursosFH.ParseToDB(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateConfiguracaoRecursosFolhaHoras([FromBody] List<TabelaConfRecursosFHViewModel> data)
+        {
+            List<TabelaConfRecursosFH> results = DBTabelaConfRecursosFH.GetAll();
+
+            data.RemoveAll(x => DBTabelaConfRecursosFH.ParseListToViewModel(results).Any(
+                u =>
+                    u.Tipo == x.Tipo &&
+                    u.CodigoRecurso == x.CodigoRecurso &&
+                    u.Descricao == x.Descricao &&
+                    u.UnidMedida == x.UnidMedida &&
+                    u.PrecoUnitarioCusto == x.PrecoUnitarioCusto &&
+                    u.PrecoUnitarioVenda == x.PrecoUnitarioVenda
+            ));
+
+            data.ForEach(x =>
+            {
+                TabelaConfRecursosFH toUpdate = DBTabelaConfRecursosFH.ParseToDB(x);
+                //toUpdate.UtilizadorModificacao = User.Identity.Name;
+                DBTabelaConfRecursosFH.Update(toUpdate);
+            });
+            return Json(data);
+        }
         #endregion
 
         #endregion
@@ -1578,6 +1720,10 @@ namespace Hydra.Such.Portal.Controllers
             if (id == "Compras")
             {
                 UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 18);
+            }
+            if (id == "Administracao")
+            {
+                UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 11, 18);
             }
 
             return UPerm;

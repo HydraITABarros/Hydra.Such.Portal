@@ -142,21 +142,81 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 UtilizadorModificação = ProcedimentoView.UtilizadorModificacao
             };
 
-            //if(ProcedimentoView.TemposPaCcp != null)
-            //{
-            //    Procedimento.TemposPaCcp = CCPFunctions.CastTemposCCPViewToTemposPaCcp(ProcedimentoView.TemposPaCcp);
-            //}
+            if (ProcedimentoView.TemposPaCcp != null)
+            {
+                Procedimento.TemposPaCcp = CCPFunctions.CastTemposCCPViewToTemposPaCcp(ProcedimentoView.TemposPaCcp);
+            }
 
-            //if(ProcedimentoView.RegistoDeAtas != null && ProcedimentoView.RegistoDeAtas.Count > 0)
-            //{
-            //    List<RegistoDeAtas> RegistoDeAtasList = new List<RegistoDeAtas>();
-            //    foreach(var ra in ProcedimentoView.RegistoDeAtas)
-            //    {
-            //        RegistoDeAtasList.Add(CastRegistoActasViewToRegistoActas(ra));
-            //    }
+            if(ProcedimentoView.RegistoDeAtas != null && ProcedimentoView.RegistoDeAtas.Count > 0)
+            {
+                List<RegistoDeAtas> Actas = new List<RegistoDeAtas>();
+                foreach(var ra in ProcedimentoView.RegistoDeAtas)
+                {
+                    Actas.Add(CastRegistoActasViewToRegistoActas(ra));
+                }
 
-            //    Procedimento.RegistoDeAtas = RegistoDeAtasList;
-            //}
+                Procedimento.RegistoDeAtas = Actas;
+            }
+
+            if(ProcedimentoView.ElementosJuri != null && ProcedimentoView.ElementosJuri.Count > 0)
+            {
+                List<ElementosJuri> Elementos = new List<ElementosJuri>();
+                foreach(var ej in ProcedimentoView.ElementosJuri)
+                {
+                    Elementos.Add(CastElementosJuriViewToElementosJuri(ej));
+                }
+
+                Procedimento.ElementosJuri = Elementos;
+            }
+
+            if(ProcedimentoView.EmailsProcedimentosCcp != null && ProcedimentoView.EmailsProcedimentosCcp.Count > 0)
+            {
+                List<EmailsProcedimentosCcp> Emails = new List<EmailsProcedimentosCcp>();
+                foreach(var em in ProcedimentoView.EmailsProcedimentosCcp)
+                {
+                    Emails.Add(CastEmailProcedimentoViewToEmailProcedimento(em));
+                }
+
+                Procedimento.EmailsProcedimentosCcp = Emails;
+            }
+
+            if(ProcedimentoView.LinhasPEncomendaProcedimentosCcp != null && ProcedimentoView.LinhasPEncomendaProcedimentosCcp.Count > 0)
+            {
+                List<LinhasPEncomendaProcedimentosCcp> LinhasParaEncomenda = new List<LinhasPEncomendaProcedimentosCcp>();
+                foreach(var le in ProcedimentoView.LinhasPEncomendaProcedimentosCcp)
+                {
+                    LinhasParaEncomenda.Add(CastLinhaParaEncomendaProcedimentoViewToLinhaEncomendaProcedimento(le));
+                }
+
+                Procedimento.LinhasPEncomendaProcedimentosCcp = LinhasParaEncomenda;
+            }
+
+            if(ProcedimentoView.NotasProcedimentosCcp != null && ProcedimentoView.NotasProcedimentosCcp.Count > 0)
+            {
+                List<NotasProcedimentosCcp> Notas = new List<NotasProcedimentosCcp>();
+                foreach(var np in ProcedimentoView.NotasProcedimentosCcp)
+                {
+                    Notas.Add(CastNotaProcedimentoViewToNotaProcedimento(np));
+                }
+
+                Procedimento.NotasProcedimentosCcp = Notas;
+            }
+
+            if(ProcedimentoView.WorkflowProcedimentosCcp != null && ProcedimentoView.WorkflowProcedimentosCcp.Count > 0)
+            {
+                List<WorkflowProcedimentosCcp> Workflows = new List<WorkflowProcedimentosCcp>();
+                foreach(var wf in ProcedimentoView.WorkflowProcedimentosCcp)
+                {
+                    Workflows.Add(CastWorkflowProcedimentoViewToWorkflowProcedimento(wf));
+                }
+
+                Procedimento.WorkflowProcedimentosCcp = Workflows;
+            }
+
+            if(ProcedimentoView.FluxoTrabalhoListaControlo != null && ProcedimentoView.FluxoTrabalhoListaControlo.Count > 0)
+            {
+                Procedimento.FluxoTrabalhoListaControlo = ProcedimentoView.FluxoTrabalhoListaControlo;
+            }
 
             return Procedimento;
 
@@ -335,7 +395,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
 
             if(Procedimento.FluxoTrabalhoListaControlo != null && Procedimento.FluxoTrabalhoListaControlo.Count > 0)
             {
-                ProcedimentoView.FluxoTrabalhoListaControlo = DBProcedimentosCCP.GetAllCheklistControloProcedimento(Procedimento.Nº);
+                ProcedimentoView.FluxoTrabalhoListaControlo = Procedimento.FluxoTrabalhoListaControlo;
             }
             return ProcedimentoView;
         }
@@ -513,6 +573,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 UtilizadorCriacao = Elementos.UtilizadorCriação,
                 UtilizadorModificacao = Elementos.UtilizadorModificação
             };
+
+            ElementoJuriV.NomeEmpregado = DBProcedimentosCCP.GetUserName(ElementoJuriV.Utilizador);
 
             return ElementoJuriV;
         }

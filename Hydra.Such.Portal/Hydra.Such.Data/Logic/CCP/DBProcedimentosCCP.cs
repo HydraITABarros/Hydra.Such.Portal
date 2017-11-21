@@ -1,6 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel.CCP;
-//using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,16 +104,16 @@ namespace Hydra.Such.Data.Logic.CCP
                 proc.Estado = 0;
 
                
-                proc.TemposPaCcp = new TemposPaCcp()
-                {
-                    NºProcedimento = proc.Nº,
-                    Estado0 = 1,
-                    DataHoraCriação = proc.DataHoraCriação,
-                    UtilizadorCriação = proc.UtilizadorCriação
-                };
+                //proc.TemposPaCcp = new TemposPaCcp()
+                //{
+                //    NºProcedimento = proc.Nº,
+                //    Estado0 = 1,
+                //    DataHoraCriação = proc.DataHoraCriação,
+                //    UtilizadorCriação = proc.UtilizadorCriação
+                //};
 
-                _context.Add(proc.TemposPaCcp);
-                _context.SaveChanges();
+                //_context.Add(proc.TemposPaCcp);
+                //_context.SaveChanges();
 
                 _context.Add(proc);
                 _context.SaveChanges();
@@ -150,6 +149,27 @@ namespace Hydra.Such.Data.Logic.CCP
             }
 
         }
+        public static ProcedimentosCcp __CreateProcedimento(int ProcedimentoType, string UserID)
+        {
+            try
+            {
+                ProcedimentoCCPView ProcedimentoView = new ProcedimentoCCPView
+                {
+                    TipoProcedimento = ProcedimentoType,
+                    UtilizadorCriacao = UserID
+
+                };
+
+                ProcedimentosCcp Procedimento = __CreateProcedimento(ProcedimentoView);
+
+                return Procedimento;
+            }
+            catch (Exception e)
+            {
+
+                return null;
+            }
+        }
         public static ProcedimentosCcp __UpdateProcedimento(ProcedimentoCCPView Procedimento)
         {
             SuchDBContext _context = new SuchDBContext();
@@ -160,6 +180,18 @@ namespace Hydra.Such.Data.Logic.CCP
 
                 _context.ProcedimentosCcp.Update(proc);
                 _context.SaveChanges();
+
+                if (proc.ElementosJuri != null && proc.ElementosJuri.Count > 0)
+                {
+                    foreach (var ej in proc.ElementosJuri)
+                    {
+                        ej.DataHoraModificação = DateTime.Now;
+                        ej.UtilizadorModificação = proc.UtilizadorModificação;
+
+                        ElementosJuri Elemento = __UpdateElementoJuri(ej);
+                    }
+
+                }
 
                 return proc;
             }
@@ -363,12 +395,18 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return ElementosView;
         }
+
         public static ElementosJuri __CreateElementoJuri(ElementosJuriView ElementoView)
         {
             SuchDBContext _context = new SuchDBContext();
 
             if (ElementoView == null)
                 return null;
+
+            //ElementosJuri DuplicateElemento = _context.ElementosJuri.Where(ej => ej.NºProcedimento == ElementoView.NoProcedimento && ej.Utilizador == ElementoView.Utilizador).FirstOrDefault();
+
+            //if (DuplicateElemento != null)
+            //    return null;
 
             ElementosJuri Elemento = CCPFunctions.CastElementosJuriViewToElementosJuri(ElementoView);
             try
@@ -380,6 +418,60 @@ namespace Hydra.Such.Data.Logic.CCP
             }
             catch (Exception e)
             {
+                return null;
+            }
+        }
+        public static ElementosJuri __UpdateElementoJuri(ElementosJuriView ElementoView)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                ElementosJuri Elemento = _context.ElementosJuri.Where(ej => ej.NºProcedimento == ElementoView.NoProcedimento && ej.NºLinha == ElementoView.NoLinha).FirstOrDefault();
+
+                Elemento.Presidente = ElementoView.Presidente;
+                Elemento.Vogal = ElementoView.Vogal;
+                Elemento.Suplente = ElementoView.Suplente;
+                Elemento.Email = ElementoView.Email;
+
+                Elemento.DataHoraModificação = ElementoView.DataHoraModificacao;
+                Elemento.UtilizadorModificação = ElementoView.UtilizadorModificacao;
+
+                _context.Update(Elemento);
+                _context.SaveChanges();
+
+                return Elemento;
+            }
+            catch (Exception e)
+            {
+
+                return null;
+            }
+
+        }
+        public static ElementosJuri __UpdateElementoJuri(ElementosJuri Elemento)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                ElementosJuri Elemento2 = _context.ElementosJuri.Where(ej => ej.NºProcedimento == Elemento.NºProcedimento && ej.NºLinha == Elemento.NºLinha).FirstOrDefault();
+
+                Elemento2.Presidente = Elemento.Presidente;
+                Elemento2.Vogal = Elemento.Vogal;
+                Elemento2.Suplente = Elemento.Suplente;
+                Elemento.Email = Elemento.Email;
+
+                Elemento2.DataHoraModificação = Elemento.DataHoraModificação;
+                Elemento2.UtilizadorModificação = Elemento.UtilizadorModificação;
+
+                _context.Update(Elemento2);
+                _context.SaveChanges();
+
+                return Elemento2;
+            }
+            catch (Exception e)
+            {
+
                 return null;
             }
         }
@@ -659,7 +751,6 @@ namespace Hydra.Such.Data.Logic.CCP
             catch (Exception e)
             {
                 return null;
-                throw;
             }
         }
 
