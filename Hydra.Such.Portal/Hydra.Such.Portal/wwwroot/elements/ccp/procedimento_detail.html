@@ -426,7 +426,22 @@
                 <!--Elementos Checklist - Estado 0 - .b -->
                 <div class="row break_clear">
                     <div class="col-sm-6">
-                        <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.comentarioAreaApresentar}}" id="comentarioAreaApresentar" name="comentarioAreaApresentar" label="Comentário"> </vaadin-text-field>
+                        <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.comentarioArea}}" id="comentarioAreaApresentar" name="comentarioAreaApresentar" label="Comentário"> </vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-6">
+                        <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.responsavelArea}}" id="responsavelAreaApresentar" name="responsavelAreaApresentar" label="O Responsável da Área pela apresentação da informação "> </vaadin-text-field>
+                    </div>
+                    <br />
+                    <div class="col-sm-6">
+                        <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.nomeResponsavelArea}}" id="nomeResponsavelAreaApresentar" name="nomeResponsavelAreaApresentar"> </vaadin-text-field>
+                    </div>
+                    
+                </div>
+                <div class="row break_clear">
+                    <div class="col-sm-3">
+                        <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.dataResponsavel}}" id="dataResponsavelApresentar" name="dataResponsavelApresentar" label="Data"> </vaadin-text-field>
                     </div>
                 </div>
                 <!--Elementos Checklist - Estado 0 - .e -->
@@ -749,7 +764,7 @@
                     debugger;;
                     
                     if (this.DisplayChecklist != null) {
-                        this._openToast(this.DisplayChecklist.comentarioAreaApresentar);
+                        //this._openToast(this.DisplayChecklist.comentarioAreaApresentar);
                     }
                 },
                 //Helpers

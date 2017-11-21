@@ -17,36 +17,38 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public TimeSpan HoraChecklist { get; set; }
 
         public ElementosChecklistArea ChecklistArea { get; set; }
+        public ElementosChecklistImobilizadoContabilidade ChecklistImobilizadoContabilidade { get; set; }
+        public ElementosChecklistImobilizadoArea CkecklistImobilizadoArea { get; set; }
     }
     public class ElementosChecklistArea
     {
-        public string ComentarioAreaApresentar { get; set; }
-        public string ResponsavelAreaApresentar { get; set; }
-        public string NomeResponsavelAreaApresentar { get; set; } 
-        public DateTime DataResponsavelApresentar { get; set; }
+        public string ComentarioArea { get; set; }
+        public string ResponsavelArea { get; set; }
+        public string NomeResponsavelArea { get; set; } 
+        public DateTime DataResponsavel { get; set; }
 
         public ElementosChecklistArea(FluxoTrabalhoListaControlo fluxo)
         {
-            ComentarioAreaApresentar = fluxo.Comentario;
-            ResponsavelAreaApresentar = fluxo.User;
-            NomeResponsavelAreaApresentar = fluxo.NomeUser;
-            DataResponsavelApresentar = fluxo.Data;
+            ComentarioArea = fluxo.Comentario;
+            ResponsavelArea = fluxo.User;
+            NomeResponsavelArea = fluxo.NomeUser;
+            DataResponsavel = fluxo.Data;
         }
     }
 
-    public class ElementosChecklistImobilizado
+    public class ElementosChecklistImobilizadoContabilidade
     {
-        public string ComentarioContabilidade { get; set; }
-        public string ComentarioContabilidade2 { get; set; }
+        public string ComentarioImobContabilidade { get; set; }
+        public string ComentarioImobContabilidade2 { get; set; }
         public bool ImobilizadoSimNao { get; set; }
-        public string ResponsavelContabilidade { get; set; }
-        public string NomeResponsavelContabilidade { get; set; }
-        public DateTime DataContabilidade { get; set; }
+        public string ResponsavelImobContabilidade { get; set; }
+        public string NomeResponsavelImobContabilidade { get; set; }
+        public DateTime DataImobContabilidade { get; set; }
 
-        public ElementosChecklistImobilizado(FluxoTrabalhoListaControlo fluxo)
+        public ElementosChecklistImobilizadoContabilidade(FluxoTrabalhoListaControlo fluxo)
         {
-            ComentarioContabilidade = fluxo.Comentario;
-            ComentarioContabilidade2 = fluxo.Comentario2;
+            ComentarioImobContabilidade = fluxo.Comentario;
+            ComentarioImobContabilidade2 = fluxo.Comentario2;
             if (fluxo.ImobSimNao.HasValue)
             {
                 ImobilizadoSimNao = fluxo.ImobSimNao.Value;
@@ -55,9 +57,26 @@ namespace Hydra.Such.Data.ViewModel.CCP
             {
                 ImobilizadoSimNao = false;
             }
-            ResponsavelContabilidade = fluxo.User;
-            NomeResponsavelContabilidade = fluxo.NomeUser;
-            DataContabilidade = fluxo.Data;
+            ResponsavelImobContabilidade = fluxo.User;
+            NomeResponsavelImobContabilidade = fluxo.NomeUser;
+            DataImobContabilidade = fluxo.Data;
+        }
+    }
+
+    public class ElementosChecklistImobilizadoArea
+    {
+        public string ComentarioImobArea { get; set; }
+        public string ResponsavelImobArea { get; set; }
+        public string NomeResponsavelImobArea { get; set; }
+        public DateTime DataImobArea { get; set; }
+        public string EmailDestinoCA { get; set; }
+
+        public ElementosChecklistImobilizadoArea(FluxoTrabalhoListaControlo fluxo)
+        {
+            ComentarioImobArea = fluxo.Comentario;
+            ResponsavelImobArea = fluxo.User;
+            NomeResponsavelImobArea = fluxo.NomeUser;
+            DataImobArea = fluxo.Data;
         }
     }
 }
