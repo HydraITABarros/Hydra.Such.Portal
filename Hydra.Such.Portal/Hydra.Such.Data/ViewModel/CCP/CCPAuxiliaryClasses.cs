@@ -20,6 +20,18 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public ElementosChecklistImobilizadoContabilidade ChecklistImobilizadoContabilidade { get; set; }
         public ElementosChecklistImobilizadoArea CkecklistImobilizadoArea { get; set; }
         public ElementosChecklistImobilizadoCA ChecklistImobilizadoCA { get; set; }
+        public ElementosChecklistFundamentoCompras ChecklistFundamentoCompras { get; set; }
+        public ElementosChecklistFundamentoFinanceiros ChecklistFundamentoFinanceiros { get; set; }
+        public ElementosChecklistJuridico ChecklistJuridico { get; set; }
+
+    }
+
+    public class ElementosGeneric
+    {
+        public string Comentario { get; set; }
+        public string Responsavel { get; set; }
+        public string NomeResponsavel { get; set; }
+        public DateTime Data { get; set; }
 
     }
     public class ElementosChecklistArea
@@ -95,6 +107,56 @@ namespace Hydra.Such.Data.ViewModel.CCP
             ResponsavelImobCA = fluxo.User;
             NomeResponsavelImobCA = fluxo.NomeUser;
             DataImobAprovisionamentoCA = fluxo.Data;
+        }
+    }
+
+    public class ElementosChecklistFundamentoCompras
+    {
+        public string ComentarioFundamentoCompras { get; set; }
+        public string ResponsavelFundamentoCompras { get; set; }    // zpgm. NAV label: "Responsável pelo envio para a área"
+        public string NomeResponsavelFundamentoCompras { get; set; }
+        public DateTime DataEnvio { get; set; }
+
+        public ElementosChecklistFundamentoCompras(FluxoTrabalhoListaControlo fluxo)
+        {
+            ComentarioFundamentoCompras = fluxo.Comentario;
+            ResponsavelFundamentoCompras = fluxo.User;
+            NomeResponsavelFundamentoCompras = fluxo.NomeUser;
+            DataEnvio = fluxo.Data;
+        }
+    }
+
+    public class ElementosChecklistFundamentoFinanceiros
+    {
+        public string ComentarioFundamentoFinanceiros { get; set; }
+        public string ComentarioFundamentoFinanceiros2 { get; set; }
+        public string ResponsavelFundamentoFinanceiros { get; set; }    // zpgm. NAV label: "Responsável dos serviços financeiros"
+        public string NomeResponsavelFundamentoFinanceiros { get; set; }
+        public DateTime DataFinanceiros { get; set; }
+
+        public ElementosChecklistFundamentoFinanceiros(FluxoTrabalhoListaControlo fluxo)
+        {
+            ComentarioFundamentoFinanceiros = fluxo.Comentario;
+            ComentarioFundamentoFinanceiros2 = fluxo.Comentario2;
+            ResponsavelFundamentoFinanceiros = fluxo.User;
+            NomeResponsavelFundamentoFinanceiros = fluxo.NomeUser;
+            DataFinanceiros = fluxo.Data;
+        }
+    }
+
+    public class ElementosChecklistJuridico
+    {
+        public string ComentarioJuridico { get; set; }
+        public string ResponsavelJuridico { get; set; }    
+        public string NomeResponsavelJuridico { get; set; }
+        public DateTime DataJuridico { get; set; }
+
+        public ElementosChecklistJuridico(FluxoTrabalhoListaControlo fluxo)
+        {
+            ComentarioJuridico = fluxo.Comentario;
+            ResponsavelJuridico = fluxo.User;
+            NomeResponsavelJuridico = fluxo.NomeUser;
+            DataJuridico = fluxo.Data;
         }
     }
 
