@@ -19,6 +19,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public ElementosChecklistArea ChecklistArea { get; set; }
         public ElementosChecklistImobilizadoContabilidade ChecklistImobilizadoContabilidade { get; set; }
         public ElementosChecklistImobilizadoArea CkecklistImobilizadoArea { get; set; }
+        public ElementosChecklistImobilizadoCA ChecklistImobilizadoCA { get; set; }
+
     }
     public class ElementosChecklistArea
     {
@@ -79,4 +81,21 @@ namespace Hydra.Such.Data.ViewModel.CCP
             DataImobArea = fluxo.Data;
         }
     }
+
+    public class ElementosChecklistImobilizadoCA
+    {
+        public string ComentarioImobCA { get; set; }
+        public string ResponsavelImobCA { get; set; }
+        public string NomeResponsavelImobCA { get; set; }
+        public DateTime DataImobAprovisionamentoCA { get; set; }
+
+        public ElementosChecklistImobilizadoCA(FluxoTrabalhoListaControlo fluxo)
+        {
+            ComentarioImobCA = fluxo.Comentario;
+            ResponsavelImobCA = fluxo.User;
+            NomeResponsavelImobCA = fluxo.NomeUser;
+            DataImobAprovisionamentoCA = fluxo.Data;
+        }
+    }
+
 }
