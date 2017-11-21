@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Hydra.Such.Data.Database
 {
-    public partial class TabelaConfRecursosFh
+    public partial class TabelaConfRecursosFH
     {
         public string Tipo { get; set; }
         public string CodRecurso { get; set; }

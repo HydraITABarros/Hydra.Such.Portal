@@ -91,7 +91,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             return new TabelaConfRecursosFH()
             {
                 Tipo = x.Tipo.ToString(),
-                CodigoRecurso = x.CodigoRecurso,
+                CodRecurso = x.CodigoRecurso,
                 Descricao = x.Descricao,
                 PrecoUnitarioCusto = x.PrecoUnitarioCusto,
                 PrecoUnitarioVenda = x.PrecoUnitarioVenda,
@@ -105,7 +105,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             return new TabelaConfRecursosFHViewModel()
             {
                 Tipo = Int32.Parse(x.Tipo),
-                CodigoRecurso = x.CodigoRecurso,
+                CodigoRecurso = x.CodRecurso,
                 Descricao = x.Descricao,
                 PrecoUnitarioCusto = x.PrecoUnitarioCusto,
                 PrecoUnitarioVenda = x.PrecoUnitarioVenda,

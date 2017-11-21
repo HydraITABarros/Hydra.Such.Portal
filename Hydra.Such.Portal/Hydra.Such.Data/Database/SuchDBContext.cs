@@ -4965,7 +4965,7 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<TabelaConfRecursosFH>(entity =>
             {
-                entity.HasKey(e => new { e.Tipo, e.CodigoRecurso, e.Descricao });
+                entity.HasKey(e => new { e.Tipo, e.CodRecurso, e.Descricao });
 
                 entity.ToTable("Tabela_Conf_Recursos_FH");
 
@@ -4973,7 +4973,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Tipo")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.CodigoRecurso)
+                entity.Property(e => e.CodRecurso)
                     .HasColumnName("Cod_Recurso")
                     .HasMaxLength(20);
 

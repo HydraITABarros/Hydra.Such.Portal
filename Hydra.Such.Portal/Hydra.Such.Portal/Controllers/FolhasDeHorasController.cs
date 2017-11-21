@@ -61,7 +61,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             //String id = HttpContext.Request.Query["FHNo"].ToString();
             //String area = HttpContext.Request.Query["area"].ToString();
-            string id="";
+            string id = "";
 
             if (FHNo == null || FHNo == "")
             {
@@ -902,8 +902,8 @@ namespace Hydra.Such.Portal.Controllers
 
 
 
-                List<ConfiguracaoAjudaCusto> AjudaCusto = DBConfiguracaoAjudaCusto.GetAll().Where(x => 
-                    (x.DataChegadaDataPartida == false) && 
+                List<ConfiguracaoAjudaCusto> AjudaCusto = DBConfiguracaoAjudaCusto.GetAll().Where(x =>
+                    (x.DataChegadaDataPartida == false) &&
                     (x.DistanciaMinima <= GetSUMDistancia(data.FolhaDeHorasNo)) &&
                     (x.TipoCusto != 1)
                     ).ToList();
@@ -936,16 +936,16 @@ namespace Hydra.Such.Portal.Controllers
                     Ajuda.TipoCusto = x.TipoCusto;
                     Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == x.TipoCusto).FirstOrDefault().Value;
                     Ajuda.Quantidade = Convert.ToDecimal(NoDias);
-                    Ajuda.CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodigoRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                    Ajuda.PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodigoRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
-                    Ajuda.CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodigoRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                    Ajuda.PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodigoRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                    Ajuda.CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                    Ajuda.PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                    Ajuda.CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                    Ajuda.PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
                     Ajuda.DataDespesa = data.DataHoraPartida;
                     Ajuda.CalculoAutomatico = true;
                     Ajuda.CodRegiao = data.CodigoRegiao;
                     Ajuda.CodArea = data.CodigoAreaFuncional;
                     Ajuda.CodCresp = data.CodigoCentroResponsabilidade;
-                    Ajuda.RubricaSalarial = DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodigoRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().RubricaSalarial;
+                    Ajuda.RubricaSalarial = DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().RubricaSalarial;
                     Ajuda.UtilizadorCriacao = User.Identity.Name;
                     Ajuda.DataHoraCriacao = DateTime.Now;
                     Ajuda.UtilizadorModificacao = User.Identity.Name;
@@ -1069,7 +1069,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             bool result = false;
 
-            
+
             try
             {
                 data.FolhaDeHorasMaoDeObra.ForEach(x =>

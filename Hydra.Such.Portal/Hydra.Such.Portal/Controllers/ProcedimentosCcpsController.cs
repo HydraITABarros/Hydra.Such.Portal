@@ -23,7 +23,7 @@ namespace Hydra.Such.Portal.Controllers
     [Authorize]
     public class ProcedimentosCcpsController : Controller
     {
-        
+
 
         #region Views
         public IActionResult Index()
@@ -75,7 +75,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProcedimentosByProcedimentoType([FromBody] int id)
         {
-            List<ProcedimentoCCPView> result = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoTypeToList(id);               
+            List<ProcedimentoCCPView> result = DBProcedimentosCCP.GetAllProcedimentosViewByProcedimentoTypeToList(id);
 
             return Json(result);
         }
@@ -97,11 +97,11 @@ namespace Hydra.Such.Portal.Controllers
                     return Json(new ProcedimentoCCPView());
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return null;
             }
-            
+
             return Json(false);
         }
         [HttpPost]
@@ -109,7 +109,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                if(data != null)
+                if (data != null)
                 {
                     data.UtilizadorCriacao = User.Identity.Name;
                     ProcedimentosCcp procedimento = DBProcedimentosCCP.__CreateProcedimento(data);
@@ -140,7 +140,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<EnumData> ProcedimentoTypes = EnumerablesFixed.ProcedimentosCcpProcedimentoType;
             bool TypeFound = false;
-            foreach(var pt in ProcedimentoTypes)
+            foreach (var pt in ProcedimentoTypes)
             {
                 if (pt.Id == id && !TypeFound)
                     TypeFound = true;
@@ -153,7 +153,7 @@ namespace Hydra.Such.Portal.Controllers
 
             if (Procedimento == null || Procedimento.Nº == "")
                 return Json("");
-            
+
             return Json(Procedimento.Nº);
 
         }
@@ -162,18 +162,18 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                if(data != null)
+                if (data != null)
                 {
                     data.UtilizadorModificacao = User.Identity.Name;
                     ProcedimentosCcp proc = DBProcedimentosCCP.__UpdateProcedimento(data);
-                    if(proc == null)
+                    if (proc == null)
                     {
                         data.eReasonCode = 3;
                         data.eMessage = "Ocorreu um erro ao actualizar o procedimento";
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 data.eReasonCode = 4;
                 data.eMessage = "Ocorreu um erro ao actualizar o procedimento";
@@ -185,7 +185,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteProcedimento([FromBody] ProcedimentoCCPView data)
         {
             ErrorHandler result = new ErrorHandler();
-            if(data != null)
+            if (data != null)
             {
                 if (DBProcedimentosCCP.__DeleteProcedimento(data.No))
                 {
@@ -224,10 +224,10 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult CreateElementoJuri([FromBody] ElementosJuriView data)
         {
             List<ElementosJuri> SearchForDuplicates = DBProcedimentosCCP.GetAllElementosJuriProcedimento(data.NoProcedimento);
-            foreach(var ej in SearchForDuplicates)
+            foreach (var ej in SearchForDuplicates)
             {
                 // search if is user is already an Elemento Juri
-                if(ej.NºProcedimento == data.NoProcedimento && ej.Utilizador == data.Utilizador)
+                if (ej.NºProcedimento == data.NoProcedimento && ej.Utilizador == data.Utilizador)
                 {
                     ErrorHandler DuplicatedUser = new ErrorHandler()
                     {
@@ -238,7 +238,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
 
                 // search if there is already a Presidente
-                if(ej.Presidente.HasValue && ej.Presidente.Value && data.Presidente.HasValue && data.Presidente.Value)
+                if (ej.Presidente.HasValue && ej.Presidente.Value && data.Presidente.HasValue && data.Presidente.Value)
                 {
                     ErrorHandler PresidentInserted = new ErrorHandler()
                     {
@@ -247,10 +247,10 @@ namespace Hydra.Such.Portal.Controllers
                     };
 
                     return Json(PresidentInserted);
-                }   
+                }
             }
-            
-            if(data.EnviarEmail.HasValue && data.EnviarEmail.Value)
+
+            if (data.EnviarEmail.HasValue && data.EnviarEmail.Value)
                 data.Email = data.Utilizador;
 
             if (data.EnviarEmail.HasValue && !data.EnviarEmail.Value)
@@ -293,7 +293,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetChecklistArea([FromBody] ProcedimentoCCPView data)
         {
-            if(data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
+            if (data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
             {
                 if (data.Estado != 0)
                 {
@@ -320,7 +320,7 @@ namespace Hydra.Such.Portal.Controllers
                     return Json(null);
                 }
 
-                
+
             }
             else
             {
@@ -332,10 +332,10 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
             {
-                if(data.Estado != 1)
+                if (data.Estado != 1)
                 {
                     FluxoTrabalhoListaControlo Fluxo = data.FluxoTrabalhoListaControlo.Where(f => f.Estado == 1).LastOrDefault();
-                    if(Fluxo != null)
+                    if (Fluxo != null)
                     {
                         ElementosChecklist Checklist = new ElementosChecklist()
                         {
@@ -343,7 +343,7 @@ namespace Hydra.Such.Portal.Controllers
                             Estado = Fluxo.Estado,
                             DataChecklist = Fluxo.Data,
                             HoraChecklist = Fluxo.Hora,
-                            ChecklistImobilizadoContabilidade = new ElementosChecklistImobilizadoContabilidade(Fluxo)
+                            //ChecklistImobilizadoContabilidade = new ElementosChecklistImobilizadoContabilidade(Fluxo)
                         };
 
                         return Json(Checklist);
@@ -362,7 +362,7 @@ namespace Hydra.Such.Portal.Controllers
             else
             {
                 return Json(null);
-            }     
+            }
         }
 
     }
