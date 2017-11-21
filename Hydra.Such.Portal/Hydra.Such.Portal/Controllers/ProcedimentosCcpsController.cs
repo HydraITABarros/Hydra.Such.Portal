@@ -721,5 +721,10 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
         #endregion
+
+        public JsonResult SubmitProcedimento([FromBody] ProcedimentoCCPView data)
+        {
+            return Json(null);
+        }
     }
 }
