@@ -92,6 +92,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHoras"
+                   last-response="{{FolhaDeHorasUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatefolhadehoras_ajax"
+                   on-response="_updatefolhadehorasResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!--CODE OPTIONS-->
         <iron-ajax url="/PopulateDropdowns/GetEmployees_FH"
                    last-response="{{codeOptions}}"
@@ -1294,7 +1303,7 @@
                     </div>
                 </div>
 
-                <paper-button raised id="btnUpdate" class="btnSave" on-tap="_updateFHDetalhe"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button raised id="btnUpdate" class="btnSave" on-tap="_updateFH"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
             </div>
         </iron-pages>
 
@@ -1329,7 +1338,6 @@
                     _folhadehoraid: {
                         type: String,
                         notify: true,
-                        value: ""
                     },
                     selected: {
                         type: Number,
@@ -1461,7 +1469,7 @@
                 },
 
 
-                //CRUDS
+                //FOLHA DE HORAS
                 _createFH: function () {
                     if (this._validateDataFH()) {
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
@@ -1470,9 +1478,9 @@
                 },
 
                 _updateFH: function () {
-                    if (this._validateDataFH()) {
-                        this._executeRequest("/FolhasDeHoras/UpdateFolhaDeHora", this.data)
-                    }
+                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                    this.$.page_updatefolhadehoras_ajax.generateRequest();
+                    this._showMessage('Folha de Horas actualizada com sucesso.');
                 },
 
                 _deleteFH: function () {
@@ -1673,11 +1681,6 @@
                 _responseProcessor: function (data) {
                     var self = this;
 
-                    //Set AreaId
-                    //if (this.data.folhaDeHorasNo == "") {
-                    //    this.data.area = this._areaid;
-                    //}
-
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetFolhaDeHora") !== -1) {
                             if (this.data.FolhaDeHorasNo == "") {
@@ -1732,6 +1735,18 @@
                     if (e.detail.value != null && e.detail.value != "") {
                         var index = this.codeOptions.findIndex(i => i.id === e.detail.value);
                         this.employeeName = this.codeOptions[index].extra;
+                    }
+                },
+
+                //FOLHA DE HORAS
+                _updateFolhaDeHorasResponse: function (e) {
+                    debugger;;;;
+                    if (this.FolhaDeHorasUpdated) {
+                        this._showMessage('Folha de Horas actualizada com sucesso.');
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao actualizar a Folha De Horas.');
                     }
                 },
 
