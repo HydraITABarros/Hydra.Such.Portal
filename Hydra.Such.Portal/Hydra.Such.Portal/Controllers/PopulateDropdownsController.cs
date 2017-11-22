@@ -441,7 +441,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetEmployees_FH()
         {
-            List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAVCompanyName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
             {
                 id = x.No,
                 value = x.No + " - " + x.Name,
