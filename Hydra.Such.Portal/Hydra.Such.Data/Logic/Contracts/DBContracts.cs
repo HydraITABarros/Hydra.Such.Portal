@@ -284,6 +284,37 @@ namespace Hydra.Such.Data.Logic.Contracts
                 UtilizadorModificação = x.UpdateUser,
                 Arquivado = x.Filed
             };
+            
+            if (result.DataHoraLimiteEsclarecimentos != null)
+            {
+                result.DataHoraLimiteEsclarecimentos = result.DataHoraLimiteEsclarecimentos.Value.Date;
+                result.DataHoraLimiteEsclarecimentos = result.DataHoraLimiteEsclarecimentos.Value.Add(TimeSpan.Parse(x.LimitClarificationTime));
+                Console.WriteLine(result.DataHoraLimiteEsclarecimentos.Value.ToString());
+            }
+
+            if (result.DataHoraErrosEOmissões != null)
+            {
+                result.DataHoraErrosEOmissões = result.DataHoraErrosEOmissões.Value.Date;
+                result.DataHoraErrosEOmissões = result.DataHoraErrosEOmissões.Value.Add(TimeSpan.Parse(x.ErrorsOmissionsTime));
+                Console.WriteLine(result.DataHoraErrosEOmissões.Value.ToString());
+            }
+
+            if (result.DataHoraRelatórioFinal != null)
+            {
+                result.DataHoraRelatórioFinal = result.DataHoraRelatórioFinal.Value.Date;
+                result.DataHoraRelatórioFinal = result.DataHoraRelatórioFinal.Value.Add(TimeSpan.Parse(x.FinalReportTime));
+                Console.WriteLine(result.DataHoraRelatórioFinal.Value.ToString());
+            }
+
+            if (result.DataHoraHabilitaçãoDocumental != null)
+            {
+                result.DataHoraHabilitaçãoDocumental = result.DataHoraHabilitaçãoDocumental.Value.Date;
+                result.DataHoraHabilitaçãoDocumental = result.DataHoraHabilitaçãoDocumental.Value.Add(TimeSpan.Parse(x.DocumentationHabilitationTime));
+                Console.WriteLine(result.DataHoraHabilitaçãoDocumental.Value.ToString());
+            }
+
+
+
             return result;
 
         }
@@ -357,10 +388,15 @@ namespace Hydra.Such.Data.Logic.Contracts
                 OrdOrderSource = x.DescOrigemDoPedido,
                 InternalNumeration = x.NumeraçãoInterna,
                 ProposalChangeDate = x.DataAlteraçãoProposta.HasValue ? x.DataAlteraçãoProposta.Value.ToString("yyyy-MM-dd") : "",
+                ProposalChangeTime = x.DataAlteraçãoProposta.HasValue ? x.DataAlteraçãoProposta.Value.ToString("HH:mm") : "",
                 LimitClarificationDate = x.DataHoraLimiteEsclarecimentos.HasValue ? x.DataHoraLimiteEsclarecimentos.Value.ToString("yyyy-MM-dd") : "",
+                LimitClarificationTime = x.DataHoraLimiteEsclarecimentos.HasValue ? x.DataHoraLimiteEsclarecimentos.Value.ToString("HH:mm") : "",
                 ErrorsOmissionsDate = x.DataHoraErrosEOmissões.HasValue ? x.DataHoraErrosEOmissões.Value.ToString("yyyy-MM-dd") : "",
+                ErrorsOmissionsTime = x.DataHoraErrosEOmissões.HasValue ? x.DataHoraErrosEOmissões.Value.ToString("HH:mm") : "",
                 FinalReportDate = x.DataHoraRelatórioFinal.HasValue ? x.DataHoraRelatórioFinal.Value.ToString("yyyy-MM-dd") : "",
+                //FinalReportTime = x.DataHoraRelatórioFinal.HasValue ? x.DataHoraRelatórioFinal.Value.ToString("HH:mm") : "",
                 DocumentationHabilitationDate = x.DataHoraHabilitaçãoDocumental.HasValue ? x.DataHoraHabilitaçãoDocumental.Value.ToString("yyyy-MM-dd") : "",
+                DocumentationHabilitationTime = x.DataHoraHabilitaçãoDocumental.HasValue ? x.DataHoraHabilitaçãoDocumental.Value.ToString("HH:mm") : "",
                 CompulsoryCompulsoryNo = x.NºComprimissoObrigatório,
                 CreateDate = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
                 UpdateDate = x.DataHoraModificação.HasValue ? x.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
