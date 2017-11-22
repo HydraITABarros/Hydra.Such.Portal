@@ -722,8 +722,104 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        /*
+         *      In the following method the ErrorHandler will return:
+         *          0 -> SUCCESS
+         *          1 -> Procedimento already submitted
+         *          2 -> Unable to create Fluxo Lista Trabalho
+         *          3 -> Unable to update Procedimento
+         *          
+         */
+        [HttpPost]
         public JsonResult SubmitProcedimento([FromBody] ProcedimentoCCPView data)
         {
+            if(data != null)
+            {
+                // 1. Get the latest version in the Database
+                ProcedimentosCcp Procedimento = DBProcedimentosCCP.GetProcedimentoById(data.No);
+                bool UserElementPreArea0 = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoPreArea0);
+                bool UserElementPreArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoPreArea);
+
+                // 2.a Check if Procedimento has been already submitted
+                if(UserElementPreArea0 && Procedimento.PréÁrea.HasValue && Procedimento.PréÁrea.Value)
+                {
+                    ErrorHandler ProcedimentoAlreadySubmitted = new ErrorHandler()
+                    {
+                        eReasonCode = 1,
+                        eMessage = "Procedimento já submetido!"
+                    };
+
+                    return Json(ProcedimentoAlreadySubmitted);
+                }
+
+                // 2.b Check if Procedimento has been already submitted
+                if(UserElementPreArea && Procedimento.SubmeterPréÁrea.HasValue && Procedimento.SubmeterPréÁrea.Value)
+                {
+                    ErrorHandler ProcedimentoAlreadySubmitted = new ErrorHandler()
+                    {
+                        eReasonCode = 1,
+                        eMessage = "Procedimento já submetido!"
+                    };
+
+                    return Json(ProcedimentoAlreadySubmitted);
+                }
+
+                // 3. Create Fluxo Trabalho
+                if (!data.Imobilizado.HasValue)
+                    data.Imobilizado = false;
+
+                FluxoTrabalhoListaControlo Fluxo = new FluxoTrabalhoListaControlo()
+                {
+                    No = data.No,
+                    Estado = 0,
+                    Data = DateTime.Now.Date,
+                    Hora = DateTime.Now.TimeOfDay,
+                    TipoEstado = 1,
+                    User = User.Identity.Name,
+                    NomeUser = DBProcedimentosCCP.GetUserName(User.Identity.Name),
+                    Comentario = data.ElementosChecklist.ChecklistArea.ComentarioArea,
+                    EstadoSeguinte = data.Imobilizado.Value ? 1 : 4,
+                };
+
+                data.ElementosChecklist.ChecklistArea.ResponsavelArea = Fluxo.User;
+                data.ElementosChecklist.ChecklistArea.NomeResponsavelArea = Fluxo.NomeUser;
+                data.ElementosChecklist.ChecklistArea.DataResponsavel = Fluxo.Data;
+
+                if (UserElementPreArea || UserElementPreArea0)
+                    Fluxo.EstadoSeguinte = 0;
+
+                if(DBProcedimentosCCP.__CreateFluxoTrabalho(Fluxo) == null)
+                {
+                    ErrorHandler UnableToCreateFluxo = new ErrorHandler()
+                    {
+                        eReasonCode = 2,
+                        eMessage = "Não foi possível criar o Fluxo Trabalho Lista Controlo!"
+                    };
+
+                    return Json(UnableToCreateFluxo);
+                }
+
+                // 4. Send emails and updates the data object
+                if(!(UserElementPreArea || UserElementPreArea0))
+                {
+                    data.Estado = data.Imobilizado.Value ? 1 : 4;
+                    data.DataHoraEstado = Fluxo.Data + Fluxo.Hora;
+
+                    if (DBProcedimentosCCP.__UpdateProcedimento(data) == null)
+                    {
+                        ErrorHandler UnableUpdatingProcedimento = new ErrorHandler()
+                        {
+                            eReasonCode = 3,
+                            eMessage = "Não foi possível actualizar o Procedimento!"
+                        };
+
+                        return Json(UnableUpdatingProcedimento);
+                    }
+                }
+
+                
+            }
+
             return Json(null);
         }
     }

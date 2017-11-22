@@ -8,7 +8,20 @@ namespace Hydra.Such.Data.Logic.CCP
 {
     public static class DBProcedimentosCCP
     {
-        private const int _ElementoJuriFeature = 23;
+        #region User roles related to CCP process, available in the EnumerablesFixed class
+        public const int _ElementoJuriPermission = 23;
+        public const int _ElementoPreArea0 = 25;
+        public const int _ElementoPreArea = 26;
+        public const int _ElementoCompras = 27;
+        public const int _ElementoJuri = 28;
+        public const int _ElementoContabilidade = 29;
+        public const int _ElementoJuridico = 30;
+        public const int _ElementoCA = 31;
+        public const int _GestorProcesso = 32;
+        public const int _SecretariadoCA = 33;
+        #endregion
+
+
 
         #region CRUD Procedimentos
         public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoTypeToList(int type)
@@ -756,12 +769,18 @@ namespace Hydra.Such.Data.Logic.CCP
 
         public static FluxoTrabalhoListaControlo __CreateFluxoTrabalho(string ProcedimentoID, DateTime SubmissionDate, int EstadoType, string Comment, string UserID, bool Imob)
         {
+            SuchDBContext _context = new SuchDBContext();
+
+            if (ProcedimentoID == "" || ProcedimentoID == null)
+                return null;
+
+            if (UserID == "")
+                return null;
+            
             FluxoTrabalhoListaControlo Fluxo = new FluxoTrabalhoListaControlo()
             {
                 No = ProcedimentoID,
                 Estado = 0,
-                Data = SubmissionDate,
-                Hora = SubmissionDate.TimeOfDay,
                 TipoEstado = EstadoType,
                 Comentario = Comment,
                 User = UserID
@@ -769,7 +788,37 @@ namespace Hydra.Such.Data.Logic.CCP
 
             Fluxo.EstadoSeguinte = Imob ? 1 : 4;
 
+            try
+            {
+                Fluxo.Data = SubmissionDate.Date;
+                Fluxo.Hora = SubmissionDate.TimeOfDay;
+            }catch(Exception e)
+            {
+                return null;
+            }
+
+
             return Fluxo;
+        }
+        public static FluxoTrabalhoListaControlo __CreateFluxoTrabalho(FluxoTrabalhoListaControlo Fluxo)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            if (Fluxo == null)
+                return null;
+
+            try
+            {
+                _context.FluxoTrabalhoListaControlo.Add(Fluxo);
+                _context.SaveChanges();
+
+                return Fluxo;
+            }
+            catch (Exception e)
+            {
+
+                return null;
+            }
         }
         public static bool __DeleteAllCheklistControloRelatedToProcedimento(string ProcedimentoID)
         {
@@ -872,10 +921,27 @@ namespace Hydra.Such.Data.Logic.CCP
             }
 
         }
+        public static string GetUserEmail(string UserID)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                var CU = _context.ConfigUtilizadores.Where(cu => cu.IdUtilizador == UserID).FirstOrDefault();
+                if (CCPFunctions.IsValidEmail(CU.IdUtilizador))
+                    return CU.IdUtilizador;
+                else
+                    return null;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
+        }
         public static List<ConfigUtilizadores> GetAllUsersElementosJuri()
         {
             SuchDBContext _context = new SuchDBContext();
-            List<AcessosUtilizador> UsersAccess = _context.AcessosUtilizador.Where(a => a.Funcionalidade == _ElementoJuriFeature).ToList();            
+            List<AcessosUtilizador> UsersAccess = _context.AcessosUtilizador.Where(a => a.Funcionalidade == _ElementoJuriPermission).ToList();            
 
             List<ConfigUtilizadores> UsersElementosJuri = new List<ConfigUtilizadores>();
 
@@ -891,7 +957,26 @@ namespace Hydra.Such.Data.Logic.CCP
             {
                 return null;
             }
-        }        
+        } 
+        
+        public static List<AcessosUtilizador> GetUserAccesses(string UserID)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            List<AcessosUtilizador> UsersAccessess = _context.AcessosUtilizador.Where(a => a.IdUtilizador == UserID).ToList();
+
+            return UsersAccessess;
+        }
+
+        public static bool CheckUserRoleRelatedToCCP(string UserID, int RoleID)
+        {
+            List<AcessosUtilizador> UserAccessess = GetUserAccesses(UserID);
+            AcessosUtilizador UserAcess = UserAccessess.Where(ua => ua.Funcionalidade == RoleID).FirstOrDefault();
+
+            if (UserAcess != null)
+                return true;
+
+            return false;
+        }
         #endregion
     }
 }

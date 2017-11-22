@@ -14,5 +14,11 @@ namespace Hydra.Such.Data.ViewModel.CCP
             DateString = _DateTime.ToShortDateString();
             TimeString = _DateTime.ToShortTimeString();
         }
+
+        public DateAndTimeView(DateTime _Date, TimeSpan _Time)
+        {
+            DateString = _Date.ToShortDateString();
+            TimeString = _Time.ToString();
+        }
     }
 }
