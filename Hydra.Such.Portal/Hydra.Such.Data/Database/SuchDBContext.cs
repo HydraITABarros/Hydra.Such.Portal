@@ -95,6 +95,8 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
+        public virtual DbSet<ConfiguracaoCCP> ConfiguracaoCCP { get; set; }
+
         // Unable to generate entity type for table 'dbo.Autorizacao_FH_RH'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.Tabela_Conf_Recursos_FH'. Please see the warning messages.
 
@@ -5854,6 +5856,33 @@ namespace Hydra.Such.Data.Database
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Workflow Procedimentos CCP_Procedimentos CCP");
             });
+
+            modelBuilder.Entity<ConfiguracaoCCP>(entity =>
+            {
+                entity.ToTable("ConfiguracaoCCP");
+
+                entity.Property(e => e.CCPEmailJurididos).HasColumnName("CCPEmailJurididos").HasMaxLength(50);
+                entity.Property(e => e.CCPEmail2Juridicos).HasColumnName("CCPEmail2Juridicos").HasMaxLength(50);
+                entity.Property(e => e.CCPEmailFinanceiros).HasColumnName("CCPEmailFinanceiros").HasMaxLength(50);
+                entity.Property(e => e.CCPEmail2Financeiros).HasColumnName("CCPEmail2Financeiros").HasMaxLength(50);
+                entity.Property(e => e.CCPEmailCA).HasColumnName("CCPEmailCA").HasMaxLength(50);
+                entity.Property(e => e.CCPEmailContabilidade).HasColumnName("CCPEmailContabilidade").HasMaxLength(50);
+                entity.Property(e => e.CCPEmail2Contabilidade).HasColumnName("CCPEmail2Contabilidade").HasMaxLength(50);
+                entity.Property(e => e.CCPEmail3Contabilidade).HasColumnName("CCPEmail3Contabilidade").HasMaxLength(50);
+                entity.Property(e => e.CCPEmailCompras).HasColumnName("CCPEmailCompras").HasMaxLength(50);
+                entity.Property(e => e.CCPEmail2Compras).HasColumnName("CCPEmail2Compras").HasMaxLength(50);
+                entity.Property(e => e.CCPEmail3Compras).HasColumnName("CCPEmail3Compras").HasMaxLength(50);
+                entity.Property(e => e.CCPEmail4Compras).HasColumnName("CCPEmail4Compras").HasMaxLength(50);
+                entity.Property(e => e.CCPEmail5Compras).HasColumnName("CCPEmail5Compras").HasMaxLength(50);
+                entity.Property(e => e.CCPEmail6Compras).HasColumnName("CCPEmail6Compras").HasMaxLength(50);
+                entity.Property(e => e.CCPEmail7Compras).HasColumnName("CCPEmail7Compras").HasMaxLength(50);
+                entity.Property(e => e.CCPEmail8Compras).HasColumnName("CCPEmail8Compras").HasMaxLength(50);
+                entity.Property(e => e.CCPEmail9Compras).HasColumnName("CCPEmail9Compras").HasMaxLength(50);
+                entity.Property(e => e.CCPEmail10Compras).HasColumnName("CCPEmail10Compras").HasMaxLength(50);
+                entity.Property(e => e.CCPEmail11Compras).HasColumnName("CCPEmail11Compras").HasMaxLength(50);
+            });
+
+            
         }
     }
 }
