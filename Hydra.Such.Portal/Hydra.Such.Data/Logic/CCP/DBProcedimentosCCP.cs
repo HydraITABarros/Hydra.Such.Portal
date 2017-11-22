@@ -754,7 +754,7 @@ namespace Hydra.Such.Data.Logic.CCP
             }
         }
 
-        public static FluxoTrabalhoListaControlo __CreateFluxoTrabalho(string ProcedimentoID, DateTime SubmissionDate, string Comment, string UserID, bool Imob)
+        public static FluxoTrabalhoListaControlo __CreateFluxoTrabalho(string ProcedimentoID, DateTime SubmissionDate, int EstadoType, string Comment, string UserID, bool Imob)
         {
             FluxoTrabalhoListaControlo Fluxo = new FluxoTrabalhoListaControlo()
             {
@@ -762,7 +762,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 Estado = 0,
                 Data = SubmissionDate,
                 Hora = SubmissionDate.TimeOfDay,
-                TipoEstado = 1,
+                TipoEstado = EstadoType,
                 Comentario = Comment,
                 User = UserID
             };
