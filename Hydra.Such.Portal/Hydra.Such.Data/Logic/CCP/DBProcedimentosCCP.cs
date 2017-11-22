@@ -754,6 +754,23 @@ namespace Hydra.Such.Data.Logic.CCP
             }
         }
 
+        public static FluxoTrabalhoListaControlo __CreateFluxoTrabalho(string ProcedimentoID, DateTime SubmissionDate, int EstadoType, string Comment, string UserID, bool Imob)
+        {
+            FluxoTrabalhoListaControlo Fluxo = new FluxoTrabalhoListaControlo()
+            {
+                No = ProcedimentoID,
+                Estado = 0,
+                Data = SubmissionDate,
+                Hora = SubmissionDate.TimeOfDay,
+                TipoEstado = EstadoType,
+                Comentario = Comment,
+                User = UserID
+            };
+
+            Fluxo.EstadoSeguinte = Imob ? 1 : 4;
+
+            return Fluxo;
+        }
         public static bool __DeleteAllCheklistControloRelatedToProcedimento(string ProcedimentoID)
         {
             SuchDBContext _context = new SuchDBContext();

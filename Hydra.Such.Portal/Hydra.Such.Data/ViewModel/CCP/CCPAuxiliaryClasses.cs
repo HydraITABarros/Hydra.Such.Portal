@@ -19,7 +19,15 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public ElementosChecklistArea ChecklistArea { get; set; }
         public ElementosChecklistImobilizadoContabilidade ChecklistImobilizadoContabilidade { get; set; }
         public ElementosChecklistImobilizadoArea CkecklistImobilizadoArea { get; set; }
+        public ElementosChecklistImobilizadoCA ChecklistImobilizadoCA { get; set; }
+        public ElementosChecklistFundamentoCompras ChecklistFundamentoCompras { get; set; }
+        public ElementosChecklistFundamentoFinanceiros ChecklistFundamentoFinanceiros { get; set; }
+        public ElementosChecklistJuridico ChecklistJuridico { get; set; }
+        public ElementosChecklistAberturaCA ChecklistAberturaCA { get; set; }
+        public ElementosChecklistAdjudicacaoCompras ChecklistAdjudicacao { get; set; }
+
     }
+
     public class ElementosChecklistArea
     {
         public string ComentarioArea { get; set; }
@@ -79,4 +87,104 @@ namespace Hydra.Such.Data.ViewModel.CCP
             DataImobArea = fluxo.Data;
         }
     }
+
+    public class ElementosChecklistImobilizadoCA
+    {
+        public string ComentarioImobCA { get; set; }
+        public string ResponsavelImobCA { get; set; }
+        public string NomeResponsavelImobCA { get; set; }
+        public DateTime DataImobAprovisionamentoCA { get; set; }
+
+        public ElementosChecklistImobilizadoCA(FluxoTrabalhoListaControlo fluxo)
+        {
+            ComentarioImobCA = fluxo.Comentario;
+            ResponsavelImobCA = fluxo.User;
+            NomeResponsavelImobCA = fluxo.NomeUser;
+            DataImobAprovisionamentoCA = fluxo.Data;
+        }
+    }
+
+    public class ElementosChecklistFundamentoCompras
+    {
+        public string ComentarioFundamentoCompras { get; set; }
+        public string ResponsavelFundamentoCompras { get; set; }    // zpgm. NAV label: "Responsável pelo envio para a área"
+        public string NomeResponsavelFundamentoCompras { get; set; }
+        public DateTime DataEnvio { get; set; }
+
+        public ElementosChecklistFundamentoCompras(FluxoTrabalhoListaControlo fluxo)
+        {
+            ComentarioFundamentoCompras = fluxo.Comentario;
+            ResponsavelFundamentoCompras = fluxo.User;
+            NomeResponsavelFundamentoCompras = fluxo.NomeUser;
+            DataEnvio = fluxo.Data;
+        }
+    }
+
+    public class ElementosChecklistFundamentoFinanceiros
+    {
+        public string ComentarioFundamentoFinanceiros { get; set; }
+        public string ComentarioFundamentoFinanceiros2 { get; set; }
+        public string ResponsavelFundamentoFinanceiros { get; set; }    // zpgm. NAV label: "Responsável dos serviços financeiros"
+        public string NomeResponsavelFundamentoFinanceiros { get; set; }
+        public DateTime DataFinanceiros { get; set; }
+
+        public ElementosChecklistFundamentoFinanceiros(FluxoTrabalhoListaControlo fluxo)
+        {
+            ComentarioFundamentoFinanceiros = fluxo.Comentario;
+            ComentarioFundamentoFinanceiros2 = fluxo.Comentario2;
+            ResponsavelFundamentoFinanceiros = fluxo.User;
+            NomeResponsavelFundamentoFinanceiros = fluxo.NomeUser;
+            DataFinanceiros = fluxo.Data;
+        }
+    }
+
+    public class ElementosChecklistJuridico
+    {
+        public string ComentarioJuridico { get; set; }
+        public string ResponsavelJuridico { get; set; }    
+        public string NomeResponsavelJuridico { get; set; }
+        public DateTime DataJuridico { get; set; }
+
+        public ElementosChecklistJuridico(FluxoTrabalhoListaControlo fluxo)
+        {
+            ComentarioJuridico = fluxo.Comentario;
+            ResponsavelJuridico = fluxo.User;
+            NomeResponsavelJuridico = fluxo.NomeUser;
+            DataJuridico = fluxo.Data;
+        }
+    }
+
+    public class ElementosChecklistAberturaCA
+    {
+        public string ComentarioCA { get; set; }
+        public string ResponsavelCA { get; set; }
+        public string NomeResponsavelCA { get; set; }
+        public DateTime DataAberturaCA { get; set; }
+
+        public ElementosChecklistAberturaCA(FluxoTrabalhoListaControlo fluxo)
+        {
+            ComentarioCA = fluxo.Comentario;
+            ResponsavelCA = fluxo.User;
+            NomeResponsavelCA = fluxo.NomeUser;
+            DataAberturaCA = fluxo.Data;
+        }
+
+    }
+
+    public class ElementosChecklistAdjudicacaoCompras
+    {
+        public string ComentarioAdjudicacao { get; set; }
+        public string ResponsavelAdjudicacao { get; set; }
+        public string NomeResponsavelAdjudicacao { get; set; }
+        public DateTime DataAdjudicacao { get; set; }
+
+        public ElementosChecklistAdjudicacaoCompras(FluxoTrabalhoListaControlo fluxo)
+        {
+            ComentarioAdjudicacao = fluxo.Comentario;
+            ResponsavelAdjudicacao = fluxo.User;
+            NomeResponsavelAdjudicacao = fluxo.NomeUser;
+            DataAdjudicacao = fluxo.Data;
+        }
+    }
+
 }

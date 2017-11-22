@@ -196,7 +196,6 @@
                             </table>
                         </template>
                     </vaadin-combo-box>
-                    <!--<vaadin-text-field type="text" value="{{data.codigoCentroResponsabilidade}}" id="codigoCentroResponsabilidade" name="codigoCentroResponsabilidade" label="Centro Resp."> </vaadin-text-field>-->
                 </div>
 
             </div>
@@ -951,6 +950,74 @@
                     if (this.DisplayChecklist != null) {
                         //this._openToast(this.DisplayChecklist.comentarioAreaApresentar);
                     }
+                },
+
+                // Action of submitting Procedimento
+                _onSubmitValidateProcedimento: function () {
+                    if (this.data.informacaoTecnica == "" || this.data.informacaoTecnica == null) {
+                        this._openToast("A Informação Técnica tem que estar preenchida!")
+                        return false;
+                    }
+
+                    if (this.data.fundamentoAquisicao == "" || this.data.fundamentoAquisicao == null) {
+                        this._openToast("A Fundamentação da Aquisição tem que estar preenchida!")
+                        return false;
+                    }
+
+                    if (this.data.precoBase == null) {
+                        this._openToast("Preço Base: tem que indicar um valor (Sim/Não)!")
+                        return false;
+                    } else if (this.data.precoBase && this.valorPrecoBase == 0) {
+                        this._openToast("Preço Base = Sim: tem que indicar um valor!")
+                        return false;
+                    }
+
+                    if (this.data.negociacao == null) {
+                        this._openToast("Negociação: tem que indicar um valor (Sim/Não)!")
+                        return false;
+                    }
+
+                    if (this.data.prazo == "" || this.data.prazo == null) {
+                        this._openToast("O Prazo para Prestação do Serviço, tem que ser indicado!!")
+                        return false;
+                    }
+
+                    if (this.data.precoMaisBaixo == null) {
+                        this._openToast("Preço Baixo: tem que indicar um valor (Sim/Não)!")
+                        return false;
+                    }
+
+                    if (this.data.propostaEconMaisVantajosa == null) {
+                        this._openToast("Proposta Economicamente mais Vantajosa: tem que indicar um valor (Sim/Não)!")
+                        return false;
+                    }
+
+                    if (this.data.propostaVariante == null) {
+                        this._openToast("Proposta Variante: tem que indicar um valor (Sim/Não)!")
+                        return false;
+                    }
+
+                    if (this.data.codigoRegiao == "" || this.data.codigoRegiao == null) {
+                        this._openToast("O Código da Região tem que estar preenchido!")
+                        return false;
+                    }
+
+                    if (this.data.codigoAreaFuncional == "" || this.data.codigoAreaFuncional == null) {
+                        this._openToast("O Código da Àrea Funcional tem que estar preenchido!")
+                        return false;
+                    }
+
+                    // zpgm.21112017_1900 
+
+                    return true;
+                },
+                _submitProcedimento: function () {
+                    if (this._submitProcedimento()) {
+
+                    }
+                },
+                _submitProcedimentoResponse: function (e) {
+
                 },
                 //Helpers
                 _executeRequest: function (url, data) {

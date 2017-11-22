@@ -92,6 +92,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHoras"
+                   last-response="{{FolhaDeHorasUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatefolhadehoras_ajax"
+                   on-response="_updatefolhadehorasResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!--CODE OPTIONS-->
         <iron-ajax url="/PopulateDropdowns/GetEmployees_FH"
                    last-response="{{codeOptions}}"
@@ -214,6 +223,36 @@
                    handle-as="json"
                    id="page_updatemaodeobra_ajax"
                    on-response="_updateMaoDeObraResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+
+
+        <!--PRESENCA-->
+        <iron-ajax url="/FolhasDeHoras/CreatePresenca"
+                   last-response="{{PresencaCreated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_createpresenca_ajax"
+                   on-response="_createPresencaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/FolhasDeHoras/DeletePresenca"
+                   last-response="{{PresencaDeleted}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deletepresenca_ajax"
+                   on-response="_deletePresencaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/FolhasDeHoras/UpdatePresenca"
+                   last-response="{{PresencaUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatepresenca_ajax"
+                   on-response="_updatePresencaResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -719,6 +758,7 @@
                                 </vaadin-grid>
 
                                 <paper-button raised id="btnUpdate" class="btnSave" on-tap="_updateAjuda"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                <paper-button raised id="btnCalcularAjudasCusto" class="btnSave" on-tap="_calcularAjudasCusto"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Calcular Aj Custo</paper-button>
                             </div>
                         </div>
                     </div>
@@ -789,7 +829,15 @@
                                     <vaadin-text-field id="maoDeObraCustoUnitarioDireto" label="Cus Unit Diret" pattern="[0-9]+([\.,][0-9]+)?" maxlength="18" required error-message="Este campo é obrigatório" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="maoDeObraCodigoCentroResponsabilidade" label="Cresp" maxlength="200" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="maoDeObraCodigoCentroResponsabilidade" item-value-path="id" item-label-path="value" label="Cresp" required error-message="Este campo é obrigatório">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
                                 </div>
                                 <div class="col-sm-1" style="text-align:right">
                                     <vaadin-text-field id="maoDeObraPrecoTotal" label="Preço Total" pattern="[0-9]+([\.,][0-9]+)?" maxlength="18" required error-message="Este campo é obrigatório" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
@@ -1022,12 +1070,22 @@
                                 </div>
                                 <div class="col-sm-6" style="text-align:right;">
                                     <vaadin-text-field id="presencaObservacoes" label="Observações" maxlength="200" required error-message="Este campo é obrigatório" style="text-align:left;"></vaadin-text-field>
-                                    <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_addPresenca"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                    <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createPresenca"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </div>
                             </div>
 
                             <div class="row break_clear">
                                 <vaadin-grid id="tabPresenca" aria-label="Tabela Presenças" items="{{ data.folhaDeHorasPresenca }}" class="editGrid">
+                                    <vaadin-grid-column width="200px" hidden>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="folhaDeHorasNo">Nº Folha de Horas</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="folhaDeHorasNo" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field name="tabPresencaFolhaDeHorasNo" id="tabPresencaFolhaDeHorasNo" value="{{item.folhaDeHorasNo}}" maxlength="200" disabled="true"></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+
                                     <vaadin-grid-column width="200px">
                                         <template class="header">
                                             <vaadin-grid-sorter path="dataTexto">Data</vaadin-grid-sorter>
@@ -1245,7 +1303,7 @@
                     </div>
                 </div>
 
-                <paper-button raised id="btnUpdate" class="btnSave" on-tap="_updateFHDetalhe"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button raised id="btnUpdate" class="btnSave" on-tap="_updateFH"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
             </div>
         </iron-pages>
 
@@ -1262,10 +1320,6 @@
                 </template>
             </template>
         </div>-->
-
-        <div class="marginSpace">
-            <paper-button raised id="btnCalcularAjudasCusto" class="btnSave" on-tap="_calcularAjudasCusto"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Calcular Aj Custo</paper-button>
-        </div>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -1365,7 +1419,6 @@
                 },
 
                 _validateDataAjuda: function () {
-                    debugger;
                     if (this.$.ajudaTipoCusto.validate() &
                         this.$.ajudaCodigoTipoCusto.validate() &
                         this.$.ajudaQuantidade.validate() &
@@ -1417,7 +1470,7 @@
                 },
 
 
-                //CRUDS
+                //FOLHA DE HORAS
                 _createFH: function () {
                     if (this._validateDataFH()) {
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
@@ -1426,9 +1479,9 @@
                 },
 
                 _updateFH: function () {
-                    if (this._validateDataFH()) {
-                        this._executeRequest("/FolhasDeHoras/UpdateFolhaDeHora", this.data)
-                    }
+                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                    this.$.page_updatefolhadehoras_ajax.generateRequest();
+                    this._showMessage('Folha de Horas actualizada com sucesso.');
                 },
 
                 _deleteFH: function () {
@@ -1457,7 +1510,6 @@
 
                 //PERCURSO
                 _createPercurso: function () {
-                    debugger;
                     if (this.$.percursoOrigem.validate() &
                         this.$.percursoDestino.validate() &
                         this.$.percursoDataViagem.validate() &
@@ -1540,7 +1592,6 @@
 
                 //MAODEOBRA
                 _createMaoDeObra: function () {
-                    debugger;
                     if (this.$.maoDeObraDate.validate() &
                         this.$.maoDeObraProjetoNo.validate() &
                         this.$.maoDeObraCodigoTipoTrabalho.validate() &
@@ -1573,18 +1624,56 @@
                 },
 
                 _deleteMaoDeObra: function (e) {
-                    debugger;
                     this.$.page_deletemaodeobra_ajax.body = JSON.stringify(e.model.item.linhaNo);
                     this.$.page_deletemaodeobra_ajax.generateRequest();
                     this.$.tabMaoDeObra.clearCache();
                 },
 
                 _updateMaoDeObra: function () {
-                    debugger;
                     this.$.page_updatemaodeobra_ajax.body = JSON.stringify(this.data);
                     this.$.page_updatemaodeobra_ajax.generateRequest();
                     this.$.tabMaoDeObra.clearCache();
                 },
+
+                //PRENSENÇAS
+                _createPresenca: function () {
+                    if (this.$.presencaDataTexto.validate() &
+                        this.$.presencaHora1Entrada.validate() &
+                        this.$.presencaHora1Saida.validate() &
+                        this.$.presencaHora2Entrada.validate() &
+                        this.$.presencaHora2Saida.validate() &
+                        this.$.presencaObservacoes.validate()) {
+                        this.$.page_createpresenca_ajax.body = JSON.stringify({
+                            folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                            data: this.$.presencaDataTexto.value,
+                            hora1Entrada: this.$.presencaHora1Entrada.value,
+                            hora1Saida: this.$.presencaHora1Saida.value,
+                            hora2Entrada: this.$.presencaHora2Entrada.value,
+                            hora2Saida: this.$.presencaHora2Saida.value,
+                            observacoes: this.$.presencaObservacoes.value
+                        });
+                        this.$.page_createpresenca_ajax.generateRequest();
+                        this.$.tabPresenca.clearCache();
+                    } else {
+                        this._showErrorMessage("É obrigatório preencher todos os campos obrigatórios corretamente.");
+                    }
+                },
+
+                _deletePresenca: function (e) {
+                    this.$.page_deletepresenca_ajax.body = JSON.stringify({
+                        folhaDeHorasNo: e.model.item.folhaDeHorasNo,
+                        data: e.model.item.dataTexto});
+                    this.$.page_deletepresenca_ajax.generateRequest();
+                    this.$.tabPresenca.clearCache();
+                },
+
+                _updatePresenca: function () {
+                    this.$.page_updatepresenca_ajax.body = JSON.stringify(this.data);
+                    this.$.page_updatepresenca_ajax.generateRequest();
+                    this.$.tabPresenca.clearCache();
+                },
+
+
 
 
 
@@ -1592,11 +1681,6 @@
                 //Responses Processors
                 _responseProcessor: function (data) {
                     var self = this;
-
-                    //Set AreaId
-                    //if (this.data.folhaDeHorasNo == "") {
-                    //    this.data.area = this._areaid;
-                    //}
 
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetFolhaDeHora") !== -1) {
@@ -1650,9 +1734,20 @@
 
                 _codeChange: function (e) {
                     if (e.detail.value != null && e.detail.value != "") {
-                        debugger;;
                         var index = this.codeOptions.findIndex(i => i.id === e.detail.value);
                         this.employeeName = this.codeOptions[index].extra;
+                    }
+                },
+
+                //FOLHA DE HORAS
+                _updateFolhaDeHorasResponse: function (e) {
+                    debugger;;;;
+                    if (this.FolhaDeHorasUpdated) {
+                        this._showMessage('Folha de Horas actualizada com sucesso.');
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao actualizar a Folha De Horas.');
                     }
                 },
 
@@ -1752,7 +1847,6 @@
                 },
 
                 _getAjudaCodTipoCustoTAB: function (e) {
-                    debugger;;
                     this.$.get_codtipocustotab.body = JSON.stringify({ id: e.model.item.tabAjudaTipoCusto.id || 0 });
                     this.$.get_codtipocustotab.generateRequest();
                     if (typeof e != 'undefined') {
@@ -1819,9 +1913,46 @@
                     }
                 },
 
+                //PRESENCA
+                _createPresencaResponse: function (e) {
+                    if (this.PresencaCreated) {
+                        this._showMessage('Adicionada Presença com sucesso.');
+                        this.$.page_databound_ajax.generateRequest();
+
+                        this.$.presencaDataTexto.value = "";
+                        this.$.presencaHora1Entrada.value = "";
+                        this.$.presencaHora1Saida.value = "";
+                        this.$.presencaHora2Entrada.value = "";
+                        this.$.presencaHora2Saida.value = "";
+                        this.$.presencaObservacoes.value = "";
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao adicionar.');
+                    }
+                },
+
+                _deletePresencaResponse: function (e) {
+                    if (this.PresencaDeleted) {
+                        this._showMessage('Presença removida com sucesso.');
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao eliminar a Presença.');
+                    }
+                },
+
+                _updatePresencaResponse: function (e) {
+                    if (this.PresencaUpdated) {
+                        this._showMessage('Presença(s) actualizada(s) com sucesso.');
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao actualizar a(s) Presença(s).');
+                    }
+                },
+
                 //Helpers
                 _executeRequest: function (url, data) {
-                    debugger;;
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
