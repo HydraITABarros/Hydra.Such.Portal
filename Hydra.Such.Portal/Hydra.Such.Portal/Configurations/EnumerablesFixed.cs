@@ -212,6 +212,9 @@ namespace Hydra.Such.Portal.Configurations
                  Id = 24,
                  Value = "Contactos"
              }
+
+             // zpgm. identify user roles related to CCP
+
         };
 
         public static readonly List<EnumData> ProposalStatus = new List<EnumData>(){
