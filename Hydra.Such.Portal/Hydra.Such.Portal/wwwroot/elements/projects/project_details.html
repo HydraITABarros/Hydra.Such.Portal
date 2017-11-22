@@ -54,7 +54,7 @@
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectContracts" last-response="{{LProjectContracts}}" auto method="post" handle-as="json" content-type="application/json" id="contracts_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectContractsByClient" last-response="{{LProjectContracts}}" id="projects_ajax" method="post" handle-as="json" content-type="application/json" id="contracts_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetGroupContProject" last-response="{{LProjectGroupContab}}" auto method="post" handle-as="json" content-type="application/json" id="groupcontab_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddresses" last-response="{{LProjectShippingAddresses}}" auto method="post" handle-as="json" content-type="application/json" id="shippinhAddress_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{LProjectEmployees}}" auto method="post" handle-as="json" content-type="application/json" id="employees_ajax"></iron-ajax>
@@ -120,13 +120,13 @@
             <div>
                 <div class="row">
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.projectNo}}" disabled="{{ !_isCreate }}" id="ProjectNo" name="ProjectNo" ed label="Nº Projeto"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.projectNo}}" maxlength="20" disabled="{{ !_isCreate }}" id="ProjectNo" name="ProjectNo" ed label="Nº Projeto"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.description}}" maxlength="100" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectClients]]" id="ProjectClient" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <vaadin-combo-box items="[[LProjectClients]]" id="ProjectClient" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Cliente" on-value-changed="_clientChanged" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
                                 <table width="350px">
                                     <tr>
@@ -194,7 +194,7 @@
                             <vaadin-checkbox checked="{{data.billable}}" disabled="{{ !_permissions.update }}">Faturável</vaadin-checkbox>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box items="[[LProjectContracts]]" id="ContractNo" item-value-path="id" item-label-path="id" value="{{data.contractNo}}" label="Nº Contrato" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        <vaadin-combo-box items="[[LProjectContracts]]" id="ContractNo" item-value-path="id" item-label-path="id" value="{{data.contractNo}}" label="Nº Contrato" disabled="{{ !_permissions.update }}">
                             <template>
                                 <table width="200px">
                                     <tr>
@@ -217,7 +217,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.ourProposal}}" id="OurProposal" name="OurProposal" label="Nossa Proposta" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.ourProposal}}" maxlength="50" id="OurProposal" name="OurProposal" label="Nossa Proposta" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
 
                 </div>
@@ -299,7 +299,7 @@
             <div>
                 <div class="row">
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.commitmentCode}}" id="CommitmentCode" name="CommitmentCode" label="Nº Compromisso" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.commitmentCode}}" maxlength="20" id="CommitmentCode" name="CommitmentCode" label="Nº Compromisso" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
                 </div>
             </div>
@@ -320,22 +320,22 @@
                         
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.shippingName}}" id="ShippingName" name="ShippingName" label="Envio-a Nome" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.shippingName}}" maxlength="100" id="ShippingName" name="ShippingName" label="Envio-a Nome" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.shippingAddress}}" id="ShippingAddress" name="ShippingAddress" label="Envio-a Endereço" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                        <vaadin-text-field value="{{data.shippingAddress}}" maxlength="100" id="ShippingAddress" name="ShippingAddress" label="Envio-a Endereço" disabled="{{ !_permissions.update }}"></vaadin-text-field>
 
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.shippingPostalCode}}" id="ShippingPostalCode" name="ShippingPostalCode" label="Envio-a Cód. Postal" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.shippingPostalCode}}" maxlength="20" id="ShippingPostalCode" name="ShippingPostalCode" label="Envio-a Cód. Postal" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
                 </div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.shippingLocality}}" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.shippingLocality}}" maxlength="30" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.shippingContact}}" id="ShippingContact" name="ShippingContact" label="Envio-a Contato" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.shippingContact}}" maxlength="50" id="ShippingContact" name="ShippingContact" label="Envio-a Contato" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
                 </div>
             </div>
@@ -344,13 +344,13 @@
             <div>
                 <div class="row">
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.clientRequest}}" id="ClientRequest" name="ClientRequest" label="Pedido do Cliente" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.clientRequest}}" maxlength="20" id="ClientRequest" name="ClientRequest" label="Pedido do Cliente" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
                         <vaadin-date-picker label="Data Pedido" id="RequestDate" name="Date" value="{{data.requestDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.detailedDescription}}" id="DetailedDescription" name="DetailedDescription" label="Descrição Detalhada" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        <vaadin-text-field value="{{data.detailedDescription}}"  id="DetailedDescription" name="DetailedDescription" label="Descrição Detalhada" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                     </div>
                 </div>
             </div>
@@ -514,22 +514,31 @@
                     var self = this;
 
                     //Set AreaId
+                    debugger;;
                     if (this.data.projectNo == "" || this.data.projectNo == undefined) {
                         this.data.area = this._areaid;
+                        this.data.status = 1;
                     }
 
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetProject") !== -1) {
                             if (this.data.ProjectNo == "") {
                                 this._isCreate = true;
+                            } else {
+                                this.$.projects_ajax.body = JSON.stringify(this.data.clientNo);
+                                this.$.projects_ajax.generateRequest();
                             }
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             this._createResponseProcessor();
                         } else if (data.detail.url.indexOf("Update") !== -1) {
-                            this._openToast("Projeto atualizado com sucesso.")
+                            if (this.data.eReasonCode != 0 ) {
+                                this._openToastError(this.data.eMessage);
+                            } else {
+                                this._openToast("Projeto atualizado com sucesso.")
+                            }
                         }
                     } else {
-                        this._openToastError("Ocorreu um erro ao criar o projeto.")
+                        this._openToastError("Ocorreu um erro.")
                     }
                 },
                 _createResponseProcessor: function () {
@@ -553,8 +562,8 @@
                 _responseDeleteProcessor: function (data) {
                     var self = this;
                     if (data.detail.status === 200) {
-                        if (this.deletedData.eReasonCode == 1) {
-                            this._openToastError("Não é possivel eliminar o projeto pois este já possui movimentos.");
+                        if (this.deletedData.eReasonCode != 0) {
+                            this._openToastError(this.deletedData.eMessage);
                         } else {
                             this._openToast(this.deletedData.eMessage);
                             setTimeout(
@@ -588,11 +597,21 @@
                 },
                 //BUTTONS
                 _OpenProjectMovements: function (url, data) {
-                    window.location.href = "/Projetos/MovimentosDeProjeto/" + this.data.projectNo;
+                    window.location.href = "../Movimentos/" + this.data.projectNo;
                 },
                 _OpenProjectDiary: function (url, data) {
-                    window.location.href = "/Projetos/DiarioProjeto/" + this.data.projectNo;
-                }
+                    window.location.href = "../DiarioProjeto/" + this.data.projectNo;
+                },
+
+
+                //Client Change
+                _clientChanged: function (e) {
+                    if (e.detail.value != "") {
+                        this.$.projects_ajax.body = JSON.stringify(e.detail.value);
+                        this.$.projects_ajax.generateRequest();
+                        this.$.ContractNo.value = "";
+                    }
+                },
             });
         });
     </script>

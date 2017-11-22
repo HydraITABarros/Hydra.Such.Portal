@@ -21,6 +21,15 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorCriação { get; set; }
         public string UtilizadorModificação { get; set; }
+        public DateTime? DataReceçãoEsperada { get; set; }
+        public DateTime? DataPPreçoFornecedor { get; set; }
+        public string CodigoLocalização { get; set; }
+        public decimal? QuantidadePorUnidMedida { get; set; }
+        public string CodigoProdutoFornecedor { get; set; }
+        public string DescriçãoProdutoFornecedor { get; set; }
+        public string NomeFornecedor { get; set; }
+        public string NºEncomendaAberto { get; set; }
+        public string NºLinhaEncomendaAberto { get; set; }
 
         public UnidadesProdutivas NºUnidadeProdutivaNavigation { get; set; }
         public TiposRefeição TipoRefeiçãoNavigation { get; set; }

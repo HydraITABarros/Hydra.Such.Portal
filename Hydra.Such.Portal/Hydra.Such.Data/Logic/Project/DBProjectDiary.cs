@@ -151,7 +151,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioDeProjeto.Where(x => x.NºProjeto == ProjectNo && x.Utilizador == user).ToList();
+                    return ctx.DiárioDeProjeto.Where(x => x.NºProjeto == ProjectNo && x.Utilizador == user && x.Registado != true).ToList();
                 }
             }
             catch (Exception ex)
@@ -161,13 +161,17 @@ namespace Hydra.Such.Data.Logic.Project
         }
 
 
-        public static List<DiárioDeProjeto> GetByLineNo(int LineNo, string user)
+        public static List<DiárioDeProjeto> GetByLineNo(int LineNo, string user = "")
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioDeProjeto.Where(x => x.NºLinha == LineNo && x.Utilizador == user).ToList();
+                    if (user == "")
+                        return ctx.DiárioDeProjeto.Where(x => x.NºLinha == LineNo).ToList();
+
+                    else
+                        return ctx.DiárioDeProjeto.Where(x => x.NºLinha == LineNo && x.Utilizador == user).ToList();
                 }
             }
             catch (Exception ex)
@@ -177,13 +181,13 @@ namespace Hydra.Such.Data.Logic.Project
         }
 
 
-        public static List<DiárioDeProjeto> GetRegisteredDiary(string ProjectNo, string user)
+        public static List<DiárioDeProjeto> GetRegisteredDiary(string ProjectNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioDeProjeto.Where(x => x.NºProjeto == ProjectNo && x.Utilizador == user && x.Registado == true).ToList();
+                    return ctx.DiárioDeProjeto.Where(x => x.NºProjeto == ProjectNo && x.Registado == true).ToList();
                 }
             }
             catch (Exception ex)

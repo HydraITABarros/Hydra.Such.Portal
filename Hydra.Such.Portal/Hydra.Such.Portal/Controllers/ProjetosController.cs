@@ -57,7 +57,7 @@ namespace Hydra.Such.Portal.Controllers
             //ResponsabilityCenter
             if (CUserDimensions.Where(y => y.Dimensão == 3).Count() > 0)
                 result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.ResponsabilityCenterCode));
-            
+
             return Json(result);
         }
         #endregion
@@ -84,7 +84,7 @@ namespace Hydra.Such.Portal.Controllers
                         Area = cProject.Área,
                         Description = cProject.Descrição,
                         ClientNo = cProject.NºCliente,
-                        Date = cProject.Data.Value.ToString("yyyy-MM-dd"),
+                        Date = cProject.Data.HasValue ? cProject.Data.Value.ToString("yyyy-MM-dd") : "",
                         Status = cProject.Estado,
                         RegionCode = cProject.CódigoRegião,
                         FunctionalAreaCode = cProject.CódigoÁreaFuncional,
@@ -105,7 +105,7 @@ namespace Hydra.Such.Portal.Controllers
                         GroupContabProjectType = cProject.TipoGrupoContabProjeto,
                         GroupContabOMProjectType = cProject.TipoGrupoContabOmProjeto,
                         ClientRequest = cProject.PedidoDoCliente,
-                        RequestDate = cProject.DataDoPedido.Value.ToString("yyyy-MM-dd"),
+                        RequestDate = cProject.DataDoPedido.HasValue ? cProject.DataDoPedido.Value.ToString("yyyy-MM-dd") : "",
                         RequestValidity = cProject.ValidadeDoPedido,
                         DetailedDescription = cProject.DescriçãoDetalhada,
                         ProjectCategory = cProject.CategoriaProjeto,
@@ -117,8 +117,11 @@ namespace Hydra.Such.Portal.Controllers
 
                     return Json(result);
                 }
-
-                return Json(new ProjectDetailsViewModel());
+                ProjectDetailsViewModel finalr = new ProjectDetailsViewModel()
+                {
+                    Status = 1
+                };
+                return Json(finalr);
             }
             return Json(false);
         }
@@ -242,7 +245,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 //Delete Created Project on Database
                                 DBProjects.Delete(cProject.NºProjeto);
-                                
+
                                 data.eReasonCode = 3;
                                 data.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
                             }
@@ -283,45 +286,91 @@ namespace Hydra.Such.Portal.Controllers
 
             if (data != null)
             {
-                Projetos cProject = new Projetos()
+                try
                 {
-                    NºProjeto = data.ProjectNo,
-                    Área = data.Area,
-                    Descrição = data.Description,
-                    NºCliente = data.ClientNo,
-                    Data = DateTime.Parse(data.Date),
-                    Estado = data.Status,
-                    CódigoRegião = data.RegionCode,
-                    CódigoÁreaFuncional = data.FunctionalAreaCode,
-                    CódigoCentroResponsabilidade = data.ResponsabilityCenterCode,
-                    Faturável = data.Billable,
-                    NºContrato = data.ContractNo,
-                    CódEndereçoEnvio = data.ShippingAddressCode,
-                    EnvioANome = data.ShippingName,
-                    EnvioAEndereço = data.ShippingAddress,
-                    EnvioACódPostal = data.ShippingPostalCode,
-                    EnvioALocalidade = data.ShippingLocality,
-                    EnvioAContato = data.ShippingContact,
-                    CódTipoProjeto = data.ProjectTypeCode,
-                    NossaProposta = data.OurProposal,
-                    CódObjetoServiço = data.ServiceObjectCode,
-                    NºCompromisso = data.CommitmentCode,
-                    GrupoContabObra = data.AccountWorkGroup,
-                    TipoGrupoContabProjeto = data.GroupContabProjectType,
-                    TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
-                    PedidoDoCliente = data.ClientRequest,
-                    DataDoPedido = DateTime.Parse(data.RequestDate),
-                    ValidadeDoPedido = data.RequestValidity,
-                    DescriçãoDetalhada = data.DetailedDescription,
-                    CategoriaProjeto = data.ProjectCategory,
-                    NºContratoOrçamento = data.BudgetContractNo,
-                    ProjetoInterno = data.InternalProject,
-                    ChefeProjeto = data.ProjectLeader,
-                    ResponsávelProjeto = data.ProjectResponsible,
-                    UtilizadorModificação = User.Identity.Name
-                };
+                    Projetos cProject = new Projetos()
+                    {
+                        NºProjeto = data.ProjectNo,
+                        Área = data.Area,
+                        Descrição = data.Description,
+                        NºCliente = data.ClientNo,
+                        Data = data.Date == "" ? (DateTime?)null : DateTime.Parse(data.Date),
+                        Estado = data.Status,
+                        CódigoRegião = data.RegionCode,
+                        CódigoÁreaFuncional = data.FunctionalAreaCode,
+                        CódigoCentroResponsabilidade = data.ResponsabilityCenterCode,
+                        Faturável = data.Billable,
+                        NºContrato = data.ContractNo,
+                        CódEndereçoEnvio = data.ShippingAddressCode,
+                        EnvioANome = data.ShippingName,
+                        EnvioAEndereço = data.ShippingAddress,
+                        EnvioACódPostal = data.ShippingPostalCode,
+                        EnvioALocalidade = data.ShippingLocality,
+                        EnvioAContato = data.ShippingContact,
+                        CódTipoProjeto = data.ProjectTypeCode,
+                        NossaProposta = data.OurProposal,
+                        CódObjetoServiço = data.ServiceObjectCode,
+                        NºCompromisso = data.CommitmentCode,
+                        GrupoContabObra = data.AccountWorkGroup,
+                        TipoGrupoContabProjeto = data.GroupContabProjectType,
+                        TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
+                        PedidoDoCliente = data.ClientRequest,
+                        DataDoPedido = data.RequestDate == "" ? (DateTime?)null : DateTime.Parse(data.RequestDate),
+                        ValidadeDoPedido = data.RequestValidity,
+                        DescriçãoDetalhada = data.DetailedDescription,
+                        CategoriaProjeto = data.ProjectCategory,
+                        NºContratoOrçamento = data.BudgetContractNo,
+                        ProjetoInterno = data.InternalProject,
+                        ChefeProjeto = data.ProjectLeader,
+                        ResponsávelProjeto = data.ProjectResponsible,
+                        UtilizadorModificação = User.Identity.Name
+                    };
 
-                DBProjects.Update(cProject);
+                    DBProjects.Update(cProject);
+
+                    data.eReasonCode = 1;
+
+
+                    //Read NAV Project Key
+                    Task<WSCreateNAVProject.Read_Result> TReadNavProj = WSProject.GetNavProject(data.ProjectNo, _configws);
+                    try
+                    {
+                        TReadNavProj.Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                    }
+
+                    if (TReadNavProj.IsCompletedSuccessfully)
+                    {
+                        //Update Project on NAV
+                        Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, data, _configws);
+                        try
+                        {
+                            TUpdateNavProj.Wait();
+                        }
+                        catch (Exception ex)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                        }
+
+                        if (!TUpdateNavProj.IsCompletedSuccessfully)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    data.eReasonCode = 2;
+                    data.eMessage = "Ocorreu um erro ao atualizar o projeto.";
+                }
+
+
                 return Json(data);
             }
             return Json(false);
@@ -349,12 +398,48 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    DBProjects.Delete(data.ProjectNo);
-                    result = new ErrorHandler()
+                    //Update Project on NAV
+                    //Read NAV Project Key
+                    Task<WSCreateNAVProject.Read_Result> TReadNavProj = WSProject.GetNavProject(data.ProjectNo, _configws);
+                    try
                     {
-                        eReasonCode = 0,
-                        eMessage = "Projeto removido com sucesso."
-                    };
+                        TReadNavProj.Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                    }
+
+                    if (TReadNavProj.IsCompletedSuccessfully)
+                    {
+                        Task<WSCreateNAVProject.Delete_Result> TDeleteNavProj = WSProject.DeleteNavProject(TReadNavProj.Result.WSJob.Key, _configws);
+                        try
+                        {
+                            TDeleteNavProj.Wait();
+
+                            if (!TDeleteNavProj.IsCompletedSuccessfully)
+                            {
+                                result.eReasonCode = 2;
+                                result.eMessage = "Não é possivel remover o projeto no nav.";
+                            }
+                            else
+                            {
+                                DBProjects.Delete(data.ProjectNo);
+                                result = new ErrorHandler()
+                                {
+                                    eReasonCode = 0,
+                                    eMessage = "Projeto removido com sucesso."
+                                };
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            result.eReasonCode = 2;
+                            result.eMessage = "Não é possivel remover o projeto no nav.";
+                        }
+                    }
+
                 }
                 return Json(result);
             }
@@ -362,15 +447,29 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         #region DiárioDeProjetos
         public IActionResult DiarioProjeto(String id)
         {
             //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
             //if (UPerm != null && UPerm.Read.Value)
             //{
-              //  ViewBag.UPermissions = UPerm;
-                ViewBag.ProjectNo = id ?? "";
-                return View();
+            //  ViewBag.UPermissions = UPerm;
+            ViewBag.ProjectNo = id ?? "";
+            return View();
             //}
             //else
             //{
@@ -387,7 +486,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     LineNo = x.NºLinha,
                     ProjectNo = x.NºProjeto,
-                    Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                    Date = !x.Data.HasValue ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
                     MovementType = x.TipoMovimento,
                     Type = x.Tipo,
                     Code = x.Código,
@@ -406,14 +505,14 @@ namespace Hydra.Such.Portal.Controllers
                     TotalPrice = x.PreçoTotal,
                     Billable = x.Faturável,
                     Registered = x.Registado,
-                    Billed = x.Faturada == null ? false : (bool)x.Faturada,
+                    Billed = x.Faturada.HasValue ? x.Faturada.Value : false,
                     Currency = x.Moeda,
                     UnitValueToInvoice = x.ValorUnitárioAFaturar,
                     MealType = x.TipoRefeição,
                     ServiceGroupCode = x.CódGrupoServiço,
                     ResidueGuideNo = x.NºGuiaResíduos,
                     ExternalGuideNo = x.NºGuiaExterna,
-                    ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
+                    ConsumptionDate = !x.DataConsumo.HasValue ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                     InvoiceToClientNo = x.FaturaANºCliente,
                     ServiceClientCode = x.CódServiçoCliente
                 }).ToList();
@@ -421,11 +520,16 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
             {
+                //List<DiárioDeProjeto> dp1 = DBProjectDiary.GetByProjectNo(projectNo, User.Identity.Name).ToList();
+                //foreach (DiárioDeProjeto var in dp1)
+                //{
+                //    vae
+                //}
                 List<ProjectDiaryViewModel> dp = DBProjectDiary.GetByProjectNo(projectNo, User.Identity.Name).Select(x => new ProjectDiaryViewModel()
                 {
                     LineNo = x.NºLinha,
                     ProjectNo = x.NºProjeto,
-                    Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                    Date = !x.Data.HasValue ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
                     MovementType = x.TipoMovimento,
                     Type = x.Tipo,
                     Code = x.Código,
@@ -434,7 +538,7 @@ namespace Hydra.Such.Portal.Controllers
                     MeasurementUnitCode = x.CódUnidadeMedida,
                     LocationCode = x.CódLocalização,
                     ProjectContabGroup = x.GrupoContabProjeto,
-                    RegionCode = x.CódigoRegião, 
+                    RegionCode = x.CódigoRegião,
                     FunctionalAreaCode = x.CódigoÁreaFuncional,
                     ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                     User = x.Utilizador,
@@ -444,14 +548,14 @@ namespace Hydra.Such.Portal.Controllers
                     TotalPrice = x.PreçoTotal,
                     Billable = x.Faturável,
                     Registered = x.Registado,
-                    Billed = (bool)x.Faturada,
+                    Billed = x.Faturada.HasValue ? x.Faturada.Value : false,
                     Currency = x.Moeda,
                     UnitValueToInvoice = x.ValorUnitárioAFaturar,
                     MealType = x.TipoRefeição,
                     ServiceGroupCode = x.CódGrupoServiço,
                     ResidueGuideNo = x.NºGuiaResíduos,
                     ExternalGuideNo = x.NºGuiaExterna,
-                    ConsumptionDate =x.DataConsumo == null ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
+                    ConsumptionDate = !x.DataConsumo.HasValue ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                     InvoiceToClientNo = x.FaturaANºCliente,
                     ServiceClientCode = x.CódServiçoCliente
                 }).ToList();
@@ -472,7 +576,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 previousList = DBProjectDiary.GetByProjectNo(projectNo, User.Identity.Name);
             }
-            
+
 
             //previousList.RemoveAll(x => !dp.Any(u => u.LineNo == x.NºLinha));
             //previousList.ForEach(x => DBProjectDiary.Delete(x));
@@ -487,13 +591,114 @@ namespace Hydra.Such.Portal.Controllers
             //Update or Create
             try
             {
- dp.ForEach(x =>
+                dp.ForEach(x =>
+                           {
+                               List<DiárioDeProjeto> dpObject = DBProjectDiary.GetByLineNo(x.LineNo, User.Identity.Name);
+
+                               if (dpObject.Count > 0)
+                               {
+                                   DiárioDeProjeto newdp = dpObject.FirstOrDefault();
+
+                                   newdp.NºLinha = x.LineNo;
+                                   newdp.NºProjeto = x.ProjectNo;
+                                   newdp.Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date);
+                                   newdp.TipoMovimento = x.MovementType;
+                                   newdp.Tipo = x.Type;
+                                   newdp.Código = x.Code;
+                                   newdp.Descrição = x.Description;
+                                   newdp.Quantidade = x.Quantity;
+                                   newdp.CódUnidadeMedida = x.MeasurementUnitCode;
+                                   newdp.CódLocalização = x.LocationCode;
+                                   newdp.GrupoContabProjeto = x.ProjectContabGroup;
+                                   newdp.CódigoRegião = x.RegionCode;
+                                   newdp.CódigoÁreaFuncional = x.FunctionalAreaCode;
+                                   newdp.CódigoCentroResponsabilidade = x.ResponsabilityCenterCode;
+                                   newdp.Utilizador = User.Identity.Name;
+                                   newdp.CustoUnitário = x.UnitCost;
+                                   newdp.CustoTotal = x.TotalCost;
+                                   newdp.PreçoUnitário = x.UnitPrice;
+                                   newdp.PreçoTotal = x.TotalPrice;
+                                   newdp.Faturável = x.Billable;
+                                   newdp.Registado = false;
+                                   newdp.FaturaANºCliente = x.InvoiceToClientNo;
+                                   newdp.Moeda = x.Currency;
+                                   newdp.ValorUnitárioAFaturar = x.UnitValueToInvoice;
+                                   newdp.TipoRefeição = x.MealType;
+                                   newdp.CódGrupoServiço = x.ServiceGroupCode;
+                                   newdp.NºGuiaResíduos = x.ResidueGuideNo;
+                                   newdp.NºGuiaExterna = x.ExternalGuideNo;
+                                   newdp.DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate);
+                                   newdp.CódServiçoCliente = x.ServiceClientCode;
+                                   newdp.Faturada = x.Billed;
+                                   newdp.DataHoraModificação = DateTime.Now;
+                                   newdp.UtilizadorModificação = User.Identity.Name;
+                                   DBProjectDiary.Update(newdp);
+                               }
+                               else
+                               {
+                                   DiárioDeProjeto newdp = new DiárioDeProjeto()
+                                   {
+                                       NºLinha = x.LineNo,
+                                       NºProjeto = x.ProjectNo,
+                                       Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date),
+                                       TipoMovimento = x.MovementType,
+                                       Tipo = x.Type,
+                                       Código = x.Code,
+                                       Descrição = x.Description,
+                                       Quantidade = x.Quantity,
+                                       CódUnidadeMedida = x.MeasurementUnitCode,
+                                       CódLocalização = x.LocationCode,
+                                       GrupoContabProjeto = x.ProjectContabGroup,
+                                       CódigoRegião = x.RegionCode,
+                                       CódigoÁreaFuncional = x.FunctionalAreaCode,
+                                       CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
+                                       Utilizador = User.Identity.Name,
+                                       CustoUnitário = x.UnitCost,
+                                       CustoTotal = x.TotalCost,
+                                       PreçoUnitário = x.UnitPrice,
+                                       PreçoTotal = x.TotalPrice,
+                                       Faturável = x.Billable,
+                                       Registado = false,
+                                       FaturaANºCliente = x.InvoiceToClientNo,
+                                       Moeda = x.Currency,
+                                       ValorUnitárioAFaturar = x.UnitValueToInvoice,
+                                       TipoRefeição = x.MealType,
+                                       CódGrupoServiço = x.ServiceGroupCode,
+                                       NºGuiaResíduos = x.ResidueGuideNo,
+                                       NºGuiaExterna = x.ExternalGuideNo,
+                                       DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
+                                       CódServiçoCliente = x.ServiceClientCode
+
+                                   };
+
+                                   newdp.Faturada = false;
+                                   newdp.DataHoraCriação = DateTime.Now;
+                                   newdp.UtilizadorCriação = User.Identity.Name;
+                                   DBProjectDiary.Create(newdp);
+                               }
+
+
+                           });
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+
+            return Json(dp);
+        }
+
+        public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo)
+        {
+            //Create
+            dp.ForEach(x =>
             {
                 DiárioDeProjeto newdp = new DiárioDeProjeto()
                 {
                     NºLinha = x.LineNo,
                     NºProjeto = x.ProjectNo,
-                    Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date),
+                    Data = x.Date == "" || x.Date == String.Empty ? (DateTime?)null : DateTime.Parse(x.Date),
                     TipoMovimento = x.MovementType,
                     Tipo = x.Type,
                     Código = x.Code,
@@ -515,11 +720,11 @@ namespace Hydra.Such.Portal.Controllers
                     FaturaANºCliente = x.InvoiceToClientNo,
                     Moeda = x.Currency,
                     ValorUnitárioAFaturar = x.UnitValueToInvoice,
-                    TipoRefeição  = x.MealType,
+                    TipoRefeição = x.MealType,
                     CódGrupoServiço = x.ServiceGroupCode,
                     NºGuiaResíduos = x.ResidueGuideNo,
                     NºGuiaExterna = x.ExternalGuideNo,
-                    DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
+                    DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
                     CódServiçoCliente = x.ServiceClientCode
 
                 };
@@ -539,72 +744,7 @@ namespace Hydra.Such.Portal.Controllers
                     DBProjectDiary.Create(newdp);
                 }
             });
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
-           
 
-            return Json(dp);
-        }
-
-        public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo)
-        {
-            //Create
-                dp.ForEach(x =>
-                {
-                    DiárioDeProjeto newdp = new DiárioDeProjeto()
-                    {
-                        NºLinha = x.LineNo,
-                        NºProjeto = x.ProjectNo,
-                        Data = x.Date == "" || x.Date == String.Empty ? (DateTime?)null : DateTime.Parse(x.Date),
-                        TipoMovimento = x.MovementType,
-                        Tipo = x.Type,
-                        Código = x.Code,
-                        Descrição = x.Description,
-                        Quantidade = x.Quantity,
-                        CódUnidadeMedida = x.MeasurementUnitCode,
-                        CódLocalização = x.LocationCode,
-                        GrupoContabProjeto = x.ProjectContabGroup,
-                        CódigoRegião = x.RegionCode,
-                        CódigoÁreaFuncional = x.FunctionalAreaCode,
-                        CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
-                        Utilizador = User.Identity.Name,
-                        CustoUnitário = x.UnitCost,
-                        CustoTotal = x.TotalCost,
-                        PreçoUnitário = x.UnitPrice,
-                        PreçoTotal = x.TotalPrice,
-                        Faturável = x.Billable,
-                        Registado = false,
-                        FaturaANºCliente = x.InvoiceToClientNo,
-                        Moeda = x.Currency,
-                        ValorUnitárioAFaturar = x.UnitValueToInvoice,
-                        TipoRefeição = x.MealType,
-                        CódGrupoServiço = x.ServiceGroupCode,
-                        NºGuiaResíduos = x.ResidueGuideNo,
-                        NºGuiaExterna = x.ExternalGuideNo,
-                        DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
-                        CódServiçoCliente = x.ServiceClientCode
-
-                    };
-
-                    if (x.LineNo > 0)
-                    {
-                        newdp.Faturada = x.Billed;
-                        newdp.DataHoraModificação = DateTime.Now;
-                        newdp.UtilizadorModificação = User.Identity.Name;
-                        DBProjectDiary.Update(newdp);
-                    }
-                    else
-                    {
-                        newdp.Faturada = false;
-                        newdp.DataHoraCriação = DateTime.Now;
-                        newdp.UtilizadorCriação = User.Identity.Name;
-                        DBProjectDiary.Create(newdp);
-                    }
-                });
-            
             return Json(dp);
         }
 
@@ -613,7 +753,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             //Get Project Info
             Projetos proj = DBProjects.GetById(projectNo);
-            
+
             if (proj != null)
             {
                 ProjectInfo pi = new ProjectInfo
@@ -666,7 +806,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 });
             }
-            
+
 
             return Json(dp);
         }
@@ -675,60 +815,42 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetMovements([FromBody] string projectNo)
         {
             //Get Contract from Project
-            List<ProjectDiaryViewModel> dp = new List<ProjectDiaryViewModel>();
+            List<DiárioDeProjeto> dp = new List<DiárioDeProjeto>();
             if (projectNo != null && projectNo != "")
             {
-                Projetos proj = DBProjects.GetById(projectNo);
-                if (proj != null)
+                dp = DBProjectDiary.GetRegisteredDiary(projectNo).Select(x => new DiárioDeProjeto()
                 {
-                   
-                    Contratos cont = Data.Logic.Contracts.DBContracts.GetActiveContractById(proj.NºContrato);
-                    if (cont != null)
-                    {
-                        List<LinhasContratos> allLines = Data.Logic.Contracts.DBContractLines.GetAllByActiveContract(cont.NºContrato, cont.NºVersão);
-                        if (allLines != null && allLines.Count > 0)
-                        {
-                            dp = allLines.Select(x => new ProjectDiaryViewModel()
-                            {
-                                ProjectNo = projectNo,
-                                Type = x.Tipo,
-                                Code = x.Código,
-                                Description = x.Descrição,
-                                MeasurementUnitCode = x.CódUnidadeMedida,
-                                UnitPrice = x.PreçoUnitário,
-                                Billable = x.Faturável,
-                                RegionCode = x.CódigoRegião,
-                                FunctionalAreaCode = x.CódigoÁreaFuncional,
-                                ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
-                                Quantity = 0,
-                                Registered = false
-                            }).ToList();
+                    NºProjeto = x.NºProjeto,
+                    Data = x.Data,
+                    TipoMovimento = x.TipoMovimento,
+                    Tipo = x.Tipo,
+                    Código = x.Código,
+                    Descrição = x.Descrição,
+                    Quantidade = x.Quantidade,
+                    CódUnidadeMedida = x.CódUnidadeMedida,
+                    CódLocalização = x.CódLocalização,
+                    GrupoContabProjeto = x.GrupoContabProjeto,
+                    CódigoRegião = x.CódigoRegião,
+                    CódigoÁreaFuncional = x.CódigoÁreaFuncional,
+                    CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
+                    Utilizador = x.Utilizador,
+                    CustoUnitário = x.CustoUnitário,
+                    CustoTotal = x.CustoTotal,
+                    PreçoUnitário = x.PreçoUnitário,
+                    PreçoTotal = x.PreçoTotal,
+                    Faturável = x.Faturável,
+                    Registado = false,
+                    DataConsumo = x.DataConsumo.ToString() == "" || x.DataConsumo.ToString() == String.Empty ? (DateTime?)null : DateTime.Parse(x.DataConsumo.ToString()),
 
-                            return Json(dp);
-                        }
-                        else
-                        {
-                            return Json(dp);
-                        }
-                    }
-                    else
-                    {
-                        return Json(dp);
-                    }
+                }).ToList();
 
-                }
-                else
+                foreach (var item in dp)
                 {
-                    return Json(dp);
+                    DBProjectDiary.Create(item);
                 }
-            }
-            else
-            {
                 return Json(dp);
             }
-
-            //contract lines by contract id and version
-
+            return Json(false);
         }
 
         public class ProjectInfo
@@ -749,7 +871,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 2);
             if (UPerm != null && UPerm.Read.Value)
-            {             
+            {
                 if (id != null)
                 {
                     ViewBag.ProjectNo = id ?? "";
@@ -769,7 +891,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProjectMovements([FromBody] string ProjectNo)
         {
-            List<ProjectDiaryViewModel> dp = DBProjectDiary.GetRegisteredDiary(ProjectNo, User.Identity.Name).Select(x => new ProjectDiaryViewModel()
+            List<ProjectDiaryViewModel> dp = DBProjectDiary.GetRegisteredDiary(ProjectNo).Select(x => new ProjectDiaryViewModel()
             {
                 LineNo = x.NºLinha,
                 ProjectNo = x.NºProjeto,
@@ -798,7 +920,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo , bool allProjs)
+        public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo, bool allProjs)
         {
             List<ProjectDiaryViewModel> dp = DBProjectDiary.GetRegisteredDiaryDp(ProjectNo, User.Identity.Name, allProjs).Select(x => new ProjectDiaryViewModel()
             {
@@ -911,7 +1033,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 return null;
             }
-           
+
         }
 
         [HttpPost]

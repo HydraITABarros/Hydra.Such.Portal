@@ -6,8 +6,8 @@ namespace Hydra.Such.Data.Database
     public partial class LinhasFolhaHoras
     {
         public string NoFolhaHoras { get; set; }
-        public string NoLinha { get; set; }
-        public bool? TipoCusto { get; set; }
+        public int NoLinha { get; set; }
+        public int? TipoCusto { get; set; }
         public string CodTipoCusto { get; set; }
         public string DescricaoTipoCusto { get; set; }
         public decimal? Quantidade { get; set; }

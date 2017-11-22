@@ -10,6 +10,8 @@ using Newtonsoft.Json.Linq;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.Nutrition;
 using Hydra.Such.Data.ViewModel.Nutrition;
+using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic.Contracts;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -58,8 +60,6 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 19);
             if (UPerm != null && UPerm.Read.Value)
             {
-               // UPerm.Update = false;
-
                 ViewBag.ProjectNo = id ?? "";
                 ViewBag.UPermissions = UPerm;
                 return View();
@@ -86,10 +86,144 @@ namespace Hydra.Such.Portal.Controllers
 
         #endregion
 
-        public IActionResult Contratos()
+        #region Contratos
+        public IActionResult Contratos(int? archived, string contractNo)
         {
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 2);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Archived = archived == null ? 0 : 1;
+                ViewBag.ContractNo = contractNo ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
+
+        public IActionResult DetalhesContrato(string id, string version = "")
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 2);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                Contratos cContract = null;
+                if (version != "")
+                    cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
+                else
+                    cContract = DBContracts.GetByIdLastVersion(id);
+
+                if (cContract != null && cContract.Arquivado == true)
+                {
+                    UPerm.Update = false;
+                }
+
+                ViewBag.ContractNo = id ?? "";
+                ViewBag.VersionNo = version ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        #endregion
+
+        #region Oportunidades
+        public IActionResult Oportunidades(int? archived, string contractNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 20);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Archived = archived == null ? 0 : 1;
+                ViewBag.ContractNo = contractNo ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult DetalhesOportunidade(string id, string version = "")
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 20);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                Contratos cContract = null;
+                if (version != "")
+                    cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
+                else
+                    cContract = DBContracts.GetByIdLastVersion(id);
+
+                if (cContract != null && cContract.Arquivado == true)
+                {
+                    UPerm.Update = false;
+                }
+
+                ViewBag.ContractNo = id ?? "";
+                ViewBag.VersionNo = version ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        #endregion
+
+        #region Propostas
+        public IActionResult Propostas(int? archived, string contractNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 21);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Archived = archived == null ? 0 : 1;
+                ViewBag.ContractNo = contractNo ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult DetalhesProposta(string id, string version = "")
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 21);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                Contratos cContract = null;
+                if (version != "")
+                    cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
+                else
+                    cContract = DBContracts.GetByIdLastVersion(id);
+
+                if (cContract != null && cContract.Arquivado == true)
+                {
+                    UPerm.Update = false;
+                }
+
+                ViewBag.ContractNo = id ?? "";
+                ViewBag.VersionNo = version ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        #endregion
+
 
         public IActionResult Requisicoes()
         {

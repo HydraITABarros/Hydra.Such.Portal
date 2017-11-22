@@ -154,6 +154,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetFolhaDeHoraViaturasMatriculas()
+        {
+            List<DDMessageString> result = DBViatura.GetAllToList().Select(x => new DDMessageString()
+            {
+                id = x.Matrícula,
+                value = x.Matrícula
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetFolhaDeHoraPercursoOrigemDestino()
         {
             List<DDMessageString> result = DBOrigemDestinoFh.GetAll().Select(x => new DDMessageString()
@@ -680,6 +691,21 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetProjectContractsByClient([FromBody]string clientNo)
+        {
+            List<Contratos> lcontracts = DBContracts.GetAll().Where(x => x.TipoContrato == 3).ToList();
+            lcontracts.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+            lcontracts.RemoveAll(x => x.NºCliente != clientNo);
+            List<DDMessageString> result = lcontracts.Select(x => new DDMessageString()
+            {
+                id = x.NºDeContrato,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+
         // zpgm.<populate dropdowns to use in Procedimentos CCP 
         [HttpPost]
         public JsonResult GetPocedimentosCcpProcedimentoType()
@@ -831,12 +857,69 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturasCartaoCombustivel()
+        {
+            List<DDMessageString> result = DBCartoesEApolices.GetAllByType(2).Select(x => new DDMessageString()
+            {
+                id = x.Número,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturasApolices()
+        {
+            List<DDMessageString> result = DBCartoesEApolices.GetAllByType(1).Select(x => new DDMessageString()
+            {
+                id = x.Número,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAjudaCustoTipoCusto()
+        {
+            List<EnumData> result = EnumerablesFixed.AjudaCustoTipoCusto;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAjudaCustoRefCusto()
+        {
+            List<EnumData> result = EnumerablesFixed.AjudaCustoRefCusto;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetTiposMovimento()
         {
             List<EnumData> result = EnumerablesFixed.TipoMovimento;
             return Json(result);
         }
     }
+
+        [HttpPost]
+        public JsonResult GetAjudaCustoPartidaChegada()
+        {
+            List<EnumData> result = EnumerablesFixed.AjudaCustoPartidaChegada;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetCodTipoCustoByTipoCusto([FromBody]DDMessage tipoCusto)
+        {
+
+            List<DDMessageString> result = DBTabelaConfRecursosFH.GetAll().Where(x => x.Tipo == tipoCusto.id.ToString()).Select(x => new DDMessageString()
+            {
+                id = x.CodRecurso,
+                value = x.CodRecurso + " - " + x.Descricao
+            }).ToList();
+            return Json(result);
+        }
+    }
+
 
     public class DDMessage
     {

@@ -91,10 +91,10 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"  required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="projectMovementList" name="projectMovementList" items="[[response2]]" item-value-path="id" item-label-path="value" label="Tipo Movimento" value="{{projectMovementNumber}}" disabled="{{ !_permissions.create }}">
+                    <vaadin-combo-box id="projectMovementList" name="projectMovementList" items="[[response2]]" item-value-path="id" item-label-path="value" label="Tipo Movimento" value="{{projectMovementNumber}}" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório">
                         <template>
                                 <table width="200px">
                                     <tr>
@@ -118,7 +118,7 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piCode" name="piCode" items="[[codeOptions]]" item-value-path="id" on-value-changed="_codeChange" item-label-path="id" label="Código" value="{{codeNumber}}" disabled="{{ !_permissions.create }}">
+                    <vaadin-combo-box id="piCode" name="piCode" items="[[codeOptions]]" item-value-path="id" on-value-changed="_codeChange" item-label-path="id" label="Código" value="{{codeNumber}}" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório">
                         <template>
                                 <table width="300px">
                                     <tr>
@@ -147,7 +147,7 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piQuantity" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" label="Quantidades" value="{{quantity}}"  on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"></vaadin-text-field >
+                    <vaadin-text-field id="piQuantity" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" label="Quantidades" value="{{quantity}}"  on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-text-field >
                 </div>
                 <div class="col-lg-2">
                     <vaadin-combo-box id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[MeasureUnit]]" item-value-path="id" value="{{codeMeasurementUnit}}" item-label-path="value" label="Cód. Unidade Medida" disabled="{{ !_permissions.create }}">
@@ -212,19 +212,19 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitCost" label="Custo Uniário" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitCost" label="Custo Unitário" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{totalCost}}" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{totalCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitPrice" label="Preço Uniário" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitPrice}}" on-value-changed="_calcTotals"  disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitPrice" label="Preço Unitário" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitPrice}}" on-value-changed="_calcTotals"  disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{totalPrice}}" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{totalPrice}}"  on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitValueToInvoice}}" disabled="{{ !_permissions.create }}"><div slot="suffix" >€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitValueToInvoice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix" >€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
@@ -1365,8 +1365,13 @@
 
                     this.$.ajax_getall.generateRequest();
                     this.$.projectDiaryProject.clearCache();
-                   
-                    this.projectNumber = "";
+
+                    if (!this.disabledProjectNo) {
+                        this.projectNumber = "";
+                        this.codeRegion = "";
+                        this.codeFuncArea = "";
+                        this.codeResponsabilityCenter = "";
+                    }
                     this.date = "";
                     this.projectMovementNumber = "";
                     this.projectTypeNumber = "";
@@ -1376,9 +1381,6 @@
                     this.codeMeasurementUnit = "";
                     this.codeLocation = "";
                     this.codeProjectContabGroup = "";
-                    this.codeRegion = "";
-                    this.codeFuncArea = "";
-                    this.codeResponsabilityCenter = "";
                     this.unitCost = "";
                     this.totalCost = "";
                     this.unitPrice = "";
@@ -1480,7 +1482,6 @@
                     
                 }
             },
-
             _updateRegisterResponse: function (e) {
                 if (this.data == null || this.data.length == 0) {
                     this.openToastError("Não existe linhas de Diário para Registar.");
@@ -1525,41 +1526,51 @@
                 }
 
             },
-            _movementLinesResponse: function () {
+            _movementLinesResponse: function (e) {
                 if (this.movementLines.length > 0) {
-                    this.movementLines.forEach(function(e) {
-
-                        this.result.unshift({
-                            projectNo: e.projectNumber,
-                            date: e.date,
-                            movementType: e.projectMovementNumber,
-                            type: e.projectTypeNumber,
-                            code: e.codeNumber,
-                            description: e.description,
-                            quantity: 0,
-                            measurementUnitCode: e.codeMeasurementUnit,
-                            locationCode: e.codeLocation,
-                            projectContabGroup: e.codeProjectContabGroup,
-                            regionCode: e.codeRegion,
-                            functionalAreaCode: e.codeFuncArea,
-                            responsabilityCenterCode: e.codeResponsabilityCenter,
-                            unitCost: e.unitCost,
-                            totalCost: e.totalCost,
-                            unitPrice: e.unitPrice,
-                            totalPrice: e.totalPrice,
-                            unitValueToInvoice: e.unitValueToInvoice,
-                            billable: e.billable,
-                            invoiceToClientNo: e.invoiceClientNo,
-                            mealType: e.ddMealTypes,
-                            serviceGroupCode: e.ddServiceGroupCode,
-                            residueGuideNo: e.residueguide,
-                            ExternalGuideNo: e.externalguide,
-                            consumptionDate: e.consumptionDate,
-                            serviceClientCode: e.ddServiceClientCode
-                        });
-                    });
-                    this.$.projectDiaryProject.clearCache();
-                    this.openToastSuccess("Movimentos adicionados com sucesso.");
+                    //this.movementLines.forEach(function(e) {
+                        debugger;
+                        if (e.detail.status === 200) {
+                            this.$.ajax_getall.generateRequest();
+                            this.$.projectDiaryProject.clearCache();
+                            this.openToastSuccess("Linhas do Diário registadas com sucesso.");
+                        }
+                        else {
+                            this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
+                        }
+                            //this.openToastSuccess("Linhas do Diário registadas com sucesso.");
+                        
+                        //this.result.unshift({
+                        //    projectNo: e.projectNumber,
+                        //    date: e.date,
+                        //    movementType: e.projectMovementNumber,
+                        //    type: e.projectTypeNumber,
+                        //    code: e.codeNumber,
+                        //    description: e.description,
+                        //    quantity: 0,
+                        //    measurementUnitCode: e.codeMeasurementUnit,
+                        //    locationCode: e.codeLocation,
+                        //    projectContabGroup: e.codeProjectContabGroup,
+                        //    regionCode: e.codeRegion,
+                        //    functionalAreaCode: e.codeFuncArea,
+                        //    responsabilityCenterCode: e.codeResponsabilityCenter,
+                        //    unitCost: e.unitCost,
+                        //    totalCost: e.totalCost,
+                        //    unitPrice: e.unitPrice,
+                        //    totalPrice: e.totalPrice,
+                        //    unitValueToInvoice: e.unitValueToInvoice,
+                        //    billable: e.billable,
+                        //    invoiceToClientNo: e.invoiceClientNo,
+                        //    mealType: e.ddMealTypes,
+                        //    serviceGroupCode: e.ddServiceGroupCode,
+                        //    residueGuideNo: e.residueguide,
+                        //    ExternalGuideNo: e.externalguide,
+                        //    consumptionDate: e.consumptionDate,
+                        //    serviceClientCode: e.ddServiceClientCode
+                        //});
+                    //});
+                    //this.$.projectDiaryProject.clearCache();
+                    //this.openToastSuccess("Movimentos adicionados com sucesso.");
                 } else {
                     this.openToastError("O projeto selecionado não tem movimentos.");
                 }
@@ -1576,6 +1587,15 @@
                     break;
                 case "piUnitPrice":
                         this.unitPrice = e.detail.value.replace(",", ".");
+                        break;
+                case "piTotalCost":
+                        this.totalCost = e.detail.value.replace(",", ".");
+                    break;
+                case "piTotalPrice":
+                        this.totalPrice = e.detail.value.replace(",", ".");
+                        break;
+                case "piUnitValueToInvoice":
+                        this.unitValueToInvoice = e.detail.value.replace(",", ".");
                     break;
                 default:
                     break;
