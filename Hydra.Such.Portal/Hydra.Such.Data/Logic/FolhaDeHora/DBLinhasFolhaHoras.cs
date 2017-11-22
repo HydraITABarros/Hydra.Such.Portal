@@ -67,6 +67,31 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
+        public static int GetMaxByFolhaHoraNo(string FolhaHoraNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    int max = 0;
+
+                    List<LinhasFolhaHoras> result = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == FolhaHoraNo).ToList();
+                    result.ForEach(x =>
+                    {
+                        if (x.NoLinha > max) max = x.NoLinha;
+                    });
+
+                    max = max + 1;
+
+                    return max;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
         public static List<LinhasFolhaHoras> GetAll()
         {
             try
