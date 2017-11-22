@@ -11,13 +11,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
     public class DBTabelaConfRecursosFH
     {
 
-        public static List<TabelaConfRecursosFh> GetAll()
+        public static List<TabelaConfRecursosFH> GetAll()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.TabelaConfRecursosFh.ToList();
+                    return ctx.TabelaConfRecursosFH.ToList();
                 }
             }
             catch (Exception e)
@@ -26,14 +26,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static TabelaConfRecursosFh Create(TabelaConfRecursosFh ObjectToCreate)
+        public static TabelaConfRecursosFH Create(TabelaConfRecursosFH ObjectToCreate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     //ObjectToCreate.DataHoraCriacao = DateTime.Now;
-                    ctx.TabelaConfRecursosFh.Add(ObjectToCreate);
+                    ctx.TabelaConfRecursosFH.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
@@ -46,14 +46,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static TabelaConfRecursosFh Update(TabelaConfRecursosFh ObjectToUpdate)
+        public static TabelaConfRecursosFH Update(TabelaConfRecursosFH ObjectToUpdate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     //ObjectToUpdate.DataHoraModificacao = DateTime.Now;
-                    ctx.TabelaConfRecursosFh.Update(ObjectToUpdate);
+                    ctx.TabelaConfRecursosFH.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
 
@@ -66,13 +66,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static bool Delete(TabelaConfRecursosFh ObjectToDelete)
+        public static bool Delete(TabelaConfRecursosFH ObjectToDelete)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.TabelaConfRecursosFh.Remove(ObjectToDelete);
+                    ctx.TabelaConfRecursosFH.Remove(ObjectToDelete);
                     ctx.SaveChanges();
                 }
 
@@ -85,10 +85,10 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static TabelaConfRecursosFh ParseToDB(TabelaConfRecursosFHViewModel x)
+        public static TabelaConfRecursosFH ParseToDB(TabelaConfRecursosFHViewModel x)
         {
 
-            return new TabelaConfRecursosFh()
+            return new TabelaConfRecursosFH()
             {
                 Tipo = x.Tipo.ToString(),
                 CodRecurso = x.CodigoRecurso,
@@ -100,7 +100,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             };
         }
 
-        public static TabelaConfRecursosFHViewModel ParseToViewModel(TabelaConfRecursosFh x)
+        public static TabelaConfRecursosFHViewModel ParseToViewModel(TabelaConfRecursosFH x)
         {
             return new TabelaConfRecursosFHViewModel()
             {
@@ -114,7 +114,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             };
         }
 
-        public static List<TabelaConfRecursosFHViewModel> ParseListToViewModel(List<TabelaConfRecursosFh> x)
+        public static List<TabelaConfRecursosFHViewModel> ParseListToViewModel(List<TabelaConfRecursosFH> x)
         {
             List<TabelaConfRecursosFHViewModel> result = new List<TabelaConfRecursosFHViewModel>();
 
