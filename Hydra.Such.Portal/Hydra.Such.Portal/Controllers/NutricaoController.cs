@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.Logic;
+using Newtonsoft.Json.Linq;
+using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic.Nutrition;
+using Hydra.Such.Data.ViewModel.Nutrition;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -125,6 +129,50 @@ namespace Hydra.Such.Portal.Controllers
             {
                 return RedirectToAction("AccessDenied", "Error");
             }
+        }
+        #endregion
+
+        #region DiárioCafeterias
+
+        public IActionResult DiarioCafeterias()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 1);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetCoffeShopDiary([FromBody] JObject requestParams)
+        {
+            try
+            {
+                int id = 1;
+                int id2 = 1;
+                List<DiárioCafetariaRefeitório> CoffeeShopDiaryList;
+
+                if (requestParams.HasValues)
+                {
+                    CoffeeShopDiaryList = DBCoffeeShopsDiary.GetByIdsList(id, id2, User.Identity.Name);
+
+                    List<CoffeeShopDiaryViewModel> result = new List<CoffeeShopDiaryViewModel>();
+
+                    CoffeeShopDiaryList.ForEach(x => result.Add(DBCoffeeShopsDiary.ParseToViewModel(x)));
+
+                    return Json(result);
+                }
+
+                return Json(false);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            } 
         }
         #endregion
     }

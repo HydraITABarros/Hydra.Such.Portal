@@ -1238,6 +1238,25 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> TipoMovimento = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Receita"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Despesa"
+            },
+             new EnumData
+            {
+                Id = 2,
+                Value = "Depósito"
+            }
+        };
+
     }
 
     public class EnumDataString

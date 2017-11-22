@@ -829,6 +829,13 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.TipoCartoesEApolices;
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetTiposMovimento()
+        {
+            List<EnumData> result = EnumerablesFixed.TipoMovimento;
+            return Json(result);
+        }
     }
 
     public class DDMessage
