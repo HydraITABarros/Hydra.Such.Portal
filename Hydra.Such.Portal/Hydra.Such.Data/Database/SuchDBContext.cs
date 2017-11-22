@@ -940,6 +940,20 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+
+                // zpgm.< Fields that will be used to retrieve destination emails through the ProcedimentosCcp life cycle
+                entity.Property(e => e.ProcedimentosEmailEnvioParaCA)
+                    .HasColumnName("ProcedimentosEmailEnvioParaCA")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ProcedimentosEmailEnvioParaArea)
+                    .HasColumnName("ProcedimentosEmailEnvioParaArea")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ProcedimentosEmailEnvioParaArea2)
+                    .HasColumnName("ProcedimentosEmailEnvioParaArea2")
+                    .HasMaxLength(50);
+                // zpgm.>
             });
 
             modelBuilder.Entity<Contactos>(entity =>

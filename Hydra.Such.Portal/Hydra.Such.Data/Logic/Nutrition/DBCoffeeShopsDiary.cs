@@ -106,7 +106,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 CreateDateTime = x.DataHoraCriação,
                 UpdateDateTime = x.DataHoraModificação,
                 CreateUser = x.UtilizadorCriação,
-                UpdateUser = x.UtilizadorModificação
+                UpdateUser = x.UtilizadorModificação,
+                DateToday = DateTime.Today.ToString("yyyy-MM-dd")
             };
             
 

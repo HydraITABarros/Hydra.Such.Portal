@@ -19,13 +19,10 @@ This program is available under Apache License Version 2.0, available at https:/
             }
 
             [part="input-field"] {
-                /*border: 1px solid rgba(0, 0, 0, 0.3);
-                background-color: #fff;*/
                 padding: 0.25em;
             }
 
             :host([focused]) [part="input-field"] {
-                /*box-shadow: 0 0 2px 2px Highlight;*/
             }
 
             :host([invalid]) [part="input-field"] {
@@ -112,7 +109,7 @@ This program is available under Apache License Version 2.0, available at https:/
             }
 
             :host([label]) {
-                margin-top: var(--valo-space-m);
+                margin-top: 0px;
                 vertical-align: var(---vaadin-text-field-vertical-align-offset);
             }
 
@@ -171,8 +168,6 @@ This program is available under Apache License Version 2.0, available at https:/
                 }
 
             [part="input-field"] {
-                /*margin-top: var(--valo-space-xs);
-                margin-bottom: var(--valo-space-xs);*/
                 border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
                 background-color: var(--valo-contrast-5pct);
                 padding: 0 calc(var(--valo-size, var(--valo-size-m)) / 6 + var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4);
@@ -180,7 +175,6 @@ This program is available under Apache License Version 2.0, available at https:/
                 font-weight: 500;
                 position: relative;
                 will-change: transform;
-                /*height: var(--valo-size, var(--valo-size-m));*/
                 padding: 10px;
             }
 

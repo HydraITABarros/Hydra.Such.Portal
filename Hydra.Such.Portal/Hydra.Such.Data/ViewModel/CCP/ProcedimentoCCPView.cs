@@ -127,6 +127,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public DateTime? DataHoraModificacao { get; set; }
         public string UtilizadorModificacao { get; set; }
 
+        public ElementosChecklist ElementosChecklist { get; set; }
+
         public TemposPACCPView TemposPaCcp { get; set; }
         public ICollection<FluxoTrabalhoListaControlo> FluxoTrabalhoListaControlo { get; set; }
         public ICollection<RegistoActasView> RegistoDeAtas { get; set; }
