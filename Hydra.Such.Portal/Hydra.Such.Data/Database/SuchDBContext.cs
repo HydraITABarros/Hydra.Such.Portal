@@ -933,6 +933,14 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Nome).HasMaxLength(50);
 
+                entity.Property(e => e.ProcedimentosEmailEnvioParaArea).HasMaxLength(50);
+
+                entity.Property(e => e.ProcedimentosEmailEnvioParaArea2).HasMaxLength(50);
+
+                entity.Property(e => e.ProcedimentosEmailEnvioParaCa)
+                    .HasColumnName("ProcedimentosEmailEnvioParaCA")
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);

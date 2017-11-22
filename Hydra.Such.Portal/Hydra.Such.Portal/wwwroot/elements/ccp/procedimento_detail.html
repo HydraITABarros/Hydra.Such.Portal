@@ -74,12 +74,15 @@
                 opacity: 1;
                 box-sizing: border-box;
                 pointer-events: none;
+                max-width: 500px;
+                left: 2px !important;
+                right: none;
                 --paper-tooltip: {
                     font-size: 13px;
                     background: white;
                     color: #2A2A2A;
                     padding: 10px;
-                    line-height: 1.1em;
+                    line-height: 1.3em;
                 }
             }
         </style>
@@ -493,7 +496,7 @@
                                         </vaadin-combo-box>
                                     </div>
                                     <div class="col-sm-8">
-                                        <paper-tooltip for="descPrecoMaisBaixo" position="top" offset="-5" animation-delay="1">
+                                        <paper-tooltip for="descPrecoMaisBaixo" position="top" offset="-1" animation-delay="1">
                                             Preço mais baixo
                                         </paper-tooltip>
                                         <such-textarea rows="5" value="{{data.descPrecoMaisBaixo}}" id="descPrecoMaisBaixo" name="descPrecoMaisBaixo" label="Descrição"> </such-textarea>
@@ -520,7 +523,7 @@
                                     </div>
 
                                     <div class="col-sm-8">
-                                        <paper-tooltip for="descPropostaEconMaisVantajosa" position="top" offset="-5" animation-delay="1">
+                                        <paper-tooltip for="descPropostaEconMaisVantajosa" position="top" offset="-1" animation-delay="1">
                                             Definição de subfactores: Preço; Características técnicas (parâmetros a avaliar e outros que sejam relevantes), etc. Todos os fatores e subfactores têm de ser parametrizados e quantificados. <br />
                                             Qualidade, em sentido lato, não é parâmetro para critério de adjudicação. Caso seja um requisito devem colocar em observações do procedimento para definição no Caderno de Encargos.
                                         </paper-tooltip>
@@ -550,7 +553,7 @@
                                     </div>
 
                                     <div class="col-sm-9">
-                                        <paper-tooltip for="propostaVarianteDescricao" position="top" offset="-5" animation-delay="1">
+                                        <paper-tooltip for="propostaVarianteDescricao" position="top" offset="-1" animation-delay="1">
                                             Não aceitando propostas variantes o concorrente tem que apresentar exatamente o solicitado nas peças do procedimento, sendo um motivo de exclusão toda a proposta apresentada que não cumpra os requisitos. <br />
                                             O Fornecedor não pode apresentar alternativas.
                                         </paper-tooltip>
@@ -574,7 +577,7 @@
                                     </div>
 
                                     <div class="col-sm-8">
-                                        <paper-tooltip for="descAbertoFechadoAoMercado" position="top" offset="-5" animation-delay="1">
+                                        <paper-tooltip for="descAbertoFechadoAoMercado" position="top" offset="-1" animation-delay="1">
                                             Aberto ao mercado, todos os concorrentes registados na categoria visualizam o procedimento, contudo, permite em simultâneo um convite direcionado aos fornecedores identificados pelo SUCH a apresentar proposta. <br />
                                             Fechado ao mercado, apenas os fornecedores convidados a apresentar proposta visualizam o procedimento.
 
@@ -588,7 +591,7 @@
                         <div class="row break_clear">
 
                             <div class="col-sm-6">
-                                <paper-tooltip for="prazoEntrega" position="top" offset="-5" animation-delay="1">
+                                <paper-tooltip for="prazoEntrega" position="top" offset="-1" animation-delay="1">
                                     Caso exista imposição da U.P. para o Cliente.
                                 </paper-tooltip>
                                 <vaadin-text-field rows="5" value="{{data.prazoEntrega}}" id="prazoEntrega" name="prazoEntrega" label="Prazo Entrega / Realização Serviço"> </vaadin-text-field>
@@ -605,7 +608,7 @@
                                 <vaadin-text-field rows="5" value="{{data.observacoesAdicionais}}" id="observacoesAdicionais" name="observacoesAdicionais" label="Observações adicionais a fixar no caderno de encargos"> </vaadin-text-field>
                             </div>
                             <div class="col-sm-6">
-                                <paper-tooltip for="estimativaPreco" position="top" offset="-5" animation-delay="1">
+                                <paper-tooltip for="estimativaPreco" position="top" offset="-1" animation-delay="1">
                                     Obrigatório indicar, mesmo quando não se pretenda estabelecer preço base.
                                 </paper-tooltip>
                                 <vaadin-text-field rows="5" value="{{data.estimativaPreco}}" id="estimativaPreco" name="estimativaPreco" label="Estimativa de preço"> </vaadin-text-field>
@@ -633,7 +636,7 @@
                                         </vaadin-combo-box>
                                     </div>
                                     <div class="col-sm-8">
-                                        <paper-tooltip for="descFornecedorExclusivo" position="top" offset="-5" animation-delay="1">
+                                        <paper-tooltip for="descFornecedorExclusivo" position="top" offset="-1" animation-delay="1">
                                             Fundamentação de exclusividade: note-se que este parametro será validado conforme CCP.
                                         </paper-tooltip>
                                         <such-textarea rows="5" value="{{data.descFornecedorExclusivo}}" id="descFornecedorExclusivo" name="descFornecedorExclusivo" label="Descrição"> </such-textarea>
