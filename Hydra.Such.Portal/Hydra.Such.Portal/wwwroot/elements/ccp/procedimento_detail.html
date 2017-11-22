@@ -18,6 +18,8 @@
 <link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button.html">
 <link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button-group.html">
 
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+
 <h1>Detalhes Procedimento</h1>
 
 <dom-module id="x-procedimentodetails">
@@ -106,12 +108,11 @@
         </iron-ajax>
         <iron-ajax url="/ProcedimentosCcps/GetUsersWhoAreElementosJuri"
                    last-response="{{LUsers}}"
-                   auto method="post" 
+                   auto method="post"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
         <!-- Dropdowns populate.e -->
-
         <!-- Controller actions.b -->
         <iron-ajax url="/ProcedimentosCcps/GetProcedimentoDetails"
                    last-response="{{data}}"
@@ -195,7 +196,6 @@
                             </table>
                         </template>
                     </vaadin-combo-box>
-                    <!--<vaadin-text-field type="text" value="{{data.codigoCentroResponsabilidade}}" id="codigoCentroResponsabilidade" name="codigoCentroResponsabilidade" label="Centro Resp."> </vaadin-text-field>-->
                 </div>
 
             </div>
@@ -225,11 +225,13 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-sm-3">
-                    <div class="col-sm-6">
-                        <vaadin-text-field type="text" value="{{data.ano}}" id="ano" name="ano" label="Ano"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-6">
-                        <vaadin-text-field type="text" value="{{data.referencia}}" id="referencia" name="referencia" label="Referência"> </vaadin-text-field>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <vaadin-text-field type="text" value="{{data.ano}}" id="ano" name="ano" label="Ano"> </vaadin-text-field>
+                        </div>
+                        <div class="col-sm-6">
+                            <vaadin-text-field type="text" value="{{data.referencia}}" id="referencia" name="referencia" label="Referência"> </vaadin-text-field>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -263,173 +265,365 @@
         <iron-pages selected="{{selected}}">
             <!-- Tab Unidade Produtiva-->
             <div>
-                <div class="row break_clear">
-                    <div class="col-sm-6">
-                        <vaadin-text-field type="text" value="{{data.informacaoTecnica}}" id="informacaoTecnica" name="informacaoTecnica" label="Informação Técnica"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-6">
-                        <br><i>Descrição da prestação de serviços ou bem a adquirir</i>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-6">
-                        <vaadin-text-field type="text" value="{{data.fundamentacaoAquisicao}}" id="fundamentacaoAquisicao" name="fundamentacaoAquisicao" label="Fundamentação Aquisição"> </vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.precoBase}}" label="Preço Base?">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.stringValue]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.negociacao}}" label="Negociação?">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.stringValue]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                </div>
-                <!-- Elementos Juri section.b -->
-                <h2 class="separator" style="border-bottom:1px dotted; padding:0;">Elementos Juri</h2>
-                <div class="table inlineForm">
-                    <div class="col-sm-3" style="padding-left:0;">
-                        <vaadin-combo-box items="[[LUsers]]" id="users" item-value-path="id" value="{{_userName }}" item-label-path="id" label="Possiveis Elementos">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div id="formAddElemento">
-                        <div class="col-lg-3 col-sm-4">
-                            <p>Responsabilidades</p>
-                            <vaadin-radio-button-group id="responsabilidades" name="responsabilidades" value="{{responsabilidade}}">
-                                <vaadin-radio-button id="_chkPresidente" checked="{{chkPresidente}}" value="presidente">Presidente</vaadin-radio-button>
-                                <vaadin-radio-button id="_chkVogal" checked="{{chkVogal}}" value="vogal">Vogal</vaadin-radio-button>
-                                <vaadin-radio-button id="_chkSuplente" checked="{{chkSuplente}}" value="suplente">Suplente</vaadin-radio-button>
-                            </vaadin-radio-button-group>
+                <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{unidadeProdutivaSelected}}">
+                    <paper-tab>Avaliação Técnica</paper-tab>
+                    <paper-tab>Critérios Adjudicação</paper-tab>
+                    <paper-tab>Outros</paper-tab>
+                    <paper-tab>Linhas Produtos</paper-tab>
+                </paper-tabs>
+                <iron-pages selected="{{unidadeProdutivaSelected}}">
+                    <!-- Tab Unidade Produtiva - Avaliação Tecnica-->
+                    <div>
+                        <div class="row break_clear">
+                            <div class="col-sm-6">
+                                <vaadin-text-field type="text" value="{{data.informacaoTecnica}}" id="informacaoTecnica" name="informacaoTecnica" label="Informação Técnica"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-6">
+                                <br><i>Descrição da prestação de serviços ou bem a adquirir</i>
+                            </div>
                         </div>
-                        <div class="col-sm-2">
-                            <p>&nbsp;</p>
-                            <vaadin-checkbox id="_chkSendMail" checked="{{chkSendMail}}">Enviar Email</vaadin-checkbox>
+                        <div class="row break_clear">
+                            <div class="col-sm-6">
+                                <vaadin-text-field type="text" value="{{data.fundamentacaoAquisicao}}" id="fundamentacaoAquisicao" name="fundamentacaoAquisicao" label="Fundamentação Aquisição"> </vaadin-text-field>
+                            </div>
                         </div>
+                        <div class="row break_clear">
+                            <div class="col-sm-3">
+                                <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.precoBase}}" label="Preço Base?">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.stringValue]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.negociacao}}" label="Negociação?">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.stringValue]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                        </div>
+                        <!-- Elementos Juri section.b -->
+                        <h2 class="separator" style="border-bottom:1px dotted; padding:0;">Elementos Juri</h2>
+                        <div class="table inlineForm">
+                            <div class="col-sm-3" style="padding-left:0;">
+                                <vaadin-combo-box items="[[LUsers]]" id="users" item-value-path="id" value="{{_userName }}" item-label-path="id" label="Possiveis Elementos">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.value]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div id="formAddElemento">
+                                <div class="col-lg-3 col-sm-4">
+                                    <p>Responsabilidades</p>
+                                    <vaadin-radio-button-group id="responsabilidades" name="responsabilidades" value="{{responsabilidade}}">
+                                        <vaadin-radio-button id="_chkPresidente" checked="{{chkPresidente}}" value="presidente">Presidente</vaadin-radio-button>
+                                        <vaadin-radio-button id="_chkVogal" checked="{{chkVogal}}" value="vogal">Vogal</vaadin-radio-button>
+                                        <vaadin-radio-button id="_chkSuplente" checked="{{chkSuplente}}" value="suplente">Suplente</vaadin-radio-button>
+                                    </vaadin-radio-button-group>
+                                </div>
+                                <div class="col-sm-2">
+                                    <p>&nbsp;</p>
+                                    <vaadin-checkbox id="_chkSendMail" checked="{{chkSendMail}}">Enviar Email</vaadin-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <br />
+                                <paper-button class="btnSave" raised on-tap="_createElementoJuri"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                            </div>
+                        </div>
+                        <vaadin-grid id="gridElementosJuri" aria-label="gridElementosJuri" items="{{data.elementosJuri}}" class="grid">
+                            <vaadin-grid-column width="20%">
+                                <template class="header">
+                                    Utilizador
+                                </template>
+                                <template>
+                                    <vaadin-text-field type="text" value="{{ item.utilizador }}"></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="20%">
+                                <template class="header">
+                                    Nome
+                                </template>
+                                <template>
+                                    <vaadin-text-field type="text" value="{{ item.nomeEmpregado }}"></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="8%">
+                                <template class="header">
+                                    <center>
+                                        Presidente
+                                    </center>
+                                </template>
+                                <template>
+                                    <center>
+                                        <vaadin-checkbox checked="{{item.presidente}}"></vaadin-checkbox>
+                                    </center>
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="8%">
+                                <template class="header">
+                                    <center>
+                                        Vogal
+                                    </center>
+                                </template>
+                                <template>
+                                    <center>
+                                        <vaadin-checkbox checked="{{item.vogal}}"></vaadin-checkbox>
+                                    </center>
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="6%">
+                                <template class="header">
+                                    <center>
+                                        Suplente
+                                    </center>
+                                </template>
+                                <template>
+                                    <center>
+                                        <vaadin-checkbox checked="{{item.suplente}}"></vaadin-checkbox>
+                                    </center>
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="8%">
+                                <template class="header">
+                                    <center>
+                                        Enviar Email?
+                                    </center>
+                                </template>
+                                <template>
+                                    <center>
+                                        <vaadin-checkbox checked="{{item.enviarEmail}}"></vaadin-checkbox>
+                                    </center>
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="20%">
+                                <template class="header">
+                                    Endereço Email
+                                </template>
+                                <template>
+                                    <vaadin-text-field type="text" value="{{ item.email }}"></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="10%">
+                                <template class="header">
+                                </template>
+                                <template>
+                                    <!--<center>-->
+                                    <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                    <!--</center>-->
+                                </template>
+                            </vaadin-grid-column>
+                        </vaadin-grid>
+                        <h2 class="separator" style="border-bottom:1px dotted; padding:0;"></h2>
+                        <!-- Elementos Juri section.e -->
+                        <div class="row break_clear">
+                            <div class="col-sm-6">
+                                <vaadin-text-field type="text" value="{{data.prazo}}" id="prazo" name="prazo" label="Prazo para a prestação do serviço (Até 3 anos)"> </vaadin-text-field>
+                            </div>
+                        </div>
+                        <!--Elementos Checklist - Estado 0 - .b -->
+                        <div class="row break_clear">
+                            <div class="col-sm-6">
+                                <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.comentarioArea}}" id="comentarioAreaApresentar" name="comentarioAreaApresentar" label="Comentário"> </vaadin-text-field>
+                            </div>
+                        </div>
+                        <div class="row break_clear">
+                            <div class="col-sm-6">
+                                <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.responsavelArea}}" id="responsavelAreaApresentar" name="responsavelAreaApresentar" label="O Responsável da Área pela apresentação da informação "> </vaadin-text-field>
+                            </div>
+                            <br />
+                            <div class="col-sm-6">
+                                <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.nomeResponsavelArea}}" id="nomeResponsavelAreaApresentar" name="nomeResponsavelAreaApresentar"> </vaadin-text-field>
+                            </div>
+
+                        </div>
+                        <div class="row break_clear">
+                            <div class="col-sm-3">
+                                <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.dataResponsavel}}" id="dataResponsavelApresentar" name="dataResponsavelApresentar" label="Data"> </vaadin-text-field>
+                            </div>
+                        </div>
+                        <!--Elementos Checklist - Estado 0 - .e -->
                     </div>
-                    <div class="col-lg-3">
-                        <br />
-                        <paper-button class="btnSave" raised on-tap="_createElementoJuri"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                    <!-- Tab Unidade Produtiva - Critérios de Adjudicação-->
+                    <div>
+                        <div class="row break_clear">
+                            <div class="col-sm-3">
+                                <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" id="precoMaisBaixo" item-label-path="stringValue" value="{{data.precoMaisBaixo}}" label="Preço mais baixo?">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.stringValue]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <such-textarea rows="5" value="{{data.precoMaisBaixoDescricao}}" id="precoMaisBaixoDescricao" name="precoMaisBaixoDescricao" label="Descrição"> </such-textarea>
+                            </div>
+                            <div class="col-sm-3">
+                                <br><i>Preço mais baixo</i>
+                            </div>
+                        </div>
+
+                        <div class="row break_clear">
+                            <div class="col-sm-3">
+
+                                <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" id="propostaEconomicamenteMaisVantajosa" item-label-path="stringValue" value="{{data.propostaEconomica}}" label="Proposta economicamente mais vantajosa?">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.stringValue]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <such-textarea rows="5" value="{{data.propostaEconomicamenteMaisVantajosaDescricao}}" id="propostaEconomicamenteMaisVantajosaDescricao" name="propostaEconomicamenteMaisVantajosaDescricao" label="Descrição"> </such-textarea>
+                            </div>
+                            <div class="col-sm-3">
+                                <br><i>Proposta economicamente mais vantajosa (Falta Observacoes)</i>
+                            </div>
+                        </div>
+
+                        <br /><br />
+
                     </div>
-                </div>
-                <vaadin-grid id="gridElementosJuri" aria-label="gridElementosJuri" items="{{data.elementosJuri}}" class="grid">
-                    <vaadin-grid-column width="20%">
-                        <template class="header">
-                            Utilizador
-                        </template>
-                        <template>
-                            <vaadin-text-field type="text" value="{{ item.utilizador }}"></vaadin-text-field>
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="20%">
-                        <template class="header">
-                            Nome
-                        </template>
-                        <template>
-                            <vaadin-text-field type="text" value="{{ item.nomeEmpregado }}"></vaadin-text-field>
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="8%">
-                        <template class="header">
-                            <center>
-                                Presidente
-                            </center>
-                        </template>
-                        <template>
-                            <center>
-                                <vaadin-checkbox checked="{{item.presidente}}"></vaadin-checkbox>
-                            </center>
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="8%">
-                        <template class="header">
-                            <center>
-                                Vogal
-                            </center>
-                        </template>
-                        <template>
-                            <center>
-                                <vaadin-checkbox checked="{{item.vogal}}"></vaadin-checkbox>
-                            </center>
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="6%">
-                        <template class="header">
-                            <center>
-                                Suplente
-                            </center>
-                        </template>
-                        <template>
-                            <center>
-                                <vaadin-checkbox checked="{{item.suplente}}"></vaadin-checkbox>
-                            </center>
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="8%">
-                        <template class="header">
-                            <center>
-                                Enviar Email?
-                            </center>
-                        </template>
-                        <template>
-                            <center>
-                                <vaadin-checkbox checked="{{item.enviarEmail}}"></vaadin-checkbox>
-                            </center>
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="20%">
-                        <template class="header">
-                            Endereço Email
-                        </template>
-                        <template>
-                            <vaadin-text-field type="text" value="{{ item.email }}"></vaadin-text-field>
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="10%">
-                        <template class="header">
-                        </template>
-                        <template>
-                            <!--<center>-->
-                            <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                            <!--</center>-->
-                        </template>
-                    </vaadin-grid-column>
-                </vaadin-grid>
-                <h2 class="separator" style="border-bottom:1px dotted; padding:0;"></h2>
-                <!-- Elementos Juri section.e -->
-                <div class="row break_clear">
-                    <div class="col-sm-6">
-                        <vaadin-text-field type="text" value="{{data.prazo}}" id="prazo" name="prazo" label="Prazo para a prestação do serviço (Até 3 anos)"> </vaadin-text-field>
+                    <!-- Tab Unidade Produtiva - Outros-->
+                    <div>
+
+                        <div class="row break_clear">
+                            <div class="col-sm-3">
+                                <vaadin-combo-box value="{{data.propostaVariante}}" label="Proposta Variante?" items="[[LBoolValues]]" item-value-path="booleanValue" id="propostaVariante" item-label-path="stringValue">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.stringValue]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <such-textarea rows="5" value="{{data.propostaVarianteDescricao}}" id="propostaVarianteDescricao" name="propostaVarianteDescricao" label="Descrição"> </such-textarea>
+                            </div>
+                            <div class="col-sm-3">
+                                <br><i>Proposta Variante (observacoes)</i>
+                            </div>
+                        </div>
+
+                        <div class="row break_clear">
+                            <div class="col-sm-3">
+                                <vaadin-combo-box value="{{data.abertoFechadoMercado}}" label="Aberto ou fechado ao mercado" items="[[LBoolValues]]" item-value-path="booleanValue" id="abertoFechadoMercado" item-label-path="stringValue">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.stringValue]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <such-textarea rows="5" value="{{data.abertoFechadoMercadoDescricao}}" id="abertoFechadoMercadoDescricao" name="abertoFechadoMercadoDescricao" label="Descrição"> </such-textarea>
+                            </div>
+                            <div class="col-sm-3">
+                                <br><i>abertoFechadoMercado (observacoes)</i>
+                            </div>
+                        </div>
+
+
+                        <div class="row break_clear">
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <vaadin-text-field rows="5" value="{{data.prazoEntregaRealizacaoServico}}" id="prazoEntregaRealizacaoServico" name="prazoEntregaPrestacaoServico" label="<a data-toggle='tooltip' title='Hooray!' >Prazo Entrega / Realização Serviço</a>"> </vaadin-text-field>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <br><i>Prazo Entrega / Realização Serviço (observacoes)</i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <vaadin-text-field rows="5" value="{{data.locaisDeEntrega}}" id="locaisDeEntrega" name="locaisDeEntrega" label="Locais de Entrega"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field rows="5" value="{{data.observacoesAdicionaisCadernoEncargos}}" id="observacoesAdicionaisCadernoEncargos" name="observacoesAdicionaisCadernoEncargos" label="Observações adicionais a fixar no caderno de encargos"> </vaadin-text-field>
+                            </div>
+
+                        </div>
+
+                        <div class="row break_clear">
+
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <vaadin-text-field rows="5" value="{{data.estimativaPreco}}" id="estimativaPreco" name="estimativaPreco" label="Estimativa de preço"> </vaadin-text-field>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <br><i>Estimativa de preço (observacoes)</i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field rows="5" value="{{data.fornecedoresSugeridos}}" id="fornecedoresSugeridos" name="fornecedoresSugeridos" label="fornecedores Sugeridos"> </vaadin-text-field>
+                            </div>
+
+                        </div>
+
+                        <div class="row break_clear">
+                            <div class="col-sm-3">
+                                <vaadin-combo-box value="{{data.fornecedorExclusivo}}" label="Fornecedor Exclusivo" items="[[LBoolValues]]" item-value-path="booleanValue" id="fornecedorExclusivo" item-label-path="stringValue">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.stringValue]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <such-textarea rows="5" value="{{data.fornecedorExclusivoDescricao}}" id="fornecedorExclusivoDescricao" name="fornecedorExclusivoDescricao" label="Descrição"> </such-textarea>
+                            </div>
+                            <div class="col-sm-3">
+                                <br><i>fornecedorExclusivoDescricao (observacoes)</i>
+                            </div>
+                        </div>
+
+                        <div class="row break_clear">
+
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.interlocutorPreferencial}}" id="interlocutorPreferencial" name="interlocutorPreferencial" label="Interlocutor Preferêncial"> </vaadin-text-field>
+                            </div>
+
+                        </div>
+
+                        <br /><br />
+
                     </div>
-                </div>
-                <!--Elementos Checklist - Estado 0 - .b -->
-                <div class="row break_clear">
-                    <div class="col-sm-6">
-                        <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.comentarioAreaApresentar}}" id="comentarioAreaApresentar" name="comentarioAreaApresentar" label="Comentário"> </vaadin-text-field>
-                    </div>
-                </div>
-                <!--Elementos Checklist - Estado 0 - .e -->
+                </iron-pages>
+
             </div>
 
             <!-- Tab Imobilizado -->
@@ -486,6 +680,11 @@
                         type: Number,
                         value: 0
                     },
+
+                    unidadeProdutivaSelected: {
+                        type: Number,
+                        value: 0
+                    },
                     _isCreate: {
                         type: Boolean,
                         value: false
@@ -513,7 +712,7 @@
                 },
 
                 ready: function () {
-                    debugger;;
+                    //debugger;;
 
                     this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
                     this.$.page_databound_ajax.generateRequest();
@@ -549,7 +748,7 @@
                 },
 
                 _update: function () {
-                    debugger;;
+                    //debugger;;
                     if (this._onUpdateValidateElementoJuri()) {
                         this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data)
                     }
@@ -582,7 +781,7 @@
 
                 //Responses Processors
                 _responseProcessor: function (data) {
-                    debugger;;
+                    //debugger;;
                     var self = this;
 
                     if (data.detail.status === 200) {
@@ -590,7 +789,7 @@
                             if (this.data.No == "") {
                                 this._isCreate = true;
                                 return;
-                            } 
+                            }
 
                             this.$.ajax_checklist_estado0.body = this.data;
                             this.$.ajax_checklist_estado0.generateRequest();
@@ -644,7 +843,7 @@
                 },
                 // Create Elemento Juri
                 _onUpdateValidateElementoJuri: function () {
-                    debugger;;
+                    //debugger;;
                     for (var i in this.data.elementosJuri) {
                         if (!this.data.elementosJuri[i].presidente && !this.data.elementosJuri[i].vogal && !this.data.elementosJuri[i].suplente) {
                             this._openToast("Não escolheu qual a responsabilidade do utilizador: " + this.data.elementosJuri[i].utilizador + ".");
@@ -671,7 +870,7 @@
                     return true;
                 },
                 _validateElementoJuriData: function () {
-                    debugger;;
+                    //debugger;;
                     if (this._userName == "") {
                         this._openToast("Não escolheu um utilizador!");
                         return false;
@@ -688,7 +887,7 @@
                         return true;
                 },
                 _createElementoJuri: function () {
-                    debugger;;
+                    //debugger;;
                     if (this._validateElementoJuriData()) {
                         this.$.ajax_createelementojuri.body = JSON.stringify({
                             noProcedimento: this.data.no,
@@ -746,11 +945,79 @@
 
                 // Checklist Fluxo Trabalho
                 _checklistResponseEstado0: function (e) {
-                    debugger;;
-                    
+                    //debugger;;
+
                     if (this.DisplayChecklist != null) {
-                        this._openToast(this.DisplayChecklist.comentarioAreaApresentar);
+                        //this._openToast(this.DisplayChecklist.comentarioAreaApresentar);
                     }
+                },
+
+                // Action of submitting Procedimento
+                _onSubmitValidateProcedimento: function () {
+                    if (this.data.informacaoTecnica == "" || this.data.informacaoTecnica == null) {
+                        this._openToast("A Informação Técnica tem que estar preenchida!")
+                        return false;
+                    }
+
+                    if (this.data.fundamentoAquisicao == "" || this.data.fundamentoAquisicao == null) {
+                        this._openToast("A Fundamentação da Aquisição tem que estar preenchida!")
+                        return false;
+                    }
+
+                    if (this.data.precoBase == null) {
+                        this._openToast("Preço Base: tem que indicar um valor (Sim/Não)!")
+                        return false;
+                    } else if (this.data.precoBase && this.valorPrecoBase == 0) {
+                        this._openToast("Preço Base = Sim: tem que indicar um valor!")
+                        return false;
+                    }
+
+                    if (this.data.negociacao == null) {
+                        this._openToast("Negociação: tem que indicar um valor (Sim/Não)!")
+                        return false;
+                    }
+
+                    if (this.data.prazo == "" || this.data.prazo == null) {
+                        this._openToast("O Prazo para Prestação do Serviço, tem que ser indicado!!")
+                        return false;
+                    }
+
+                    if (this.data.precoMaisBaixo == null) {
+                        this._openToast("Preço Baixo: tem que indicar um valor (Sim/Não)!")
+                        return false;
+                    }
+
+                    if (this.data.propostaEconMaisVantajosa == null) {
+                        this._openToast("Proposta Economicamente mais Vantajosa: tem que indicar um valor (Sim/Não)!")
+                        return false;
+                    }
+
+                    if (this.data.propostaVariante == null) {
+                        this._openToast("Proposta Variante: tem que indicar um valor (Sim/Não)!")
+                        return false;
+                    }
+
+                    if (this.data.codigoRegiao == "" || this.data.codigoRegiao == null) {
+                        this._openToast("O Código da Região tem que estar preenchido!")
+                        return false;
+                    }
+
+                    if (this.data.codigoAreaFuncional == "" || this.data.codigoAreaFuncional == null) {
+                        this._openToast("O Código da Àrea Funcional tem que estar preenchido!")
+                        return false;
+                    }
+
+                    // zpgm.21112017_1900
+
+                    return true;
+                },
+                _submitProcedimento: function () {
+                    if (this._submitProcedimento()) {
+
+                    }
+                },
+                _submitProcedimentoResponse: function (e) {
+                    
                 },
                 //Helpers
                 _executeRequest: function (url, data) {

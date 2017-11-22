@@ -201,7 +201,7 @@
                     <vaadin-grid-filter path="precoUnitarioCusto" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.precoUnitarioCusto}}" type="number"></vaadin-text-field>
+                    <vaadin-text-field value="{{item.precoUnitarioCusto}}" type="number" pattern="[0-9]*"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -212,7 +212,7 @@
                     <vaadin-grid-filter path="precoUnitarioVenda" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.precoUnitarioVenda}}" type="number"></vaadin-text-field>
+                    <vaadin-text-field value="{{item.precoUnitarioVenda}}" type="number" pattern="[0-9]*"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -274,7 +274,9 @@
                     ready: function () {
                         var _self = this;
                         this.$.ajax_GetAll.generateRequest();
-
+                        
+                        console.log(this.$.codigoRecurso);
+                        window.teste = this.$.codigoRecurso
                         this.$.codigoRecurso.addEventListener('value-changed', function () {
                             _self.$.descricao.value = _self.$.codigoRecurso.__data.selectedItem.value;
                             _self.$.unidMedida.value = _self.$.codigoRecurso.__data.selectedItem.extra;

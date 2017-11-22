@@ -441,7 +441,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetEmployees_FH()
         {
-            List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAVCompanyName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
             {
                 id = x.No,
                 value = x.No + " - " + x.Name,
@@ -893,13 +893,32 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetTiposMovimento()
+        {
+            List<EnumData> result = EnumerablesFixed.TipoMovimento;
+            return Json(result);
+        }
+    
+        [HttpPost]
         public JsonResult GetAjudaCustoPartidaChegada()
         {
             List<EnumData> result = EnumerablesFixed.AjudaCustoPartidaChegada;
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetCodTipoCustoByTipoCusto([FromBody]DDMessage tipoCusto)
+        {
+
+            List<DDMessageString> result = DBTabelaConfRecursosFH.GetAll().Where(x => x.Tipo == tipoCusto.id.ToString()).Select(x => new DDMessageString()
+            {
+                id = x.CodRecurso,
+                value = x.CodRecurso + " - " + x.Descricao
+            }).ToList();
+            return Json(result);
+        }
     }
+
 
     public class DDMessage
     {

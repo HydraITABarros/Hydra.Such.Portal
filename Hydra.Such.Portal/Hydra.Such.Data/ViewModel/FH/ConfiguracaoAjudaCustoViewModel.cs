@@ -7,7 +7,7 @@ namespace Hydra.Such.Data.ViewModel.FH
     {
         public string CodigoTipoCusto { get; set; }
         public int CodigoRefCusto { get; set; }
-        public bool? DataChegadaDataPartida { get; set; }
+        public bool DataChegadaDataPartida { get; set; }
         public decimal? DistanciaMinima { get; set; }
         public string LimiteHoraPartida { get; set; }
         public string LimiteHoraChegada { get; set; }

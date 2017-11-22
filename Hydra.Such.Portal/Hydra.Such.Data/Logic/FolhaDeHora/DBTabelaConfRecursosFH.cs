@@ -95,7 +95,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 Descricao = x.Descricao,
                 PrecoUnitarioCusto = x.PrecoUnitarioCusto,
                 PrecoUnitarioVenda = x.PrecoUnitarioVenda,
-                UnidMedida = x.UnidMedida
+                UnidMedida = x.UnidMedida,
+                RubricaSalarial = x.RubricaSalarial
             };
         }
 
@@ -108,7 +109,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 Descricao = x.Descricao,
                 PrecoUnitarioCusto = x.PrecoUnitarioCusto,
                 PrecoUnitarioVenda = x.PrecoUnitarioVenda,
-                UnidMedida = x.UnidMedida
+                UnidMedida = x.UnidMedida,
+                RubricaSalarial = x.RubricaSalarial
             };
         }
 
@@ -118,6 +120,28 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
             x.ForEach(y => result.Add(ParseToViewModel(y)));
             return result;
+        }
+
+        public static decimal GetPrecoUnitarioCusto(string Tipo, string CodRecurso)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    TabelaConfRecursosFH recurso;
+
+                    recurso = ctx.TabelaConfRecursosFH.FirstOrDefault(x => x.Tipo == Tipo && x.CodRecurso == CodRecurso);
+
+                    if (recurso == null)
+                        return 0;
+                    else
+                        return Convert.ToDecimal(recurso.PrecoUnitarioCusto);
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
         }
 
     }

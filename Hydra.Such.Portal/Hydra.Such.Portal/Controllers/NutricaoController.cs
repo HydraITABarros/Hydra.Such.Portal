@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.Logic;
+using Newtonsoft.Json.Linq;
 using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic.Nutrition;
+using Hydra.Such.Data.ViewModel.Nutrition;
 using Hydra.Such.Data.Logic.Contracts;
 
 namespace Hydra.Such.Portal.Controllers
@@ -259,6 +262,144 @@ namespace Hydra.Such.Portal.Controllers
             {
                 return RedirectToAction("AccessDenied", "Error");
             }
+        }
+        #endregion
+
+
+
+
+        #region DiárioCafeterias
+
+        public IActionResult DiarioCafeterias(int NºUnidadeProdutiva, int code)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 1);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                ViewBag.CoffeeShopNo = 1;
+                ViewBag.ProdutiveUnityNo = 2;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetCoffeShopDiaryDetails(int NºUnidadeProdutiva, int CoffeeShopNo)
+        {   
+            try
+            {
+                CafetariasRefeitórios detailCoffeeShop = DBCoffeeShops.GetByIdDiary(2, 1);
+
+                CoffeeShopDiaryViewModel coffeShopPar = new CoffeeShopDiaryViewModel();
+                if (detailCoffeeShop != null)
+                { 
+                    coffeShopPar.DateToday = DateTime.Today.ToString("yyyy-MM-dd");
+                    coffeShopPar.CoffeShopCode = detailCoffeeShop.Código;
+                    coffeShopPar.ProdutiveUnityNo = detailCoffeeShop.NºUnidadeProdutiva;
+                }
+                else
+                {
+                    coffeShopPar.DateToday = DateTime.Today.ToString("yyyy-MM-dd");
+                }
+
+                return Json(coffeShopPar);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        
+
+        [HttpPost]
+        public JsonResult CreateCoffeeShopsDiary([FromBody] List<CoffeeShopDiaryViewModel> data)
+        {
+            //try
+            //{
+            //    if (data != null)
+            //    {
+            //        List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+            //        List<LinhasContratos> CLToDelete = ContractLines.Where(y => !data.Lines.Any(x => x.ContractType == y.TipoContrato && x.ContractNo == y.NºContrato && x.VersionNo == y.NºVersão && x.LineNo == y.NºLinha)).ToList();
+
+            //        CLToDelete.ForEach(x => DBContractLines.Delete(x));
+
+            //        data.Lines.ForEach(x =>
+            //        {
+            //            LinhasContratos CLine = ContractLines.Where(y => x.ContractType == y.TipoContrato && x.ContractNo == y.NºContrato && x.VersionNo == y.NºVersão && x.LineNo == y.NºLinha).FirstOrDefault();
+
+            //            if (CLine != null)
+            //            {
+            //                CLine.TipoContrato = x.ContractType;
+            //                CLine.NºContrato = x.ContractNo;
+            //                CLine.NºVersão = x.VersionNo;
+            //                CLine.NºLinha = x.LineNo;
+            //                CLine.Tipo = x.Type;
+            //                CLine.Código = x.Code;
+            //                CLine.Descrição = x.Description;
+            //                CLine.Quantidade = x.Quantity;
+            //                CLine.CódUnidadeMedida = x.CodeMeasureUnit;
+            //                CLine.PreçoUnitário = x.UnitPrice;
+            //                CLine.DescontoLinha = x.LineDiscount;
+            //                CLine.Faturável = x.Billable;
+            //                CLine.CódigoRegião = x.CodeRegion;
+            //                CLine.CódigoÁreaFuncional = x.CodeFunctionalArea;
+            //                CLine.CódigoCentroResponsabilidade = x.CodeResponsabilityCenter;
+            //                CLine.Periodicidade = x.Frequency;
+            //                CLine.NºHorasIntervenção = x.InterventionHours;
+            //                CLine.NºTécnicos = x.TotalTechinicians;
+            //                CLine.TipoProposta = x.ProposalType;
+            //                CLine.DataInícioVersão = x.VersionStartDate != null && x.VersionStartDate != "" ? DateTime.Parse(x.VersionStartDate) : (DateTime?)null;
+            //                CLine.DataFimVersão = x.VersionEndDate != null && x.VersionStartDate != "" ? DateTime.Parse(x.VersionEndDate) : (DateTime?)null;
+            //                CLine.NºResponsável = x.ResponsibleNo;
+            //                CLine.CódServiçoCliente = x.ServiceClientNo == 0 ? null : x.ServiceClientNo;
+            //                CLine.GrupoFatura = x.InvoiceGroup;
+            //                CLine.CriaContrato = x.CreateContract;
+            //                CLine.UtilizadorModificação = User.Identity.Name;
+            //                DBContractLines.Update(CLine);
+            //            }
+            //            else
+            //            {
+            //                x = DBContractLines.ParseToViewModel(DBContractLines.Create(DBContractLines.ParseToDB(x)));
+            //            }
+            //        });
+
+            //        data.eReasonCode = 1;
+            //        data.eMessage = "Linhas de contrato atualizadas com sucesso.";
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    data.eReasonCode = 2;
+            //    data.eMessage = "Ocorreu um erro ao atualizar as linhas de contrato.";
+            //}
+            return Json(data);
+        }
+
+        public JsonResult GetCoffeShopDiary([FromBody] JObject requestParams)
+        {
+            try
+            {
+                List<DiárioCafetariaRefeitório> CoffeeShopDiaryList;
+
+                if (requestParams.HasValues)
+                {
+                    CoffeeShopDiaryList = DBCoffeeShopsDiary.GetByIdsList(2, 1, User.Identity.Name);
+
+                    List<CoffeeShopDiaryViewModel> result = new List<CoffeeShopDiaryViewModel>();
+
+                    CoffeeShopDiaryList.ForEach(x => result.Add(DBCoffeeShopsDiary.ParseToViewModel(x)));
+
+                    return Json(result);
+                }
+
+                return Json(false);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            } 
         }
         #endregion
     }

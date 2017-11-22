@@ -12,6 +12,8 @@
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
+<link rel="import" href="/lib/paper-input/paper-textarea.html" />
+
 <dom-module id="x-oportunitieslist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -63,7 +65,6 @@
                 </div>
             </template>
         </template>
-
 
         <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px">
