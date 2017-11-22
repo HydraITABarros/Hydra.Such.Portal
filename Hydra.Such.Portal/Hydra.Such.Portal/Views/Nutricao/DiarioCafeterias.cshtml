@@ -17,12 +17,12 @@
 
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
-
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
 
-<x-coffeeshopdiary></x-coffeeshopdiary>
+<x-coffeeshopdiary _paramCoffeeNo="@ViewBag.CoffeeShopNo" _produtiveNo="@ViewBag.NºUnidadeProdutiva" _areaid="3" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-coffeeshopdiary>
 
 <dom-module id="x-coffeeshopdiary">
     <template>
@@ -54,10 +54,18 @@
             </style>
         </custom-style>
 
+        <iron-ajax url="/Nutricao/GetCoffeShopDiaryDetails"
+                   last-response="{{diary}}"
+                   method="post"
+                   handle-as="json"
+                   id="diary_databound"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Nutricao/GetCoffeShopDiary"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
+                   auto
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
@@ -66,16 +74,16 @@
 
         <div class="row">
             <div class="col-lg-2">
-                <vaadin-text-field id="produtiveUnityNo" name="produtiveUnityNo" value="{{result.produtiveUnityNo}}" label="Unidade Produtiva" disabled></vaadin-text-field>
+                <vaadin-text-field id="produtiveUnityNo" name="produtiveUnityNo" value="{{diary.produtiveUnityNo}}" label="Unidade Produtiva" disabled></vaadin-text-field>
             </div>
             <div class="col-lg-2">
-                <vaadin-text-field id="coffeShopCode" name="coffeShopCode" value="{{result.coffeShopCode}}" label="Codigo Cafetaria/Ref" disabled></vaadin-text-field>
+                <vaadin-text-field id="coffeShopCode" name="coffeShopCode" value="{{diary.coffeShopCode}}" label="Codigo Cafetaria/Ref" disabled></vaadin-text-field>
             </div>
             <div class="col-lg-2">
-                <vaadin-date-picker label="Data Registo" id="registryDate" name="registryDate"></vaadin-date-picker>
+                <vaadin-date-picker label="Data Registo" max="{{diary.dateToday}}" id="registryDate" name="registryDate"></vaadin-date-picker>
             </div>
             <div class="col-lg-2">
-                <vaadin-combo-box items="[[CBMovementType]]" id="cbmovementType" item-value-path="id" item-label-path="value" value="{{data.movementType}}" label="Tipo de Movimento">
+                <vaadin-combo-box items="[[CBMovementType]]" id="cbmovementType" item-value-path="id" item-label-path="value" value="{{ddmovementType}}" label="Tipo de Movimento">
                     <template>
                         <paper-icon-item>
                             <paper-item-body two-line>
@@ -86,10 +94,10 @@
                 </vaadin-combo-box>
             </div>
             <div class="col-lg-2">
-                <vaadin-text-field id="description" name="description" value="{{ddDescription}}" label="Descrição"></vaadin-text-field>
+                <vaadin-text-field id="description" name="description" label="Descrição"></vaadin-text-field>
             </div>
             <div class="col-lg-2">
-                <vaadin-text-field id="Value" name="Value" value="{{ddValue}}" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" label="Valor"></vaadin-text-field>
+                <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" label="Valor"></vaadin-text-field>
             </div>
             
         </div>
@@ -171,48 +179,45 @@
     </template>
 
 <script>
-    @*var CreateValue = true, UpdateValue = true, DeleteValue = true;
-    if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' =="false") {
-    CreateValue = false;
-    }
-    if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' =="false") {
-    UpdateValue = false;
-    }
-    if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' =="false") {
-    DeleteValue = false;
-    }*@
     document.addEventListener('WebComponentsReady', function () {
     Polymer({
-        is: 'x-coffeeshopdiary'
-        //properties: {
-        //_permissionsUpdate: {
-        //type: Boolean,
-        //value: UpdateValue
-        //},
-        //_permissionsCreate: {
-        //type: Boolean,
-        //value: CreateValue
-        //},
-        //_permissionsDelete: {
-        //type: Boolean,
-        //value: DeleteValue
-        //},
-    //ddClients: {
-    //type: Number,
-    //notify: true,
-    //value: ""
-    //},
+        is: 'x-coffeeshopdiary',
+        properties: {
+            ddmovementType: {
+            type: Number,
+            notify: true,
+            value: ""
+            }
+        },
+        ready: function () {
+            //GET CONTRACT DATA
+            debugger;
+            var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
+            this.$.diary_databound.body = JSON.stringify({ "NºUnidadeProdutiva": this._produtiveNo, "CoffeeShopNo": this._paramCoffeeNo });
+            this.$.diary_databound.generateRequest();
 
-    //ddServices: {
-    //type: Number,
-    //notify: true,
-    //value: ""
-    //},
-    //_filterActive: {
-    //type: Boolean,
-    //value: true
-    //}
-    //},
+            if (this._contractno == "") {
+                this._isCreate = true;
+            }
+        },
+
+        _createCoffeeShopDiary: function () {
+            debugger;
+            this.result.unshift({
+
+                produtiveUnityNo: this.$.produtiveUnityNo,
+                coffeShopCode: this.$.coffeShopCode,
+                functionalAreaCode: this.$.dateToday,
+                movementType: this.ddmovementType,
+                description: this.$.description,
+                value: this.$.value
+            });
+            this.$.page_databound_ajax.url = "/Nutricao/CreateCoffeeShopsDiary";
+            this.$.page_databound_ajax.body = JSON.stringify(this.result);
+            this.$.gridContabGroupTypes.clearCache();
+
+        }
+
     //    openToast: function (message) {
     //    this.$.ToastMessageSuccess.text = message;
     //    this.$.ToastMessageSuccess.open();

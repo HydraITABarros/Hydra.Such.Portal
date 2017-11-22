@@ -46,13 +46,18 @@
                 margin-top: 0px !important;
                 width: 100%;
             }
-
+            
             .break_clear {
                 margin-top: 15px;
             }
         </style>
 
         <!-- DROPDOWNS POPULATE -->
+
+        <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{LFolhaDeHoraEmployee}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
+
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LFolhaDeHoraRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LFolhaDeHoraFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LFolhaDeHoraResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -101,15 +106,16 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <!--CODE OPTIONS-->
-        <iron-ajax url="/PopulateDropdowns/GetEmployees_FH"
-                   last-response="{{codeOptions}}"
-                   auto
+        <!--GetEmployeeNome-->
+        <iron-ajax url="/FolhasDeHoras/GetEmployeeNome"
+                   last-response="{{getEmpoyeeNAV}}"
                    method="post"
                    handle-as="json"
+                   id="getEmpoyeeNAV_ajax"
+                   on-response="_getEmpoyeeNAVResponse"
                    content-type="application/json">
         </iron-ajax>
-        <!--CODE OPTIONS-->
+        <!--GetEmployeeNome-->
 
         <!-- FOLHADEHORA Valitador -->
         <iron-ajax url="/FolhasDeHoras/ValidateNumeration"
@@ -120,7 +126,7 @@
                    on-response="_responseValidatorProcessor"
                    content-type="application/json">
         </iron-ajax>
-
+        <!-- FOLHADEHORA Valitador -->
         
         <!--PERCURSO-->
         <iron-ajax url="/FolhasDeHoras/CreatePercurso"
@@ -278,102 +284,101 @@
         <iron-pages selected="{{selected}}">
             <!--Viagens-->
             <div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.folhaDeHorasNo}}" id="folhaDeHorasNo" name="folhaDeHorasNo" label="Nº Folha Horas" disabled="true"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[LFolhaDeHoraProjectNo]]" id="projetoNo" item-value-path="id" item-label-path="value" value="{{data.projetoNo}}" label="Nº Ordem/Projecto" required error-message="Este campo é obrigatório">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[codeOptions]]" id="empregadoNo" item-value-path="id" item-label-path="value" value="{{data.empregadoNo}}" on-value-changed="_codeChange" label="Nº Empregado" required error-message="Este campo é obrigatório">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.empregadoNome}}" id="empregadoNome" name="empregadoNome" label="Nome Empregado" disabled="true"> </vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" name="horaPartidaTexto" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" required error-message="Este campo é obrigatório" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" name="horaChegadaTexto" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"> </vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" id="tipoDeslocacao" item-value-path="id" item-label-path="value" value="{{data.tipoDeslocacao}}" required error-message="Este campo é obrigatório" label="Tipo Deslocação">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" id="codigoTipoKms" item-value-path="id" item-label-path="value" required error-message="Este campo é obrigatório" value="{{data.codigoTipoKms}}" label="Cód. Tipo Kms">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[LFolhaDeHoraViaturaMatricula]]" id="matricula" item-value-path="id" item-label-path="value" required error-message="Este campo é obrigatório" value="{{data.matricula}}" label="Matricula">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-sm-3 alignPoga">
-                        <vaadin-checkbox checked="{{data.deslocacaoForaConcelho}}" id="deslocacaoForaConcelho" required error-message="Este campo é obrigatório">Desloc. fora do concelho</vaadin-checkbox>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3 alignPoga">
-                        <vaadin-checkbox checked="{{data.deslocacaoPlaneada}}" disabled="true">Deslocação Planeada</vaadin-checkbox>
-                    </div>
-                    <div class="col-sm-3 alignPoga">
-                        <vaadin-checkbox checked="{{data.terminada}}" id="terminada" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>
-                    </div>
-                    <div class="col-sm-3">
-                    </div>
-                    <div class="col-sm-3">
-                    </div>
-                </div>
+                <div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Cabeçalho
+                        </div>
+                        <div class="panel-body">
+                            <div class="row break_clear">
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.folhaDeHorasNo}}" id="folhaDeHorasNo" name="folhaDeHorasNo" label="Nº Folha Horas" disabled="true"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraProjectNo]]" id="projetoNo" item-value-path="id" item-label-path="value" value="{{data.projetoNo}}" label="Nº Ordem/Projecto" required error-message="Este campo é obrigatório">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraEmployee]]" id="empregadoNo" item-value-path="id" item-label-path="value" value="{{data.empregadoNo}}" on-value-changed="_codeChange" label="Nº Empregado" required error-message="Este campo é obrigatório">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.empregadoNome}}" id="empregadoNome" name="empregadoNome" label="Nome Empregado" disabled="true"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-sm-3">
+                                    <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" name="horaPartidaTexto" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" required error-message="Este campo é obrigatório" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" name="horaChegadaTexto" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-sm-3">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraTypeDeslocation]]" id="tipoDeslocacao" item-value-path="id" item-label-path="value" value="{{data.tipoDeslocacao}}" required error-message="Este campo é obrigatório" label="Tipo Deslocação">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" id="codigoTipoKms" item-value-path="id" item-label-path="value" required error-message="Este campo é obrigatório" value="{{data.codigoTipoKms}}" label="Cód. Tipo Kms">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraViaturaMatricula]]" id="matricula" item-value-path="id" item-label-path="value" value="{{data.matricula}}" label="Matricula">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-sm-3 alignPoga">
+                                    <vaadin-checkbox checked="{{data.deslocacaoForaConcelho}}" id="deslocacaoForaConcelho" required error-message="Este campo é obrigatório">Desloc. fora do concelho</vaadin-checkbox>
+                                    <vaadin-checkbox checked="{{data.deslocacaoPlaneada}}" disabled="true" hidden>Deslocação Planeada</vaadin-checkbox>
+                                    <vaadin-checkbox checked="{{data.terminada}}" id="terminada" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>
+                                </div>
+                            </div>
 
-                <paper-button raised id="btnUpdate" class="btnSave" on-tap="_updateFH"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            <paper-button raised id="btnUpdate" class="btnSave" on-tap="_updateFH"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                        </div>
+                    </div>
+                </div>
 
 
 
@@ -381,15 +386,15 @@
 
 
 
-                <div class="row break_clear">
+                <div>
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             Percursos
                         </div>
                         <div class="panel-body">
                             <div class="row break_clear">
-                                <div class="col-sm-2">
-                                    <vaadin-combo-box id="percursoOrigem" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Código Origem" required error-message="Este campo é obrigatório">
+                                <div class="col-sm-4">
+                                    <vaadin-combo-box id="percursoOrigem" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Código Origem" on-value-changed="_DataInicio" required error-message="Este campo é obrigatório">
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
@@ -398,31 +403,33 @@
                                             </paper-icon-item>
                                         </template>
                                     </vaadin-combo-box>
-                                </div>
-                                <div class="col-sm-2">
-                                    <vaadin-combo-box id="percursoDestino" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Código Destino" required error-message="Este campo é obrigatório">
-                                        <template>
-                                            <paper-icon-item>
-                                                <paper-item-body two-line>
-                                                    <div>[[item.value]]</div>
-                                                </paper-item-body>
-                                            </paper-icon-item>
-                                        </template>
-                                    </vaadin-combo-box>
-                                </div>
-                                <div class="col-sm-2">
-                                    <vaadin-date-picker id="percursoDataViagem" label="Data Despesa" name="PercursoDataViagemTexto" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" required error-message="Este campo é obrigatório" value="{{data.dataViagemTexto}}"></vaadin-date-picker>
-                                </div>
-                                <div class="col-sm-2">
-                                    <vaadin-text-field id="percursoJustificacao" label="Justificação" maxlength="200" required error-message="Este campo é obrigatório"></vaadin-text-field>
-                                </div>
-                                <div class="col-sm-2">
-                                    <vaadin-text-field id="percursoDistanciaEfetuada" label="Distância Efectuada" maxlength="18" pattern="[0-9]*" required error-message="Este campo é obrigatório" style="text-align:right;"><div slot="suffix">KM</div></vaadin-text-field>
-                                </div>
-                                <div class="col-sm-2" style="text-align:right">
-                                    <vaadin-text-field id="percursoCustoUnitario" label="Custo Unitário" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" required error-message="Este campo é obrigatório" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
                                     <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createPercurso"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </div>
+                                <div class="col-sm-4">
+                                    <vaadin-combo-box id="percursoDestino" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Código Destino" on-value-changed="_DataInicio" required error-message="Este campo é obrigatório">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-sm-4">
+                                    <vaadin-date-picker id="percursoDataViagem" label="Data Despesa" name="PercursoDataViagemTexto" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" required error-message="Este campo é obrigatório" value="{{data.dataViagemTexto}}"></vaadin-date-picker>
+                                </div>
+                                <!--<div class="col-sm-2" hidden>
+                                <div class="col-sm-2" hidden>
+                                    <vaadin-text-field id="percursoJustificacao" label="Justificação" maxlength="200" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                </div>
+                                <div class="col-sm-2" hidden>
+                                    <vaadin-text-field id="percursoDistanciaEfetuada" label="Distância Efectuada" maxlength="18" pattern="[0-9]*" required error-message="Este campo é obrigatório" style="text-align:right;"><div slot="suffix">KM</div></vaadin-text-field>
+                                </div>
+                                <div class="col-sm-2" style="text-align:right" hidden>
+                                    <vaadin-text-field id="percursoCustoUnitario" label="Custo Unitário" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" required error-message="Este campo é obrigatório" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
+                                </div>
+                            </div>-->
                             </div>
 
                             <div class="row break_clear">
@@ -574,9 +581,10 @@
 
 
 
-                <div class="row break_clear">
+                <div>
                     <div class="panel panel-default">
-                        <div class="panel-heading">Ajudas de Custo/Despesas
+                        <div class="panel-heading">
+                            Ajudas de Custo/Despesas
                         </div>
                         <div class="panel-body">
                             <div class="row break_clear">
@@ -590,6 +598,7 @@
                                             </paper-icon-item>
                                         </template>
                                     </vaadin-combo-box>
+                                    <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createAjuda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </div>
                                 <div class="col-sm-2">
                                     <vaadin-combo-box id="ajudaCodigoTipoCusto" items="[[LFolhaDeHoraAjudaCodTipoCusto]]" item-value-path="id" item-label-path="value" label="Cód Tipo Custo" required error-message="Este campo é obrigatório">
@@ -616,7 +625,6 @@
                                 </div>
                                 <div class="col-sm-3" style="text-align:right">
                                     <vaadin-text-field id="ajudaJustificacao" label="Justificação" required error-message="Este campo é obrigatório" maxlength="200" style="text-align:left;"></vaadin-text-field>
-                                    <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createAjuda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </div>
                             </div>
 
@@ -669,14 +677,14 @@
                                     </vaadin-grid-column>
 
                                     <!--<vaadin-grid-column width="200px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="">Descrição Tipo Custo</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="" />
-                                        </template>
-                                        <template>
-                                            <vaadin-text-field name="tabAjudaDescricaoTipoCusto" value="{{item.observacao}}" maxlength="200" disabled="true"></vaadin-text-field>
-                                        </template>
-                                    </vaadin-grid-column>-->
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="">Descrição Tipo Custo</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="" />
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field name="tabAjudaDescricaoTipoCusto" value="{{item.observacao}}" maxlength="200" disabled="true"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>-->
 
                                     <vaadin-grid-column width="200px">
                                         <template class="header">
@@ -758,7 +766,7 @@
                                 </vaadin-grid>
 
                                 <paper-button raised id="btnUpdate" class="btnSave" on-tap="_updateAjuda"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                <paper-button raised id="btnCalcularAjudasCusto" class="btnSave" on-tap="_calcularAjudasCusto"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Calcular Aj Custo</paper-button>
+                                <paper-button raised id="btnCalcularAjudasCusto" class="btnSave" on-tap="_calcularAjudasCusto"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ca Aj Custo</paper-button>
                             </div>
                         </div>
                     </div>
@@ -769,32 +777,42 @@
             <!------------ MÃO-DE-OBRA ------------>
 
 
-
             <div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.projetoNo}}" id="projetoNo" name="projetoNo" disabled="true" label="Nº Obra"> </vaadin-text-field>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Cabeçalho
                     </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.projetoDescricao}}" disabled="true" id="projetoDescricao" name="projetoDescricao" label="Descrição"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.empregadoNo}}" id="empregadoNo" name="empregadoNo" disabled="true" label="Nº Empregado"> </vaadin-text-field>
-                    </div>
+                    <div class="panel-body">
+                        <div>
+                            <div class="row break_clear">
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.projetoNo}}" id="projetoNo" name="projetoNo" disabled="true" label="Nº Obra"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.projetoDescricao}}" disabled="true" id="projetoDescricao" name="projetoDescricao" label="Descrição"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.empregadoNo}}" id="empregadoNo" name="empregadoNo" disabled="true" label="Nº Empregado"> </vaadin-text-field>
+                                </div>
 
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.empregadoNome}}" disabled="true" id="empregadoNome" name="empregadoNome" label="Nome Empregado"> </vaadin-text-field>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.empregadoNome}}" disabled="true" id="empregadoNome" name="empregadoNome" label="Nome Empregado"> </vaadin-text-field>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="row break_clear">
+                <div>
                     <div class="panel panel-default">
-                        <div class="panel-heading">Mão-de-Obra
+                        <div class="panel-heading">
+                            Mão-de-Obra
                         </div>
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
                                     <vaadin-date-picker id="maoDeObraDate" name="maoDeObraDate" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                    <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createMaoDeObra"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </div>
                                 <div class="col-sm-1">
                                     <vaadin-combo-box items="[[LFolhaDeHoraProjectNo]]" id="maoDeObraProjetoNo" item-value-path="id" item-label-path="value" label="Nº Obra" required error-message="Este campo é obrigatório">
@@ -823,7 +841,7 @@
                                     <vaadin-checkbox id="maoDeObraHorarioJantar" checked="{{chkJantar}}">Jantar</vaadin-checkbox>
                                 </div>
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="maoDeObraCodigoFamiliaRecurso" label="Nº Famíl Recur" maxlength="200" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="maoDeObraCodigoFamiliaRecurso" label="Famíl Recur" maxlength="200" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-1">
                                     <vaadin-text-field id="maoDeObraCustoUnitarioDireto" label="Cus Unit Diret" pattern="[0-9]+([\.,][0-9]+)?" maxlength="18" required error-message="Este campo é obrigatório" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
@@ -841,7 +859,6 @@
                                 </div>
                                 <div class="col-sm-1" style="text-align:right">
                                     <vaadin-text-field id="maoDeObraPrecoTotal" label="Preço Total" pattern="[0-9]+([\.,][0-9]+)?" maxlength="18" required error-message="Este campo é obrigatório" style="text-align:right;"><div slot="suffix">€</div></vaadin-text-field>
-                                    <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createMaoDeObra"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </div>
                             </div>
 
@@ -1037,24 +1054,35 @@
 
 
             <div>
-                <div class="row break_clear">
-                    <div class="col-sm-6">
-                        <vaadin-text-field type="text" value="{{data.empregadoNo}}" id="empregadoNo" name="empregadoNo" disabled="true" label="Nº Empregado"> </vaadin-text-field>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Cabeçalho
                     </div>
+                    <div class="panel-body">
+                        <div>
+                            <div class="row break_clear">
+                                <div class="col-sm-6">
+                                    <vaadin-text-field type="text" value="{{data.empregadoNo}}" id="empregadoNo" name="empregadoNo" disabled="true" label="Nº Empregado"> </vaadin-text-field>
+                                </div>
 
-                    <div class="col-sm-6">
-                        <vaadin-text-field type="text" value="{{data.empregadoNome}}" disabled="true" id="empregadoNome" name="empregadoNome" label="Nome Empregado"> </vaadin-text-field>
+                                <div class="col-sm-6">
+                                    <vaadin-text-field type="text" value="{{data.empregadoNome}}" disabled="true" id="empregadoNome" name="empregadoNome" label="Nome Empregado"> </vaadin-text-field>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="row break_clear">
+                <div>
                     <div class="panel panel-default">
-                        <div class="panel-heading">Presenças
+                        <div class="panel-heading">
+                            Presenças
                         </div>
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
                                     <vaadin-date-picker id="presencaDataTexto" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                    <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createPresenca"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </div>
                                 <div class="col-sm-1">
                                     <vaadin-text-field id="presencaHora1Entrada" label="1ª Entrada" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" required error-message="Este campo é obrigatório"></vaadin-text-field>
@@ -1070,7 +1098,6 @@
                                 </div>
                                 <div class="col-sm-6" style="text-align:right;">
                                     <vaadin-text-field id="presencaObservacoes" label="Observações" maxlength="200" required error-message="Este campo é obrigatório" style="text-align:left;"></vaadin-text-field>
-                                    <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createPresenca"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </div>
                             </div>
 
@@ -1170,140 +1197,149 @@
 
 
             <div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[LFolhaDeHoraStatus]]" id="folhaDeHoraStatus" item-value-path="id" item-label-path="value" disabled="true" value="{{data.estado}}" label="Estado">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Cabeçalho
                     </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.criadoPor}}" id="criadoPor" name="criadoPor" disabled="true" label="Criado por"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.dataCriacaoTexto}}" id="dataCriacaoTexto" name="dataCriacaoTexto" disabled="true" label="Data Criação"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.horaCriacaoTexto}}" id="horaCriacaoTexto" name="horaCriacaoTexto" disabled="true" label="Hora Criação"> </vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[LFolhaDeHoraRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" label="Código Região" required error-message="Este campo é obrigatório">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[LFolhaDeHoraFunctionalAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" label="Código Área Funcional" required error-message="Este campo é obrigatório">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" label="Código Centro Respon." required error-message="Este campo é obrigatório">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.terminadoPor}}" id="terminadoPor" name="terminadoPor" disabled="true" label="Terminado por"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.dataTerminadoTexto}}" id="dataTerminadoTexto" name="dataTerminadoTexto" disabled="true" label="Data Terminado"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.horaTerminadoTexto}}" id="horaTerminadoTexto" name="horaTerminadoTexto" disabled="true" label="Hora Terminado"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3 alignPoga">
-                        <vaadin-checkbox checked="{{data.validadoTexto}}" disabled="true">Validado</vaadin-checkbox>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.validadores}}" id="validadores" name="validadores" disabled="true" label="Validadores"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.validador}}" id="validador" name="validador" disabled="true" label="Validador"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.dataValidacaoTexto}}" id="dataValidacaoTexto" name="dataValidacaoTexto" disabled="true" label="Data Validação"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.horaValidacaoTexto}}" id="horaValidacaoTexto" name="horaValidacaoTexto" disabled="true" label="Hora Validação"> </vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.integradorEmRH}}" id="integradorEmRH" name="integradorEmRH" disabled="true" label="Integradores Aj Custo"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.integradorEmRH}}" id="integradorEmRH" name="integradorEmRH" disabled="true" label="Integrador Aj. Custo RH"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.dataIntegracaoEmRHTexto}}" id="dataIntegracaoEmRHTexto" name="dataIntegracaoEmRHTexto" disabled="true" label="Data Integ. Aj. Custo RH"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.horaIntegracaoEmRHTexto}}" id="horaIntegracaoEmRHTexto" name="horaIntegracaoEmRHTexto" disabled="true" label="Hora Integ. Aj. Custo RH"> </vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.integradorEmRHKM}}" id="integradorEmRHKM" name="integradorEmRHKM" disabled="true" label="Integradores KMs RH"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.integradorEmRHKM}}" id="integradorEmRHKM" name="integradorEmRHKM" disabled="true" label="Integrador KMs RH"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.dataIntegracaoEmRHKMTexto}}" id="dataIntegracaoEmRHKMTexto" name="dataIntegracaoEmRHKMTexto" disabled="true" label="Data Integ. KMs RH"> </vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.horaIntegracaoEmRHKMTexto}}" id="horaIntegracaoEmRHKMTexto" name="horaIntegracaoEmRHKMTexto" disabled="true" label="Hora Integ. KMs RH"> </vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.custoTotalAjudaCusto}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total Ajuda Custo"><div slot="suffix">€</div></vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.custoTotalHoras}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total Horas"><div slot="suffix">€</div></vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.custoTotalKM}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total KM"><div slot="suffix">€</div></vaadin-text-field>
-                    </div>
-                    <div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.numTotalKM}}" id="userModification" name="userModification" disabled="true" label="Nº Total KM"> </vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-sm-12">
-                        <vaadin-text-field type="text" value="{{data.observacoes}}" id="observacoes" name="observacoes" required error-message="Este campo é obrigatório" label="Observações"> </vaadin-text-field>
-                    </div>
-                </div>
+                    <div class="panel-body">
+                        <div>
+                            <div class="row break_clear">
+                                <div class="col-sm-3">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraStatus]]" id="folhaDeHoraStatus" item-value-path="id" item-label-path="value" disabled="true" value="{{data.estado}}" label="Estado">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.criadoPor}}" id="criadoPor" name="criadoPor" disabled="true" label="Criado por"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.dataCriacaoTexto}}" id="dataCriacaoTexto" name="dataCriacaoTexto" disabled="true" label="Data Criação"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.horaCriacaoTexto}}" id="horaCriacaoTexto" name="horaCriacaoTexto" disabled="true" label="Hora Criação"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-sm-3">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" label="Código Região" required error-message="Este campo é obrigatório">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraFunctionalAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" label="Código Área Funcional" required error-message="Este campo é obrigatório">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" label="Código Centro Respon." required error-message="Este campo é obrigatório">
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.value]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.terminadoPor}}" id="terminadoPor" name="terminadoPor" disabled="true" label="Terminado por"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.dataTerminadoTexto}}" id="dataTerminadoTexto" name="dataTerminadoTexto" disabled="true" label="Data Terminado"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.horaTerminadoTexto}}" id="horaTerminadoTexto" name="horaTerminadoTexto" disabled="true" label="Hora Terminado"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3 alignPoga">
+                                    <vaadin-checkbox checked="{{data.validadoTexto}}" disabled="true">Validado</vaadin-checkbox>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.validadores}}" id="validadores" name="validadores" disabled="true" label="Validadores"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.validador}}" id="validador" name="validador" disabled="true" label="Validador"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.dataValidacaoTexto}}" id="dataValidacaoTexto" name="dataValidacaoTexto" disabled="true" label="Data Validação"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.horaValidacaoTexto}}" id="horaValidacaoTexto" name="horaValidacaoTexto" disabled="true" label="Hora Validação"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.integradorEmRH}}" id="integradorEmRH" name="integradorEmRH" disabled="true" label="Integradores Aj Custo"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.integradorEmRH}}" id="integradorEmRH" name="integradorEmRH" disabled="true" label="Integrador Aj. Custo RH"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.dataIntegracaoEmRHTexto}}" id="dataIntegracaoEmRHTexto" name="dataIntegracaoEmRHTexto" disabled="true" label="Data Integ. Aj. Custo RH"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.horaIntegracaoEmRHTexto}}" id="horaIntegracaoEmRHTexto" name="horaIntegracaoEmRHTexto" disabled="true" label="Hora Integ. Aj. Custo RH"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.integradorEmRHKM}}" id="integradorEmRHKM" name="integradorEmRHKM" disabled="true" label="Integradores KMs RH"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.integradorEmRHKM}}" id="integradorEmRHKM" name="integradorEmRHKM" disabled="true" label="Integrador KMs RH"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.dataIntegracaoEmRHKMTexto}}" id="dataIntegracaoEmRHKMTexto" name="dataIntegracaoEmRHKMTexto" disabled="true" label="Data Integ. KMs RH"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.horaIntegracaoEmRHKMTexto}}" id="horaIntegracaoEmRHKMTexto" name="horaIntegracaoEmRHKMTexto" disabled="true" label="Hora Integ. KMs RH"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.custoTotalAjudaCusto}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total Ajuda Custo"><div slot="suffix">€</div></vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.custoTotalHoras}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total Horas"><div slot="suffix">€</div></vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.custoTotalKM}}" id="userModification" name="userModification" disabled="true" class="alignRight" label="Custo Total KM"><div slot="suffix">€</div></vaadin-text-field>
+                                </div>
+                                <div class="col-sm-3">
+                                    <vaadin-text-field type="text" value="{{data.numTotalKM}}" id="userModification" name="userModification" disabled="true" label="Nº Total KM"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-sm-12">
+                                    <vaadin-text-field type="text" value="{{data.observacoes}}" id="observacoes" name="observacoes" required error-message="Este campo é obrigatório" label="Observações"> </vaadin-text-field>
+                                </div>
+                            </div>
 
-                <paper-button raised id="btnUpdate" class="btnSave" on-tap="_updateFH"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            <paper-button raised id="btnUpdate" class="btnSave" on-tap="_updateFH"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </iron-pages>
 
@@ -1479,9 +1515,27 @@
                 },
 
                 _updateFH: function () {
-                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
-                    this.$.page_updatefolhadehoras_ajax.generateRequest();
-                    this._showMessage('Folha de Horas actualizada com sucesso.');
+                    if (this.$.dataPartidaTexto.validate() &
+                        this.$.horaPartidaTexto.validate() &
+                        this.$.dataChegadaTexto.validate() &
+                        this.$.horaChegadaTexto.validate()) {
+                        if (this.$.tipoDeslocacao.value == "1") {
+                            if (this.$.matricula.value != "") {
+                                this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                                this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                this._showMessage('Folha de Horas actualizada com sucesso.');
+                            }
+                            else
+                                this._showErrorMessage('É obrigatório preencher o campo Matrícula.');
+                        }
+                        else {
+                            this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                            this.$.page_updatefolhadehoras_ajax.generateRequest();
+                            this._showMessage('Folha de Horas actualizada com sucesso.');
+                        }
+                    }
+                    else
+                        this._showErrorMessage('É obrigatório preencher todos os campos obrigatórios corretamente.');
                 },
 
                 _deleteFH: function () {
@@ -1510,20 +1564,16 @@
 
                 //PERCURSO
                 _createPercurso: function () {
+                    debugger;
                     if (this.$.percursoOrigem.validate() &
                         this.$.percursoDestino.validate() &
-                        this.$.percursoDataViagem.validate() &
-                        this.$.percursoJustificacao.validate() &
-                        this.$.percursoDistanciaEfetuada.validate() &
-                        this.$.percursoCustoUnitario.validate()) {
+                        this.$.percursoDataViagem.validate()) {
                         this.$.page_createpercurso_ajax.body = JSON.stringify({
                             noFolhaHoras: this.$.folhaDeHorasNo.value,
+                            codTipoCusto: this.$.codigoTipoKms.value,
                             codOrigem: this.$.percursoOrigem.value,
                             codDestino: this.$.percursoDestino.value,
-                            dataDespesa: this.$.percursoDataViagem.value,
-                            observacao: this.$.percursoJustificacao.value,
-                            distancia: parseFloat(this.$.percursoDistanciaEfetuada.value),
-                            custoUnitario: parseFloat(this.$.percursoCustoUnitario.value)
+                            dataDespesa: this.$.percursoDataViagem.value
                         });
                             this.$.page_createpercurso_ajax.generateRequest();
                             this.$.tabPercurso.clearCache();
@@ -1732,12 +1782,26 @@
                     }
                 },
 
+                //Employee Functions
                 _codeChange: function (e) {
-                    if (e.detail.value != null && e.detail.value != "") {
-                        var index = this.codeOptions.findIndex(i => i.id === e.detail.value);
-                        this.employeeName = this.codeOptions[index].extra;
+                    this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(e.detail.value);
+                    this.$.getEmpoyeeNAV_ajax.generateRequest();
+                },
+                _getEmpoyeeNAVResponse: function (e) {
+                    var self = this;
+                    if (this.getEmpoyeeNAV != null) {
+                        this.$.empregadoNome.value = this.getEmpoyeeNAV[0].value;
                     }
                 },
+
+                _DataInicio: function (e) {
+                    debugger;
+                    var self = this;
+                    if (this.$.dataPartidaTexto.value != null) {
+                        this.$.percursoDataViagem.value = this.$.dataPartidaTexto.value;
+                    }
+                },
+
 
                 //FOLHA DE HORAS
                 _updateFolhaDeHorasResponse: function (e) {
@@ -1760,9 +1824,9 @@
                         this.$.percursoOrigem.value = "";
                         this.$.percursoDestino.value = "";
                         this.$.percursoDataViagem.value = "";
-                        this.$.percursoJustificacao.value = "";
-                        this.$.percursoDistanciaEfetuada.value = "";
-                        this.$.percursoCustoUnitario.value = "";
+                        //this.$.percursoJustificacao.value = "";
+                        //this.$.percursoDistanciaEfetuada.value = "";
+                        //this.$.percursoCustoUnitario.value = "";
                     }
                     else {
                         this._showErrorMessage('Ocorreu um erro ao adicionar.');
