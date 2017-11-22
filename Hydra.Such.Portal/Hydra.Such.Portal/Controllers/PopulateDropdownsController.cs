@@ -898,8 +898,7 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.TipoMovimento;
             return Json(result);
         }
-    }
-
+    
         [HttpPost]
         public JsonResult GetAjudaCustoPartidaChegada()
         {
