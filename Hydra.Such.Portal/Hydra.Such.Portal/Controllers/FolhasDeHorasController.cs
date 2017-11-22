@@ -87,9 +87,11 @@ namespace Hydra.Such.Portal.Controllers
                 FH.DataHoraModificação = DateTime.Now;
 
                 DBFolhasDeHoras.Create(FH);
+
+                FHNo = FH.NºFolhaDeHoras;
             }
 
-            ViewBag.FolhaDeHorasNo = id == null ? "" : id;
+            ViewBag.FolhaDeHorasNo = FHNo == null ? "" : FHNo;
             return View();
         }
 
@@ -98,8 +100,6 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-
-
                 if (data != null)
                 {
                     FolhasDeHoras FH = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
