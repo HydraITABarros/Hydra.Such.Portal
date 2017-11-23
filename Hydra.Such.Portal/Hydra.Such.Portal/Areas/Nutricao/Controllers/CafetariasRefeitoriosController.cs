@@ -23,6 +23,8 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [Area("Nutricao")]
         public JsonResult GetCoffeeShops()
         {
+            var items = DBCoffeeShops.GetAll().ParseToViewModel();
+
             ////Apply User Dimensions Validations
             //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             ////Regions
@@ -34,7 +36,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             ////ResponsabilityCenter
             //if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
             //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CodeResponsabilityCenter));
-            var items = DBCoffeeShops.GetAll().ParseToViewModel();
+
             return Json(items);
         }
 
