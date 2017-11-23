@@ -211,7 +211,71 @@ namespace Hydra.Such.Portal.Configurations
              {
                  Id = 24,
                  Value = "Contactos"
-             }
+             },
+
+            
+            #region identify user roles related to CCP
+		     new EnumData()
+             {
+                 Id = 25,
+                 Value = "Checklist - Elemento Pre-Area 0"
+             },
+
+             new EnumData()
+             {
+                 Id  = 26,
+                 Value = "Checklist - Elemento Pre-Area"
+             },
+
+             new EnumData()
+             {
+                 Id = 27,
+                 Value = "Checklist - Elemento Compras"
+             },
+
+             new EnumData()
+             {
+                 Id  = 28,
+                 Value = "Checklist - Elemento Juri"
+             },
+
+             new EnumData()
+             {
+                 Id = 29,
+                 Value = "Checklist - Elemento Contabilidade"
+             },
+
+             new EnumData()
+             {
+                 Id = 30,
+                 Value = "Checklist - Elemento Juridico"
+             },
+
+             new EnumData()
+             {
+                 Id = 31,
+                 Value = "Checklist - Elemento CA"
+             },
+
+             new EnumData()
+             {
+                 Id = 32,
+                 Value = "Checklist - Gestor Processo"
+             },
+
+             new EnumData()
+             {
+                 Id = 33,
+                 Value = "Checklist - Secretariado CA"
+             },
+
+             new EnumData()
+             {
+                 Id = 34,
+                 Value = "Checklist - Fecho de Processo"
+             } 
+	        #endregion
+
         };
 
         public static readonly List<EnumData> ProposalStatus = new List<EnumData>(){
@@ -371,7 +435,7 @@ namespace Hydra.Such.Portal.Configurations
             },
             new EnumData()
             {
-                Id = 4,
+                Id = 5,
                 Value = "Fechado"
             } };
 
@@ -1307,6 +1371,25 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 1,
                 Value = "<="
+            }
+        };
+
+        public static readonly List<EnumData> TipoMovimento = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Receita"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Despesa"
+            },
+             new EnumData
+            {
+                Id = 2,
+                Value = "Depósito"
             }
         };
 

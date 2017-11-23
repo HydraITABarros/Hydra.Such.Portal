@@ -106,7 +106,7 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px">
                 <template class="header">
-                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="description">Âmbito dos Serviços</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
                 </template>
                 <template>
@@ -119,7 +119,7 @@
                     <vaadin-grid-filter path="status" />
                 </template>
                 <template>
-                    {{item.status}}
+                    {{item.statusDescription}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="200px">

@@ -12,6 +12,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public int? Area { get; set; }
         public string Description { get; set; }
         public int? Status { get; set; }
+        public string StatusDescription { get; set; }
         public int? ChangeStatus { get; set; }
         public string ClientNo { get; set; }
         public string ClientName { get; set; }
@@ -74,10 +75,15 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string OrdOrderSource { get; set; }
         public string InternalNumeration { get; set; }
         public string ProposalChangeDate { get; set; }
+        public string ProposalChangeTime { get; set; }
         public string LimitClarificationDate { get; set; }
+        public string LimitClarificationTime { get; set; }
         public string ErrorsOmissionsDate { get; set; }
+        public string ErrorsOmissionsTime { get; set; }
         public string FinalReportDate { get; set; }
+        public string FinalReportTime { get; set; }
         public string DocumentationHabilitationDate { get; set; }
+        public string DocumentationHabilitationTime { get; set; }
         public bool? CompulsoryCompulsoryNo { get; set; }
         public string CreateDate { get; set; }
         public string UpdateDate { get; set; }

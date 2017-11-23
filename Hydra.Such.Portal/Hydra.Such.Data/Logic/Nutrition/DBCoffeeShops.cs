@@ -101,6 +101,23 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
+        public static CafetariasRefeitórios GetByIdDiary(int NºUnidadeProdutiva, int CódigoCafetariaRefeitório)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.CafetariasRefeitórios.FirstOrDefault(x => x.NºUnidadeProdutiva == NºUnidadeProdutiva && x.Código == CódigoCafetariaRefeitório);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+
         public static bool Delete(CafetariasRefeitórios ObjectToDelete)
         {
             try

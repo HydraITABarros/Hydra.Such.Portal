@@ -76,6 +76,14 @@
         <iron-ajax url="/PopulateDropdowns/GetServiceGroup" last-response="{{ServiceGroupData}}" id="ajax_ServiceGroup" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetClientService" last-response="{{ServiceClientData}}"  id="ajax_SServiceClient" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Projetos/GetProjectDetails"
+                   last-response="{{projdata}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <div>
             <div class="row">
                 <div class="col-lg-2">
@@ -91,10 +99,10 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"  required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="projectMovementList" name="projectMovementList" items="[[response2]]" item-value-path="id" item-label-path="value" label="Tipo Movimento" value="{{projectMovementNumber}}" disabled="{{ !_permissions.create }}">
+                    <vaadin-combo-box id="projectMovementList" name="projectMovementList" items="[[response2]]" item-value-path="id" item-label-path="value" label="Tipo Movimento" value="{{projectMovementNumber}}" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório">
                         <template>
                                 <table width="200px">
                                     <tr>
@@ -118,7 +126,7 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piCode" name="piCode" items="[[codeOptions]]" item-value-path="id" on-value-changed="_codeChange" item-label-path="id" label="Código" value="{{codeNumber}}" disabled="{{ !_permissions.create }}">
+                    <vaadin-combo-box id="piCode" name="piCode" items="[[codeOptions]]" item-value-path="id" on-value-changed="_codeChange" item-label-path="id" label="Código" value="{{codeNumber}}" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório">
                         <template>
                                 <table width="300px">
                                     <tr>
@@ -147,7 +155,7 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piQuantity" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" label="Quantidades" value="{{quantity}}"  on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"></vaadin-text-field >
+                    <vaadin-text-field id="piQuantity" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" label="Quantidades" value="{{quantity}}"  on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-text-field >
                 </div>
                 <div class="col-lg-2">
                     <vaadin-combo-box id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[MeasureUnit]]" item-value-path="id" value="{{codeMeasurementUnit}}" item-label-path="value" label="Cód. Unidade Medida" disabled="{{ !_permissions.create }}">
@@ -212,13 +220,13 @@
                     </vaadin-combo-box>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitCost" label="Custo Uniário" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitCost" label="Custo Unitário" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{totalCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitPrice" label="Preço Uniário" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitPrice}}" on-value-changed="_calcTotals"  disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitPrice" label="Preço Unitário" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{unitPrice}}" on-value-changed="_calcTotals"  disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="^[1-9]\d*(\.\d+)?$"  class="alignRight" value="{{totalPrice}}"  on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
@@ -1047,6 +1055,11 @@
         Polymer({
             is: 'x-projectdiary',
             properties: {
+                disabledFields: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
                 ddMealTypes: {
                     type: String,
                     notify: true,
@@ -1244,7 +1257,7 @@
                 }
             },
 
-            ready: function() {
+            ready: function () {
                 if (this.paramprojno != "") {
                     this.$.projectList.value = this.paramprojno;
                     this.disabledProjectNo = true;
@@ -1253,6 +1266,9 @@
                     this.$.grid_databound_ajax.params = { "allProjs": false };
                     this.$.grid_databound_ajax.generateRequest();
                     this.$.projectMovementTable.clearCache();
+
+                    this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this.paramprojno });
+                    this.$.page_databound_ajax.generateRequest();
                 } else {
                     this.disabledProjectNo = !this._permissions.create;
                     this.$.grid_databound_ajax.body = JSON.stringify("");
@@ -1268,6 +1284,12 @@
                 this.$.ajax_SServiceClient.params = { "allProjs": true };
                 this.$.ajax_SServiceClient.generateRequest();
                 
+            },
+            _responseProcessor: function () {
+                debugger;;
+                if (this.projdata.status >= 4) {
+                    this._permissions.create = false;
+                }
             },
 
             openToastSuccess: function(message) {
@@ -1365,8 +1387,13 @@
 
                     this.$.ajax_getall.generateRequest();
                     this.$.projectDiaryProject.clearCache();
-                   
-                    this.projectNumber = "";
+
+                    if (!this.disabledProjectNo) {
+                        this.projectNumber = "";
+                        this.codeRegion = "";
+                        this.codeFuncArea = "";
+                        this.codeResponsabilityCenter = "";
+                    }
                     this.date = "";
                     this.projectMovementNumber = "";
                     this.projectTypeNumber = "";
@@ -1376,9 +1403,6 @@
                     this.codeMeasurementUnit = "";
                     this.codeLocation = "";
                     this.codeProjectContabGroup = "";
-                    this.codeRegion = "";
-                    this.codeFuncArea = "";
-                    this.codeResponsabilityCenter = "";
                     this.unitCost = "";
                     this.totalCost = "";
                     this.unitPrice = "";
@@ -1516,7 +1540,6 @@
 
             },
             _getMovementsProject: function () {
-                debugger;
                 this.$.dialog.open();
                 if (this.resultMovements == null || this.resultMovements == undefined || this.resultMovements.length == 0)
                 {
@@ -1527,7 +1550,6 @@
             _movementLinesResponse: function (e) {
                 if (this.movementLines.length > 0) {
                     //this.movementLines.forEach(function(e) {
-                        debugger;
                         if (e.detail.status === 200) {
                             this.$.ajax_getall.generateRequest();
                             this.$.projectDiaryProject.clearCache();
@@ -1575,7 +1597,6 @@
             },
 
             _calcTotals: function (e) {
-                debugger;
                 switch (e.target.id) {
                 case "piQuantity":
                         this.quantity = e.detail.value.replace(",", ".");

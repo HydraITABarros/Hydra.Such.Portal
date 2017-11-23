@@ -17,7 +17,6 @@ using Hydra.Such.Data.Logic.Contracts;
 using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Data.Logic.Viatura;
 using Hydra.Such.Data.ViewModel.Viaturas;
-using Hydra.Such.Data.Logic.Nutrition;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -442,7 +441,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetEmployees_FH()
         {
-            List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAVCompanyName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
             {
                 id = x.No,
                 value = x.No + " - " + x.Name,
@@ -692,6 +691,21 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetProjectContractsByClient([FromBody]string clientNo)
+        {
+            List<Contratos> lcontracts = DBContracts.GetAll().Where(x => x.TipoContrato == 3).ToList();
+            lcontracts.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+            lcontracts.RemoveAll(x => x.NºCliente != clientNo);
+            List<DDMessageString> result = lcontracts.Select(x => new DDMessageString()
+            {
+                id = x.NºDeContrato,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+
         // zpgm.<populate dropdowns to use in Procedimentos CCP 
         [HttpPost]
         public JsonResult GetPocedimentosCcpProcedimentoType()
@@ -879,22 +893,32 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetTiposMovimento()
+        {
+            List<EnumData> result = EnumerablesFixed.TipoMovimento;
+            return Json(result);
+        }
+    
+        [HttpPost]
         public JsonResult GetAjudaCustoPartidaChegada()
         {
             List<EnumData> result = EnumerablesFixed.AjudaCustoPartidaChegada;
             return Json(result);
         }
+
         [HttpPost]
-        public JsonResult GetProductivityUnits()
+        public JsonResult GetCodTipoCustoByTipoCusto([FromBody]DDMessage tipoCusto)
         {
-            List<DDMessage> result = DBProductivityUnits.GetAll().Select(x => new DDMessage()
+
+            List<DDMessageString> result = DBTabelaConfRecursosFh.GetAll().Where(x => x.Tipo == tipoCusto.id.ToString()).Select(x => new DDMessageString()
             {
-                id = x.NºUnidadeProdutiva,
-                value = x.Descrição
+                id = x.CodRecurso,
+                value = x.CodRecurso + " - " + x.Descricao
             }).ToList();
             return Json(result);
         }
     }
+
 
     public class DDMessage
     {

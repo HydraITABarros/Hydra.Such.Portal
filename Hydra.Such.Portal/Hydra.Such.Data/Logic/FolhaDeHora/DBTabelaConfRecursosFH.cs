@@ -8,16 +8,16 @@ using System.Text;
 
 namespace Hydra.Such.Data.Logic.FolhaDeHora
 {
-    public class DBTabelaConfRecursosFH
+    public class DBTabelaConfRecursosFh
     {
 
-        public static List<TabelaConfRecursosFH> GetAll()
+        public static List<TabelaConfRecursosFh> GetAll()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.TabelaConfRecursosFH.ToList();
+                    return ctx.TabelaConfRecursosFh.ToList();
                 }
             }
             catch (Exception e)
@@ -26,14 +26,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static TabelaConfRecursosFH Create(TabelaConfRecursosFH ObjectToCreate)
+        public static TabelaConfRecursosFh Create(TabelaConfRecursosFh ObjectToCreate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     //ObjectToCreate.DataHoraCriacao = DateTime.Now;
-                    ctx.TabelaConfRecursosFH.Add(ObjectToCreate);
+                    ctx.TabelaConfRecursosFh.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
@@ -46,14 +46,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static TabelaConfRecursosFH Update(TabelaConfRecursosFH ObjectToUpdate)
+        public static TabelaConfRecursosFh Update(TabelaConfRecursosFh ObjectToUpdate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     //ObjectToUpdate.DataHoraModificacao = DateTime.Now;
-                    ctx.TabelaConfRecursosFH.Update(ObjectToUpdate);
+                    ctx.TabelaConfRecursosFh.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
 
@@ -66,13 +66,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static bool Delete(TabelaConfRecursosFH ObjectToDelete)
+        public static bool Delete(TabelaConfRecursosFh ObjectToDelete)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.TabelaConfRecursosFH.Remove(ObjectToDelete);
+                    ctx.TabelaConfRecursosFh.Remove(ObjectToDelete);
                     ctx.SaveChanges();
                 }
 
@@ -85,39 +85,63 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static TabelaConfRecursosFH ParseToDB(TabelaConfRecursosFHViewModel x)
+        public static TabelaConfRecursosFh ParseToDB(TabelaConfRecursosFHViewModel x)
         {
 
-            return new TabelaConfRecursosFH()
+            return new TabelaConfRecursosFh()
             {
                 Tipo = x.Tipo.ToString(),
-                CodigoRecurso = x.CodigoRecurso,
+                CodRecurso = x.CodigoRecurso,
                 Descricao = x.Descricao,
                 PrecoUnitarioCusto = x.PrecoUnitarioCusto,
                 PrecoUnitarioVenda = x.PrecoUnitarioVenda,
-                UnidMedida = x.UnidMedida
+                UnidMedida = x.UnidMedida,
+                RubricaSalarial = x.RubricaSalarial
             };
         }
 
-        public static TabelaConfRecursosFHViewModel ParseToViewModel(TabelaConfRecursosFH x)
+        public static TabelaConfRecursosFHViewModel ParseToViewModel(TabelaConfRecursosFh x)
         {
             return new TabelaConfRecursosFHViewModel()
             {
                 Tipo = Int32.Parse(x.Tipo),
-                CodigoRecurso = x.CodigoRecurso,
+                CodigoRecurso = x.CodRecurso,
                 Descricao = x.Descricao,
                 PrecoUnitarioCusto = x.PrecoUnitarioCusto,
                 PrecoUnitarioVenda = x.PrecoUnitarioVenda,
-                UnidMedida = x.UnidMedida
+                UnidMedida = x.UnidMedida,
+                RubricaSalarial = x.RubricaSalarial
             };
         }
 
-        public static List<TabelaConfRecursosFHViewModel> ParseListToViewModel(List<TabelaConfRecursosFH> x)
+        public static List<TabelaConfRecursosFHViewModel> ParseListToViewModel(List<TabelaConfRecursosFh> x)
         {
             List<TabelaConfRecursosFHViewModel> result = new List<TabelaConfRecursosFHViewModel>();
 
             x.ForEach(y => result.Add(ParseToViewModel(y)));
             return result;
+        }
+
+        public static decimal GetPrecoUnitarioCusto(string Tipo, string CodRecurso)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    TabelaConfRecursosFh recurso;
+
+                    recurso = ctx.TabelaConfRecursosFh.FirstOrDefault(x => x.Tipo == Tipo && x.CodRecurso == CodRecurso);
+
+                    if (recurso == null)
+                        return 0;
+                    else
+                        return Convert.ToDecimal(recurso.PrecoUnitarioCusto);
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
         }
 
     }
