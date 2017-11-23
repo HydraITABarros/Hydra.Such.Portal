@@ -333,6 +333,10 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetEmployeeNome([FromBody] string idEmployee)
         {
+            FolhaDeHorasViewModel FH = new FolhaDeHorasViewModel();
+
+            //List<Autori>
+
             List<DDMessageString> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No == idEmployee).Select(x => new DDMessageString()
             {
                 id = x.No,
@@ -472,7 +476,7 @@ namespace Hydra.Such.Portal.Controllers
                     DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
                     TipoDeslocação = data.TipoDeslocacaoTexto == "" ? 1 : Convert.ToInt32(data.TipoDeslocacaoTexto),
                     CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
-                    DeslocaçãoForaConcelho = data.DeslocacaoForaConcelhoTexto == "" ? false : Convert.ToBoolean(data.DeslocacaoForaConcelhoTexto),
+                    DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
                     Validadores = data.Validadores == "" ? null : data.Validadores,
                     Estado = data.Estadotexto == "" ? 1 : Convert.ToInt32(data.Estadotexto),
                     CriadoPor = data.CriadoPor,
@@ -486,7 +490,7 @@ namespace Hydra.Such.Portal.Controllers
                     TerminadoPor = data.TerminadoPor,
                     DataHoraTerminado = data.DataHoraTerminado,
                     Validado = data.ValidadoTexto == "" ? false : Convert.ToBoolean(data.ValidadoTexto),
-                    DeslocaçãoPlaneada = data.DeslocacaoPlaneadaTexto == "" ? false : Convert.ToBoolean(data.DeslocacaoPlaneadaTexto),
+                    DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
                     Observações = data.Observacoes,
                     NºResponsável1 = data.Responsavel1No,
                     NºResponsável2 = data.Responsavel2No,
