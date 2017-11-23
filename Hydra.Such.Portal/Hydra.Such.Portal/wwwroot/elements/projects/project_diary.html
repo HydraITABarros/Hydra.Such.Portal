@@ -1257,7 +1257,7 @@
                 }
             },
 
-            ready: function() {
+            ready: function () {
                 if (this.paramprojno != "") {
                     this.$.projectList.value = this.paramprojno;
                     this.disabledProjectNo = true;
@@ -1266,7 +1266,7 @@
                     this.$.grid_databound_ajax.params = { "allProjs": false };
                     this.$.grid_databound_ajax.generateRequest();
                     this.$.projectMovementTable.clearCache();
-                    
+
                     this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this.paramprojno });
                     this.$.page_databound_ajax.generateRequest();
                 } else {
@@ -1285,9 +1285,10 @@
                 this.$.ajax_SServiceClient.generateRequest();
                 
             },
-            __responseProcessor: function () {
+            _responseProcessor: function () {
+                debugger;;
                 if (this.projdata.status >= 4) {
-                    this.disabledFields = true;
+                    this._permissions.create = false;
                 }
             },
 
@@ -1539,7 +1540,6 @@
 
             },
             _getMovementsProject: function () {
-                debugger;
                 this.$.dialog.open();
                 if (this.resultMovements == null || this.resultMovements == undefined || this.resultMovements.length == 0)
                 {
@@ -1550,7 +1550,6 @@
             _movementLinesResponse: function (e) {
                 if (this.movementLines.length > 0) {
                     //this.movementLines.forEach(function(e) {
-                        debugger;
                         if (e.detail.status === 200) {
                             this.$.ajax_getall.generateRequest();
                             this.$.projectDiaryProject.clearCache();
@@ -1598,7 +1597,6 @@
             },
 
             _calcTotals: function (e) {
-                debugger;
                 switch (e.target.id) {
                 case "piQuantity":
                         this.quantity = e.detail.value.replace(",", ".");

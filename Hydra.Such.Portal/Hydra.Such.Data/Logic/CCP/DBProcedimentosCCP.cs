@@ -912,7 +912,8 @@ namespace Hydra.Such.Data.Logic.CCP
             SuchDBContext _context = new SuchDBContext();
             try
             {
-                return _context.ConfiguracaoCCP.ToList().FirstOrDefault();
+                //return _context.ToList().FirstOrDefault();
+                return null;
             }
             catch (Exception e)
             {
