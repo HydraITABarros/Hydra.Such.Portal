@@ -11,7 +11,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<AcessosUtilizador> AcessosUtilizador { get; set; }
         public virtual DbSet<AçõesDeConfeção> AçõesDeConfeção { get; set; }
         public virtual DbSet<Anexos> Anexos { get; set; }
-        public virtual DbSet<AutorizacaoFHRH> AutorizacaoFHRH { get; set; }
+        public virtual DbSet<AutorizacaoFhRh> AutorizacaoFhRh { get; set; }
         public virtual DbSet<AutorizarFaturaçãoContratos> AutorizarFaturaçãoContratos { get; set; }
         public virtual DbSet<BarramentosDeVoz> BarramentosDeVoz { get; set; }
         public virtual DbSet<CafetariasRefeitórios> CafetariasRefeitórios { get; set; }
@@ -103,7 +103,8 @@ namespace Hydra.Such.Data.Database
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;");
+                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH_TST;user id=such_portal_user;password=SuchPW.2K17;");
+
             }
         }
 
@@ -282,7 +283,7 @@ namespace Hydra.Such.Data.Database
                     .HasConstraintName("FK_Anexos_Requisição");
             });
 
-            modelBuilder.Entity<AutorizacaoFHRH>(entity =>
+            modelBuilder.Entity<AutorizacaoFhRh>(entity =>
             {
                 entity.HasKey(e => e.NoEmpregado);
 
@@ -321,15 +322,15 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("No_Responsavel_3")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.ValidadorRH1)
+                entity.Property(e => e.ValidadorRh1)
                     .HasColumnName("Validador_RH1")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.ValidadorRH2)
+                entity.Property(e => e.ValidadorRh2)
                     .HasColumnName("Validador_RH2")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.ValidadorRH3)
+                entity.Property(e => e.ValidadorRh3)
                     .HasColumnName("Validador_RH3")
                     .HasMaxLength(20);
             });
