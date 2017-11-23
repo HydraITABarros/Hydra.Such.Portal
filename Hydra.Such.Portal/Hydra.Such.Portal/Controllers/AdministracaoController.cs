@@ -1629,7 +1629,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetConfiguracaoRecursosFolhaHoras()
         {
-            List<TabelaConfRecursosFHViewModel> result = DBTabelaConfRecursosFH.ParseListToViewModel(DBTabelaConfRecursosFH.GetAll());
+            List<TabelaConfRecursosFHViewModel> result = DBTabelaConfRecursosFh.ParseListToViewModel(DBTabelaConfRecursosFh.GetAll());
             return Json(result);
         }
 
@@ -1637,9 +1637,9 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult CreateConfiguracaoRecursosFolhaHoras([FromBody] TabelaConfRecursosFHViewModel data)
         {
 
-            TabelaConfRecursosFH toCreate = DBTabelaConfRecursosFH.ParseToDB(data);
+            TabelaConfRecursosFh toCreate = DBTabelaConfRecursosFh.ParseToDB(data);
             //toCreate.UtilizadorCriacao = User.Identity.Name;
-            var result = DBTabelaConfRecursosFH.Create(toCreate);
+            var result = DBTabelaConfRecursosFh.Create(toCreate);
 
             return Json(data);
         }
@@ -1647,16 +1647,16 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult DeleteConfiguracaoRecursosFolhaHoras([FromBody] TabelaConfRecursosFHViewModel data)
         {
-            var result = DBTabelaConfRecursosFH.Delete(DBTabelaConfRecursosFH.ParseToDB(data));
+            var result = DBTabelaConfRecursosFh.Delete(DBTabelaConfRecursosFh.ParseToDB(data));
             return Json(result);
         }
 
         [HttpPost]
         public JsonResult UpdateConfiguracaoRecursosFolhaHoras([FromBody] List<TabelaConfRecursosFHViewModel> data)
         {
-            List<TabelaConfRecursosFH> results = DBTabelaConfRecursosFH.GetAll();
+            List<TabelaConfRecursosFh> results = DBTabelaConfRecursosFh.GetAll();
 
-            data.RemoveAll(x => DBTabelaConfRecursosFH.ParseListToViewModel(results).Any(
+            data.RemoveAll(x => DBTabelaConfRecursosFh.ParseListToViewModel(results).Any(
                 u =>
                     u.Tipo == x.Tipo &&
                     u.CodigoRecurso == x.CodigoRecurso &&
@@ -1669,9 +1669,9 @@ namespace Hydra.Such.Portal.Controllers
 
             data.ForEach(x =>
             {
-                TabelaConfRecursosFH toUpdate = DBTabelaConfRecursosFH.ParseToDB(x);
+                TabelaConfRecursosFh toUpdate = DBTabelaConfRecursosFh.ParseToDB(x);
                 //toUpdate.UtilizadorModificacao = User.Identity.Name;
-                DBTabelaConfRecursosFH.Update(toUpdate);
+                DBTabelaConfRecursosFh.Update(toUpdate);
             });
             return Json(data);
         }
