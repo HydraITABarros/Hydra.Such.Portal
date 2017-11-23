@@ -17,6 +17,7 @@ using Hydra.Such.Data.Logic.Contracts;
 using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Data.Logic.Viatura;
 using Hydra.Such.Data.ViewModel.Viaturas;
+using Hydra.Such.Data.Logic.Nutrition;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -883,7 +884,16 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.AjudaCustoPartidaChegada;
             return Json(result);
         }
-
+        [HttpPost]
+        public JsonResult GetProductivityUnits()
+        {
+            List<DDMessage> result = DBProductivityUnits.GetAll().Select(x => new DDMessage()
+            {
+                id = x.NºUnidadeProdutiva,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
     }
 
     public class DDMessage

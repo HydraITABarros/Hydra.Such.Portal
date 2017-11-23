@@ -65,6 +65,26 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
+        public static CafetariasRefeitórios GetById(int productivityUnitNo, int type, int code, DateTime explorationStartDate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.CafetariasRefeitórios
+                        .FirstOrDefault(x => x.NºUnidadeProdutiva == productivityUnitNo && 
+                        x.Tipo == type &&
+                        x.Código == code &&
+                        x.DataInícioExploração == explorationStartDate);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static CafetariasRefeitórios GetById(int NºUnidadeProdutiva, string NºProjeto)
         {
             try
@@ -145,30 +165,30 @@ namespace Hydra.Such.Data.Logic.Nutrition
         }
 
 
-        public static CoffeeShopViewModel ParseToViewModel(CafetariasRefeitórios x)
-        {
-            return new CoffeeShopViewModel()
-            {
-                ProductivityUnitNo = x.NºUnidadeProdutiva,
-                Type = x.Tipo,
-                Code = x.Código,
-                StartDateExploration = x.DataInícioExploração.ToString("yyyy-MM-dd"),
-                EndDateExploration = x.DataFimExploração.HasValue ? x.DataFimExploração.Value.ToString("yyyy-MM-dd") : "",
-                Description = x.Descrição,
-                CodeResponsible = x.CódResponsável,
-                CodeRegion = x.CódigoRegião,
-                CodeFunctionalArea = x.CódigoÁreaFuncional,
-                CodeResponsabilityCenter = x.CódigoCentroResponsabilidade,
-                Warehouse = x.Armazém,
-                WarehouseSupplier = x.ArmazémLocal,
-                ProjectNo = x.NºProjeto,
-                Active = x.Ativa,
-                CreateDate = x.DataHoraCriação,
-                CreateUser = x.UtilizadorCriação,
-                UpdateDate = x.DataHoraModificação,
-                UpdateUser = x.UtilizadorModificação
-            };
-        }
+        //public static CoffeeShopViewModel ParseToViewModel(CafetariasRefeitórios x)
+        //{
+        //    return new CoffeeShopViewModel()
+        //    {
+        //        ProductivityUnitNo = x.NºUnidadeProdutiva,
+        //        Type = x.Tipo,
+        //        Code = x.Código,
+        //        StartDateExploration = x.DataInícioExploração.ToString("yyyy-MM-dd"),
+        //        EndDateExploration = x.DataFimExploração.HasValue ? x.DataFimExploração.Value.ToString("yyyy-MM-dd") : "",
+        //        Description = x.Descrição,
+        //        CodeResponsible = x.CódResponsável,
+        //        CodeRegion = x.CódigoRegião,
+        //        CodeFunctionalArea = x.CódigoÁreaFuncional,
+        //        CodeResponsabilityCenter = x.CódigoCentroResponsabilidade,
+        //        Warehouse = x.Armazém,
+        //        WarehouseSupplier = x.ArmazémLocal,
+        //        ProjectNo = x.NºProjeto,
+        //        Active = x.Ativa,
+        //        CreateDate = x.DataHoraCriação,
+        //        CreateUser = x.UtilizadorCriação,
+        //        UpdateDate = x.DataHoraModificação,
+        //        UpdateUser = x.UtilizadorModificação
+        //    };
+        //}
 
 
         public static List<CoffeeShopViewModel> ParseListToViewModel(List<CafetariasRefeitórios> x)
@@ -177,6 +197,44 @@ namespace Hydra.Such.Data.Logic.Nutrition
 
             x.ForEach(y => result.Add(ParseToViewModel(y)));
             return result;
+        }
+        
+        public static CoffeeShopViewModel ParseToViewModel(this CafetariasRefeitórios item)
+        {
+            if (item != null)
+            {
+                return new CoffeeShopViewModel()
+                {
+                    ProductivityUnitNo = item.NºUnidadeProdutiva,
+                    Type = item.Tipo,
+                    Code = item.Código,
+                    StartDateExploration = item.DataInícioExploração.ToString("yyyy-MM-dd"),
+                    EndDateExploration = item.DataFimExploração.HasValue ? item.DataFimExploração.Value.ToString("yyyy-MM-dd") : "",
+                    Description = item.Descrição,
+                    CodeResponsible = item.CódResponsável,
+                    CodeRegion = item.CódigoRegião,
+                    CodeFunctionalArea = item.CódigoÁreaFuncional,
+                    CodeResponsabilityCenter = item.CódigoCentroResponsabilidade,
+                    Warehouse = item.Armazém,
+                    WarehouseSupplier = item.ArmazémLocal,
+                    ProjectNo = item.NºProjeto,
+                    Active = item.Ativa,
+                    CreateDate = item.DataHoraCriação,
+                    CreateUser = item.UtilizadorCriação,
+                    UpdateDate = item.DataHoraModificação,
+                    UpdateUser = item.UtilizadorModificação
+                };
+            }
+            return null;
+        }
+
+        public static List<CoffeeShopViewModel> ParseToViewModel(this List<CafetariasRefeitórios> items)
+        {
+            List<CoffeeShopViewModel> coffeeShops = new List<CoffeeShopViewModel>();
+            if (items != null)
+                items.ForEach(x =>
+                    coffeeShops.Add(x.ParseToViewModel()));
+            return coffeeShops;
         }
     }
 }
