@@ -587,6 +587,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetProjectListDiary()
+        {
+            List<DDMessageString> result = DBProjects.GetAll().Where(x => x.Estado != 5 && x.Estado != 4).Select(x => new DDMessageString()
+            {
+                id = x.NºProjeto,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+        
+        [HttpPost]
         public JsonResult GetContabGroupTypesOM_Type()
         {
             List<EnumData> result = EnumerablesFixed.ContabGroupTypesOM_Type;
