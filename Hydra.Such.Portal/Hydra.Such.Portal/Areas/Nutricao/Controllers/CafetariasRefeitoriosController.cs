@@ -25,17 +25,17 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         {
             var items = DBCoffeeShops.GetAll().ParseToViewModel();
 
-            ////Apply User Dimensions Validations
-            //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            ////Regions
-            //if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.CodeRegion));
-            ////FunctionalAreas
-            //if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.CodeFunctionalArea));
-            ////ResponsabilityCenter
-            //if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CodeResponsabilityCenter));
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
+                items.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && (y.ValorDimensão == x.CodeRegion || string.IsNullOrEmpty(x.CodeRegion))));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
+                items.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && (y.ValorDimensão == x.CodeFunctionalArea || string.IsNullOrEmpty(x.CodeFunctionalArea))));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
+                items.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && (y.ValorDimensão == x.CodeResponsabilityCenter || string.IsNullOrEmpty(x.CodeResponsabilityCenter))));
 
             return Json(items);
         }
@@ -43,12 +43,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [Area("Nutricao")]
         public IActionResult Detalhes(int productivityUnitNo, int type, int code, string explorationStartDate)
         {
-            UserAccessesViewModel userPermissions = new UserAccessesViewModel() {
-                Create = true,
-                Delete = true,
-                Read = true,
-                Update = true
-            }; //DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 2, 2);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 35);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -94,20 +89,6 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             {
                 item = new CoffeeShopViewModel();
             }
-
-
-            ////Apply User Dimensions Validations
-            //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            ////Regions
-            //if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.CodeRegion));
-            ////FunctionalAreas
-            //if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.CodeFunctionalArea));
-            ////ResponsabilityCenter
-            //if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CodeResponsabilityCenter));
-
             return Json(item);
         }
 
