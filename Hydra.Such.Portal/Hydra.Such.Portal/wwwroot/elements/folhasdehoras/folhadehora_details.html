@@ -1817,7 +1817,10 @@
                 _getEmpoyeeNAVResponse: function (e) {
                     var self = this;
                     if (this.getEmpoyeeNAV != null) {
-                        this.$.empregadoNome.value = this.getEmpoyeeNAV[0].value;
+                        this.$.empregadoNome.value = this.getEmpoyeeNAV.EmpregadoNome.value;
+
+                        this.$.validadores.value = this.getEmpoyeeNAV.validadores.value;
+
                     }
                 },
 

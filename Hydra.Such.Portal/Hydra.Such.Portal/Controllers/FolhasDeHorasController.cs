@@ -335,7 +335,16 @@ namespace Hydra.Such.Portal.Controllers
         {
             FolhaDeHorasViewModel FH = new FolhaDeHorasViewModel();
 
-            //List<Autori>
+            AutorizacaoFHRH Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado == idEmployee).SingleOrDefault();
+
+            if (Autorizacao != null)
+            {
+                FH.Responsavel1No = Autorizacao.NoResponsavel1;
+                FH.Responsavel2No = Autorizacao.NoResponsavel2;
+                FH.Responsavel3No = Autorizacao.NoResponsavel3;
+                FH.Validadores = string.Concat(Autorizacao.ValidadorRH1 + " - " + Autorizacao.ValidadorRH2 + " - " + Autorizacao.ValidadorRH3);
+            };
+
 
             List<DDMessageString> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No == idEmployee).Select(x => new DDMessageString()
             {
@@ -343,7 +352,9 @@ namespace Hydra.Such.Portal.Controllers
                 value = x.Name
             }).ToList();
 
-            return Json(result);
+            FH.EmpregadoNome = result[0].value;
+
+            return Json(FH);
         }
 
 
