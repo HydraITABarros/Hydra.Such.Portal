@@ -1417,7 +1417,6 @@
 
                 //PERCURSO
                 _createPercurso: function () {
-                    debugger;
                     if (this.$.percursoOrigem.validate() &
                         this.$.percursoDestino.validate() &
                         this.$.percursoDataViagem.validate()) {
@@ -1634,7 +1633,6 @@
 
                 //FOLHA DE HORAS
                 _updateFolhaDeHorasResponse: function (e) {
-                    debugger;;;;
                     if (this.FolhaDeHorasUpdated) {
                         this._showMessage('Folha de Horas actualizada com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
@@ -1817,18 +1815,18 @@
                     this.$.getEmpoyeeNAV_ajax.generateRequest();
                 },
                 _getEmpoyeeNAVResponse: function (e) {
+                    debugger;
                     var self = this;
                     if (this.getEmpoyeeNAV != null) {
-                        this.$.empregadoNome.value = this.getEmpoyeeNAV.EmpregadoNome.value;
+                        this.$.empregadoNome.value = this.getEmpoyeeNAV.empregadoNome;
 
-                        this.$.validadores.value = this.getEmpoyeeNAV.validadores.value;
+                        this.$.validadores.value = this.getEmpoyeeNAV.validadores;
 
                     }
                 },
 
                 //DATA INICIO
                 _DataInicio: function (e) {
-                    debugger;
                     var self = this;
                     if (this.$.dataPartidaTexto.value != null) {
                         this.$.percursoDataViagem.value = this.$.dataPartidaTexto.value;

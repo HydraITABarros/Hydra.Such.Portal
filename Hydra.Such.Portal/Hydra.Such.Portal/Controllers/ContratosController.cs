@@ -1041,6 +1041,7 @@ namespace Hydra.Such.Portal.Controllers
                             List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(contractNo, int.Parse(versionNo)).OrderBy(x => x.NºLinha).ToList();
                             try
                             {
+
                                 thisHeader.TipoContrato = originType;
                                 thisHeader.NºDeContrato = contractNo;
                                 thisHeader.NºContrato = newNumeration;

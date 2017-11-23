@@ -3,27 +3,27 @@ using System.Collections.Generic;
 
 namespace Hydra.Such.Data.Database
 {
-    public partial class ConfiguracaoCCP
+    public partial class ConfiguracaoCcp
     {
-        public string CCPEmailJurididos { get; set; }
-        public string CCPEmail2Juridicos { get; set; }
-        public string CCPEmailFinanceiros { get; set; }
-        public string CCPEmail2Financeiros { get; set; }
-        public string CCPEmailCA { get; set; }
-        public string CCPEmailContabilidade { get; set; }
-        public string CCPEmail2Contabilidade { get; set; }
-        public string CCPEmail3Contabilidade { get; set; }
-        public string CCPEmailCompras { get; set; }
-        public string CCPEmail2Compras { get; set; }
-        public string CCPEmail3Compras { get; set; }
-        public string CCPEmail4Compras { get; set; }
-        public string CCPEmail5Compras { get; set; }
-        public string CCPEmail6Compras { get; set; }
-        public string CCPEmail7Compras { get; set; }
-        public string CCPEmail8Compras { get; set; }
-        public string CCPEmail9Compras { get; set; }
-        public string CCPEmail10Compras { get; set; }
-        public string CCPEmail11Compras { get; set; }
-
+        public string CcpemailJurididos { get; set; }
+        public string Ccpemail2Juridicos { get; set; }
+        public string CcpemailFinanceiros { get; set; }
+        public string Ccpemail2Financeiros { get; set; }
+        public string CcpemailCa { get; set; }
+        public string CcpemailContabilidade { get; set; }
+        public string Ccpemail2Contabilidade { get; set; }
+        public string Ccpemail3Contabilidade { get; set; }
+        public string CcpemailCompras { get; set; }
+        public string Ccpemail2Compras { get; set; }
+        public string Ccpemail3Compras { get; set; }
+        public string Ccpemail4Compras { get; set; }
+        public string Ccpemail5Compras { get; set; }
+        public string Ccpemail6Compras { get; set; }
+        public string Ccpemail7Compras { get; set; }
+        public string Ccpemail8Compras { get; set; }
+        public string Ccpemail9Compras { get; set; }
+        public string Ccpemail10Compras { get; set; }
+        public string Ccpemail11Compras { get; set; }
+        public int Id { get; set; }
     }
 }
