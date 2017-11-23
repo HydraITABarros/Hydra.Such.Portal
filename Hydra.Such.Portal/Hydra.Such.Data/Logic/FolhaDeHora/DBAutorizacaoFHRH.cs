@@ -8,15 +8,15 @@ using System.Text;
 
 namespace Hydra.Such.Data.Logic.FolhaDeHora
 {
-    public class DBAutorizacaoFhRh
+    public class DBAutorizacaoFHRH
     {
-        public static List<AutorizacaoFhRh> GetAll()
+        public static List<AutorizacaoFHRH> GetAll()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.AutorizacaoFhRh.ToList();
+                    return ctx.AutorizacaoFHRH.ToList();
                 }
             }
             catch (Exception e)
@@ -25,14 +25,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static AutorizacaoFhRh Create(AutorizacaoFhRh ObjectToCreate)
+        public static AutorizacaoFHRH Create(AutorizacaoFHRH ObjectToCreate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToCreate.DataHoraCriação = DateTime.Now;
-                    ctx.AutorizacaoFhRh.Add(ObjectToCreate);
+                    ctx.AutorizacaoFHRH.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
@@ -45,14 +45,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static AutorizacaoFhRh Update(AutorizacaoFhRh ObjectToUpdate)
+        public static AutorizacaoFHRH Update(AutorizacaoFHRH ObjectToUpdate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToUpdate.DataHoraÚltimaAlteração = DateTime.Now;
-                    ctx.AutorizacaoFhRh.Update(ObjectToUpdate);
+                    ctx.AutorizacaoFHRH.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
 
@@ -65,13 +65,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static bool Delete(AutorizacaoFhRh ObjectToDelete)
+        public static bool Delete(AutorizacaoFHRH ObjectToDelete)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.AutorizacaoFhRh.Remove(ObjectToDelete);
+                    ctx.AutorizacaoFHRH.Remove(ObjectToDelete);
                     ctx.SaveChanges();
                 }
 

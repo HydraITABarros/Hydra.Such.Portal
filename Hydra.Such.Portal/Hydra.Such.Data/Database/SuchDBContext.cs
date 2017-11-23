@@ -11,7 +11,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<AcessosUtilizador> AcessosUtilizador { get; set; }
         public virtual DbSet<AçõesDeConfeção> AçõesDeConfeção { get; set; }
         public virtual DbSet<Anexos> Anexos { get; set; }
-        public virtual DbSet<AutorizacaoFhRh> AutorizacaoFhRh { get; set; }
+        public virtual DbSet<AutorizacaoFHRH> AutorizacaoFHRH { get; set; }
         public virtual DbSet<AutorizarFaturaçãoContratos> AutorizarFaturaçãoContratos { get; set; }
         public virtual DbSet<BarramentosDeVoz> BarramentosDeVoz { get; set; }
         public virtual DbSet<CafetariasRefeitórios> CafetariasRefeitórios { get; set; }
@@ -282,7 +282,7 @@ namespace Hydra.Such.Data.Database
                     .HasConstraintName("FK_Anexos_Requisição");
             });
 
-            modelBuilder.Entity<AutorizacaoFhRh>(entity =>
+            modelBuilder.Entity<AutorizacaoFHRH>(entity =>
             {
                 entity.HasKey(e => e.NoEmpregado);
 
@@ -321,15 +321,15 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("No_Responsavel_3")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.ValidadorRh1)
+                entity.Property(e => e.ValidadorRH1)
                     .HasColumnName("Validador_RH1")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.ValidadorRh2)
+                entity.Property(e => e.ValidadorRH2)
                     .HasColumnName("Validador_RH2")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.ValidadorRh3)
+                entity.Property(e => e.ValidadorRH3)
                     .HasColumnName("Validador_RH3")
                     .HasMaxLength(20);
             });
