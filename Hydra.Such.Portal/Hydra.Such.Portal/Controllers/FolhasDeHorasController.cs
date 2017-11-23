@@ -329,7 +329,7 @@ namespace Hydra.Such.Portal.Controllers
                 return null;
             }
         }
-
+        
         [HttpPost]
         public JsonResult GetEmployeeNome([FromBody] string idEmployee)
         {
@@ -345,6 +345,7 @@ namespace Hydra.Such.Portal.Controllers
                 FH.Validadores = string.Concat(Autorizacao.ValidadorRH1 + " - " + Autorizacao.ValidadorRH2 + " - " + Autorizacao.ValidadorRH3);
             };
 
+            FH.EmpregadoNome = DBUserConfigurations.GetById(Autorizacao.NoResponsavel1).Nome;
 
             List<DDMessageString> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No == idEmployee).Select(x => new DDMessageString()
             {
@@ -352,7 +353,10 @@ namespace Hydra.Such.Portal.Controllers
                 value = x.Name
             }).ToList();
 
-            FH.EmpregadoNome = result[0].value;
+            if (result.Count > 0)
+            {
+                FH.EmpregadoNome = result[0].value;
+            }
 
             return Json(FH);
         }
