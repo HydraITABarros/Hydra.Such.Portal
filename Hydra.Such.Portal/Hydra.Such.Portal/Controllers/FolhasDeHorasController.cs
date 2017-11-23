@@ -335,14 +335,14 @@ namespace Hydra.Such.Portal.Controllers
         {
             FolhaDeHorasViewModel FH = new FolhaDeHorasViewModel();
 
-            AutorizacaoFHRH Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado == idEmployee).SingleOrDefault();
+            AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado == idEmployee).SingleOrDefault();
 
             if (Autorizacao != null)
             {
                 FH.Responsavel1No = Autorizacao.NoResponsavel1;
                 FH.Responsavel2No = Autorizacao.NoResponsavel2;
                 FH.Responsavel3No = Autorizacao.NoResponsavel3;
-                FH.Validadores = string.Concat(Autorizacao.ValidadorRH1 + " - " + Autorizacao.ValidadorRH2 + " - " + Autorizacao.ValidadorRH3);
+                FH.Validadores = string.Concat(Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3);
             };
 
             FH.EmpregadoNome = DBUserConfigurations.GetById(Autorizacao.NoResponsavel1).Nome;
