@@ -76,6 +76,14 @@
         <iron-ajax url="/PopulateDropdowns/GetServiceGroup" last-response="{{ServiceGroupData}}" id="ajax_ServiceGroup" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetClientService" last-response="{{ServiceClientData}}"  id="ajax_SServiceClient" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Projetos/GetProjectDetails"
+                   last-response="{{projdata}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <div>
             <div class="row">
                 <div class="col-lg-2">
@@ -1047,6 +1055,11 @@
         Polymer({
             is: 'x-projectdiary',
             properties: {
+                disabledFields: {
+                    type: Boolean,
+                    notify: true,
+                    value: false
+                },
                 ddMealTypes: {
                     type: String,
                     notify: true,
@@ -1253,6 +1266,9 @@
                     this.$.grid_databound_ajax.params = { "allProjs": false };
                     this.$.grid_databound_ajax.generateRequest();
                     this.$.projectMovementTable.clearCache();
+                    
+                    this.$.page_databound_ajax.body = JSON.stringify({ "ProjectNo": this.paramprojno });
+                    this.$.page_databound_ajax.generateRequest();
                 } else {
                     this.disabledProjectNo = !this._permissions.create;
                     this.$.grid_databound_ajax.body = JSON.stringify("");
@@ -1268,6 +1284,11 @@
                 this.$.ajax_SServiceClient.params = { "allProjs": true };
                 this.$.ajax_SServiceClient.generateRequest();
                 
+            },
+            __responseProcessor: function () {
+                if (this.projdata.status >= 4) {
+                    this.disabledFields = true;
+                }
             },
 
             openToastSuccess: function(message) {

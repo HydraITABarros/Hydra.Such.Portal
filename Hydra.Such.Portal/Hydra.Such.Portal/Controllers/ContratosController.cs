@@ -104,6 +104,9 @@ namespace Hydra.Such.Portal.Controllers
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
+            List<EnumData> status = EnumerablesFixed.ContractStatus;
+            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
+
             return Json(result);
         }
 
@@ -714,6 +717,8 @@ namespace Hydra.Such.Portal.Controllers
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
+            List<EnumData> status = EnumerablesFixed.ContractStatus;
+            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
             return Json(result);
         }
 
@@ -999,6 +1004,8 @@ namespace Hydra.Such.Portal.Controllers
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
+            List<EnumData> status = EnumerablesFixed.ContractStatus;
+            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
             return Json(result);
         }
         

@@ -295,7 +295,7 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-date-picker label="Data Alteração" id="mProposalChangeDate" name="ProposalChangeDate" value="{{data.proposalChangeDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                            <vaadin-date-picker label="Data Alteração" id="mProposalChangeDate" name="ProposalChangeDate" value="{{data.proposalChangeDate}}" disabled></vaadin-date-picker>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.internalNumeration}}" id="mInternalNumeration" name="mInternalNumeration" label="Numeração Interna" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
@@ -402,23 +402,6 @@
                                                             <br />
                                                             <vaadin-date-picker id="mProposalDelivery" name="mProposalDelivery" value="{{data.proposalDelivery}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker> 
                                                         </div>
-                                                        <!--<div class="col-md-3 ">
-                            <vaadin-date-picker label="Data Receção Requisição" id="mReceiptDateRequisition" name="receiptDateRequisition" value="{{data.receiptDateRequisition}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
-                        </div>-->
-                                                        <!--<div class="col-md-3 ">
-                            <vaadin-date-picker label="Data Expiração" id="dueDate" name="dueDate" value="{{data.dueDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                        </div>
-                        <div class="col-md-3 ">
-                            <vaadin-combo-box items="[[CBChangeStatus]]" id="mChangeStatus" item-value-path="id" item-label-path="value" value="{{data.changeStatus}}" label="Estado Alteração" disabled="{{ !_permissions.update }}">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>-->
                                                     </div>
                                                 </div>
                                             </div>
@@ -1614,7 +1597,7 @@
                     //GET CONTRACT DATA
                     debugger;
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
-                    this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
+                    this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo, "ContractType": 1 });
                     this.$.page_databound_ajax.generateRequest();
 
                     if (this._contractno == "") {
