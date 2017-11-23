@@ -4,25 +4,25 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Nutrition
 {
-    public class CoffeeShopViewModel
+    public class CoffeeShopViewModel : ErrorHandler
     {
-        public int ProductivityUnitNo { get; set; }
-        public int Type { get; set; }
-        public int Code { get; set; }
-        public string Description { get; set; }
-        public string CodeRegion { get; set; }
-        public string CodeFunctionalArea { get; set; }
-        public string CodeResponsabilityCenter { get; set; }
-        public string CodeResponsible { get; set; }
-        public string StartDateExploration { get; set; }
-        public string EndDateExploration { get; set; }
-        public string Warehouse { get; set; }
-        public string WarehouseSupplier { get; set; }
+        public int ProductivityUnitNo { get; set; } = 0;
+        public int Type { get; set; } = 0;
+        public int Code { get; set; } = 0;
+        public string Description { get; set; } = string.Empty;
+        public string CodeRegion { get; set; } = string.Empty;
+        public string CodeFunctionalArea { get; set; } = string.Empty;
+        public string CodeResponsabilityCenter { get; set; } = string.Empty;
+        public string CodeResponsible { get; set; } = string.Empty;
+        public string StartDateExploration { get; set; } = string.Empty;
+        public string EndDateExploration { get; set; } = string.Empty;
+        public string Warehouse { get; set; } = string.Empty;
+        public string WarehouseSupplier { get; set; } = string.Empty;
         public string ProjectNo { get; set; }
-        public bool? Active { get; set; }
-        public string UpdateUser { get; set; }
+        public bool? Active { get; set; } = false;
+        public string UpdateUser { get; set; } = string.Empty;
         public DateTime? CreateDate { get; set; }
-        public string CreateUser { get; set; }
+        public string CreateUser { get; set; } = string.Empty;
         public DateTime? UpdateDate { get; set; }
     }
 }
