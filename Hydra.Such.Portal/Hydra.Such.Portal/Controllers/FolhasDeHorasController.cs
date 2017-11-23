@@ -330,6 +330,7 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
         
+
         [HttpPost]
         public JsonResult GetEmployeeNome([FromBody] string idEmployee)
         {
