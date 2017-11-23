@@ -19,6 +19,8 @@
 <link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button-group.html">
 
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
+<link rel="import" href="/lib/neon-animation/web-animations.html">
 
 <h1>Detalhes Procedimento</h1>
 
@@ -28,6 +30,7 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
+
         <style>
             vaadin-combo-box {
                 margin-top: 0px !important;
@@ -64,7 +67,26 @@
                 line-height: 1px;
                 background-color: black;
             }
+
+            paper-tooltip {
+                padding: 11px;
+                right: 5px;
+                opacity: 1;
+                box-sizing: border-box;
+                pointer-events: none;
+                max-width: 500px;
+                left: 2px !important;
+                right: none;
+                --paper-tooltip: {
+                    font-size: 13px;
+                    background: white;
+                    color: #2A2A2A;
+                    padding: 10px;
+                    line-height: 1.3em;
+                }
+            }
         </style>
+
 
         <!-- Dropdowns populate.b -->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode"
@@ -269,7 +291,7 @@
                     <paper-tab>Avaliação Técnica</paper-tab>
                     <paper-tab>Critérios Adjudicação</paper-tab>
                     <paper-tab>Outros</paper-tab>
-                    <paper-tab>Linhas Produtos</paper-tab>
+                    <paper-tab>Linhas Produtos / Serviços</paper-tab>
                 </paper-tabs>
                 <iron-pages selected="{{unidadeProdutivaSelected}}">
                     <!-- Tab Unidade Produtiva - Avaliação Tecnica-->
@@ -460,114 +482,122 @@
                     <!-- Tab Unidade Produtiva - Critérios de Adjudicação-->
                     <div>
                         <div class="row break_clear">
-                            <div class="col-sm-3">
-                                <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" id="precoMaisBaixo" item-label-path="stringValue" value="{{data.precoMaisBaixo}}" label="Preço mais baixo?">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.stringValue]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" id="precoMaisBaixo" item-label-path="stringValue" value="{{data.precoMaisBaixo}}" label="Preço mais baixo?">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.stringValue]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <paper-tooltip for="descPrecoMaisBaixo" position="top" offset="-1" animation-delay="1">
+                                            Preço mais baixo
+                                        </paper-tooltip>
+                                        <such-textarea rows="5" value="{{data.descPrecoMaisBaixo}}" id="descPrecoMaisBaixo" name="descPrecoMaisBaixo" label="Descrição"> </such-textarea>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="col-sm-6">
-                                <such-textarea rows="5" value="{{data.precoMaisBaixoDescricao}}" id="precoMaisBaixoDescricao" name="precoMaisBaixoDescricao" label="Descrição"> </such-textarea>
-                            </div>
-                            <div class="col-sm-3">
-                                <br><i>Preço mais baixo</i>
-                            </div>
                         </div>
+
 
                         <div class="row break_clear">
-                            <div class="col-sm-3">
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" id="propostaEconMaisVantajosa" item-label-path="stringValue" value="{{data.propostaEconMaisVantajosa}}" label="Proposta economicamente mais vantajosa?">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.stringValue]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
 
-                                <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" id="propostaEconomicamenteMaisVantajosa" item-label-path="stringValue" value="{{data.propostaEconomica}}" label="Proposta economicamente mais vantajosa?">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.stringValue]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <such-textarea rows="5" value="{{data.propostaEconomicamenteMaisVantajosaDescricao}}" id="propostaEconomicamenteMaisVantajosaDescricao" name="propostaEconomicamenteMaisVantajosaDescricao" label="Descrição"> </such-textarea>
-                            </div>
-                            <div class="col-sm-3">
-                                <br><i>Proposta economicamente mais vantajosa (Falta Observacoes)</i>
+                                    <div class="col-sm-8">
+                                        <paper-tooltip for="descPropostaEconMaisVantajosa" position="top" offset="-1" animation-delay="1">
+                                            Definição de subfactores: Preço; Características técnicas (parâmetros a avaliar e outros que sejam relevantes), etc. Todos os fatores e subfactores têm de ser parametrizados e quantificados. <br />
+                                            Qualidade, em sentido lato, não é parâmetro para critério de adjudicação. Caso seja um requisito devem colocar em observações do procedimento para definição no Caderno de Encargos.
+                                        </paper-tooltip>
+                                        <such-textarea rows="5" value="{{data.descPropostaEconMaisVantajosa}}" id="descPropostaEconMaisVantajosa" name="descPropostaEconMaisVantajosa" label="Descrição"> </such-textarea>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
                         <br /><br />
 
                     </div>
                     <!-- Tab Unidade Produtiva - Outros-->
                     <div>
-
-                        <div class="row break_clear">
-                            <div class="col-sm-3">
-                                <vaadin-combo-box value="{{data.propostaVariante}}" label="Proposta Variante?" items="[[LBoolValues]]" item-value-path="booleanValue" id="propostaVariante" item-label-path="stringValue">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.stringValue]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <such-textarea rows="5" value="{{data.propostaVarianteDescricao}}" id="propostaVarianteDescricao" name="propostaVarianteDescricao" label="Descrição"> </such-textarea>
-                            </div>
-                            <div class="col-sm-3">
-                                <br><i>Proposta Variante (observacoes)</i>
-                            </div>
-                        </div>
-
-                        <div class="row break_clear">
-                            <div class="col-sm-3">
-                                <vaadin-combo-box value="{{data.abertoFechadoMercado}}" label="Aberto ou fechado ao mercado" items="[[LBoolValues]]" item-value-path="booleanValue" id="abertoFechadoMercado" item-label-path="stringValue">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.stringValue]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <such-textarea rows="5" value="{{data.abertoFechadoMercadoDescricao}}" id="abertoFechadoMercadoDescricao" name="abertoFechadoMercadoDescricao" label="Descrição"> </such-textarea>
-                            </div>
-                            <div class="col-sm-3">
-                                <br><i>abertoFechadoMercado (observacoes)</i>
-                            </div>
-                        </div>
-
-
                         <div class="row break_clear">
                             <div class="col-sm-6">
                                 <div class="row">
-                                    <div class="col-sm-6">
-                                        <vaadin-text-field rows="5" value="{{data.prazoEntregaRealizacaoServico}}" id="prazoEntregaRealizacaoServico" name="prazoEntregaPrestacaoServico" label="<a data-toggle='tooltip' title='Hooray!' >Prazo Entrega / Realização Serviço</a>"> </vaadin-text-field>
+                                    <div class="col-sm-3">
+                                        <vaadin-combo-box value="{{data.propostaVariante}}" label="Proposta Variante?" items="[[LBoolValues]]" item-value-path="booleanValue" id="propostaVariante" item-label-path="stringValue">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.stringValue]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
                                     </div>
-                                    <div class="col-sm-6">
-                                        <br><i>Prazo Entrega / Realização Serviço (observacoes)</i>
+
+                                    <div class="col-sm-9">
+                                        <paper-tooltip for="propostaVarianteDescricao" position="top" offset="-1" animation-delay="1">
+                                            Não aceitando propostas variantes o concorrente tem que apresentar exatamente o solicitado nas peças do procedimento, sendo um motivo de exclusão toda a proposta apresentada que não cumpra os requisitos. <br />
+                                            O Fornecedor não pode apresentar alternativas.
+                                        </paper-tooltip>
+                                        <such-textarea rows="5" value="{{data.propostaVarianteDescricao}}" id="propostaVarianteDescricao" name="propostaVarianteDescricao" label="Descrição"> </such-textarea>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-sm-3">
-                                <vaadin-text-field rows="5" value="{{data.locaisDeEntrega}}" id="locaisDeEntrega" name="locaisDeEntrega" label="Locais de Entrega"> </vaadin-text-field>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <vaadin-combo-box value="{{data.abertoFechadoAoMercado}}" label="Aberto ou fechado ao mercado" items="[[LBoolValues]]" item-value-path="booleanValue" id="abertoFechadoAoMercado" item-label-path="stringValue">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.stringValue]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+
+                                    <div class="col-sm-8">
+                                        <paper-tooltip for="descAbertoFechadoAoMercado" position="top" offset="-1" animation-delay="1">
+                                            Aberto ao mercado, todos os concorrentes registados na categoria visualizam o procedimento, contudo, permite em simultâneo um convite direcionado aos fornecedores identificados pelo SUCH a apresentar proposta. <br />
+                                            Fechado ao mercado, apenas os fornecedores convidados a apresentar proposta visualizam o procedimento.
+
+                                        </paper-tooltip>
+                                        <such-textarea rows="5" value="{{data.descAbertoFechadoAoMercado}}" id="descAbertoFechadoAoMercado" name="descAbertoFechadoAoMercado" label="Descrição"> </such-textarea>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-sm-3">
-                                <vaadin-text-field rows="5" value="{{data.observacoesAdicionaisCadernoEncargos}}" id="observacoesAdicionaisCadernoEncargos" name="observacoesAdicionaisCadernoEncargos" label="Observações adicionais a fixar no caderno de encargos"> </vaadin-text-field>
+                        </div>
+
+                        <div class="row break_clear">
+
+                            <div class="col-sm-6">
+                                <paper-tooltip for="prazoEntrega" position="top" offset="-1" animation-delay="1">
+                                    Caso exista imposição da U.P. para o Cliente.
+                                </paper-tooltip>
+                                <vaadin-text-field rows="5" value="{{data.prazoEntrega}}" id="prazoEntrega" name="prazoEntrega" label="Prazo Entrega / Realização Serviço"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-6">
+                                <vaadin-text-field rows="5" value="{{data.locaisEntrega}}" id="locaisEntrega" name="locaisEntrega" label="Locais de Entrega"> </vaadin-text-field>
                             </div>
 
                         </div>
@@ -575,52 +605,146 @@
                         <div class="row break_clear">
 
                             <div class="col-sm-6">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <vaadin-text-field rows="5" value="{{data.estimativaPreco}}" id="estimativaPreco" name="estimativaPreco" label="Estimativa de preço"> </vaadin-text-field>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <br><i>Estimativa de preço (observacoes)</i>
-                                    </div>
-                                </div>
+                                <vaadin-text-field rows="5" value="{{data.observacoesAdicionais}}" id="observacoesAdicionais" name="observacoesAdicionais" label="Observações adicionais a fixar no caderno de encargos"> </vaadin-text-field>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-6">
+                                <paper-tooltip for="estimativaPreco" position="top" offset="-1" animation-delay="1">
+                                    Obrigatório indicar, mesmo quando não se pretenda estabelecer preço base.
+                                </paper-tooltip>
+                                <vaadin-text-field rows="5" value="{{data.estimativaPreco}}" id="estimativaPreco" name="estimativaPreco" label="Estimativa de preço"> </vaadin-text-field>
+                            </div>
+
+                        </div>
+
+                        <div class="row break_clear">
+
+                            <div class="col-sm-6">
                                 <vaadin-text-field rows="5" value="{{data.fornecedoresSugeridos}}" id="fornecedoresSugeridos" name="fornecedoresSugeridos" label="fornecedores Sugeridos"> </vaadin-text-field>
                             </div>
 
-                        </div>
-
-                        <div class="row break_clear">
-                            <div class="col-sm-3">
-                                <vaadin-combo-box value="{{data.fornecedorExclusivo}}" label="Fornecedor Exclusivo" items="[[LBoolValues]]" item-value-path="booleanValue" id="fornecedorExclusivo" item-label-path="stringValue">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.stringValue]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
                             <div class="col-sm-6">
-                                <such-textarea rows="5" value="{{data.fornecedorExclusivoDescricao}}" id="fornecedorExclusivoDescricao" name="fornecedorExclusivoDescricao" label="Descrição"> </such-textarea>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <vaadin-combo-box value="{{data.fornecedorExclusivo}}" label="Fornecedor Exclusivo" items="[[LBoolValues]]" item-value-path="booleanValue" id="fornecedorExclusivo" item-label-path="stringValue">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.stringValue]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <paper-tooltip for="descFornecedorExclusivo" position="top" offset="-1" animation-delay="1">
+                                            Fundamentação de exclusividade: note-se que este parametro será validado conforme CCP.
+                                        </paper-tooltip>
+                                        <such-textarea rows="5" value="{{data.descFornecedorExclusivo}}" id="descFornecedorExclusivo" name="descFornecedorExclusivo" label="Descrição"> </such-textarea>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-sm-3">
-                                <br><i>fornecedorExclusivoDescricao (observacoes)</i>
+                            <div class="col-sm-6">
+                                <vaadin-text-field value="{{data.interlocutor}}" id="interlocutor" name="interlocutor" label="Interlocutor Preferêncial"> </vaadin-text-field>
                             </div>
                         </div>
-
-                        <div class="row break_clear">
-
-                            <div class="col-sm-3">
-                                <vaadin-text-field value="{{data.interlocutorPreferencial}}" id="interlocutorPreferencial" name="interlocutorPreferencial" label="Interlocutor Preferêncial"> </vaadin-text-field>
-                            </div>
-
-                        </div>
-
                         <br /><br />
-
+                    </div>
+                    <!-- Tab Unidade Produtiva - Linhas Produtos Servicos-->
+                    <div>
+                        <div class="break_clear">
+                            <vaadin-grid id="gridProdutosServicos" aria-label="gridProdutosServicos" items="{{data.produtosServicos}}" class="grid">
+                                <vaadin-grid-column width="10%">
+                                    <template class="header">
+                                        Tipo
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field type="text" value="{{ item.tipo }}"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="10%">
+                                    <template class="header">
+                                        Cod. Localização
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field type="text" value="{{ item.codigoLocalizacao }}"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="8%">
+                                    <template class="header">
+                                        <center>
+                                            Nº
+                                        </center>
+                                    </template>
+                                    <template>
+                                        <center>
+                                            <vaadin-checkbox checked="{{item.no}}"></vaadin-checkbox>
+                                        </center>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="8%">
+                                    <template class="header">
+                                        <center>
+                                            Descrição
+                                        </center>
+                                    </template>
+                                    <template>
+                                        <center>
+                                            <vaadin-checkbox checked="{{item.descricao}}"></vaadin-checkbox>
+                                        </center>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="6%">
+                                    <template class="header">
+                                        <center>
+                                            Descrição 2
+                                        </center>
+                                    </template>
+                                    <template>
+                                        <center>
+                                            <vaadin-checkbox checked="{{item.descricao2}}"></vaadin-checkbox>
+                                        </center>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="8%">
+                                    <template class="header">
+                                        <center>
+                                            Cod. Unidade
+                                        </center>
+                                    </template>
+                                    <template>
+                                        <center>
+                                            <vaadin-checkbox checked="{{item.codigoUnidade}}"></vaadin-checkbox>
+                                        </center>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="20%">
+                                    <template class="header">
+                                        Qtd. a Requerer
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field type="text" value="{{ item.quantidadeRequerer }}"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="20%">
+                                    <template class="header">
+                                        Custo Unitário
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field type="text" value="{{ item.custoUnitario }}"></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="10%">
+                                    <template class="header">
+                                    </template>
+                                    <template>
+                                        <!--<center>-->
+                                        <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                        <!--</center>-->
+                                    </template>
+                                </vaadin-grid-column>
+                            </vaadin-grid>
+                        </div>
+                        <br /><br />
                     </div>
                 </iron-pages>
 
@@ -1017,7 +1141,7 @@
                     }
                 },
                 _submitProcedimentoResponse: function (e) {
-                    
+
                 },
                 //Helpers
                 _executeRequest: function (url, data) {

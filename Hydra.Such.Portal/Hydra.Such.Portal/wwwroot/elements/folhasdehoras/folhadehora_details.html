@@ -88,15 +88,6 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/FolhasDeHoras/DeleteFolhaDeHoras"
-                   last-response="{{deletedData}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_delete_folhadehora"
-                   on-response="_responseDeleteProcessor"
-                   content-type="application/json">
-        </iron-ajax>
-
         <iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHoras"
                    last-response="{{FolhaDeHorasUpdated}}"
                    method="post"
@@ -264,23 +255,13 @@
 
 
 
-        <!--<template is="dom-if" if="{{ !_isCreate }}">
-            <div class="row">
-                <div class="col-lg-12">
-                    <template is="dom-if" if="{{ _permissions.create }}">
-                        <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createNewFH"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                    </template>
-                    <paper-button raised id="btnProjectMovements" class="" on-tap="_OpenFHListagem"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Listagem de FH</paper-button>
-                </div>
-            </div>
-        </template>-->
-
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
             <paper-tab>Viagens</paper-tab>
             <paper-tab>Mão-de-obra</paper-tab>
             <paper-tab>Presenças</paper-tab>
             <paper-tab>Detalhe</paper-tab>
         </paper-tabs>
+        <paper-button raised id="btnGoBack" class="btnDefault" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
         <iron-pages selected="{{selected}}">
             <!--Viagens-->
             <div>
@@ -1341,21 +1322,8 @@
                     </div>
                 </div>
             </div>
-        </iron-pages>
 
-        <!--<div class="marginSpace">
-            <template is="dom-if" if="{{ _isCreate }}">
-                <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createFH"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-            </template>
-            <template is="dom-if" if="{{ !_isCreate }}">
-                <template is="dom-if" if="{{ _permissions.update }}">
-                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_updateFH"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                </template>
-                <template is="dom-if" if="{{ _permissions.delete }}">
-                    <paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteFH"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar FH</paper-button>
-                </template>
-            </template>
-        </div>-->
+        </iron-pages>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -1420,100 +1388,7 @@
                     this.$.ToastMessageError.open();
                 },
 
-                _validateDataFH: function () {
-                    if (this.$.projetoNo.validate() &
-                        this.$.empregadoNo.validate() &
-                        this.$.dataPartidaTexto.validate() &
-                        this.$.horaPartidaTexto.validate() &
-                        this.$.dataChegadaTexto.validate() &
-                        this.$.horaChegadaTexto.validate() &
-                        this.$.tipoDeslocacao.validate() &
-                        this.$.codigoTipoKms.validate() &
-                        this.$.matricula.validate() &
-                        this.$.deslocacaoForaConcelho.validate() &
-                        this.$.codigoRegiao.validate() &
-                        this.$.codigoAreaFuncional.validate() &
-                        this.$.codigoCentroResponsabilidade.validate() &
-                        this.$.observacoes.validate()) {
-                        return true;
-                    }
-                    this._showErrorMessage("Verifique os dados inseridos.");
-                    return false;
-                },
-
-                _validateDataPercurso: function () {
-                    if (this.$.percursoOrigem.validate() &
-                        this.$.percursoDestino.validate() &
-                        this.$.percursoDataViagemTexto.validate() &
-                        this.$.percursoJustificacao.validate() &
-                        this.$.percursoDistanciaEfetuada.validate() &
-                        this.$.percursoCustoUnitario.validate()) {
-                        return true;
-                    }
-                    this._showErrorMessage("Verifique os dados inseridos.");
-                    return false;
-                },
-
-                _validateDataAjuda: function () {
-                    if (this.$.ajudaTipoCusto.validate() &
-                        this.$.ajudaCodigoTipoCusto.validate() &
-                        this.$.ajudaQuantidade.validate() &
-                        this.$.ajudaCustoUnitario.validate() &
-                        this.$.ajudaPrecoUnitario.validate() &
-                        this.$.ajudaDataDespesa.validate() &
-                        this.$.ajudaJustificacao.validate()) {
-                        return true;
-                    }
-                    this._showErrorMessage("Verifique os dados inseridos.");
-                    return false;
-                },
-
-                _validateDataMaoDeObra: function () {
-                    if (this.$.maoDeObraDate.validate() &
-                        this.$.maoDeObraProjetoNo.validate() &
-                        this.$.maoDeObraCodigoTipoTrabalho.validate() &
-                        this.$.maoDeObraHoraInicio.validate() &
-                        this.$.maoDeObraHoraFim.validate() &
-                        this.$.maoDeObraCodigoFamiliaRecurso.validate() &
-                        this.$.maoDeObraCustoUnitarioDireto.validate() &
-                        this.$.maoDeObraCodigoCentroResponsabilidade.validate() &
-                        this.$.maoDeObraPrecoTotal.validate()) {
-                        return true;
-                    }
-                    this._showErrorMessage("Verifique os dados inseridos.");
-                    return false;
-                },
-
-                _validateDataPresenca: function () {
-                    if (this.$.presencaDataTexto.validate() &
-                        this.$.presencaHora1Entrada.validate() &
-                        this.$.presencaHora1Saida.validate() &
-                        this.$.presencaHora2Entrada.validate() &
-                        this.$.presencaHora2Saida.validate() &
-                        this.$.presencaObservacoes.validate()) {
-                        return true;
-                    }
-                    this._showErrorMessage("Verifique os dados inseridos.");
-                    return false;
-                },
-
-                _createNewFH: function () {
-                    window.location.href = "/FolhasDeHoras/Detalhes";
-                },
-
-                _OpenFHListagem: function () {
-                    window.location.href = "/FolhasDeHoras/Index";
-                },
-
-
                 //FOLHA DE HORAS
-                _createFH: function () {
-                    if (this._validateDataFH()) {
-                        this.$.page_validator_ajax.body = JSON.stringify(this.data);
-                        this.$.page_validator_ajax.generateRequest();
-                    }
-                },
-
                 _updateFH: function () {
                     if (this.$.dataPartidaTexto.validate() &
                         this.$.horaPartidaTexto.validate() &
@@ -1536,30 +1411,6 @@
                     }
                     else
                         this._showErrorMessage('É obrigatório preencher todos os campos obrigatórios corretamente.');
-                },
-
-                _deleteFH: function () {
-                    var FolhaDeHora = this.data;
-                    var ajax_request = this.$.ajax_delete_folhadehora;
-                    bootbox.confirm({
-                        message: "Tem a certeza que pretende remover a Folha de Horas " + this.data.folhaDeHorasNo + "?",
-                        buttons: {
-                            confirm: {
-                                label: 'Sim',
-                                className: 'btn-success'
-                            },
-                            cancel: {
-                                label: 'Não',
-                                className: 'btn-danger'
-                            }
-                        },
-                        callback: function (result) {
-                            if (result) {
-                                ajax_request.body = JSON.stringify(FolhaDeHora);
-                                ajax_request.generateRequest();
-                            }
-                        }
-                    });
                 },
 
                 //PERCURSO
@@ -1632,7 +1483,7 @@
                     this.$.tabAjuda.clearCache();
                 },
 
-                //CALCULAR AJUDAS DE CUSTO
+                //AJUDAS DE CUSTO
                 _calcularAjudasCusto: function () {
                     this.$.page_calcularajudascusto_ajax.body = JSON.stringify(this.data);
                     this.$.page_calcularajudascusto_ajax.generateRequest();
@@ -1725,10 +1576,7 @@
 
 
 
-
-
-
-                //Responses Processors
+                //RESPONSES PROCESSORS
                 _responseProcessor: function (data) {
                     var self = this;
 
@@ -1782,27 +1630,6 @@
                     }
                 },
 
-                //Employee Functions
-                _codeChange: function (e) {
-                    this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(e.detail.value);
-                    this.$.getEmpoyeeNAV_ajax.generateRequest();
-                },
-                _getEmpoyeeNAVResponse: function (e) {
-                    var self = this;
-                    if (this.getEmpoyeeNAV != null) {
-                        this.$.empregadoNome.value = this.getEmpoyeeNAV[0].value;
-                    }
-                },
-
-                _DataInicio: function (e) {
-                    debugger;
-                    var self = this;
-                    if (this.$.dataPartidaTexto.value != null) {
-                        this.$.percursoDataViagem.value = this.$.dataPartidaTexto.value;
-                    }
-                },
-
-
                 //FOLHA DE HORAS
                 _updateFolhaDeHorasResponse: function (e) {
                     debugger;;;;
@@ -1824,9 +1651,6 @@
                         this.$.percursoOrigem.value = "";
                         this.$.percursoDestino.value = "";
                         this.$.percursoDataViagem.value = "";
-                        //this.$.percursoJustificacao.value = "";
-                        //this.$.percursoDistanciaEfetuada.value = "";
-                        //this.$.percursoCustoUnitario.value = "";
                     }
                     else {
                         this._showErrorMessage('Ocorreu um erro ao adicionar.');
@@ -1892,6 +1716,7 @@
                     }
                 },
 
+                //AJUDA DE CUSTOS
                 _updateCalcularAjudasCustoResponse: function (e) {
                     if (this.CalcularAjudasCustoUpdated) {
                         this._showMessage('Foi calculado a(s) Ajuda(s) de Custo com sucesso.');
@@ -1899,38 +1724,6 @@
                     }
                     else {
                         this._showErrorMessage('Ocorreu um erro ao calcular a(s) Ajuda(s) de Custo.');
-                    }
-                },
-
-                _getAjudaCodTipoCusto: function (e) {
-                    this.$.get_codtipocusto.body = JSON.stringify({ id: this.$.ajudaTipoCusto.value || 0 });
-                    this.$.get_codtipocusto.generateRequest();
-                    if (typeof e != 'undefined') {
-                        this.$.Modelo.value = "";
-                    }
-                },
-
-                _getAjudaCodTipoCustoTAB: function (e) {
-                    this.$.get_codtipocustotab.body = JSON.stringify({ id: e.model.item.tabAjudaTipoCusto.id || 0 });
-                    this.$.get_codtipocustotab.generateRequest();
-                    if (typeof e != 'undefined') {
-                        this.$.Modelo.value = "";
-                    }
-                },
-
-                _setCodTipoCustoResponse: function (data) {
-                    if (this.LFolhaDeHoraAjudaCodTipoCusto.length > 0) {
-                        this.$.ajudaCodigoTipoCusto.disabled = false;
-                    } else {
-                        this.$.ajudaCodigoTipoCusto.disabled = true;
-                    }
-                },
-
-                _setCodTipoCustoTabResponse: function (e) {
-                    if (this.LFolhaDeHoraAjudaCodTipoCusto_TAB.length > 0) {
-                        this.$.tabAjudaTipoCusto.disabled = false;
-                    } else {
-                        this.$.tabAjudaTipoCusto.disabled = true;
                     }
                 },
 
@@ -2014,6 +1807,65 @@
                         this._showErrorMessage('Ocorreu um erro ao actualizar a(s) Presença(s).');
                     }
                 },
+
+
+                //EMPREGADO FUNÇÕES
+                _codeChange: function (e) {
+                    this.$.getEmpoyeeNAV_ajax.body = JSON.stringify(e.detail.value);
+                    this.$.getEmpoyeeNAV_ajax.generateRequest();
+                },
+                _getEmpoyeeNAVResponse: function (e) {
+                    var self = this;
+                    if (this.getEmpoyeeNAV != null) {
+                        this.$.empregadoNome.value = this.getEmpoyeeNAV[0].value;
+                    }
+                },
+
+                //DATA INICIO
+                _DataInicio: function (e) {
+                    debugger;
+                    var self = this;
+                    if (this.$.dataPartidaTexto.value != null) {
+                        this.$.percursoDataViagem.value = this.$.dataPartidaTexto.value;
+                    }
+                },
+
+                _getAjudaCodTipoCusto: function (e) {
+                    this.$.get_codtipocusto.body = JSON.stringify({ id: this.$.ajudaTipoCusto.value || 0 });
+                    this.$.get_codtipocusto.generateRequest();
+                    if (typeof e != 'undefined') {
+                        this.$.Modelo.value = "";
+                    }
+                },
+
+                _getAjudaCodTipoCustoTAB: function (e) {
+                    this.$.get_codtipocustotab.body = JSON.stringify({ id: e.model.item.tabAjudaTipoCusto.id || 0 });
+                    this.$.get_codtipocustotab.generateRequest();
+                    if (typeof e != 'undefined') {
+                        this.$.Modelo.value = "";
+                    }
+                },
+
+                _setCodTipoCustoResponse: function (data) {
+                    if (this.LFolhaDeHoraAjudaCodTipoCusto.length > 0) {
+                        this.$.ajudaCodigoTipoCusto.disabled = false;
+                    } else {
+                        this.$.ajudaCodigoTipoCusto.disabled = true;
+                    }
+                },
+
+                _setCodTipoCustoTabResponse: function (e) {
+                    if (this.LFolhaDeHoraAjudaCodTipoCusto_TAB.length > 0) {
+                        this.$.tabAjudaTipoCusto.disabled = false;
+                    } else {
+                        this.$.tabAjudaTipoCusto.disabled = true;
+                    }
+                },
+
+                _goBack: function (e) {
+                    window.location = "../";
+                },
+
 
                 //Helpers
                 _executeRequest: function (url, data) {

@@ -23,6 +23,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ConfiguraçãoNumerações> ConfiguraçãoNumerações { get; set; }
         public virtual DbSet<ConfiguraçãoTemposCcp> ConfiguraçãoTemposCcp { get; set; }
         public virtual DbSet<ConfiguracaoAjudaCusto> ConfiguracaoAjudaCusto { get; set; }
+        public virtual DbSet<AutorizacaoFHRH> AutorizacaoFHRH { get; set; }
         public virtual DbSet<ConfigUtilizadores> ConfigUtilizadores { get; set; }
         public virtual DbSet<Contactos> Contactos { get; set; }
         public virtual DbSet<Contratos> Contratos { get; set; }
@@ -913,6 +914,56 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50);
             });
 
+            modelBuilder.Entity<AutorizacaoFHRH>(entity =>
+            {
+                entity.HasKey(e => new { e.NoEmpregado });
+
+                entity.ToTable("Autorizacao_FH_RH");
+
+                entity.Property(e => e.NoEmpregado)
+                    .HasColumnName("No_Empregado")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NoResponsavel1)
+                    .HasColumnName("No_Responsavel_1")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NoResponsavel2)
+                    .HasColumnName("No_Responsavel_2")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NoResponsavel3)
+                    .HasColumnName("No_Responsavel_3")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.ValidadorRH1)
+                    .HasColumnName("Validador_RH1")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.ValidadorRH2)
+                    .HasColumnName("Validador_RH2")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.ValidadorRH3)
+                    .HasColumnName("Validador_RH3")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("Criado Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraCriacao)
+                 .HasColumnName("Data/Hora Criação")
+                 .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("Alterado Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraModificacao)
+                    .HasColumnName("Data/Hora Última Alteração")
+                    .HasColumnType("datetime");
+            });
 
             modelBuilder.Entity<ConfigUtilizadores>(entity =>
             {
@@ -938,11 +989,11 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ProcedimentosEmailEnvioParaArea).HasMaxLength(50);
 
                 entity.Property(e => e.ProcedimentosEmailEnvioParaArea2).HasMaxLength(50);
-
+                /*
                 entity.Property(e => e.ProcedimentosEmailEnvioParaCa)
                     .HasColumnName("ProcedimentosEmailEnvioParaCA")
                     .HasMaxLength(50);
-
+                */
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);

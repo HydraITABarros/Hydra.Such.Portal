@@ -1,46 +1,55 @@
 ﻿
-<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
-<link rel="import" href="/lib/iron-form/iron-form.html" />
-<link rel="import" href="/lib/paper-input/paper-input.html" />
-<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
-<link rel="import" href="/lib/paper-button/paper-button.html" />
-<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 
 <dom-module id="x-folhadehoralist">
     <template>
+        <!-- STYLES -->
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
-        <custom-style>
-            <style is="custom-style">
-                input[readonly] {
-                    border: 2px solid transparent;
-                }
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
 
-                input {
-                    font: inherit;
-                }
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
 
-                .grid {
-                    font-size: 13px;
-                }
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
 
-                    .grid input {
-                        border: none;
-                        padding-left: 5px;
-                    }
+            .break_clear {
+                margin-top: 15px;
+            }
+        </style>
 
-                paper-input {
-                    max-width: 200px !important;
-                }
-            </style>
-        </custom-style>
-        
         <iron-ajax url="/FolhasDeHoras/GetListFolhasDeHorasByArea"
                    last-response="{{result}}"
                    method="post"
@@ -50,7 +59,8 @@
         </iron-ajax>
 
         <div class="marginSpace">
-            <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
+            <paper-button raised id="btnGoBack" class="btnDefault" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+            <paper-button class="btnDefault" raised on-tap="_create">Criar Novo</paper-button>
         </div>
 
         <vaadin-grid aria-label="FolhasDeHorasGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
@@ -576,6 +586,8 @@
         </vaadin-grid>
     </template>
 
+
+
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
@@ -608,6 +620,9 @@
                 ready: function () {
                     this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
                     this.$.grid_databound_ajax.generateRequest();
+                },
+                _goBack: function (e) {
+                    window.location = "../";
                 },
             });
         });
