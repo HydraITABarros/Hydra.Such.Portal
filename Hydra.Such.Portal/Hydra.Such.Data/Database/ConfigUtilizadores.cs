@@ -20,6 +20,9 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorCriação { get; set; }
         public string UtilizadorModificação { get; set; }
+        //public string ProcedimentosEmailEnvioParaCa { get; set; }
+        //public string ProcedimentosEmailEnvioParaArea { get; set; }
+        //public string ProcedimentosEmailEnvioParaArea2 { get; set; }
 
         // zpgm.< Fields that will be used to retrieve destination emails through the ProcedimentosCcp life cycle
         public string ProcedimentosEmailEnvioParaCA { get; set; }
