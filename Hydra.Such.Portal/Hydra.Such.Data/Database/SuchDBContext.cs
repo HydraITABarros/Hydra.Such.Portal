@@ -22,6 +22,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Configuração> Configuração { get; set; }
         public virtual DbSet<ConfiguracaoAjudaCusto> ConfiguracaoAjudaCusto { get; set; }
         public virtual DbSet<ConfiguraçãoAprovações> ConfiguraçãoAprovações { get; set; }
+        public virtual DbSet<ConfiguracaoCcp> ConfiguracaoCcp { get; set; }
         public virtual DbSet<ConfiguraçãoNumerações> ConfiguraçãoNumerações { get; set; }
         public virtual DbSet<ConfiguraçãoTemposCcp> ConfiguraçãoTemposCcp { get; set; }
         public virtual DbSet<ConfigUtilizadores> ConfigUtilizadores { get; set; }
@@ -95,8 +96,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<UtilizadoresGruposAprovação> UtilizadoresGruposAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-
-        // Unable to generate entity type for table 'dbo.ConfiguracaoCCP'. Please see the warning messages.
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -807,6 +806,54 @@ namespace Hydra.Such.Data.Database
                     .WithMany(p => p.ConfiguraçãoAprovações)
                     .HasForeignKey(d => d.GrupoAprovação)
                     .HasConstraintName("FK_Configuração Aprovações_Grupos Aprovação");
+            });
+
+            modelBuilder.Entity<ConfiguracaoCcp>(entity =>
+            {
+                entity.ToTable("ConfiguracaoCCP");
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.Email10Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email11Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email2Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email2Contabilidade).HasMaxLength(50);
+
+                entity.Property(e => e.Email2Financeiros).HasMaxLength(50);
+
+                entity.Property(e => e.Email2Juridicos).HasMaxLength(50);
+
+                entity.Property(e => e.Email3Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email3Contabilidade).HasMaxLength(50);
+
+                entity.Property(e => e.Email4Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email5Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email6Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email7Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email8Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email9Compras).HasMaxLength(50);
+
+                entity.Property(e => e.EmailCa)
+                    .HasColumnName("EmailCA")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.EmailCompras).HasMaxLength(50);
+
+                entity.Property(e => e.EmailContabilidade).HasMaxLength(50);
+
+                entity.Property(e => e.EmailFinanceiros).HasMaxLength(50);
+
+                entity.Property(e => e.EmailJurididos).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ConfiguraçãoNumerações>(entity =>
