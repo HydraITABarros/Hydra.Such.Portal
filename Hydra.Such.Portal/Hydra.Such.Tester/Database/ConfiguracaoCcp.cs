@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Hydra.Such.Data.Database
+namespace Hydra.Such.Tester.Database
 {
     public partial class ConfiguracaoCcp
     {

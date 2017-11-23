@@ -907,7 +907,7 @@ namespace Hydra.Such.Data.Logic.CCP
         #endregion
 
         #region Users settings related to Procedimentos CCP
-        public static ConfiguracaoCCP GetConfiguracaoCCP()
+        public static ConfiguracaoCcp GetConfiguracaoCCP()
         {
             SuchDBContext _context = new SuchDBContext();
             try

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Hydra.Such.Data.Database
+namespace Hydra.Such.Tester.Database
 {
     public partial class SuchDBContext : DbContext
     {
