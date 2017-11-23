@@ -329,21 +329,23 @@ namespace Hydra.Such.Portal.Controllers
                 return null;
             }
         }
-
+        
         [HttpPost]
         public JsonResult GetEmployeeNome([FromBody] string idEmployee)
         {
             FolhaDeHorasViewModel FH = new FolhaDeHorasViewModel();
 
-            AutorizacaoFhRh Autorizacao = DBAutorizacaoFhRh.GetAll().Where(x => x.NoEmpregado == idEmployee).SingleOrDefault();
+            AutorizacaoFHRH Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado == idEmployee).SingleOrDefault();
 
             if (Autorizacao != null)
             {
                 FH.Responsavel1No = Autorizacao.NoResponsavel1;
                 FH.Responsavel2No = Autorizacao.NoResponsavel2;
                 FH.Responsavel3No = Autorizacao.NoResponsavel3;
-                FH.Validadores = string.Concat(Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3);
+                FH.Validadores = string.Concat(Autorizacao.ValidadorRH1 + " - " + Autorizacao.ValidadorRH2 + " - " + Autorizacao.ValidadorRH3);
             };
+
+            FH.EmpregadoNome = DBUserConfigurations.GetById(Autorizacao.NoResponsavel1).Nome;
 
             List<DDMessageString> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No == idEmployee).Select(x => new DDMessageString()
             {
@@ -351,7 +353,10 @@ namespace Hydra.Such.Portal.Controllers
                 value = x.Name
             }).ToList();
 
-            FH.EmpregadoNome = result[0].value;
+            if (result.Count > 0)
+            {
+                FH.EmpregadoNome = result[0].value;
+            }
 
             return Json(FH);
         }
