@@ -1,10 +1,8 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel.Nutrition;
-using Hydra.Such.Data.ViewModel.Projects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Hydra.Such.Data.Logic.Nutrition
 {
@@ -81,6 +79,22 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
+        public static CafetariasRefeitórios GetByCode(int Code)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.CafetariasRefeitórios.FirstOrDefault(x => x.Código == Code);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static CafetariasRefeitórios GetByIdDiary(int NºUnidadeProdutiva, int CódigoCafetariaRefeitório)
         {
             try
@@ -96,7 +110,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
-
 
         public static bool Delete(CafetariasRefeitórios ObjectToDelete)
         {
@@ -117,7 +130,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
-
         public static List<CafetariasRefeitórios> GetByNUnidadeProdutiva(int NºUnidadeProdutiva)
         {
             try
@@ -133,8 +145,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
-
-
 
         public static CafetariasRefeitórios ParseToDB(CoffeeShopViewModel x)
         {
@@ -161,7 +171,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
             };
         }
 
-
         public static CoffeeShopViewModel ParseToViewModel(CafetariasRefeitórios x)
         {
             return new CoffeeShopViewModel()
@@ -186,7 +195,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 UpdateUser = x.UtilizadorModificação
             };
         }
-
 
         public static List<CoffeeShopViewModel> ParseListToViewModel(List<CafetariasRefeitórios> x)
         {
