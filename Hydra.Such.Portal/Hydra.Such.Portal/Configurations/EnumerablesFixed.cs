@@ -273,8 +273,14 @@ namespace Hydra.Such.Portal.Configurations
              {
                  Id = 34,
                  Value = "Checklist - Fecho de Processo"
-             } 
+             },
 	        #endregion
+
+             new EnumData()
+             {
+                 Id = 35,
+                 Value = "Cafetarias / Refeitórios"
+             },
 
         };
 
@@ -435,7 +441,7 @@ namespace Hydra.Such.Portal.Configurations
             },
             new EnumData()
             {
-                Id = 4,
+                Id = 5,
                 Value = "Fechado"
             } };
 

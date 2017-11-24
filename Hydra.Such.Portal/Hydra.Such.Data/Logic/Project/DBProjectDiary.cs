@@ -24,6 +24,22 @@ namespace Hydra.Such.Data.Logic.Project
                 return null;
             }
         }
+
+        public static List<DiárioDeProjeto> GetAllOpen(string user)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.DiárioDeProjeto.Where(x => x.Utilizador == user && x.Registado != true && x.NºProjetoNavigation.Estado != 4 && x.NºProjetoNavigation.Estado != 5).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static DiárioDeProjeto GetAllByCode(string user, string code)
         {
             try
@@ -46,6 +62,21 @@ namespace Hydra.Such.Data.Logic.Project
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.DiárioDeProjeto.Where(x => x.Faturada == false /*|| x.Faturada == null*/ && x.Faturável == true && x.Registado == true && x.Utilizador == user).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<DiárioDeProjeto> GetAllTableByArea(string user, int areaId)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.DiárioDeProjeto.Where(x => x.Faturada == false /*|| x.Faturada == null*/ && x.Faturável == true && x.Registado == true && x.Utilizador == user && x.NºProjetoNavigation.Área == areaId).ToList();
                 }
             }
             catch (Exception ex)

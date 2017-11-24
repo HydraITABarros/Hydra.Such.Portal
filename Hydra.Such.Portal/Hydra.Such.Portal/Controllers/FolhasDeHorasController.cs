@@ -59,13 +59,11 @@ namespace Hydra.Such.Portal.Controllers
         //public IActionResult Detalhes(string id)
         public IActionResult Detalhes([FromQuery] string FHNo, [FromQuery] int area)
         {
-            //String id = HttpContext.Request.Query["FHNo"].ToString();
-            //String area = HttpContext.Request.Query["area"].ToString();
             string id = "";
 
             if (FHNo == null || FHNo == "")
             {
-                //Get Project Numeration
+                //Get Folha de Horas Numeration
                 Configuração Configs = DBConfigurations.GetById(1);
                 int FolhaDeHorasNumerationConfigurationId = Configs.NumeraçãoFolhasDeHoras.Value;
                 id = DBNumerationConfigurations.GetNextNumeration(FolhaDeHorasNumerationConfigurationId, true);
@@ -81,6 +79,7 @@ namespace Hydra.Such.Portal.Controllers
                 };
 
                 FH.Área = area;
+                FH.CódigoTipoKmS = "KM";
                 FH.CriadoPor = User.Identity.Name;
                 FH.DataHoraCriação = DateTime.Now;
                 FH.UtilizadorModificação = User.Identity.Name;
@@ -117,10 +116,10 @@ namespace Hydra.Such.Portal.Controllers
                             EmpregadoNome = FH.NomeEmpregado,
                             DataHoraPartida = FH.DataHoraPartida,
                             DataPartidaTexto = FH.DataHoraPartida == null ? "" : FH.DataHoraPartida.Value.ToString("yyyy-MM-dd"),
-                            HoraPartidaTexto = FH.DataHoraPartida == null ? "" : FH.DataHoraPartida.Value.ToString("HH:mm:ss"),
+                            HoraPartidaTexto = FH.DataHoraPartida == null ? "" : FH.DataHoraPartida.Value.ToString("HH:mm"),
                             DataHoraChegada = FH.DataHoraChegada,
                             DataChegadaTexto = FH.DataHoraChegada == null ? "" : FH.DataHoraChegada.Value.ToString("yyyy-MM-dd"),
-                            HoraChegadaTexto = FH.DataHoraChegada == null ? "" : FH.DataHoraChegada.Value.ToString("HH:mm:ss"),
+                            HoraChegadaTexto = FH.DataHoraChegada == null ? "" : FH.DataHoraChegada.Value.ToString("HH:mm"),
                             TipoDeslocacao = FH.TipoDeslocação,
                             TipoDeslocacaoTexto = FH.TipoDeslocação == null ? "" : FH.TipoDeslocação == null ? "" : FH.TipoDeslocação.ToString(),
                             CodigoTipoKms = FH.CódigoTipoKmS,
@@ -136,31 +135,31 @@ namespace Hydra.Such.Portal.Controllers
                             CriadoPor = FH.CriadoPor,
                             DataHoraCriacao = FH.DataHoraCriação,
                             DataCriacaoTexto = FH.DataHoraCriação == null ? "" : FH.DataHoraCriação.Value.ToString("yyyy-MM-dd"),
-                            HoraCriacaoTexto = FH.DataHoraCriação == null ? "" : FH.DataHoraCriação.Value.ToString("HH:mm:ss"),
+                            HoraCriacaoTexto = FH.DataHoraCriação == null ? "" : FH.DataHoraCriação.Value.ToString("HH:mm"),
                             CodigoRegiao = FH.CódigoRegião,
                             CodigoAreaFuncional = FH.CódigoÁreaFuncional,
                             CodigoCentroResponsabilidade = FH.CódigoCentroResponsabilidade,
                             TerminadoPor = FH.TerminadoPor,
                             DataHoraTerminado = FH.DataHoraTerminado,
                             DataTerminadoTexto = FH.DataHoraTerminado == null ? "" : FH.DataHoraTerminado.Value.ToString("yyyy-MM-dd"),
-                            HoraTerminadoTexto = FH.DataHoraTerminado == null ? "" : FH.DataHoraTerminado.Value.ToString("HH:mm:ss"),
+                            HoraTerminadoTexto = FH.DataHoraTerminado == null ? "" : FH.DataHoraTerminado.Value.ToString("HH:mm"),
                             Validado = FH.Validado,
                             ValidadoTexto = FH.Validado == null ? "" : FH.Validado.ToString(),
                             Validadores = FH.Validadores == null ? "" : FH.Validadores,
                             Validador = FH.Validador,
                             DataHoraValidacao = FH.DataHoraValidação,
                             DataValidacaoTexto = FH.DataHoraValidação == null ? "" : FH.DataHoraValidação.Value.ToString("yyyy-MM-dd"),
-                            HoraValidacaoTexto = FH.DataHoraValidação == null ? "" : FH.DataHoraValidação.Value.ToString("HH:mm:ss"),
+                            HoraValidacaoTexto = FH.DataHoraValidação == null ? "" : FH.DataHoraValidação.Value.ToString("HH:mm"),
                             IntegradorEmRH = FH.IntegradorEmRh,
                             IntegradoresEmRH = FH.IntegradoresEmRh,
                             DataIntegracaoEmRH = FH.DataIntegraçãoEmRh,
                             DataIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh == null ? "" : FH.DataIntegraçãoEmRh.Value.ToString("yyyy-MM-dd"),
-                            HoraIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh == null ? "" : FH.DataIntegraçãoEmRh.Value.ToString("HH:mm:ss"),
+                            HoraIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh == null ? "" : FH.DataIntegraçãoEmRh.Value.ToString("HH:mm"),
                             IntegradorEmRHKM = FH.IntegradorEmRhKm,
                             IntegradoresEmRHKM = FH.IntegradoresEmRhkm,
                             DataIntegracaoEmRHKM = FH.DataIntegraçãoEmRhKm,
                             DataIntegracaoEmRHKMTexto = FH.DataIntegraçãoEmRhKm == null ? "" : FH.DataIntegraçãoEmRhKm.Value.ToString("yyyy-MM-dd"),
-                            HoraIntegracaoEmRHKMTexto = FH.DataIntegraçãoEmRhKm == null ? "" : FH.DataIntegraçãoEmRhKm.Value.ToString("HH:mm:ss"),
+                            HoraIntegracaoEmRHKMTexto = FH.DataIntegraçãoEmRhKm == null ? "" : FH.DataIntegraçãoEmRhKm.Value.ToString("HH:mm"),
                             CustoTotalAjudaCusto = Convert.ToDecimal(FH.CustoTotalAjudaCusto),
                             CustoTotalHoras = Convert.ToDecimal(FH.CustoTotalHoras),
                             CustoTotalKM = Convert.ToDecimal(FH.CustoTotalKm),
@@ -172,11 +171,11 @@ namespace Hydra.Such.Portal.Controllers
                             ValidadoresRHKM = FH.ValidadoresRhKm,
                             DataHoraUltimoEstado = FH.DataHoraÚltimoEstado,
                             DataUltimoEstadoTexto = FH.DataHoraÚltimoEstado == null ? "" : FH.DataHoraÚltimoEstado.Value.ToString("yyyy-MM-dd"),
-                            HoraUltimoEstadoTexto = FH.DataHoraÚltimoEstado == null ? "" : FH.DataHoraÚltimoEstado.Value.ToString("HH:mm:ss"),
+                            HoraUltimoEstadoTexto = FH.DataHoraÚltimoEstado == null ? "" : FH.DataHoraÚltimoEstado.Value.ToString("HH:mm"),
                             UtilizadorModificacao = FH.UtilizadorModificação,
                             DataHoraModificacao = FH.DataHoraModificação,
                             DataModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("yyyy-MM-dd"),
-                            HoraModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("HH:mm:ss")
+                            HoraModificacaoTexto = FH.DataHoraModificação == null ? "" : FH.DataHoraModificação.Value.ToString("HH:mm")
                         };
 
                         Projetos cProject = DBProjects.GetById(FH.NºProjeto);
@@ -330,6 +329,43 @@ namespace Hydra.Such.Portal.Controllers
                 return null;
             }
         }
+        
+
+        [HttpPost]
+        public JsonResult GetEmployeeNome([FromBody] string idEmployee)
+        {
+            FolhaDeHorasViewModel FH = new FolhaDeHorasViewModel();
+
+            if (idEmployee != null && idEmployee != "")
+            {
+
+                AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado == idEmployee).SingleOrDefault();
+
+                if (Autorizacao != null)
+                {
+                    FH.Responsavel1No = Autorizacao.NoResponsavel1;
+                    FH.Responsavel2No = Autorizacao.NoResponsavel2;
+                    FH.Responsavel3No = Autorizacao.NoResponsavel3;
+                    FH.Validadores = string.Concat(Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3);
+                };
+
+                FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAVDatabaseName, _config.NAVCompanyName).SingleOrDefault().Name;
+
+                //List<DDMessageString> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No == idEmployee).Select(x => new DDMessageString()
+                //{
+                //    id = x.No,
+                //    value = x.Name
+                //}).ToList();
+
+                //if (result.Count > 0)
+                //{
+                //    FH.EmpregadoNome = result[0].value;
+                //}
+
+            }
+            return Json(FH);
+        }
+
 
         [HttpPost]
         public JsonResult ValidateNumeration([FromBody] FolhaDeHorasViewModel data)
@@ -454,35 +490,35 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     NºFolhaDeHoras = data.FolhaDeHorasNo,
                     Área = data.Area,
-                    NºProjeto = data.ProjetoNo,
-                    NºEmpregado = data.EmpregadoNo,
+                    NºProjeto = data.ProjetoNo == "" ? null : data.ProjetoNo,
+                    NºEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
                     DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
                     DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
-                    TipoDeslocação = Convert.ToInt16(data.TipoDeslocacaoTexto),
-                    CódigoTipoKmS = data.CodigoTipoKms,
-                    DeslocaçãoForaConcelho = Convert.ToBoolean(data.DeslocacaoForaConcelhoTexto),
-                    Validadores = data.Validadores,
-                    Estado = Convert.ToUInt16(data.Estadotexto),
+                    TipoDeslocação = data.TipoDeslocacaoTexto == "" ? 1 : Convert.ToInt32(data.TipoDeslocacaoTexto),
+                    CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
+                    DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
+                    Validadores = data.Validadores == "" ? null : data.Validadores,
+                    Estado = data.Estadotexto == "" ? 1 : Convert.ToInt32(data.Estadotexto),
                     CriadoPor = data.CriadoPor,
-                    DataHoraCriação = DateTime.Parse(string.Concat(data.DataCriacaoTexto, " ", data.HoraCriacaoTexto)),
+                    DataHoraCriação = data.DataHoraCriacao,
                     DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
                     DataHoraModificação = DateTime.Now,
                     UtilizadorModificação = User.Identity.Name,
-                    NomeEmpregado = data.EmpregadoNo,
-                    Matrícula = data.Matricula,
+                    NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                    Matrícula = data.Matricula == "" ? null : data.Matricula,
                     Terminada = data.Terminada,
                     TerminadoPor = data.TerminadoPor,
                     DataHoraTerminado = data.DataHoraTerminado,
-                    Validado = Convert.ToBoolean(data.ValidadoTexto),
-                    DeslocaçãoPlaneada = Convert.ToBoolean(data.DeslocacaoPlaneadaTexto),
+                    Validado = data.ValidadoTexto == "" ? false : Convert.ToBoolean(data.ValidadoTexto),
+                    DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
                     Observações = data.Observacoes,
                     NºResponsável1 = data.Responsavel1No,
                     NºResponsável2 = data.Responsavel2No,
                     NºResponsável3 = data.Responsavel3No,
                     ValidadoresRhKm = data.ValidadoresRHKM,
-                    CódigoRegião = data.CodigoRegiao,
-                    CódigoÁreaFuncional = data.CodigoAreaFuncional,
-                    CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade,
+                    CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
+                    CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
+                    CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
                     Validador = data.Validador,
                     DataHoraValidação = data.DataHoraValidacao,
                     IntegradorEmRh = data.IntegradorEmRH,
@@ -564,14 +600,14 @@ namespace Hydra.Such.Portal.Controllers
                 noPercursos = DBLinhasFolhaHoras.GetPercursoByFolhaHoraNo(data.NoFolhaHoras).Count();
 
                 int noLinha;
-                noLinha = DBLinhasFolhaHoras.GetMaxPercursoByFolhaHoraNo(data.NoFolhaHoras);
+                noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.NoFolhaHoras);
 
                 if (noPercursos == 0)
                 {
                     LinhasFolhaHoras Percurso1 = new LinhasFolhaHoras();
 
                     Percurso1.NoFolhaHoras = data.NoFolhaHoras;
-                    Percurso1.NoLinha = noLinha + 1;
+                    Percurso1.NoLinha = noLinha;
                     Percurso1.TipoCusto = 1; //PERCURSO
                     Percurso1.CodOrigem = data.CodOrigem;
                     Percurso1.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
@@ -579,10 +615,10 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
                     Percurso1.DataDespesa = data.DataDespesa;
                     Percurso1.Observacao = data.Observacao;
-                    Percurso1.Distancia = data.Distancia;
+                    Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso1.CustoUnitario = data.CustoUnitario;
-                    Percurso1.CustoTotal = data.Distancia * data.CustoUnitario;
+                    Percurso1.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
+                    Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
                     Percurso1.UtilizadorCriacao = User.Identity.Name;
                     Percurso1.DataHoraCriacao = DateTime.Now;
                     Percurso1.UtilizadorModificacao = User.Identity.Name;
@@ -594,18 +630,18 @@ namespace Hydra.Such.Portal.Controllers
                     LinhasFolhaHoras Percurso2 = new LinhasFolhaHoras();
 
                     Percurso2.NoFolhaHoras = data.NoFolhaHoras;
-                    Percurso2.NoLinha = noLinha + 2;
+                    Percurso2.NoLinha = noLinha + 1;
                     Percurso2.TipoCusto = 1; //PERCURSO
-                    Percurso2.CodOrigem = data.CodOrigem;
-                    Percurso2.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
-                    Percurso2.CodDestino = data.CodDestino;
-                    Percurso2.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
+                    Percurso2.CodOrigem = data.CodDestino;
+                    Percurso2.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
+                    Percurso2.CodDestino = data.CodOrigem;
+                    Percurso2.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
                     Percurso2.DataDespesa = data.DataDespesa;
                     Percurso2.Observacao = data.Observacao;
-                    Percurso2.Distancia = data.Distancia;
+                    Percurso2.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso2.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso2.CustoUnitario = data.CustoUnitario;
-                    Percurso2.CustoTotal = data.Distancia * data.CustoUnitario;
+                    Percurso2.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
+                    Percurso2.CustoTotal = Percurso2.Distancia * Percurso2.CustoUnitario;
                     Percurso2.UtilizadorCriacao = User.Identity.Name;
                     Percurso2.DataHoraCriacao = DateTime.Now;
                     Percurso2.UtilizadorModificacao = User.Identity.Name;
@@ -623,7 +659,7 @@ namespace Hydra.Such.Portal.Controllers
                     LinhasFolhaHoras Percurso1 = new LinhasFolhaHoras();
 
                     Percurso1.NoFolhaHoras = data.NoFolhaHoras;
-                    Percurso1.NoLinha = noLinha + 1;
+                    Percurso1.NoLinha = noLinha;
                     Percurso1.TipoCusto = 1; //PERCURSO
                     Percurso1.CodOrigem = data.CodOrigem;
                     Percurso1.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
@@ -631,10 +667,10 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
                     Percurso1.DataDespesa = data.DataDespesa;
                     Percurso1.Observacao = data.Observacao;
-                    Percurso1.Distancia = data.Distancia;
+                    Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso1.CustoUnitario = data.CustoUnitario;
-                    Percurso1.CustoTotal = data.Distancia * data.CustoUnitario;
+                    Percurso1.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
+                    Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
                     Percurso1.UtilizadorCriacao = User.Identity.Name;
                     Percurso1.DataHoraCriacao = DateTime.Now;
                     Percurso1.UtilizadorModificacao = User.Identity.Name;
@@ -891,16 +927,16 @@ namespace Hydra.Such.Portal.Controllers
                     Ajuda.TipoCusto = x.TipoCusto;
                     Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == x.TipoCusto).FirstOrDefault().Value;
                     Ajuda.Quantidade = Convert.ToDecimal(NoDias);
-                    Ajuda.CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                    Ajuda.PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
-                    Ajuda.CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                    Ajuda.PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                    Ajuda.CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                    Ajuda.PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                    Ajuda.CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                    Ajuda.PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
                     Ajuda.DataDespesa = data.DataHoraPartida;
                     Ajuda.CalculoAutomatico = true;
                     Ajuda.CodRegiao = data.CodigoRegiao;
                     Ajuda.CodArea = data.CodigoAreaFuncional;
                     Ajuda.CodCresp = data.CodigoCentroResponsabilidade;
-                    Ajuda.RubricaSalarial = DBTabelaConfRecursosFH.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().RubricaSalarial;
+                    Ajuda.RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().RubricaSalarial;
                     Ajuda.UtilizadorCriacao = User.Identity.Name;
                     Ajuda.DataHoraCriacao = DateTime.Now;
                     Ajuda.UtilizadorModificacao = User.Identity.Name;

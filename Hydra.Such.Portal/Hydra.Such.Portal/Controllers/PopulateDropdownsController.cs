@@ -17,6 +17,7 @@ using Hydra.Such.Data.Logic.Contracts;
 using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Data.Logic.Viatura;
 using Hydra.Such.Data.ViewModel.Viaturas;
+using Hydra.Such.Data.Logic.Nutrition;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -441,7 +442,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetEmployees_FH()
         {
-            List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAVCompanyName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
             {
                 id = x.No,
                 value = x.No + " - " + x.Name,
@@ -586,6 +587,18 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetProjectListDiary()
+        {
+            List<DDMessageString> result = DBProjects.GetAll().Where(x => x.Estado != 5 && x.Estado != 4).Select(x => new DDMessageString()
+            {
+                id = x.NºProjeto,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+        
         [HttpPost]
         public JsonResult GetContabGroupTypesOM_Type()
         {
@@ -910,10 +923,21 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetCodTipoCustoByTipoCusto([FromBody]DDMessage tipoCusto)
         {
 
-            List<DDMessageString> result = DBTabelaConfRecursosFH.GetAll().Where(x => x.Tipo == tipoCusto.id.ToString()).Select(x => new DDMessageString()
+            List<DDMessageString> result = DBTabelaConfRecursosFh.GetAll().Where(x => x.Tipo == tipoCusto.id.ToString()).Select(x => new DDMessageString()
             {
                 id = x.CodRecurso,
                 value = x.CodRecurso + " - " + x.Descricao
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProductivityUnits()
+        {
+            List<DDMessage> result = DBProductivityUnits.GetAll().Select(x => new DDMessage()
+            {
+                id = x.NºUnidadeProdutiva,
+                value = x.Descrição
             }).ToList();
             return Json(result);
         }

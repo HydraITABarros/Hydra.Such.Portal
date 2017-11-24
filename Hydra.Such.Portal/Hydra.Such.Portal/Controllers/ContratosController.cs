@@ -104,6 +104,9 @@ namespace Hydra.Such.Portal.Controllers
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
+            List<EnumData> status = EnumerablesFixed.ContractStatus;
+            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
+
             return Json(result);
         }
 
@@ -162,6 +165,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 ContractViewModel result = new ContractViewModel();
 
+
                 if (cContract != null)
                 {
                     result = DBContracts.ParseToViewModel(cContract, _config.NAVDatabaseName, _config.NAVCompanyName);
@@ -187,6 +191,11 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
+                    if (data.ContractType == 1)
+                    {
+                        result.Status = 8;
+                    }
+
                     result.ClientRequisitions = new List<ContractClientRequisitionViewModel>();
                     result.InvoiceTexts = new List<ContractInvoiceTextViewModel>();
                 }
@@ -370,6 +379,35 @@ namespace Hydra.Such.Portal.Controllers
                                 : (DateTime?)DateTime.Parse(data.NextInvoiceDate);
                             ContratoDB.PróximoPeríodoFact = data.NextBillingPeriod;
                             ContratoDB.NºContato = data.ContactNo;
+
+                            if (ContratoDB.DataHoraLimiteEsclarecimentos != null)
+                            {
+                                ContratoDB.DataHoraLimiteEsclarecimentos = ContratoDB.DataHoraLimiteEsclarecimentos.Value.Date;
+                                ContratoDB.DataHoraLimiteEsclarecimentos = ContratoDB.DataHoraLimiteEsclarecimentos.Value.Add(TimeSpan.Parse(data.LimitClarificationTime));
+                                Console.WriteLine(ContratoDB.DataHoraLimiteEsclarecimentos.Value.ToString());
+                            }
+
+                            if (ContratoDB.DataHoraErrosEOmissões != null)
+                            {
+                                ContratoDB.DataHoraErrosEOmissões = ContratoDB.DataHoraErrosEOmissões.Value.Date;
+                                ContratoDB.DataHoraErrosEOmissões = ContratoDB.DataHoraErrosEOmissões.Value.Add(TimeSpan.Parse(data.ErrorsOmissionsTime));
+                                Console.WriteLine(ContratoDB.DataHoraErrosEOmissões.Value.ToString());
+                            }
+
+                            if (ContratoDB.DataHoraRelatórioFinal != null)
+                            {
+                                ContratoDB.DataHoraRelatórioFinal = ContratoDB.DataHoraRelatórioFinal.Value.Date;
+                                ContratoDB.DataHoraRelatórioFinal = ContratoDB.DataHoraRelatórioFinal.Value.Add(TimeSpan.Parse(data.FinalReportTime));
+                                Console.WriteLine(ContratoDB.DataHoraRelatórioFinal.Value.ToString());
+                            }
+
+                            if (ContratoDB.DataHoraHabilitaçãoDocumental != null)
+                            {
+                                ContratoDB.DataHoraHabilitaçãoDocumental = ContratoDB.DataHoraHabilitaçãoDocumental.Value.Date;
+                                ContratoDB.DataHoraHabilitaçãoDocumental = ContratoDB.DataHoraHabilitaçãoDocumental.Value.Add(TimeSpan.Parse(data.DocumentationHabilitationTime));
+                                Console.WriteLine(ContratoDB.DataHoraHabilitaçãoDocumental.Value.ToString());
+                            }
+
                             ContratoDB = DBContracts.Update(ContratoDB);
 
                             //Create/Update Contract Client Requests
@@ -679,6 +717,8 @@ namespace Hydra.Such.Portal.Controllers
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
+            List<EnumData> status = EnumerablesFixed.ContractStatus;
+            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
             return Json(result);
         }
 
@@ -964,6 +1004,8 @@ namespace Hydra.Such.Portal.Controllers
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
+            List<EnumData> status = EnumerablesFixed.ContractStatus;
+            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
             return Json(result);
         }
         
@@ -999,6 +1041,7 @@ namespace Hydra.Such.Portal.Controllers
                             List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(contractNo, int.Parse(versionNo)).OrderBy(x => x.NºLinha).ToList();
                             try
                             {
+
                                 thisHeader.TipoContrato = originType;
                                 thisHeader.NºDeContrato = contractNo;
                                 thisHeader.NºContrato = newNumeration;

@@ -11,6 +11,7 @@ namespace Hydra.Such.Tester.Database
         public virtual DbSet<AcessosUtilizador> AcessosUtilizador { get; set; }
         public virtual DbSet<AçõesDeConfeção> AçõesDeConfeção { get; set; }
         public virtual DbSet<Anexos> Anexos { get; set; }
+        public virtual DbSet<AutorizacaoFhRh> AutorizacaoFhRh { get; set; }
         public virtual DbSet<AutorizarFaturaçãoContratos> AutorizarFaturaçãoContratos { get; set; }
         public virtual DbSet<BarramentosDeVoz> BarramentosDeVoz { get; set; }
         public virtual DbSet<CafetariasRefeitórios> CafetariasRefeitórios { get; set; }
@@ -21,6 +22,7 @@ namespace Hydra.Such.Tester.Database
         public virtual DbSet<Configuração> Configuração { get; set; }
         public virtual DbSet<ConfiguracaoAjudaCusto> ConfiguracaoAjudaCusto { get; set; }
         public virtual DbSet<ConfiguraçãoAprovações> ConfiguraçãoAprovações { get; set; }
+        public virtual DbSet<ConfiguracaoCcp> ConfiguracaoCcp { get; set; }
         public virtual DbSet<ConfiguraçãoNumerações> ConfiguraçãoNumerações { get; set; }
         public virtual DbSet<ConfiguraçãoTemposCcp> ConfiguraçãoTemposCcp { get; set; }
         public virtual DbSet<ConfigUtilizadores> ConfigUtilizadores { get; set; }
@@ -94,8 +96,6 @@ namespace Hydra.Such.Tester.Database
         public virtual DbSet<UtilizadoresGruposAprovação> UtilizadoresGruposAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
-
-        // Unable to generate entity type for table 'dbo.Autorizacao_FH_RH'. Please see the warning messages.
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -279,6 +279,58 @@ namespace Hydra.Such.Tester.Database
                     .HasForeignKey(d => d.NºOrigem)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Anexos_Requisição");
+            });
+
+            modelBuilder.Entity<AutorizacaoFhRh>(entity =>
+            {
+                entity.HasKey(e => e.NoEmpregado);
+
+                entity.ToTable("Autorizacao_FH_RH");
+
+                entity.Property(e => e.NoEmpregado)
+                    .HasColumnName("No_Empregado")
+                    .HasMaxLength(20)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.AlteradoPor)
+                    .HasColumnName("Alterado Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CriadoPor)
+                    .HasColumnName("Criado Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraÚltimaAlteração)
+                    .HasColumnName("Data/Hora Última Alteração")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.NoResponsavel1)
+                    .HasColumnName("No_Responsavel_1")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NoResponsavel2)
+                    .HasColumnName("No_Responsavel_2")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NoResponsavel3)
+                    .HasColumnName("No_Responsavel_3")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.ValidadorRh1)
+                    .HasColumnName("Validador_RH1")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.ValidadorRh2)
+                    .HasColumnName("Validador_RH2")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.ValidadorRh3)
+                    .HasColumnName("Validador_RH3")
+                    .HasMaxLength(20);
             });
 
             modelBuilder.Entity<AutorizarFaturaçãoContratos>(entity =>
@@ -756,6 +808,89 @@ namespace Hydra.Such.Tester.Database
                     .HasConstraintName("FK_Configuração Aprovações_Grupos Aprovação");
             });
 
+            modelBuilder.Entity<ConfiguracaoCcp>(entity =>
+            {
+                entity.ToTable("ConfiguracaoCCP");
+
+                entity.Property(e => e.Id).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.Ccpemail10Compras)
+                    .HasColumnName("CCPEmail10Compras")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Ccpemail11Compras)
+                    .HasColumnName("CCPEmail11Compras")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Ccpemail2Compras)
+                    .HasColumnName("CCPEmail2Compras")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Ccpemail2Contabilidade)
+                    .HasColumnName("CCPEmail2Contabilidade")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Ccpemail2Financeiros)
+                    .HasColumnName("CCPEmail2Financeiros")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Ccpemail2Juridicos)
+                    .HasColumnName("CCPEmail2Juridicos")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Ccpemail3Compras)
+                    .HasColumnName("CCPEmail3Compras")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Ccpemail3Contabilidade)
+                    .HasColumnName("CCPEmail3Contabilidade")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Ccpemail4Compras)
+                    .HasColumnName("CCPEmail4Compras")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Ccpemail5Compras)
+                    .HasColumnName("CCPEmail5Compras")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Ccpemail6Compras)
+                    .HasColumnName("CCPEmail6Compras")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Ccpemail7Compras)
+                    .HasColumnName("CCPEmail7Compras")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Ccpemail8Compras)
+                    .HasColumnName("CCPEmail8Compras")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Ccpemail9Compras)
+                    .HasColumnName("CCPEmail9Compras")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CcpemailCa)
+                    .HasColumnName("CCPEmailCA")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CcpemailCompras)
+                    .HasColumnName("CCPEmailCompras")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CcpemailContabilidade)
+                    .HasColumnName("CCPEmailContabilidade")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CcpemailFinanceiros)
+                    .HasColumnName("CCPEmailFinanceiros")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CcpemailJurididos)
+                    .HasColumnName("CCPEmailJurididos")
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<ConfiguraçãoNumerações>(entity =>
             {
                 entity.ToTable("Configuração Numerações");
@@ -876,6 +1011,14 @@ namespace Hydra.Such.Tester.Database
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.Nome).HasMaxLength(50);
+
+                entity.Property(e => e.ProcedimentosEmailEnvioParaArea).HasMaxLength(50);
+
+                entity.Property(e => e.ProcedimentosEmailEnvioParaArea2).HasMaxLength(50);
+
+                entity.Property(e => e.ProcedimentosEmailEnvioParaCa)
+                    .HasColumnName("ProcedimentosEmailEnvioParaCA")
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
