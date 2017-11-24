@@ -404,14 +404,14 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public JsonResult CoffeeShopsDiaryLineRegister([FromBody] List<CoffeeShopDiaryViewModel> data, int Code)
+        public JsonResult CoffeeShopsDiaryLineRegister([FromBody] List<CoffeeShopDiaryViewModel> data)
         {
             try
             {
                 if (data != null)
                 {
-                    //int id = data.Find()
-                    //CafetariasRefeitórios CoffeeShop = DBCoffeeShops.GetByCode();
+                    int? id = data.Find(x => x.User == User.Identity.Name).CoffeShopCode;
+                    CafetariasRefeitórios CoffeeShop = DBCoffeeShops.GetByCode((int)id);
 
                     foreach (var linesToRegist in data)
                     {
@@ -431,7 +431,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         
                         MovementsToCreate.TipoMovimento = linesToRegist.MovementType;
-                        MovementsToCreate.CódigoRegião = "1";
+                        MovementsToCreate.CódigoRegião = CoffeeShop.CódigoRegião;
                         MovementsToCreate.CódigoÁreaFuncional = "1";
                         MovementsToCreate.CódigoCentroResponsabilidade = "1";
                         MovementsToCreate.Utilizador = User.Identity.Name;

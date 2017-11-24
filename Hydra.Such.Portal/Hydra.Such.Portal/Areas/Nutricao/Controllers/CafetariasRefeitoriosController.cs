@@ -77,8 +77,8 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 DateTime date;                
                 if (DateTime.TryParse(explorationStartDate, out date))
                 {
-                    item = DBCoffeeShops.GetById(productivityUnitNo, type, code, date)
-                        .ParseToViewModel();
+                    var coffeeShop = DBCoffeeShops.GetById(productivityUnitNo, type, code, date);
+                    item = DBCoffeeShops.ParseToViewModel(coffeeShop); 
                 }
                 else
                 {

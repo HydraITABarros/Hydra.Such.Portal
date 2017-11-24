@@ -299,6 +299,7 @@
         },
 
         _registerDiaryLines: function () {
+            debugger;
             this.$.register_databound_ajax.body = JSON.stringify(this.result, @ViewBag.CoffeeShopNo);
             this.$.register_databound_ajax.generateRequest();
         },
