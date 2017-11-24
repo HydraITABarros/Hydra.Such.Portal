@@ -268,7 +268,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DiarioCafeterias(int NºUnidadeProdutiva, int CódigoCafetaria)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 1);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 36);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -421,7 +421,8 @@ namespace Hydra.Such.Portal.Controllers
                         MovementsToCreate.DataRegisto = linesToRegist.RegistryDate != "" ? DateTime.Parse(linesToRegist.RegistryDate) : (DateTime?)null;
                         MovementsToCreate.NºRecurso = linesToRegist.ResourceNo;
                         MovementsToCreate.Descrição = linesToRegist.Description;
-                        if(linesToRegist.MovementType == 2 || linesToRegist.MovementType == 3)
+                        MovementsToCreate.Tipo = CoffeeShop.Tipo;
+                        if (linesToRegist.MovementType == 2 || linesToRegist.MovementType == 3)
                         {
                             MovementsToCreate.Valor = linesToRegist.Value * (-1);
                         }
@@ -431,13 +432,21 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         
                         MovementsToCreate.TipoMovimento = linesToRegist.MovementType;
-                        MovementsToCreate.CódigoRegião = CoffeeShop.CódigoRegião;
-                        MovementsToCreate.CódigoÁreaFuncional = "1";
-                        MovementsToCreate.CódigoCentroResponsabilidade = "1";
+                        MovementsToCreate.CódigoRegião = CoffeeShop.CódigoRegião ?? "";
+                        MovementsToCreate.CódigoÁreaFuncional = CoffeeShop.CódigoÁreaFuncional ?? "";
+                        MovementsToCreate.CódigoCentroResponsabilidade = CoffeeShop.CódigoCentroResponsabilidade ?? "";
                         MovementsToCreate.Utilizador = User.Identity.Name;
                         MovementsToCreate.DataHoraSistemaRegisto = DateTime.Now;
                         MovementsToCreate.DataHoraCriação = DateTime.Now;
                         MovementsToCreate.UtilizadorCriação = User.Identity.Name;
+
+                        DBCoffeeShopMovements.Create(MovementsToCreate);
+                        if(MovementsToCreate.NºMovimento > 0)
+                        {
+                            DiárioCafetariaRefeitório lineToRemove = new DiárioCafetariaRefeitório();
+                            lineToRemove = DBCoffeeShopsDiary.GetById(linesToRegist.LineNo);
+                            DBCoffeeShopsDiary.Delete(lineToRemove);
+                        }
                     }
 
                     return Json(true);
