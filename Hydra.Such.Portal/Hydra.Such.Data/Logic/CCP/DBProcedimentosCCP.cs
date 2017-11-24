@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.CCP;
 using System;
 using System.Collections.Generic;
@@ -543,6 +544,45 @@ namespace Hydra.Such.Data.Logic.CCP
             return EmailsView;
         }
 
+        public static bool __CreateEmailProcedimento(EmailsProcedimentosCcp Email)
+        {
+            if (Email == null)
+                return false;
+
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                _context.Add(Email);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+        }
+        public static bool __UpdateEmailProcedimento(EmailsProcedimentosCcp Email)
+        {
+            if (Email == null)
+                return false;
+
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                _context.Update(Email);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+
+                return false;
+            }
+            return false;
+        }
         public static bool __DeleteAllEmailsRelatedToProcedimento(string ProcedimentoID)
         {
             SuchDBContext _context = new SuchDBContext();
@@ -941,7 +981,7 @@ namespace Hydra.Such.Data.Logic.CCP
             try
             {
                 var CU = _context.ConfigUtilizadores.Where(cu => cu.IdUtilizador == UserID).FirstOrDefault();
-                if (CCPFunctions.IsValidEmail(CU.IdUtilizador))
+                if (EmailAutomation.IsValidEmail(CU.IdUtilizador))
                     return CU.IdUtilizador;
                 else
                     return null;
