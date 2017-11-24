@@ -920,7 +920,11 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50)
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.DataHoraCriação)
+                entity.Property(e => e.EmployeeNo)
+                    .HasColumnName("EmployeeNo")
+                    .HasMaxLength(20);
+
+                    entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
                     .HasColumnType("datetime");
 

@@ -14,6 +14,7 @@ namespace Hydra.Such.Data.Database
 
         public string IdUtilizador { get; set; }
         public string Nome { get; set; }
+        public string EmployeeNo { get; set; }
         public bool? Ativo { get; set; }
         public bool Administrador { get; set; }
         public DateTime? DataHoraCriação { get; set; }

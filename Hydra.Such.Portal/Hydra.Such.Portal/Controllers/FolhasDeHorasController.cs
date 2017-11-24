@@ -336,29 +336,33 @@ namespace Hydra.Such.Portal.Controllers
         {
             FolhaDeHorasViewModel FH = new FolhaDeHorasViewModel();
 
-            AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado == idEmployee).SingleOrDefault();
-
-            if (Autorizacao != null)
+            if (idEmployee != null && idEmployee != "")
             {
-                FH.Responsavel1No = Autorizacao.NoResponsavel1;
-                FH.Responsavel2No = Autorizacao.NoResponsavel2;
-                FH.Responsavel3No = Autorizacao.NoResponsavel3;
-                FH.Validadores = string.Concat(Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3);
-            };
 
-            FH.EmpregadoNome = DBUserConfigurations.GetById(Autorizacao.NoResponsavel1).Nome;
+                AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado == idEmployee).SingleOrDefault();
 
-            List<DDMessageString> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No == idEmployee).Select(x => new DDMessageString()
-            {
-                id = x.No,
-                value = x.Name
-            }).ToList();
+                if (Autorizacao != null)
+                {
+                    FH.Responsavel1No = Autorizacao.NoResponsavel1;
+                    FH.Responsavel2No = Autorizacao.NoResponsavel2;
+                    FH.Responsavel3No = Autorizacao.NoResponsavel3;
+                    FH.Validadores = string.Concat(Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3);
+                };
 
-            if (result.Count > 0)
-            {
-                FH.EmpregadoNome = result[0].value;
+                FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAVDatabaseName, _config.NAVCompanyName).SingleOrDefault().Name;
+
+                //List<DDMessageString> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No == idEmployee).Select(x => new DDMessageString()
+                //{
+                //    id = x.No,
+                //    value = x.Name
+                //}).ToList();
+
+                //if (result.Count > 0)
+                //{
+                //    FH.EmpregadoNome = result[0].value;
+                //}
+
             }
-
             return Json(FH);
         }
 
