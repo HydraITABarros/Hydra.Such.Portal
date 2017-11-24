@@ -68,7 +68,7 @@ namespace Hydra.Such.Data.ViewModel
         private static bool MailSent = false; 
         #endregion
 
-        #region Class constructors
+        #region Class constructors & Set accessor for the To property
         public EmailAutomation()
         {
             To = new List<string>();
@@ -83,6 +83,20 @@ namespace Hydra.Such.Data.ViewModel
             Body = body;
             IsBodyHtml = isBodyHtml;
             Config = new __Configurations();
+        }
+
+        public void SetTo(List<string> DestinationAddresses)
+        {
+            if(DestinationAddresses != null && DestinationAddresses.Count > 0)
+            {
+                foreach(var da in DestinationAddresses)
+                {
+                    if (IsValidEmail(da))
+                    {
+                        To.Add(da);
+                    }
+                }
+            }
         }
         #endregion
 
@@ -162,11 +176,28 @@ namespace Hydra.Such.Data.ViewModel
                 MailSent = true;
                 if (MailSent)
                 {
-                    // Do database update
+                    // Log the success
                 }
             }
 
             if(e.Error != null)
+            {
+                // Log the error
+            }
+        }
+        private static void SendCompletedCallbackForProcedimento(object sender, AsyncCompletedEventArgs e)
+        {
+            string Token = (string)e.UserState;
+            if (!e.Cancelled && e.Error == null)
+            {
+                MailSent = true;
+                if (MailSent)
+                {
+                    // Do database update
+                }
+            }
+
+            if (e.Error != null)
             {
                 // Log the erros to the EmailProcedimento table
             }
@@ -191,7 +222,8 @@ namespace Hydra.Such.Data.ViewModel
 
             foreach (var t in To)
             {
-                MMessage.To.Add(new MailAddress(t));
+                if(IsValidEmail(t))
+                    MMessage.To.Add(new MailAddress(t));
             }
 
             MMessage.Subject = Subject;
@@ -202,6 +234,11 @@ namespace Hydra.Such.Data.ViewModel
             string UserState = "EmailProcedimentos";
 
             Client.SendAsync(MMessage, UserState);
+        }
+
+        public void SendEmailProcedimento()
+        {
+
         }
     }
 }

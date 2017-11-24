@@ -1962,6 +1962,8 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Utilizador Resposta")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.ObservacoesEnvio).HasColumnType("text");
+
                 entity.HasOne(d => d.NºProcedimentoNavigation)
                     .WithMany(p => p.EmailsProcedimentosCcp)
                     .HasForeignKey(d => d.NºProcedimento)
