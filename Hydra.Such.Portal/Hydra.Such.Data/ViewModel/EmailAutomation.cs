@@ -13,6 +13,7 @@ using System.Net;
 using System.Configuration;
 
 using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic.CCP;
 
 
 namespace Hydra.Such.Data.ViewModel
@@ -60,10 +61,11 @@ namespace Hydra.Such.Data.ViewModel
         public string Body { get; set; }
         public bool IsBodyHtml { get; set; }
         private __Configurations Config { get; set; }
-        private EmailsProcedimentosCcp EmailProcedimento
-        {
-            set { EmailProcedimento = value; }
-        }
+        // Property used to send a specific object type
+        // Must use method SendEmailProcedimento
+        public EmailsProcedimentosCcp EmailProcedimento { get; set; }
+
+        public string UserID { get; set; }  // this property will be used to update the EmailProcedimento.UtilizadorModificação
 
         private static bool MailSent = false; 
         #endregion
@@ -185,21 +187,28 @@ namespace Hydra.Such.Data.ViewModel
                 // Log the error
             }
         }
-        private static void SendCompletedCallbackForProcedimento(object sender, AsyncCompletedEventArgs e)
+
+        
+        private void SendCompletedCallbackForProcedimento(object sender, AsyncCompletedEventArgs e)
         {
+            MailSent = false;
             string Token = (string)e.UserState;
             if (!e.Cancelled && e.Error == null)
             {
                 MailSent = true;
                 if (MailSent)
                 {
-                    // Do database update
+                    EmailProcedimento.UtilizadorModificação = UserID;
+                    EmailProcedimento.DataHoraModificação = DateTime.Now;
+                    EmailProcedimento.ObservacoesEnvio = "Não foi possível enviar a mensagem!";
+                    DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
                 }
             }
 
             if (e.Error != null)
             {
-                // Log the erros to the EmailProcedimento table
+                EmailProcedimento.ObservacoesEnvio = "Não foi possível enviar a mensagem " + DateTime.Now.ToString();
+                DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
             }
         }
         #endregion
@@ -236,9 +245,77 @@ namespace Hydra.Such.Data.ViewModel
             Client.SendAsync(MMessage, UserState);
         }
 
+        // Method used to send the property EmailProcedimento
         public void SendEmailProcedimento()
         {
+            if (EmailProcedimento == null)
+                return;
 
+            // the From property must be set and be a valid email address
+            if (string.IsNullOrEmpty(From) && !IsValidEmail(From))
+            {
+                if(string.IsNullOrEmpty(EmailProcedimento.ObservacoesEnvio))
+                    EmailProcedimento.ObservacoesEnvio = "Email do remetente inválido!";
+                else
+                    EmailProcedimento.ObservacoesEnvio = " ** Email do remetente inválido!";
+
+                DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(EmailProcedimento.EmailDestinatário))
+            {
+                if (string.IsNullOrEmpty(EmailProcedimento.ObservacoesEnvio))
+                    EmailProcedimento.ObservacoesEnvio = "Não há Destinatários!";
+                else
+                    EmailProcedimento.ObservacoesEnvio = " ** Não há Destinatários!";
+
+                DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
+                return;
+            }
+             
+            // split EmailDestinatários to obtain the valid email addresses
+            foreach(var eaddr in EmailProcedimento.EmailDestinatário.Split(';'))
+            {
+                if (IsValidEmail(eaddr))
+                {
+                    To.Add(eaddr);
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(EmailProcedimento.ObservacoesEnvio))
+                        EmailProcedimento.ObservacoesEnvio = "Endereço " + eaddr + " não é válido!";
+                    else
+                        EmailProcedimento.ObservacoesEnvio = " ** Endereço " + eaddr + " não é válido!";
+                }
+            }
+
+            DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
+
+            SmtpClient Client = new SmtpClient(Config.Host, Config.Port);
+            NetworkCredential Credentials = new NetworkCredential(Config.Username, Config.Password);
+            Client.UseDefaultCredentials = true;
+            Client.Credentials = Credentials;
+            Client.EnableSsl = Config.SSL;
+
+            MailMessage MMessage = new MailMessage
+            {
+                From = new MailAddress(From, DisplayName)
+            };
+
+            foreach (var t in To)
+            {
+                MMessage.To.Add(new MailAddress(t));
+            }
+
+            MMessage.Subject = Subject;
+            MMessage.Body = Body;
+            MMessage.IsBodyHtml = IsBodyHtml;
+
+            Client.SendCompleted += new SendCompletedEventHandler(SendCompletedCallbackForProcedimento);
+
+            string UserState = "EmailProcedimentos";
+            Client.SendAsync(MMessage, UserState);
         }
     }
 }
