@@ -263,13 +263,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static bool DeleteAjuda(int AjudaNo)
+        public static bool DeleteAjuda(string NoFolhaHoras, int AjudaNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.LinhasFolhaHoras.RemoveRange(ctx.LinhasFolhaHoras.Where(x => x.NoLinha == AjudaNo));
+                    ctx.LinhasFolhaHoras.RemoveRange(ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == NoFolhaHoras && x.NoLinha == AjudaNo));
                     ctx.SaveChanges();
                 }
 

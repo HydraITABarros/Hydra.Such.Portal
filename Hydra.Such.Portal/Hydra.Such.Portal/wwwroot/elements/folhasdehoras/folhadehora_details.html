@@ -321,7 +321,7 @@
                             </div>
                             <div class="row break_clear">
                                 <div class="col-sm-3">
-                                    <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
+                                    <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}" <!--on-change="_dataPartidaDataChegada"-->></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-3">
                                     <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" name="horaPartidaTexto" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"> </vaadin-text-field>
@@ -1433,7 +1433,11 @@
                         this._showErrorMessage('É obrigatório preencher todos os campos obrigatórios corretamente.');
                 },
 
-
+                _dataPartidaDataChegada: function () {
+                    if (this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.value == "") {
+                        this.$.dataChegadaTexto.value = this.$.dataPartidaTexto.value;
+                    }
+                },
 
                 //PERCURSO
                 _createPercurso: function () {
@@ -1512,7 +1516,7 @@
                 },
 
                 _deleteAjuda: function (e) {
-                    this.$.page_deleteajuda_ajax.body = JSON.stringify(e.model.item.noLinha);
+                    this.$.page_deleteajuda_ajax.body = JSON.stringify(this.$.folhaDeHorasNo.value, e.model.item.noLinha);
                     this.$.page_deleteajuda_ajax.generateRequest();
                     this.$.tabAjuda.clearCache();
                 },

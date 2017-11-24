@@ -48,7 +48,7 @@ namespace Hydra.Such.Portal.Controllers
                 FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
                 FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity.Where(y => y.Id == Convert.ToInt32(FH.DeslocacaoForaConcelho)).FirstOrDefault().Value;
                 FH.Estadotexto = FH.Estado == null ? "" : EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == FH.Estado).FirstOrDefault().Value;
-                FH.Validadores = FH.Validadores == "" ? "" : DBUserConfigurations.GetById(FH.Validadores).Nome;
+                //FH.Validadores = FH.Validadores == "" ? "" : FH.Validadores;
             });
 
             return Json(result);
@@ -922,12 +922,12 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult DeleteAjuda([FromBody] int linhaNo)
+        public JsonResult DeleteAjuda([FromBody] string NoFolhaHoras, int linhaNo)
         {
             bool result = false;
             try
             {
-                bool dbDeleteResult = DBLinhasFolhaHoras.DeleteAjuda(Convert.ToInt32(linhaNo));
+                bool dbDeleteResult = DBLinhasFolhaHoras.DeleteAjuda(NoFolhaHoras, Convert.ToInt32(linhaNo));
 
                 result = dbDeleteResult;
             }
@@ -952,11 +952,8 @@ namespace Hydra.Such.Portal.Controllers
                 List<LinhasFolhaHoras> LinhasFH = DBLinhasFolhaHoras.GetAjudaByFolhaHoraNo(data.FolhaDeHorasNo).Where(x => (x.NoFolhaHoras == data.FolhaDeHorasNo) && (x.CalculoAutomatico == true)).ToList();
                 LinhasFH.ForEach(x =>
                 {
-                    DBLinhasFolhaHoras.DeleteAjuda(x.NoLinha);
+                    DBLinhasFolhaHoras.DeleteAjuda(x.NoFolhaHoras, x.NoLinha);
                 });
-
-
-
 
 
                 List<ConfiguracaoAjudaCusto> AjudaCusto = DBConfiguracaoAjudaCusto.GetAll().Where(x =>
