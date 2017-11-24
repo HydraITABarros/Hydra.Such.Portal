@@ -57,6 +57,8 @@ namespace Hydra.Such.Data.ViewModel
         public string From { get; set; }
         public string DisplayName { get; set; }
         public List<string> To { get; set; }
+        public List<string> CC { get; set; }
+        public List<string> BCC { get; set; }
         public string Subject { get; set; }
         public string Body { get; set; }
         public bool IsBodyHtml { get; set; }
@@ -74,17 +76,23 @@ namespace Hydra.Such.Data.ViewModel
         public EmailAutomation()
         {
             To = new List<string>();
+            CC = new List<string>();
+            BCC = new List<string>();
+            EmailProcedimento = new EmailsProcedimentosCcp();
             Config = new __Configurations();
         }
         public EmailAutomation(string from, string displayName, string subject, string body, bool isBodyHtml)
         {
             From = from;
             To = new List<string>();
+            CC = new List<string>();
+            BCC = new List<string>();
             DisplayName = displayName;
             Subject = subject;
             Body = body;
             IsBodyHtml = isBodyHtml;
             Config = new __Configurations();
+            EmailProcedimento = new EmailsProcedimentosCcp();
         }
 
         public void SetTo(List<string> DestinationAddresses)
@@ -200,7 +208,8 @@ namespace Hydra.Such.Data.ViewModel
                 {
                     EmailProcedimento.UtilizadorModificação = UserID;
                     EmailProcedimento.DataHoraModificação = DateTime.Now;
-                    EmailProcedimento.ObservacoesEnvio = "Não foi possível enviar a mensagem!";
+                    EmailProcedimento.ObservacoesEnvio = "Mensagem enviada com Sucesso";
+                    EmailProcedimento.Email = true;
                     DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
                 }
             }
@@ -235,6 +244,18 @@ namespace Hydra.Such.Data.ViewModel
                     MMessage.To.Add(new MailAddress(t));
             }
 
+            foreach (var cc in CC)
+            {
+                if (IsValidEmail(cc))
+                    MMessage.CC.Add(cc);
+            }
+
+            foreach (var bcc in BCC)
+            {
+                if (IsValidEmail(bcc))
+                    MMessage.Bcc.Add(bcc);
+            }
+
             MMessage.Subject = Subject;
             MMessage.Body = Body;
             MMessage.IsBodyHtml = IsBodyHtml;
@@ -262,7 +283,7 @@ namespace Hydra.Such.Data.ViewModel
                 DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
                 return;
             }
-
+/*
             if (string.IsNullOrEmpty(EmailProcedimento.EmailDestinatário))
             {
                 if (string.IsNullOrEmpty(EmailProcedimento.ObservacoesEnvio))
@@ -273,8 +294,9 @@ namespace Hydra.Such.Data.ViewModel
                 DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
                 return;
             }
-             
-            // split EmailDestinatários to obtain the valid email addresses
+
+            
+             split EmailDestinatários to obtain the valid email addresses
             foreach(var eaddr in EmailProcedimento.EmailDestinatário.Split(';'))
             {
                 if (IsValidEmail(eaddr))
@@ -288,6 +310,17 @@ namespace Hydra.Such.Data.ViewModel
                     else
                         EmailProcedimento.ObservacoesEnvio = " ** Endereço " + eaddr + " não é válido!";
                 }
+            }
+            */
+
+            if(To == null || To.Count <= 0)
+            {
+                if (string.IsNullOrEmpty(EmailProcedimento.ObservacoesEnvio))
+                    EmailProcedimento.ObservacoesEnvio = "Não há destinatários";
+                else
+                    EmailProcedimento.ObservacoesEnvio = " ** Não há destinatários";
+
+                return;
             }
 
             DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
@@ -306,6 +339,18 @@ namespace Hydra.Such.Data.ViewModel
             foreach (var t in To)
             {
                 MMessage.To.Add(new MailAddress(t));
+            }
+
+            foreach(var cc in CC)
+            {
+                if (IsValidEmail(cc))
+                    MMessage.CC.Add(cc);
+            }
+
+            foreach(var bcc in BCC)
+            {
+                if (IsValidEmail(bcc))
+                    MMessage.Bcc.Add(bcc);
             }
 
             MMessage.Subject = Subject;
