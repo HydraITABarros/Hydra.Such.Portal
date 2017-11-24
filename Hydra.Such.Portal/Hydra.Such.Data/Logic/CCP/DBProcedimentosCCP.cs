@@ -907,13 +907,13 @@ namespace Hydra.Such.Data.Logic.CCP
         #endregion
 
         #region Users settings related to Procedimentos CCP
-        public static ConfiguracaoCCP GetConfiguracaoCCP()
+        public static ConfiguracaoCcp GetConfiguracaoCCP()
         {
             SuchDBContext _context = new SuchDBContext();
             try
             {
-                //return _context.ToList().FirstOrDefault();
-                return null;
+                return _context.ConfiguracaoCcp.Where(c => c.Id == 1).LastOrDefault();
+                //return null;
             }
             catch (Exception e)
             {
