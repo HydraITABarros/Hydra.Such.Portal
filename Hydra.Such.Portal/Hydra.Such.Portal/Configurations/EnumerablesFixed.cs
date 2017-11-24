@@ -279,8 +279,14 @@ namespace Hydra.Such.Portal.Configurations
              new EnumData()
              {
                  Id = 35,
-                 Value = "Cafetarias / Refeitórios"
+                 Value = "Cafetarias/Refeitórios"
              },
+
+             new EnumData()
+             {
+                 Id = 36,
+                 Value = "Diário Cafetarias/Refeitórios"
+             }
 
         };
 

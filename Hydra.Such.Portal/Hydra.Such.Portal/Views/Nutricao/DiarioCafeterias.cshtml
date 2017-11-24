@@ -88,7 +88,7 @@
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Nutricao/UpdateCoffeeShopsDiaryLine"
-                   last-response="{{deleted}}"
+                   last-response="{{updated}}"
                    method="post"
                    handle-as="json"
                    id="update_databound_ajax"
@@ -138,7 +138,9 @@
             <br />
             <div class="row">
                 <div class="col-lg-1">
-                    <paper-button class="btnSave" raised on-tap="_createCoffeeShopDiary"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar</paper-button>
+                    <template is="dom-if" if="{{ _permissions.create }}">
+                        <paper-button class="btnSave" raised on-tap="_createCoffeeShopDiary"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar</paper-button>
+                    </template>
                 </div>
             </div>
             <br />
@@ -209,21 +211,30 @@
                     <vaadin-text-field id="valueGrid" name="valueGrid" pattern="^[1-9]\d*(\.\d+)?$" value="{{item.value}}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissions.delete }}">
             <vaadin-grid-column width="10%" resizable>
                 <template class="header">
                 </template>
                 <template>
                     <center>
+                        <template is="dom-if" if="{{ _permissions.delete }}">
                             <paper-button class="btnRemove" raised on-tap="_deleteDiaryLine">Eliminar</paper-button>
+                        </template>
                     </center>
                 </template>
             </vaadin-grid-column>
+            </template>
         </vaadin-grid>
 
-        <div class="marginSpace">
-                <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateDiaryLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnRegisterLine" class="btnSave" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
 
+        <div class="marginSpace">
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateDiaryLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            </template>
+
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button raised id="btnRegisterLine" class="btnSave" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
+            </template>
         </div>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -239,7 +250,10 @@
             type: Number,
             notify: true,
             value: ""
-            }
+            },
+            _permissions: {
+                type: Array
+            },
         },
         ready: function () {
             //GET CONTRACT DATA
@@ -284,7 +298,7 @@
                 if (this.deleted == true) {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
                     this.$.grid_databound_ajax.generateRequest();
-                    this._openToast("Diário Cafetaria/Refeitório apagado com sucesso.");
+                    this._openToast("Diário Cafetaria/Refeitório eliminado com sucesso.");
                 } else {
                     this._openToastError("Ocorreu um erro desconhecido.");
                 }
@@ -298,10 +312,41 @@
             this.$.update_databound_ajax.generateRequest();
         },
 
-        _registerDiaryLines: function () {
+        _responseUpdate: function (updated) {
+            var self = this;
             debugger;
-            this.$.register_databound_ajax.body = JSON.stringify(this.result, @ViewBag.CoffeeShopNo);
+            if (updated.detail.status === 200) {
+                if (this.updated == true) {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+                    this.$.grid_databound_ajax.generateRequest();
+                    this._openToast("Diário Cafetaria/Refeitório atualizado com sucesso.");
+                } else {
+                    this._openToastError("Ocorreu um erro desconhecido.");
+                }
+            } else {
+                this._openToastError("Ocorreu um erro desconhecido.");
+            }
+        },
+
+        _registerDiaryLines: function () {
+            this.$.register_databound_ajax.body = JSON.stringify(this.result);
             this.$.register_databound_ajax.generateRequest();
+        },
+        _responseRegister: function (registed) {
+            var self = this;
+            debugger;
+            if (registed.detail.status === 200) {
+                if (this.registed == true) {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+                    this.$.grid_databound_ajax.generateRequest();
+                    this._openToast("Diário Cafetaria/Refeitório registado com sucesso.");
+                } else {
+                    this._openToastError("Ocorreu um erro desconhecido.");
+                }
+            } else {
+                this._openToastError("Ocorreu um erro desconhecido.");
+            }
+
         },
 
         _openToast: function (message) {

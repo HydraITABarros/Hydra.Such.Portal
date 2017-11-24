@@ -224,35 +224,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
             return result;
         }
 
-        //public static CoffeeShopViewModel ParseToViewModel(this CafetariasRefeitórios item)
-        //{
-        //    if (item != null)
-        //    {
-        //        return new CoffeeShopViewModel()
-        //        {
-        //            ProductivityUnitNo = item.NºUnidadeProdutiva,
-        //            Type = item.Tipo,
-        //            Code = item.Código,
-        //            StartDateExploration = item.DataInícioExploração.ToString("yyyy-MM-dd"),
-        //            EndDateExploration = item.DataFimExploração.HasValue ? item.DataFimExploração.Value.ToString("yyyy-MM-dd") : "",
-        //            Description = item.Descrição,
-        //            CodeResponsible = item.CódResponsável,
-        //            CodeRegion = item.CódigoRegião,
-        //            CodeFunctionalArea = item.CódigoÁreaFuncional,
-        //            CodeResponsabilityCenter = item.CódigoCentroResponsabilidade,
-        //            Warehouse = item.Armazém,
-        //            WarehouseSupplier = item.ArmazémLocal,
-        //            ProjectNo = item.NºProjeto,
-        //            Active = item.Ativa,
-        //            CreateDate = item.DataHoraCriação,
-        //            CreateUser = item.UtilizadorCriação,
-        //            UpdateDate = item.DataHoraModificação,
-        //            UpdateUser = item.UtilizadorModificação
-        //        };
-        //    }
-        //    return null;
-        //}
-
         public static List<CoffeeShopViewModel> ParseToViewModel(this List<CafetariasRefeitórios> items)
         {
             List<CoffeeShopViewModel> coffeeShops = new List<CoffeeShopViewModel>();
