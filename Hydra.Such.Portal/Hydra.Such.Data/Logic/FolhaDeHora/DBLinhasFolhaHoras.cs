@@ -11,13 +11,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
     public class DBLinhasFolhaHoras
     {
         #region CRUD PERCURSO
-        public static LinhasFolhaHoras GetByPercursoNo(int PercursoNo)
+        public static LinhasFolhaHoras GetByPercursoNo(string NoFolhaHoras, int PercursoNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.LinhasFolhaHoras.Where(x => x.NoLinha == PercursoNo).FirstOrDefault();
+                    return ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == NoFolhaHoras && x.NoLinha == PercursoNo).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -168,13 +168,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
         #endregion
 
         #region CRUD AJUDA
-        public static LinhasFolhaHoras GetByAjudaNo(int AjudaNo)
+        public static LinhasFolhaHoras GetByAjudaNo(string NoFolhaHoras, int AjudaNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.LinhasFolhaHoras.Where(x => x.NoLinha == AjudaNo).FirstOrDefault();
+                    return ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == NoFolhaHoras && x.NoLinha == AjudaNo).FirstOrDefault();
                 }
             }
             catch (Exception ex)
