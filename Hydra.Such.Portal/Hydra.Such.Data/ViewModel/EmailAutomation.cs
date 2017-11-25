@@ -50,7 +50,7 @@ namespace Hydra.Such.Data.ViewModel
             get { return __SSL; }
         }
     }
-    public class EmailAutomation
+    public partial class EmailAutomation
     {
         // Properties declaration
         #region Properties declaration
@@ -62,14 +62,11 @@ namespace Hydra.Such.Data.ViewModel
         public string Subject { get; set; }
         public string Body { get; set; }
         public bool IsBodyHtml { get; set; }
-        private __Configurations Config { get; set; }
-        // Property used to send a specific object type
-        // Must use method SendEmailProcedimento
-        public EmailsProcedimentosCcp EmailProcedimento { get; set; }
-
+        protected __Configurations Config { get; set; }
+        
         public string UserID { get; set; }  // this property will be used to update the EmailProcedimento.UtilizadorModificação
 
-        private static bool MailSent = false; 
+        
         #endregion
 
         #region Class constructors & Set accessor for the To property
@@ -78,7 +75,6 @@ namespace Hydra.Such.Data.ViewModel
             To = new List<string>();
             CC = new List<string>();
             BCC = new List<string>();
-            EmailProcedimento = new EmailsProcedimentosCcp();
             Config = new __Configurations();
         }
         public EmailAutomation(string from, string displayName, string subject, string body, bool isBodyHtml)
@@ -92,7 +88,6 @@ namespace Hydra.Such.Data.ViewModel
             Body = body;
             IsBodyHtml = isBodyHtml;
             Config = new __Configurations();
-            EmailProcedimento = new EmailsProcedimentosCcp();
         }
 
         public void SetTo(List<string> DestinationAddresses)
@@ -167,7 +162,7 @@ namespace Hydra.Such.Data.ViewModel
         }
         #endregion
 
-        #region Function that will be use in the EventHandler
+        #region partial methods to send emails
         /* 
         * URL: https://msdn.microsoft.com/en-us/library/system.net.mail.smtpclient(v=vs.110).aspx
         *      To send the e-mail message and block while waiting for the e-mail to be transmitted to the SMTP server, use one of the synchronous Send methods. 
@@ -178,189 +173,9 @@ namespace Hydra.Such.Data.ViewModel
         *      
         *      The SendCompletedCallback is the method used by the SendAsync SMTP method and will perform the database updates when email has been successfuly sent
         */
-        private static void SendCompletedCallback(object sender, AsyncCompletedEventArgs e)
-        {
-            string Token = (string)e.UserState;
-            if (!e.Cancelled && e.Error == null)
-            {
-                MailSent = true;
-                if (MailSent)
-                {
-                    // Log the success
-                }
-            }
+        partial void SendCompletedCallback(object sender, AsyncCompletedEventArgs e);
 
-            if(e.Error != null)
-            {
-                // Log the error
-            }
-        }
-
-        
-        private void SendCompletedCallbackForProcedimento(object sender, AsyncCompletedEventArgs e)
-        {
-            MailSent = false;
-            string Token = (string)e.UserState;
-            if (!e.Cancelled && e.Error == null)
-            {
-                MailSent = true;
-                if (MailSent)
-                {
-                    EmailProcedimento.UtilizadorModificação = UserID;
-                    EmailProcedimento.DataHoraModificação = DateTime.Now;
-                    EmailProcedimento.ObservacoesEnvio = "Mensagem enviada com Sucesso";
-                    EmailProcedimento.Email = true;
-                    DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
-                }
-            }
-
-            if (e.Error != null)
-            {
-                EmailProcedimento.ObservacoesEnvio = "Não foi possível enviar a mensagem " + DateTime.Now.ToString();
-                DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
-            }
-        }
+        partial void SendEmail();
         #endregion
-
-        public void SendEmail()
-        {
-            if (To == null || string.IsNullOrEmpty(From))
-                return;
-
-            SmtpClient Client = new SmtpClient(Config.Host, Config.Port);
-            NetworkCredential Credentials = new NetworkCredential(Config.Username, Config.Password);
-            Client.UseDefaultCredentials = true;
-            Client.Credentials = Credentials;
-            Client.EnableSsl = Config.SSL;
-
-            MailMessage MMessage = new MailMessage
-            {
-                From = new MailAddress(From, DisplayName)
-            };
-
-            foreach (var t in To)
-            {
-                if(IsValidEmail(t))
-                    MMessage.To.Add(new MailAddress(t));
-            }
-
-            foreach (var cc in CC)
-            {
-                if (IsValidEmail(cc))
-                    MMessage.CC.Add(cc);
-            }
-
-            foreach (var bcc in BCC)
-            {
-                if (IsValidEmail(bcc))
-                    MMessage.Bcc.Add(bcc);
-            }
-
-            MMessage.Subject = Subject;
-            MMessage.Body = Body;
-            MMessage.IsBodyHtml = IsBodyHtml;
-
-            Client.SendCompleted += new SendCompletedEventHandler(SendCompletedCallback);
-            string UserState = "EmailProcedimentos";
-
-            Client.SendAsync(MMessage, UserState);
-        }
-
-        // Method used to send the property EmailProcedimento
-        public void SendEmailProcedimento()
-        {
-            if (EmailProcedimento == null)
-                return;
-
-            // the From property must be set and be a valid email address
-            if (string.IsNullOrEmpty(From) && !IsValidEmail(From))
-            {
-                if(string.IsNullOrEmpty(EmailProcedimento.ObservacoesEnvio))
-                    EmailProcedimento.ObservacoesEnvio = "Email do remetente inválido!";
-                else
-                    EmailProcedimento.ObservacoesEnvio = " ** Email do remetente inválido!";
-
-                DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
-                return;
-            }
-/*
-            if (string.IsNullOrEmpty(EmailProcedimento.EmailDestinatário))
-            {
-                if (string.IsNullOrEmpty(EmailProcedimento.ObservacoesEnvio))
-                    EmailProcedimento.ObservacoesEnvio = "Não há Destinatários!";
-                else
-                    EmailProcedimento.ObservacoesEnvio = " ** Não há Destinatários!";
-
-                DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
-                return;
-            }
-
-            
-             split EmailDestinatários to obtain the valid email addresses
-            foreach(var eaddr in EmailProcedimento.EmailDestinatário.Split(';'))
-            {
-                if (IsValidEmail(eaddr))
-                {
-                    To.Add(eaddr);
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(EmailProcedimento.ObservacoesEnvio))
-                        EmailProcedimento.ObservacoesEnvio = "Endereço " + eaddr + " não é válido!";
-                    else
-                        EmailProcedimento.ObservacoesEnvio = " ** Endereço " + eaddr + " não é válido!";
-                }
-            }
-            */
-
-            if(To == null || To.Count <= 0)
-            {
-                if (string.IsNullOrEmpty(EmailProcedimento.ObservacoesEnvio))
-                    EmailProcedimento.ObservacoesEnvio = "Não há destinatários";
-                else
-                    EmailProcedimento.ObservacoesEnvio = " ** Não há destinatários";
-
-                return;
-            }
-
-            DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
-
-            SmtpClient Client = new SmtpClient(Config.Host, Config.Port);
-            NetworkCredential Credentials = new NetworkCredential(Config.Username, Config.Password);
-            Client.UseDefaultCredentials = true;
-            Client.Credentials = Credentials;
-            Client.EnableSsl = Config.SSL;
-
-            MailMessage MMessage = new MailMessage
-            {
-                From = new MailAddress(From, DisplayName)
-            };
-
-            foreach (var t in To)
-            {
-                MMessage.To.Add(new MailAddress(t));
-            }
-
-            foreach(var cc in CC)
-            {
-                if (IsValidEmail(cc))
-                    MMessage.CC.Add(cc);
-            }
-
-            foreach(var bcc in BCC)
-            {
-                if (IsValidEmail(bcc))
-                    MMessage.Bcc.Add(bcc);
-            }
-
-            MMessage.Subject = Subject;
-            MMessage.Body = Body;
-            MMessage.IsBodyHtml = IsBodyHtml;
-
-            Client.SendCompleted += new SendCompletedEventHandler(SendCompletedCallbackForProcedimento);
-
-            string UserState = "EmailProcedimentos";
-            Client.SendAsync(MMessage, UserState);
-        }
     }
 }

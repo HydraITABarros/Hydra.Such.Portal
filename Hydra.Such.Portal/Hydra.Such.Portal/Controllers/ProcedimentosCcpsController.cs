@@ -807,49 +807,52 @@ namespace Hydra.Such.Portal.Controllers
                     return Json(UnableToCreateFluxo);
                 }
 
-                // 4. Send emails and updates the data object
-                if(!(UserElementPreArea || UserElementPreArea0))
+                data.Estado = data.Imobilizado.Value ? 1 : 4;
+                data.DataHoraEstado = Fluxo.Data + Fluxo.Hora;
+                data.UtilizadorEstado = UserID;
+                data.DataHoraEstado = DateTime.Now;
+                data.UtilizadorModificacao = UserID;
+
+                if (DBProcedimentosCCP.__UpdateProcedimento(data) == null)
                 {
-                    data.Estado = data.Imobilizado.Value ? 1 : 4;
-                    data.DataHoraEstado = Fluxo.Data + Fluxo.Hora;
-                    data.UtilizadorEstado = UserID;
-                    data.DataHoraEstado = DateTime.Now;
-                    data.UtilizadorModificacao = UserID;
-
-                    if (DBProcedimentosCCP.__UpdateProcedimento(data) == null)
+                    ErrorHandler UnableUpdatingProcedimento = new ErrorHandler()
                     {
-                        ErrorHandler UnableUpdatingProcedimento = new ErrorHandler()
-                        {
-                            eReasonCode = errorCount,
-                            eMessage = "Não foi possível actualizar o Procedimento!"
-                        };
+                        eReasonCode = errorCount,
+                        eMessage = "Não foi possível actualizar o Procedimento!"
+                    };
 
-                        errorCount += 1;
-                        return Json(UnableUpdatingProcedimento);
-                    }
+                    errorCount += 1;
+                    return Json(UnableUpdatingProcedimento);
+                }
 
-                    if (string.IsNullOrEmpty(UserEmail))
+                if (string.IsNullOrEmpty(UserEmail) || !EmailAutomation.IsValidEmail(UserEmail))
+                {
+                    ErrorHandler InvalidUserEmailAddress = new ErrorHandler()
                     {
-                        ErrorHandler InvalidUserEmailAddress = new ErrorHandler()
-                        {
-                            eReasonCode = 4,
-                            eMessage = "Utilizador sem endereço de email válido"
-                        };
+                        eReasonCode = errorCount,
+                        eMessage = "Utilizador sem endereço de email válido"
+                    };
 
-                        return Json(InvalidUserEmailAddress);
-                    }
-                    ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
-                    if (EmailList == null)
+                    errorCount += 1;
+                    return Json(InvalidUserEmailAddress);
+                }
+
+                ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
+                if (EmailList == null)
+                {
+                    ErrorHandler DestinationEmailsAreEmpty = new ErrorHandler()
                     {
-                        ErrorHandler DestinationEmailsAreEmpty = new ErrorHandler()
-                        {
-                            eReasonCode = errorCount,
-                            eMessage = "Falta configuração dos destinatários de emails!"
-                        };
+                        eReasonCode = errorCount,
+                        eMessage = "Falta configuração dos destinatários de emails!"
+                    };
 
-                        errorCount += 1;
-                        return Json(DestinationEmailsAreEmpty);
-                    }
+                    errorCount += 1;
+                    return Json(DestinationEmailsAreEmpty);
+                }
+
+                // 4. Send emails and updates the data object
+                if (!(UserElementPreArea || UserElementPreArea0))
+                {
                     // Prepare emails
                     if (data.Imobilizado.Value)
                     {
@@ -865,7 +868,7 @@ namespace Hydra.Such.Portal.Controllers
                             return Json(InvalidDestinationAddress);
                         }
 
-                        EmailsProcedimentosCcp EmailProcedimento = new EmailsProcedimentosCcp
+                        EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
                         {
                             NºProcedimento = data.No,
                             EmailDestinatário = EmailList.EmailContabilidade,
@@ -873,10 +876,11 @@ namespace Hydra.Such.Portal.Controllers
                             TextoEmail = data.ElementosChecklist.ChecklistArea.ComentarioArea,
                             UtilizadorEmail = UserEmail,
                             DataHoraEmail = DateTime.Now,
-                            UtilizadorCriação = UserID
+                            UtilizadorCriação = UserID,
+                            DataHoraCriação = DateTime.Now
                         };
 
-                        if (!DBProcedimentosCCP.__CreateEmailProcedimento(EmailProcedimento))
+                        if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
                         {
                             ErrorHandler UnableToCreateEmailProcedimento = new ErrorHandler()
                             {
@@ -888,12 +892,12 @@ namespace Hydra.Such.Portal.Controllers
                             return Json(UnableToCreateEmailProcedimento);
                         }
 
-                        EmailAutomation Email = new EmailAutomation
+                        SendEmailsProcedimentos Email = new SendEmailsProcedimentos
                         {
                             DisplayName = DBProcedimentosCCP.GetUserName(UserID),
                             From = "CCP_NAV@such.pt"
                         };
-
+                        
                         Email.To.Add(EmailList.EmailContabilidade);
 
                         if (EmailAutomation.IsValidEmail(EmailList.Email2Contabilidade))
@@ -904,15 +908,21 @@ namespace Hydra.Such.Portal.Controllers
 
                         Email.BCC.Add(UserEmail);
 
-                        Email.Body = EmailProcedimento.TextoEmail;
+                        Email.Body = ProcedimentoEmail.TextoEmail;
+                        
                         Email.IsBodyHtml = false;
+                        Email.EmailProcedimento = ProcedimentoEmail;
 
-                        Email.SendEmailProcedimento();
+                        Email.SendEmail();
                     }
                     else
                     {
 
                     }
+                }
+                else
+                {
+
                 }
 
                 
