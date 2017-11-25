@@ -12,8 +12,6 @@ using System.IO;
 using System.Net;
 using System.Configuration;
 
-using Hydra.Such.Data.Database;
-using Hydra.Such.Data.Logic.CCP;
 
 
 namespace Hydra.Such.Data.ViewModel
@@ -107,7 +105,7 @@ namespace Hydra.Such.Data.ViewModel
 
         #region Check if email is valid
         /*
-         *      The next methods was taken from Microsoft website
+         *      The next methods were taken from Microsoft website
          *      URL: https://docs.microsoft.com/en-us/dotnet/standard/base-types/how-to-verify-that-strings-are-in-valid-email-format
          */
         static bool invalid = false;
