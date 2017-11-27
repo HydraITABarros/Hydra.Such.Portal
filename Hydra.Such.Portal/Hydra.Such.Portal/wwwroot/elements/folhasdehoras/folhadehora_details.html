@@ -321,7 +321,7 @@
                             </div>
                             <div class="row break_clear">
                                 <div class="col-sm-3">
-                                    <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}" <!--on-change="_dataPartidaDataChegada"-->></vaadin-date-picker>
+                                    <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-3">
                                     <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" name="horaPartidaTexto" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"> </vaadin-text-field>
@@ -1551,9 +1551,30 @@
 
                 //AJUDAS DE CUSTO
                 _calcularAjudasCusto: function () {
-                    this.$.page_calcularajudascusto_ajax.body = JSON.stringify(this.data);
-                    this.$.page_calcularajudascusto_ajax.generateRequest();
-                    this.$.tabAjuda.clearCache();
+                    debugger;;
+                    if (this.$.dataPartidaTexto.value == "" | this.$.dataPartidaTexto.validate() == false) {
+                        _showErrorMessage("É necessário primeiro preencher corretamente o campo Data Inicio.");
+                    }
+                    else {
+                        if (this.$.horaPartidaTexto.value == "" | this.$.horaPartidaTexto.validate() == false) {
+                            _showErrorMessage("É necessário primeiro preencher corretamente o campo Hora Inicio.");
+                        }
+                        else {
+                            if (this.$.dataChegadaTexto.value == "" | this.$.dataChegadaTexto.validate() == false) {
+                                _showErrorMessage("É necessário primeiro preencher corretamente o campo Data Fim.");
+                            }
+                            else {
+                                if (this.$.horaChegadaTexto.value == "" | this.$.horaChegadaTexto.validate() == false) {
+                                    _showErrorMessage("É necessário primeiro preencher corretamente o campo Hora Fim.");
+                                }
+                                else {
+                                    this.$.page_calcularajudascusto_ajax.body = JSON.stringify(this.data);
+                                    this.$.page_calcularajudascusto_ajax.generateRequest();
+                                    this.$.tabAjuda.clearCache();
+                                }
+                            }
+                        }
+                    }
                 },
 
 
