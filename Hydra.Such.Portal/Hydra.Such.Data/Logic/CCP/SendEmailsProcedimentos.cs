@@ -55,10 +55,7 @@ namespace Hydra.Such.Data.Logic.CCP
             // the From property must be set and be a valid email address
             if (string.IsNullOrEmpty(From) && !IsValidEmail(From))
             {
-                if (string.IsNullOrEmpty(EmailProcedimento.ObservacoesEnvio))
-                    EmailProcedimento.ObservacoesEnvio = "Email do remetente inválido!";
-                else
-                    EmailProcedimento.ObservacoesEnvio = " ** Email do remetente inválido!";
+                EmailProcedimento.ObservacoesEnvio = "Email do remetente inválido!";
 
                 DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
                 return;
@@ -95,11 +92,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
             if (To == null || To.Count <= 0)
             {
-                if (string.IsNullOrEmpty(EmailProcedimento.ObservacoesEnvio))
-                    EmailProcedimento.ObservacoesEnvio = "Não há destinatários";
-                else
-                    EmailProcedimento.ObservacoesEnvio = " ** Não há destinatários";
-
+                EmailProcedimento.ObservacoesEnvio = "Não há destinatários";
                 return;
             }
 

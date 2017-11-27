@@ -1006,6 +1006,19 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> ProcedimentosAbertoFechado = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Aberto"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Fechado"
+            }
+        };
+
         public static readonly List<EnumData> ProcedimentosCcpType = new List<EnumData>()
         {
             new EnumData()
