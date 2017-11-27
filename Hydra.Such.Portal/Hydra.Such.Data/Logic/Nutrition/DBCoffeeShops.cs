@@ -1,7 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
-using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel.Nutrition;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -193,12 +191,9 @@ namespace Hydra.Such.Data.Logic.Nutrition
             };
         }
 
-        public static CoffeeShopViewModel ParseToViewModel(CafetariasRefeitórios x, string navDatabaseName, string navCompanyName)
+        public static CoffeeShopViewModel ParseToViewModel(CafetariasRefeitórios x)
         {
-            if (x == null)
-                return new CoffeeShopViewModel();
-
-            CoffeeShopViewModel result = new CoffeeShopViewModel()
+            return new CoffeeShopViewModel()
             {
                 ProductivityUnitNo = x.NºUnidadeProdutiva,
                 Type = x.Tipo,
@@ -219,60 +214,22 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 UpdateDate = x.DataHoraModificação,
                 UpdateUser = x.UtilizadorModificação
             };
-            
-            //Get totals
-            result.TotalRevenues = DBCoffeeShopMovements.GetTotalRevenuesFor(result.ProductivityUnitNo, result.Code, result.Type);
-            result.TotalConsumption = DBProjectDiary.GetProjectTotaConsumption(result.ProjectNo);
-            
-            decimal totalMeals = DBNAV2017CoffeeShops.GetTotalMeals(navDatabaseName, navCompanyName, result.ProjectNo);
-            result.TotalMeals = totalMeals;
-                
-            return result;
         }
 
-        public static List<CoffeeShopViewModel> ParseListToViewModel(List<CafetariasRefeitórios> x, string navDatabaseName, string navCompanyName)
+        public static List<CoffeeShopViewModel> ParseListToViewModel(List<CafetariasRefeitórios> x)
         {
             List<CoffeeShopViewModel> result = new List<CoffeeShopViewModel>();
 
-            x.ForEach(y => result.Add(ParseToViewModel(y, navDatabaseName, navCompanyName)));
+            x.ForEach(y => result.Add(ParseToViewModel(y)));
             return result;
         }
 
-        //public static CoffeeShopViewModel ParseToViewModel(this CafetariasRefeitórios item)
-        //{
-        //    if (item != null)
-        //    {
-        //        return new CoffeeShopViewModel()
-        //        {
-        //            ProductivityUnitNo = item.NºUnidadeProdutiva,
-        //            Type = item.Tipo,
-        //            Code = item.Código,
-        //            StartDateExploration = item.DataInícioExploração.ToString("yyyy-MM-dd"),
-        //            EndDateExploration = item.DataFimExploração.HasValue ? item.DataFimExploração.Value.ToString("yyyy-MM-dd") : "",
-        //            Description = item.Descrição,
-        //            CodeResponsible = item.CódResponsável,
-        //            CodeRegion = item.CódigoRegião,
-        //            CodeFunctionalArea = item.CódigoÁreaFuncional,
-        //            CodeResponsabilityCenter = item.CódigoCentroResponsabilidade,
-        //            Warehouse = item.Armazém,
-        //            WarehouseSupplier = item.ArmazémLocal,
-        //            ProjectNo = item.NºProjeto,
-        //            Active = item.Ativa,
-        //            CreateDate = item.DataHoraCriação,
-        //            CreateUser = item.UtilizadorCriação,
-        //            UpdateDate = item.DataHoraModificação,
-        //            UpdateUser = item.UtilizadorModificação
-        //        };
-        //    }
-        //    return null;
-        //}
-
-        public static List<CoffeeShopViewModel> ParseToViewModel(this List<CafetariasRefeitórios> items, string navDatabaseName, string navCompanyName)
+        public static List<CoffeeShopViewModel> ParseToViewModel(this List<CafetariasRefeitórios> items)
         {
             List<CoffeeShopViewModel> coffeeShops = new List<CoffeeShopViewModel>();
             if (items != null)
                 items.ForEach(x =>
-                    coffeeShops.Add(ParseToViewModel(x, navDatabaseName, navCompanyName)));
+                    coffeeShops.Add(ParseToViewModel(x)));
             return coffeeShops;
         }
     }
