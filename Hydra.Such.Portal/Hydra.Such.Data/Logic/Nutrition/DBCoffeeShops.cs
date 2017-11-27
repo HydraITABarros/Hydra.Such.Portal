@@ -1,10 +1,9 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel.Nutrition;
-using Hydra.Such.Data.ViewModel.Projects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Hydra.Such.Data.Logic.Nutrition
 {
@@ -101,6 +100,22 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
+        public static CafetariasRefeitórios GetByCode(int Code)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.CafetariasRefeitórios.FirstOrDefault(x => x.Código == Code);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static CafetariasRefeitórios GetByIdDiary(int NºUnidadeProdutiva, int CódigoCafetariaRefeitório)
         {
             try
@@ -116,7 +131,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
-
 
         public static bool Delete(CafetariasRefeitórios ObjectToDelete)
         {
@@ -137,7 +151,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
-
         public static List<CafetariasRefeitórios> GetByNUnidadeProdutiva(int NºUnidadeProdutiva)
         {
             try
@@ -153,8 +166,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
-
-
 
         public static CafetariasRefeitórios ParseToDB(CoffeeShopViewModel x)
         {
@@ -181,76 +192,57 @@ namespace Hydra.Such.Data.Logic.Nutrition
             };
         }
 
+        public static CoffeeShopViewModel ParseToViewModel(CafetariasRefeitórios x, string navDatabaseName, string navCompanyName)
+        {
+            if (x == null)
+                return new CoffeeShopViewModel();
 
-        //public static CoffeeShopViewModel ParseToViewModel(CafetariasRefeitórios x)
-        //{
-        //    return new CoffeeShopViewModel()
-        //    {
-        //        ProductivityUnitNo = x.NºUnidadeProdutiva,
-        //        Type = x.Tipo,
-        //        Code = x.Código,
-        //        StartDateExploration = x.DataInícioExploração.ToString("yyyy-MM-dd"),
-        //        EndDateExploration = x.DataFimExploração.HasValue ? x.DataFimExploração.Value.ToString("yyyy-MM-dd") : "",
-        //        Description = x.Descrição,
-        //        CodeResponsible = x.CódResponsável,
-        //        CodeRegion = x.CódigoRegião,
-        //        CodeFunctionalArea = x.CódigoÁreaFuncional,
-        //        CodeResponsabilityCenter = x.CódigoCentroResponsabilidade,
-        //        Warehouse = x.Armazém,
-        //        WarehouseSupplier = x.ArmazémLocal,
-        //        ProjectNo = x.NºProjeto,
-        //        Active = x.Ativa,
-        //        CreateDate = x.DataHoraCriação,
-        //        CreateUser = x.UtilizadorCriação,
-        //        UpdateDate = x.DataHoraModificação,
-        //        UpdateUser = x.UtilizadorModificação
-        //    };
-        //}
+            CoffeeShopViewModel result = new CoffeeShopViewModel()
+            {
+                ProductivityUnitNo = x.NºUnidadeProdutiva,
+                Type = x.Tipo,
+                Code = x.Código,
+                StartDateExploration = x.DataInícioExploração.ToString("yyyy-MM-dd"),
+                EndDateExploration = x.DataFimExploração.HasValue ? x.DataFimExploração.Value.ToString("yyyy-MM-dd") : "",
+                Description = x.Descrição,
+                CodeResponsible = x.CódResponsável,
+                CodeRegion = x.CódigoRegião,
+                CodeFunctionalArea = x.CódigoÁreaFuncional,
+                CodeResponsabilityCenter = x.CódigoCentroResponsabilidade,
+                Warehouse = x.Armazém,
+                WarehouseSupplier = x.ArmazémLocal,
+                ProjectNo = x.NºProjeto,
+                Active = x.Ativa,
+                CreateDate = x.DataHoraCriação,
+                CreateUser = x.UtilizadorCriação,
+                UpdateDate = x.DataHoraModificação,
+                UpdateUser = x.UtilizadorModificação
+            };
 
+            //Get totals
+            result.TotalRevenues = DBCoffeeShopMovements.GetTotalRevenuesFor(result.ProductivityUnitNo, result.Code, result.Type);
+            result.TotalConsumption = DBProjectDiary.GetProjectTotaConsumption(result.ProjectNo);
 
-        public static List<CoffeeShopViewModel> ParseListToViewModel(List<CafetariasRefeitórios> x)
+            decimal totalMeals = DBNAV2017CoffeeShops.GetTotalMeals(navDatabaseName, navCompanyName, result.ProjectNo);
+            result.TotalMeals = totalMeals;
+
+            return result;
+        }
+
+        public static List<CoffeeShopViewModel> ParseListToViewModel(List<CafetariasRefeitórios> x, string navDatabaseName, string navCompanyName)
         {
             List<CoffeeShopViewModel> result = new List<CoffeeShopViewModel>();
 
-            x.ForEach(y => result.Add(ParseToViewModel(y)));
+            x.ForEach(y => result.Add(ParseToViewModel(y, navDatabaseName, navCompanyName)));
             return result;
         }
-        
-        public static CoffeeShopViewModel ParseToViewModel(this CafetariasRefeitórios item)
-        {
-            if (item != null)
-            {
-                return new CoffeeShopViewModel()
-                {
-                    ProductivityUnitNo = item.NºUnidadeProdutiva,
-                    Type = item.Tipo,
-                    Code = item.Código,
-                    StartDateExploration = item.DataInícioExploração.ToString("yyyy-MM-dd"),
-                    EndDateExploration = item.DataFimExploração.HasValue ? item.DataFimExploração.Value.ToString("yyyy-MM-dd") : "",
-                    Description = item.Descrição,
-                    CodeResponsible = item.CódResponsável,
-                    CodeRegion = item.CódigoRegião,
-                    CodeFunctionalArea = item.CódigoÁreaFuncional,
-                    CodeResponsabilityCenter = item.CódigoCentroResponsabilidade,
-                    Warehouse = item.Armazém,
-                    WarehouseSupplier = item.ArmazémLocal,
-                    ProjectNo = item.NºProjeto,
-                    Active = item.Ativa,
-                    CreateDate = item.DataHoraCriação,
-                    CreateUser = item.UtilizadorCriação,
-                    UpdateDate = item.DataHoraModificação,
-                    UpdateUser = item.UtilizadorModificação
-                };
-            }
-            return null;
-        }
 
-        public static List<CoffeeShopViewModel> ParseToViewModel(this List<CafetariasRefeitórios> items)
+        public static List<CoffeeShopViewModel> ParseToViewModel(this List<CafetariasRefeitórios> items, string navDatabaseName, string navCompanyName)
         {
             List<CoffeeShopViewModel> coffeeShops = new List<CoffeeShopViewModel>();
             if (items != null)
                 items.ForEach(x =>
-                    coffeeShops.Add(x.ParseToViewModel()));
+                    coffeeShops.Add(ParseToViewModel(x, navDatabaseName, navCompanyName)));
             return coffeeShops;
         }
     }

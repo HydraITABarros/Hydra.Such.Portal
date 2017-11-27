@@ -8,7 +8,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
     {
         public int LineNo { get; set; }
         public int? CoffeShopCode { get; set; }
-        public DateTime? RegistryDate { get; set; }
+        public string RegistryDate { get; set; }
         public string ResourceNo { get; set; }
         public string Description { get; set; }
         public decimal? Value { get; set; }
@@ -21,8 +21,8 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public int? MealType { get; set; }
         public int? MovementType { get; set; }
         public string User { get; set; }
-        public DateTime? CreateDateTime { get; set; }
-        public DateTime? UpdateDateTime { get; set; }
+        public string CreateDateTime { get; set; }
+        public string UpdateDateTime { get; set; }
         public string CreateUser { get; set; }
         public string UpdateUser { get; set; }
 

@@ -22,7 +22,10 @@
 <link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
 <link rel="import" href="/lib/neon-animation/web-animations.html">
 
-<h1>Detalhes Procedimento</h1>
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+
 
 <dom-module id="x-procedimentodetails">
     <template>
@@ -32,6 +35,10 @@
         <link rel="stylesheet" href="/css/main.css" />
 
         <style>
+            .mb-15 {
+                margin-bottom: 15px;
+            }
+
             vaadin-combo-box {
                 margin-top: 0px !important;
                 width: 100% !important;
@@ -78,15 +85,80 @@
                 left: 2px !important;
                 right: none;
                 --paper-tooltip: {
-                    font-size: 13px;
-                    background: white;
-                    color: #2A2A2A;
-                    padding: 10px;
-                    line-height: 1.3em;
-                }
+                                    font-size: 13px;
+                                    background: white;
+                                    color: #2A2A2A;
+                                    padding: 10px;
+                                    line-height: 1.3em;
+                                }
+            }
+
+            [part="label"] {
+                color: rgba(48, 64, 84, 0.52);
+                margin-bottom: 1px;
+            }
+
+            .title--bgblue {
+                border: none;
+                border-radius: 6px;
+                color: white !important;
+                background-color: cornflowerblue;
+                border: none !important;
+            }
+
+            .title--bgyellow {
+                border: none;
+                border-radius: 6px;
+                color: dimgrey !important;
+                background-color: yellow;
+                border: none !important;
+            }
+
+            paper-collapse-item {
+                --paper-collapse-item-header: {
+                             padding: 0 15px;
+                             color: #333;
+                             background-color: #f5f5f5;
+                                border-bottom: solid #ddd 1px;
+                             border-top-left-radius: 3px;
+                             border-top-right-radius: 3px;
+
+
+                        } --paper-collapse-toogle-icon: {
+                            //display: none;
+                        } --paper-collapse-item-content {
+                    background: red !important;
+                    }
+            }
+
+            .btn--confirm {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                background: #71BCC1;
+                color: white;
+                margin-top: 7px;
+            }
+
+            .btn--confirm {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                background: #71BCC1;
+                color: white;
+                margin-top: 7px;
+            }
+
+            .btn--sendtoevaluate {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                margin-top: 7px;
             }
         </style>
-
 
         <!-- Dropdowns populate.b -->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode"
@@ -125,6 +197,11 @@
         </iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetBoolValues"
                    last-response="{{LBoolValues}}"
+                   auto method="post" handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPocedimentosAbertoFechado"
+                   last-response="{{LAbertoFechado}}"
                    auto method="post" handle-as="json"
                    content-type="application/json">
         </iron-ajax>
@@ -178,604 +255,1073 @@
         </iron-ajax>
         <!-- Controller actions.e -->
         <!-- Header section of the Procedimento details -->
-        <div>
-            <div class="row break_clear">
-                <div class="col-sm-3">
-                    <vaadin-text-field type="text" value="{{data.no}}" id="no" name="no" label="Nº Procedimento" disabled="true"> </vaadin-text-field>
-                </div>
-                <div class="col-sm-3">
-                    <vaadin-combo-box items="[[CBRegions]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                        <template>
-                            <table width="250px">
-                                <tr>
-                                    <td width="20%">[[item.id]]</td>
-                                    <td width="80%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-                <div class="col-sm-3">
-                    <vaadin-combo-box items="[[CBFunctionalAreas]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" label="Àrea Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                        <template>
-                            <table width="250px">
-                                <tr>
-                                    <td width="30%">[[item.id]]</td>
-                                    <td width="70%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-                <div class="col-sm-3">
-                    <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" label="Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                        <template>
-                            <table width="180px">
-                                <tr>
-                                    <td width="40%">[[item.id]]</td>
-                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-
-            </div>
-        </div>
-        <div>
-            <div class="row break_clear">
-                <div class="col-sm-3">
-                    <vaadin-combo-box items="[[LProcedimentoState]]" item-value-path="id" item-label-path="value" required value="{{data.estado}}" label="Estado">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-                <div class="col-sm-3">
-                    <vaadin-combo-box items="[[LType]]" item-value-path="id" item-label-path="value" required value="{{data.tipo}}" label="Tipo">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </div>
-                <div class="col-sm-3">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <vaadin-text-field type="text" value="{{data.ano}}" id="ano" name="ano" label="Ano"> </vaadin-text-field>
+        <!--<iron-form id="formContract">-->
+        <div class="panel panel-default">
+            <div class="panel-heading">Cabeçalho</div>
+            <div class="panel-body">
+                <div>
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-text-field type="text" value="{{data.no}}" id="no" name="no" label="Nº Procedimento" disabled="true"> </vaadin-text-field>
                         </div>
-                        <div class="col-sm-6">
-                            <vaadin-text-field type="text" value="{{data.referencia}}" id="referencia" name="referencia" label="Referência"> </vaadin-text-field>
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[CBRegions]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                <template>
+                                    <table width="250px">
+                                        <tr>
+                                            <td width="20%">[[item.id]]</td>
+                                            <td width="80%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[CBFunctionalAreas]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" label="Àrea Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                <template>
+                                    <table width="250px">
+                                        <tr>
+                                            <td width="30%">[[item.id]]</td>
+                                            <td width="70%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" label="Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                <template>
+                                    <table width="180px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                    </div>
+                </div>
+                <div>
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[LProcedimentoState]]" item-value-path="id" item-label-path="value" required value="{{data.estado}}" label="Estado">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[LType]]" item-value-path="id" item-label-path="value" required value="{{data.tipo}}" label="Tipo">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <vaadin-text-field type="text" value="{{data.ano}}" id="ano" name="ano" label="Ano"> </vaadin-text-field>
+                                </div>
+                                <div class="col-sm-6">
+                                    <vaadin-text-field type="text" value="{{data.referencia}}" id="referencia" name="referencia" label="Referência"> </vaadin-text-field>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div>
-            <div class="row break_clear">
-                <div class="col-sm-3">
-                    <vaadin-checkbox checked="{{data.imobilizado}}" required>Imobilizado?</vaadin-checkbox>
-                    <vaadin-checkbox checked="{{data.tratado}}" required>Tratado?</vaadin-checkbox>
+                <div>
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-checkbox checked="{{data.imobilizado}}" required>Imobilizado?</vaadin-checkbox>
+                            <vaadin-checkbox checked="{{data.tratado}}" required>Tratado?</vaadin-checkbox>
+                        </div>
+
+                    </div>
                 </div>
 
-            </div>
-        </div>
 
-
-        <!-- Procedimentos section tabs-->
-        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
-            <paper-tab>Unidade Produtiva (0)</paper-tab>
-            <paper-tab>Imobilizado (1-2)</paper-tab>
-            <paper-tab>Fundamentos Decisão (4, 5 e 7)</paper-tab>
-            <paper-tab>CCP</paper-tab>
-            <paper-tab>Jurídicos</paper-tab>
-            <paper-tab>Valores Adjudicação</paper-tab>
-            <paper-tab>CA</paper-tab>
-            <paper-tab>Adjudicação</paper-tab>
-            <paper-tab>Workflow</paper-tab>
-            <paper-tab>Notas</paper-tab>
-            <paper-tab>Tempos</paper-tab>
-        </paper-tabs>
-
-        <iron-pages selected="{{selected}}">
-            <!-- Tab Unidade Produtiva-->
-            <div>
-                <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{unidadeProdutivaSelected}}">
-                    <paper-tab>Avaliação Técnica</paper-tab>
-                    <paper-tab>Critérios Adjudicação</paper-tab>
-                    <paper-tab>Outros</paper-tab>
-                    <paper-tab>Linhas Produtos / Serviços</paper-tab>
+                <!-- Procedimentos section tabs-->
+                <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                    <paper-tab>Unidade Produtiva (0)</paper-tab>
+                    <paper-tab>Imobilizado (1-2)</paper-tab>
+                    <paper-tab>Fundamentos Decisão (4, 5 e 7)</paper-tab>
+                    <paper-tab>CCP</paper-tab>
+                    <paper-tab>Jurídicos</paper-tab>
+                    <paper-tab>Valores Adjudicação</paper-tab>
+                    <paper-tab>CA</paper-tab>
+                    <paper-tab>Adjudicação</paper-tab>
+                    <paper-tab>Workflow</paper-tab>
+                    <paper-tab>Notas</paper-tab>
+                    <paper-tab>Tempos</paper-tab>
                 </paper-tabs>
-                <iron-pages selected="{{unidadeProdutivaSelected}}">
-                    <!-- Tab Unidade Produtiva - Avaliação Tecnica-->
-                    <div>
-                        <div class="row break_clear">
-                            <div class="col-sm-6">
-                                <vaadin-text-field type="text" value="{{data.informacaoTecnica}}" id="informacaoTecnica" name="informacaoTecnica" label="Informação Técnica"> </vaadin-text-field>
-                            </div>
-                            <div class="col-sm-6">
-                                <br><i>Descrição da prestação de serviços ou bem a adquirir</i>
-                            </div>
-                        </div>
-                        <div class="row break_clear">
-                            <div class="col-sm-6">
-                                <vaadin-text-field type="text" value="{{data.fundamentacaoAquisicao}}" id="fundamentacaoAquisicao" name="fundamentacaoAquisicao" label="Fundamentação Aquisição"> </vaadin-text-field>
-                            </div>
-                        </div>
-                        <div class="row break_clear">
-                            <div class="col-sm-3">
-                                <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.precoBase}}" label="Preço Base?">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.stringValue]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-                            <div class="col-sm-3">
-                                <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.negociacao}}" label="Negociação?">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.stringValue]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-                        </div>
-                        <!-- Elementos Juri section.b -->
-                        <h2 class="separator" style="border-bottom:1px dotted; padding:0;">Elementos Juri</h2>
-                        <div class="table inlineForm">
-                            <div class="col-sm-3" style="padding-left:0;">
-                                <vaadin-combo-box items="[[LUsers]]" id="users" item-value-path="id" value="{{_userName }}" item-label-path="id" label="Possiveis Elementos">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-                            <div id="formAddElemento">
-                                <div class="col-lg-3 col-sm-4">
-                                    <p>Responsabilidades</p>
-                                    <vaadin-radio-button-group id="responsabilidades" name="responsabilidades" value="{{responsabilidade}}">
-                                        <vaadin-radio-button id="_chkPresidente" checked="{{chkPresidente}}" value="presidente">Presidente</vaadin-radio-button>
-                                        <vaadin-radio-button id="_chkVogal" checked="{{chkVogal}}" value="vogal">Vogal</vaadin-radio-button>
-                                        <vaadin-radio-button id="_chkSuplente" checked="{{chkSuplente}}" value="suplente">Suplente</vaadin-radio-button>
-                                    </vaadin-radio-button-group>
-                                </div>
-                                <div class="col-sm-2">
-                                    <p>&nbsp;</p>
-                                    <vaadin-checkbox id="_chkSendMail" checked="{{chkSendMail}}">Enviar Email</vaadin-checkbox>
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <br />
-                                <paper-button class="btnSave" raised on-tap="_createElementoJuri"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                            </div>
-                        </div>
-                        <vaadin-grid id="gridElementosJuri" aria-label="gridElementosJuri" items="{{data.elementosJuri}}" class="grid">
-                            <vaadin-grid-column width="20%">
-                                <template class="header">
-                                    Utilizador
-                                </template>
-                                <template>
-                                    <vaadin-text-field type="text" value="{{ item.utilizador }}"></vaadin-text-field>
-                                </template>
-                            </vaadin-grid-column>
-                            <vaadin-grid-column width="20%">
-                                <template class="header">
-                                    Nome
-                                </template>
-                                <template>
-                                    <vaadin-text-field type="text" value="{{ item.nomeEmpregado }}"></vaadin-text-field>
-                                </template>
-                            </vaadin-grid-column>
-                            <vaadin-grid-column width="8%">
-                                <template class="header">
-                                    <center>
-                                        Presidente
-                                    </center>
-                                </template>
-                                <template>
-                                    <center>
-                                        <vaadin-checkbox checked="{{item.presidente}}"></vaadin-checkbox>
-                                    </center>
-                                </template>
-                            </vaadin-grid-column>
-                            <vaadin-grid-column width="8%">
-                                <template class="header">
-                                    <center>
-                                        Vogal
-                                    </center>
-                                </template>
-                                <template>
-                                    <center>
-                                        <vaadin-checkbox checked="{{item.vogal}}"></vaadin-checkbox>
-                                    </center>
-                                </template>
-                            </vaadin-grid-column>
-                            <vaadin-grid-column width="6%">
-                                <template class="header">
-                                    <center>
-                                        Suplente
-                                    </center>
-                                </template>
-                                <template>
-                                    <center>
-                                        <vaadin-checkbox checked="{{item.suplente}}"></vaadin-checkbox>
-                                    </center>
-                                </template>
-                            </vaadin-grid-column>
-                            <vaadin-grid-column width="8%">
-                                <template class="header">
-                                    <center>
-                                        Enviar Email?
-                                    </center>
-                                </template>
-                                <template>
-                                    <center>
-                                        <vaadin-checkbox checked="{{item.enviarEmail}}"></vaadin-checkbox>
-                                    </center>
-                                </template>
-                            </vaadin-grid-column>
-                            <vaadin-grid-column width="20%">
-                                <template class="header">
-                                    Endereço Email
-                                </template>
-                                <template>
-                                    <vaadin-text-field type="text" value="{{ item.email }}"></vaadin-text-field>
-                                </template>
-                            </vaadin-grid-column>
-                            <vaadin-grid-column width="10%">
-                                <template class="header">
-                                </template>
-                                <template>
-                                    <!--<center>-->
-                                    <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                    <!--</center>-->
-                                </template>
-                            </vaadin-grid-column>
-                        </vaadin-grid>
-                        <h2 class="separator" style="border-bottom:1px dotted; padding:0;"></h2>
-                        <!-- Elementos Juri section.e -->
-                        <div class="row break_clear">
-                            <div class="col-sm-6">
-                                <vaadin-text-field type="text" value="{{data.prazo}}" id="prazo" name="prazo" label="Prazo para a prestação do serviço (Até 3 anos)"> </vaadin-text-field>
-                            </div>
-                        </div>
-                        <!--Elementos Checklist - Estado 0 - .b -->
-                        <div class="row break_clear">
-                            <div class="col-sm-6">
-                                <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.comentarioArea}}" id="comentarioAreaApresentar" name="comentarioAreaApresentar" label="Comentário"> </vaadin-text-field>
-                            </div>
-                        </div>
-                        <div class="row break_clear">
-                            <div class="col-sm-6">
-                                <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.responsavelArea}}" id="responsavelAreaApresentar" name="responsavelAreaApresentar" label="O Responsável da Área pela apresentação da informação "> </vaadin-text-field>
-                            </div>
-                            <br />
-                            <div class="col-sm-6">
-                                <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.nomeResponsavelArea}}" id="nomeResponsavelAreaApresentar" name="nomeResponsavelAreaApresentar"> </vaadin-text-field>
-                            </div>
 
-                        </div>
-                        <div class="row break_clear">
-                            <div class="col-sm-3">
-                                <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.dataResponsavel}}" id="dataResponsavelApresentar" name="dataResponsavelApresentar" label="Data"> </vaadin-text-field>
-                            </div>
-                        </div>
-                        <!--Elementos Checklist - Estado 0 - .e -->
-                    </div>
-                    <!-- Tab Unidade Produtiva - Critérios de Adjudicação-->
-                    <div>
-                        <div class="row break_clear">
-                            <div class="col-sm-12">
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" id="precoMaisBaixo" item-label-path="stringValue" value="{{data.precoMaisBaixo}}" label="Preço mais baixo?">
-                                            <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.stringValue]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
+                <iron-pages selected="{{selected}}">
+                    <!-- Tab Unidade Produtiva-->
+                    <div class="panel panel-default">
+                        <paper-collapse-group>
+                            <paper-collapse-item header="Avaliação Técnica" opened>
+                                <!-- Tab Unidade Produtiva - Avaliação Tecnica-->
+                                <div class="col-xs-12 mb-15">
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <vaadin-text-field type="text" value="{{data.informacaoTecnica}}" id="informacaoTecnica" name="informacaoTecnica" label="Informação Técnica"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <br><i>Descrição da prestação de serviços ou bem a adquirir</i>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <vaadin-text-field type="text" value="{{data.fundamentacaoAquisicao}}" id="fundamentacaoAquisicao" name="fundamentacaoAquisicao" label="Fundamentação Aquisição"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-3">
+                                            <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.precoBase}}" label="Preço Base?">
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.stringValue]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.negociacao}}" label="Negociação?">
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.stringValue]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                    </div>
+                                    <!-- Elementos Juri section.b -->
+                                    <h2 class="separator" style="border-bottom:1px dotted; padding:0;">Elementos Juri</h2>
+                                    <div class="table inlineForm">
+                                        <div class="col-sm-3" style="padding-left:0;">
+                                            <vaadin-combo-box items="[[LUsers]]" id="users" item-value-path="id" value="{{_userName }}" item-label-path="id" label="Possiveis Elementos">
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.value]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                        <div id="formAddElemento">
+                                            <div class="col-lg-3 col-sm-4">
+                                                <p>Responsabilidades</p>
+                                                <vaadin-radio-button-group id="responsabilidades" name="responsabilidades" value="{{responsabilidade}}">
+                                                    <vaadin-radio-button id="_chkPresidente" checked="{{chkPresidente}}" value="presidente">Presidente</vaadin-radio-button>
+                                                    <vaadin-radio-button id="_chkVogal" checked="{{chkVogal}}" value="vogal">Vogal</vaadin-radio-button>
+                                                    <vaadin-radio-button id="_chkSuplente" checked="{{chkSuplente}}" value="suplente">Suplente</vaadin-radio-button>
+                                                </vaadin-radio-button-group>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <p>&nbsp;</p>
+                                                <vaadin-checkbox id="_chkSendMail" checked="{{chkSendMail}}">Enviar Email</vaadin-checkbox>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <br />
+                                            <paper-button class="btnSave" raised on-tap="_createElementoJuri"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        </div>
+                                    </div>
+                                    <vaadin-grid id="gridElementosJuri" aria-label="gridElementosJuri" items="{{data.elementosJuri}}" class="grid">
+                                        <vaadin-grid-column width="20%">
+                                            <template class="header">
+                                                Utilizador
                                             </template>
-                                        </vaadin-combo-box>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <paper-tooltip for="descPrecoMaisBaixo" position="top" offset="-1" animation-delay="1">
-                                            Preço mais baixo
-                                        </paper-tooltip>
-                                        <such-textarea rows="5" value="{{data.descPrecoMaisBaixo}}" id="descPrecoMaisBaixo" name="descPrecoMaisBaixo" label="Descrição"> </such-textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-
-                        <div class="row break_clear">
-                            <div class="col-sm-12">
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" id="propostaEconMaisVantajosa" item-label-path="stringValue" value="{{data.propostaEconMaisVantajosa}}" label="Proposta economicamente mais vantajosa?">
                                             <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.stringValue]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
+                                                <vaadin-text-field type="text" value="{{ item.utilizador }}"></vaadin-text-field>
                                             </template>
-                                        </vaadin-combo-box>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="20%">
+                                            <template class="header">
+                                                Nome
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field type="text" value="{{ item.nomeEmpregado }}"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="8%">
+                                            <template class="header">
+                                                <center>
+                                                    Presidente
+                                                </center>
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <vaadin-checkbox checked="{{item.presidente}}"></vaadin-checkbox>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="8%">
+                                            <template class="header">
+                                                <center>
+                                                    Vogal
+                                                </center>
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <vaadin-checkbox checked="{{item.vogal}}"></vaadin-checkbox>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="6%">
+                                            <template class="header">
+                                                <center>
+                                                    Suplente
+                                                </center>
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <vaadin-checkbox checked="{{item.suplente}}"></vaadin-checkbox>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="8%">
+                                            <template class="header">
+                                                <center>
+                                                    Enviar Email?
+                                                </center>
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <vaadin-checkbox checked="{{item.enviarEmail}}"></vaadin-checkbox>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="20%">
+                                            <template class="header">
+                                                Endereço Email
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field type="text" value="{{ item.email }}"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="10%">
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <!--<center>-->
+                                                <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                                <!--</center>-->
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                    <h2 class="separator" style="border-bottom:1px dotted; padding:0;"></h2>
+                                    <!-- Elementos Juri section.e -->
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <vaadin-text-field type="text" value="{{data.prazo}}" id="prazo" name="prazo" label="Prazo para a prestação do serviço (Até 3 anos)"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <!--Elementos Checklist - Estado 0 - .b -->
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.comentarioArea}}" id="comentarioAreaApresentar" name="comentarioAreaApresentar" label="Comentário"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.responsavelArea}}" id="responsavelAreaApresentar" name="responsavelAreaApresentar" label="O Responsável da Área pela apresentação da informação "> </vaadin-text-field>
+                                        </div>
+                                        <br />
+                                        <div class="col-sm-6">
+                                            <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.nomeResponsavelArea}}" id="nomeResponsavelAreaApresentar" name="nomeResponsavelAreaApresentar"> </vaadin-text-field>
+                                        </div>
+
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.dataResponsavel}}" id="dataResponsavelApresentar" name="dataResponsavelApresentar" label="Data"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <!--Elementos Checklist - Estado 0 - .e -->
+                                    <div class="clearfix"></div>
+                                </div>
+                            </paper-collapse-item>
+                            <paper-collapse-item header="Critérios Adjudicação">
+                                <!-- Tab Unidade Produtiva - Critérios de Adjudicação-->
+                                <div class="col-xs-12 mb-15">
+                                    <div class="row break_clear">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" id="precoMaisBaixo" item-label-path="stringValue" value="{{data.precoMaisBaixo}}" label="Preço mais baixo?">
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.stringValue]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <paper-tooltip for="descPrecoMaisBaixo" position="top" offset="-1" animation-delay="1">
+                                                        Preço mais baixo
+                                                    </paper-tooltip>
+                                                    <such-textarea rows="5" value="{{data.descPrecoMaisBaixo}}" id="descPrecoMaisBaixo" name="descPrecoMaisBaixo" label="Descrição"> </such-textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
 
-                                    <div class="col-sm-8">
-                                        <paper-tooltip for="descPropostaEconMaisVantajosa" position="top" offset="-1" animation-delay="1">
-                                            Definição de subfactores: Preço; Características técnicas (parâmetros a avaliar e outros que sejam relevantes), etc. Todos os fatores e subfactores têm de ser parametrizados e quantificados. <br />
-                                            Qualidade, em sentido lato, não é parâmetro para critério de adjudicação. Caso seja um requisito devem colocar em observações do procedimento para definição no Caderno de Encargos.
-                                        </paper-tooltip>
-                                        <such-textarea rows="5" value="{{data.descPropostaEconMaisVantajosa}}" id="descPropostaEconMaisVantajosa" name="descPropostaEconMaisVantajosa" label="Descrição"> </such-textarea>
+
+                                    <div class="row break_clear">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" id="propostaEconMaisVantajosa" item-label-path="stringValue" value="{{data.propostaEconMaisVantajosa}}" label="Proposta economicamente mais vantajosa?">
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.stringValue]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+
+                                                <div class="col-sm-8">
+                                                    <paper-tooltip for="descPropostaEconMaisVantajosa" position="top" offset="-1" animation-delay="1">
+                                                        Definição de subfactores: Preço; Características técnicas (parâmetros a avaliar e outros que sejam relevantes), etc. Todos os fatores e subfactores têm de ser parametrizados e quantificados. <br />
+                                                        Qualidade, em sentido lato, não é parâmetro para critério de adjudicação. Caso seja um requisito devem colocar em observações do procedimento para definição no Caderno de Encargos.
+                                                    </paper-tooltip>
+                                                    <such-textarea rows="5" value="{{data.descPropostaEconMaisVantajosa}}" id="descPropostaEconMaisVantajosa" name="descPropostaEconMaisVantajosa" label="Descrição"> </such-textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </paper-collapse-item>
+                            <paper-collapse-item header="Outros">
+                                <!-- Tab Unidade Produtiva - Outros-->
+                                <div class="col-xs-12 mb-15">
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <vaadin-combo-box value="{{data.propostaVariante}}" label="Proposta Variante?" items="[[LBoolValues]]" item-value-path="booleanValue" id="propostaVariante" item-label-path="stringValue">
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.stringValue]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+
+                                                <div class="col-sm-9">
+                                                    <paper-tooltip for="propostaVarianteDescricao" position="top" offset="-1" animation-delay="1">
+                                                        Não aceitando propostas variantes o concorrente tem que apresentar exatamente o solicitado nas peças do procedimento, sendo um motivo de exclusão toda a proposta apresentada que não cumpra os requisitos. <br />
+                                                        O Fornecedor não pode apresentar alternativas.
+                                                    </paper-tooltip>
+                                                    <such-textarea rows="5" value="{{data.propostaVarianteDescricao}}" id="propostaVarianteDescricao" name="propostaVarianteDescricao" label="Descrição"> </such-textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <vaadin-combo-box value="{{data.abertoFechadoAoMercado}}" label="Aberto ou fechado ao mercado" items="[[LAbertoFechado]]" item-value-path="booleanValue" id="abertoFechadoAoMercado" item-label-path="value">
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.value]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+
+                                                <div class="col-sm-8">
+                                                    <paper-tooltip for="descAbertoFechadoAoMercado" position="top" offset="-1" animation-delay="1">
+                                                        Aberto ao mercado, todos os concorrentes registados na categoria visualizam o procedimento, contudo, permite em simultâneo um convite direcionado aos fornecedores identificados pelo SUCH a apresentar proposta. <br />
+                                                        Fechado ao mercado, apenas os fornecedores convidados a apresentar proposta visualizam o procedimento.
+
+                                                    </paper-tooltip>
+                                                    <such-textarea rows="5" value="{{data.descAbertoFechadoAoMercado}}" id="descAbertoFechadoAoMercado" name="descAbertoFechadoAoMercado" label="Descrição"> </such-textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row break_clear">
+
+                                        <div class="col-sm-6">
+                                            <paper-tooltip for="prazoEntrega" position="top" offset="-1" animation-delay="1">
+                                                Caso exista imposição da U.P. para o Cliente.
+                                            </paper-tooltip>
+                                            <vaadin-text-field value="{{data.prazoEntrega}}" id="prazoEntrega" name="prazoEntrega" label="Prazo Entrega / Realização Serviço"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <vaadin-text-field value="{{data.locaisEntrega}}" id="locaisEntrega" name="locaisEntrega" label="Locais de Entrega"> </vaadin-text-field>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row break_clear">
+
+                                        <div class="col-sm-6">
+                                            <vaadin-text-field rows="5" value="{{data.observacoesAdicionais}}" id="observacoesAdicionais" name="observacoesAdicionais" label="Observações adicionais a fixar no caderno de encargos"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <paper-tooltip for="estimativaPreco" position="top" offset="-1" animation-delay="1">
+                                                Obrigatório indicar, mesmo quando não se pretenda estabelecer preço base.
+                                            </paper-tooltip>
+                                            <vaadin-text-field rows="5" value="{{data.estimativaPreco}}" id="estimativaPreco" name="estimativaPreco" label="Estimativa de preço"> </vaadin-text-field>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row break_clear">
+
+                                        <div class="col-sm-6">
+                                            <vaadin-text-field rows="5" value="{{data.fornecedoresSugeridos}}" id="fornecedoresSugeridos" name="fornecedoresSugeridos" label="fornecedores Sugeridos"> </vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <vaadin-combo-box value="{{data.fornecedorExclusivo}}" label="Fornecedor Exclusivo" items="[[LBoolValues]]" item-value-path="booleanValue" id="fornecedorExclusivo" item-label-path="stringValue">
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.stringValue]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <paper-tooltip for="descFornecedorExclusivo" position="top" offset="-1" animation-delay="1">
+                                                        Fundamentação de exclusividade: note-se que este parametro será validado conforme CCP.
+                                                    </paper-tooltip>
+                                                    <such-textarea rows="5" value="{{data.descFornecedorExclusivo}}" id="descFornecedorExclusivo" name="descFornecedorExclusivo" label="Descrição"> </such-textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <vaadin-text-field value="{{data.interlocutor}}" id="interlocutor" name="interlocutor" label="Interlocutor Preferêncial"> </vaadin-text-field>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <br /><br />
-
+                            </paper-collapse-item>
+                            <paper-collapse-item header="Linhas Produtos / Serviços">
+                                <!-- Tab Unidade Produtiva - Linhas Produtos Servicos-->
+                                <div class="col-xs-12 mb-15">
+                                    <div class="break_clear">
+                                        <vaadin-grid id="gridProdutosServicos" aria-label="gridProdutosServicos" items="{{data.produtosServicos}}" class="grid">
+                                            <vaadin-grid-column width="10%">
+                                                <template class="header">
+                                                    Tipo
+                                                </template>
+                                                <template>
+                                                    <vaadin-text-field type="text" value="{{ item.tipo }}"></vaadin-text-field>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="10%">
+                                                <template class="header">
+                                                    Cod. Localização
+                                                </template>
+                                                <template>
+                                                    <vaadin-text-field type="text" value="{{ item.codigoLocalizacao }}"></vaadin-text-field>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="8%">
+                                                <template class="header">
+                                                    <center>
+                                                        Nº
+                                                    </center>
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <vaadin-checkbox checked="{{item.no}}"></vaadin-checkbox>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="8%">
+                                                <template class="header">
+                                                    <center>
+                                                        Descrição
+                                                    </center>
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <vaadin-checkbox checked="{{item.descricao}}"></vaadin-checkbox>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="6%">
+                                                <template class="header">
+                                                    <center>
+                                                        Descrição 2
+                                                    </center>
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <vaadin-checkbox checked="{{item.descricao2}}"></vaadin-checkbox>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="8%">
+                                                <template class="header">
+                                                    <center>
+                                                        Cod. Unidade
+                                                    </center>
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <vaadin-checkbox checked="{{item.codigoUnidade}}"></vaadin-checkbox>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="20%">
+                                                <template class="header">
+                                                    Qtd. a Requerer
+                                                </template>
+                                                <template>
+                                                    <vaadin-text-field type="text" value="{{ item.quantidadeRequerer }}"></vaadin-text-field>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="20%">
+                                                <template class="header">
+                                                    Custo Unitário
+                                                </template>
+                                                <template>
+                                                    <vaadin-text-field type="text" value="{{ item.custoUnitario }}"></vaadin-text-field>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="10%">
+                                                <template class="header">
+                                                </template>
+                                                <template>
+                                                    <!--<center>-->
+                                                    <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                                    <!--</center>-->
+                                                </template>
+                                            </vaadin-grid-column>
+                                        </vaadin-grid>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </paper-collapse-item>
+                        </paper-collapse-group>
                     </div>
-                    <!-- Tab Unidade Produtiva - Outros-->
+
+                    <!-- Tab Imobilizado -->
                     <div>
+                        <h2 class="title title--bgyellow">Aquisição de Imobilizado</h2>
+                        <p></p>
+                        <h2 class="title title--bgblue">A preencher pelos Serviços de Contabilidade - Avaliação Cabimentação Orçamental</h2>
                         <div class="row break_clear">
-                            <div class="col-sm-6">
+
+                            <div class="col-xs-12">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Contabilidade</div>
+                                    <div class="panel-body">
+                                        <div class="col-sm-6">
+                                            <such-textarea rows="5" value="{{data.contabilidade}}" id="contabilidadeComentario" name="contabilidadeComentario" label="Comentário"> </such-textarea>
+
+                                            <div class="row break_clear">
+                                                <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">O responsável dos serviços de contabilidade</label></div>
+                                                <div class="col-xs-6">
+                                                    <vaadin-text-field value="{{data.responsavelServicosContabilidade}}" id="responsavelServicosContabilidade" name="responsavelServicosContabilidade" label=""></vaadin-text-field>
+                                                </div>
+                                                <div class="col-xs-6">
+                                                    <vaadin-text-field value="{{data.responsavelServicosContabilidade2}}" id="responsavelServicosContabilidade2" name="responsavelServicosContabilidade2" label=""> </vaadin-text-field>
+                                                </div>
+                                            </div>
+
+                                            <div class="row break_clear">
+                                                <div class="col-sm-6">
+                                                    <vaadin-date-picker value="{{data.contabilidadeData}}" id="responsavelServicosContabilidade" name="responsavelServicosContabilidade" label="Data"> </vaadin-date-picker>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <vaadin-combo-box value="{{data.cabimentoOrcamental}}" id="cabimentoOrcamental" label="Cabimento Orçamental?" items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue">
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.stringValue]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear"></div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Área</div>
+                                    <div class="panel-body">
+                                        <div class="col-sm-6">
+                                            <such-textarea rows="5" value="{{data.areaComentario}}" id="areaComentario" name="areaComentario" label="Comentário"> </such-textarea>
+
+                                            <div class="row break_clear">
+                                                <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">O responsável da área pela adjudicação</label></div>
+                                                <div class="col-xs-6">
+                                                    <vaadin-text-field value="{{data.responsavelArea}}" id="responsavelArea" name="responsavelArea" label=""> </vaadin-text-field>
+                                                </div>
+                                                <div class="col-xs-6">
+                                                    <vaadin-text-field value="{{data.responsavelArea2}}" id="responsavelArea2" name="responsavelArea2" label=""> </vaadin-text-field>
+                                                </div>
+                                            </div>
+
+                                            <div class="row break_clear">
+                                                <div class="col-sm-6">
+                                                    <vaadin-date-picker value="{{data.contabilidadeData}}" id="responsavelServicosContabilidade" name="responsavelServicosContabilidade" label="Data"> </vaadin-date-picker>
+                                                </div>
+
+                                            </div>
+                                            <div class="row break_clear"></div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <!-- Tab Fundamentos Decisão-->
+                    <div>
+                        <h2 class="title title--bgblue">A Preencher pelas Compras</h2>
+
+                        <div class="break_clear row">
+                            <div class="col-sm-12">
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <vaadin-combo-box value="{{data.propostaVariante}}" label="Proposta Variante?" items="[[LBoolValues]]" item-value-path="booleanValue" id="propostaVariante" item-label-path="stringValue">
-                                            <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.stringValue]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
-                                            </template>
-                                        </vaadin-combo-box>
+                                        <vaadin-text-field value="{{data.escolhaProcedimento}}" id="escolhaProcedimento" name="escolhaProcedimento" label="Escolha do Procedimento"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-sm-9">
-                                        <paper-tooltip for="propostaVarianteDescricao" position="top" offset="-1" animation-delay="1">
-                                            Não aceitando propostas variantes o concorrente tem que apresentar exatamente o solicitado nas peças do procedimento, sendo um motivo de exclusão toda a proposta apresentada que não cumpra os requisitos. <br />
-                                            O Fornecedor não pode apresentar alternativas.
+                                        <paper-tooltip for="escolhaProcedimentoDescricao" position="top" offset="-1" animation-delay="1">
+                                            Em função do valor de acordo com os critérios formais, de acordo com o CCP.
                                         </paper-tooltip>
-                                        <such-textarea rows="5" value="{{data.propostaVarianteDescricao}}" id="propostaVarianteDescricao" name="propostaVarianteDescricao" label="Descrição"> </such-textarea>
+                                        <such-textarea rows="5" value="{{data.escolhaProcedimentoDescricao}}" id="escolhaProcedimentoDescricao" name="escolhaProcedimentoDescricao" label="Descrição"> </such-textarea>
                                     </div>
                                 </div>
                             </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="break_clear row">
+                            <div class="col-sm-3 mb-15">
+                                <vaadin-combo-box value="{{data.juri}}" label="Juri" i label="Juri" items="[[LBoolValues]]" item-value-path="booleanValue" id="juri" item-label-path="stringValue">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.stringValue]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-xs-12">
+                                <vaadin-grid id="gridElementosJuri" aria-label="gridElementosJuri" items="{{data.elementosJuri}}" class="grid">
+                                    <vaadin-grid-column width="20%">
+                                        <template class="header">
+                                            Utilizador
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field type="text" value="{{ item.utilizador }}"></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="20%">
+                                        <template class="header">
+                                            Nome
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field type="text" value="{{ item.nomeEmpregado }}"></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="8%">
+                                        <template class="header">
+                                            <center>
+                                                Presidente
+                                            </center>
+                                        </template>
+                                        <template>
+                                            <center>
+                                                <vaadin-checkbox checked="{{item.presidente}}"></vaadin-checkbox>
+                                            </center>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="8%">
+                                        <template class="header">
+                                            <center>
+                                                Vogal
+                                            </center>
+                                        </template>
+                                        <template>
+                                            <center>
+                                                <vaadin-checkbox checked="{{item.vogal}}"></vaadin-checkbox>
+                                            </center>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="6%">
+                                        <template class="header">
+                                            <center>
+                                                Suplente
+                                            </center>
+                                        </template>
+                                        <template>
+                                            <center>
+                                                <vaadin-checkbox checked="{{item.suplente}}"></vaadin-checkbox>
+                                            </center>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="8%">
+                                        <template class="header">
+                                            <center>
+                                                Enviar Email?
+                                            </center>
+                                        </template>
+                                        <template>
+                                            <center>
+                                                <vaadin-checkbox checked="{{item.enviarEmail}}"></vaadin-checkbox>
+                                            </center>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="20%">
+                                        <template class="header">
+                                            Endereço Email
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field type="text" value="{{ item.email }}"></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="10%">
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <!--<center>-->
+                                            <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                            <!--</center>-->
+                                        </template>
+                                    </vaadin-grid-column>
+                                </vaadin-grid>
+                            </div>
+                        </div>
+                        <div class="row break_clear">
 
                             <div class="col-sm-6">
+                                <vaadin-text-field value="{{data.pomeProcesso}}" id="pomeProcesso" name="pomeProcesso" label="Nome do Processo"> </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-combo-box value="{{data.objectoContrato}}" label="Objecto do Contrato" items="[[LBoolValues]]" item-value-path="booleanValue" id="objectoContrato" item-label-path="stringValue">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.stringValue]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.condicoesPagamento}}" id="condicoesPagamento" name="condicoesPagamento" label="Condições Pagamento"> </vaadin-text-field>
+                            </div>
+                        </div>
+                        <div class="row break_clear">
+
+                            <div class="col-sm-3">
+                                <vaadin-combo-box value="{{data.gestorProcesso}}" label="Gestor Processo" items="[[LBoolValues]]" item-value-path="booleanValue" id="gestorProcesso" item-label-path="stringValue">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.stringValue]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                        </div>
+
+                        <div class="row break_clear">
+                            <div class="col-sm-6">
+                                <such-textarea rows="5" value="{{data.processoComentario}}" id="processoComentario" name="processoComentario" label="Comentário"> </such-textarea>
+                            </div>
+                        </div>
+
+                        <div class="row break_clear">
+                            <div class="col-sm-6">
                                 <div class="row">
+                                    <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável pelo envio para área</label></div>
                                     <div class="col-sm-4">
-                                        <vaadin-combo-box value="{{data.abertoFechadoAoMercado}}" label="Aberto ou fechado ao mercado" items="[[LBoolValues]]" item-value-path="booleanValue" id="abertoFechadoAoMercado" item-label-path="stringValue">
-                                            <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.stringValue]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
-                                            </template>
-                                        </vaadin-combo-box>
+                                        <vaadin-text-field value="{{data.responsavelEnvioArea}}" id="responsavelEnvioArea" name="responsavelEnvioArea"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-sm-8">
-                                        <paper-tooltip for="descAbertoFechadoAoMercado" position="top" offset="-1" animation-delay="1">
-                                            Aberto ao mercado, todos os concorrentes registados na categoria visualizam o procedimento, contudo, permite em simultâneo um convite direcionado aos fornecedores identificados pelo SUCH a apresentar proposta. <br />
-                                            Fechado ao mercado, apenas os fornecedores convidados a apresentar proposta visualizam o procedimento.
-
-                                        </paper-tooltip>
-                                        <such-textarea rows="5" value="{{data.descAbertoFechadoAoMercado}}" id="descAbertoFechadoAoMercado" name="descAbertoFechadoAoMercado" label="Descrição"> </such-textarea>
+                                        <vaadin-text-field value="{{data.responsavelEnvioArea2}}" id="responsavelEnvioArea2" name="responsavelEnvioArea2"> </vaadin-text-field>
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-sm-3">
+                                <vaadin-date-picker value="{{data.processoData}}" id="processoData" name="processoData" label="Data"></vaadin-date-picker>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-text-field value="{{data.emailDestinoCa}}" id="emailDestinoCa" name="emailDestinoCa" label="Email destino CA"> </vaadin-text-field>
+                            </div>
                         </div>
+                        <div class="mb-15"></div>
 
+                        <h2 class="title title--bgblue">A Preencher pelos Serviços Financeiros</h2>
                         <div class="row break_clear">
-
                             <div class="col-sm-6">
-                                <paper-tooltip for="prazoEntrega" position="top" offset="-1" animation-delay="1">
-                                    Caso exista imposição da U.P. para o Cliente.
-                                </paper-tooltip>
-                                <vaadin-text-field rows="5" value="{{data.prazoEntrega}}" id="prazoEntrega" name="prazoEntrega" label="Prazo Entrega / Realização Serviço"> </vaadin-text-field>
+                                <such-textarea rows="5" value="{{data.processoComentario}}" id="processoComentario" name="processoComentario" label="Comentário"> </such-textarea>
                             </div>
-                            <div class="col-sm-6">
-                                <vaadin-text-field rows="5" value="{{data.locaisEntrega}}" id="locaisEntrega" name="locaisEntrega" label="Locais de Entrega"> </vaadin-text-field>
-                            </div>
-
                         </div>
-
                         <div class="row break_clear">
-
-                            <div class="col-sm-6">
-                                <vaadin-text-field rows="5" value="{{data.observacoesAdicionais}}" id="observacoesAdicionais" name="observacoesAdicionais" label="Observações adicionais a fixar no caderno de encargos"> </vaadin-text-field>
-                            </div>
-                            <div class="col-sm-6">
-                                <paper-tooltip for="estimativaPreco" position="top" offset="-1" animation-delay="1">
-                                    Obrigatório indicar, mesmo quando não se pretenda estabelecer preço base.
-                                </paper-tooltip>
-                                <vaadin-text-field rows="5" value="{{data.estimativaPreco}}" id="estimativaPreco" name="estimativaPreco" label="Estimativa de preço"> </vaadin-text-field>
-                            </div>
-
-                        </div>
-
-                        <div class="row break_clear">
-
-                            <div class="col-sm-6">
-                                <vaadin-text-field rows="5" value="{{data.fornecedoresSugeridos}}" id="fornecedoresSugeridos" name="fornecedoresSugeridos" label="fornecedores Sugeridos"> </vaadin-text-field>
-                            </div>
-
                             <div class="col-sm-6">
                                 <div class="row">
+                                    <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável pela área</label></div>
                                     <div class="col-sm-4">
-                                        <vaadin-combo-box value="{{data.fornecedorExclusivo}}" label="Fornecedor Exclusivo" items="[[LBoolValues]]" item-value-path="booleanValue" id="fornecedorExclusivo" item-label-path="stringValue">
-                                            <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.stringValue]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
-                                            </template>
-                                        </vaadin-combo-box>
+                                        <vaadin-text-field value="{{data.responsavelPelaArea}}" id="responsavelPelaArea" name="responsavelPelaArea"></vaadin-text-field>
                                     </div>
+
                                     <div class="col-sm-8">
-                                        <paper-tooltip for="descFornecedorExclusivo" position="top" offset="-1" animation-delay="1">
-                                            Fundamentação de exclusividade: note-se que este parametro será validado conforme CCP.
-                                        </paper-tooltip>
-                                        <such-textarea rows="5" value="{{data.descFornecedorExclusivo}}" id="descFornecedorExclusivo" name="descFornecedorExclusivo" label="Descrição"> </such-textarea>
+                                        <vaadin-text-field value="{{data.responsavelPelaArea2}}" id="responsavelPelaArea2" name="responsavelPelaArea2"> </vaadin-text-field>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <vaadin-text-field value="{{data.interlocutor}}" id="interlocutor" name="interlocutor" label="Interlocutor Preferêncial"> </vaadin-text-field>
+                            <div class="col-sm-3">
+                                <vaadin-date-picker value="{{data.responsavelPelaAreaData}}" id="processoData" name="processoData" label="Data"></vaadin-date-picker>
                             </div>
                         </div>
-                        <br /><br />
+                        <div class="mb-15"></div>
+
+                        <h2 class="title title--bgblue">A Preencher pela área - Pedido de Abertura de Procedimento</h2>
+                        <div class="row break_clear">
+                            <div class="col-sm-6">
+                                <such-textarea rows="5" value="{{data.processoComentario}}" id="processoComentario" name="processoComentario" label="Comentário"> </such-textarea>
+                            </div>
+                        </div>
+                        <div class="row break_clear">
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável dos serviços financeiros</label></div>
+                                    <div class="col-sm-4">
+                                        <vaadin-text-field value="{{data.responsavelServicosFinanceiros}}" id="responsavelServicosFinanceiros" name="responsavelServicosFinanceiros"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-sm-8">
+                                        <vaadin-text-field value="{{data.responsavelServicosFinanceiros2}}" id="responsavelServicosFinanceiros2" name="responsavelServicosFinanceiros2"> </vaadin-text-field>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <vaadin-date-picker value="{{data.responsavelServicosFinanceirosData}}" id="processoData" name="processoData" label="Data"></vaadin-date-picker>
+                            </div>
+                        </div>
+                        <div class="mb-15">&nbsp;</div>
                     </div>
-                    <!-- Tab Unidade Produtiva - Linhas Produtos Servicos-->
+
+                    <!-- Tab CCP -->
                     <div>
-                        <div class="break_clear">
-                            <vaadin-grid id="gridProdutosServicos" aria-label="gridProdutosServicos" items="{{data.produtosServicos}}" class="grid">
-                                <vaadin-grid-column width="10%">
-                                    <template class="header">
-                                        Tipo
-                                    </template>
-                                    <template>
-                                        <vaadin-text-field type="text" value="{{ item.tipo }}"></vaadin-text-field>
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="10%">
-                                    <template class="header">
-                                        Cod. Localização
-                                    </template>
-                                    <template>
-                                        <vaadin-text-field type="text" value="{{ item.codigoLocalizacao }}"></vaadin-text-field>
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="8%">
-                                    <template class="header">
-                                        <center>
-                                            Nº
-                                        </center>
-                                    </template>
-                                    <template>
-                                        <center>
-                                            <vaadin-checkbox checked="{{item.no}}"></vaadin-checkbox>
-                                        </center>
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="8%">
-                                    <template class="header">
-                                        <center>
-                                            Descrição
-                                        </center>
-                                    </template>
-                                    <template>
-                                        <center>
-                                            <vaadin-checkbox checked="{{item.descricao}}"></vaadin-checkbox>
-                                        </center>
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="6%">
-                                    <template class="header">
-                                        <center>
-                                            Descrição 2
-                                        </center>
-                                    </template>
-                                    <template>
-                                        <center>
-                                            <vaadin-checkbox checked="{{item.descricao2}}"></vaadin-checkbox>
-                                        </center>
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="8%">
-                                    <template class="header">
-                                        <center>
-                                            Cod. Unidade
-                                        </center>
-                                    </template>
-                                    <template>
-                                        <center>
-                                            <vaadin-checkbox checked="{{item.codigoUnidade}}"></vaadin-checkbox>
-                                        </center>
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="20%">
-                                    <template class="header">
-                                        Qtd. a Requerer
-                                    </template>
-                                    <template>
-                                        <vaadin-text-field type="text" value="{{ item.quantidadeRequerer }}"></vaadin-text-field>
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="20%">
-                                    <template class="header">
-                                        Custo Unitário
-                                    </template>
-                                    <template>
-                                        <vaadin-text-field type="text" value="{{ item.custoUnitario }}"></vaadin-text-field>
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="10%">
-                                    <template class="header">
-                                    </template>
-                                    <template>
-                                        <!--<center>-->
-                                        <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                        <!--</center>-->
-                                    </template>
-                                </vaadin-grid-column>
-                            </vaadin-grid>
+                        <div class="row break_clear">
+
+                            <div class="col-xs-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Publicação na Plataforma</div>
+                                    <div class="panel-body">
+                                        <div class="">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <vaadin-text-field value="{{data.publicacaoNaPlataformaComentario}}" id="publicacaoNaPlataformaComentario" name="publicacaoNaPlataformaComentario" label="Comentário"></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+                                                <div class="col-sm-6">
+                                                    <vaadin-date-picker value="{{data.publicacaoNaPlataformaData}}" id="publicacaoNaPlataformaData" name="publicacaoNaPlataformaData" label="Data"> </vaadin-date-picker>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+
+                                                <div class="col-xs-6">
+                                                    <vaadin-text-field value="{{data.publicacaoNaPlataformaUtilizador}}" id="publicacaoNaPlataformaUtilizador" name="publicacaoNaPlataformaUtilizador" label="Utilizador"> </vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <br />
+                                                    <paper-button raised id="btnConfirmPublicacaoNaPlataforma" class="btn--confirm pull-right" on-tap="_confirmPublicacaoNaPlataforma"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Confirmar</paper-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Recolha da Plataforma</div>
+                                    <div class="panel-body">
+                                        <div class="">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <vaadin-text-field value="{{data.recolhaPlataformaComentario}}" id="recolhaPlataformaComentario" name="recolhaPlataformaComentario" label="Comentário"></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+                                                <div class="col-sm-6">
+                                                    <vaadin-date-picker value="{{data.recolhaPlataformaData}}" id="recolhaPlataformaData" name="recolhaPlataformaData" label="Data"> </vaadin-date-picker>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+
+                                                <div class="col-xs-6">
+                                                    <vaadin-text-field value="{{data.recolhaPlataformaUtilizador}}" id="recolhaPlataformaUtilizador" name="recolhaPlataformaUtilizador" label="Utilizador"> </vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <br />
+                                                    <paper-button raised id="btnConfirmRecolhaPlataforma" class="btn--confirm pull-right" on-tap="_confirmRecolhaPlataforma"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Confirmar</paper-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Validação Relatório Preliminar Pelo Juri</div>
+                                    <div class="panel-body">
+                                        <div class="">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <vaadin-text-field value="{{data.validacaoRelatorioComentario}}" id="validacaoRelatorioComentario" name="validacaoRelatorioComentario" label="Comentário"></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+                                                <div class="col-sm-6">
+                                                    <vaadin-date-picker value="{{data.validacaoRelatorioData}}" id="validacaoRelatorioData" name="validacaoRelatorioData" label="Data"> </vaadin-date-picker>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+
+                                                <div class="col-xs-6">
+                                                    <vaadin-text-field value="{{data.validacaoRelatorioUtilizador}}" id="validacaoRelatorioUtilizador" name="validacaoRelatorioUtilizador" label="Utilizador"> </vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <br />
+                                                    <paper-button raised id="btnConfirmValidacaoRelatorio" class="btn--confirm pull-right" on-tap="_confirmValidacaoRelatorio"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Confirmar</paper-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Audiência Prévia</div>
+                                    <div class="panel-body">
+                                        <div class="">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <vaadin-text-field value="{{data.audienciaPreviaComentario}}" id="audienciaPreviaComentario" name="audienciaPreviaComentario" label="Comentário"></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+                                                <div class="col-sm-6">
+                                                    <vaadin-date-picker value="{{data.audienciaPreviaData}}" id="audienciaPreviaData" name="audienciaPreviaData" label="Data"> </vaadin-date-picker>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+
+                                                <div class="col-xs-6">
+                                                    <vaadin-text-field value="{{data.audienciaPreviaUtilizador}}" id="audienciaPreviaUtilizador" name="audienciaPreviaUtilizador" label="Utilizador"> </vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <br />
+                                                    <paper-button raised id="btnConfirmAudienciaPrevia" class="btn--confirm pull-right" on-tap="_confirmAudienciaPrevia"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Confirmar</paper-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Relatório Final</div>
+                                    <div class="panel-body">
+                                        <div class="">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <vaadin-text-field value="{{data.relatorioFinalComentario}}" id="relatorioFinalComentario" name="relatorioFinalComentario" label="Comentário"></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+                                                <div class="col-sm-6">
+                                                    <vaadin-date-picker value="{{data.relatorioFinalData}}" id="relatorioFinalData" name="relatorioFinalData" label="Data"> </vaadin-date-picker>
+                                                </div>
+                                            </div>
+                                            <div class="row break_clear">
+
+                                                <div class="col-xs-6">
+                                                    <vaadin-text-field value="{{data.relatorioFinalUtilizador}}" id="relatorioFinalUtilizador" name="relatorioFinalUtilizador" label="Utilizador"> </vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-sm-6">
+                                                    <br />
+                                                    <paper-button raised id="btnConfirmRelatorioFinal" class="btn--confirm pull-right" on-tap="_confirmRelatorioFinal"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Confirmar</paper-button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-6">
+                                <br />
+                                &nbsp;<paper-button raised id="btnSendToEvaluate" class="btn--sendtoevaluate" on-tap="_sendToEvaluate"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp; Envio para avaliação (Juri)</paper-button>
+                            </div>
+
                         </div>
-                        <br /><br />
                     </div>
+
                 </iron-pages>
 
-            </div>
-
-            <!-- Tab Imobilizado -->
-            <div>
-                <h2 class="title" style="border:1px solid; color:black; background-color:yellow">Aquisição de Imobilizado</h2>
-                <p></p>
-                <h2 class="title" style="border:1px solid; color:black; background-color:cornflowerblue">A preencher pelos Serviços de Contabilidade - Avaliação Cabimentação Orçamental</h2>
-                <div class="row break_clear">
-                    <div class="col-sm-10">
-                        <h1>FALTA CRIAR A TABELA CHECKLIST WORKFLOW</h1>
-                        <h3>Contabilidade (1)</h3>
-                        <p>Conteúdo referente à tabela Checklist Workflow</p>
-                        <h3>Área (2)</h3>
-                        <p>Conteúdo referente à tabela Checklist Workflow</p>
-                    </div>
+                <!-- Save and Create Buttons -->
+                <div class="marginSpace">
+                    <template is="dom-if" if="{{ _isCreate }}">
+                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                    </template>
+                    <template is="dom-if" if="{{ !_isCreate }}">
+                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                    </template>
                 </div>
             </div>
-        </iron-pages>
-
-        <!-- Save and Create Buttons -->
-        <div class="marginSpace">
-            <template is="dom-if" if="{{ _isCreate }}">
-                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-            </template>
-            <template is="dom-if" if="{{ !_isCreate }}">
-                <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-            </template>
         </div>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
     </template>

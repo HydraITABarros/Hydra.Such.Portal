@@ -8,11 +8,20 @@ using Hydra.Such.Data.ViewModel.Nutrition;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.ViewModel;
+using Hydra.Such.Portal.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 {
     public class CafetariasRefeitoriosController : Controller
     {
+        private readonly NAVConfigurations config;
+
+        public CafetariasRefeitoriosController(IOptions<NAVConfigurations> appSettings)
+        {
+            config = appSettings.Value;
+        }
+
         [Area("Nutricao")]
         public IActionResult Index()
         {
@@ -23,30 +32,27 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [Area("Nutricao")]
         public JsonResult GetCoffeeShops()
         {
-            ////Apply User Dimensions Validations
-            //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            ////Regions
-            //if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.CodeRegion));
-            ////FunctionalAreas
-            //if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.CodeFunctionalArea));
-            ////ResponsabilityCenter
-            //if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CodeResponsabilityCenter));
-            var items = DBCoffeeShops.GetAll().ParseToViewModel();
+            var items = DBCoffeeShops.GetAll().ParseToViewModel(config.NAVDatabaseName, config.NAVCompanyName);
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
+                items.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && (y.ValorDimensão == x.CodeRegion || string.IsNullOrEmpty(x.CodeRegion))));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
+                items.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && (y.ValorDimensão == x.CodeFunctionalArea || string.IsNullOrEmpty(x.CodeFunctionalArea))));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
+                items.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && (y.ValorDimensão == x.CodeResponsabilityCenter || string.IsNullOrEmpty(x.CodeResponsabilityCenter))));
+
             return Json(items);
         }
 
         [Area("Nutricao")]
         public IActionResult Detalhes(int productivityUnitNo, int type, int code, string explorationStartDate)
         {
-            UserAccessesViewModel userPermissions = new UserAccessesViewModel() {
-                Create = true,
-                Delete = true,
-                Read = true,
-                Update = true
-            }; //DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 2, 2);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 35);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
@@ -80,8 +86,8 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 DateTime date;                
                 if (DateTime.TryParse(explorationStartDate, out date))
                 {
-                    item = DBCoffeeShops.GetById(productivityUnitNo, type, code, date)
-                        .ParseToViewModel();
+                    var coffeeShop = DBCoffeeShops.GetById(productivityUnitNo, type, code, date);
+                    item = DBCoffeeShops.ParseToViewModel(coffeeShop, config.NAVDatabaseName, config.NAVCompanyName);
                 }
                 else
                 {
@@ -92,20 +98,6 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             {
                 item = new CoffeeShopViewModel();
             }
-
-
-            ////Apply User Dimensions Validations
-            //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            ////Regions
-            //if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.CodeRegion));
-            ////FunctionalAreas
-            //if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.CodeFunctionalArea));
-            ////ResponsabilityCenter
-            //if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CodeResponsabilityCenter));
-
             return Json(item);
         }
 
@@ -124,7 +116,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
                     if (itemToCreate != null)
                     {
-                        data = DBCoffeeShops.ParseToViewModel(itemToCreate);
+                        data = DBCoffeeShops.ParseToViewModel(itemToCreate, config.NAVDatabaseName, config.NAVCompanyName);
                         data.eReasonCode = 1;
                         data.eMessage = "Registo criado com sucesso.";
                     }
@@ -155,7 +147,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 
                 if (updatedItem != null)
                 {
-                    item = DBCoffeeShops.ParseToViewModel(updatedItem);
+                    item = DBCoffeeShops.ParseToViewModel(updatedItem, config.NAVDatabaseName, config.NAVCompanyName);
                     item.eReasonCode = 1;
                     item.eMessage = "Cafetaria / refeitório atualizado com sucesso.";
                 }

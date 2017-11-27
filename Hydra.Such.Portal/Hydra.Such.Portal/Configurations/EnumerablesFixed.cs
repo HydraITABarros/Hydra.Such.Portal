@@ -273,8 +273,20 @@ namespace Hydra.Such.Portal.Configurations
              {
                  Id = 34,
                  Value = "Checklist - Fecho de Processo"
-             } 
+             },
 	        #endregion
+
+             new EnumData()
+             {
+                 Id = 35,
+                 Value = "Cafetarias/Refeitórios"
+             },
+
+             new EnumData()
+             {
+                 Id = 36,
+                 Value = "Diário Cafetarias/Refeitórios"
+             }
 
         };
 
@@ -999,6 +1011,19 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> ProcedimentosAbertoFechado = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Aberto"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Fechado"
+            }
+        };
+
         public static readonly List<EnumData> ProcedimentosCcpType = new List<EnumData>()
         {
             new EnumData()
@@ -1376,6 +1401,30 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 1,
                 Value = "<="
+            }
+        };
+
+        public static readonly List<EnumData> GetTipoHoraFH = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Contrato"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Avulso"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Viagem"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Interna"
             }
         };
 

@@ -608,7 +608,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
-        
+
         [HttpPost]
         public JsonResult GetContabGroupTypesOM_Type()
         {
@@ -736,6 +736,14 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> ProcedimentoTypes = EnumerablesFixed.ProcedimentosCcpProcedimentoType;
 
             return Json(ProcedimentoTypes);
+        }
+
+        [HttpPost]
+        public JsonResult GetPocedimentosAbertoFechado()
+        {
+            List<EnumData> retval = EnumerablesFixed.ProcedimentosAbertoFechado;
+
+            return Json(retval);
         }
 
         [HttpPost]
@@ -921,11 +929,18 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.TipoMovimento;
             return Json(result);
         }
-    
+
         [HttpPost]
         public JsonResult GetAjudaCustoPartidaChegada()
         {
             List<EnumData> result = EnumerablesFixed.AjudaCustoPartidaChegada;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetTipoHoraFH()
+        {
+            List<EnumData> result = EnumerablesFixed.GetTipoHoraFH;
             return Json(result);
         }
 

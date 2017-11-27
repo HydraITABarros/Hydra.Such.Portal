@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Unidades Produtivas - Nutrição - Such";
+    ViewData["Title"] = "Cafetarias / Refeitórios - Nutrição - Such";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -15,8 +15,9 @@
 <link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
-<h1 class="title">Unidades Produtivas</h1>
+<h1 class="title">Cafetarias / Refeitórios</h1>
 
 <x-coffeeshops></x-coffeeshops>
 <dom-module id="x-coffeeshops">
@@ -32,6 +33,13 @@
                    method="post"
                    handle-as="json"
                    id="grid_databound"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/CafetariasRefeitorios/DeleteCoffeeShop"
+                   last-response="{{deletedData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_coffeeshop"
+                   on-response="_onDeleteCoffeeShopResponse"
                    content-type="application/json"></iron-ajax>
 
 
@@ -95,11 +103,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="30%">
                 <template class="header">
-                    <vaadin-grid-sorter path="codeResponsabilityCenter">Armazém Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codeResponsabilityCenter" />
+                    <vaadin-grid-sorter path="warehouseSupplier">Armazém Local</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="warehouseSupplier" />
                 </template>
                 <template>
-                    
+                    {{item.warehouseSupplier}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="30%">
@@ -120,61 +128,63 @@
                     {{item.codeRegion}}
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeFunctionalArea">Àrea</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeFunctionalArea" />
+                </template>
+                <template>
+                    {{item.codeFunctionalArea}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projectNo" />
+                </template>
+                <template>
+                    {{item.projectNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="">Total Receitas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="" />
+                </template>
+                <template>
+                    {{item.totalRevenues}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="">Total Consumos</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="" />
+                </template>
+                <template>
+                    {{item.totalConsumption}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="">Nº Refeições</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="" />
+                </template>
+                <template>
+                    {{item.totalMeals}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="10%" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnRemove" raised on-tap="_deleteCoffeeShop" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
-        <vaadin-grid-column width="30%">
-            <template class="header">
-                <vaadin-grid-sorter path="codeFunctionalArea">Àrea</vaadin-grid-sorter>
-                <vaadin-grid-filter path="codeFunctionalArea" />
-            </template>
-            <template>
-                {{item.codeFunctionalArea}}
-            </template>
-        </vaadin-grid-column>
-        <vaadin-grid-column width="30%">
-            <template class="header">
-                <vaadin-grid-sorter path="">Àrea</vaadin-grid-sorter>
-                <vaadin-grid-filter path="" />
-            </template>
-            <template>
-                
-            </template>
-        </vaadin-grid-column>
-        <vaadin-grid-column width="30%">
-            <template class="header">
-                <vaadin-grid-sorter path="">Nº Projeto</vaadin-grid-sorter>
-                <vaadin-grid-filter path="" />
-            </template>
-            <template>
-                
-            </template>
-        </vaadin-grid-column>
-        <vaadin-grid-column width="30%">
-            <template class="header">
-                <vaadin-grid-sorter path="">Total Receitas</vaadin-grid-sorter>
-                <vaadin-grid-filter path="" />
-            </template>
-            <template>
-
-            </template>
-        </vaadin-grid-column>
-        <vaadin-grid-column width="30%">
-            <template class="header">
-                <vaadin-grid-sorter path="">Total Consumos</vaadin-grid-sorter>
-                <vaadin-grid-filter path="" />
-            </template>
-            <template>
-
-            </template>
-        </vaadin-grid-column>
-        <vaadin-grid-column width="30%">
-            <template class="header">
-                <vaadin-grid-sorter path="">Nº Refeições</vaadin-grid-sorter>
-                <vaadin-grid-filter path="" />
-            </template>
-            <template>
-
-            </template>
-        </vaadin-grid-column>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -195,13 +205,39 @@
                         window.location.href = "/Nutricao/CafetariasRefeitorios/Detalhes/" + urlParams;
                     }
                 },
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
                 _create: function (item) {
                     if (item != null) {
                         window.location.href = "/Nutricao/CafetariasRefeitorios/Detalhes/";
                     }
-                }
+                },
+                _deleteCoffeeShop: function (data) {
+                    var index = this.result.indexOf(data.model.item);
+                    this.result.splice(index, 1);
+                    this.$.ajax_delete_coffeeshop.body = JSON.stringify(data.model.item);
+                    this.$.ajax_delete_coffeeshop.generateRequest();
+                },
+                _onDeleteCoffeeShopResponse: function (data) {
+                    if (data.detail.status === 200) {
+                        this._openToast(this.deletedData.eMessage);
+                        if (this.deletedData.eReasonCode == 1) {
+                            setTimeout(
+                                function () {
+                                    window.location.href = "/Nutricao/CafetariasRefeitorios";
+                                }, 2500);
+                        } else {
+                            this._openToastError(this.deletedData.eMessage);
+                        }
+                    }
+                },
             });
         });
     </script>
-
 </dom-module>

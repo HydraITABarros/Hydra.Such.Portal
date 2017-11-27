@@ -11,6 +11,8 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
 
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
 <link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
@@ -22,11 +24,12 @@
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
 
-<x-coffeeshopdiary _paramCoffeeNo="@ViewBag.CoffeeShopNo" _produtiveNo="@ViewBag.NºUnidadeProdutiva" _areaid="3" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-coffeeshopdiary>
+<x-coffeeshopdiary _areaid="3" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-coffeeshopdiary>
 
 <dom-module id="x-coffeeshopdiary">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
         <custom-style>
@@ -65,49 +68,84 @@
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
-                   auto
                    id="grid_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Nutricao/CreateCoffeeShopsDiary"
+                   last-response="{{created}}"
+                   method="post"
+                   handle-as="json"
+                   id="create_databound_ajax"
+                   on-response="_responseCreated"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Nutricao/DeleteCoffeeShopsDiaryLine"
+                   last-response="{{deleted}}"
+                   method="post"
+                   handle-as="json"
+                   id="delete_databound_ajax"
+                   on-response="_responseDeleted"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Nutricao/UpdateCoffeeShopsDiaryLine"
+                   last-response="{{updated}}"
+                   method="post"
+                   handle-as="json"
+                   id="update_databound_ajax"
+                   on-response="_responseUpdate"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Nutricao/CoffeeShopsDiaryLineRegister"
+                   last-response="{{registed}}"
+                   method="post"
+                   handle-as="json"
+                   id="register_databound_ajax"
+                   on-response="_responseRegister"
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/GetTiposMovimento" last-response="{{CBMovementType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <iron-form id="formCoffeeShopDiary">
+            <div class="row">
+                <div class="col-lg-2">
+                    <vaadin-text-field id="produtiveUnityNo" name="produtiveUnityNo" value="{{diary.produtiveUnityNo}}" label="Unidade Produtiva" disabled></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="coffeShopCode" name="coffeShopCode" value="{{diary.coffeShopCode}}" label="Codigo Cafetaria/Ref" disabled></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-date-picker label="Data Registo" max="{{diary.dateToday}}" value="{{diary.registryDate}}" id="registryDate" name="registryDate"></vaadin-date-picker>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-combo-box items="[[CBMovementType]]" id="cbmovementType" item-value-path="id" item-label-path="value" value="{{diary.movementType}}" label="Tipo de Movimento">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="description" name="description" value="{{diary.description}}" label="Descrição"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" value="{{diary.value}}" label="Valor"></vaadin-text-field>
+                </div>
 
-        <div class="row">
-            <div class="col-lg-2">
-                <vaadin-text-field id="produtiveUnityNo" name="produtiveUnityNo" value="{{diary.produtiveUnityNo}}" label="Unidade Produtiva" disabled></vaadin-text-field>
             </div>
-            <div class="col-lg-2">
-                <vaadin-text-field id="coffeShopCode" name="coffeShopCode" value="{{diary.coffeShopCode}}" label="Codigo Cafetaria/Ref" disabled></vaadin-text-field>
-            </div>
-            <div class="col-lg-2">
-                <vaadin-date-picker label="Data Registo" max="{{diary.dateToday}}" id="registryDate" name="registryDate"></vaadin-date-picker>
-            </div>
-            <div class="col-lg-2">
-                <vaadin-combo-box items="[[CBMovementType]]" id="cbmovementType" item-value-path="id" item-label-path="value" value="{{ddmovementType}}" label="Tipo de Movimento">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
+            <br />
+            <div class="row">
+                <div class="col-lg-1">
+                    <template is="dom-if" if="{{ _permissions.create }}">
+                        <paper-button class="btnSave" raised on-tap="_createCoffeeShopDiary"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar</paper-button>
                     </template>
-                </vaadin-combo-box>
+                </div>
             </div>
-            <div class="col-lg-2">
-                <vaadin-text-field id="description" name="description" label="Descrição"></vaadin-text-field>
-            </div>
-            <div class="col-lg-2">
-                <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" label="Valor"></vaadin-text-field>
-            </div>
-            
-        </div>
-        <br />
-        <div class="row">
-            <div class="col-lg-1">
-                <paper-button class="btnSave" on-tap="_createCoffeeShopDiary">Criar</paper-button>
-            </div>
-        </div>
-        <br />
+            <br />
+        </iron-form>
+
         <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px">
                 <template class="header">
@@ -115,7 +153,8 @@
                     <vaadin-grid-filter path="produtiveUnityNo" />
                 </template>
                 <template>
-                    {{item.produtiveUnityNo}}
+                    <vaadin-text-field id="produtiveUnityNoGrid" name="produtiveUnityNoGrid" value="{{item.produtiveUnityNo}}" disabled></vaadin-text-field>
+
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px">
@@ -124,7 +163,8 @@
                     <vaadin-grid-filter path="coffeShopCode" />
                 </template>
                 <template>
-                    {{item.coffeShopCode}}
+                    <vaadin-text-field id="coffeShopCodeGrid" name="coffeShopCodeGrid" value="{{item.coffeShopCode}}" disabled></vaadin-text-field>
+
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px">
@@ -133,7 +173,7 @@
                     <vaadin-grid-filter path="registryDate" />
                 </template>
                 <template>
-                    {{item.registryDate}}
+                    <input type="date" id="registryDateGrid" name="registryDateGrid" max="{{diary.dateToday}}" value="{{item.registryDate}}">
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="200px">
@@ -142,7 +182,15 @@
                     <vaadin-grid-filter path="movementType" />
                 </template>
                 <template>
-                    {{item.movementType}}
+                    <vaadin-combo-box items="[[CBMovementType]]" id="cbmovementTypeGrid" item-value-path="id" item-label-path="value" value="{{item.movementType}}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="200px">
@@ -151,7 +199,7 @@
                     <vaadin-grid-filter path="description" />
                 </template>
                 <template>
-                    {{item.description}}
+                    <vaadin-text-field id="descriptionGrid" name="descriptionGrid" value="{{item.description}}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px">
@@ -160,159 +208,156 @@
                     <vaadin-grid-filter path="value" />
                 </template>
                 <template>
-                    {{item.value}}
+                    <vaadin-text-field id="valueGrid" name="valueGrid" pattern="^[1-9]\d*(\.\d+)?$" value="{{item.value}}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissions.delete }}">
             <vaadin-grid-column width="10%" resizable>
                 <template class="header">
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                        <template is="dom-if" if="{{ _permissions.delete }}">
+                            <paper-button class="btnRemove" raised on-tap="_deleteDiaryLine">Eliminar</paper-button>
+                        </template>
                     </center>
                 </template>
             </vaadin-grid-column>
+            </template>
         </vaadin-grid>
+
+
+        <div class="marginSpace">
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateDiaryLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            </template>
+
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button raised id="btnRegisterLine" class="btnSave" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
+            </template>
+        </div>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
-    </template>
+</template>
 
 <script>
     document.addEventListener('WebComponentsReady', function () {
     Polymer({
         is: 'x-coffeeshopdiary',
         properties: {
-            ddmovementType: {
+            movementType: {
             type: Number,
             notify: true,
             value: ""
-            }
+            },
+            _permissions: {
+                type: Array
+            },
         },
         ready: function () {
             //GET CONTRACT DATA
             debugger;
-            var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
-            this.$.diary_databound.body = JSON.stringify({ "NºUnidadeProdutiva": this._produtiveNo, "CoffeeShopNo": this._paramCoffeeNo });
+            this.$.diary_databound.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
             this.$.diary_databound.generateRequest();
 
-            if (this._contractno == "") {
-                this._isCreate = true;
-            }
+            this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+            this.$.grid_databound_ajax.generateRequest();
+
         },
 
         _createCoffeeShopDiary: function () {
+            this.$.create_databound_ajax.body = JSON.stringify(this.diary);
+            this.$.create_databound_ajax.generateRequest();
+        },
+
+        _responseCreated: function (created) {
+            var self = this;
+            if (created.detail.status === 200) {
+                if (this.created == true) {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+                    this.$.grid_databound_ajax.generateRequest();
+                    this._openToast("Diário Cafetaria/Refeitório criado com sucesso.");
+                } else {
+                    this._openToastError("Ocorreu um erro desconhecido.");
+                }
+            } else {
+                this._openToastError("Ocorreu um erro desconhecido.");
+            }
+        },
+
+        _deleteDiaryLine: function (e) {
+
+            this.$.delete_databound_ajax.body = JSON.stringify(e.model.item);
+            this.$.delete_databound_ajax.generateRequest();
+        },
+
+        _responseDeleted: function (deleted) {
+            var self = this;
+            if (deleted.detail.status === 200) {
+                if (this.deleted == true) {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+                    this.$.grid_databound_ajax.generateRequest();
+                    this._openToast("Diário Cafetaria/Refeitório eliminado com sucesso.");
+                } else {
+                    this._openToastError("Ocorreu um erro desconhecido.");
+                }
+            } else {
+                this._openToastError("Ocorreu um erro desconhecido.");
+            }
+        },
+
+        _updateDiaryLines: function () {
+            this.$.update_databound_ajax.body = JSON.stringify(this.result);
+            this.$.update_databound_ajax.generateRequest();
+        },
+
+        _responseUpdate: function (updated) {
+            var self = this;
             debugger;
-            this.result.unshift({
+            if (updated.detail.status === 200) {
+                if (this.updated == true) {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+                    this.$.grid_databound_ajax.generateRequest();
+                    this._openToast("Diário Cafetaria/Refeitório atualizado com sucesso.");
+                } else {
+                    this._openToastError("Ocorreu um erro desconhecido.");
+                }
+            } else {
+                this._openToastError("Ocorreu um erro desconhecido.");
+            }
+        },
 
-                produtiveUnityNo: this.$.produtiveUnityNo,
-                coffeShopCode: this.$.coffeShopCode,
-                functionalAreaCode: this.$.dateToday,
-                movementType: this.ddmovementType,
-                description: this.$.description,
-                value: this.$.value
-            });
-            this.$.page_databound_ajax.url = "/Nutricao/CreateCoffeeShopsDiary";
-            this.$.page_databound_ajax.body = JSON.stringify(this.result);
-            this.$.gridContabGroupTypes.clearCache();
+        _registerDiaryLines: function () {
+            this.$.register_databound_ajax.body = JSON.stringify(this.result);
+            this.$.register_databound_ajax.generateRequest();
+        },
+        _responseRegister: function (registed) {
+            var self = this;
+            debugger;
+            if (registed.detail.status === 200) {
+                if (this.registed == true) {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+                    this.$.grid_databound_ajax.generateRequest();
+                    this._openToast("Diário Cafetaria/Refeitório registado com sucesso.");
+                } else {
+                    this._openToastError("Ocorreu um erro desconhecido.");
+                }
+            } else {
+                this._openToastError("Ocorreu um erro desconhecido.");
+            }
 
+        },
+
+        _openToast: function (message) {
+            this.$.ToastMessage.text = message;
+            this.$.ToastMessage.open();
+        },
+
+        _openToastError: function (message) {
+            this.$.ToastError.text = message;
+            this.$.ToastError.open();
         }
-
-    //    openToast: function (message) {
-    //    this.$.ToastMessageSuccess.text = message;
-    //    this.$.ToastMessageSuccess.open();
-    //    },
-    //    openToastError: function (message) {
-    //    this.$.ToastError.text = message;
-    //    this.$.ToastError.open();
-    //    },
-    //    _update: function () {
-
-    //    this.$.page_update_ajax.body = JSON.stringify(this.result);
-    //    this.$.page_update_ajax.generateRequest();
-    //    this.$.gridClientServices.clearCache();
-    //    },
-    //    _CreateResponse: function (e) {
-    //    var self = this;
-    //    if (this.exist === false) {
-    //    this.openToast('Criado com sucesso');
-    //    this.ddClients = "";
-    //    this.ddServices = "";
-    //    this.chkServiceGroup = false;
-
-    //    this.$.page_databound_ajax.generateRequest();
-    //    }
-    //    else if (this.exist === true) {
-
-    //    this.openToastError("Este serviço cliente já existe.");
-    //    this.$.page_databound_ajax.generateRequest();
-    //    } else {
-    //    this.openToastError('Ocorreu um erro ao Criar o Serviço Cliente.');
-    //    }
-    //    },
-    //    _UpdateResponse: function (e) {
-    //    var self = this;
-    //    if (e.detail.status === 200) {
-    //    this.openToast('Atualizado com sucesso');
-    //    this.$.page_databound_ajax.generateRequest();
-    //    }
-    //    else {
-    //    this.openToastError('Ocorreu um erro ao atualizar o Serviço Cliente.');
-    //    }
-    //    },
-
-    //    _DeleteResponse: function (e) {
-    //    var self = this;
-    //    if (e.detail.status === 200) {
-    //    this.openToast('Eliminado com sucesso');
-    //    this.$.page_databound_ajax.generateRequest();
-    //    }
-    //    else {
-    //    this.openToastError('Ocorreu um erro ao atualizar o Serviço Cliente.');
-    //    }
-    //    },
-
-    //    _cancel: function () {
-    //    this.$.page_databound_ajax.generateRequest();
-    //    this.$.gridClientServices.clearCache();
-    //    },
-
-    //    _createClientService: function () {
-
-    //    if (this.ddClients != "" && this.ddServices != "") {
-    //    if (this.result == null)
-    //    {
-    //    this.result.unshift({
-    //    ClientNumber: this.ddClients,
-    //    ServiceCode: this.ddServices,
-    //    ServiceGroup: this.chkServiceGroup
-    //    });
-    //    }
-    //    else
-    //    {
-    //    this.result.unshift({
-    //    ClientNumber: this.ddClients,
-    //    ServiceCode: this.ddServices,
-    //    ServiceGroup: this.chkServiceGroup
-    //    });
-    //    }
-    //    this.$.page_create_ajax.body = JSON.stringify(this.result);
-    //    this.$.page_create_ajax.generateRequest();
-    //    this.$.gridClientServices.clearCache();
-    //    } else {
-    //    this.openToastError('Preencha os campos antes de criar.');
-
-    //    }
-    //    },
-
-    //    _deleteAccessProfile: function (data) {
-    //    var index = this.result.indexOf(data.model.item);
-    //    this.result.splice(index, 1);
-    //    this.$.page_delete_ajax.body = JSON.stringify(this.result);
-    //    this.$.page_delete_ajax.generateRequest();
-    //    this.$.gridClientServices.clearCache();
-    //    }
-
         });
     });
 </script>
