@@ -5935,7 +5935,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("DataHoraCriacao")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.UtilizadorCriacao)
+                entity.Property(e => e.UtilizadorModificacao)
                     .HasColumnName("AlteradoPor")
                     .HasMaxLength(50);
 
@@ -5966,6 +5966,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("PrecoUnitario")
                     .HasColumnType("decimal(, 20)");
 
+                entity.Property(e => e.CustoUnitario)
+                    .HasColumnName("CustoUnitario")
+                    .HasColumnType("decimal(, 20)");
+
                 entity.Property(e => e.StartingDate)
                     .HasColumnName("StartingDate")
                     .HasColumnType("date");
@@ -5986,7 +5990,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("DataHoraCriacao")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.UtilizadorCriacao)
+                entity.Property(e => e.UtilizadorModificacao)
                     .HasColumnName("AlteradoPor")
                     .HasMaxLength(50);
 
@@ -6037,7 +6041,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("DataHoraCriacao")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.UtilizadorCriacao)
+                entity.Property(e => e.UtilizadorModificacao)
                     .HasColumnName("AlteradoPor")
                     .HasMaxLength(50);
 
@@ -6080,7 +6084,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("DataHoraCriacao")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.UtilizadorCriacao)
+                entity.Property(e => e.UtilizadorModificacao)
                     .HasColumnName("AlteradoPor")
                     .HasMaxLength(50);
 

@@ -83,5 +83,49 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 return false;
             }
         }
+
+        public static PrecoCustoRecursoFh ParseToDB(PrecoCustoRecursoViewModel x)
+        {
+            return new PrecoCustoRecursoFh()
+            {
+                Code = x.Code,
+                Descricao = x.Descricao,
+                CodTipoTrabalho = x.CodTipoTrabalho,
+                CustoUnitario = x.CustoUnitario,
+                StartingDate = x.StartingDate,
+                EndingDate = x.EndingDate,
+                FamiliaRecurso = x.FamiliaRecurso,
+                UtilizadorCriacao = x.UtilizadorCriacao,
+                DataHoraCriacao = x.DataHoraCriacao,
+                UtilizadorModificacao = x.UtilizadorModificacao,
+                DataHoraModificacao = x.DataHoraModificacao
+            };
+        }
+
+        public static PrecoCustoRecursoViewModel ParseToViewModel(PrecoCustoRecursoFh x)
+        {
+            return new PrecoCustoRecursoViewModel()
+            {
+                Code = x.Code,
+                Descricao = x.Descricao,
+                CodTipoTrabalho = x.CodTipoTrabalho,
+                CustoUnitario = x.CustoUnitario,
+                StartingDate = x.StartingDate,
+                EndingDate = x.EndingDate,
+                FamiliaRecurso = x.FamiliaRecurso,
+                UtilizadorCriacao = x.UtilizadorCriacao,
+                DataHoraCriacao = x.DataHoraCriacao,
+                UtilizadorModificacao = x.UtilizadorModificacao,
+                DataHoraModificacao = x.DataHoraModificacao
+            };
+        }
+
+        public static List<PrecoCustoRecursoViewModel> ParseListToViewModel(List<PrecoCustoRecursoFh> x)
+        {
+            List<PrecoCustoRecursoViewModel> result = new List<PrecoCustoRecursoViewModel>();
+
+            x.ForEach(y => result.Add(ParseToViewModel(y)));
+            return result;
+        }
     }
 }

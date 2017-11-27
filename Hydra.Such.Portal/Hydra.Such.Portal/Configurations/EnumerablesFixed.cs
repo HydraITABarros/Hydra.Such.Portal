@@ -1399,6 +1399,30 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> GetTipoHoraFH = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Contrato"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Avulso"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Viagem"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Interna"
+            }
+        };
+
         public static readonly List<EnumData> TipoMovimento = new List<EnumData>()
         {
             new EnumData

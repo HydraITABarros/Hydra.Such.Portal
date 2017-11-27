@@ -83,5 +83,45 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 return false;
             }
         }
+
+        public static RhRecursosFh ParseToDB(RHRecursosViewModel x)
+        {
+            return new RhRecursosFh()
+            {
+                NoEmpregado = x.NoEmpregado,
+                Recurso = x.Recurso,
+                NomeRecurso = x.NomeRecurso,
+                FamiliaRecurso = x.FamiliaRecurso,
+                NomeEmpregado = x.NomeEmpregado,
+                UtilizadorCriacao = x.UtilizadorCriacao,
+                DataHoraCriacao = x.DataHoraCriacao,
+                UtilizadorModificacao = x.UtilizadorModificacao,
+                DataHoraModificacao = x.DataHoraModificacao
+            };
+        }
+
+        public static RHRecursosViewModel ParseToViewModel(RhRecursosFh x)
+        {
+            return new RHRecursosViewModel()
+            {
+                NoEmpregado = x.NoEmpregado,
+                Recurso = x.Recurso,
+                NomeRecurso = x.NomeRecurso,
+                FamiliaRecurso = x.FamiliaRecurso,
+                NomeEmpregado = x.NomeEmpregado,
+                UtilizadorCriacao = x.UtilizadorCriacao,
+                DataHoraCriacao = x.DataHoraCriacao,
+                UtilizadorModificacao = x.UtilizadorModificacao,
+                DataHoraModificacao = x.DataHoraModificacao
+            };
+        }
+
+        public static List<RHRecursosViewModel> ParseListToViewModel(List<RhRecursosFh> x)
+        {
+            List<RHRecursosViewModel> result = new List<RHRecursosViewModel>();
+
+            x.ForEach(y => result.Add(ParseToViewModel(y)));
+            return result;
+        }
     }
 }

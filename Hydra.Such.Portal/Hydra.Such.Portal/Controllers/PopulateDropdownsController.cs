@@ -928,6 +928,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetTipoHoraFH()
+        {
+            List<EnumData> result = EnumerablesFixed.GetTipoHoraFH;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetCodTipoCustoByTipoCusto([FromBody]DDMessage tipoCusto)
         {
 
