@@ -962,30 +962,34 @@ namespace Hydra.Such.Portal.Controllers
                     (x.TipoCusto != 1)
                     ).ToList();
 
-                NoDias = Convert.ToInt32((Convert.ToDateTime(data.DataHoraChegada) - Convert.ToDateTime(data.DataHoraPartida)).TotalDays);
+                NoDias = Convert.ToInt32((Convert.ToDateTime(data.DataChegadaTexto) - Convert.ToDateTime(data.DataPartidaTexto)).TotalDays);
 
                 AjudaCusto.ForEach(x =>
                 {
                     if (x.CodigoRefCusto == 1) //ALMOCO
                     {
-                        if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida) NoDias = NoDias + 1;
+                        if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida)
+                            NoDias = NoDias + 1;
 
-                        if ((TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada) || data.DataPartidaTexto != data.DataChegadaTexto) NoDias = NoDias + 1;
+                        if ((TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada) || data.DataPartidaTexto != data.DataChegadaTexto)
+                            NoDias = NoDias + 1;
                     }
 
                     if (x.CodigoRefCusto == 2) //JANTAR
                     {
-                        if ((TimeSpan.Parse(data.HoraPartidaTexto) >= x.LimiteHoraPartida) || data.DataPartidaTexto != data.DataChegadaTexto) NoDias = NoDias + 1;
+                        if ((TimeSpan.Parse(data.HoraPartidaTexto) >= x.LimiteHoraPartida) || data.DataPartidaTexto != data.DataChegadaTexto)
+                            NoDias = NoDias + 1;
 
-                        if (TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada) NoDias = NoDias + 1;
+                        if (TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada)
+                            NoDias = NoDias + 1;
                     }
 
-                    noLinha = DBLinhasFolhaHoras.GetMaxAjudaByFolhaHoraNo(data.FolhaDeHorasNo);
+                    noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.FolhaDeHorasNo);
 
                     LinhasFolhaHoras Ajuda = new LinhasFolhaHoras();
 
                     Ajuda.NoFolhaHoras = data.FolhaDeHorasNo;
-                    Ajuda.NoLinha = noLinha + 1;
+                    Ajuda.NoLinha = noLinha;
                     Ajuda.CodTipoCusto = x.CodigoTipoCusto.Trim();
                     Ajuda.TipoCusto = x.TipoCusto;
                     Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == x.TipoCusto).FirstOrDefault().Value;
@@ -994,11 +998,11 @@ namespace Hydra.Such.Portal.Controllers
                     Ajuda.PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
                     Ajuda.CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
                     Ajuda.PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
-                    Ajuda.DataDespesa = data.DataHoraPartida;
+                    Ajuda.DataDespesa = Convert.ToDateTime(data.DataPartidaTexto + " " + data.HoraPartidaTexto);
                     Ajuda.CalculoAutomatico = true;
-                    Ajuda.CodRegiao = data.CodigoRegiao;
-                    Ajuda.CodArea = data.CodigoAreaFuncional;
-                    Ajuda.CodCresp = data.CodigoCentroResponsabilidade;
+                    Ajuda.CodRegiao = data.CodigoRegiao == "" ? null : data.CodigoRegiao;
+                    Ajuda.CodArea = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional;
+                    Ajuda.CodCresp = data.CodigoCentroResponsabilidade == null ? null : data.CodigoCentroResponsabilidade;
                     Ajuda.RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().RubricaSalarial;
                     Ajuda.UtilizadorCriacao = User.Identity.Name;
                     Ajuda.DataHoraCriacao = DateTime.Now;
