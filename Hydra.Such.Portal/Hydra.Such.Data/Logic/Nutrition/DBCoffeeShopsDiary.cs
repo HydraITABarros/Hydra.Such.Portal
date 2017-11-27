@@ -83,6 +83,22 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
+        public static DiárioCafetariaRefeitório GetById(int LineNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.DiárioCafetariaRefeitório.Where(x => x.NºLinha == LineNo).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
 
         public static CoffeeShopDiaryViewModel ParseToViewModel(DiárioCafetariaRefeitório x)
         {
@@ -90,7 +106,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 LineNo = x.NºLinha,
                 CoffeShopCode = x.CódigoCafetariaRefeitório,
-                RegistryDate = x.DataRegisto,
+                RegistryDate = x.DataRegisto.HasValue ? x.DataRegisto.Value.ToString("yyyy-MM-dd") : "",
                 ResourceNo = x.NºRecurso,
                 Description = x.Descrição,
                 Value = x.Valor,
@@ -103,16 +119,71 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 MealType = x.TipoRefeição,
                 MovementType = x.TipoMovimento,
                 User = x.Utilizador,
-                CreateDateTime = x.DataHoraCriação,
-                UpdateDateTime = x.DataHoraModificação,
+                CreateDateTime = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
+                UpdateDateTime = x.DataHoraModificação.HasValue ? x.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
                 CreateUser = x.UtilizadorCriação,
                 UpdateUser = x.UtilizadorModificação,
                 DateToday = DateTime.Today.ToString("yyyy-MM-dd")
             };
-            
-
             return result;
 
+        }
+
+        public static DiárioCafetariaRefeitório ParseToDB( CoffeeShopDiaryViewModel x)
+        {
+            DiárioCafetariaRefeitório result = new DiárioCafetariaRefeitório()
+            {
+                NºLinha = x.LineNo,
+                CódigoCafetariaRefeitório = x.CoffeShopCode,
+                DataRegisto = x.RegistryDate != null ? DateTime.Parse(x.RegistryDate) : (DateTime?)null,
+                NºRecurso = x.ResourceNo,
+                Descrição = x.Description,
+                Valor = x.Value,
+                NºProjeto = x.ProjectNo,
+                CódigoRegião = x.RegionCode,
+                CódigoÁreaFuncional = x.FunctionalAreaCode,
+                CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
+                Quantidade = x.Quantity,
+                NºUnidadeProdutiva = x.ProdutiveUnityNo,
+                TipoRefeição = x.MealType,
+                TipoMovimento = x.MovementType,
+                Utilizador = x.User,
+                DataHoraCriação = x.CreateDateTime != null ? DateTime.Parse(x.CreateDateTime) : (DateTime?)null,
+                DataHoraModificação = x.UpdateDateTime != null ? DateTime.Parse(x.UpdateDateTime) : (DateTime?)null,
+                UtilizadorCriação = x.CreateUser,
+                UtilizadorModificação = x.UpdateUser,
+            };
+            return result;
+        }
+
+        public static List<DiárioCafetariaRefeitório> ParseToDBList(List<CoffeeShopDiaryViewModel> data)
+        {
+            List<DiárioCafetariaRefeitório> updatedLines = new List<DiárioCafetariaRefeitório>();
+            foreach (var x in data)
+            {
+                DiárioCafetariaRefeitório LineToUpdate = new DiárioCafetariaRefeitório();
+                LineToUpdate.NºLinha = x.LineNo;
+                LineToUpdate.CódigoCafetariaRefeitório = x.CoffeShopCode;
+                LineToUpdate.DataRegisto = x.RegistryDate != null ? DateTime.Parse(x.RegistryDate) : (DateTime?)null;
+                LineToUpdate.NºRecurso = x.ResourceNo;
+                LineToUpdate.Descrição = x.Description;
+                LineToUpdate.Valor = x.Value;
+                LineToUpdate.NºProjeto = x.ProjectNo;
+                LineToUpdate.CódigoRegião = x.RegionCode;
+                LineToUpdate.CódigoÁreaFuncional = x.FunctionalAreaCode;
+                LineToUpdate.CódigoCentroResponsabilidade = x.ResponsabilityCenterCode;
+                LineToUpdate.Quantidade = x.Quantity;
+                LineToUpdate.NºUnidadeProdutiva = x.ProdutiveUnityNo;
+                LineToUpdate.TipoRefeição = x.MealType;
+                LineToUpdate.TipoMovimento = x.MovementType;
+                LineToUpdate.Utilizador = x.User;
+                LineToUpdate.DataHoraCriação = x.CreateDateTime != null ? DateTime.Parse(x.CreateDateTime) : (DateTime?)null;
+                LineToUpdate.UtilizadorCriação = x.CreateUser;
+                LineToUpdate.UtilizadorModificação = x.UpdateUser;
+                updatedLines.Add(LineToUpdate);
+            };
+            return updatedLines;
+            
         }
     }
 }

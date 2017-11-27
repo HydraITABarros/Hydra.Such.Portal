@@ -737,18 +737,24 @@ namespace Hydra.Such.Portal.Controllers
             {
                 // 1. Get the latest version in the Database
                 ProcedimentosCcp Procedimento = DBProcedimentosCCP.GetProcedimentoById(data.No);
-                bool UserElementPreArea0 = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoPreArea0);
-                bool UserElementPreArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoPreArea);
+                string UserID = User.Identity.Name;
+                bool UserElementPreArea0 = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(UserID, DBProcedimentosCCP._ElementoPreArea0);
+                bool UserElementPreArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(UserID, DBProcedimentosCCP._ElementoPreArea);
+
+                int errorCount = 1;
+
+                string UserEmail = DBProcedimentosCCP.GetUserEmail(UserID);
 
                 // 2.a Check if Procedimento has been already submitted
-                if(UserElementPreArea0 && Procedimento.PréÁrea.HasValue && Procedimento.PréÁrea.Value)
+                if (UserElementPreArea0 && Procedimento.PréÁrea.HasValue && Procedimento.PréÁrea.Value)
                 {
                     ErrorHandler ProcedimentoAlreadySubmitted = new ErrorHandler()
                     {
-                        eReasonCode = 1,
+                        eReasonCode = errorCount,
                         eMessage = "Procedimento já submetido!"
                     };
 
+                    errorCount += 1;
                     return Json(ProcedimentoAlreadySubmitted);
                 }
 
@@ -757,10 +763,11 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     ErrorHandler ProcedimentoAlreadySubmitted = new ErrorHandler()
                     {
-                        eReasonCode = 1,
+                        eReasonCode = errorCount,
                         eMessage = "Procedimento já submetido!"
                     };
 
+                    errorCount += 1;
                     return Json(ProcedimentoAlreadySubmitted);
                 }
 
@@ -776,7 +783,7 @@ namespace Hydra.Such.Portal.Controllers
                     Hora = DateTime.Now.TimeOfDay,
                     TipoEstado = 1,
                     User = User.Identity.Name,
-                    NomeUser = DBProcedimentosCCP.GetUserName(User.Identity.Name),
+                    NomeUser = DBProcedimentosCCP.GetUserName(UserID),
                     Comentario = data.ElementosChecklist.ChecklistArea.ComentarioArea,
                     EstadoSeguinte = data.Imobilizado.Value ? 1 : 4,
                 };
@@ -792,29 +799,130 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     ErrorHandler UnableToCreateFluxo = new ErrorHandler()
                     {
-                        eReasonCode = 2,
+                        eReasonCode = errorCount,
                         eMessage = "Não foi possível criar o Fluxo Trabalho Lista Controlo!"
                     };
 
+                    errorCount += 1;
                     return Json(UnableToCreateFluxo);
                 }
 
-                // 4. Send emails and updates the data object
-                if(!(UserElementPreArea || UserElementPreArea0))
-                {
-                    data.Estado = data.Imobilizado.Value ? 1 : 4;
-                    data.DataHoraEstado = Fluxo.Data + Fluxo.Hora;
+                data.Estado = data.Imobilizado.Value ? 1 : 4;
+                data.DataHoraEstado = Fluxo.Data + Fluxo.Hora;
+                data.UtilizadorEstado = UserID;
+                data.DataHoraEstado = DateTime.Now;
+                data.UtilizadorModificacao = UserID;
 
-                    if (DBProcedimentosCCP.__UpdateProcedimento(data) == null)
+                if (DBProcedimentosCCP.__UpdateProcedimento(data) == null)
+                {
+                    ErrorHandler UnableUpdatingProcedimento = new ErrorHandler()
                     {
-                        ErrorHandler UnableUpdatingProcedimento = new ErrorHandler()
+                        eReasonCode = errorCount,
+                        eMessage = "Não foi possível actualizar o Procedimento!"
+                    };
+
+                    errorCount += 1;
+                    return Json(UnableUpdatingProcedimento);
+                }
+
+                if (string.IsNullOrEmpty(UserEmail) || !EmailAutomation.IsValidEmail(UserEmail))
+                {
+                    ErrorHandler InvalidUserEmailAddress = new ErrorHandler()
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Utilizador sem endereço de email válido"
+                    };
+
+                    errorCount += 1;
+                    return Json(InvalidUserEmailAddress);
+                }
+
+                ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
+                if (EmailList == null)
+                {
+                    ErrorHandler DestinationEmailsAreEmpty = new ErrorHandler()
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Falta configuração dos destinatários de emails!"
+                    };
+
+                    errorCount += 1;
+                    return Json(DestinationEmailsAreEmpty);
+                }
+
+                // 4. Send emails and updates the data object
+                if (!(UserElementPreArea || UserElementPreArea0))
+                {
+                    // Prepare emails
+                    if (data.Imobilizado.Value)
+                    {
+                        if (!EmailAutomation.IsValidEmail(EmailList.EmailContabilidade))
                         {
-                            eReasonCode = 3,
-                            eMessage = "Não foi possível actualizar o Procedimento!"
+                            ErrorHandler InvalidDestinationAddress = new ErrorHandler()
+                            {
+                                eReasonCode = errorCount,
+                                eMessage = "Verifique as configurações: Endereço de Email Contabilidade não preenchido"
+                            };
+
+                            errorCount += 1;
+                            return Json(InvalidDestinationAddress);
+                        }
+
+                        EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                        {
+                            NºProcedimento = data.No,
+                            EmailDestinatário = EmailList.EmailContabilidade,
+                            Assunto = data.No + " - Aquisção de Imobilizado",
+                            TextoEmail = data.ElementosChecklist.ChecklistArea.ComentarioArea,
+                            UtilizadorEmail = UserEmail,
+                            DataHoraEmail = DateTime.Now,
+                            UtilizadorCriação = UserID,
+                            DataHoraCriação = DateTime.Now
                         };
 
-                        return Json(UnableUpdatingProcedimento);
+                        if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                        {
+                            ErrorHandler UnableToCreateEmailProcedimento = new ErrorHandler()
+                            {
+                                eReasonCode = errorCount,
+                                eMessage = "Não foi possível escrever na Base de Dados o Email!"
+                            };
+
+                            errorCount += 1;
+                            return Json(UnableToCreateEmailProcedimento);
+                        }
+
+                        SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                        {
+                            DisplayName = DBProcedimentosCCP.GetUserName(UserID),
+                            From = "CCP_NAV@such.pt"
+                        };
+                        
+                        Email.To.Add(EmailList.EmailContabilidade);
+
+                        if (EmailAutomation.IsValidEmail(EmailList.Email2Contabilidade))
+                            Email.CC.Add(EmailList.Email2Contabilidade);
+
+                        if (EmailAutomation.IsValidEmail(EmailList.Email3Contabilidade))
+                            Email.CC.Add(EmailList.Email3Contabilidade);
+
+                        Email.BCC.Add(UserEmail);
+
+                        Email.Body = ProcedimentoEmail.TextoEmail;
+                        
+                        Email.IsBodyHtml = false;
+                        Email.EmailProcedimento = ProcedimentoEmail;
+
+                        Email.SendEmail();
                     }
+                    else
+                    {
+
+                    }
+                }
+                else
+                {
+
                 }
 
                 

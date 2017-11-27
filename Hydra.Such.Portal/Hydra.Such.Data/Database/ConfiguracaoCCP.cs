@@ -5,25 +5,25 @@ namespace Hydra.Such.Data.Database
 {
     public partial class ConfiguracaoCcp
     {
-        public string CcpemailJurididos { get; set; }
-        public string Ccpemail2Juridicos { get; set; }
-        public string CcpemailFinanceiros { get; set; }
-        public string Ccpemail2Financeiros { get; set; }
-        public string CcpemailCa { get; set; }
-        public string CcpemailContabilidade { get; set; }
-        public string Ccpemail2Contabilidade { get; set; }
-        public string Ccpemail3Contabilidade { get; set; }
-        public string CcpemailCompras { get; set; }
-        public string Ccpemail2Compras { get; set; }
-        public string Ccpemail3Compras { get; set; }
-        public string Ccpemail4Compras { get; set; }
-        public string Ccpemail5Compras { get; set; }
-        public string Ccpemail6Compras { get; set; }
-        public string Ccpemail7Compras { get; set; }
-        public string Ccpemail8Compras { get; set; }
-        public string Ccpemail9Compras { get; set; }
-        public string Ccpemail10Compras { get; set; }
-        public string Ccpemail11Compras { get; set; }
+        public string EmailJurididos { get; set; }
+        public string Email2Juridicos { get; set; }
+        public string EmailFinanceiros { get; set; }
+        public string Email2Financeiros { get; set; }
+        public string EmailCa { get; set; }
+        public string EmailContabilidade { get; set; }
+        public string Email2Contabilidade { get; set; }
+        public string Email3Contabilidade { get; set; }
+        public string EmailCompras { get; set; }
+        public string Email2Compras { get; set; }
+        public string Email3Compras { get; set; }
+        public string Email4Compras { get; set; }
+        public string Email5Compras { get; set; }
+        public string Email6Compras { get; set; }
+        public string Email7Compras { get; set; }
+        public string Email8Compras { get; set; }
+        public string Email9Compras { get; set; }
+        public string Email10Compras { get; set; }
+        public string Email11Compras { get; set; }
         public int Id { get; set; }
     }
 }

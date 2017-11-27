@@ -811,84 +811,49 @@ namespace Hydra.Such.Data.Database
             modelBuilder.Entity<ConfiguracaoCcp>(entity =>
             {
                 entity.ToTable("ConfiguracaoCCP");
+                entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Id).HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.Ccpemail10Compras)
-                    .HasColumnName("CCPEmail10Compras")
+                entity.Property(e => e.Email10Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email11Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email2Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email2Contabilidade).HasMaxLength(50);
+
+                entity.Property(e => e.Email2Financeiros).HasMaxLength(50);
+
+                entity.Property(e => e.Email2Juridicos).HasMaxLength(50);
+
+                entity.Property(e => e.Email3Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email3Contabilidade).HasMaxLength(50);
+
+                entity.Property(e => e.Email4Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email5Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email6Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email7Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email8Compras).HasMaxLength(50);
+
+                entity.Property(e => e.Email9Compras).HasMaxLength(50);
+
+                entity.Property(e => e.EmailCa)
+                    .HasColumnName("EmailCA")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Ccpemail11Compras)
-                    .HasColumnName("CCPEmail11Compras")
-                    .HasMaxLength(50);
+                entity.Property(e => e.EmailCompras).HasMaxLength(50);
 
-                entity.Property(e => e.Ccpemail2Compras)
-                    .HasColumnName("CCPEmail2Compras")
-                    .HasMaxLength(50);
+                entity.Property(e => e.EmailContabilidade).HasMaxLength(50);
 
-                entity.Property(e => e.Ccpemail2Contabilidade)
-                    .HasColumnName("CCPEmail2Contabilidade")
-                    .HasMaxLength(50);
+                entity.Property(e => e.EmailFinanceiros).HasMaxLength(50);
 
-                entity.Property(e => e.Ccpemail2Financeiros)
-                    .HasColumnName("CCPEmail2Financeiros")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Ccpemail2Juridicos)
-                    .HasColumnName("CCPEmail2Juridicos")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Ccpemail3Compras)
-                    .HasColumnName("CCPEmail3Compras")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Ccpemail3Contabilidade)
-                    .HasColumnName("CCPEmail3Contabilidade")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Ccpemail4Compras)
-                    .HasColumnName("CCPEmail4Compras")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Ccpemail5Compras)
-                    .HasColumnName("CCPEmail5Compras")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Ccpemail6Compras)
-                    .HasColumnName("CCPEmail6Compras")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Ccpemail7Compras)
-                    .HasColumnName("CCPEmail7Compras")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Ccpemail8Compras)
-                    .HasColumnName("CCPEmail8Compras")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Ccpemail9Compras)
-                    .HasColumnName("CCPEmail9Compras")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.CcpemailCa)
-                    .HasColumnName("CCPEmailCA")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.CcpemailCompras)
-                    .HasColumnName("CCPEmailCompras")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.CcpemailContabilidade)
-                    .HasColumnName("CCPEmailContabilidade")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.CcpemailFinanceiros)
-                    .HasColumnName("CCPEmailFinanceiros")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.CcpemailJurididos)
-                    .HasColumnName("CCPEmailJurididos")
-                    .HasMaxLength(50);
+                entity.Property(e => e.EmailJurididos).HasMaxLength(50);
             });
 
             modelBuilder.Entity<ConfiguraçãoNumerações>(entity =>
@@ -1002,7 +967,11 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50)
                     .ValueGeneratedNever();
 
-                entity.Property(e => e.DataHoraCriação)
+                entity.Property(e => e.EmployeeNo)
+                    .HasColumnName("EmployeeNo")
+                    .HasMaxLength(20);
+
+                    entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
                     .HasColumnType("datetime");
 
@@ -1992,6 +1961,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorResposta)
                     .HasColumnName("Utilizador Resposta")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.ObservacoesEnvio).HasColumnType("text");
 
                 entity.HasOne(d => d.NºProcedimentoNavigation)
                     .WithMany(p => p.EmailsProcedimentosCcp)
