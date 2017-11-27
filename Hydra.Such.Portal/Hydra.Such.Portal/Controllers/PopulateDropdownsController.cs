@@ -544,7 +544,17 @@ namespace Hydra.Such.Portal.Controllers
             List<DDMessageString> result = DBNAV2017ShippingAddresses.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
             {
                 id = X.Code,
-                value = X.Name
+                value = X.Name + " - " + X.City
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetNAVShippingAddressesByClientNo([FromBody] string ClientNo) { 
+            List<DDMessageString> result = DBNAV2017ShippingAddresses.GetByClientNo(ClientNo,_config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
+            {
+                id = X.Code,
+                value = X.Name + " - " + X.Address +" - " + X.City
             }).ToList();
             return Json(result);
         }
@@ -924,6 +934,13 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetAjudaCustoPartidaChegada()
         {
             List<EnumData> result = EnumerablesFixed.AjudaCustoPartidaChegada;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetTipoHoraFH()
+        {
+            List<EnumData> result = EnumerablesFixed.GetTipoHoraFH;
             return Json(result);
         }
 

@@ -8,11 +8,20 @@ using Hydra.Such.Data.ViewModel.Nutrition;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.ViewModel;
+using Hydra.Such.Portal.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 {
     public class CafetariasRefeitoriosController : Controller
     {
+        private readonly NAVConfigurations config;
+
+        public CafetariasRefeitoriosController(IOptions<NAVConfigurations> appSettings)
+        {
+            config = appSettings.Value;
+        }
+
         [Area("Nutricao")]
         public IActionResult Index()
         {
@@ -23,7 +32,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [Area("Nutricao")]
         public JsonResult GetCoffeeShops()
         {
-            var items = DBCoffeeShops.GetAll().ParseToViewModel();
+            var items = DBCoffeeShops.GetAll().ParseToViewModel(config.NAVDatabaseName, config.NAVCompanyName);
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -78,7 +87,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 if (DateTime.TryParse(explorationStartDate, out date))
                 {
                     var coffeeShop = DBCoffeeShops.GetById(productivityUnitNo, type, code, date);
-                    item = DBCoffeeShops.ParseToViewModel(coffeeShop); 
+                    item = DBCoffeeShops.ParseToViewModel(coffeeShop, config.NAVDatabaseName, config.NAVCompanyName);
                 }
                 else
                 {
@@ -107,7 +116,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
                     if (itemToCreate != null)
                     {
-                        data = DBCoffeeShops.ParseToViewModel(itemToCreate);
+                        data = DBCoffeeShops.ParseToViewModel(itemToCreate, config.NAVDatabaseName, config.NAVCompanyName);
                         data.eReasonCode = 1;
                         data.eMessage = "Registo criado com sucesso.";
                     }
@@ -138,7 +147,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 
                 if (updatedItem != null)
                 {
-                    item = DBCoffeeShops.ParseToViewModel(updatedItem);
+                    item = DBCoffeeShops.ParseToViewModel(updatedItem, config.NAVDatabaseName, config.NAVCompanyName);
                     item.eReasonCode = 1;
                     item.eMessage = "Cafetaria / refeitório atualizado com sucesso.";
                 }

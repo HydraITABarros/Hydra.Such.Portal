@@ -738,6 +738,7 @@ namespace Hydra.Such.Portal.Controllers
                 // 1. Get the latest version in the Database
                 ProcedimentosCcp Procedimento = DBProcedimentosCCP.GetProcedimentoById(data.No);
                 string UserID = User.Identity.Name;
+                string UserName = DBProcedimentosCCP.GetUserName(UserID);
                 bool UserElementPreArea0 = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(UserID, DBProcedimentosCCP._ElementoPreArea0);
                 bool UserElementPreArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(UserID, DBProcedimentosCCP._ElementoPreArea);
 
@@ -853,6 +854,7 @@ namespace Hydra.Such.Portal.Controllers
                 // 4. Send emails and updates the data object
                 if (!(UserElementPreArea || UserElementPreArea0))
                 {
+                    
                     // Prepare emails
                     if (data.Imobilizado.Value)
                     {
@@ -894,7 +896,8 @@ namespace Hydra.Such.Portal.Controllers
 
                         SendEmailsProcedimentos Email = new SendEmailsProcedimentos
                         {
-                            DisplayName = DBProcedimentosCCP.GetUserName(UserID),
+                            DisplayName = UserName,
+                            Subject = ProcedimentoEmail.Assunto,
                             From = "CCP_NAV@such.pt"
                         };
                         
@@ -907,10 +910,10 @@ namespace Hydra.Such.Portal.Controllers
                             Email.CC.Add(EmailList.Email3Contabilidade);
 
                         Email.BCC.Add(UserEmail);
-
-                        Email.Body = ProcedimentoEmail.TextoEmail;
                         
-                        Email.IsBodyHtml = false;
+                        Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserName);
+                        
+                        Email.IsBodyHtml = true;
                         Email.EmailProcedimento = ProcedimentoEmail;
 
                         Email.SendEmail();
@@ -930,5 +933,57 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(null);
         }
+    }
+
+    public class AreaEmailReceiver
+    {
+        public int AreaID { get; set; }
+        public string AreaName { get; set; }
+        public string ToAddress { get; set; }
+        public string CCAddress { get; set; }
+
+        public AreaEmailReceiver(string AreaFuncionalCode, ConfiguracaoCcp Addresses)
+        {
+            List<EnumData> Areas = EnumerablesFixed.Areas;
+            AreaID = Convert.ToInt32(AreaFuncionalCode.Substring(0,1));
+            AreaName = Areas.Find(a => a.Id == AreaID).Value ?? "";
+
+            switch (AreaID)
+            {
+                case 0:
+                    ToAddress = Addresses.Email3Compras;
+                    CCAddress = "";
+                    break;
+                case 1:
+                    ToAddress = Addresses.Email5Compras;
+                    CCAddress = Addresses.Email6Compras;
+                    break;
+                case 2:
+                    ToAddress = Addresses.Email7Compras;
+                    CCAddress = Addresses.Email8Compras;
+                    break;
+                case 5:
+                    ToAddress = Addresses.Email4Compras;
+                    CCAddress = "";
+                    break;
+                default:
+                    if(Convert.ToInt32(AreaFuncionalCode.Substring(0, 2)) == 72)
+                    {
+                        AreaID = 72;
+                        AreaName = "Gestão de Parques de Estacionamento";
+                        ToAddress = Addresses.Email7Compras;
+                        CCAddress = Addresses.Email8Compras;
+                    }
+                    else
+                    {
+                        AreaID = 0;
+                        AreaName = "";
+                        ToAddress = "";
+                        CCAddress = "";
+                    }
+                    break;
+            }
+        }
+
     }
 }

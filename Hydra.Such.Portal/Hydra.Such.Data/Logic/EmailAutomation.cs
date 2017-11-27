@@ -33,7 +33,6 @@ namespace Hydra.Such.Data.ViewModel
         {
             get { return __Username; }
         }
-
         public int Port
         {
             get { return __Port; }
@@ -42,7 +41,6 @@ namespace Hydra.Such.Data.ViewModel
         {
             get { return __Password; }
         }
-
         public bool SSL
         {
             get { return __SSL; }
@@ -62,7 +60,7 @@ namespace Hydra.Such.Data.ViewModel
         public bool IsBodyHtml { get; set; }
         protected __Configurations Config { get; set; }
         
-        public string UserID { get; set; }  // this property will be used to update the EmailProcedimento.UtilizadorModificação
+        public string UserID { get; set; }  
 
         
         #endregion

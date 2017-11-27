@@ -380,46 +380,51 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 1,
-                Value = "Enviada"
+                Value = "Aberta"
             },
             new EnumData()
             {
                 Id = 2,
-                Value = "Revista"
+                Value = "Enviada"
             },
             new EnumData()
             {
                 Id = 3,
-                Value = "Perdida"
+                Value = "Revista"
             },
             new EnumData()
             {
                 Id = 4,
-                Value = "Cancelada"
+                Value = "Perdida"
             },
             new EnumData()
             {
                 Id = 5,
-                Value = "Renovada"
+                Value = "Cancelada"
             },
             new EnumData()
             {
                 Id = 6,
-                Value = "Adjudicada"
+                Value = "Renovada"
             },
             new EnumData()
             {
                 Id = 7,
-                Value = "Parcialmente Aceite, "
+                Value = "Adjudicada"
             },
             new EnumData()
             {
                 Id = 8,
-                Value = "Oportunidade"
+                Value = "Parcialmente Aceite"
             },
             new EnumData()
             {
                 Id = 9,
+                Value = "Oportunidade"
+            },
+            new EnumData()
+            {
+                Id = 10,
                 Value = "Oportunidade Não Respondida"
             }
         };
@@ -1396,6 +1401,30 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 1,
                 Value = "<="
+            }
+        };
+
+        public static readonly List<EnumData> GetTipoHoraFH = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Contrato"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Avulso"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Viagem"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Interna"
             }
         };
 
