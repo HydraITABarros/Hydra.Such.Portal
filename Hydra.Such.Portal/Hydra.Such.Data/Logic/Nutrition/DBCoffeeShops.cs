@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel.Nutrition;
 using System;
 using System.Collections.Generic;
@@ -191,9 +192,12 @@ namespace Hydra.Such.Data.Logic.Nutrition
             };
         }
 
-        public static CoffeeShopViewModel ParseToViewModel(CafetariasRefeitórios x)
+        public static CoffeeShopViewModel ParseToViewModel(CafetariasRefeitórios x, string navDatabaseName, string navCompanyName)
         {
-            return new CoffeeShopViewModel()
+            if (x == null)
+                return new CoffeeShopViewModel();
+
+            CoffeeShopViewModel result = new CoffeeShopViewModel()
             {
                 ProductivityUnitNo = x.NºUnidadeProdutiva,
                 Type = x.Tipo,
@@ -214,22 +218,31 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 UpdateDate = x.DataHoraModificação,
                 UpdateUser = x.UtilizadorModificação
             };
-        }
 
-        public static List<CoffeeShopViewModel> ParseListToViewModel(List<CafetariasRefeitórios> x)
-        {
-            List<CoffeeShopViewModel> result = new List<CoffeeShopViewModel>();
+            //Get totals
+            result.TotalRevenues = DBCoffeeShopMovements.GetTotalRevenuesFor(result.ProductivityUnitNo, result.Code, result.Type);
+            result.TotalConsumption = DBProjectDiary.GetProjectTotaConsumption(result.ProjectNo);
 
-            x.ForEach(y => result.Add(ParseToViewModel(y)));
+            decimal totalMeals = DBNAV2017CoffeeShops.GetTotalMeals(navDatabaseName, navCompanyName, result.ProjectNo);
+            result.TotalMeals = totalMeals;
+
             return result;
         }
 
-        public static List<CoffeeShopViewModel> ParseToViewModel(this List<CafetariasRefeitórios> items)
+        public static List<CoffeeShopViewModel> ParseListToViewModel(List<CafetariasRefeitórios> x, string navDatabaseName, string navCompanyName)
+        {
+            List<CoffeeShopViewModel> result = new List<CoffeeShopViewModel>();
+
+            x.ForEach(y => result.Add(ParseToViewModel(y, navDatabaseName, navCompanyName)));
+            return result;
+        }
+
+        public static List<CoffeeShopViewModel> ParseToViewModel(this List<CafetariasRefeitórios> items, string navDatabaseName, string navCompanyName)
         {
             List<CoffeeShopViewModel> coffeeShops = new List<CoffeeShopViewModel>();
             if (items != null)
                 items.ForEach(x =>
-                    coffeeShops.Add(ParseToViewModel(x)));
+                    coffeeShops.Add(ParseToViewModel(x, navDatabaseName, navCompanyName)));
             return coffeeShops;
         }
     }

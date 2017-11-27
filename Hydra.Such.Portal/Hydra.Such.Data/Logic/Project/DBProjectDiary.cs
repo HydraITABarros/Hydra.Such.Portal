@@ -249,5 +249,24 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
+        public static decimal GetProjectTotaConsumption(string projectNo)
+        {
+            decimal? totalConsumption = null;
+            if (!string.IsNullOrEmpty(projectNo))
+            {
+                try
+                {
+                    using (var ctx = new SuchDBContext())
+                    {
+                        totalConsumption = ctx.DiárioDeProjeto.Where(proj => proj.NºProjeto == projectNo &&
+                                                                                proj.TipoMovimento == 1 &&
+                                                                                proj.Registado.Value)
+                                                              .Sum(total => total.CustoTotal);
+                    }
+                }
+                catch { }
+            }
+            return totalConsumption.HasValue ? totalConsumption.Value : 0;
+        }
     }
 }
