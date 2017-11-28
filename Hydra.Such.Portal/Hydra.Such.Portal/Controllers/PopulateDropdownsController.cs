@@ -598,6 +598,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetTipoTrabalhoList()
+        {
+            List<DDMessageString> result = DBTipoTrabalhoFH.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.Codigo,
+                value = x.Descricao
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetProjectListDiary()
         {
             List<DDMessageString> result = DBProjects.GetAll().Where(x => x.Estado != 5 && x.Estado != 4).Select(x => new DDMessageString()
