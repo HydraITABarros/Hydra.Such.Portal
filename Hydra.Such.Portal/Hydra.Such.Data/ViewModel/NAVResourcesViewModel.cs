@@ -9,5 +9,6 @@ namespace Hydra.Such.Data.ViewModel
         public string Code { get; set; }
         public string Name { get; set; }
         public string MeasureUnit { get; set; }
+        public string ResourceGroup { get; set; }
     }
 }
