@@ -1867,9 +1867,19 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CreateRHRecursosFH([FromBody] RHRecursosViewModel data)
         {
+            string NAVDatabaseName = "SUCH_NAV_DEV";
+            string NAVCompanyName = "CRONUS Portugal Ltd_";
 
             RhRecursosFh toCreate = DBRHRecursosFH.ParseToDB(data);
+
+            NAVResourcesViewModel resource = DBNAV2017Resources.GetAllResources(NAVDatabaseName, NAVCompanyName, "", "", 0, "").Where(x => x.Code == data.Recurso).SingleOrDefault();
+            NAVEmployeeViewModel employee = DBNAV2009Employees.GetAll(data.NoEmpregado, NAVDatabaseName, NAVCompanyName).SingleOrDefault();
+                 
+            toCreate.NomeRecurso = resource.Name;
+            toCreate.FamiliaRecurso = resource.ResourceGroup;
+            toCreate.NomeEmpregado = employee.Name;
             toCreate.UtilizadorCriacao = User.Identity.Name;
+
             var result = DBRHRecursosFH.Create(toCreate);
 
             return Json(data);
