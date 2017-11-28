@@ -966,6 +966,30 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult PrecoVendaRecurso_Code()
+        {
+            List<DDMessageString> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult PrecoVendaRecurso_CodeTipoTrabalho()
+        {
+            List<DDMessageString> result = DBTipoTrabalhoFH.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.Codigo,
+                value = x.Descricao
+            }).ToList();
+
+            return Json(result);
+        }
     }
 
 

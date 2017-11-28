@@ -725,6 +725,22 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NumeraçãoPropostas).HasColumnName("Numeração Propostas");
 
+                entity.Property(e => e.InicioHoraAlmoco)
+                    .HasColumnName("InicioHoraAlmoco")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.FimHoraAlmoco)
+                    .HasColumnName("FimHoraAlmoco")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.InicioHoraJantar)
+                    .HasColumnName("InicioHoraJantar")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.FimHoraJantar)
+                    .HasColumnName("FimHoraJantar")
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);

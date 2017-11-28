@@ -16,6 +16,8 @@ using Hydra.Such.Data.ViewModel.Viaturas;
 using Hydra.Such.Data.Logic.Viatura;
 using Hydra.Such.Data.ViewModel.FH;
 using Hydra.Such.Data.Logic.FolhaDeHora;
+using Hydra.Such.Portal.Configurations;
+using Hydra.Such.Data.NAV;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1705,6 +1707,16 @@ namespace Hydra.Such.Portal.Controllers
         {
 
             PrecoVendaRecursoFh toCreate = DBPrecoVendaRecursoFH.ParseToDB(data);
+
+
+            string NAVDatabaseName = "SUCH_NAV_DEV";
+            string NAVCompanyName = "CRONUS Portugal Ltd_";
+
+            NAVResourcesViewModel resource = DBNAV2017Resources.GetAllResources(NAVDatabaseName, NAVCompanyName, "", "", 0, "").Where(x => x.Code == data.Code).SingleOrDefault();
+
+            toCreate.Descricao = resource.Name;
+            toCreate.FamiliaRecurso = resource.ResourceGroup;
+
             toCreate.UtilizadorCriacao = User.Identity.Name;
             var result = DBPrecoVendaRecursoFH.Create(toCreate);
 
@@ -1744,6 +1756,17 @@ namespace Hydra.Such.Portal.Controllers
                 DBPrecoVendaRecursoFH.Update(toUpdate);
             });
             return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult GetRecurso([FromBody] NAVResourcesViewModel data)
+        {
+            string NAVDatabaseName = "SUCH_NAV_DEV";
+            string NAVCompanyName = "CRONUS Portugal Ltd_";
+
+            NAVResourcesViewModel result = DBNAV2017Resources.GetAllResources(NAVDatabaseName, NAVCompanyName, "", "", 0, "").Where(x => x.Code == data.Code).SingleOrDefault();
+
+            return Json(result);
         }
         #endregion
 
@@ -1844,9 +1867,19 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CreateRHRecursosFH([FromBody] RHRecursosViewModel data)
         {
+            string NAVDatabaseName = "SUCH_NAV_DEV";
+            string NAVCompanyName = "CRONUS Portugal Ltd_";
 
             RhRecursosFh toCreate = DBRHRecursosFH.ParseToDB(data);
+
+            NAVResourcesViewModel resource = DBNAV2017Resources.GetAllResources(NAVDatabaseName, NAVCompanyName, "", "", 0, "").Where(x => x.Code == data.Recurso).SingleOrDefault();
+            NAVEmployeeViewModel employee = DBNAV2009Employees.GetAll(data.NoEmpregado, NAVDatabaseName, NAVCompanyName).SingleOrDefault();
+                 
+            toCreate.NomeRecurso = resource.Name;
+            toCreate.FamiliaRecurso = resource.ResourceGroup;
+            toCreate.NomeEmpregado = employee.Name;
             toCreate.UtilizadorCriacao = User.Identity.Name;
+
             var result = DBRHRecursosFH.Create(toCreate);
 
             return Json(data);
