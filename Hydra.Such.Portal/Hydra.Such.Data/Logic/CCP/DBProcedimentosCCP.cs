@@ -23,36 +23,7 @@ namespace Hydra.Such.Data.Logic.CCP
         public const int _FechoProcesso = 34;
         #endregion
 
-        #region Working days calculation
-        // only excludes weekends
-        public static int GetWorkingDays(this DateTime Current, DateTime FinishDateExclusive)
-        {
-            Func<int, bool> isWorkingDay = days =>
-            {
-                var currentDate = Current.AddDays(days);
-                var isNonWorkingDay = currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday;
-                return !isNonWorkingDay;
-            };
-
-            return Enumerable.Range(0, (FinishDateExclusive - Current).Days).Count(isWorkingDay);
-        }
-
-        // we can provide a list of dates to exclude from the range
-        public static int GetWorkingDays(this DateTime Current, DateTime FinishDateExclusive, List<DateTime> ExcludedDates)
-        {
-            Func<int, bool> isWorkingDay = days =>
-            {
-                var currentDate = Current.AddDays(days);
-                var isNonWorkingDay = 
-                    currentDate.DayOfWeek == DayOfWeek.Saturday || 
-                    currentDate.DayOfWeek == DayOfWeek.Sunday ||
-                    ExcludedDates.Exists(excdate => excdate.Date.Equals(currentDate.Date));
-                return !isNonWorkingDay;
-            };
-
-            return Enumerable.Range(0, (FinishDateExclusive - Current).Days).Count(isWorkingDay);
-        }
-        #endregion
+        
 
         #region CRUD Procedimentos
         public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoTypeToList(int type)
@@ -272,6 +243,119 @@ namespace Hydra.Such.Data.Logic.CCP
         #endregion
 
         #region CRUD TemposPaCcp
+        public static ErrorHandler ContabilidadeConfirmAssetPurchase(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails)
+        {
+            ErrorHandler ReturnHandler = new ErrorHandler();
+
+            TemposPaCcp TemposPA = GetTemposPaCcP(Procedimento.No);
+            if (TemposPA != null)
+            {
+                // Holidays aren't excluded (see GetWorkingDays overload method thar uses a List<DateTime>)
+                TemposPA.Estado1Tg += GetWorkingDays(DateTime.Now, Procedimento.DataHoraEstado.Value);
+                TemposPA.UtilizadorModificação = UserDetails.IdUtilizador;
+                TemposPA.DataHoraModificação = DateTime.Now;
+
+                if (!__UpdateTemposPaCcp(TemposPA))
+                {
+                    ReturnHandler.eReasonCode = 1;
+                    ReturnHandler.eMessage = "Não foi possível actualizar os Tempos de Procedimento";
+
+                    return ReturnHandler;
+                }
+            }
+            else
+            {
+                TemposPA.NºProcedimento = Procedimento.No;
+                TemposPA.Estado0 = 1;
+                TemposPA.Estado1 = 1;
+                TemposPA.Estado2 = 1;
+                TemposPA.Estado3 = 1;
+                TemposPA.Estado4 = 1;
+                TemposPA.Estado5 = 1;
+                TemposPA.Estado6 = 1;
+                TemposPA.Estado7 = 1;
+                TemposPA.Estado8 = 1;
+                TemposPA.Estado9 = 1;
+                TemposPA.Estado10 = 1;
+                TemposPA.Estado11 = 1;
+                TemposPA.Estado12 = 1;
+                TemposPA.Estado13 = 1;
+                TemposPA.Estado14 = 1;
+                TemposPA.Estado15 = 1;
+                TemposPA.Estado16 = 1;
+                TemposPA.Estado17 = 1;
+                TemposPA.Estado18 = 1;
+                TemposPA.Estado19 = 1;
+                TemposPA.Estado20 = 1;
+                TemposPA.Estado1Tg += GetWorkingDays(DateTime.Now, Procedimento.DataHoraEstado.Value) + 1;
+                TemposPA.UtilizadorCriação = UserDetails.IdUtilizador;
+                TemposPA.DataHoraCriação = DateTime.Now;
+
+                if (!__CreateTemposPaCcp(TemposPA))
+                {
+                    ReturnHandler.eReasonCode = 2;
+                    ReturnHandler.eMessage = "Não foi possível Criar os Tempos de Procedimento";
+
+                    return ReturnHandler;
+                }
+            }
+
+            FluxoTrabalhoListaControlo Fluxo = GetChecklistControloProcedimento(Procedimento.No, 0);
+            if(Fluxo != null)
+            {
+                Fluxo.Resposta = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade;
+                Fluxo.TipoResposta = Procedimento.Estado;
+                Fluxo.UtilizadorModificacao = UserDetails.IdUtilizador;
+                Fluxo.DataHoraModificacao = DateTime.Now;
+
+                if (!__UpdateFluxoTrabalho(Fluxo))
+                {
+                    ReturnHandler.eReasonCode = 3;
+                    ReturnHandler.eMessage = "Não foi possível actualizar o Fluxo de Trabalho!";
+
+                    return ReturnHandler;
+
+                }
+            }
+
+            FluxoTrabalhoListaControlo NewFluxo = new FluxoTrabalhoListaControlo
+            {
+                No = Procedimento.No,
+                Estado = 1,
+                Data = DateTime.Now.Date,
+                Hora = DateTime.Now.TimeOfDay,
+                Comentario = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade,
+                Comentario2 = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade2,
+                ImobSimNao=Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ImobilizadoSimNao,
+                User=UserDetails.IdUtilizador,
+                TipoEstado=Procedimento.Estado
+            };
+
+            if(Procedimento.Estado == 1)
+            {
+                if (Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ImobilizadoSimNao)
+                    NewFluxo.EstadoSeguinte = 4;
+                else
+                    NewFluxo.EstadoSeguinte = 2;
+            }
+            else
+            {
+                NewFluxo.EstadoSeguinte = 0;
+            }
+
+            if(__CreateFluxoTrabalho(NewFluxo) == null)
+            {
+                ReturnHandler.eReasonCode = 4;
+                ReturnHandler.eMessage = "Não foi possível criar o Fluxo de Trabalho!";
+
+                return ReturnHandler;
+            }
+
+            ReturnHandler.eReasonCode = 0;
+            ReturnHandler.eMessage = "A Contabilidade confirmou o Procedimento";
+
+            return ReturnHandler;
+        }
         public static TemposPaCcp GetTemposPaCcP(string NoProcedimento)
         {
             SuchDBContext _context = new SuchDBContext();
@@ -658,7 +742,6 @@ namespace Hydra.Such.Data.Logic.CCP
 
                 return false;
             }
-            return false;
         }
         public static bool __DeleteAllEmailsRelatedToProcedimento(string ProcedimentoID)
         {
@@ -883,6 +966,20 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
         }
+        public static FluxoTrabalhoListaControlo GetChecklistControloProcedimento(string ProcedimentoID, int ProcedimentoState)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                return _context.FluxoTrabalhoListaControlo.Where(f => f.No == ProcedimentoID && f.Estado == ProcedimentoState).LastOrDefault();
+            }
+            catch (Exception e)
+            {
+
+                return null;
+            }
+        }
 
         public static FluxoTrabalhoListaControlo __CreateFluxoTrabalho(string ProcedimentoID, DateTime SubmissionDate, int EstadoType, string Comment, string UserID, bool Imob)
         {
@@ -935,6 +1032,25 @@ namespace Hydra.Such.Data.Logic.CCP
             {
 
                 return null;
+            }
+        }
+        public static bool __UpdateFluxoTrabalho(FluxoTrabalhoListaControlo Fluxo)
+        {
+            if (Fluxo == null)
+                return false;
+
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                _context.FluxoTrabalhoListaControlo.Update(Fluxo);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+
+                return false;
             }
         }
         public static bool __DeleteAllCheklistControloRelatedToProcedimento(string ProcedimentoID)
@@ -1118,6 +1234,37 @@ namespace Hydra.Such.Data.Logic.CCP
                 return true;
 
             return false;
+        }
+        #endregion
+
+        #region Working days calculation
+        // only excludes weekends
+        public static int GetWorkingDays(this DateTime Current, DateTime FinishDateExclusive)
+        {
+            Func<int, bool> isWorkingDay = days =>
+            {
+                var currentDate = Current.AddDays(days);
+                var isNonWorkingDay = currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday;
+                return !isNonWorkingDay;
+            };
+
+            return Enumerable.Range(0, (FinishDateExclusive - Current).Days).Count(isWorkingDay);
+        }
+
+        // we can provide a list of dates to exclude from the range
+        public static int GetWorkingDays(this DateTime Current, DateTime FinishDateExclusive, List<DateTime> ExcludedDates)
+        {
+            Func<int, bool> isWorkingDay = days =>
+            {
+                var currentDate = Current.AddDays(days);
+                var isNonWorkingDay =
+                    currentDate.DayOfWeek == DayOfWeek.Saturday ||
+                    currentDate.DayOfWeek == DayOfWeek.Sunday ||
+                    ExcludedDates.Exists(excdate => excdate.Date.Equals(currentDate.Date));
+                return !isNonWorkingDay;
+            };
+
+            return Enumerable.Range(0, (FinishDateExclusive - Current).Days).Count(isWorkingDay);
         }
         #endregion
     }
