@@ -321,13 +321,13 @@
                             </div>
                             <div class="row break_clear">
                                 <div class="col-sm-3">
-                                    <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
+                                    <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-3">
                                     <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" name="horaPartidaTexto" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"> </vaadin-text-field>
                                 </div>
                                 <div class="col-sm-3">
-                                    <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" required error-message="Este campo é obrigatório" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
+                                    <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" required error-message="Este campo é obrigatório" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-3">
                                     <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" name="horaChegadaTexto" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"> </vaadin-text-field>
@@ -1383,6 +1383,11 @@
                         notify: true,
                         value: true
                     },
+                    valDataPartidaChegada: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
                     _isCreate: {
                         type: Boolean,
                         value: false
@@ -1410,10 +1415,12 @@
 
                 //FOLHA DE HORAS
                 _updateFH: function () {
+                    debugger;;
                     if (this.$.dataPartidaTexto.validate() &
                         this.$.horaPartidaTexto.validate() &
                         this.$.dataChegadaTexto.validate() &
-                        this.$.horaChegadaTexto.validate()) {
+                        this.$.horaChegadaTexto.validate() &
+                        this._validacaoDataPartidaChegada()) {
                         if (this.$.tipoDeslocacao.value == "1") {
                             if (this.$.matricula.value != "") {
                                 this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
@@ -1429,14 +1436,36 @@
                             this._showMessage('Folha de Horas actualizada com sucesso.');
                         }
                     }
-                    else
-                        this._showErrorMessage('É obrigatório preencher todos os campos obrigatórios corretamente.');
                 },
 
-                _dataPartidaDataChegada: function () {
-                    if (this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.value == "") {
-                        this.$.dataChegadaTexto.value = this.$.dataPartidaTexto.value;
+                _validacaoDataPartidaChegada: function () {
+                    debugger;
+                    if (this.$.dataPartidaTexto.value != "" & this.$.dataPartidaTexto.validate() &
+                        this.$.dataChegadaTexto.value != "" & this.$.dataChegadaTexto.validate()) {
+
+                        var myDataPartida = new Date(this.$.dataPartidaTexto.value);
+                        var myDataChegada = new Date(this.$.dataChegadaTexto.value);
+                        var myDataHoje = new Date();
+
+                        console.log(myDataPartida);
+                        console.log(myDataChegada);
+                        console.log(myDataHoje);
+
+                        if (myDataChegada < myDataPartida) {
+                            this._showErrorMessage('O campo Data Fim tem que ser superior ou igual ao campo Data Inicio.');
+                            return false;
+                        }
+                        if (myDataPartida > myDataHoje) {
+                            this._showErrorMessage('O campo Data Inicio tem que ser inferior ou igual á data hoje.');
+                            return false;
+                        }
+                        if (myDataChegada > myDataHoje) {
+                            this._showErrorMessage('O campo Data Fim tem que ser inferior ou igual á data hoje.');
+                            return false;
+                        }
+                        return true;
                     }
+                    return false;
                 },
 
                 //PERCURSO
@@ -1454,7 +1483,7 @@
                             this.$.page_createpercurso_ajax.generateRequest();
                             this.$.tabPercurso.clearCache();
                     } else {
-                        this._showErrorMessage("É obrigatório preencher todos os campos obrigatórios corretamente.");
+                        this._showErrorMessage('É obrigatório preencher todos os campos obrigatórios corretamente.');
                     }
                 },
 
@@ -1511,7 +1540,7 @@
                         this.$.page_createajuda_ajax.generateRequest();
                         this.$.tabAjuda.clearCache();
                     } else {
-                        this._showErrorMessage("É obrigatório preencher todos os campos obrigatórios corretamente.");
+                        this._showErrorMessage('É obrigatório preencher todos os campos obrigatórios corretamente.');
                     }
                 },
 
@@ -1553,19 +1582,19 @@
                 _calcularAjudasCusto: function () {
                     debugger;;
                     if (this.$.dataPartidaTexto.value == "" | this.$.dataPartidaTexto.validate() == false) {
-                        _showErrorMessage("É necessário primeiro preencher corretamente o campo Data Inicio.");
+                        _showErrorMessage('É necessário primeiro preencher corretamente o campo Data Inicio.');
                     }
                     else {
                         if (this.$.horaPartidaTexto.value == "" | this.$.horaPartidaTexto.validate() == false) {
-                            _showErrorMessage("É necessário primeiro preencher corretamente o campo Hora Inicio.");
+                            _showErrorMessage('É necessário primeiro preencher corretamente o campo Hora Inicio.');
                         }
                         else {
                             if (this.$.dataChegadaTexto.value == "" | this.$.dataChegadaTexto.validate() == false) {
-                                _showErrorMessage("É necessário primeiro preencher corretamente o campo Data Fim.");
+                                _showErrorMessage('É necessário primeiro preencher corretamente o campo Data Fim.');
                             }
                             else {
                                 if (this.$.horaChegadaTexto.value == "" | this.$.horaChegadaTexto.validate() == false) {
-                                    _showErrorMessage("É necessário primeiro preencher corretamente o campo Hora Fim.");
+                                    _showErrorMessage('É necessário primeiro preencher corretamente o campo Hora Fim.');
                                 }
                                 else {
                                     this.$.page_calcularajudascusto_ajax.body = JSON.stringify(this.data);
@@ -1607,7 +1636,7 @@
                         this.$.page_createmaodeobra_ajax.generateRequest();
                         this.$.tabMaoDeObra.clearCache();
                     } else {
-                        this._showErrorMessage("É obrigatório preencher todos os campos obrigatórios corretamente.");
+                        this._showErrorMessage('É obrigatório preencher todos os campos obrigatórios corretamente.');
                     }
                 },
 
@@ -1643,7 +1672,7 @@
                         this.$.page_createpresenca_ajax.generateRequest();
                         this.$.tabPresenca.clearCache();
                     } else {
-                        this._showErrorMessage("É obrigatório preencher todos os campos obrigatórios corretamente.");
+                        this._showErrorMessage('É obrigatório preencher todos os campos obrigatórios corretamente.');
                     }
                 },
 
@@ -1686,17 +1715,17 @@
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             this._createResponseProcessor();
                         } else if (data.detail.url.indexOf("Update") !== -1) {
-                            this._showMessage("Folha de Horas atualizada com sucesso.")
+                            this._showMessage('Folha de Horas atualizada com sucesso.')
                         }
                     } else {
-                        this._showErrorMessage("Ocorreu um erro ao criar a Folha de Hora.")
+                        this._showErrorMessage('Ocorreu um erro ao criar a Folha de Hora.')
                     }
                 },
 
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
-                        this._showMessage("Folha de Hora criado com sucesso.");
+                        this._showMessage('Folha de Hora criado com sucesso.');
                     } else {
                         this._showErrorMessage(this.data.eMessage);
                     }
@@ -1717,7 +1746,7 @@
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.deletedData.eReasonCode == 1) {
-                            this._showErrorMessage("Não é possivel eliminar a Folha de Horas pois este já possui movimentos.");
+                            this._showErrorMessage('Não é possivel eliminar a Folha de Horas pois este já possui movimentos.');
                         } else {
                             this._showMessage(this.deletedData.eMessage);
                             setTimeout(

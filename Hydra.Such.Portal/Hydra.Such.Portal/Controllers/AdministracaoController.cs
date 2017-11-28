@@ -1608,6 +1608,282 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        #region Configuracao Tipo Trabalho FH
+        public IActionResult ConfiguracaoTipoTrabalhoFH(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetConfiguracaoTipoTrabalhoFH()
+        {
+            List<TipoTrabalhoFHViewModel> result = DBTipoTrabalhoFH.ParseListToViewModel(DBTipoTrabalhoFH.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateConfiguracaoTipoTrabalhoFH([FromBody] TipoTrabalhoFHViewModel data)
+        {
+
+            TipoTrabalhoFh toCreate = DBTipoTrabalhoFH.ParseToDB(data);
+            toCreate.UtilizadorCriacao = User.Identity.Name;
+            var result = DBTipoTrabalhoFH.Create(toCreate);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteTipoTrabalhoFH([FromBody] TipoTrabalhoFHViewModel data)
+        {
+            var result = DBTipoTrabalhoFH.Delete(DBTipoTrabalhoFH.ParseToDB(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateTipoTrabalhoFH([FromBody] List<TipoTrabalhoFHViewModel> data)
+        {
+            List<TipoTrabalhoFh> results = DBTipoTrabalhoFH.GetAll();
+
+            data.RemoveAll(x => DBTipoTrabalhoFH.ParseListToViewModel(results).Any(
+                u =>
+                    u.Codigo == x.Codigo &&
+                    u.Descricao == x.Descricao &&
+                    u.CodUnidadeMedida == x.CodUnidadeMedida &&
+                    u.HoraViagem == x.HoraViagem &&
+                    u.TipoHora == x.TipoHora &&
+                    u.UtilizadorCriacao == x.UtilizadorCriacao &&
+                    u.DataHoraCriacao == x.DataHoraCriacao
+            ));
+
+            data.ForEach(x =>
+            {
+                TipoTrabalhoFh toUpdate = DBTipoTrabalhoFH.ParseToDB(x);
+                toUpdate.UtilizadorModificacao = User.Identity.Name;
+                DBTipoTrabalhoFH.Update(toUpdate);
+            });
+            return Json(data);
+        }
+        #endregion
+
+        #region Configuração Preço Venda Recursos FH
+        public IActionResult ConfiguracaoPrecoVendaRecursoFH(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetConfiguracaoPrecoVendaRecursoFH()
+        {
+            List<PrecoVendaRecursoFHViewModel> result = DBPrecoVendaRecursoFH.ParseListToViewModel(DBPrecoVendaRecursoFH.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateConfiguracaoPrecoVendaRecursoFH([FromBody] PrecoVendaRecursoFHViewModel data)
+        {
+
+            PrecoVendaRecursoFh toCreate = DBPrecoVendaRecursoFH.ParseToDB(data);
+            toCreate.UtilizadorCriacao = User.Identity.Name;
+            var result = DBPrecoVendaRecursoFH.Create(toCreate);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult DeletePrecoVendaRecursoFH([FromBody] PrecoVendaRecursoFHViewModel data)
+        {
+            var result = DBPrecoVendaRecursoFH.Delete(DBPrecoVendaRecursoFH.ParseToDB(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdatePrecoVendaRecursoFH([FromBody] List<PrecoVendaRecursoFHViewModel> data)
+        {
+            List<PrecoVendaRecursoFh> results = DBPrecoVendaRecursoFH.GetAll();
+
+            data.RemoveAll(x => DBPrecoVendaRecursoFH.ParseListToViewModel(results).Any(
+                u =>
+                    u.Code == x.Code &&
+                    u.Descricao == x.Descricao &&
+                    u.CodTipoTrabalho == x.CodTipoTrabalho &&
+                    u.PrecoUnitario == x.PrecoUnitario &&
+                    u.CustoUnitario == x.CustoUnitario &&
+                    u.StartingDate == x.StartingDate &&
+                    u.EndingDate == x.EndingDate &&
+                    u.FamiliaRecurso == x.FamiliaRecurso &&
+                    u.UtilizadorCriacao == x.UtilizadorCriacao &&
+                    u.DataHoraCriacao == x.DataHoraCriacao
+            ));
+
+            data.ForEach(x =>
+            {
+                PrecoVendaRecursoFh toUpdate = DBPrecoVendaRecursoFH.ParseToDB(x);
+                toUpdate.UtilizadorModificacao = User.Identity.Name;
+                DBPrecoVendaRecursoFH.Update(toUpdate);
+            });
+            return Json(data);
+        }
+        #endregion
+
+        #region Configuração Preço Custo Recursos FH
+        public IActionResult ConfiguracaoPrecoCustoRecursoFH(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetConfiguracaoPrecoCustoRecursoFH()
+        {
+            List<PrecoCustoRecursoViewModel> result = DBPrecoCustoRecursoFH.ParseListToViewModel(DBPrecoCustoRecursoFH.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateConfiguracaoPrecoCustoRecursoFH([FromBody] PrecoCustoRecursoViewModel data)
+        {
+
+            PrecoCustoRecursoFh toCreate = DBPrecoCustoRecursoFH.ParseToDB(data);
+            toCreate.UtilizadorCriacao = User.Identity.Name;
+            var result = DBPrecoCustoRecursoFH.Create(toCreate);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult DeletePrecoCustoRecursoFH([FromBody] PrecoCustoRecursoViewModel data)
+        {
+            var result = DBPrecoCustoRecursoFH.Delete(DBPrecoCustoRecursoFH.ParseToDB(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdatePrecoCustoRecursoFH([FromBody] List<PrecoCustoRecursoViewModel> data)
+        {
+            List<PrecoCustoRecursoFh> results = DBPrecoCustoRecursoFH.GetAll();
+
+            data.RemoveAll(x => DBPrecoCustoRecursoFH.ParseListToViewModel(results).Any(
+                u =>
+                    u.Code == x.Code &&
+                    u.Descricao == x.Descricao &&
+                    u.CodTipoTrabalho == x.CodTipoTrabalho &&
+                    u.CustoUnitario == x.CustoUnitario &&
+                    u.StartingDate == x.StartingDate &&
+                    u.EndingDate == x.EndingDate &&
+                    u.FamiliaRecurso == x.FamiliaRecurso &&
+                    u.UtilizadorCriacao == x.UtilizadorCriacao &&
+                    u.DataHoraCriacao == x.DataHoraCriacao
+            ));
+
+            data.ForEach(x =>
+            {
+                PrecoCustoRecursoFh toUpdate = DBPrecoCustoRecursoFH.ParseToDB(x);
+                toUpdate.UtilizadorModificacao = User.Identity.Name;
+                DBPrecoCustoRecursoFH.Update(toUpdate);
+            });
+            return Json(data);
+        }
+        #endregion
+
+        #region Configuração RH Recursos FH
+        public IActionResult ConfiguracaoRHRecursosFH(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetRHRecursosFH()
+        {
+            List<RHRecursosViewModel> result = DBRHRecursosFH.ParseListToViewModel(DBRHRecursosFH.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateRHRecursosFH([FromBody] RHRecursosViewModel data)
+        {
+
+            RhRecursosFh toCreate = DBRHRecursosFH.ParseToDB(data);
+            toCreate.UtilizadorCriacao = User.Identity.Name;
+            var result = DBRHRecursosFH.Create(toCreate);
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteRHRecursosFH([FromBody] RHRecursosViewModel data)
+        {
+            var result = DBRHRecursosFH.Delete(DBRHRecursosFH.ParseToDB(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateRHRecursosFH([FromBody] List<RHRecursosViewModel> data)
+        {
+            List<RhRecursosFh> results = DBRHRecursosFH.GetAll();
+
+            data.RemoveAll(x => DBRHRecursosFH.ParseListToViewModel(results).Any(
+                u =>
+                    u.NoEmpregado == x.NoEmpregado &&
+                    u.Recurso == x.Recurso &&
+                    u.NomeRecurso == x.NomeRecurso &&
+                    u.FamiliaRecurso == x.FamiliaRecurso &&
+                    u.NomeEmpregado == x.NomeEmpregado &&
+                    u.UtilizadorCriacao == x.UtilizadorCriacao &&
+                    u.DataHoraCriacao == x.DataHoraCriacao
+            ));
+
+            data.ForEach(x =>
+            {
+                RhRecursosFh toUpdate = DBRHRecursosFH.ParseToDB(x);
+                toUpdate.UtilizadorModificacao = User.Identity.Name;
+                DBRHRecursosFH.Update(toUpdate);
+            });
+            return Json(data);
+        }
+        #endregion
 
         #region Configuracao Recursos Folha Horas
         public IActionResult ConfiguracaoRecursosFolhaHoras(string id)
