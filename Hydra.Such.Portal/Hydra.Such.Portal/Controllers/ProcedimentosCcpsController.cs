@@ -63,10 +63,9 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
-                            AreaID = -1;
                             AreaName = "";
-                            ToAddress = "";
-                            CCAddress = "";
+                            ToAddress = Addresses.EmailCompras;
+                            CCAddress = Addresses.Email2Compras;
                         }
                         break;
                 }
@@ -1165,8 +1164,6 @@ namespace Hydra.Such.Portal.Controllers
                     return Json(StateNotAllowed);
                 };
 
-                int NumberOfDaysDifference = 0;
-
                 bool UserElementContabilidade = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoContabilidade);
                 bool UserElementGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
 
@@ -1202,68 +1199,180 @@ namespace Hydra.Such.Portal.Controllers
                     return Json(InvalidUserEmailAddress);
                 };
 
-                TemposPaCcp TemposPA = DBProcedimentosCCP.GetTemposPaCcP(data.No);
-
-                if(TemposPA != null)
+                // NAV Procedure ImobContabConfirmar.b
+                ErrorHandler UnableToConfirmAssetPurchase = DBProcedimentosCCP.ContabilidadeConfirmAssetPurchase(data, UserDetails);
+                if (UnableToConfirmAssetPurchase.eReasonCode != 0)
                 {
-                    TemposPA.Estado1Tg += (DBProcedimentosCCP.GetWorkingDays(DateTime.Now, data.DataHoraEstado.Value) + 1);
-                    TemposPA.UtilizadorModificação = UserDetails.IdUtilizador;
-                    TemposPA.DataHoraModificação = DateTime.Now;
+                    errorCount += 1;
+                    return Json(UnableToConfirmAssetPurchase);
+                }
 
-                    if (!DBProcedimentosCCP.__UpdateTemposPaCcp(TemposPA))
-                    {
-                        ErrorHandler UnableToUpdateTempos = new ErrorHandler
-                        {
-                            eReasonCode = errorCount,
-                            eMessage = "Não foi possível actualizar o registo de Tempos!"
-                        };
 
-                        errorCount += 1;
-                        return Json(UnableToUpdateTempos);
-                    }
-
-                    NumberOfDaysDifference = TemposPA.Estado1Tg.Value - TemposPA.Estado1.Value;
+                if (data.ElementosChecklist.ChecklistImobilizadoContabilidade.ImobilizadoSimNao)
+                {
+                    data.Estado = 4;
                 }
                 else
                 {
-                    TemposPA.NºProcedimento = data.No;
-                    TemposPA.Estado0 = 1;
-                    TemposPA.Estado1 = 1;
-                    TemposPA.Estado2 = 1;
-                    TemposPA.Estado3 = 1;
-                    TemposPA.Estado4 = 1;
-                    TemposPA.Estado5 = 1;
-                    TemposPA.Estado6 = 1;
-                    TemposPA.Estado7 = 1;
-                    TemposPA.Estado8 = 1;
-                    TemposPA.Estado9 = 1;
-                    TemposPA.Estado10 = 1;
-                    TemposPA.Estado11 = 1;
-                    TemposPA.Estado12 = 1;
-                    TemposPA.Estado13 = 1;
-                    TemposPA.Estado14 = 1;
-                    TemposPA.Estado15 = 1;
-                    TemposPA.Estado16 = 1;
-                    TemposPA.Estado17 = 1;
-                    TemposPA.Estado18 = 1;
-                    TemposPA.Estado19 = 1;
-                    TemposPA.Estado20 = 1;
-                    TemposPA.Estado1Tg += DBProcedimentosCCP.GetWorkingDays(DateTime.Now, data.DataHoraEstado.Value) + 1;
-                    TemposPA.UtilizadorCriação = UserDetails.IdUtilizador;
-                    TemposPA.DataHoraCriação = DateTime.Now;
+                    data.Estado = 2;
+                }
 
-                    if (!DBProcedimentosCCP.__CreateTemposPaCcp(TemposPA))
+                data.ComentarioEstado = "";
+                data.DataHoraEstado = DateTime.Now;
+                data.UtilizadorEstado = UserDetails.IdUtilizador;
+                TemposPaCcp TemposPA = DBProcedimentosCCP.GetTemposPaCcP(data.No);
+                if (TemposPA != null)
+                {
+                    if (TemposPA.Estado1Tg - TemposPA.Estado1 != 0)
                     {
-                        ErrorHandler UnableToCreateTempos = new ErrorHandler
+                        data.No_DiasAtraso = TemposPA.Estado1Tg - TemposPA.Estado1;
+                        if (data.DataFechoPrevista.HasValue)
+                        {
+                            DateTime DateAux = data.DataFechoPrevista.Value;
+                            data.DataFechoPrevista = DateAux.AddDays(data.No_DiasAtraso.Value);
+                        }
+                        else
+                        {
+                            data.DataFechoPrevista = DateTime.Now.AddDays(data.No_DiasAtraso.Value);
+                        }
+                    }
+                }
+
+                if (DBProcedimentosCCP.__UpdateProcedimento(data) == null)
+                {
+                    ErrorHandler UnableToUpdateProcedimento = new ErrorHandler
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Não foi possível actualizar o Procedimento!"
+                    };
+
+                    errorCount += 1;
+                    return Json(UnableToUpdateProcedimento);
+                }
+                // NAV ImobContabConfirmar.e
+
+                // send emails.b
+                ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
+                if (EmailList == null)
+                {
+                    ErrorHandler DestinationEmailsAreEmpty = new ErrorHandler()
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Falta configuração dos destinatários de emails!"
+                    };
+
+                    errorCount += 1;
+                    return Json(DestinationEmailsAreEmpty);
+                }
+
+                AreaEmailReceivers DestinationEmails = new AreaEmailReceivers(data.CodigoAreaFuncional, EmailList);
+
+                if (DestinationEmails.AreaID == -1)
+                {
+                    ErrorHandler UnknownArea = new ErrorHandler
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Área Funcional sem correspondência para as Áreas do Portal!"
+                    };
+
+                    errorCount += 1;
+                    return Json(UnknownArea);
+                }
+                EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                {
+                    NºProcedimento = data.No,
+                    Assunto = data.No + " - Aquisição de Imobilizado",
+                    UtilizadorEmail = UserEmail,
+                    DataHoraEmail = DateTime.Now,
+                    UtilizadorCriação = UserDetails.IdUtilizador,
+                    DataHoraCriação = DateTime.Now
+                };
+
+                SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                {
+                    DisplayName = UserDetails.Nome,
+                    Subject = data.No + " - Aquisição de Imobilizado",
+                    From = "CCP_NAV@such.pt"
+                };
+
+                if (data.ElementosChecklist.ChecklistImobilizadoContabilidade.ImobilizadoSimNao)
+                {
+                    if (EmailAutomation.IsValidEmail(DestinationEmails.ToAddress))
+                    {
+                        Email.To.Add(DestinationEmails.ToAddress);
+                        ProcedimentoEmail.EmailDestinatário = DestinationEmails.ToAddress;
+                    }
+                    else
+                    {
+                        ErrorHandler InvalidDestinationEmailAddress = new ErrorHandler
                         {
                             eReasonCode = errorCount,
-                            eMessage = "Não foi possível criar o registo de Tempos!"
+                            eMessage = "Endereço de email do destinatário inválido!"
                         };
 
                         errorCount += 1;
-                        return Json(UnableToCreateTempos);
+                        return Json(InvalidDestinationEmailAddress);
+                    }
+
+                    if (EmailAutomation.IsValidEmail(DestinationEmails.CCAddress))
+                        Email.CC.Add(DestinationEmails.CCAddress);
+                }
+                else
+                {
+                    FluxoTrabalhoListaControlo Fluxo = DBProcedimentosCCP.GetChecklistControloProcedimento(data.No, 0);
+                    if(Fluxo != null)
+                    {
+                        ConfigUtilizadores FluxoUser = DBProcedimentosCCP.GetUserDetails(Fluxo.User);
+                        if(FluxoUser != null && EmailAutomation.IsValidEmail(FluxoUser.IdUtilizador))
+                        {
+                            Email.To.Add(FluxoUser.IdUtilizador);
+                            ProcedimentoEmail.EmailDestinatário = FluxoUser.IdUtilizador;
+
+                            if (EmailAutomation.IsValidEmail(FluxoUser.ProcedimentosEmailEnvioParaArea))
+                                Email.CC.Add(FluxoUser.ProcedimentosEmailEnvioParaArea);
+                        }
+                        else
+                        {
+                            ErrorHandler InvalidDestinationEmailAddress = new ErrorHandler
+                            {
+                                eReasonCode = errorCount,
+                                eMessage = "Endereço de email do destinatário inválido!"
+                            };
+
+                            errorCount += 1;
+                            return Json(InvalidDestinationEmailAddress);
+                        }
+                    }
+                    else
+                    {
+                        Email.To.Add(UserEmail);
+                        ProcedimentoEmail.EmailDestinatário = UserEmail;
+
+                        if (EmailAutomation.IsValidEmail(UserDetails.ProcedimentosEmailEnvioParaArea))
+                            Email.CC.Add(UserDetails.ProcedimentosEmailEnvioParaArea);
                     }
                 }
+
+                ProcedimentoEmail.TextoEmail = data.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade;
+                if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                {
+                    ErrorHandler UnableToCreateEmailProcedimento = new ErrorHandler()
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Não foi possível escrever na Base de Dados o Email!"
+                    };
+
+                    errorCount += 1;
+                    return Json(UnableToCreateEmailProcedimento);
+                }
+
+                Email.BCC.Add(UserEmail);
+                Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+                Email.IsBodyHtml = true;
+                Email.EmailProcedimento = ProcedimentoEmail;
+
+                Email.SendEmail();
+                // send emails
 
             }
             else
