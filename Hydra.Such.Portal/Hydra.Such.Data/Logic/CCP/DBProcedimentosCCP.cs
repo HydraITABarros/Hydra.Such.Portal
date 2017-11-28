@@ -20,9 +20,39 @@ namespace Hydra.Such.Data.Logic.CCP
         public const int _ElementoCA = 31;
         public const int _GestorProcesso = 32;
         public const int _SecretariadoCA = 33;
+        public const int _FechoProcesso = 34;
         #endregion
 
+        #region Working days calculation
+        // only excludes weekends
+        public static int GetWorkingDays(this DateTime Current, DateTime FinishDateExclusive)
+        {
+            Func<int, bool> isWorkingDay = days =>
+            {
+                var currentDate = Current.AddDays(days);
+                var isNonWorkingDay = currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday;
+                return !isNonWorkingDay;
+            };
 
+            return Enumerable.Range(0, (FinishDateExclusive - Current).Days).Count(isWorkingDay);
+        }
+
+        // we can provide a list of dates to exclude from the range
+        public static int GetWorkingDays(this DateTime Current, DateTime FinishDateExclusive, List<DateTime> ExcludedDates)
+        {
+            Func<int, bool> isWorkingDay = days =>
+            {
+                var currentDate = Current.AddDays(days);
+                var isNonWorkingDay = 
+                    currentDate.DayOfWeek == DayOfWeek.Saturday || 
+                    currentDate.DayOfWeek == DayOfWeek.Sunday ||
+                    ExcludedDates.Exists(excdate => excdate.Date.Equals(currentDate.Date));
+                return !isNonWorkingDay;
+            };
+
+            return Enumerable.Range(0, (FinishDateExclusive - Current).Days).Count(isWorkingDay);
+        }
+        #endregion
 
         #region CRUD Procedimentos
         public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoTypeToList(int type)
@@ -117,17 +147,16 @@ namespace Hydra.Such.Data.Logic.CCP
                 proc.DataHoraCriação = DateTime.Now;
                 proc.Estado = 0;
 
-               
-                //proc.TemposPaCcp = new TemposPaCcp()
-                //{
-                //    NºProcedimento = proc.Nº,
-                //    Estado0 = 1,
-                //    DataHoraCriação = proc.DataHoraCriação,
-                //    UtilizadorCriação = proc.UtilizadorCriação
-                //};
+                proc.TemposPaCcp = new TemposPaCcp()
+                {
+                    NºProcedimento = proc.Nº,
+                    Estado0 = 1,
+                    DataHoraCriação = proc.DataHoraCriação,
+                    UtilizadorCriação = proc.UtilizadorCriação,
+                };
 
-                //_context.Add(proc.TemposPaCcp);
-                //_context.SaveChanges();
+                _context.Add(proc.TemposPaCcp);
+                _context.SaveChanges();
 
                 _context.Add(proc);
                 _context.SaveChanges();
@@ -243,7 +272,55 @@ namespace Hydra.Such.Data.Logic.CCP
         #endregion
 
         #region CRUD TemposPaCcp
-        //public static TemposPACCPView GetTemposPACcpView()
+        public static TemposPaCcp GetTemposPaCcP(string NoProcedimento)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                return _context.TemposPaCcp.Where(t => t.NºProcedimento == NoProcedimento).FirstOrDefault();
+            }
+            catch (Exception e)
+            {
+
+                return null;
+            }
+        }
+        public static bool __CreateTemposPaCcp(TemposPaCcp TemposPA)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                _context.TemposPaCcp.Add(TemposPA);
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+
+            }
+            
+        }
+        public static bool __UpdateTemposPaCcp(TemposPaCcp TemposPA)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                _context.TemposPaCcp.Update(TemposPA);
+                _context.SaveChanges();
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                return false;
+            }
+        }
         public static bool __DeleteTemposPaCcp(string ProcedimentoID)
         {
             SuchDBContext _context = new SuchDBContext();
@@ -1011,8 +1088,20 @@ namespace Hydra.Such.Data.Logic.CCP
             {
                 return null;
             }
-        } 
-        
+        }    
+        public static ConfigUtilizadores GetUserDetails(string UserID)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                return _context.ConfigUtilizadores.Where(u => u.IdUtilizador == UserID).FirstOrDefault();
+            }
+            catch (Exception e)
+            {
+
+                return null;
+            }
+        }
         public static List<AcessosUtilizador> GetUserAccesses(string UserID)
         {
             SuchDBContext _context = new SuchDBContext();
@@ -1020,7 +1109,6 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return UsersAccessess;
         }
-
         public static bool CheckUserRoleRelatedToCCP(string UserID, int RoleID)
         {
             List<AcessosUtilizador> UserAccessess = GetUserAccesses(UserID);

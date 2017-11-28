@@ -129,7 +129,7 @@
         <iron-ajax url="/PopulateDropdowns/GetContractBillingTypes" last-response="{{CBBillingTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractMaintenanceTypes" last-response="{{CBMaintenanceTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractInvoicePeriods" last-response="{{CBInvoicePeriods}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddresses" last-response="{{CBShippingAddresses}}" auto method="post" handle-as="json" content-type="application/json" id="shippinhAddress_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddressesByClientNo" last-response="{{CBShippingAddresses}}" id="shippingAddresses_ajax" method="post" handle-as="json" content-type="application/json" id="shippinhAddress_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractInvoiceGroups" last-response="{{CBInvoiceGroups}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractLineTypes" last-response="{{CBContractLineTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -237,7 +237,7 @@
                                             <vaadin-text-field id="contactNo" name="contactNo" label="Nº Contacto" value="{{data.contactNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>-->
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"  on-value-changed="_clientChange">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -579,7 +579,7 @@
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBShippingAddresses]]" item-value-path="id" item-label-path="value" value="{{data.codeShippingAddress}}" label="Cód. Endereço Envio" on-value-changed="_getAddressByCode" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[CBShippingAddresses]]" id="codeShippingAddress" item-value-path="id" item-label-path="value" value="{{data.codeShippingAddress}}" label="Cód. Endereço Envio" on-value-changed="_getAddressByCode" disabled="{{ !_permissions.update }}">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -1657,7 +1657,11 @@
                 _createNewContract: function () {
                     window.location.href = "../DetalhesOportunidade";
                 },
-
+                _clientChange: function (e) {
+                    this.$.codeShippingAddress.value = "";
+                    this.$.shippingAddresses_ajax.body = JSON.stringify(e.detail.value);
+                    this.$.shippingAddresses_ajax.generateRequest();
+                },
 
                 //CRUDS
                 _create: function () {
@@ -1733,6 +1737,10 @@
                         this.data.area = this._areaid;
                         this.$.versionNo.value = "1";
                     } else {
+                        debugger;;
+                        this.$.shippingAddresses_ajax.body = JSON.stringify(this.data.codeShippingAddress);
+                        this.$.shippingAddresses_ajax.generateRequest();
+
                         this._showContractLines = "";
                         this._CLRegion = this.data.codeRegion;
                         this._CLFunctionalArea = this.data.codeFunctionalArea;
