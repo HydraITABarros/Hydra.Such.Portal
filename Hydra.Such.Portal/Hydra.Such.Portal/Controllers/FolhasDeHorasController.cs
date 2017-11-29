@@ -1114,9 +1114,38 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result == 0)
                 {
-                    //Projetos Projecto = DBN
-
                     MãoDeObraFolhaDeHoras MaoDeObra = new MãoDeObraFolhaDeHoras();
+
+                    //TABELA NAV2017JOB
+                    //FALTA PREENCHER AS DIMENSÕES POIS A TABELA NAV2017JOB NÃO TEM AS DIMENSÕES A FUNCIONAR A 100%
+                    MaoDeObra.CodigoRegiao = null;
+                    MaoDeObra.CodigoArea = null;
+                    MaoDeObra.CodigoCentroResponsabilidade = null;
+
+                    //TABELA RHRECURSOSFH
+                    RhRecursosFh Recurso = DBRHRecursosFH.GetAll().Where(x => x.NoEmpregado == data.EmpregadoNo).SingleOrDefault();
+                    if (Recurso != null)
+                    {
+                        MaoDeObra.NºRecurso = Recurso.Recurso;
+                        MaoDeObra.CódigoFamíliaRecurso = Recurso.FamiliaRecurso;
+                    }
+
+                    //TABELA PRECOVENDARECURSOFH
+                    PrecoVendaRecursoFh PrecoVendaRecurso = DBPrecoVendaRecursoFH.GetAll().Where(x => x.Code == MaoDeObra.NºRecurso && x.CodTipoTrabalho == data.CodigoTipoTrabalho.ToString() && Convert.ToDateTime(x.StartingDate) <= DateTime.Now && Convert.ToDateTime(x.EndingDate) >= DateTime.Now).SingleOrDefault();
+                    if (PrecoVendaRecurso != null)
+                    {
+                        MaoDeObra.PreçoDeVenda = PrecoVendaRecurso.PrecoUnitario;
+                        MaoDeObra.PreçoDeCusto = PrecoVendaRecurso.CustoUnitario;
+                    }
+
+                    //CALCULAR PRECO TOTAL
+                    TimeSpan HorasTotal = TimeSpan.Parse(data.HoraFim) - TimeSpan.Parse(data.HoraInicio);
+                    MaoDeObra.NºDeHoras = HorasTotal;
+
+                    decimal HorasMinutosDecimal = Convert.ToDecimal(HorasTotal.TotalMinutes / 60);
+                    MaoDeObra.PreçoTotal = HorasMinutosDecimal  * Convert.ToDecimal(MaoDeObra.PreçoDeVenda);
+
+
 
                     MaoDeObra.NºFolhaDeHoras = data.FolhaDeHorasNo;
                     MaoDeObra.Date = data.Date;
@@ -1127,17 +1156,10 @@ namespace Hydra.Such.Portal.Controllers
                     MaoDeObra.HorárioAlmoço = data.HorarioAlmoco;
                     MaoDeObra.HoraFim = TimeSpan.Parse(data.HoraFim);
                     MaoDeObra.HorárioJantar = data.HorarioJantar;
-                    MaoDeObra.CódigoFamíliaRecurso = data.CodigoFamiliaRecurso;
                     MaoDeObra.CódigoTipoOm = data.CodigoTipoOM;
-                    MaoDeObra.NºDeHoras = TimeSpan.Parse(data.HoraFim) - TimeSpan.Parse(data.HoraInicio);
                     MaoDeObra.CustoUnitárioDireto = data.CustoUnitarioDireto;
-                    MaoDeObra.CodigoCentroResponsabilidade = data.CodigoCentroResponsabilidade;
-                    MaoDeObra.PreçoTotal = data.PrecoTotal;
                     MaoDeObra.Descricao = data.Descricao;
-                    MaoDeObra.NºRecurso = data.RecursoNo;
                     MaoDeObra.CódUnidadeMedida = data.CodigoUnidadeMedida;
-                    MaoDeObra.PreçoDeCusto = data.PrecoDeCusto;
-                    MaoDeObra.PreçoDeVenda = data.PrecoDeVenda;
                     MaoDeObra.UtilizadorCriação = User.Identity.Name;
                     MaoDeObra.DataHoraCriação = DateTime.Now;
                     MaoDeObra.UtilizadorModificação = User.Identity.Name;

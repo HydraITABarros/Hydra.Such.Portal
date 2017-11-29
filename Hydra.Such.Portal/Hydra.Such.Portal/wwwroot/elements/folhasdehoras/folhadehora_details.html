@@ -1570,6 +1570,7 @@
 
                 //MAODEOBRA
                 _createMaoDeObra: function () {
+                    debugger;
                     if (this.$.maoDeObraDate.validate() &
                         this.$.maoDeObraProjetoNo.validate() &
                         this.$.maoDeObraCodigoTipoTrabalho.validate() &
@@ -1580,7 +1581,7 @@
                             date: this.$.maoDeObraDate.value,
                             projetoNo: this.$.maoDeObraProjetoNo.value,
                             empregadoNo: this.$.empregadoNo.value,
-                            codigoTipoTrabalho: parseInt(this.$.maoDeObraCodigoTipoTrabalho.value),
+                            codigoTipoTrabalho: this.$.maoDeObraCodigoTipoTrabalho.value,
                             horaInicio: this.$.maoDeObraHoraInicio.value,
                             horarioAlmoco: (this.$.maoDeObraHorarioAlmoco.value == "on" ? true : false),
                             horaFim: this.$.maoDeObraHoraFim.value,
@@ -1633,18 +1634,23 @@
                 },
 
                 _MaoDeObraHoraInicioFim: function () {
-                    this.$.page_maodeobrahorainiciofim_ajax.body = JSON.stringify({
-                        folhaDeHorasNo: this.$.folhaDeHorasNo.value,
-                        date: this.$.maoDeObraDate.value,
-                        projetoNo: this.$.maoDeObraProjetoNo.value,
-                        empregadoNo: this.$.empregadoNo.value,
-                        codigoTipoTrabalho: parseInt(this.$.maoDeObraCodigoTipoTrabalho.value),
-                        horaInicio: this.$.maoDeObraHoraInicio.value,
-                        horarioAlmoco: (this.$.maoDeObraHorarioAlmoco.value == "on" ? true : false),
-                        horaFim: this.$.maoDeObraHoraFim.value,
-                        horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false),
-                    });
-                    this.$.page_maodeobrahorainiciofim_ajax.generateRequest();
+                    debugger;
+                    if ((this.$.maoDeObraHoraInicio.validate() & this.$.maoDeObraHoraInicio.value != "" & this.$.maoDeObraHoraInicio.value != "00:00") &
+                        (this.$.maoDeObraHoraFim.validate() & this.$.maoDeObraHoraFim.value != "" & this.$.maoDeObraHoraFim.value != "00:00")) {
+
+                        this.$.page_maodeobrahorainiciofim_ajax.body = JSON.stringify({
+                            folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                            date: this.$.maoDeObraDate.value,
+                            projetoNo: this.$.maoDeObraProjetoNo.value,
+                            empregadoNo: this.$.empregadoNo.value,
+                            codigoTipoTrabalho: parseInt(this.$.maoDeObraCodigoTipoTrabalho.value),
+                            horaInicio: this.$.maoDeObraHoraInicio.value,
+                            horarioAlmoco: (this.$.maoDeObraHorarioAlmoco.value == "on" ? true : false),
+                            horaFim: this.$.maoDeObraHoraFim.value,
+                            horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false),
+                        });
+                        this.$.page_maodeobrahorainiciofim_ajax.generateRequest();
+                    }
                 },
 
                 //PRENSENÇAS
@@ -1867,7 +1873,8 @@
 
                 //MAODEOBRA
                 _createMaoDeObraResponse: function (e) {
-                    if (this.MaoDeObraCreated) {
+                    debugger;
+                    if (this.MaoDeObraCreated  == 0) {
                         this._showMessage('Adicionada Mão de Obra com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
 
@@ -1878,10 +1885,6 @@
                         this.$.maoDeObraHorarioAlmoco.value = "";
                         this.$.maoDeObraHoraFim.value = "";
                         this.$.maoDeObraHorarioJantar.value = "";
-                        this.$.maoDeObraCodigoFamiliaRecurso.value = "";
-                        this.$.maoDeObraCustoUnitarioDireto.value = "";
-                        this.$.maoDeObraCodigoCentroResponsabilidade.value = "";
-                        this.$.maoDeObraPrecoTotal.value = "";
                     }
                     else {
                         this._showErrorMessage('Ocorreu um erro ao adicionar.');
@@ -1917,10 +1920,6 @@
                 },
 
                 _MaoDeObraHoraInicioFimResponse: function (e) {
-                    if (this.MaoDeObraHoraInicioFim == 0) {
-                        this._showErrorMessage('TUDO OKKKKKKKKKKKKKKKKKKKKKKKKKK!!!!!!!!!!!!!!!!!!');
-                    }
-
                     if (this.MaoDeObraHoraInicioFim == 1 | this.MaoDeObraHoraInicioFim == 2) {
                         this._showErrorMessage('Horário de trabalho não pode cair dentro do intervalo da Hora de Almoço.');
                     }
