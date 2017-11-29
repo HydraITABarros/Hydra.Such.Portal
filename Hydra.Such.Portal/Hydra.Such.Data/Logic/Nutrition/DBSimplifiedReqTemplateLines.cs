@@ -17,9 +17,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.LinhasRequisiçõesSimplificadas
-                        .Include("RequisiçõesSimplificadas")
-                        .Where(x => x.NºRequisição == reqTemplateId && x.NºRequisiçãoNavigation.RequisiçãoModelo.Value).FirstOrDefault();
+                    return GetTemplateBaseQuery(ctx)
+                        .Where(x => x.NºRequisição == reqTemplateId).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -34,9 +33,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.LinhasRequisiçõesSimplificadas
-                        .Include("RequisiçõesSimplificadas")
-                        .Where(x => x.NºRequisiçãoNavigation.RequisiçãoModelo.Value).ToList();
+                    return GetTemplateBaseQuery(ctx)
+                        .ToList();
                 }
             }
             catch (Exception ex)
@@ -67,16 +65,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 {
                     return GetTemplateBaseQuery(ctx)
                         .Where(x => x.NºRequisição == reqTemplateId).ToList();
-
-                    //return ctx.LinhasRequisiçõesSimplificadas
-                    //    .Join(ctx.RequisiçõesSimplificadas,
-                    //        rsl => rsl.NºRequisição,
-                    //        rs => rs.NºRequisição,
-                    //        (rsl, rs) => new { Lines = rsl, Header = rs }
-                    //    )
-                    //    .Where(x => x.Header.RequisiçãoModelo.Value)
-                    //    .Select(x => x.Lines)
-                    //    .Where(x => x.NºRequisição == reqTemplateId).ToList();
                 }
             }
             catch (Exception ex)
