@@ -56,27 +56,21 @@
             }
 
             /*ACORDEÃO*/
-            paper-tooltip {
-                padding: 11px;
-                right: 5px;
-                opacity: 1;
-                box-sizing: border-box;
-                pointer-events: none;
-                max-width: 500px;
-                left: 2px !important;
-                right: none;
-                white-space: initial;
-                --paper-tooltip: {
-                                  font-size: 13px;
-                                  background: #f5f5f5;
-                                  background: white;
-                                  color: #2A2A2A;
-                                  padding: 10px;
-                                  line-height: 1.3em;
-                                  -webkit-box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.2);
-                                  -moz-box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.2);
-                                  box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.2);
-                             }
+            paper-collapse-item {
+                --paper-item: { padding: 0 0;};
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: #333;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+
+                    } --paper-collapse-toogle-icon: {
+                    //display: none;
+                    } --paper-collapse-item-content {
+
+                    }
             }
         </style>
 
@@ -270,7 +264,14 @@
                    content-type="application/json">
         </iron-ajax>
 
-
+        <iron-ajax url="/FolhasDeHoras/MaoDeObraHoraInicioFim"
+                   last-response="{{MaoDeObraHoraInicioFim}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_maodeobrahorainiciofim_ajax"
+                   on-response="_MaoDeObraHoraInicioFimResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <!--PRESENCA-->
         <iron-ajax url="/FolhasDeHoras/CreatePresenca"
@@ -400,14 +401,17 @@
                     </div>
 
                     <paper-button raised id="btnUpdate" class="btnSave" on-tap="_updateFH"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                </div>
 
 
 
-                    <!------------ PERCURSOS ------------>
+                <!------------ PERCURSOS ------------>
 
 
-                    <paper-collapse-group>
-                        <paper-collapse-item header="Percursos" closed>
+
+                <paper-collapse-group>
+                    <paper-collapse-item class="panel-heading" header="Percursos" closed>
+                        <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-4">
                                     <vaadin-combo-box id="percursoOrigem" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Código Origem" on-value-changed="_DataInicio" required error-message="Este campo é obrigatório">
@@ -438,9 +442,11 @@
                                     <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createPercurso"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </div>
                             </div>
-                        </paper-collapse-item>
-                    </paper-collapse-group>
+                        </div>
+                    </paper-collapse-item>
+                </paper-collapse-group>
 
+                <div class="panel-body">
                     <div class="row break_clear">
                         <vaadin-grid id="tabPercurso" aria-label="TabelaPercursos" items="{{ data.folhaDeHorasPercurso }}" class="editGrid" multi-sort="true">
                             <vaadin-grid-column width="200px" hidden>
@@ -578,14 +584,16 @@
                             </vaadin-grid-column>
                         </vaadin-grid>
                     </div>
+                </div>
 
 
 
-                    <!------------ AJUDAS DE CUSTO / DESPESAS ------------>
+                <!------------ AJUDAS DE CUSTO / DESPESAS ------------>
 
 
-                    <paper-collapse-group>
-                        <paper-collapse-item header="Ajudas De Custo / Despesas" closed>
+                <paper-collapse-group>
+                    <paper-collapse-item class="panel-heading" header="Ajudas De Custo / Despesas" closed>
+                        <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
                                     <vaadin-combo-box id="ajudaTipoCusto" items="[[LFolhaDeHoraAjudaTipoCusto]]" item-value-path="id" item-label-path="value" label="Tipo Custo" on-change="_getAjudaCodTipoCusto" required error-message="Este campo é obrigatório">
@@ -628,10 +636,11 @@
                                     <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createAjuda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </div>
                             </div>
-                        </paper-collapse-item>
-                    </paper-collapse-group>
+                        </div>
+                    </paper-collapse-item>
+                </paper-collapse-group>
 
-
+                <div class="panel-body">
                     <div class="row break_clear">
                         <vaadin-grid id="tabAjuda" aria-label="Tabela Ajudas de Custo/Despesas" items="{{ data.folhaDeHorasAjuda }}" class="editGrid">
                             <vaadin-grid-column width="200px" hidden>
@@ -765,6 +774,7 @@
             </div>
 
 
+
             <!------------ MÃO-DE-OBRA ------------>
 
             <div class="panel panel-default">
@@ -785,15 +795,17 @@
                             <vaadin-text-field type="text" value="{{data.empregadoNome}}" disabled="true" id="empregadoNome" name="empregadoNome" label="Nome Empregado"> </vaadin-text-field>
                         </div>
                     </div>
+                </div>
 
-                    <paper-collapse-group>
-                        <paper-collapse-item header="Mão De Obra">
+                <paper-collapse-group>
+                    <paper-collapse-item class="panel-heading" header="Mão-De-Obra">
+                        <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
                                     <vaadin-date-picker id="maoDeObraDate" name="maoDeObraDate" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" on-blur="_MaoDeObraData" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-2">
-                                    <vaadin-combo-box items="[[LFolhaDeHoraProjectNo]]" id="maoDeObraProjetoNo" item-value-path="id" item-label-path="value" label="Nº Obra" required error-message="Este campo é obrigatório">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraProjectNo]]" id="maoDeObraProjetoNo" item-value-path="id" item-label-path="value" label="Nº Obra" on-change="_MaoDeObraProjecto" required error-message="Este campo é obrigatório">
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
@@ -804,7 +816,7 @@
                                     </vaadin-combo-box>
                                 </div>
                                 <div class="col-sm-3">
-                                    <vaadin-combo-box items="[[LFolhaDeHoraTipoTrabalhoNo]]" id="maoDeObraCodigoTipoTrabalho" item-value-path="id" item-label-path="value" label="Tipo Trabalho" required error-message="Este campo é obrigatório">
+                                    <vaadin-combo-box items="[[LFolhaDeHoraTipoTrabalhoNo]]" id="maoDeObraCodigoTipoTrabalho" item-value-path="id" item-label-path="value" label="Tipo Trabalho" on-change="_MaoDeObraTipoTrabalho" required error-message="Este campo é obrigatório">
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
@@ -815,13 +827,13 @@
                                     </vaadin-combo-box>
                                 </div>
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="maoDeObraHoraInicio" label="Hora de Início" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="maoDeObraHoraInicio" label="Hora de Início" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" on-blur="_MaoDeObraHoraInicioFim" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-1 alignPoga">
                                     <vaadin-checkbox id="maoDeObraHorarioAlmoco" checked="{{chkAlmoco}}">Almoço</vaadin-checkbox>
                                 </div>
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="maoDeObraHoraFim" label="Hora de Fim" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="maoDeObraHoraFim" label="Hora de Fim" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" on-blur="_MaoDeObraHoraInicioFim" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-1 alignPoga">
                                     <vaadin-checkbox id="maoDeObraHorarioJantar" checked="{{chkJantar}}">Jantar</vaadin-checkbox>
@@ -830,10 +842,11 @@
                                     <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createMaoDeObra"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </div>
                             </div>
-                        </paper-collapse-item>
-                    </paper-collapse-group>
+                        </div>
+                    </paper-collapse-item>
+                </paper-collapse-group>
 
-
+                <div class="panel-body">
                     <div class="row break_clear">
                         <vaadin-grid id="tabMaoDeObra" aria-label="Tabela Mão-de-Obra" items="{{ data.folhaDeHorasMaoDeObra }}" class="editGrid">
                             <vaadin-grid-column width="200px" hidden>
@@ -1034,9 +1047,11 @@
                             <vaadin-text-field type="text" value="{{data.empregadoNome}}" disabled="true" id="empregadoNome" name="empregadoNome" label="Nome Empregado"> </vaadin-text-field>
                         </div>
                     </div>
+                </div>
 
-                    <paper-collapse-group>
-                        <paper-collapse-item header="Presenças">
+                <paper-collapse-group>
+                    <paper-collapse-item class="panel-heading" header="Presenças">
+                        <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
                                     <vaadin-date-picker id="presencaDataTexto" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" required error-message="Este campo é obrigatório"></vaadin-date-picker>
@@ -1060,10 +1075,11 @@
                                     <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createPresenca"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </div>
                             </div>
-                        </paper-collapse-item>
-                    </paper-collapse-group>
+                        </div>
+                    </paper-collapse-item>
+                </paper-collapse-group>
 
-
+                <div class="panel-body">
                     <div class="row break_clear">
                         <vaadin-grid id="tabPresenca" aria-label="Tabela Presenças" items="{{ data.folhaDeHorasPresenca }}" class="editGrid">
                             <vaadin-grid-column width="200px" hidden>
@@ -1156,7 +1172,6 @@
 
 
             <div class="panel panel-default">
-                <div class="panel-heading">Cabeçalho</div>
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-3">
@@ -1366,7 +1381,6 @@
 
                 //FOLHA DE HORAS
                 _updateFH: function () {
-                    debugger;;
                     if (this.$.dataPartidaTexto.validate() &
                         this.$.horaPartidaTexto.validate() &
                         this.$.dataChegadaTexto.validate() &
@@ -1390,7 +1404,6 @@
                 },
 
                 _validacaoDataPartidaChegada: function () {
-                    debugger;
                     if (this.$.dataPartidaTexto.value != "" & this.$.dataPartidaTexto.validate() &
                         this.$.dataChegadaTexto.value != "" & this.$.dataChegadaTexto.validate()) {
 
@@ -1451,7 +1464,6 @@
                 },
 
                 _updateLinhaPercurso: function (e) {
-                    debugger;
                     var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
 
                     this.$.page_updatelinhapercurso_ajax.body = JSON.stringify({
@@ -1508,7 +1520,6 @@
                 },
 
                 _updateLinhaAjuda: function (e) {
-                    debugger;
                     var index = this.data.folhaDeHorasAjuda.indexOf(e.model.item);
 
                     this.$.page_updatelinhaajuda_ajax.body = JSON.stringify({
@@ -1531,7 +1542,6 @@
 
                 //AJUDAS DE CUSTO
                 _calcularAjudasCusto: function () {
-                    debugger;;
                     if (this.$.dataPartidaTexto.value == "" | this.$.dataPartidaTexto.validate() == false) {
                         _showErrorMessage('É necessário primeiro preencher corretamente o campo Data Inicio.');
                     }
@@ -1564,11 +1574,7 @@
                         this.$.maoDeObraProjetoNo.validate() &
                         this.$.maoDeObraCodigoTipoTrabalho.validate() &
                         this.$.maoDeObraHoraInicio.validate() &
-                        this.$.maoDeObraHoraFim.validate() &
-                        this.$.maoDeObraCodigoFamiliaRecurso.validate() &
-                        this.$.maoDeObraCustoUnitarioDireto.validate() &
-                        this.$.maoDeObraCodigoCentroResponsabilidade.validate() &
-                        this.$.maoDeObraPrecoTotal.validate()) {
+                        this.$.maoDeObraHoraFim.validate()) {
                         this.$.page_createmaodeobra_ajax.body = JSON.stringify({
                             folhaDeHorasNo: this.$.folhaDeHorasNo.value,
                             date: this.$.maoDeObraDate.value,
@@ -1578,11 +1584,7 @@
                             horaInicio: this.$.maoDeObraHoraInicio.value,
                             horarioAlmoco: (this.$.maoDeObraHorarioAlmoco.value == "on" ? true : false),
                             horaFim: this.$.maoDeObraHoraFim.value,
-                            horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false),
-                            codigoFamiliaRecurso: this.$.maoDeObraCodigoFamiliaRecurso.value,
-                            custoUnitarioDireto: parseFloat(this.$.maoDeObraCustoUnitarioDireto.value),
-                            codigoCentroResponsabilidade: this.$.maoDeObraCodigoCentroResponsabilidade.value,
-                            precoTotal: parseFloat(this.$.maoDeObraPrecoTotal.value)
+                            horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false)
                         });
                         this.$.page_createmaodeobra_ajax.generateRequest();
                         this.$.tabMaoDeObra.clearCache();
@@ -1604,7 +1606,6 @@
                 },
 
                 _MaoDeObraData: function () {
-                    debugger;
                     if (this.$.maoDeObraDate.value != "") {
                         this.$.maoDeObraProjetoNo.value = this.$.projetoNo.value;
                         this.$.maoDeObraCodigoTipoTrabalho.value = "";
@@ -1621,6 +1622,29 @@
                         this.$.maoDeObraHoraFim.value = "";
                         this.$.maoDeObraHorarioJantar.value = "off"
                     }
+                },
+
+                _MaoDeObraProjecto: function () {
+
+                },
+
+                _MaoDeObraTipoTrabalho: function () {
+
+                },
+
+                _MaoDeObraHoraInicioFim: function () {
+                    this.$.page_maodeobrahorainiciofim_ajax.body = JSON.stringify({
+                        folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                        date: this.$.maoDeObraDate.value,
+                        projetoNo: this.$.maoDeObraProjetoNo.value,
+                        empregadoNo: this.$.empregadoNo.value,
+                        codigoTipoTrabalho: parseInt(this.$.maoDeObraCodigoTipoTrabalho.value),
+                        horaInicio: this.$.maoDeObraHoraInicio.value,
+                        horarioAlmoco: (this.$.maoDeObraHorarioAlmoco.value == "on" ? true : false),
+                        horaFim: this.$.maoDeObraHoraFim.value,
+                        horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false),
+                    });
+                    this.$.page_maodeobrahorainiciofim_ajax.generateRequest();
                 },
 
                 //PRENSENÇAS
@@ -1661,10 +1685,6 @@
                     this.$.page_updatepresenca_ajax.generateRequest();
                     this.$.tabPresenca.clearCache();
                 },
-
-
-
-
 
 
 
@@ -1887,6 +1907,33 @@
                         this._showErrorMessage('Ocorreu um erro ao actualizar a(s) Mão de Obra(s).');
                     }
                 },
+
+                _MaoDeObraProjectoResponse: function (e) {
+
+                },
+
+                _MaoDeObraTipoTrabalhoResponse: function (e) {
+
+                },
+
+                _MaoDeObraHoraInicioFimResponse: function (e) {
+                    if (this.MaoDeObraHoraInicioFim == 0) {
+                        this._showErrorMessage('TUDO OKKKKKKKKKKKKKKKKKKKKKKKKKK!!!!!!!!!!!!!!!!!!');
+                    }
+
+                    if (this.MaoDeObraHoraInicioFim == 1 | this.MaoDeObraHoraInicioFim == 2) {
+                        this._showErrorMessage('Horário de trabalho não pode cair dentro do intervalo da Hora de Almoço.');
+                    }
+
+                    if (this.MaoDeObraHoraInicioFim == 3 | this.MaoDeObraHoraInicioFim == 4) {
+                        this._showErrorMessage('Horário de trabalho não pode cair dentro do intervalo da Hora de Jantar.');
+                    }
+
+                    if (this.MaoDeObraHoraInicioFim == 5) {
+                        this._showErrorMessage('A Hora de Início tem que ser inferior á Hora de Fim.');
+                    }
+                },
+
 
                 //PRESENCA
                 _createPresencaResponse: function (e) {
