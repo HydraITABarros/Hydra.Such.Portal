@@ -18,7 +18,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
 
         public ElementosChecklistArea ChecklistArea { get; set; }
         public ElementosChecklistImobilizadoContabilidade ChecklistImobilizadoContabilidade { get; set; }
-        public ElementosChecklistImobilizadoArea CkecklistImobilizadoArea { get; set; }
+        public ElementosChecklistImobilizadoArea ChecklistImobilizadoArea { get; set; }
         public ElementosChecklistImobilizadoCA ChecklistImobilizadoCA { get; set; }
         public ElementosChecklistFundamentoCompras ChecklistFundamentoCompras { get; set; }
         public ElementosChecklistFundamentoFinanceiros ChecklistFundamentoFinanceiros { get; set; }

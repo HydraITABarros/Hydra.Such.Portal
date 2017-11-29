@@ -1251,41 +1251,6 @@ namespace Hydra.Such.Data.Logic.CCP
 
                     }
                 }
-
-                FluxoTrabalhoListaControlo NewFluxo1 = new FluxoTrabalhoListaControlo
-                {
-                    No = Procedimento.No,
-                    Estado = 1,
-                    Data = DateTime.Now.Date,
-                    Hora = DateTime.Now.TimeOfDay,
-                    Comentario = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade,
-                    Comentario2 = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade2,
-                    ImobSimNao = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ImobilizadoSimNao,
-                    User = UserDetails.IdUtilizador,
-                    TipoEstado = Procedimento.Estado
-                };
-
-                if (StateToCheck == 1)
-                {
-                    if (Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ImobilizadoSimNao)
-                        NewFluxo1.EstadoSeguinte = 4;
-                    else
-                        NewFluxo1.EstadoSeguinte = 2;
-                }
-                else
-                {
-                    NewFluxo1.EstadoSeguinte = 0;
-                }
-
-                if (__CreateFluxoTrabalho(NewFluxo1) == null)
-                {
-                    ReturnHandler.eReasonCode = 4;
-                    ReturnHandler.eMessage = "Não foi possível criar o Fluxo de Trabalho!";
-
-                    return ReturnHandler;
-                }
-
-                Procedimento.FluxoTrabalhoListaControlo = GetAllCheklistControloProcedimento(Procedimento.No);
             }
             else
             {
@@ -1306,42 +1271,45 @@ namespace Hydra.Such.Data.Logic.CCP
 
                     }
                 }
-
-                FluxoTrabalhoListaControlo NewFluxo1 = new FluxoTrabalhoListaControlo
-                {
-                    No = Procedimento.No,
-                    Estado = 1,
-                    Data = DateTime.Now.Date,
-                    Hora = DateTime.Now.TimeOfDay,
-                    Comentario = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade,
-                    Comentario2 = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade2,
-                    ImobSimNao = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ImobilizadoSimNao,
-                    User = UserDetails.IdUtilizador,
-                    TipoEstado = Procedimento.Estado
-                };
-
-                if (StateToCheck == 1)
-                {
-                    if (Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ImobilizadoSimNao)
-                        NewFluxo1.EstadoSeguinte = 4;
-                    else
-                        NewFluxo1.EstadoSeguinte = 2;
-                }
-                else
-                {
-                    NewFluxo1.EstadoSeguinte = 0;
-                }
-
-                if (__CreateFluxoTrabalho(NewFluxo1) == null)
-                {
-                    ReturnHandler.eReasonCode = 4;
-                    ReturnHandler.eMessage = "Não foi possível criar o Fluxo de Trabalho!";
-
-                    return ReturnHandler;
-                }
-
-                Procedimento.FluxoTrabalhoListaControlo = GetAllCheklistControloProcedimento(Procedimento.No);
             }
+
+            FluxoTrabalhoListaControlo NewFluxo1 = new FluxoTrabalhoListaControlo
+            {
+                No = Procedimento.No,
+                Estado = 1,
+                Data = DateTime.Now.Date,
+                Hora = DateTime.Now.TimeOfDay,
+                Comentario = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade,
+                Comentario2 = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade2,
+                ImobSimNao = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ImobilizadoSimNao,
+                User = UserDetails.IdUtilizador,
+                TipoEstado = Procedimento.Estado,
+
+                UtilizadorCriacao = UserDetails.IdUtilizador,
+                DataHoraCriacao = DateTime.Now
+            };
+
+            if (StateToCheck == 1)
+            {
+                if (Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ImobilizadoSimNao)
+                    NewFluxo1.EstadoSeguinte = 4;
+                else
+                    NewFluxo1.EstadoSeguinte = 2;
+            }
+            else
+            {
+                NewFluxo1.EstadoSeguinte = 0;
+            }
+
+            if (__CreateFluxoTrabalho(NewFluxo1) == null)
+            {
+                ReturnHandler.eReasonCode = 4;
+                ReturnHandler.eMessage = "Não foi possível criar o Fluxo de Trabalho!";
+
+                return ReturnHandler;
+            }
+
+            Procedimento.FluxoTrabalhoListaControlo = GetAllCheklistControloProcedimento(Procedimento.No);
 
             if (Procedimento.Estado == 1)
             {
@@ -1390,6 +1358,174 @@ namespace Hydra.Such.Data.Logic.CCP
 
             ReturnHandler.eReasonCode = 0;
             ReturnHandler.eMessage = "A Contabilidade confirmou o Procedimento";
+
+            return ReturnHandler;
+        }
+        public static ErrorHandler AreaConfirmAssetPurchase(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails, int StateToCheck)
+        {
+            ErrorHandler ReturnHandler = new ErrorHandler();
+
+            if(Procedimento.TemposPaCcp == null)
+            {
+                TemposPaCcp TemposPA = GetTemposPaCcP(Procedimento.No);
+                if(TemposPA != null)
+                {
+                    // Holidays aren't excluded (see GetWorkingDays overload method thar uses a List<DateTime>)
+                    TemposPA.Estado2Tg += GetWorkingDays(DateTime.Now, Procedimento.DataHoraEstado.Value);
+                    TemposPA.UtilizadorModificação = UserDetails.IdUtilizador;
+                    TemposPA.DataHoraModificação = DateTime.Now;
+
+                    if (!__UpdateTemposPaCcp(TemposPA))
+                    {
+                        ReturnHandler.eReasonCode = 1;
+                        ReturnHandler.eMessage = "Não foi possível actualizar os Tempos de Procedimento";
+
+                        return ReturnHandler;
+                    }
+                };
+
+                Procedimento.TemposPaCcp = CCPFunctions.CastTemposPaCcpToTemposCCPView(TemposPA);
+            }
+            else
+            {
+                Procedimento.TemposPaCcp.Estado2Tg += GetWorkingDays(DateTime.Now, Procedimento.DataHoraEstado.Value);
+                Procedimento.TemposPaCcp.UtilizadorModificacao = UserDetails.IdUtilizador;
+                Procedimento.TemposPaCcp.DataHoraModificacao = DateTime.Now;
+                if (!__UpdateTemposPaCcp(CCPFunctions.CastTemposCCPViewToTemposPaCcp(Procedimento.TemposPaCcp)))
+                {
+                    ReturnHandler.eReasonCode = 1;
+                    ReturnHandler.eMessage = "Não foi possível actualizar os Tempos de Procedimento";
+
+                    return ReturnHandler;
+                }
+            }
+
+            if(Procedimento.FluxoTrabalhoListaControlo == null)
+            {
+                FluxoTrabalhoListaControlo Fluxo1 = GetChecklistControloProcedimento(Procedimento.No, 1);
+                if(Fluxo1 != null)
+                {
+                    Fluxo1.Resposta = Procedimento.ElementosChecklist.ChecklistImobilizadoArea.ComentarioImobArea;
+                    Fluxo1.TipoEstado = StateToCheck;
+                    Fluxo1.UtilizadorModificacao = UserDetails.IdUtilizador;
+                    Fluxo1.DataHoraModificacao = DateTime.Now;
+
+                    if (!__UpdateFluxoTrabalho(Fluxo1))
+                    {
+                        ReturnHandler.eReasonCode = 3;
+                        ReturnHandler.eMessage = "Não foi possível actualizar o Fluxo de Trabalho!";
+
+                        return ReturnHandler;
+
+                    }
+                }
+            }
+            else
+            {
+                FluxoTrabalhoListaControlo Fluxo1 = Procedimento.FluxoTrabalhoListaControlo.Where(s => s.Estado == 1).LastOrDefault();
+                if (Fluxo1 != null)
+                {
+                    Fluxo1.Resposta = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade;
+                    Fluxo1.TipoResposta = Procedimento.Estado;
+                    Fluxo1.UtilizadorModificacao = UserDetails.IdUtilizador;
+                    Fluxo1.DataHoraModificacao = DateTime.Now;
+
+                    if (!__UpdateFluxoTrabalho(Fluxo1))
+                    {
+                        ReturnHandler.eReasonCode = 3;
+                        ReturnHandler.eMessage = "Não foi possível actualizar o Fluxo de Trabalho!";
+
+                        return ReturnHandler;
+
+                    }
+                }
+            }
+
+            FluxoTrabalhoListaControlo NewFluxo2 = new FluxoTrabalhoListaControlo
+            {
+                No = Procedimento.No,
+                Estado = 2,
+                Data = DateTime.Now.Date,
+                Hora = DateTime.Now.TimeOfDay,
+                Comentario = Procedimento.ElementosChecklist.ChecklistImobilizadoArea.ComentarioImobArea,
+                User = UserDetails.IdUtilizador,
+                TipoEstado = Procedimento.Estado,
+
+                UtilizadorCriacao = UserDetails.IdUtilizador,
+                DataHoraCriacao = DateTime.Now
+            };
+
+            switch (StateToCheck)
+            {
+                case 1:
+                    NewFluxo2.EstadoSeguinte = 3;
+                    break;
+                case 2:
+                    NewFluxo2.EstadoSeguinte = 19;
+                    break;
+                case 0:
+                    NewFluxo2.EstadoSeguinte = 1;
+                    break;
+            }
+
+            if (__CreateFluxoTrabalho(NewFluxo2) == null)
+            {
+                ReturnHandler.eReasonCode = 4;
+                ReturnHandler.eMessage = "Não foi possível criar o Fluxo de Trabalho!";
+
+                return ReturnHandler;
+            }
+
+            Procedimento.FluxoTrabalhoListaControlo = GetAllCheklistControloProcedimento(Procedimento.No);
+
+            if(Procedimento.Estado == 2)
+            {
+                switch (StateToCheck)
+                {
+                    case 1:
+                        Procedimento.Estado = 3;
+                        Procedimento.ComentarioEstado = "";
+                        break;
+                    case 2:
+                        Procedimento.Estado = 19;
+                        Procedimento.ComentarioEstado = "";
+                        break;
+                    case 0:
+                        Procedimento.Estado = 1;
+                        Procedimento.ComentarioEstado = Procedimento.ElementosChecklist.ChecklistImobilizadoArea.ComentarioImobArea;
+                        break;
+                }
+
+                if(Procedimento.TemposPaCcp.Estado2Tg - Procedimento.TemposPaCcp.Estado2 != 0)
+                {
+                    Procedimento.No_DiasAtraso += (Procedimento.TemposPaCcp.Estado2Tg - Procedimento.TemposPaCcp.Estado2);
+                    if (Procedimento.DataFechoPrevista.HasValue)
+                    {
+                        DateTime DateAux = Procedimento.DataFechoPrevista.Value;
+                        Procedimento.DataFechoPrevista = DateAux.AddDays(Procedimento.No_DiasAtraso.Value);
+                    }
+                    else
+                    {
+                        Procedimento.DataFechoPrevista = DateTime.Now.AddDays(Procedimento.No_DiasAtraso.Value);
+                    }
+                };
+
+                Procedimento.DataHoraEstado = DateTime.Now;
+                Procedimento.UtilizadorEstado = UserDetails.IdUtilizador;
+                Procedimento.UtilizadorModificacao = UserDetails.IdUtilizador;
+                Procedimento.DataHoraModificacao = DateTime.Now;
+
+                if (__UpdateProcedimento(Procedimento) == null)
+                {
+                    ReturnHandler.eReasonCode = 5;
+                    ReturnHandler.eMessage = "Não foi possível actualizar o Procedimento!";
+
+                    return ReturnHandler;
+                };
+            }
+
+            ReturnHandler.eReasonCode = 0;
+            ReturnHandler.eMessage = "Autorização concedida";
 
             return ReturnHandler;
         }
