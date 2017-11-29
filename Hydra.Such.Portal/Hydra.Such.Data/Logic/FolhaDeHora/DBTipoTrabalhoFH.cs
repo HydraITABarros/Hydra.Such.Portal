@@ -83,5 +83,46 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 return false;
             }
         }
+
+        public static TipoTrabalhoFh ParseToDB(TipoTrabalhoFHViewModel x)
+        {
+
+            return new TipoTrabalhoFh()
+            {
+                Codigo = x.Codigo,
+                Descricao = x.Descricao,
+                CodUnidadeMedida = x.CodUnidadeMedida,
+                HoraViagem = x.HoraViagem,
+                TipoHora = x.TipoHora,
+                UtilizadorCriacao = x.UtilizadorCriacao,
+                DataHoraCriacao = x.DataHoraCriacao,
+                UtilizadorModificacao = x.UtilizadorModificacao,
+                DataHoraModificacao = x.DataHoraModificacao
+            };
+        }
+
+        public static TipoTrabalhoFHViewModel ParseToViewModel(TipoTrabalhoFh x)
+        {
+            return new TipoTrabalhoFHViewModel()
+            {
+                Codigo = x.Codigo,
+                Descricao = x.Descricao,
+                CodUnidadeMedida = x.CodUnidadeMedida,
+                HoraViagem = x.HoraViagem,
+                TipoHora = x.TipoHora,
+                UtilizadorCriacao = x.UtilizadorCriacao,
+                DataHoraCriacao = x.DataHoraCriacao,
+                UtilizadorModificacao = x.UtilizadorModificacao,
+                DataHoraModificacao = x.DataHoraModificacao
+            };
+        }
+
+        public static List<TipoTrabalhoFHViewModel> ParseListToViewModel(List<TipoTrabalhoFh> x)
+        {
+            List<TipoTrabalhoFHViewModel> result = new List<TipoTrabalhoFHViewModel>();
+
+            x.ForEach(y => result.Add(ParseToViewModel(y)));
+            return result;
+        }
     }
 }

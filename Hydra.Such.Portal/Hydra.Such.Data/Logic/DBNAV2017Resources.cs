@@ -33,7 +33,8 @@ namespace Hydra.Such.Data.Logic
                         {
                             Code = (string)temp.No_,
                             Name = (string)temp.Name,
-                            MeasureUnit = (string)temp.Base_Unit_of_Measure
+                            MeasureUnit = (string)temp.Base_Unit_of_Measure,
+                            ResourceGroup = (string)temp.Resource_Group_No
                         });
                     }
                 }

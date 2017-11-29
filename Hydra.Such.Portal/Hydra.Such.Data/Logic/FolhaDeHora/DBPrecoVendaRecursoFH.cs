@@ -83,5 +83,54 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 return false;
             }
         }
+
+        public static PrecoVendaRecursoFh ParseToDB(PrecoVendaRecursoFHViewModel x)
+        {
+
+            return new PrecoVendaRecursoFh()
+            {
+                Code = x.Code,
+                Descricao = x.Descricao,
+                CodTipoTrabalho = x.CodTipoTrabalho,
+                PrecoUnitario = x.PrecoUnitario,
+                CustoUnitario = x.CustoUnitario,
+                StartingDate = x.StartingDate,
+                EndingDate = x.EndingDate,
+                FamiliaRecurso = x.FamiliaRecurso,
+                UtilizadorCriacao = x.UtilizadorCriacao,
+                DataHoraCriacao = x.DataHoraCriacao,
+                UtilizadorModificacao = x.UtilizadorModificacao,
+                DataHoraModificacao = x.DataHoraModificacao
+            };
+        }
+
+        public static PrecoVendaRecursoFHViewModel ParseToViewModel(PrecoVendaRecursoFh x)
+        {
+            return new PrecoVendaRecursoFHViewModel()
+            {
+                Code = x.Code,
+                Descricao = x.Descricao,
+                CodTipoTrabalho = x.CodTipoTrabalho,
+                PrecoUnitario = x.PrecoUnitario,
+                CustoUnitario = x.CustoUnitario,
+                StartingDate = x.StartingDate,
+                StartingDateTexto = x.StartingDate.Value.ToString("yyyy-MM-dd"),
+                EndingDate = x.EndingDate,
+                EndingDateTexto = x.EndingDate.Value.ToString("yyyy-MM-dd"),
+                FamiliaRecurso = x.FamiliaRecurso,
+                UtilizadorCriacao = x.UtilizadorCriacao,
+                DataHoraCriacao = x.DataHoraCriacao,
+                UtilizadorModificacao = x.UtilizadorModificacao,
+                DataHoraModificacao = x.DataHoraModificacao
+            };
+        }
+
+        public static List<PrecoVendaRecursoFHViewModel> ParseListToViewModel(List<PrecoVendaRecursoFh> x)
+        {
+            List<PrecoVendaRecursoFHViewModel> result = new List<PrecoVendaRecursoFHViewModel>();
+
+            x.ForEach(y => result.Add(ParseToViewModel(y)));
+            return result;
+        }
     }
 }

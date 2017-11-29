@@ -544,7 +544,17 @@ namespace Hydra.Such.Portal.Controllers
             List<DDMessageString> result = DBNAV2017ShippingAddresses.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
             {
                 id = X.Code,
-                value = X.Name
+                value = X.Name + " - " + X.City
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetNAVShippingAddressesByClientNo([FromBody] string ClientNo) { 
+            List<DDMessageString> result = DBNAV2017ShippingAddresses.GetByClientNo(ClientNo,_config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
+            {
+                id = X.Code,
+                value = X.Name + " - " + X.Address +" - " + X.City
             }).ToList();
             return Json(result);
         }
@@ -582,6 +592,18 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = x.NºProjeto,
                 value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetTipoTrabalhoList()
+        {
+            List<DDMessageString> result = DBTipoTrabalhoFH.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.Codigo,
+                value = x.Descricao
             }).ToList();
 
             return Json(result);
@@ -928,6 +950,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetTipoHoraFH()
+        {
+            List<EnumData> result = EnumerablesFixed.GetTipoHoraFH;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetCodTipoCustoByTipoCusto([FromBody]DDMessage tipoCusto)
         {
 
@@ -947,6 +976,30 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.NºUnidadeProdutiva,
                 value = x.Descrição
             }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult PrecoVendaRecurso_Code()
+        {
+            List<DDMessageString> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult PrecoVendaRecurso_CodeTipoTrabalho()
+        {
+            List<DDMessageString> result = DBTipoTrabalhoFH.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.Codigo,
+                value = x.Descricao
+            }).ToList();
+
             return Json(result);
         }
     }

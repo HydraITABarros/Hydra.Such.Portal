@@ -373,6 +373,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
             
             if(Procedimento.EmailsProcedimentosCcp != null && Procedimento.EmailsProcedimentosCcp.Count > 0)
             {
+                
                 ProcedimentoView.EmailsProcedimentosCcp = DBProcedimentosCCP.GetAllEmailsView(Procedimento);
             }
 
