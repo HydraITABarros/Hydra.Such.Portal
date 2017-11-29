@@ -1155,7 +1155,7 @@ namespace Hydra.Such.Portal.Controllers
 
         #region The following methods map the MenuItem actions, named "Acções" in the "Imobilizado" tab of the NAV form
         #region "Acções" MenuItem in the "Contabilidade" section
-        public JsonResult ConfirmProcedimento(ProcedimentoCCPView data)
+        public JsonResult ConfirmProcedimento([FromBody] ProcedimentoCCPView data)
         {
             if(data != null)
             {
@@ -1344,7 +1344,7 @@ namespace Hydra.Such.Portal.Controllers
                 ErrorHandler Success = new ErrorHandler
                 {
                     eReasonCode = 0,
-                    eMessage = "Procedimento " + data.No + " submetido com sucesso!"
+                    eMessage = "Procedimento " + data.No + " confirmado!"
                 };
 
                 return Json(Success);
@@ -1361,25 +1361,49 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public JsonResult ReturnToArea(ProcedimentoCCPView data)
+        public JsonResult ReturnToArea([FromBody] ProcedimentoCCPView data)
         {
             if(data != null)
             {
                 int errorCount = 1;
+                bool IsElementContabilidade = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoContabilidade);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
 
-                FluxoTrabalhoListaControlo Fluxo = DBProcedimentosCCP.GetChecklistControloProcedimento(data.No, 0);
-                ConfigUtilizadores UserDetails = new ConfigUtilizadores();
+                if (!IsElementContabilidade && !IsGestorProcesso)
+                {
+                    ErrorHandler UserNotAllowed = new ErrorHandler
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Não está autorizado a utilizar esta opção!"
+                    };
+
+                    errorCount += 1;
+                    return Json(UserNotAllowed);
+                }
+
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+
+                // NAV Procedure ImobContabConfirmar.b
+                ErrorHandler UnableToConfirmAssetPurchase = DBProcedimentosCCP.ContabilidadeConfirmAssetPurchase(data, UserDetails, 0);
+                if (UnableToConfirmAssetPurchase.eReasonCode != 0)
+                {
+                    errorCount += 1;
+                    return Json(UnableToConfirmAssetPurchase);
+                }
+                // NAV ImobContabConfirmar.e
+
+                if (data.FluxoTrabalhoListaControlo == null)
+                    data.FluxoTrabalhoListaControlo = DBProcedimentosCCP.GetAllCheklistControloProcedimento(data.No);
+
+                FluxoTrabalhoListaControlo Fluxo0 = data.FluxoTrabalhoListaControlo.Where(e => e.Estado == 0).LastOrDefault();
+
                 string UserEmail = "";
 
-                if(Fluxo != null)
+                if(Fluxo0 != null)
                 {
-                    UserDetails = DBProcedimentosCCP.GetUserDetails(Fluxo.User);
-                    if (UserDetails == null)
-                        UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
-                }
-                else
-                {
-                    UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                    ConfigUtilizadores UserDetailsAux = DBProcedimentosCCP.GetUserDetails(Fluxo0.User);
+                    if (UserDetailsAux != null)
+                        UserDetails = UserDetailsAux;
                 }
 
                 if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
@@ -1422,6 +1446,8 @@ namespace Hydra.Such.Portal.Controllers
                     return Json(UnableToCreateEmailProcedimento);
                 }
 
+                data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
                 SendEmailsProcedimentos Email = new SendEmailsProcedimentos
                 {
                     DisplayName = UserDetails.Nome,
@@ -1445,11 +1471,12 @@ namespace Hydra.Such.Portal.Controllers
                 ErrorHandler Success = new ErrorHandler
                 {
                     eReasonCode = 0,
-                    eMessage = "Procedimento " + data.No + " submetido com sucesso!"
+                    eMessage = "Procedimento " + data.No + " devolvido à Área!"
                 };
 
                 return Json(Success);
             }
+            else
             {
                 ErrorHandler Error = new ErrorHandler
                 {
@@ -1463,17 +1490,39 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
         
         #region "Acções" MenuItem in the "Area" section
-        public JsonResult GetPermission(ProcedimentoCCPView data)
+        public JsonResult GetPermission([FromBody] ProcedimentoCCPView data)
+        {
+            if(data != null)
+            {
+                //bool IsElementArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, )
+
+
+                ErrorHandler Success = new ErrorHandler
+                {
+                    eReasonCode = 0,
+                    eMessage = "Procedimento " + data.No + " devolvido à Área!"
+                };
+
+                return Json(Success);
+            }
+            else
+            {
+                ErrorHandler Error = new ErrorHandler
+                {
+                    eReasonCode = -1,
+                    eMessage = "Sem dados disponiveis!"
+                };
+
+                return Json(Error);
+            }
+        }
+
+        public JsonResult ReturnToContabilidade([FromBody] ProcedimentoCCPView data)
         {
             return Json(null);
         }
 
-        public JsonResult ReturnToContabilidade(ProcedimentoCCPView data)
-        {
-            return Json(null);
-        }
-
-        public JsonResult CloseProcedimentoArea(ProcedimentoCCPView data)
+        public JsonResult CloseProcedimentoArea([FromBody] ProcedimentoCCPView data)
         {
             return Json(null);
         }

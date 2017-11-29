@@ -214,7 +214,7 @@ namespace Hydra.Such.Portal.Configurations
              },
 
             
-            #region identify user roles related to CCP
+            #region 1. identify user roles related to CCP
 		     new EnumData()
              {
                  Id = 25,
@@ -286,8 +286,15 @@ namespace Hydra.Such.Portal.Configurations
              {
                  Id = 36,
                  Value = "Diário Cafetarias/Refeitórios"
-             }
+             },
 
+            #region 2. identify user roles related to CCP
+             new EnumData
+             {
+                 Id = 37,
+                 Value = "Checklist - Elemento Area"
+             }
+	        #endregion
         };
 
         public static readonly List<EnumData> ProposalStatus = new List<EnumData>(){

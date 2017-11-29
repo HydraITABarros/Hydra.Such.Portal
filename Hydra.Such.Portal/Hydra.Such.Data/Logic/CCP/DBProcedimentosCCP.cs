@@ -21,6 +21,7 @@ namespace Hydra.Such.Data.Logic.CCP
         public const int _GestorProcesso = 32;
         public const int _SecretariadoCA = 33;
         public const int _FechoProcesso = 34;
+        public const int _ElementoArea = 37;
         #endregion
 
         
