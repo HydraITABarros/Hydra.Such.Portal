@@ -3094,6 +3094,14 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nº Linha")
                     .ValueGeneratedOnAdd();
 
+                entity.Property(e => e.CodigoRegiao)
+                    .HasColumnName("CodigoRegiao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodigoArea)
+                    .HasColumnName("CodigoArea")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.CodigoCentroResponsabilidade).HasMaxLength(20);
 
                 entity.Property(e => e.CustoUnitárioDireto).HasColumnName("Custo Unitário Direto");

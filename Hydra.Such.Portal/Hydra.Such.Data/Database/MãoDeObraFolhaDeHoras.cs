@@ -19,6 +19,8 @@ namespace Hydra.Such.Data.Database
         public int? CódigoTipoOm { get; set; }
         public TimeSpan? NºDeHoras { get; set; }
         public decimal? CustoUnitárioDireto { get; set; }
+        public string CodigoRegiao { get; set; }
+        public string CodigoArea { get; set; }
         public string CodigoCentroResponsabilidade { get; set; }
         public decimal? PreçoTotal { get; set; }
         public string Descricao { get; set; }

@@ -136,6 +136,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         HoraFim = Convert.ToDateTime(DateTime.Now.Date + " " + MaoDeObra.HoraFim).ToShortTimeString(),
                         HoraFimTexto = MaoDeObra.HoraFim.ToString(),
                         HorarioJantar = MaoDeObra.HorárioJantar,
+                        CodigoRegiao = MaoDeObra.CodigoRegiao,
+                        CodigoArea = MaoDeObra.CodigoArea,
                         CodigoFamiliaRecurso = MaoDeObra.CódigoFamíliaRecurso,
                         CodigoTipoOM = MaoDeObra.CódigoTipoOm,
                         HorasNo = Convert.ToDateTime(DateTime.Now.Date + " " + MaoDeObra.NºDeHoras).ToShortTimeString(),
