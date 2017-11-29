@@ -293,8 +293,14 @@ namespace Hydra.Such.Portal.Configurations
              {
                  Id = 37,
                  Value = "Checklist - Elemento Area"
-             }
+             },
 	        #endregion
+
+             new EnumData()
+            {
+                Id = 38,
+                Value = "Modelos Requisições Simplificadas"
+            },
         };
 
         public static readonly List<EnumData> ProposalStatus = new List<EnumData>(){
