@@ -192,7 +192,6 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 else
                 {
                     item = new CoffeeShopViewModel();
-                    throw new ArgumentNullException("item");
                 }
             }
             catch {

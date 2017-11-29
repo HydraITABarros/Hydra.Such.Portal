@@ -189,29 +189,29 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 20,
                 Value = "Oportunidades"
             },
-             new EnumData()
+            new EnumData()
             {
                 Id = 21,
                 Value = "Propostas"
             },
-             new EnumData()
+            new EnumData()
             {
                 Id = 22,
                 Value = "Autorizaçãp Faturação"
             },
 
              // zpgm. identify users that can be appointed Elementos Juri in ProcedimentosCcp
-             new EnumData()
-             {
-                 Id = 23,
-                 Value = "Elemento Juri CCP"
-             },
+            new EnumData()
+            {
+                Id = 23,
+                Value = "Elemento Juri CCP"
+            },
 
-             new EnumData()
-             {
-                 Id = 24,
-                 Value = "Contactos"
-             },
+            new EnumData()
+            {
+                Id = 24,
+                Value = "Contactos"
+            },
 
             
             #region identify user roles related to CCP
@@ -276,17 +276,23 @@ namespace Hydra.Such.Portal.Configurations
              },
 	        #endregion
 
-             new EnumData()
-             {
-                 Id = 35,
-                 Value = "Cafetarias/Refeitórios"
-             },
+            new EnumData()
+            {
+                Id = 35,
+                Value = "Cafetarias/Refeitórios"
+            },
 
-             new EnumData()
-             {
-                 Id = 36,
-                 Value = "Diário Cafetarias/Refeitórios"
-             }
+            new EnumData()
+            {
+                Id = 36,
+                Value = "Diário Cafetarias/Refeitórios"
+            },
+
+            new EnumData()
+            {
+                Id = 37,
+                Value = "Modelos Requisições Simplificadas"
+            },
 
         };
 
