@@ -10,7 +10,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? Date { get; set; }
         public string NºProjeto { get; set; }
         public string NºEmpregado { get; set; }
-        public int? CódigoTipoTrabalho { get; set; }
+        public string CódigoTipoTrabalho { get; set; }
         public TimeSpan? HoraInício { get; set; }
         public bool? HorárioAlmoço { get; set; }
         public TimeSpan? HoraFim { get; set; }

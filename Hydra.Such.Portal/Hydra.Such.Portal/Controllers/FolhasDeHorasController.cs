@@ -1077,6 +1077,7 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
         public JsonResult CreateMaoDeObra([FromBody] MaoDeObraFolhaDeHorasViewModel data)
+        //public JsonResult CreateMaoDeObra([FromBody] string folhaDeHorasNo, DateTime date, string projetoNo, string empregadoNo, int codigoTipoTrabalho, horaInicio, horarioAlmoco, horaFim, horarioJantar)
         {
             int result = 0;
             try

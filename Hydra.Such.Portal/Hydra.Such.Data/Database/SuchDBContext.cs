@@ -3116,7 +3116,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CódigoTipoOm).HasColumnName("Código Tipo OM");
 
-                entity.Property(e => e.CódigoTipoTrabalho).HasColumnName("Código Tipo Trabalho");
+                entity.Property(e => e.CódigoTipoTrabalho)
+                    .HasColumnName("Código Tipo Trabalho")
+                    .HasMaxLength(10);
 
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
