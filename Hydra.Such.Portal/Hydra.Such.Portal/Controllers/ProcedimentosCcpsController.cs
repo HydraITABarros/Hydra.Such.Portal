@@ -1153,8 +1153,9 @@ namespace Hydra.Such.Portal.Controllers
             return Json(Success);
         }
 
-        #region The following methods map the MenuItem actions, named "Acções" in the "Imobilizado" tab of the NAV form
+        #region The following methods map the MenuButton actions, named "Acções" in the "Imobilizado" tab on the NAV form
         #region "Acções" MenuItem in the "Contabilidade" section
+        [HttpPost]
         public JsonResult ConfirmProcedimento([FromBody] ProcedimentoCCPView data)
         {
             if(data != null)
@@ -1208,7 +1209,7 @@ namespace Hydra.Such.Portal.Controllers
                 };
 
                 // NAV Procedure ImobContabConfirmar.b
-                ErrorHandler UnableToConfirmAssetPurchase = DBProcedimentosCCP.ContabilidadeConfirmAssetPurchase(data, UserDetails, 1);
+                ErrorHandler UnableToConfirmAssetPurchase = DBProcedimentosCCP.AccountingConfirmsAssetPurchase(data, UserDetails, 1);
                 if (UnableToConfirmAssetPurchase.eReasonCode != 0)
                 {
                     errorCount += 1;
@@ -1360,7 +1361,7 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(Error);
             }
         }
-
+        [HttpPost]
         public JsonResult ReturnToArea([FromBody] ProcedimentoCCPView data)
         {
             if(data != null)
@@ -1384,7 +1385,7 @@ namespace Hydra.Such.Portal.Controllers
                 ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
 
                 // NAV Procedure ImobContabConfirmar.b
-                ErrorHandler UnableToConfirmAssetPurchase = DBProcedimentosCCP.ContabilidadeConfirmAssetPurchase(data, UserDetails, 0);
+                ErrorHandler UnableToConfirmAssetPurchase = DBProcedimentosCCP.AccountingConfirmsAssetPurchase(data, UserDetails, 0);
                 if (UnableToConfirmAssetPurchase.eReasonCode != 0)
                 {
                     errorCount += 1;
@@ -1542,7 +1543,7 @@ namespace Hydra.Such.Portal.Controllers
                 };
 
                 // NAV Procedure ImobAreaConfirmar.b
-                ErrorHandler PermissionDenied = DBProcedimentosCCP.AreaConfirmAssetPurchase(data, UserDetails, 1);
+                ErrorHandler PermissionDenied = DBProcedimentosCCP.AreaConfirmsAssetPurchase(data, UserDetails, 1);
                 if (PermissionDenied.eReasonCode != 0)
                 {
                     errorCount += 1;
@@ -1638,17 +1639,275 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public JsonResult ReturnToContabilidade([FromBody] ProcedimentoCCPView data)
+        public JsonResult ReturnToAccounting([FromBody] ProcedimentoCCPView data)
         {
-            return Json(null);
+            if(data != null)
+            {
+                bool IsElementArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoArea);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
+                int errorCount = 1;
+
+                if (!IsElementArea && !IsGestorProcesso)
+                {
+                    ErrorHandler UserNotAllowed = new ErrorHandler
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Não está autorizado a utilizar esta opção!"
+                    };
+
+                    errorCount += 1;
+                    return Json(UserNotAllowed);
+                }
+
+                if (data.Estado != 2)
+                {
+                    ErrorHandler StateNotAllowed = new ErrorHandler
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Não está autorizado a utilizar esta opção: Estado " + data.Estado.Value + " diferente de 2"
+                    };
+
+                    errorCount += 1;
+                    return Json(StateNotAllowed);
+                }
+
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+
+                // NAV Procedure ImobAreaConfirmar.b
+                ErrorHandler PermissionDenied = DBProcedimentosCCP.AreaConfirmsAssetPurchase(data, UserDetails, 0);
+                if (PermissionDenied.eReasonCode != 0)
+                {
+                    errorCount += 1;
+                    return Json(PermissionDenied);
+                }
+                // NAV ImobAreaConfirmar.e
+
+                ErrorHandler Success = new ErrorHandler
+                {
+                    eReasonCode = 0,
+                    eMessage = "Procedimento " + data.No + " devolvido à contabilidade!"
+                };
+
+                return Json(Success);
+            }
+            else
+            {
+                ErrorHandler Error = new ErrorHandler
+                {
+                    eReasonCode = -1,
+                    eMessage = "Sem dados disponiveis!"
+                };
+
+                return Json(Error);
+            }
         }
 
         public JsonResult CloseProcedimentoArea([FromBody] ProcedimentoCCPView data)
         {
+            // zpgm.28112017 - this action doens't have an implementation in NAV. Decide whether is relevant or not.
             return Json(null);
         }
         #endregion
 
+        #endregion
+
+        #region The following methods map the MenuButtons, named "Acções" in the "Fundamentos Decisão" tab on the NAV form
+        #region MenuButton "Acções" in the "A preencher pelas compras" section
+        [HttpPost]
+        public JsonResult SubmitToAccounting([FromBody] ProcedimentoCCPView data)
+        {
+            if(data != null)
+            {
+                bool IsElementCompras = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoCompras);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
+                int errorCount = 1;
+
+                if (!IsElementCompras && !IsGestorProcesso)
+                {
+                    ErrorHandler UserNotAllowed = new ErrorHandler
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Não está autorizado a utilizar esta opção!"
+                    };
+
+                    errorCount += 1;
+                    return Json(UserNotAllowed);
+                }
+
+                if (data.Estado < 4 || data.Estado > 6)
+                {
+                    ErrorHandler StateNotAllowed = new ErrorHandler
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Não está autorizado a utilizar esta opção: Estado " + data.Estado.Value
+                    };
+
+                    errorCount += 1;
+                    return Json(StateNotAllowed);
+                }
+
+                if (string.IsNullOrEmpty(data.NomeProcesso))
+                {
+                    ErrorHandler ProcessNameNotDefined = new ErrorHandler
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Antes de prosseguir, tem que definir o Nome do procedimento!"
+                    };
+
+                    errorCount += 1;
+                    return Json(ProcessNameNotDefined);
+                }
+
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                string UserEmail = "";
+
+                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                {
+                    UserEmail = UserDetails.IdUtilizador;
+                }
+                else
+                {
+                    ErrorHandler InvalidUserEmailAddress = new ErrorHandler()
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Utilizador sem endereço de email válido"
+                    };
+
+                    errorCount += 1;
+                    return Json(InvalidUserEmailAddress);
+                };
+                // xxxxx
+                // NAV Procedure FDComprasConfirmar.b
+                ErrorHandler DecisionTaken = DBProcedimentosCCP.DecisionGroundsToBuy(data, UserDetails, 1);
+                if (DecisionTaken.eReasonCode != 0)
+                {
+                    errorCount += 1;
+                    return Json(DecisionTaken);
+                }
+                // NAV FDComprasConfirmar.e
+
+                ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
+                if (EmailList == null)
+                {
+                    ErrorHandler DestinationEmailsAreEmpty = new ErrorHandler()
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Falta configuração dos destinatários de emails!"
+                    };
+
+                    errorCount += 1;
+                    return Json(DestinationEmailsAreEmpty);
+                }
+
+                if (!EmailAutomation.IsValidEmail(EmailList.EmailFinanceiros))
+                {
+                    ErrorHandler InvalidUserEmailAddress = new ErrorHandler()
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Utilizador sem endereço de email válido"
+                    };
+
+                    errorCount += 1;
+                    return Json(InvalidUserEmailAddress);
+                };
+
+                EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                {
+                    NºProcedimento = data.No,
+                    Assunto = data.No + " " + data.NomeProcesso + " - Parecer Financeiro",
+                    UtilizadorEmail = UserEmail,
+                    EmailDestinatário = EmailList.EmailFinanceiros,
+                    TextoEmail = data.ElementosChecklist.ChecklistFundamentoCompras.ComentarioFundamentoCompras,
+                    DataHoraEmail = DateTime.Now,
+                    UtilizadorCriação = UserDetails.IdUtilizador,
+                    DataHoraCriação = DateTime.Now
+                };
+
+                if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                {
+                    ErrorHandler UnableToCreateEmailProcedimento = new ErrorHandler()
+                    {
+                        eReasonCode = errorCount,
+                        eMessage = "Não foi possível escrever na Base de Dados o Email!"
+                    };
+
+                    errorCount += 1;
+                    return Json(UnableToCreateEmailProcedimento);
+                }
+
+                data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
+                SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                {
+                    DisplayName = UserDetails.Nome,
+                    Subject = ProcedimentoEmail.Assunto,
+                    From = "CCP_NAV@such.pt"
+                };
+
+                Email.To.Add(EmailList.EmailFinanceiros);
+
+                if (EmailAutomation.IsValidEmail(EmailList.Email2Financeiros))
+                    Email.CC.Add(EmailList.Email2Financeiros);
+
+                Email.BCC.Add(UserEmail);
+
+                Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+                Email.IsBodyHtml = true;
+
+                Email.EmailProcedimento = ProcedimentoEmail;
+
+                Email.SendEmail();
+
+                ErrorHandler Success = new ErrorHandler
+                {
+                    eReasonCode = 0,
+                    eMessage = "Procedimento " + data.No + " submetido à contabilidade!"
+                };
+
+                return Json(Success);
+            }
+            else
+            {
+                ErrorHandler Error = new ErrorHandler
+                {
+                    eReasonCode = -1,
+                    eMessage = "Sem dados disponiveis!"
+                };
+
+                return Json(Error);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult SubmitToLegalDepartment([FromBody] ProcedimentoCCPView data)
+        {
+            return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult SubmitToArea([FromBody] ProcedimentoCCPView data)
+        {
+            return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult ReturnToAreaToJustifyProcess([FromBody] ProcedimentoCCPView data)
+        {
+            return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult SubmitToBoardForOpening([FromBody] ProcedimentoCCPView data)
+        {
+            return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult SubmitToBoardForGranting([FromBody] ProcedimentoCCPView data)
+        {
+            return Json(null);
+        } 
+        #endregion
         #endregion
     }
 
