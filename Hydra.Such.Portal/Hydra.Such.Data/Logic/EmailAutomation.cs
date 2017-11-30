@@ -16,10 +16,10 @@ using System.Configuration;
 
 namespace Hydra.Such.Data.ViewModel
 {
-    public class __Configurations
+    public class __EmailSetup
     {
         private const string __Host = "10.19.247.98";
-        private const string __Username = "navision@such.pt";
+        private const string __Username = "server.such.pt";
         private const string __Password = "";
         private const int __Port = 25;
         private const bool __SSL = false;
@@ -58,7 +58,7 @@ namespace Hydra.Such.Data.ViewModel
         public string Subject { get; set; }
         public string Body { get; set; }
         public bool IsBodyHtml { get; set; }
-        protected __Configurations Config { get; set; }
+        protected __EmailSetup Config { get; set; }
         
         public string UserID { get; set; }  
 
@@ -71,7 +71,7 @@ namespace Hydra.Such.Data.ViewModel
             To = new List<string>();
             CC = new List<string>();
             BCC = new List<string>();
-            Config = new __Configurations();
+            Config = new __EmailSetup();
         }
         public EmailAutomation(string from, string displayName, string subject, string body, bool isBodyHtml)
         {
@@ -83,7 +83,7 @@ namespace Hydra.Such.Data.ViewModel
             Subject = subject;
             Body = body;
             IsBodyHtml = isBodyHtml;
-            Config = new __Configurations();
+            Config = new __EmailSetup();
         }
 
         public void SetTo(List<string> DestinationAddresses)

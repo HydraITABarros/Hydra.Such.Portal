@@ -725,6 +725,22 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NumeraçãoPropostas).HasColumnName("Numeração Propostas");
 
+                entity.Property(e => e.InicioHoraAlmoco)
+                    .HasColumnName("InicioHoraAlmoco")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.FimHoraAlmoco)
+                    .HasColumnName("FimHoraAlmoco")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.InicioHoraJantar)
+                    .HasColumnName("InicioHoraJantar")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.FimHoraJantar)
+                    .HasColumnName("FimHoraJantar")
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);
@@ -3078,6 +3094,14 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nº Linha")
                     .ValueGeneratedOnAdd();
 
+                entity.Property(e => e.CodigoRegiao)
+                    .HasColumnName("CodigoRegiao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodigoArea)
+                    .HasColumnName("CodigoArea")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.CodigoCentroResponsabilidade).HasMaxLength(20);
 
                 entity.Property(e => e.CustoUnitárioDireto).HasColumnName("Custo Unitário Direto");
@@ -3092,7 +3116,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CódigoTipoOm).HasColumnName("Código Tipo OM");
 
-                entity.Property(e => e.CódigoTipoTrabalho).HasColumnName("Código Tipo Trabalho");
+                entity.Property(e => e.CódigoTipoTrabalho)
+                    .HasColumnName("Código Tipo Trabalho")
+                    .HasMaxLength(10);
 
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")

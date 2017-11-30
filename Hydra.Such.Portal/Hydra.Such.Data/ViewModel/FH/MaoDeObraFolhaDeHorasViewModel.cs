@@ -12,7 +12,7 @@ namespace Hydra.Such.Data.ViewModel.FH
         public string DateTexto { get; set; }
         public string ProjetoNo { get; set; }
         public string EmpregadoNo { get; set; }
-        public int? CodigoTipoTrabalho { get; set; }
+        public string CodigoTipoTrabalho { get; set; }
         public string HoraInicio { get; set; }
         public string HoraInicioTexto { get; set; }
         public Boolean? HorarioAlmoco { get; set; }
@@ -24,6 +24,8 @@ namespace Hydra.Such.Data.ViewModel.FH
         public string HorasNo { get; set; }
         public string HorasNoTexto { get; set; }
         public decimal CustoUnitarioDireto { get; set; }
+        public string CodigoRegiao { get; set; }
+        public string CodigoArea { get; set; }
         public string CodigoCentroResponsabilidade { get; set; }
         public decimal PrecoTotal { get; set; }
         public string Descricao { get; set; }
