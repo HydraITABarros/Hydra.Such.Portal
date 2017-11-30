@@ -256,8 +256,7 @@
                     height: 48px;
                     color: rgba(0, 0, 0, var(--dark-primary-opacity));
                     font-size: 13px;
-                    padding: 15px 20px;
-
+                    /*padding: 15px 20px;*/
                 };
 
                 --vaadin-grid-body-row-hover-cell: {
@@ -271,17 +270,9 @@
             }
 
             vaadin-grid .cell {
+                padding: 7px 12px;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                padding-right: 56px;
-            }
-
-            vaadin-grid .cell.last {
-                padding-right: 24px;
-            }
-
-            vaadin-grid .cell.numeric {
-                text-align: right;
             }
 
             vaadin-grid paper-checkbox {
@@ -359,7 +350,9 @@
                                             <vaadin-grid-filter path="[[field.field]]"/>
                                         </template>
                                         <template>
-                                            {{ _getFieldValue(field.field, item) }}
+                                            <div class="cell" title="{{ _getFieldValue(field.field, item) }}">
+                                                {{ _getFieldValue(field.field, item) }}
+                                            </div>
                                         </template>
                                     </vaadin-grid-column>
                                 </template>
