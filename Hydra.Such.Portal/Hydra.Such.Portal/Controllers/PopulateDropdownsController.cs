@@ -597,6 +597,14 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+
+        [HttpPost]
+        public JsonResult GetProjectNavList()
+        {
+            List<NAVProjectsViewModel> result = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+            return Json(result);
+        }
+
         [HttpPost]
         public JsonResult GetProjectListDiary()
         {

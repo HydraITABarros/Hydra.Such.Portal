@@ -23,6 +23,8 @@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+
 <h1 class="title">Folha de Horas</h1>
 
 <dom-module id="x-folhadehoradetails">
@@ -66,6 +68,7 @@
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraTypeDeslocation" last-response="{{LFolhaDeHoraTypeDeslocation}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraCodeTypeKms" last-response="{{LFolhaDeHoraCodeTypeKms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{LFolhaDeHoraProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{LFolhaDeHoraNavProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraDisplacementOutsideCity" last-response="{{LFolhaDeHoraDisplacementOutsideCity}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUtilizadores" last-response="{{LFolhaDeHoraValidators}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetEmployees_FH" last-response="{{LFolhaDeHoraEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -294,15 +297,14 @@
                                     <vaadin-text-field type="text" value="{{data.folhaDeHorasNo}}" id="folhaDeHorasNo" name="folhaDeHorasNo" label="Nº Folha Horas" disabled="true"> </vaadin-text-field>
                                 </div>
                                 <div class="col-sm-3">
-                                    <vaadin-combo-box items="[[LFolhaDeHoraProjectNo]]" id="projetoNo" item-value-path="id" item-label-path="value" value="{{data.projetoNo}}" label="Nº Ordem/Projecto" required error-message="Este campo é obrigatório">
-                                        <template>
-                                            <paper-icon-item>
-                                                <paper-item-body two-line>
-                                                    <div>[[item.value]]</div>
-                                                </paper-item-body>
-                                            </paper-icon-item>
-                                        </template>
-                                    </vaadin-combo-box>
+
+                                    <such-selectbox id="projetoNo" value="{{data.folhaDeHoraNavProjectNo}}" label="Nº Ordem/Projecto"
+                                                    items="[[LFolhaDeHoraNavProjectNo]]"
+                                                    text-path="no"
+                                                    value-path="no"
+                                                    fields='[{"field":"no","name":"Nº"},{"field":"description","name":"Descrição"},{"field":"customerNo","name":"CustomerNo"},{"field":"globalDimension1","name":"GlobalDimension1"},{"field":"globalDimension2","name":"GlobalDimension2"}]'
+                                                    required error-message="Este campo é obrigatório"></such-selectbox>
+
                                 </div>
                                 <div class="col-sm-3">
                                     <vaadin-combo-box items="[[LFolhaDeHoraEmployee]]" id="empregadoNo" item-value-path="id" item-label-path="value" value="{{data.empregadoNo}}" on-value-changed="_codeChange" label="Nº Empregado" required error-message="Este campo é obrigatório">
