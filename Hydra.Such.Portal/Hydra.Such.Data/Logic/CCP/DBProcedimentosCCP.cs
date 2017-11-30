@@ -1159,8 +1159,6 @@ namespace Hydra.Such.Data.Logic.CCP
         #region Processing Procedimentos
         public static ErrorHandler AccountingConfirmsAssetPurchase(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails, int StateToCheck)
         {
-            ErrorHandler ReturnHandler = new ErrorHandler();
-
             if (Procedimento.TemposPaCcp == null)
             {
                 TemposPaCcp TemposPA = GetTemposPaCcP(Procedimento.No);
@@ -1173,10 +1171,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
                     if (!__UpdateTemposPaCcp(TemposPA))
                     {
-                        ReturnHandler.eReasonCode = 1;
-                        ReturnHandler.eMessage = "Não foi possível actualizar os Tempos de Procedimento";
-
-                        return ReturnHandler;
+                        return ReturnHandlers.UnableToUpdateTemposPA;
                     }
                 }
                 else
@@ -1209,10 +1204,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
                     if (!__CreateTemposPaCcp(TemposPA))
                     {
-                        ReturnHandler.eReasonCode = 2;
-                        ReturnHandler.eMessage = "Não foi possível Criar os Tempos de Procedimento";
-
-                        return ReturnHandler;
+                        return ReturnHandlers.UnableToCreateTemposPA;
                     }
                 }
 
@@ -1225,10 +1217,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 Procedimento.TemposPaCcp.DataHoraModificacao = DateTime.Now;
                 if (!__UpdateTemposPaCcp(CCPFunctions.CastTemposCCPViewToTemposPaCcp(Procedimento.TemposPaCcp)))
                 {
-                    ReturnHandler.eReasonCode = 1;
-                    ReturnHandler.eMessage = "Não foi possível actualizar os Tempos de Procedimento";
-
-                    return ReturnHandler;
+                    return ReturnHandlers.UnableToUpdateTemposPA;
                 }
             }
 
@@ -1244,11 +1233,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
                     if (!__UpdateFluxoTrabalho(Fluxo0))
                     {
-                        ReturnHandler.eReasonCode = 3;
-                        ReturnHandler.eMessage = "Não foi possível actualizar o Fluxo de Trabalho!";
-
-                        return ReturnHandler;
-
+                        return ReturnHandlers.UnableToUpdateFluxo;
                     }
                 }
             }
@@ -1264,11 +1249,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
                     if (!__UpdateFluxoTrabalho(Fluxo0))
                     {
-                        ReturnHandler.eReasonCode = 3;
-                        ReturnHandler.eMessage = "Não foi possível actualizar o Fluxo de Trabalho!";
-
-                        return ReturnHandler;
-
+                        return ReturnHandlers.UnableToUpdateFluxo;
                     }
                 }
             }
@@ -1303,10 +1284,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
             if (__CreateFluxoTrabalho(NewFluxo1) == null)
             {
-                ReturnHandler.eReasonCode = 4;
-                ReturnHandler.eMessage = "Não foi possível criar o Fluxo de Trabalho!";
-
-                return ReturnHandler;
+                return ReturnHandlers.UnableToCreateFluxo;
             }
 
             Procedimento.FluxoTrabalhoListaControlo = GetAllCheklistControloProcedimento(Procedimento.No);
@@ -1348,23 +1326,14 @@ namespace Hydra.Such.Data.Logic.CCP
 
                 if (__UpdateProcedimento(Procedimento) == null)
                 {
-
-                    ReturnHandler.eReasonCode = 5;
-                    ReturnHandler.eMessage = "Não foi possível actualizar o Procedimento!";
-
-                    return ReturnHandler;
+                    return ReturnHandlers.UnableToUpdateProcedimento;
                 }
             }
 
-            ReturnHandler.eReasonCode = 0;
-            ReturnHandler.eMessage = "A Contabilidade confirmou o Procedimento";
-
-            return ReturnHandler;
+            return ReturnHandlers.Success;
         }
         public static ErrorHandler AreaConfirmsAssetPurchase(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails, int StateToCheck)
         {
-            ErrorHandler ReturnHandler = new ErrorHandler();
-
             if(Procedimento.TemposPaCcp == null)
             {
                 TemposPaCcp TemposPA = GetTemposPaCcP(Procedimento.No);
@@ -1377,10 +1346,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
                     if (!__UpdateTemposPaCcp(TemposPA))
                     {
-                        ReturnHandler.eReasonCode = 1;
-                        ReturnHandler.eMessage = "Não foi possível actualizar os Tempos de Procedimento";
-
-                        return ReturnHandler;
+                        return ReturnHandlers.UnableToUpdateTemposPA;
                     }
                 };
 
@@ -1393,10 +1359,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 Procedimento.TemposPaCcp.DataHoraModificacao = DateTime.Now;
                 if (!__UpdateTemposPaCcp(CCPFunctions.CastTemposCCPViewToTemposPaCcp(Procedimento.TemposPaCcp)))
                 {
-                    ReturnHandler.eReasonCode = 1;
-                    ReturnHandler.eMessage = "Não foi possível actualizar os Tempos de Procedimento";
-
-                    return ReturnHandler;
+                    return ReturnHandlers.UnableToUpdateTemposPA;
                 }
             }
 
@@ -1412,11 +1375,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
                     if (!__UpdateFluxoTrabalho(Fluxo1))
                     {
-                        ReturnHandler.eReasonCode = 3;
-                        ReturnHandler.eMessage = "Não foi possível actualizar o Fluxo de Trabalho!";
-
-                        return ReturnHandler;
-
+                        return ReturnHandlers.UnableToUpdateFluxo;
                     }
                 }
             }
@@ -1432,11 +1391,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
                     if (!__UpdateFluxoTrabalho(Fluxo1))
                     {
-                        ReturnHandler.eReasonCode = 3;
-                        ReturnHandler.eMessage = "Não foi possível actualizar o Fluxo de Trabalho!";
-
-                        return ReturnHandler;
-
+                        return ReturnHandlers.UnableToUpdateFluxo;
                     }
                 }
             }
@@ -1470,10 +1425,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
             if (__CreateFluxoTrabalho(NewFluxo2) == null)
             {
-                ReturnHandler.eReasonCode = 4;
-                ReturnHandler.eMessage = "Não foi possível criar o Fluxo de Trabalho!";
-
-                return ReturnHandler;
+                return ReturnHandlers.UnableToCreateFluxo;
             }
 
             Procedimento.FluxoTrabalhoListaControlo = GetAllCheklistControloProcedimento(Procedimento.No);
@@ -1517,23 +1469,14 @@ namespace Hydra.Such.Data.Logic.CCP
 
                 if (__UpdateProcedimento(Procedimento) == null)
                 {
-                    ReturnHandler.eReasonCode = 5;
-                    ReturnHandler.eMessage = "Não foi possível actualizar o Procedimento!";
-
-                    return ReturnHandler;
+                    return ReturnHandlers.UnableToUpdateProcedimento;
                 };
             }
 
-            ReturnHandler.eReasonCode = 0;
-            ReturnHandler.eMessage = "Autorização concedida";
-
-            return ReturnHandler;
+            return ReturnHandlers.Success;
         }
-
         public static ErrorHandler DecisionGroundsToBuy(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails, int StateToCheck)
         {
-            ErrorHandler ReturnHandler = new ErrorHandler();
-
             if (Procedimento.TemposPaCcp == null)
             {
                 TemposPaCcp TemposPA = GetTemposPaCcP(Procedimento.No);
@@ -1546,10 +1489,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
                     if (!__UpdateTemposPaCcp(TemposPA))
                     {
-                        ReturnHandler.eReasonCode = 1;
-                        ReturnHandler.eMessage = "Não foi possível actualizar os Tempos de Procedimento";
-
-                        return ReturnHandler;
+                        return ReturnHandlers.UnableToUpdateTemposPA;
                     }
                 };
 
@@ -1562,10 +1502,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 Procedimento.TemposPaCcp.DataHoraModificacao = DateTime.Now;
                 if (!__UpdateTemposPaCcp(CCPFunctions.CastTemposCCPViewToTemposPaCcp(Procedimento.TemposPaCcp)))
                 {
-                    ReturnHandler.eReasonCode = 1;
-                    ReturnHandler.eMessage = "Não foi possível actualizar os Tempos de Procedimento";
-
-                    return ReturnHandler;
+                    return ReturnHandlers.UnableToUpdateTemposPA;
                 }
             }
 
@@ -1581,11 +1518,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
                     if (!__UpdateFluxoTrabalho(Fluxo2))
                     {
-                        ReturnHandler.eReasonCode = 3;
-                        ReturnHandler.eMessage = "Não foi possível actualizar o Fluxo de Trabalho!";
-
-                        return ReturnHandler;
-
+                        return ReturnHandlers.UnableToUpdateFluxo;
                     }
                 }
             }
@@ -1601,11 +1534,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
                     if (!__UpdateFluxoTrabalho(Fluxo2))
                     {
-                        ReturnHandler.eReasonCode = 3;
-                        ReturnHandler.eMessage = "Não foi possível actualizar o Fluxo de Trabalho!";
-
-                        return ReturnHandler;
-
+                        return ReturnHandlers.UnableToUpdateFluxo;
                     }
                 }
             }
@@ -1655,10 +1584,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
             if (__CreateFluxoTrabalho(NewFluxo4) == null)
             {
-                ReturnHandler.eReasonCode = 4;
-                ReturnHandler.eMessage = "Não foi possível criar o Fluxo de Trabalho!";
-
-                return ReturnHandler;
+                return ReturnHandlers.UnableToCreateFluxo;
             }
 
             Procedimento.FluxoTrabalhoListaControlo = GetAllCheklistControloProcedimento(Procedimento.No);
@@ -1719,17 +1645,11 @@ namespace Hydra.Such.Data.Logic.CCP
 
                 if (__UpdateProcedimento(Procedimento) == null)
                 {
-                    ReturnHandler.eReasonCode = 5;
-                    ReturnHandler.eMessage = "Não foi possível actualizar o Procedimento!";
-
-                    return ReturnHandler;
+                    return ReturnHandlers.UnableToUpdateProcedimento;
                 };
             }
 
-            ReturnHandler.eReasonCode = 0;
-            ReturnHandler.eMessage = "Fundamentação compras";
-
-            return ReturnHandler;
+            return ReturnHandlers.Success;
         }
         #endregion
 
