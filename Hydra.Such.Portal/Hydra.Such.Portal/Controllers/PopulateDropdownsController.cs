@@ -136,7 +136,12 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetFolhaDeHoraCodeTypeKms()
         {
-            List<EnumDataString> result = EnumerablesFixed.FolhaDeHoraCodeTypeKms;
+            List<DDMessageString> result = DBTabelaConfRecursosFh.GetAll().Where(x => x.Tipo == "1").Select(x => new DDMessageString()
+            {
+                id = x.CodRecurso,
+                value = x.Descricao
+            }).ToList();
+
             return Json(result);
         }
 
@@ -957,10 +962,33 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetRHRecursosFH()
+        {
+            List<DDMessageString> result = DBRHRecursosFH.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.FamiliaRecurso,
+                value = x.NomeRecurso
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetCodTipoCustoByTipoCusto([FromBody]DDMessage tipoCusto)
         {
 
             List<DDMessageString> result = DBTabelaConfRecursosFh.GetAll().Where(x => x.Tipo == tipoCusto.id.ToString()).Select(x => new DDMessageString()
+            {
+                id = x.CodRecurso,
+                value = x.CodRecurso + " - " + x.Descricao
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetCodTipoCustoByTipoCusto_ALL()
+        {
+
+            List<DDMessageString> result = DBTabelaConfRecursosFh.GetAll().Select(x => new DDMessageString()
             {
                 id = x.CodRecurso,
                 value = x.CodRecurso + " - " + x.Descricao
