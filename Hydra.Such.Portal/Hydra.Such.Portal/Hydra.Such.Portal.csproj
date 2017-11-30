@@ -6,9 +6,13 @@
 
   <ItemGroup>
     <Compile Remove="wwwroot\lib\paper-input-money-master\**" />
+    <Compile Remove="__Notes\**" />
     <Content Remove="wwwroot\lib\paper-input-money-master\**" />
+    <Content Remove="__Notes\**" />
     <EmbeddedResource Remove="wwwroot\lib\paper-input-money-master\**" />
+    <EmbeddedResource Remove="__Notes\**" />
     <None Remove="wwwroot\lib\paper-input-money-master\**" />
+    <None Remove="__Notes\**" />
   </ItemGroup>
 
   <ItemGroup>

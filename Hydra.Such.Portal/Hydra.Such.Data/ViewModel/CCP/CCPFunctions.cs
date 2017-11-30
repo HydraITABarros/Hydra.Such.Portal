@@ -818,8 +818,6 @@ namespace Hydra.Such.Data.ViewModel.CCP
 
             return Body;
         } 
-
-
         #endregion
     }
 }
