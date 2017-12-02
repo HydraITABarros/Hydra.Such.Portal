@@ -64,6 +64,7 @@
                    last-response="{{result}}"
                    method="post"
                    auto
+                   on-response="_getAllResponse"
                    handle-as="json"
                    id="ajax_GetAll"
                    content-type="application/json">
@@ -189,8 +190,8 @@
 
             <vaadin-grid-column resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="tipoHora">Tipo Hora</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tipoHora" />
+                    <vaadin-grid-sorter path="tipoHoraText">Tipo Hora</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipoHoraText" />
                 </template>
                 <template>
                     @*<vaadin-text-field value="{{item.tipoHora}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>*@
@@ -387,7 +388,30 @@
                     this.$.ajax_GetAll.generateRequest();
                     this.$.gridTipoTrabalhoFH.clearCache();
                 },
+                _getAllResponse: function (e) {
 
+                    var _this = this;
+
+                    if (e.detail.status === 200) {
+                        (function fillComboText() {
+                            if (!_this.LTipoHora) {
+                                setTimeout(fillComboText, 600);
+                                return;
+                            }
+                            e.detail.response.forEach(function (data) {
+                                var tipoHora = _this.LTipoHora.filter(function (item) {
+                                    return item.id == data.tipoHora;
+                                });
+
+                                if (tipoHora && tipoHora[0]) {
+                                    data.tipoHoraText = tipoHora[0].value;
+                                }
+
+                            });
+                            _this.$.gridTipoTrabalhoFH.clearCache();
+                        })();
+                    }
+                },
                 _updateResponse: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {

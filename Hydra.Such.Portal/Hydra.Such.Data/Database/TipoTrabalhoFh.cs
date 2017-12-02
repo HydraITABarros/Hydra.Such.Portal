@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-
 namespace Hydra.Such.Data.Database
 {
     public partial class TipoTrabalhoFh
@@ -11,9 +10,9 @@ namespace Hydra.Such.Data.Database
         public string CodUnidadeMedida { get; set; }
         public bool? HoraViagem { get; set; }
         public int? TipoHora { get; set; }
-        public string UtilizadorCriacao { get; set; }
+        public string CriadoPor { get; set; }
         public DateTime? DataHoraCriacao { get; set; }
-        public string UtilizadorModificacao { get; set; }
-        public DateTime? DataHoraModificacao { get; set; }
+        public string AlteradoPor { get; set; }
+        public DateTime? DataHoraUltimaAlteracao { get; set; }
     }
 }

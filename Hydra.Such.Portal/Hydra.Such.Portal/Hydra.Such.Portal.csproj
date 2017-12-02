@@ -6,9 +6,13 @@
 
   <ItemGroup>
     <Compile Remove="wwwroot\lib\paper-input-money-master\**" />
+    <Compile Remove="__Notes\**" />
     <Content Remove="wwwroot\lib\paper-input-money-master\**" />
+    <Content Remove="__Notes\**" />
     <EmbeddedResource Remove="wwwroot\lib\paper-input-money-master\**" />
+    <EmbeddedResource Remove="__Notes\**" />
     <None Remove="wwwroot\lib\paper-input-money-master\**" />
+    <None Remove="__Notes\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,8 +29,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Compras\Data\" />
+    <Folder Include="Areas\Compras\Models\" />
     <Folder Include="Areas\Nutricao\Data\" />
     <Folder Include="Areas\Nutricao\Models\" />
+    <Folder Include="Areas\Requisicoes\Data\" />
+    <Folder Include="Areas\Requisicoes\Models\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 

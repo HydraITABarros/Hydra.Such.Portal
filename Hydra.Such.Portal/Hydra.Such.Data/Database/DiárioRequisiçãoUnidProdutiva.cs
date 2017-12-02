@@ -30,6 +30,8 @@ namespace Hydra.Such.Data.Database
         public string NomeFornecedor { get; set; }
         public string NºEncomendaAberto { get; set; }
         public string NºLinhaEncomendaAberto { get; set; }
+        public string DescriçãoUnidadeProduto { get; set; }
+        public string NºDocumento { get; set; }
 
         public UnidadesProdutivas NºUnidadeProdutivaNavigation { get; set; }
         public TiposRefeição TipoRefeiçãoNavigation { get; set; }

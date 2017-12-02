@@ -523,6 +523,19 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Conta CG"
             }
         };
+        public static readonly List<EnumData> requestTypes = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Produto"
+            },
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Recurso"
+            }
+        };
 
         public static readonly List<EnumData> FeeUnits = new List<EnumData>(){
             new EnumData()

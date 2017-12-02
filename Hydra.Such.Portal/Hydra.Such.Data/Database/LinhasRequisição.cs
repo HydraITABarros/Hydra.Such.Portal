@@ -39,6 +39,32 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
+        public decimal? QtdPorUnidadeDeMedida { get; set; }
+        public decimal? PreçoUnitárioVenda { get; set; }
+        public decimal? ValorOrçamento { get; set; }
+        public int? NºLinhaOrdemManutenção { get; set; }
+        public bool? CriarConsultaMercado { get; set; }
+        public bool? EnviarPréCompra { get; set; }
+        public bool? EnviadoPréCompra { get; set; }
+        public DateTime? DataMercadoLocal { get; set; }
+        public string UserMercadoLocal { get; set; }
+        public bool? EnviadoParaCompras { get; set; }
+        public DateTime? DataEnvioParaCompras { get; set; }
+        public bool? ValidadoCompras { get; set; }
+        public bool? RecusadoCompras { get; set; }
+        public string MotivoRecusaMercLocal { get; set; }
+        public DateTime? DataRecusaMercLocal { get; set; }
+        public int? IdCompra { get; set; }
+        public string NºFornecedor { get; set; }
+        public string NºEncomendaAberto { get; set; }
+        public int? NºLinhaEncomendaAberto { get; set; }
+        public string NºDeConsultaMercadoCriada { get; set; }
+        public string NºEncomendaCriada { get; set; }
+        public string CódigoProdutoFornecedor { get; set; }
+        public string UnidadeProdutivaNutrição { get; set; }
+        public string RegiãoMercadoLocal { get; set; }
+        public string NºCliente { get; set; }
+        public string Aprovadores { get; set; }
 
         public Projetos NºProjetoNavigation { get; set; }
         public Requisição NºRequisiçãoNavigation { get; set; }
