@@ -1,0 +1,80 @@
+﻿
+@{
+    ViewData["Title"] = "PreRequisicoes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+
+
+<link rel="import" href="/lib/paper-date-picker-master/paper-date-picker.html">
+<link rel="import" href="/lib/datetime-picker-master/datetime-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+
+<h1 class="title">Pré-Requisição</h1>
+
+<x-prerequisitions></x-prerequisitions>
+
+<dom-module id="x-prerequisitions">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+
+        <div class="row break_frm">
+            <div class="col-md-12 col-md-12 col-lg-12">
+                <iron-form id="formPreRequisitions">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Cabeçalho</div>
+                        <div class="panel-body">
+                            <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                                <paper-tab>Geral</paper-tab>
+                                <paper-tab>Reparação</paper-tab>
+                                <paper-tab>Recolha</paper-tab>
+                                <paper-tab>Entrega (Fornecedor)</paper-tab>
+                            </paper-tabs>
+
+                            <iron-pages selected="{{selected}}">
+                                <!--Geral-->
+                                <div></div>
+
+                                <!--Reparação-->
+                                <div></div>
+
+                                <!--Recolha-->
+                                <div></div>
+
+                                <!--Entrega (Fornecedor)-->
+                                <div></div>
+                            </iron-pages>
+                        </div>
+                    </div>
+                </iron-form>
+            </div>
+        </div>
+</template>
+
+<script>
+    document.addEventListener('WebComponentsReady', function () {
+        Polymer({
+            is: 'x-prerequisitions'
+        });
+    });
+</script>
+</dom-module>
