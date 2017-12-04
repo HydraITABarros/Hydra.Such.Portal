@@ -16,8 +16,8 @@ using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.Logic.Contracts;
 using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Data.Logic.Viatura;
-using Hydra.Such.Data.ViewModel.Viaturas;
 using Hydra.Such.Data.Logic.Nutrition;
+using Hydra.Such.Data.Logic.Compras;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1034,6 +1034,18 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = x.Codigo,
                 value = x.Descricao
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult TipoRequisicoesLista()
+        {
+            List<DDMessage> result = DBRequesitionType.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
             }).ToList();
 
             return Json(result);
