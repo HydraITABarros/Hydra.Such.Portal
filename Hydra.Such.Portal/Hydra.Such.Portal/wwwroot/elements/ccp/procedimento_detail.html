@@ -260,6 +260,16 @@
                    on-response="_checklistResponseEstado0"
                    content-type="application/json">
         </iron-ajax>
+
+        <iron-ajax url="/ProcedimentosCcps/SubmitProcedimento"
+                   last-response="{{ProcedimentoSubmitted}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_submitprocedimento"
+                   on-response="_submitProcedimentoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!-- Controller actions.e -->
         <!-- Header section of the Procedimento details -->
         <!--<iron-form id="formContract">-->
@@ -2159,8 +2169,6 @@
                     } else {
                         this._openToast('Não foi possível eliminar o Elemento do Juri!')
                     }
-
-
                 },
 
                 // Checklist Fluxo Trabalho

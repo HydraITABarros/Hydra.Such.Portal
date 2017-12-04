@@ -67,6 +67,7 @@
                    last-response="{{result}}"
                    method="post"
                    auto
+                   on-response="_getAllResponse"
                    handle-as="json"
                    id="ajax_GetAll"
                    content-type="application/json"></iron-ajax>
@@ -148,11 +149,11 @@
 
             <vaadin-grid-column resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="Tipo" disabled>Tipo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="Tipo" />
+                    <vaadin-grid-sorter path="tipoText" disabled>Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipoText" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[LtipoCusto]]" item-value-path="id" item-label-path="value" value="{{item.tipo }}" disabled>
+                    <vaadin-combo-box items="[[LtipoCusto]]" item-value-path="id" item-label-path="value" value="{{ item.tipo }}" disabled>
                         <template>
                             <table width="220px"><tr><td width="100%"> <b>[[item.value]]</b></td></tr></table>
                         </template>
@@ -162,8 +163,8 @@
 
             <vaadin-grid-column resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="codigoRecurso">Código Recurso</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoRecurso" />
+                    <vaadin-grid-sorter path="codigoRecursoText">Código Recurso</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoRecursoText" />
                 </template>
                 <template>
 
@@ -274,8 +275,7 @@
                     ready: function () {
                         var _self = this;
                         this.$.ajax_GetAll.generateRequest();
-                        
-                        console.log(this.$.codigoRecurso);
+
                         window.teste = this.$.codigoRecurso
                         this.$.codigoRecurso.addEventListener('value-changed', function () {
                             _self.$.descricao.value = _self.$.codigoRecurso.__data.selectedItem.value;
@@ -351,6 +351,38 @@
                         }
                         else {
                             this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        }
+                    },
+                    _getAllResponse: function (e) {
+                        var _this = this;
+                        if (e.detail.status === 200) {
+                            (function fillComboText() {
+                                if (!_this.LtipoCusto || !_this.LCodigoRecurso) {
+                                    setTimeout(fillCombosText, 600);
+                                    return;
+                                }
+
+                                e.detail.response.forEach(function (data) {
+                                    var tipo = _this.LtipoCusto.filter(function (item) {
+                                        return item.id == data.tipo;
+                                    });
+
+                                    if (tipo && tipo[0]) {
+                                        data.tipoText = tipo[0].value;
+                                    }
+
+                                    var codigoRecurso = _this.LCodigoRecurso.filter(function (item) {
+                                        return item.id == data.codigoRecurso;
+                                    });
+
+                                    if (codigoRecurso && codigoRecurso[0]) {
+                                        data.codigoRecursoText = codigoRecurso[0].value;
+                                    }
+                                });
+                                _this.$.gridConfiguracaoRecursosFolhaHoras.clearCache();
+
+                            })();
+
                         }
                     },
                     _createResponse: function (e) {

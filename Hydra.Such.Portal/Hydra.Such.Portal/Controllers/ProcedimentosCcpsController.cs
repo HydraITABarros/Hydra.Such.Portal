@@ -20,14 +20,14 @@ using Microsoft.Extensions.Options;
 
 namespace Hydra.Such.Portal.Controllers
 {
-    public class AreaEmailReceivers
+    public class AreaEmailRecipients
     {
         public int AreaID { get; set; }
         public string AreaName { get; set; }
         public string ToAddress { get; set; }
         public string CCAddress { get; set; }
 
-        public AreaEmailReceivers(string AreaFuncionalCode, ConfiguracaoCcp Addresses)
+        public AreaEmailRecipients(string AreaFuncionalCode, ConfiguracaoCcp Addresses)
         {
             List<EnumData> Areas = EnumerablesFixed.Areas;
 
@@ -81,11 +81,10 @@ namespace Hydra.Such.Portal.Controllers
         }
 
     }
+
     [Authorize]
     public class ProcedimentosCcpsController : Controller
     {
-
-
         #region Views
         public IActionResult Index()
         {
@@ -783,6 +782,61 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        [HttpPost]
+        public JsonResult GetUserFeatures()
+        {
+            List<AcessosUtilizador> UserAccesses = DBProcedimentosCCP.GetUserAccesses(User.Identity.Name);
+            if(UserAccesses != null)
+            {
+                List<string> UAccess = null;
+
+                foreach(var ua in UserAccesses)
+                {
+                    switch (ua.Funcionalidade)
+                    {
+                        case DBProcedimentosCCP._ElementoArea:
+                            UAccess.Add("IsElementArea");
+                            break;
+                        case DBProcedimentosCCP._ElementoPreArea0:
+                            UAccess.Add("IsElementPreArea0");
+                            break;
+                        case DBProcedimentosCCP._ElementoPreArea:
+                            UAccess.Add("IsElementPreArea");
+                            break;
+                        case DBProcedimentosCCP._ElementoCompras:
+                            UAccess.Add("IsElementCompras");
+                            break;
+                        case DBProcedimentosCCP._ElementoJuri:
+                            UAccess.Add("IsElementJuri");
+                            break;
+                        case DBProcedimentosCCP._ElementoContabilidade:
+                            UAccess.Add("IsElementContabilidade");
+                            break;
+                        case DBProcedimentosCCP._ElementoJuridico:
+                            UAccess.Add("IsElementJuridico");
+                            break;
+                        case DBProcedimentosCCP._ElementoCA:
+                            UAccess.Add("IsElementCA");
+                            break;
+                        case DBProcedimentosCCP._GestorProcesso:
+                            UAccess.Add("IsGestorProcesso");
+                            break;
+                        case DBProcedimentosCCP._SecretariadoCA:
+                            UAccess.Add("IsSecretariadoCA");
+                            break;
+                        case DBProcedimentosCCP._FechoProcesso:
+                            UAccess.Add("IsFechoProcesso");
+                            break;
+                    }
+                }
+
+                
+                return Json(UAccess.Distinct().ToList());
+            }
+
+            return Json(null);
+        }
+
         /*
          *      In the following methods the ErrorHandler will return:
          *          0 -> SUCCESS
@@ -926,7 +980,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
-                        AreaEmailReceivers DestinationEmails = new AreaEmailReceivers(data.CodigoAreaFuncional, EmailList);
+                        AreaEmailRecipients DestinationEmails = new AreaEmailRecipients(data.CodigoAreaFuncional, EmailList);
 
                         if(DestinationEmails.AreaID == -1)
                         {
@@ -1090,7 +1144,7 @@ namespace Hydra.Such.Portal.Controllers
                     return Json(ReturnHandlers.AddressListIsEmpty);
                 }
 
-                AreaEmailReceivers DestinationEmails = new AreaEmailReceivers(data.CodigoAreaFuncional, EmailList);
+                AreaEmailRecipients DestinationEmails = new AreaEmailRecipients(data.CodigoAreaFuncional, EmailList);
 
                 if (DestinationEmails.AreaID == -1)
                 {
