@@ -136,7 +136,12 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetFolhaDeHoraCodeTypeKms()
         {
-            List<EnumDataString> result = EnumerablesFixed.FolhaDeHoraCodeTypeKms;
+            List<DDMessageString> result = DBTabelaConfRecursosFh.GetAll().Where(x => x.Tipo == "1").Select(x => new DDMessageString()
+            {
+                id = x.CodRecurso,
+                value = x.Descricao
+            }).ToList();
+
             return Json(result);
         }
 
@@ -544,7 +549,17 @@ namespace Hydra.Such.Portal.Controllers
             List<DDMessageString> result = DBNAV2017ShippingAddresses.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
             {
                 id = X.Code,
-                value = X.Name
+                value = X.Name + " - " + X.City
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetNAVShippingAddressesByClientNo([FromBody] string ClientNo) { 
+            List<DDMessageString> result = DBNAV2017ShippingAddresses.GetByClientNo(ClientNo,_config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
+            {
+                id = X.Code,
+                value = X.Name + " - " + X.Address +" - " + X.City
             }).ToList();
             return Json(result);
         }
@@ -587,6 +602,26 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+
+        [HttpPost]
+        public JsonResult GetProjectNavList()
+        {
+            List<NAVProjectsViewModel> result = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetTipoTrabalhoList()
+        {
+            List<DDMessageString> result = DBTipoTrabalhoFH.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.Codigo,
+                value = x.Descricao
+            }).ToList();
+
+            return Json(result);
+        }
+
         [HttpPost]
         public JsonResult GetProjectListDiary()
         {
@@ -598,7 +633,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
-        
+
         [HttpPost]
         public JsonResult GetContabGroupTypesOM_Type()
         {
@@ -726,6 +761,14 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> ProcedimentoTypes = EnumerablesFixed.ProcedimentosCcpProcedimentoType;
 
             return Json(ProcedimentoTypes);
+        }
+
+        [HttpPost]
+        public JsonResult GetPocedimentosAbertoFechado()
+        {
+            List<EnumData> retval = EnumerablesFixed.ProcedimentosAbertoFechado;
+
+            return Json(retval);
         }
 
         [HttpPost]
@@ -911,11 +954,29 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.TipoMovimento;
             return Json(result);
         }
-    
+
         [HttpPost]
         public JsonResult GetAjudaCustoPartidaChegada()
         {
             List<EnumData> result = EnumerablesFixed.AjudaCustoPartidaChegada;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetTipoHoraFH()
+        {
+            List<EnumData> result = EnumerablesFixed.GetTipoHoraFH;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetRHRecursosFH()
+        {
+            List<DDMessageString> result = DBRHRecursosFH.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.FamiliaRecurso,
+                value = x.NomeRecurso
+            }).ToList();
             return Json(result);
         }
 
@@ -932,6 +993,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetCodTipoCustoByTipoCusto_ALL()
+        {
+
+            List<DDMessageString> result = DBTabelaConfRecursosFh.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.CodRecurso,
+                value = x.CodRecurso + " - " + x.Descricao
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetProductivityUnits()
         {
             List<DDMessage> result = DBProductivityUnits.GetAll().Select(x => new DDMessage()
@@ -939,6 +1012,30 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.NºUnidadeProdutiva,
                 value = x.Descrição
             }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult PrecoVendaRecurso_Code()
+        {
+            List<DDMessageString> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult PrecoVendaRecurso_CodeTipoTrabalho()
+        {
+            List<DDMessageString> result = DBTipoTrabalhoFH.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.Codigo,
+                value = x.Descricao
+            }).ToList();
+
             return Json(result);
         }
     }

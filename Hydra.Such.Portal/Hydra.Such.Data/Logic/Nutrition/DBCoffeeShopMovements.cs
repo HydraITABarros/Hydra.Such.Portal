@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Hydra.Such.Data.Logic.Nutrition
 {
@@ -24,6 +25,38 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 return null;
             }
+        }
+
+        public static MovimentosCafetariaRefeitório GetById(int movementNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.MovimentosCafetariaRefeitório.SingleOrDefault(x => x.NºMovimento == movementNo);
+                }
+            }
+            catch { }
+
+            return null;
+        }
+
+        public static decimal GetTotalRevenuesFor(int productivityUnitNo, int coffeeShopCode, int coffeeShopType)
+        {
+            decimal? totalRevenues = null;
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    totalRevenues = ctx.MovimentosCafetariaRefeitório.Where(mov => mov.NºUnidadeProdutiva == productivityUnitNo &&
+                                                                            mov.CódigoCafetariaRefeitório.Value == coffeeShopCode &&
+                                                                            mov.Tipo.Value == coffeeShopType)
+                                                                     .Sum(total => total.Valor);
+                }
+            }
+            catch { }
+
+            return totalRevenues.HasValue ? totalRevenues.Value : 0;
         }
     }
 }

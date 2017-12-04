@@ -373,6 +373,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
             
             if(Procedimento.EmailsProcedimentosCcp != null && Procedimento.EmailsProcedimentosCcp.Count > 0)
             {
+                
                 ProcedimentoView.EmailsProcedimentosCcp = DBProcedimentosCCP.GetAllEmailsView(Procedimento);
             }
 
@@ -761,5 +762,62 @@ namespace Hydra.Such.Data.ViewModel.CCP
         }
         #endregion
 
+
+        #region Procedures used in the email automation
+        public static string MakeEmailBodyContent(string BodyText, string SenderName)
+        {
+            string Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:600px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Exmos (as) Senhores (as)," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyText +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                SenderName +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+
+            return Body;
+        } 
+        #endregion
     }
 }

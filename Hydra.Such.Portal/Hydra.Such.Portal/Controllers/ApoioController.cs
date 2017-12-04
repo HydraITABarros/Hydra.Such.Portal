@@ -259,7 +259,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Viaturas()
         {
-            return View();
+            //return View();
 
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 5, 11);
             if (UPerm != null && UPerm.Read.Value)
@@ -274,7 +274,6 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult DetalhesViatura(string id)
         {
-            //return View();
 
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 5, 1);
             if (UPerm != null && UPerm.Read.Value)

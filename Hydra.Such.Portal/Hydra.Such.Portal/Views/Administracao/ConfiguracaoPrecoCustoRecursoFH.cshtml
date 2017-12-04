@@ -1,0 +1,244 @@
+﻿
+@{
+    ViewData["Title"] = "Configuração Preço Custo Recursos FH";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*grid*@
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
+@*textfield*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+
+
+@*combobox*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html" />
+@*toast*@
+<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
+@*layout*@
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+@*mixin*@
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+@*button*@
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+@*ironform*@
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+@*paperinput*@
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
+
+<h1 class="title">Configuração Preço Custo Recursos FH</h1>
+
+<x-group-cont-product></x-group-cont-product>
+
+<dom-module id="x-group-cont-product">
+    <template>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="~/css/main.css" />
+        <style>
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            #configuracaoTipoTrabalhoCusto vaadin-date-picker {
+                margin-top: 16px !important;
+                width: 100% !important;
+            }
+
+            input {
+                font: inherit;
+            }
+
+            paper-input {
+                max-width: 450px !important;
+            }
+        </style>
+    </template>
+
+    <script>
+        var CreateValue = true, UpdateValue = true, DeleteValue = true;
+
+        if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' == "false") {
+            CreateValue = false;
+        }
+
+        if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' == "false") {
+            UpdateValue = false;
+        }
+
+        if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' == "false") {
+            DeleteValue = false;
+        }
+
+        document.addEventListener('WebComponentsReady',
+        function () {
+            Polymer({
+                is: 'x-group-cont-product',
+                properties: {
+                    _permissionsUpdate: {
+                        type: Boolean,
+                        value: UpdateValue
+                    },
+
+                    _permissionsCreate: {
+                        type: Boolean,
+                        value: CreateValue
+                    },
+
+                    _permissionsDelete: {
+                        type: Boolean,
+                        value: DeleteValue
+                    },
+
+                    ddgroupcontprod: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    }
+                },
+
+                ready: function () {
+                    this.$.ajax_GetAll.generateRequest();
+                },
+
+                openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+
+                _validateData: function (container) {
+
+                    var polymerDom = Polymer.dom(this.$[container]);
+                    var errors = 0;
+                    var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
+                    var formFields = polymerDom.querySelectorAll(formSelector);
+
+                    formFields.forEach(function (element) {
+                        if (!element.validate()) errors++;
+                    });
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
+                    return true;
+                },
+
+                _create: function () {
+                    //if (this._validateData("configuracaoAjudaCusto")) {
+
+                    //    this.$.ajax_create.body = JSON.stringify(
+                    //        {
+                    //            codigoTipoCusto: this.$.codigoTipoCusto.value,
+                    //            codigoRefCusto: this.$.codigoRefCusto.value,
+                    //            dataChegadaDataPartida: this.$.dataChegadaDataPartida.checked,
+                    //            distanciaMinima: this.$.distanciaMinima.value,
+                    //            limiteHoraPartida: this.$.limiteHoraPartida.value,
+                    //            limiteHoraChegada: this.$.limiteHoraChegada.value,
+                    //            prioritario: this.$.prioritario.checked,
+                    //            tipoCusto: this.$.tipoCusto.value,
+                    //            sinalHoraPartida: this.$.sinalHoraPartida.value,
+                    //            horaPartida: this.$.horaPartida.value,
+                    //            sinalHoraChegada: this.$.sinalHoraChegada.value,
+                    //            horaChegada: this.$.horaChegada.value,
+                    //            tipoEstadia: this.$.tipoEstadia.checked
+                    //        }
+                    //    );
+                    //    this.$.ajax_create.generateRequest();
+                    //    this.$.gridConfiguracaoAjudaCusto.clearCache();
+                    //}
+                },
+
+                _update: function () {
+                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.generateRequest();
+                    //this.$.gridConfiguracaoAjudaCusto.clearCache();
+                },
+
+                _delete: function (e) {
+
+                    this.$.ajax_delete.body = JSON.stringify(e.model.item);
+                    this.$.ajax_delete.generateRequest();
+                    this.result = this.result.filter(function (item) {
+                        return item != e.model.item;
+                    });
+                    //this.$.gridConfiguracaoAjudaCusto.clearCache();
+                },
+
+                _cancel: function () {
+                    this.$.ajax_GetAll.generateRequest();
+                    //this.$.gridConfiguracaoAjudaCusto.clearCache();
+                },
+
+                _updateResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        this.$.ajax_GetAll.generateRequest();
+                        this.openToast("Tabela atualizada.");
+                    }
+                    else {
+                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                    }
+                },
+
+                _createResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+
+                        //this.$.codigoTipoCusto.value = "";
+                        //this.$.codigoRefCusto.value = "";
+                        //this.$.dataChegadaDataPartida.checked = false;
+                        //this.$.distanciaMinima.value = "";
+                        //this.$.limiteHoraPartida.value = "";
+                        //this.$.limiteHoraChegada.value = "";
+                        //this.$.prioritario.checked = false;
+                        //this.$.tipoCusto.value = "";
+                        //this.$.sinalHoraPartida.value = "";
+                        //this.$.horaPartida.value = "";
+                        //this.$.sinalHoraChegada.value = "";
+                        //this.$.horaChegada.value = "";
+                        //this.$.tipoEstadia.checked = false;
+
+                        this.$.ajax_GetAll.generateRequest();
+                        this.openToast("Tabela atualizada.");
+                    }
+                    else {
+                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                    }
+                },
+
+                _deleteResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        this.$.ajax_GetAll.generateRequest();
+                        this.openToast("Tabela atualizada.");
+                    }
+                    else {
+                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                    }
+                },
+
+                _goBack: function (e) {
+                    window.location = "../";
+                }
+            });
+        });
+    </script>
+</dom-module>

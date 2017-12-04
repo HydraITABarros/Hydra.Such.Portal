@@ -18,6 +18,10 @@ namespace Hydra.Such.Data.Database
         public int? NumeraçãoOportunidades { get; set; }
         public int? NumeraçãoPropostas { get; set; }
         public int? NumeraçãoContactos { get; set; }
+        public TimeSpan InicioHoraAlmoco { get; set; }
+        public TimeSpan FimHoraAlmoco { get; set; }
+        public TimeSpan InicioHoraJantar { get; set; }
+        public TimeSpan FimHoraJantar { get; set; }
 
         public ConfiguraçãoNumerações NumeraçãoContratosNavigation { get; set; }
         public ConfiguraçãoNumerações NumeraçãoFolhasDeHorasNavigation { get; set; }

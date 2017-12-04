@@ -24,5 +24,9 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public DateTime? CreateDate { get; set; }
         public string CreateUser { get; set; } = string.Empty;
         public DateTime? UpdateDate { get; set; }
+
+        public decimal? TotalRevenues { get; set; }
+        public decimal? TotalConsumption { get; set; }
+        public decimal? TotalMeals { get; set; }
     }
 }
