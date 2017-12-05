@@ -1109,9 +1109,14 @@ namespace Hydra.Such.Data.Logic.CCP
         public static List<AcessosUtilizador> GetUserAccesses(string UserID)
         {
             SuchDBContext _context = new SuchDBContext();
-            List<AcessosUtilizador> UsersAccessess = _context.AcessosUtilizador.Where(a => a.IdUtilizador == UserID).ToList();
-
-            return UsersAccessess;
+            try
+            {
+                return (_context.AcessosUtilizador.Where(a => a.IdUtilizador == UserID).ToList());
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
         public static bool CheckUserRoleRelatedToCCP(string UserID, int RoleID)
         {

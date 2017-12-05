@@ -1639,7 +1639,7 @@ namespace Hydra.Such.Portal.Controllers
         {
 
             TipoTrabalhoFh toCreate = DBTipoTrabalhoFH.ParseToDB(data);
-            toCreate.UtilizadorCriacao = User.Identity.Name;
+            toCreate.CriadoPor = User.Identity.Name;
             var result = DBTipoTrabalhoFH.Create(toCreate);
 
             return Json(data);
@@ -1671,7 +1671,7 @@ namespace Hydra.Such.Portal.Controllers
             data.ForEach(x =>
             {
                 TipoTrabalhoFh toUpdate = DBTipoTrabalhoFH.ParseToDB(x);
-                toUpdate.UtilizadorModificacao = User.Identity.Name;
+                toUpdate.AlteradoPor = User.Identity.Name;
                 DBTipoTrabalhoFH.Update(toUpdate);
             });
             return Json(data);
@@ -1717,7 +1717,7 @@ namespace Hydra.Such.Portal.Controllers
             toCreate.Descricao = resource.Name;
             toCreate.FamiliaRecurso = resource.ResourceGroup;
 
-            toCreate.UtilizadorCriacao = User.Identity.Name;
+            toCreate.CriadoPor = User.Identity.Name;
             var result = DBPrecoVendaRecursoFH.Create(toCreate);
 
             return Json(data);
@@ -1752,7 +1752,7 @@ namespace Hydra.Such.Portal.Controllers
             data.ForEach(x =>
             {
                 PrecoVendaRecursoFh toUpdate = DBPrecoVendaRecursoFH.ParseToDB(x);
-                toUpdate.UtilizadorModificacao = User.Identity.Name;
+                toUpdate.AlteradoPor = User.Identity.Name;
                 DBPrecoVendaRecursoFH.Update(toUpdate);
             });
             return Json(data);
@@ -1799,7 +1799,7 @@ namespace Hydra.Such.Portal.Controllers
         {
 
             PrecoCustoRecursoFh toCreate = DBPrecoCustoRecursoFH.ParseToDB(data);
-            toCreate.UtilizadorCriacao = User.Identity.Name;
+            toCreate.CriadoPor = User.Identity.Name;
             var result = DBPrecoCustoRecursoFH.Create(toCreate);
 
             return Json(data);
@@ -1833,7 +1833,7 @@ namespace Hydra.Such.Portal.Controllers
             data.ForEach(x =>
             {
                 PrecoCustoRecursoFh toUpdate = DBPrecoCustoRecursoFH.ParseToDB(x);
-                toUpdate.UtilizadorModificacao = User.Identity.Name;
+                toUpdate.AlteradoPor = User.Identity.Name;
                 DBPrecoCustoRecursoFH.Update(toUpdate);
             });
             return Json(data);
@@ -1878,7 +1878,7 @@ namespace Hydra.Such.Portal.Controllers
             toCreate.NomeRecurso = resource.Name;
             toCreate.FamiliaRecurso = resource.ResourceGroup;
             toCreate.NomeEmpregado = employee.Name;
-            toCreate.UtilizadorCriacao = User.Identity.Name;
+            toCreate.CriadoPor = User.Identity.Name;
 
             var result = DBRHRecursosFH.Create(toCreate);
 
@@ -1911,7 +1911,7 @@ namespace Hydra.Such.Portal.Controllers
             data.ForEach(x =>
             {
                 RhRecursosFh toUpdate = DBRHRecursosFH.ParseToDB(x);
-                toUpdate.UtilizadorModificacao = User.Identity.Name;
+                toUpdate.AlteradoPor = User.Identity.Name;
                 DBRHRecursosFH.Update(toUpdate);
             });
             return Json(data);
