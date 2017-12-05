@@ -1002,6 +1002,19 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetMealTypes()
+        {
+            List<DDMessage> result = DBMealTypes.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+        
     }
 
 

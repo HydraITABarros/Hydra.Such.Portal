@@ -185,7 +185,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 {
                     RequisitionTemplateId = item.NºRequisição,
                     RequisitionTemplateLineId = item.NºLinha,
-                    Description = "Não implementado",//item.Descrição
                     CodeRegion = item.CódigoRegião,
                     CodeFunctionalArea = item.CódigoÁreaFuncional,
                     CodeResponsabilityCenter = item.CódigoCentroResponsabilidade,
@@ -193,7 +192,21 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     UpdateDate = item.DataHoraModificação.HasValue ? item.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
                     CreateUser = item.UtilizadorCriação,
                     UpdateUser = item.UtilizadorModificação,
-                    //TemplateHeader = item.NºRequisiçãoNavigation.ParseToViewModel()
+                    EmployeeId = item.NºFuncionário,
+                    MealType = item.TipoRefeição.HasValue ? item.TipoRefeição.Value : -1,
+                    ProductDescription = item.Descrição,
+                    ProductId = item.Código,
+                    ProjectId = item.NºProjeto,
+                    Quantity = item.QuantidadeARequerer.HasValue ? item.QuantidadeARequerer.Value : 0,
+                    QuantityApproved = item.QuantidadeAprovada.HasValue ? item.QuantidadeAprovada.Value : 0,
+                    QuantityReceived = item.QuantidadeRecebida.HasValue ? item.QuantidadeRecebida.Value : 0,
+                    QuantityToApprove = item.QuantidadeAAprovar.HasValue ? item.QuantidadeAAprovar.Value : 0,
+                    Status = item.Estado.HasValue ? item.Estado.Value : 0,
+                    SupplierId = item.CódLocalização,
+                    TotalCost = item.CustoTotal.HasValue ? item.CustoTotal.Value : 0,
+                    Type = item.Tipo.HasValue ? item.Tipo.Value : -1,
+                    UnitCost = item.CustoUnitário.HasValue ? item.CustoUnitário.Value : 0,
+                    UnitOfMeasure = item.CódUnidadeMedida,
                 };
             }
             return null;
@@ -216,7 +229,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 {
                     NºRequisição = item.RequisitionTemplateId,
                     NºLinha = item.RequisitionTemplateLineId,
-                    Descrição = item.Description,
+                    Descrição = item.ProductDescription,
                     CódigoRegião = item.CodeRegion,
                     CódigoÁreaFuncional = item.CodeFunctionalArea,
                     CódigoCentroResponsabilidade = item.CodeResponsabilityCenter,
@@ -224,6 +237,20 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     DataHoraModificação = string.IsNullOrEmpty(item.UpdateDate) ? (DateTime?)null : DateTime.Parse(item.UpdateDate),
                     UtilizadorCriação = item.CreateUser,
                     UtilizadorModificação = item.UpdateUser,
+                    NºFuncionário = item.EmployeeId,
+                    TipoRefeição = item.MealType > 0 ? item.MealType : (int?)null,
+                    Código = item.ProductId,
+                    NºProjeto = item.ProjectId,
+                    QuantidadeARequerer = item.Quantity,
+                    QuantidadeAprovada = item.QuantityApproved,
+                    QuantidadeRecebida = item.QuantityReceived,
+                    QuantidadeAAprovar = item.QuantityToApprove,
+                    Estado = item.Status > -1 ? item.Status : (int?)null,
+                    CódLocalização = item.SupplierId,
+                    CustoTotal = item.TotalCost,
+                    Tipo = item.Type > -1 ? item.Type : (int?)null,
+                    CustoUnitário = item.UnitCost,
+                    CódUnidadeMedida = item.UnitOfMeasure,
                 };
             }
             return null;
