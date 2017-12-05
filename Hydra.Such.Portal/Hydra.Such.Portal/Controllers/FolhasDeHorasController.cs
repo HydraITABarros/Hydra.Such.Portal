@@ -38,10 +38,20 @@ namespace Hydra.Such.Portal.Controllers
             return View();
         }
 
+        public FolhaDeHorasViewModel ParseDBtoViewModel(FolhasDeHoras FH)
+        {
+            FolhaDeHorasViewModel FHViewModel = new FolhaDeHorasViewModel();
+
+            FHViewModel.Area = 1;
+
+            return FHViewModel;
+        }
+
+
         [HttpPost]
         public JsonResult GetListFolhasDeHorasByArea([FromBody] int id)
         {
-            List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByAreaToList(id);
+            List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name);
 
             result.ForEach(FH =>
             {
