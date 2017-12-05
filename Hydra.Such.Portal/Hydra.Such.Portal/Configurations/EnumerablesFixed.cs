@@ -214,7 +214,7 @@ namespace Hydra.Such.Portal.Configurations
              },
 
             
-            #region identify user roles related to CCP
+            #region 1. identify user roles related to CCP
 		     new EnumData()
              {
                  Id = 25,
@@ -273,9 +273,34 @@ namespace Hydra.Such.Portal.Configurations
              {
                  Id = 34,
                  Value = "Checklist - Fecho de Processo"
-             } 
+             },
 	        #endregion
 
+             new EnumData()
+             {
+                 Id = 35,
+                 Value = "Cafetarias/Refeitórios"
+             },
+
+             new EnumData()
+             {
+                 Id = 36,
+                 Value = "Diário Cafetarias/Refeitórios"
+             },
+
+            #region 2. identify user roles related to CCP
+             new EnumData
+             {
+                 Id = 37,
+                 Value = "Checklist - Elemento Area"
+             },
+	        #endregion
+
+             new EnumData()
+            {
+                Id = 38,
+                Value = "Modelos Requisições Simplificadas"
+            },
         };
 
         public static readonly List<EnumData> ProposalStatus = new List<EnumData>(){
@@ -368,46 +393,51 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 1,
-                Value = "Enviada"
+                Value = "Aberta"
             },
             new EnumData()
             {
                 Id = 2,
-                Value = "Revista"
+                Value = "Enviada"
             },
             new EnumData()
             {
                 Id = 3,
-                Value = "Perdida"
+                Value = "Revista"
             },
             new EnumData()
             {
                 Id = 4,
-                Value = "Cancelada"
+                Value = "Perdida"
             },
             new EnumData()
             {
                 Id = 5,
-                Value = "Renovada"
+                Value = "Cancelada"
             },
             new EnumData()
             {
                 Id = 6,
-                Value = "Adjudicada"
+                Value = "Renovada"
             },
             new EnumData()
             {
                 Id = 7,
-                Value = "Parcialmente Aceite, "
+                Value = "Adjudicada"
             },
             new EnumData()
             {
                 Id = 8,
-                Value = "Oportunidade"
+                Value = "Parcialmente Aceite"
             },
             new EnumData()
             {
                 Id = 9,
+                Value = "Oportunidade"
+            },
+            new EnumData()
+            {
+                Id = 10,
                 Value = "Oportunidade Não Respondida"
             }
         };
@@ -435,7 +465,7 @@ namespace Hydra.Such.Portal.Configurations
             },
             new EnumData()
             {
-                Id = 4,
+                Id = 5,
                 Value = "Fechado"
             } };
 
@@ -1007,6 +1037,19 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> ProcedimentosAbertoFechado = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Aberto"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Fechado"
+            }
+        };
+
         public static readonly List<EnumData> ProcedimentosCcpType = new List<EnumData>()
         {
             new EnumData()
@@ -1384,6 +1427,30 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 1,
                 Value = "<="
+            }
+        };
+
+        public static readonly List<EnumData> GetTipoHoraFH = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 0,
+                Value = "Contrato"
+            },
+            new EnumData
+            {
+                Id = 1,
+                Value = "Avulso"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Viagem"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Interna"
             }
         };
 

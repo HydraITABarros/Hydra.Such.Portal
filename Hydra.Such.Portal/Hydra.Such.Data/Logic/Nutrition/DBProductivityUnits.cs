@@ -141,30 +141,69 @@ namespace Hydra.Such.Data.Logic.Nutrition
 
             return result;
         }
-        public static ProductivityUnitViewModel ParseToViewModel(UnidadesProdutivas x)
+        //public static ProductivityUnitViewModel ParseToViewModel(UnidadesProdutivas x)
+        //{
+        //    return new ProductivityUnitViewModel()
+        //    {
+        //        ProductivityUnitNo = x.NºUnidadeProdutiva,
+        //        Description = x.Descrição,
+        //        Status = x.Estado,
+        //        ClientNo = x.NºCliente,
+        //        CodeRegion = x.CódigoRegião,
+        //        CodeResponsabilityCenter = x.CódigoCentroResponsabilidade,
+        //        CodeFunctionalArea = x.CódigoÁreaFuncional,
+        //        StartDateExploration = x.DataInícioExploração.HasValue ? x.DataInícioExploração.Value.ToString("yyyy-MM-dd") : "",
+        //        EndDateExploration = x.DataFimExploração.HasValue ? x.DataFimExploração.Value.ToString("yyyy-MM-dd") : "",
+        //        Warehouse = x.Armazém,
+        //        WarehouseSupplier = x.ArmazémFornecedor,
+        //        ProjectKitchen = x.ProjetoCozinha,
+        //        ProjectWaste = x.ProjetoDesperdícios,
+        //        ProjectWasteFeedstock = x.ProjetoDespMatPrimas,
+        //        ProjectSubsidiaries = x.ProjetoMatSubsidiárias,
+        //        CreateDate = x.DataHoraCriação,
+        //        UpdateDate = x.DataHoraModificação,
+        //        CreateUser = x.UtilizadorCriação,
+        //        UpdateUser = x.UtilizadorModificação
+        //    };
+        //}
+
+        public static ProductivityUnitViewModel ParseToViewModel(this UnidadesProdutivas item)
         {
-            return new ProductivityUnitViewModel()
+            if (item != null)
             {
-                ProductivityUnitNo = x.NºUnidadeProdutiva,
-                Description = x.Descrição,
-                Status = x.Estado,
-                ClientNo = x.NºCliente,
-                CodeRegion = x.CódigoRegião,
-                CodeResponsabilityCenter = x.CódigoCentroResponsabilidade,
-                CodeFunctionalArea = x.CódigoÁreaFuncional,
-                StartDateExploration = x.DataInícioExploração.HasValue ? x.DataInícioExploração.Value.ToString("yyyy-MM-dd") : "",
-                EndDateExploration = x.DataFimExploração.HasValue ? x.DataFimExploração.Value.ToString("yyyy-MM-dd") : "",
-                Warehouse = x.Armazém,
-                WarehouseSupplier = x.ArmazémFornecedor,
-                ProjectKitchen = x.ProjetoCozinha,
-                ProjectWaste = x.ProjetoDesperdícios,
-                ProjectWasteFeedstock = x.ProjetoDespMatPrimas,
-                ProjectSubsidiaries = x.ProjetoMatSubsidiárias,
-                CreateDate = x.DataHoraCriação,
-                UpdateDate = x.DataHoraModificação,
-                CreateUser = x.UtilizadorCriação,
-                UpdateUser = x.UtilizadorModificação
-            };
+                return new ProductivityUnitViewModel()
+                {
+                    ProductivityUnitNo = item.NºUnidadeProdutiva,
+                    Description = item.Descrição,
+                    Status = item.Estado,
+                    ClientNo = item.NºCliente,
+                    CodeRegion = item.CódigoRegião,
+                    CodeResponsabilityCenter = item.CódigoCentroResponsabilidade,
+                    CodeFunctionalArea = item.CódigoÁreaFuncional,
+                    StartDateExploration = item.DataInícioExploração.HasValue ? item.DataInícioExploração.Value.ToString("yyyy-MM-dd") : "",
+                    EndDateExploration = item.DataFimExploração.HasValue ? item.DataFimExploração.Value.ToString("yyyy-MM-dd") : "",
+                    Warehouse = item.Armazém,
+                    WarehouseSupplier = item.ArmazémFornecedor,
+                    ProjectKitchen = item.ProjetoCozinha,
+                    ProjectWaste = item.ProjetoDesperdícios,
+                    ProjectWasteFeedstock = item.ProjetoDespMatPrimas,
+                    ProjectSubsidiaries = item.ProjetoMatSubsidiárias,
+                    CreateDate = item.DataHoraCriação,
+                    UpdateDate = item.DataHoraModificação,
+                    CreateUser = item.UtilizadorCriação,
+                    UpdateUser = item.UtilizadorModificação
+                };
+            }
+            return null;
+        }
+
+        public static List<ProductivityUnitViewModel> ParseToViewModel(this List<UnidadesProdutivas> items)
+        {
+            List<ProductivityUnitViewModel> parsedItems = new List<ProductivityUnitViewModel>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseToViewModel()));
+            return parsedItems;
         }
     }
 }

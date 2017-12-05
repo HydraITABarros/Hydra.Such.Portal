@@ -1,10 +1,9 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel.Nutrition;
-using Hydra.Such.Data.ViewModel.Projects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Hydra.Such.Data.Logic.Nutrition
 {
@@ -65,6 +64,26 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
+        public static CafetariasRefeitórios GetById(int productivityUnitNo, int type, int code, DateTime explorationStartDate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.CafetariasRefeitórios
+                        .FirstOrDefault(x => x.NºUnidadeProdutiva == productivityUnitNo && 
+                        x.Tipo == type &&
+                        x.Código == code &&
+                        x.DataInícioExploração == explorationStartDate);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static CafetariasRefeitórios GetById(int NºUnidadeProdutiva, string NºProjeto)
         {
             try
@@ -72,6 +91,22 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.CafetariasRefeitórios.FirstOrDefault(x => x.NºUnidadeProdutiva == NºUnidadeProdutiva && x.NºProjeto == NºProjeto);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static CafetariasRefeitórios GetByCode(int Code)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.CafetariasRefeitórios.FirstOrDefault(x => x.Código == Code);
                 }
             }
             catch (Exception ex)
@@ -97,7 +132,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
-
         public static bool Delete(CafetariasRefeitórios ObjectToDelete)
         {
             try
@@ -117,7 +151,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
-
         public static List<CafetariasRefeitórios> GetByNUnidadeProdutiva(int NºUnidadeProdutiva)
         {
             try
@@ -133,8 +166,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
-
-
 
         public static CafetariasRefeitórios ParseToDB(CoffeeShopViewModel x)
         {
@@ -161,10 +192,12 @@ namespace Hydra.Such.Data.Logic.Nutrition
             };
         }
 
-
-        public static CoffeeShopViewModel ParseToViewModel(CafetariasRefeitórios x)
+        public static CoffeeShopViewModel ParseToViewModel(CafetariasRefeitórios x, string navDatabaseName, string navCompanyName)
         {
-            return new CoffeeShopViewModel()
+            if (x == null)
+                return new CoffeeShopViewModel();
+
+            CoffeeShopViewModel result = new CoffeeShopViewModel()
             {
                 ProductivityUnitNo = x.NºUnidadeProdutiva,
                 Type = x.Tipo,
@@ -185,15 +218,32 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 UpdateDate = x.DataHoraModificação,
                 UpdateUser = x.UtilizadorModificação
             };
+
+            //Get totals
+            result.TotalRevenues = DBCoffeeShopMovements.GetTotalRevenuesFor(result.ProductivityUnitNo, result.Code, result.Type);
+            result.TotalConsumption = DBProjectDiary.GetProjectTotaConsumption(result.ProjectNo);
+
+            decimal totalMeals = DBNAV2017CoffeeShops.GetTotalMeals(navDatabaseName, navCompanyName, result.ProjectNo);
+            result.TotalMeals = totalMeals;
+
+            return result;
         }
 
-
-        public static List<CoffeeShopViewModel> ParseListToViewModel(List<CafetariasRefeitórios> x)
+        public static List<CoffeeShopViewModel> ParseListToViewModel(List<CafetariasRefeitórios> x, string navDatabaseName, string navCompanyName)
         {
             List<CoffeeShopViewModel> result = new List<CoffeeShopViewModel>();
 
-            x.ForEach(y => result.Add(ParseToViewModel(y)));
+            x.ForEach(y => result.Add(ParseToViewModel(y, navDatabaseName, navCompanyName)));
             return result;
+        }
+
+        public static List<CoffeeShopViewModel> ParseToViewModel(this List<CafetariasRefeitórios> items, string navDatabaseName, string navCompanyName)
+        {
+            List<CoffeeShopViewModel> coffeeShops = new List<CoffeeShopViewModel>();
+            if (items != null)
+                items.ForEach(x =>
+                    coffeeShops.Add(ParseToViewModel(x, navDatabaseName, navCompanyName)));
+            return coffeeShops;
         }
     }
 }

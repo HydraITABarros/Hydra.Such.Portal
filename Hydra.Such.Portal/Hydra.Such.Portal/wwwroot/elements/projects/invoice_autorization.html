@@ -43,7 +43,6 @@
 <iron-ajax url="/Projetos/GetAutorizacaoFaturacao"
            last-response="{{result}}"
            method="post"
-           auto
            handle-as="json"
            id="page_databound_ajax"
            content-type="application/json">
@@ -292,6 +291,11 @@
         Polymer({
             is: 'x-invoice-autorization',
             properties: {
+                _areaid: {
+                    type: Number,
+                    notify: true,
+                    value: 0
+                },
                 ddCGTOM_Type: {
                     type: Number,
                     notify: true,
@@ -313,7 +317,8 @@
                 }
             },
             ready: function () {
-                //this.$.page_databound_ajax.generateRequest();
+                this.$.page_databound_ajax.body = JSON.stringify(this._areaid);
+                this.$.page_databound_ajax.generateRequest();
             },
             openToast: function (message) {
                 this.$.ToastMessageSuccess.text = message;

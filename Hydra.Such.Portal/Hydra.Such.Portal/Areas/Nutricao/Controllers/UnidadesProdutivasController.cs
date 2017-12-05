@@ -93,7 +93,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 result = DBProductivityUnits.ParseToViewModel(ProductivityUnitDB);
                 
                 result.BillingProjects =  DBProjectBilling.ParseListToViewModel(DBProjectBilling.GetByNUnidadeProdutiva(result.ProductivityUnitNo));
-                result.CoffeeShops = DBCoffeeShops.ParseListToViewModel(DBCoffeeShops.GetByNUnidadeProdutiva(result.ProductivityUnitNo));
+                result.CoffeeShops = DBCoffeeShops.ParseListToViewModel(DBCoffeeShops.GetByNUnidadeProdutiva(result.ProductivityUnitNo), _config.NAVDatabaseName, _config.NAVCompanyName);
             }
             else
             {

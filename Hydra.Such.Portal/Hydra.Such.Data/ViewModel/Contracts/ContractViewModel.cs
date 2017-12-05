@@ -12,6 +12,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public int? Area { get; set; }
         public string Description { get; set; }
         public int? Status { get; set; }
+        public string StatusDescription { get; set; }
         public int? ChangeStatus { get; set; }
         public string ClientNo { get; set; }
         public string ClientName { get; set; }

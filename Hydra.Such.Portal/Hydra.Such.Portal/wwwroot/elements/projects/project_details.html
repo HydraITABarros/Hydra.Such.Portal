@@ -102,8 +102,10 @@
                     <template is="dom-if" if="{{ _permissions.create }}">
                         <paper-button raised id="btnProjectAdd" class="" on-tap="_createNewProject"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                     </template>
-                    <paper-button raised id="btnProjectMovements" class="" on-tap="_OpenProjectMovements" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
-                    <paper-button raised id="btnProjectDiary" class="" on-tap="_OpenProjectDiary" ><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
+                        <paper-button raised id="btnProjectMovements" class="" on-tap="_OpenProjectMovements"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
+                    <template is="dom-if" if="{{ !_projectClosed }}">
+                        <paper-button raised id="btnProjectDiary" class="" on-tap="_OpenProjectDiary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
+                    </template>
                 </div>
             </div>
         </template>
@@ -432,7 +434,12 @@
                     _isCreate: {
                         type: Boolean,
                         value: false
-                    }
+                    },
+                    _projectClosed: {
+                        type: Boolean,
+                        value: false
+                    },
+                    
                 },
                 ready: function () {
                     //GET PROJECT DATA
@@ -518,6 +525,10 @@
                     if (this.data.projectNo == "" || this.data.projectNo == undefined) {
                         this.data.area = this._areaid;
                         this.data.status = 1;
+                    } else {
+                        if (this.data.status == 4 || this.data.status == 5) {
+                            this._projectClosed = true;
+                        }
                     }
 
                     if (data.detail.status === 200) {
@@ -597,7 +608,7 @@
                 },
                 //BUTTONS
                 _OpenProjectMovements: function (url, data) {
-                    window.location.href = "../Movimentos/" + this.data.projectNo;
+                    window.location.href = "/Projetos/MovimentosDeProjeto/" + this.data.projectNo;
                 },
                 _OpenProjectDiary: function (url, data) {
                     window.location.href = "../DiarioProjeto/" + this.data.projectNo;

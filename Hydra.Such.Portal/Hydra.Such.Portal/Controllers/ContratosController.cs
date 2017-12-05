@@ -104,6 +104,9 @@ namespace Hydra.Such.Portal.Controllers
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
+            List<EnumData> status = EnumerablesFixed.ContractStatus;
+            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
+
             return Json(result);
         }
 
@@ -297,8 +300,6 @@ namespace Hydra.Such.Portal.Controllers
                     if (data.ContractNo != null)
                     {
                         //Contratos cContract = DBContracts.ParseToDB(data);
-
-
                         Contratos ContratoDB = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
 
 
@@ -714,6 +715,8 @@ namespace Hydra.Such.Portal.Controllers
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
+            List<EnumData> status = EnumerablesFixed.ContractStatus;
+            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
             return Json(result);
         }
 
@@ -999,6 +1002,8 @@ namespace Hydra.Such.Portal.Controllers
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
+            List<EnumData> status = EnumerablesFixed.ContractStatus;
+            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
             return Json(result);
         }
         
@@ -1034,6 +1039,7 @@ namespace Hydra.Such.Portal.Controllers
                             List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(contractNo, int.Parse(versionNo)).OrderBy(x => x.NºLinha).ToList();
                             try
                             {
+                                thisHeader.Estado = 1;
                                 thisHeader.TipoContrato = originType;
                                 thisHeader.NºDeContrato = contractNo;
                                 thisHeader.NºContrato = newNumeration;

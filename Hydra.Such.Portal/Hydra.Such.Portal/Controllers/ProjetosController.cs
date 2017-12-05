@@ -482,7 +482,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (projectNo == null || projectNo == "")
             {
-                List<ProjectDiaryViewModel> dp = DBProjectDiary.GetAll(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
+                List<ProjectDiaryViewModel> dp = DBProjectDiary.GetAllOpen(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
                 {
                     LineNo = x.NºLinha,
                     ProjectNo = x.NºProjeto,
@@ -968,11 +968,11 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAutorizacaoFaturacao([FromBody] ProjectDiaryViewModel data)
+        public JsonResult GetAutorizacaoFaturacao([FromBody] int areaId)
         {
             try
             {
-                List<ProjectDiaryViewModel> result = DBProjectDiary.GetAllTable(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
+                List<ProjectDiaryViewModel> result = DBProjectDiary.GetAllTableByArea(User.Identity.Name, areaId).Select(x => new ProjectDiaryViewModel()
                 {
                     LineNo = x.NºLinha,
                     ProjectNo = x.NºProjeto,

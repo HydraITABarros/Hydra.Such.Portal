@@ -20,7 +20,7 @@ namespace Hydra.Such.Tester
             //StoredProcedureTeste();
             try
             {
-                CreateNAVProj();
+                IsServerConnected();
             }
             catch (Exception ex)
             {
@@ -98,6 +98,22 @@ namespace Hydra.Such.Tester
             }
 
 
+        }
+
+        public static bool IsServerConnected()
+        {
+            using (var l_oConnection = new SqlConnection("data source=10.101.1.10\\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;"))
+            {
+                try
+                {
+                    l_oConnection.Open();
+                    return true;
+                }
+                catch (SqlException ex)
+                {
+                    return false;
+                }
+            }
         }
     }
 }

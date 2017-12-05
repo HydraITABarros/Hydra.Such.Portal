@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.Logic.FolhaDeHora
 {
-    public class DBTabelaConfRecursosFH
+    public class DBTabelaConfRecursosFh
     {
 
         public static List<TabelaConfRecursosFh> GetAll()
