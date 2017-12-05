@@ -135,6 +135,17 @@
                    on-response="_getEmpoyeeNAVResponse"
                    content-type="application/json">
         </iron-ajax>
+
+        <iron-ajax url="/FolhasDeHoras/ValidarFolhaDeHoras"
+                   last-response="{{validarFolhaDeHoras}}"
+                   method="post"
+                   handle-as="json"
+                   id="validarfolhadehoras_ajax"
+                   on-response="_validarfolhadehorasResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+
         <!--GetEmployeeNome-->
         <!-- FOLHADEHORA Valitador -->
         <iron-ajax url="/FolhasDeHoras/ValidateNumeration"
@@ -1455,10 +1466,6 @@
               var myDataChegada = new Date(this.$.dataChegadaTexto.value);
               var myDataHoje = new Date();
 
-              console.log(myDataPartida);
-              console.log(myDataChegada);
-              console.log(myDataHoje);
-
               if (myDataChegada < myDataPartida) {
                 this._showErrorMessage('O campo Data Fim tem que ser superior ou igual ao campo Data Inicio.');
                 return false;
@@ -1474,6 +1481,20 @@
               return true;
             }
             return false;
+          },
+
+          _validarFolhaDeHoras: function () {
+              debugger;
+              if (this.$.folhaDeHorasNo.value != "" &
+                  this.$.empregadoNo.value != "") {
+                  this.$.validarfolhadehoras_ajax.body = JSON.stringify({
+                      folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                      empregadoNo: this.$.empregadoNo.value
+                  });
+                  this.$.validarfolhadehoras_ajax.generateRequest();
+              } else {
+                  this._showErrorMessage('É obrigatório preencher o campo Empregado.');
+              }
           },
 
           //PERCURSO
@@ -1861,6 +1882,17 @@
             else {
               this._showErrorMessage('Ocorreu um erro ao actualizar a Folha De Horas.');
             }
+          },
+
+          _validarfolhadehorasResponse: function (e) {
+              debugger;;
+              if (this.validarFolhaDeHoras) {
+                  this._showMessage('Folha de Horas validada com sucesso.');
+                  this.$.page_databound_ajax.generateRequest();
+              }
+              else {
+                  this._showErrorMessage('Ocorreu um erro ao validar a Folha De Horas.');
+              }
           },
 
           //PERCURSO
