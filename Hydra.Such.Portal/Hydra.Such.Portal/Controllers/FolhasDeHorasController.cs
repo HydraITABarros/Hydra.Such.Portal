@@ -1089,10 +1089,10 @@ namespace Hydra.Such.Portal.Controllers
 
                 Configuração Configuracao = DBConfigurations.GetAll().Where(x => x.Id == 1).SingleOrDefault();
 
-                TimeSpan InicioHoraAlmoco = Configuracao.InicioHoraAlmoco;
-                TimeSpan FimHoraAlmoco = Configuracao.FimHoraAlmoco;
-                TimeSpan InicioHoraJantar = Configuracao.InicioHoraJantar;
-                TimeSpan FimHoraJantar = Configuracao.FimHoraJantar;
+                TimeSpan InicioHoraAlmoco = (TimeSpan)Configuracao.InicioHoraAlmoco;
+                TimeSpan FimHoraAlmoco = (TimeSpan)Configuracao.FimHoraAlmoco;
+                TimeSpan InicioHoraJantar = (TimeSpan)Configuracao.InicioHoraJantar;
+                TimeSpan FimHoraJantar = (TimeSpan)Configuracao.FimHoraJantar;
 
                 if (Almoco)
                     if (HoraFim > InicioHoraAlmoco && HoraFim < FimHoraAlmoco)
@@ -1247,10 +1247,10 @@ namespace Hydra.Such.Portal.Controllers
 
                 Configuração Configuracao = DBConfigurations.GetAll().Where(x => x.Id == 1).SingleOrDefault();
 
-                TimeSpan InicioHoraAlmoco = Configuracao.InicioHoraAlmoco;
-                TimeSpan FimHoraAlmoco = Configuracao.FimHoraAlmoco;
-                TimeSpan InicioHoraJantar = Configuracao.InicioHoraJantar;
-                TimeSpan FimHoraJantar = Configuracao.FimHoraJantar;
+                TimeSpan InicioHoraAlmoco = (TimeSpan)Configuracao.InicioHoraAlmoco;
+                TimeSpan FimHoraAlmoco = (TimeSpan)Configuracao.FimHoraAlmoco;
+                TimeSpan InicioHoraJantar = (TimeSpan)Configuracao.InicioHoraJantar;
+                TimeSpan FimHoraJantar = (TimeSpan)Configuracao.FimHoraJantar;
 
                 if (Almoco)
                     if (HoraFim > InicioHoraAlmoco && HoraFim < FimHoraAlmoco)
@@ -1361,10 +1361,10 @@ namespace Hydra.Such.Portal.Controllers
 
             Configuração Configuracao = DBConfigurations.GetAll().Where(x => x.Id == 1).SingleOrDefault();
 
-            TimeSpan InicioHoraAlmoco = Configuracao.InicioHoraAlmoco;
-            TimeSpan FimHoraAlmoco = Configuracao.FimHoraAlmoco;
-            TimeSpan InicioHoraJantar = Configuracao.InicioHoraJantar;
-            TimeSpan FimHoraJantar = Configuracao.FimHoraJantar;
+            TimeSpan InicioHoraAlmoco = (TimeSpan)Configuracao.InicioHoraAlmoco;
+            TimeSpan FimHoraAlmoco = (TimeSpan)Configuracao.FimHoraAlmoco;
+            TimeSpan InicioHoraJantar = (TimeSpan)Configuracao.InicioHoraJantar;
+            TimeSpan FimHoraJantar = (TimeSpan)Configuracao.FimHoraJantar;
 
             try
             {

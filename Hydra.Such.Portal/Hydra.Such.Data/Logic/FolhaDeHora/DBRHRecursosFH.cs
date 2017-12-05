@@ -51,7 +51,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ObjectToUpdate.DataHoraModificacao = DateTime.Now;
+                    ObjectToUpdate.DataHoraUltimaAlteracao = DateTime.Now;
                     ctx.RhRecursosFh.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
@@ -93,10 +93,10 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 NomeRecurso = x.NomeRecurso,
                 FamiliaRecurso = x.FamiliaRecurso,
                 NomeEmpregado = x.NomeEmpregado,
-                UtilizadorCriacao = x.UtilizadorCriacao,
+                CriadoPor = x.UtilizadorCriacao,
                 DataHoraCriacao = x.DataHoraCriacao,
-                UtilizadorModificacao = x.UtilizadorModificacao,
-                DataHoraModificacao = x.DataHoraModificacao
+                AlteradoPor = x.UtilizadorModificacao,
+                DataHoraUltimaAlteracao = x.DataHoraModificacao
             };
         }
 
@@ -109,10 +109,10 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 NomeRecurso = x.NomeRecurso,
                 FamiliaRecurso = x.FamiliaRecurso,
                 NomeEmpregado = x.NomeEmpregado,
-                UtilizadorCriacao = x.UtilizadorCriacao,
+                UtilizadorCriacao = x.CriadoPor,
                 DataHoraCriacao = x.DataHoraCriacao,
-                UtilizadorModificacao = x.UtilizadorModificacao,
-                DataHoraModificacao = x.DataHoraModificacao
+                UtilizadorModificacao = x.AlteradoPor,
+                DataHoraModificacao = x.DataHoraUltimaAlteracao
             };
         }
 
