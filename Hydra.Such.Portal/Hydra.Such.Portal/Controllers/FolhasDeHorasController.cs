@@ -16,6 +16,7 @@ using System.Net;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using Hydra.Such.Data.Logic.Project;
+using System.Data.SqlClient;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -37,10 +38,20 @@ namespace Hydra.Such.Portal.Controllers
             return View();
         }
 
+        public FolhaDeHorasViewModel ParseDBtoViewModel(FolhasDeHoras FH)
+        {
+            FolhaDeHorasViewModel FHViewModel = new FolhaDeHorasViewModel();
+
+            FHViewModel.Area = 1;
+
+            return FHViewModel;
+        }
+
+
         [HttpPost]
         public JsonResult GetListFolhasDeHorasByArea([FromBody] int id)
         {
-            List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByAreaToList(id);
+            List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name);
 
             result.ForEach(FH =>
             {
@@ -1089,10 +1100,10 @@ namespace Hydra.Such.Portal.Controllers
 
                 Configuração Configuracao = DBConfigurations.GetAll().Where(x => x.Id == 1).SingleOrDefault();
 
-                TimeSpan InicioHoraAlmoco = Configuracao.InicioHoraAlmoco;
-                TimeSpan FimHoraAlmoco = Configuracao.FimHoraAlmoco;
-                TimeSpan InicioHoraJantar = Configuracao.InicioHoraJantar;
-                TimeSpan FimHoraJantar = Configuracao.FimHoraJantar;
+                TimeSpan InicioHoraAlmoco = (TimeSpan)Configuracao.InicioHoraAlmoco;
+                TimeSpan FimHoraAlmoco = (TimeSpan)Configuracao.FimHoraAlmoco;
+                TimeSpan InicioHoraJantar = (TimeSpan)Configuracao.InicioHoraJantar;
+                TimeSpan FimHoraJantar = (TimeSpan)Configuracao.FimHoraJantar;
 
                 if (Almoco)
                     if (HoraFim > InicioHoraAlmoco && HoraFim < FimHoraAlmoco)
@@ -1247,10 +1258,10 @@ namespace Hydra.Such.Portal.Controllers
 
                 Configuração Configuracao = DBConfigurations.GetAll().Where(x => x.Id == 1).SingleOrDefault();
 
-                TimeSpan InicioHoraAlmoco = Configuracao.InicioHoraAlmoco;
-                TimeSpan FimHoraAlmoco = Configuracao.FimHoraAlmoco;
-                TimeSpan InicioHoraJantar = Configuracao.InicioHoraJantar;
-                TimeSpan FimHoraJantar = Configuracao.FimHoraJantar;
+                TimeSpan InicioHoraAlmoco = (TimeSpan)Configuracao.InicioHoraAlmoco;
+                TimeSpan FimHoraAlmoco = (TimeSpan)Configuracao.FimHoraAlmoco;
+                TimeSpan InicioHoraJantar = (TimeSpan)Configuracao.InicioHoraJantar;
+                TimeSpan FimHoraJantar = (TimeSpan)Configuracao.FimHoraJantar;
 
                 if (Almoco)
                     if (HoraFim > InicioHoraAlmoco && HoraFim < FimHoraAlmoco)
@@ -1361,10 +1372,10 @@ namespace Hydra.Such.Portal.Controllers
 
             Configuração Configuracao = DBConfigurations.GetAll().Where(x => x.Id == 1).SingleOrDefault();
 
-            TimeSpan InicioHoraAlmoco = Configuracao.InicioHoraAlmoco;
-            TimeSpan FimHoraAlmoco = Configuracao.FimHoraAlmoco;
-            TimeSpan InicioHoraJantar = Configuracao.InicioHoraJantar;
-            TimeSpan FimHoraJantar = Configuracao.FimHoraJantar;
+            TimeSpan InicioHoraAlmoco = (TimeSpan)Configuracao.InicioHoraAlmoco;
+            TimeSpan FimHoraAlmoco = (TimeSpan)Configuracao.FimHoraAlmoco;
+            TimeSpan InicioHoraJantar = (TimeSpan)Configuracao.InicioHoraJantar;
+            TimeSpan FimHoraJantar = (TimeSpan)Configuracao.FimHoraJantar;
 
             try
             {
@@ -1518,5 +1529,37 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
         #endregion
+
+        [HttpPost]
+        public JsonResult ValidarFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
+        {
+            bool result = false;
+            try
+            {
+                if (!string.IsNullOrEmpty(data.FolhaDeHorasNo) && !string.IsNullOrEmpty(data.EmpregadoNo))
+                {
+                    using (var ctx = new SuchDBContextExtention())
+                    {
+                        var parameters = new[]{
+                        //new SqlParameter("@ServerName", "SUCH-NAVSQL\\SQLNAV"),
+                        //new SqlParameter("@DBName", "EvolutionWEB"),
+                        //new SqlParameter("@TableName", "Job Ledger Entry"),
+                        new SqlParameter("@NoFH", data.FolhaDeHorasNo),
+                        new SqlParameter("@NoUtilizador", data.EmpregadoNo)
+                    };
+
+                        //ctx.execStoredProcedure("exec Validar_FH @ServerName, @DBName, @TableName, @NoFH, @NoUtilizador", parameters);
+                        ctx.execStoredProcedureValidarFH("exec Validar_FH @NoFH, @NoUtilizador", parameters);
+
+                        result = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
     }
 }

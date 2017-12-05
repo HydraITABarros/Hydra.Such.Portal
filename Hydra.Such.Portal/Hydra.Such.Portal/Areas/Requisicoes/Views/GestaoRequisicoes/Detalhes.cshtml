@@ -1,0 +1,253 @@
+﻿
+@{
+    ViewData["Title"] = "Detalhes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
+<link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
+<link rel="import" href="~/elements/comboboxs/ProjectList.html" />
+<h1 class="title">Gestão Requisições</h1>
+<x-request></x-request>
+
+<dom-module id="x-request">
+<template>
+<link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+<link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+<paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
+    <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+<iron-ajax url="/Requisicoes/GestaoRequisicoes/GetGridValues" id="ajax_getgrid" auto last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+ 
+<div class="subMenu">
+    <paper-button class="tablinks" on-tap="_requestModels"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i>Linhas de Requisição</paper-button>
+</div><!--on-response="_gridListResponse"-->
+    <h2 class="separator">Requisições</h2>
+<vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="requisitionNo">Nº Requisição </vaadin-grid-sorter>
+        <vaadin-grid-filter path="requisitionNo" />
+    </template>
+    <template>
+            {{item.requisitionNo}}
+    </template>
+
+</vaadin-grid-column>
+    <vaadin-grid-column  width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
+            <vaadin-grid-filter path="state" />
+        </template>
+        <template>
+            {{item.state}}
+        </template>
+    </vaadin-grid-column>
+    
+    <vaadin-grid-column  width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="urgent">Urgente</vaadin-grid-sorter>
+            <vaadin-grid-filter path="urgent" />
+        </template>
+        <template>
+            {{item.urgent}}
+        </template>
+    </vaadin-grid-column>
+
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="buyCash">Compra a Dinheiro</vaadin-grid-sorter>
+            <vaadin-grid-filter path="buyCash" />
+        </template>
+        <template>
+            {{item.buyCash}}
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
+            <vaadin-grid-filter path="comments" />
+        </template>
+        <template>
+            {{item.comments}}
+        </template>
+    </vaadin-grid-column>
+<vaadin-grid-column  width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="area">Área</vaadin-grid-sorter>
+        <vaadin-grid-filter path="area" />
+    </template>
+    <template>
+        {{item.area}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column  width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+        <vaadin-grid-filter path="projectNo" />
+    </template>
+    <template>
+        {{item.projectNo}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column  width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
+        <vaadin-grid-filter path="regionCode" />
+    </template>
+    <template>
+        {{item.regionCode}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column  width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
+        <vaadin-grid-filter path="functionalAreaCode" />
+    </template>
+    <template>
+        {{item.functionalAreaCode}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column  width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="centerResponsibilityCode">Código Centro Responsabilidade</vaadin-grid-sorter>
+        <vaadin-grid-filter path="centerResponsibilityCode" />
+    </template>
+    <template>
+        {{item.centerResponsibilityCode}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column  width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
+        <vaadin-grid-filter path="localCode" />
+    </template>
+    <template>
+        {{item.localCode}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column  width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="employeeNo">Nº Funcionário</vaadin-grid-sorter>
+        <vaadin-grid-filter path="employeeNo" />
+    </template>
+    <template>
+        {{item.employeeNo}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column  width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="vehicle">Viatura </vaadin-grid-sorter>
+        <vaadin-grid-filter path="vehicle" />
+    </template>
+    <template>
+        {{item.vehicle}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column  width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="receivedDate">Data Receção</vaadin-grid-sorter>
+        <vaadin-grid-filter path="receivedDate" />
+    </template>
+    <template>
+        {{item.receivedDate}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column  width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="sample">Amostra</vaadin-grid-sorter>
+        <vaadin-grid-filter path="sample" />
+    </template>
+    <template>
+        {{item.sample}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column  width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="attachment">Anexo</vaadin-grid-sorter>
+        <vaadin-grid-filter path="attachment" />
+    </template>
+    <template>
+        {{item.attachment}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column  width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="immobilized">Imobilizado</vaadin-grid-sorter>
+        <vaadin-grid-filter path="immobilized" />
+    </template>
+    <template>
+        {{item.immobilized}}
+    </template>
+</vaadin-grid-column>
+    
+    <vaadin-grid-column  width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="localCollectionCode">Código Local Recolha</vaadin-grid-sorter>
+            <vaadin-grid-filter path="localCollectionCode" />
+        </template>
+        <template>
+            {{item.localCollectionCode}}
+        </template>
+    </vaadin-grid-column>
+    
+    <vaadin-grid-column  width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="localDeliveryCode">Código Local Entrega</vaadin-grid-sorter>
+            <vaadin-grid-filter path="localDeliveryCode" />
+        </template>
+        <template>
+            {{item.localDeliveryCode}}
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column  width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="requestModel">Modelo De Requisição</vaadin-grid-sorter>
+            <vaadin-grid-filter path="requestModel" />
+        </template>
+        <template>
+            {{item.requestModel}}
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column with="10%">
+    <template class="header">
+    </template>
+    <template>
+        <center>
+            <paper-button class="btnRemove" raised on-tap="_delete" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+        </center>
+    </template>
+</vaadin-grid-column>
+</vaadin-grid>    
+</template>
+<script>
+    document.addEventListener('WebComponentsReady', function () {
+        Polymer({
+            is: 'x-request',
+            _requestModels: function () {
+                window.location.href = "/Requisicoes/GestaoRequisicoes/LinhasRequisicao";
+            },
+        });
+    });
+
+</script>
+</dom-module>
+
