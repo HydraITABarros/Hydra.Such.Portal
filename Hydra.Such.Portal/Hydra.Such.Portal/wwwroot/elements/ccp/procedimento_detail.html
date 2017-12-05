@@ -219,7 +219,16 @@
                    content-type="application/json">
         </iron-ajax>
         <!-- Dropdowns populate.e -->
+
         <!-- Controller actions.b -->
+        <iron-ajax url="/ProcedimentosCcps/GetUserFeatures"
+                   last-response="{{UserAccesses}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_userpermissions"
+                   on-response="_userPermissionsResponseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
         <iron-ajax url="/ProcedimentosCcps/GetProcedimentoDetails"
                    last-response="{{data}}"
                    method="post"
@@ -228,6 +237,89 @@
                    on-response="_responseProcessor"
                    content-type="application/json">
         </iron-ajax>
+        <!-- Data from Fluxo Trabalho.b -->
+        <iron-ajax url="/ProcedimentosCcps/GetChecklistArea"
+                   last-response="{{CLArea}}"           
+                   method="post"
+                   handle-as="json"
+                   id="ajax_checklist_estado0"
+                   on-response="_checklistResponseEstado0"
+                   content-type="application/json">
+        </iron-ajax> <!-- FluxoTrabalho.Estado == 0 -->
+        <iron-ajax url="/ProcedimentosCcps/GetChecklistImobilizadoContabilidade"
+                   last-response="{{CLImobContab}}"     
+                   method="post"
+                   handle-as="json"
+                   id="ajax_checklist_estado1"
+                   on-response="_checklistResponseEstado1"
+                   content-type="application/json">
+        </iron-ajax> <!-- FluxoTrabalho.Estado == 1 -->   
+        <iron-ajax url="/ProcedimentosCcps/GetChecklistImobilizadoArea"
+                   last-response="{{CLImobArea}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_checklist_estado2"
+                   on-response="_checklistResponseEstado2"
+                   content-type="application/json">
+        </iron-ajax> <!-- FluxoTrabalho.Estado == 2 -->
+        <iron-ajax url="/ProcedimentosCcps/GetChecklistImobilizadoCA"
+                   last-response="{{CLImobCA}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_checklist_estado3"
+                   on-response="_checklistResponseEstado3"
+                   content-type="application/json">
+        </iron-ajax> <!-- FluxoTrabalho.Estado == 3 -->
+        <iron-ajax url="/ProcedimentosCcps/GetChecklistFundamentoCompras"
+                   last-response="{{CLFundamentoCompras}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_checklist_estado4"
+                   on-response="_checklistResponseEstado4"
+                   content-type="application/json">
+        </iron-ajax> <!-- FluxoTrabalho.Estado == 4 -->
+        <iron-ajax url="/ProcedimentosCcps/GetChecklistFundamentoFinanceiros"
+                   last-response="{{CLFundamentoFinanceiros}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_checklist_estado5"
+                   on-response="_checklistResponseEstado5"
+                   content-type="application/json">
+        </iron-ajax> <!-- FluxoTrabalho.Estado == 5 -->
+        <iron-ajax url="/ProcedimentosCcps/GetChecklistJuridicoAvaliacaoPecasOuContrato"
+                   last-response="{{CLAvaliacaoJuridico}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_checklist_estado6ou14"
+                   on-response="_checklistResponseEstado6ou14"
+                   content-type="application/json">
+        </iron-ajax> <!-- FluxoTrabalho.Estado == 6 || 14 -->
+        <iron-ajax url="/ProcedimentosCcps/GetChecklistFundamentacaoArea"
+                   last-response="{{CLFundamentacaoArea}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_checklist_estado7"
+                   on-response="_checklistResponseEstado7"
+                   content-type="application/json">
+        </iron-ajax> <!-- FluxoTrabalho.Estado == 7 -->
+        <iron-ajax url="/ProcedimentosCcps/GetChecklistAberturaOuAutorizacao"
+                   last-response="{{CLAbertura}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_checklist_estado8ou17"
+                   on-response="_checklistResponseEstado8ou17"
+                   content-type="application/json">
+        </iron-ajax> <!-- FluxoTrabalho.Estado == 8 || 17 -->
+        <iron-ajax url="/ProcedimentosCcps/GetChecklistAdjudicacao"
+                   last-response="{{CLAdjudicacao}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_checklist_estado15ou16"
+                   on-response="_checklistResponseEstado15ou16"
+                   content-type="application/json">
+        </iron-ajax> <!-- FluxoTrabalho.Estado == 15 || 16 -->
+        <!-- Data from Fluxo Trabalho.e -->
+
         <iron-ajax url="/ProcedimentosCcps/DeleteProcedimento"
                    last-response="{{deletedData}}"
                    method="post"
@@ -251,16 +343,7 @@
                    id="ajax_deleteelementojuri"
                    on-response="_deleteElementoJuriResponse"
                    content-type="application/json">
-        </iron-ajax>
-        <iron-ajax url="/ProcedimentosCcps/GetChecklistArea"
-                   last-response="{{DisplayChecklist}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_checklist_estado0"
-                   on-response="_checklistResponseEstado0"
-                   content-type="application/json">
-        </iron-ajax>
-
+        </iron-ajax>        
         <iron-ajax url="/ProcedimentosCcps/SubmitProcedimento"
                    last-response="{{ProcedimentoSubmitted}}"
                    method="post"
@@ -323,7 +406,7 @@
                 <div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LProcedimentoState]]" item-value-path="id" item-label-path="value" required value="{{data.estado}}" label="Estado">
+                            <vaadin-combo-box items="[[LProcedimentoState]]" item-value-path="id" item-label-path="value" required value="{{data.estado}}" label="Estado" disabled="true">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -551,22 +634,22 @@
                                     <!--Elementos Checklist - Estado 0 - .b -->
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.comentarioArea}}" id="comentarioAreaApresentar" name="comentarioAreaApresentar" label="Comentário"> </vaadin-text-field>
+                                            <vaadin-text-field type="text" value="{{CLArea.checklistArea.comentarioArea}}" id="comentarioAreaApresentar" name="comentarioAreaApresentar" label="Comentário"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.responsavelArea}}" id="responsavelAreaApresentar" name="responsavelAreaApresentar" label="O Responsável da Área pela apresentação da informação "> </vaadin-text-field>
+                                            <vaadin-text-field type="text" value="{{CLArea.checklistArea.responsavelArea}}" id="responsavelAreaApresentar" name="responsavelAreaApresentar" label="O Responsável da Área pela apresentação da informação "> </vaadin-text-field>
                                         </div>
                                         <br />
                                         <div class="col-sm-6">
-                                            <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.nomeResponsavelArea}}" id="nomeResponsavelAreaApresentar" name="nomeResponsavelAreaApresentar"> </vaadin-text-field>
+                                            <vaadin-text-field type="text" value="{{CLArea.checklistArea.nomeResponsavelArea}}" id="nomeResponsavelAreaApresentar" name="nomeResponsavelAreaApresentar"> </vaadin-text-field>
                                         </div>
 
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-3">
-                                            <vaadin-text-field type="text" value="{{DisplayChecklist.checklistArea.dataResponsavel}}" id="dataResponsavelApresentar" name="dataResponsavelApresentar" label="Data"> </vaadin-text-field>
+                                            <vaadin-text-field type="text" value="{{CLArea.checklistArea.dataResponsavel}}" id="dataResponsavelApresentar" name="dataResponsavelApresentar" label="Data"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <!--Elementos Checklist - Estado 0 - .e -->
@@ -1939,17 +2022,16 @@
                         notify: true,
                         value: false
                     },
+                    userAllowed: {
+                        type: Boolean,
+                        value: true
+                    },
                 },
 
                 ready: function () {
-                    //debugger;;
-
-                    this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
-                    this.$.page_databound_ajax.generateRequest();
-
-                    if (this._procedimentoid == "") {
-                        this._isCreate = true;
-                    }
+                    debugger;;
+                    this.$.ajax_userpermissions.body = this.data;
+                    this.$.ajax_userpermissions.generateRequest();                               
                 },
 
                 _openToast: function (message) {
@@ -2011,7 +2093,6 @@
 
                 //Responses Processors
                 _responseProcessor: function (data) {
-                    //debugger;;
                     var self = this;
 
                     if (data.detail.status === 200) {
@@ -2021,9 +2102,12 @@
                                 return;
                             }
 
+                            this._setFieldsEditability(data);
+
                             this.$.ajax_checklist_estado0.body = this.data;
                             this.$.ajax_checklist_estado0.generateRequest();
 
+                            
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             this._createResponseProcessor();
                         } else if (data.detail.url.indexOf("Update") !== -1) {
@@ -2045,15 +2129,7 @@
                 },
 
                 _responseValidatorProcessor: function (data) {
-                    ////debugger;;
                     var self = this;
-                    //if (data.detail.status === 200) {
-                    //    if (this.validateResponse == "") {
-                    //        this._executeRequest("/FolhasDeHoras/CreateFolhaDeHora", this.data)
-                    //    } else {
-                    //        this._openToast(data);
-                    //    }
-                    //}
                 },
 
                 _responseDeleteProcessor: function (data) {
@@ -2071,6 +2147,33 @@
                         }
                     }
                 },
+
+                _userPermissionsResponseProcessor: function () {
+                    if (this.UserAccesses == null) {
+                        this._openToast("Não está autorizado a aceder a esta opção");
+                        this.userAllowed = false;
+
+                        setTimeout(
+                            function () {
+                               // window.location.replace("/");
+                            }, 3000);
+                    }
+ 
+                    if (this.userAllowed) {
+                        this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
+                        this.$.page_databound_ajax.generateRequest();
+
+                        if (this._procedimentoid == "") {
+                            this._isCreate = true;
+                        }
+                    } else {
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    }  
+                },
+
                 // Create Elemento Juri
                 _onUpdateValidateElementoJuri: function () {
                     //debugger;;
@@ -2173,10 +2276,10 @@
 
                 // Checklist Fluxo Trabalho
                 _checklistResponseEstado0: function (e) {
-                    //debugger;;
+                    debugger;;
 
-                    if (this.DisplayChecklist != null) {
-                        //this._openToast(this.DisplayChecklist.comentarioAreaApresentar);
+                    if (this.CLArea != null) {
+                        //this._openToast(this.ChecklistArea.comentarioAreaApresentar);
                     }
                 },
 
@@ -2240,12 +2343,27 @@
                     return true;
                 },
                 _submitProcedimento: function () {
-                    if (this._submitProcedimento()) {
+                    if (this._onSubmitValidateProcedimento()) {
 
                     }
                 },
                 _submitProcedimentoResponse: function (e) {
 
+                },
+
+                _setFieldsEditability(data) {
+                    var _self = this;
+                    console.log(123456789);
+                    if (data.estado != 1) {
+                        //desabilitar um campo
+                        //_self.$.no.disabled = false;
+
+                        //esconder um campo
+                        //_self.$.codigoRegiao.hidden = true;
+
+                        //esconder uma seccao (adicionar id ao container da seccao)
+                        //_self.$.seccaoTeste.hidden = true;
+                    }
                 },
                 //Helpers
                 _executeRequest: function (url, data) {

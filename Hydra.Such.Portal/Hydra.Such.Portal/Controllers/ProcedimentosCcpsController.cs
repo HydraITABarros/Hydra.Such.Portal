@@ -588,7 +588,7 @@ namespace Hydra.Such.Portal.Controllers
 
         // 6. Used in the "Juridicos" paper-tab returns a List of ElementosChecklist according to ProcedimentosCcp.Estado (!= 6 or != 14)
         [HttpPost]
-        public JsonResult GetChecklistJuridicoAvaliacaoPecasOrContrato([FromBody] ProcedimentoCCPView data)
+        public JsonResult GetChecklistJuridicoAvaliacaoPecasOuContrato([FromBody] ProcedimentoCCPView data)
         {
             if (data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
             {
@@ -679,7 +679,7 @@ namespace Hydra.Such.Portal.Controllers
 
         // 8. Used in the "CA" paper-tab returns a List of ElementosChecklist according to ProcedimentosCcp.Estado (!= 8 or != 17)
         [HttpPost]
-        public JsonResult GetChecklistAberturaOrAutorizacao([FromBody] ProcedimentoCCPView data)
+        public JsonResult GetChecklistAberturaOuAutorizacao([FromBody] ProcedimentoCCPView data)
         {
             if (data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
             {
@@ -788,7 +788,7 @@ namespace Hydra.Such.Portal.Controllers
             List<AcessosUtilizador> UserAccesses = DBProcedimentosCCP.GetUserAccesses(User.Identity.Name);
             if(UserAccesses != null)
             {
-                List<string> UAccess = null;
+                List<string> UAccess = new List<string>();
 
                 foreach(var ua in UserAccesses)
                 {
@@ -830,7 +830,9 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
 
-                
+                if (UAccess == null || UAccess.Count == 0)
+                    return Json(null);
+
                 return Json(UAccess.Distinct().ToList());
             }
 

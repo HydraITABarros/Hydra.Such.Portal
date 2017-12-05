@@ -103,7 +103,7 @@
 
     <script>
         document.addEventListener('WebComponentsReady', function () {
-            debugger;
+            
 
             Polymer({
                 is: 'x-procedimentoslist',
@@ -118,7 +118,7 @@
                     }
                 },
                 ready: function () {
-                    debugger;
+                    
 
                     this.$.grid_databound_ajax.body = JSON.stringify(this._procedimentotypeid);
                     this.$.grid_databound_ajax.generateRequest();
@@ -135,12 +135,12 @@
                     }
                 },
                 _openToast: function (message) {
-                    debugger;;
+                    ;
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
                 _create: function (/*item*/) {
-                    debugger;
+                    
 
                     // zpgm.20112017.b original code
                     //if (item != null) {
@@ -161,7 +161,7 @@
                     }
                 },
                 _newProcedimentoResponse: function (e) {
-                    debugger;;
+                    ;
                     if (this.NewProcedimento == "") {
                         this._openToast("Não é possível criar novo");
                     } else {
