@@ -14,6 +14,7 @@ namespace Hydra.Such.Data.Database
 
         public string IdUtilizador { get; set; }
         public string Nome { get; set; }
+        public string EmployeeNo { get; set; }
         public bool? Ativo { get; set; }
         public bool Administrador { get; set; }
         public DateTime? DataHoraCriação { get; set; }
@@ -23,12 +24,6 @@ namespace Hydra.Such.Data.Database
         public string ProcedimentosEmailEnvioParaCa { get; set; }
         public string ProcedimentosEmailEnvioParaArea { get; set; }
         public string ProcedimentosEmailEnvioParaArea2 { get; set; }
-
-        // zpgm.< Fields that will be used to retrieve destination emails through the ProcedimentosCcp life cycle
-        public string ProcedimentosEmailEnvioParaCA { get; set; }
-        public string ProcedimentosEmailEnvioParaArea { get; set; }
-        public string ProcedimentosEmailEnvioParaArea2 { get; set; }
-        // zpgm.>
 
         public ICollection<AcessosDimensões> AcessosDimensões { get; set; }
         public ICollection<AcessosUtilizador> AcessosUtilizador { get; set; }

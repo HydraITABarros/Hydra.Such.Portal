@@ -128,9 +128,9 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    TabelaConfRecursosFH recurso;
+                    TabelaConfRecursosFh recurso;
 
-                    recurso = ctx.TabelaConfRecursosFH.FirstOrDefault(x => x.Tipo == Tipo && x.CodRecurso == CodRecurso);
+                    recurso = ctx.TabelaConfRecursosFh.FirstOrDefault(x => x.Tipo == Tipo && x.CodRecurso == CodRecurso);
 
                     if (recurso == null)
                         return 0;

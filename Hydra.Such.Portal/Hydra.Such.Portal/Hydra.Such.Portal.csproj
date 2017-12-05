@@ -27,6 +27,8 @@
   <ItemGroup>
     <Folder Include="Areas\Nutricao\Data\" />
     <Folder Include="Areas\Nutricao\Models\" />
+    <Folder Include="Areas\Requisicoes\Data\" />
+    <Folder Include="Areas\Requisicoes\Models\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 

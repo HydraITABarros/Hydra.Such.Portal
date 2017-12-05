@@ -92,7 +92,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 CodigoTipoCusto = x.CodigoTipoCusto,
                 CodigoRefCusto = x.CodigoRefCusto,
-                DataChegadaDataPartida = x.DataChegadaDataPartida.Value,
+                DataChegadaDataPartida = x.DataChegadaDataPartida,
                 DistanciaMinima = x.DistanciaMinima,
                 LimiteHoraPartida = TimeSpan.TryParse(x.LimiteHoraPartida, out TimeSpan LimiteHoraPartida) ? LimiteHoraPartida : (TimeSpan?)null,
                 LimiteHoraChegada = TimeSpan.TryParse(x.LimiteHoraChegada, out TimeSpan LimiteHoraChegada) ? LimiteHoraChegada : (TimeSpan?)null,
