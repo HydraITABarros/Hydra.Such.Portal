@@ -18,6 +18,8 @@ using Hydra.Such.Data.ViewModel.FH;
 using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.NAV;
+using Hydra.Such.Data.ViewModel.Compras;
+using Hydra.Such.Data.Logic.Compras;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1981,6 +1983,67 @@ namespace Hydra.Such.Portal.Controllers
                 TabelaConfRecursosFh toUpdate = DBTabelaConfRecursosFh.ParseToDB(x);
                 //toUpdate.UtilizadorModificacao = User.Identity.Name;
                 DBTabelaConfRecursosFh.Update(toUpdate);
+            });
+            return Json(data);
+        }
+        #endregion
+
+        #region Tipo Requisição
+        public IActionResult TiposRequisicao(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetRequisitionTypes()
+        {
+            List<RequesitionTypeViewModel> result = DBRequesitionType.GetAll().Select(x => new RequesitionTypeViewModel()
+            {
+                Code = x.Código,
+                Description = x.Descrição,
+                Fleet = x.Frota
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateRequesitionTypes([FromBody] List<RequesitionTypeViewModel> data)
+        {
+            List<TiposRequisições> results = DBRequesitionType.GetAll();
+            results.RemoveAll(x => data.Any(u => u.Code == x.Código));
+            results.ForEach(x => DBRequesitionType.Delete(x));
+            data.ForEach(x =>
+            {
+                TiposRequisições TR = new TiposRequisições()
+                {
+                    Descrição = x.Description
+                };
+                if (x.Code > 0)
+                {
+                    TR.Código = x.Code;
+                    TR.Frota = x.Fleet;
+                    TR.DataHoraModificação = DateTime.Now;
+                    TR.UtilizadorModificação = User.Identity.Name;
+                    DBRequesitionType.Update(TR);
+                }
+                else
+                {
+                    TR.DataHoraCriação = DateTime.Now;
+                    TR.UtilizadorCriação = User.Identity.Name;
+                    TR.Frota = x.Fleet;
+                    DBRequesitionType.Create(TR);
+                }
             });
             return Json(data);
         }

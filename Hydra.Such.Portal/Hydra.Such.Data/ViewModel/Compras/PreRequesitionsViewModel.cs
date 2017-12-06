@@ -52,7 +52,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string LocalMarketRegion { get; set; }
         public bool? WarrantyRepair { get; set; }
         public bool? EMM { get; set; }
-        public DateTime? DeliveryWarehoseDate { get; set; }
+        public DateTime? DeliveryWarehouseDate { get; set; }
         public int? CollectionLocal { get; set; }
         public string CollectionAddress { get; set; }
         public string CollectionAddress2 { get; set; }
