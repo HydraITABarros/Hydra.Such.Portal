@@ -18,7 +18,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
 
         public ElementosChecklistArea ChecklistArea { get; set; }
         public ElementosChecklistImobilizadoContabilidade ChecklistImobilizadoContabilidade { get; set; }
-        public ElementosChecklistImobilizadoArea CkecklistImobilizadoArea { get; set; }
+        public ElementosChecklistImobilizadoArea ChecklistImobilizadoArea { get; set; }
         public ElementosChecklistImobilizadoCA ChecklistImobilizadoCA { get; set; }
         public ElementosChecklistFundamentoCompras ChecklistFundamentoCompras { get; set; }
         public ElementosChecklistFundamentoFinanceiros ChecklistFundamentoFinanceiros { get; set; }
@@ -185,6 +185,107 @@ namespace Hydra.Such.Data.ViewModel.CCP
             NomeResponsavelAdjudicacao = fluxo.NomeUser;
             DataAdjudicacao = fluxo.Data;
         }
+    }
+
+    public static class ReturnHandlers
+    {
+        /*
+         * Return Handlers categories:
+         * -1 - Object is empty or null
+         * 0 - Success
+         * 1xx - Create errors
+         * 2xx - Update Errors
+         * 3xx - Read Erros
+         * 4xx - Email related errors
+         * 5xx - User Permissons
+         * 6xx - Procedimento status errors
+         * 7xx - Unknown data
+         * 
+         */
+        public static ErrorHandler NoData = new ErrorHandler
+        {
+            eReasonCode = -1,
+            eMessage = "Sem dados"
+        };
+        public static ErrorHandler Success = new ErrorHandler
+        {
+            eReasonCode = 0,
+            eMessage = "Sucesso"
+        };
+
+        public static ErrorHandler UnableToCreateEmailProcedimento = new ErrorHandler
+        {
+            eReasonCode = 100,
+            eMessage = "Não foi possível criar Email Procedimento"
+        };
+        public static ErrorHandler UnableToCreateFluxo = new ErrorHandler
+        {
+            eReasonCode = 101,
+            eMessage = "Não foi possível criar o Fluxo de Trabalho"
+        };
+        public static ErrorHandler UnableToCreateTemposPA = new ErrorHandler
+        {
+            eReasonCode = 102,
+            eMessage = "Não foi possível criar os Tempos PA"
+        };
+
+        public static ErrorHandler UnableToUpdateProcedimento = new ErrorHandler
+        {
+            eReasonCode = 200,
+            eMessage = "Não foi possível actualizar o Procedimento"
+        };
+        public static ErrorHandler UnableToUpdateTemposPA = new ErrorHandler
+        {
+            eReasonCode = 201,
+            eMessage = "Não foi possível actualizar os Tempos PA"
+        };
+        public static ErrorHandler UnableToUpdateFluxo = new ErrorHandler
+        {
+            eReasonCode = 202,
+            eMessage = "Não foipossível actualizar o Fluxo"
+        };
+
+        public static ErrorHandler InvalidEmailAddres = new ErrorHandler
+        {
+            eReasonCode = 400,
+            eMessage = "Endereço de email inválido"
+        };
+        public static ErrorHandler AddressListIsEmpty = new ErrorHandler
+        {
+            eReasonCode = 401,
+            eMessage = "Lista de endereços inválida"
+        };
+
+        public static ErrorHandler UserNotAllowed = new ErrorHandler
+        {
+            eReasonCode = 500,
+            eMessage = "Utilizador não tem permissões para efectuar esta acção"
+        };
+
+        public static ErrorHandler StateNotAllowed = new ErrorHandler
+        {
+            eReasonCode = 600,
+            eMessage = "Estado actual não permite esta opção"
+        };
+        public static ErrorHandler ProcedimentoAlreadySubmitted = new ErrorHandler
+        {
+            eReasonCode = 601,
+            eMessage = "Procedimento já submetido"
+        };
+
+        public static ErrorHandler UnknownArea = new ErrorHandler
+        {
+            eReasonCode = 700,
+            eMessage = "Área Funcional sem correspondência para as Áreas do Portal!"
+        };
+        public static ErrorHandler ProcessNameNotSet = new ErrorHandler
+        {
+            eReasonCode = 701,
+            eMessage = "Tem que definir o Nome do Procedimento"
+        };
+
+
+
     }
 
 }

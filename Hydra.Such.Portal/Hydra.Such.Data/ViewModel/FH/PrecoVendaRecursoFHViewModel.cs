@@ -11,7 +11,9 @@ namespace Hydra.Such.Data.ViewModel.FH
         public decimal? PrecoUnitario { get; set; }
         public decimal? CustoUnitario { get; set; }
         public DateTime? StartingDate { get; set; }
+        public string StartingDateTexto { get; set; }
         public DateTime? EndingDate { get; set; }
+        public string EndingDateTexto { get; set; }
         public string FamiliaRecurso { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataHoraCriacao { get; set; }

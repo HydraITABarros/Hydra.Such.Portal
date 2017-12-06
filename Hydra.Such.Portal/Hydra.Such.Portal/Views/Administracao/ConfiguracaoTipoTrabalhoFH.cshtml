@@ -64,6 +64,7 @@
                    last-response="{{result}}"
                    method="post"
                    auto
+                   on-response="_getAllResponse"
                    handle-as="json"
                    id="ajax_GetAll"
                    content-type="application/json">
@@ -112,7 +113,7 @@
 
         <div class="row" id="configuracaoTipoTrabalho">
             <div class="col-sm-2">
-                <vaadin-text-field id="codigo" value="{{codigo}}" label="Código" disabled="{{ _permissionsCreate }}" maxlength="10"></vaadin-text-field>
+                <vaadin-text-field id="codigo" value="{{codigo}}" label="Código" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório" maxlength="10"></vaadin-text-field>
             </div>
 
             <div class="col-sm-3">
@@ -128,7 +129,7 @@
             </div>
 
             <div class="col-sm-2">
-                <vaadin-combo-box items="[[LTipoHora]]" id="tipoHora" name="tipoHora" item-value-path="id" item-label-path="value" label="Tipo Hora" value="{{tipoHora}}">
+                <vaadin-combo-box items="[[LTipoHora]]" id="tipoHora" name="tipoHora" item-value-path="id" item-label-path="value" label="Tipo Hora" value="{{tipoHora}}" disabled="{{ _permissionsCreate }}">
                     <template>
                         <paper-icon-item>
                             <paper-item-body two-line>
@@ -182,17 +183,32 @@
                     <vaadin-grid-filter path="horaViagem" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.horaViagem}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                    @*<vaadin-text-field value="{{item.horaViagem}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>*@
+                    <vaadin-checkbox checked="{{item.horaViagem}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="tipoHora">Tipo Hora</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="tipoHora" />
+                    <vaadin-grid-sorter path="tipoHoraText">Tipo Hora</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipoHoraText" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.tipoHora}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                    @*<vaadin-text-field value="{{item.tipoHora}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>*@
+
+
+                    <vaadin-combo-box items="[[LTipoHora]]" id="tipoHora" name="tipoHora" item-value-path="id" item-label-path="value" value="{{item.tipoHora}}" disabled="{{ _permissionsUpdate }}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+
+
+
                 </template>
             </vaadin-grid-column>
 
@@ -202,7 +218,7 @@
                     <vaadin-grid-filter path="criadoPor" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.criadoPor}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                    <vaadin-text-field value="{{item.utilizadorCriacao}}" disabled="true"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -212,7 +228,7 @@
                     <vaadin-grid-filter path="dataHoraCriacao" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                    <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled="true"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -222,7 +238,7 @@
                     <vaadin-grid-filter path="alteradoPor" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.alteradoPor}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                    <vaadin-text-field value="{{item.utilizadorModificacao}}" disabled="true"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -232,7 +248,7 @@
                     <vaadin-grid-filter path="dataHoraUltimaAlteracao" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.dataHoraUltimaAlteracao}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                    <vaadin-text-field value="{{item.dataHoraModificacao}}" disabled="true"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -241,7 +257,7 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove" raised on-tap="_delete" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
+                        <paper-button class="btnRemove" raised on-tap="_delete" disabled="{{ _permissionsUpdate }}">Eliminar</paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -372,7 +388,30 @@
                     this.$.ajax_GetAll.generateRequest();
                     this.$.gridTipoTrabalhoFH.clearCache();
                 },
+                _getAllResponse: function (e) {
 
+                    var _this = this;
+
+                    if (e.detail.status === 200) {
+                        (function fillComboText() {
+                            if (!_this.LTipoHora) {
+                                setTimeout(fillComboText, 600);
+                                return;
+                            }
+                            e.detail.response.forEach(function (data) {
+                                var tipoHora = _this.LTipoHora.filter(function (item) {
+                                    return item.id == data.tipoHora;
+                                });
+
+                                if (tipoHora && tipoHora[0]) {
+                                    data.tipoHoraText = tipoHora[0].value;
+                                }
+
+                            });
+                            _this.$.gridTipoTrabalhoFH.clearCache();
+                        })();
+                    }
+                },
                 _updateResponse: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {

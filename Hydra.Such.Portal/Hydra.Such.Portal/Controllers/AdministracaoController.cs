@@ -16,6 +16,8 @@ using Hydra.Such.Data.ViewModel.Viaturas;
 using Hydra.Such.Data.Logic.Viatura;
 using Hydra.Such.Data.ViewModel.FH;
 using Hydra.Such.Data.Logic.FolhaDeHora;
+using Hydra.Such.Portal.Configurations;
+using Hydra.Such.Data.NAV;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1637,7 +1639,7 @@ namespace Hydra.Such.Portal.Controllers
         {
 
             TipoTrabalhoFh toCreate = DBTipoTrabalhoFH.ParseToDB(data);
-            toCreate.UtilizadorCriacao = User.Identity.Name;
+            toCreate.CriadoPor = User.Identity.Name;
             var result = DBTipoTrabalhoFH.Create(toCreate);
 
             return Json(data);
@@ -1669,7 +1671,7 @@ namespace Hydra.Such.Portal.Controllers
             data.ForEach(x =>
             {
                 TipoTrabalhoFh toUpdate = DBTipoTrabalhoFH.ParseToDB(x);
-                toUpdate.UtilizadorModificacao = User.Identity.Name;
+                toUpdate.AlteradoPor = User.Identity.Name;
                 DBTipoTrabalhoFH.Update(toUpdate);
             });
             return Json(data);
@@ -1705,7 +1707,17 @@ namespace Hydra.Such.Portal.Controllers
         {
 
             PrecoVendaRecursoFh toCreate = DBPrecoVendaRecursoFH.ParseToDB(data);
-            toCreate.UtilizadorCriacao = User.Identity.Name;
+
+
+            string NAVDatabaseName = "SUCH_NAV_DEV";
+            string NAVCompanyName = "CRONUS Portugal Ltd_";
+
+            NAVResourcesViewModel resource = DBNAV2017Resources.GetAllResources(NAVDatabaseName, NAVCompanyName, "", "", 0, "").Where(x => x.Code == data.Code).SingleOrDefault();
+
+            toCreate.Descricao = resource.Name;
+            toCreate.FamiliaRecurso = resource.ResourceGroup;
+
+            toCreate.CriadoPor = User.Identity.Name;
             var result = DBPrecoVendaRecursoFH.Create(toCreate);
 
             return Json(data);
@@ -1740,10 +1752,21 @@ namespace Hydra.Such.Portal.Controllers
             data.ForEach(x =>
             {
                 PrecoVendaRecursoFh toUpdate = DBPrecoVendaRecursoFH.ParseToDB(x);
-                toUpdate.UtilizadorModificacao = User.Identity.Name;
+                toUpdate.AlteradoPor = User.Identity.Name;
                 DBPrecoVendaRecursoFH.Update(toUpdate);
             });
             return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult GetRecurso([FromBody] NAVResourcesViewModel data)
+        {
+            string NAVDatabaseName = "SUCH_NAV_DEV";
+            string NAVCompanyName = "CRONUS Portugal Ltd_";
+
+            NAVResourcesViewModel result = DBNAV2017Resources.GetAllResources(NAVDatabaseName, NAVCompanyName, "", "", 0, "").Where(x => x.Code == data.Code).SingleOrDefault();
+
+            return Json(result);
         }
         #endregion
 
@@ -1776,7 +1799,7 @@ namespace Hydra.Such.Portal.Controllers
         {
 
             PrecoCustoRecursoFh toCreate = DBPrecoCustoRecursoFH.ParseToDB(data);
-            toCreate.UtilizadorCriacao = User.Identity.Name;
+            toCreate.CriadoPor = User.Identity.Name;
             var result = DBPrecoCustoRecursoFH.Create(toCreate);
 
             return Json(data);
@@ -1810,7 +1833,7 @@ namespace Hydra.Such.Portal.Controllers
             data.ForEach(x =>
             {
                 PrecoCustoRecursoFh toUpdate = DBPrecoCustoRecursoFH.ParseToDB(x);
-                toUpdate.UtilizadorModificacao = User.Identity.Name;
+                toUpdate.AlteradoPor = User.Identity.Name;
                 DBPrecoCustoRecursoFH.Update(toUpdate);
             });
             return Json(data);
@@ -1844,9 +1867,19 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CreateRHRecursosFH([FromBody] RHRecursosViewModel data)
         {
+            string NAVDatabaseName = "SUCH_NAV_DEV";
+            string NAVCompanyName = "CRONUS Portugal Ltd_";
 
             RhRecursosFh toCreate = DBRHRecursosFH.ParseToDB(data);
-            toCreate.UtilizadorCriacao = User.Identity.Name;
+
+            NAVResourcesViewModel resource = DBNAV2017Resources.GetAllResources(NAVDatabaseName, NAVCompanyName, "", "", 0, "").Where(x => x.Code == data.Recurso).SingleOrDefault();
+            NAVEmployeeViewModel employee = DBNAV2009Employees.GetAll(data.NoEmpregado, NAVDatabaseName, NAVCompanyName).SingleOrDefault();
+                 
+            toCreate.NomeRecurso = resource.Name;
+            toCreate.FamiliaRecurso = resource.ResourceGroup;
+            toCreate.NomeEmpregado = employee.Name;
+            toCreate.CriadoPor = User.Identity.Name;
+
             var result = DBRHRecursosFH.Create(toCreate);
 
             return Json(data);
@@ -1878,7 +1911,7 @@ namespace Hydra.Such.Portal.Controllers
             data.ForEach(x =>
             {
                 RhRecursosFh toUpdate = DBRHRecursosFH.ParseToDB(x);
-                toUpdate.UtilizadorModificacao = User.Identity.Name;
+                toUpdate.AlteradoPor = User.Identity.Name;
                 DBRHRecursosFH.Update(toUpdate);
             });
             return Json(data);

@@ -20,11 +20,71 @@ using Microsoft.Extensions.Options;
 
 namespace Hydra.Such.Portal.Controllers
 {
+    public class AreaEmailRecipients
+    {
+        public int AreaID { get; set; }
+        public string AreaName { get; set; }
+        public string ToAddress { get; set; }
+        public string CCAddress { get; set; }
+
+        public AreaEmailRecipients(string AreaFuncionalCode, ConfiguracaoCcp Addresses)
+        {
+            List<EnumData> Areas = EnumerablesFixed.Areas;
+
+            try
+            {
+                AreaID = Convert.ToInt32(AreaFuncionalCode.Substring(0, 1));
+                AreaName = Areas.Find(a => a.Id == AreaID).Value ?? "";
+                switch (AreaID)
+                {
+                    case 0:
+                        ToAddress = Addresses.Email3Compras;
+                        CCAddress = "";
+                        break;
+                    case 1:
+                        ToAddress = Addresses.Email5Compras;
+                        CCAddress = Addresses.Email6Compras;
+                        break;
+                    case 2:
+                        ToAddress = Addresses.Email7Compras;
+                        CCAddress = Addresses.Email8Compras;
+                        break;
+                    case 5:
+                        ToAddress = Addresses.Email4Compras;
+                        CCAddress = "";
+                        break;
+                    default:
+                        if (Convert.ToInt32(AreaFuncionalCode.Substring(0, 2)) == 72)
+                        {
+                            AreaID = 72;
+                            AreaName = "Gestão de Parques de Estacionamento";
+                            ToAddress = Addresses.Email7Compras;
+                            CCAddress = Addresses.Email8Compras;
+                        }
+                        else
+                        {
+                            AreaName = "";
+                            ToAddress = Addresses.EmailCompras;
+                            CCAddress = Addresses.Email2Compras;
+                        }
+                        break;
+                }
+            }
+            catch (Exception)
+            {
+
+                AreaID = -1;
+                AreaName = "";
+                ToAddress = "";
+                CCAddress = "";
+            }
+        }
+
+    }
+
     [Authorize]
     public class ProcedimentosCcpsController : Controller
     {
-
-
         #region Views
         public IActionResult Index()
         {
@@ -387,7 +447,7 @@ namespace Hydra.Such.Portal.Controllers
                             Estado = Fluxo.Estado,
                             DataChecklist = Fluxo.Data,
                             HoraChecklist = Fluxo.Hora,
-                            CkecklistImobilizadoArea = new ElementosChecklistImobilizadoArea(Fluxo)
+                            ChecklistImobilizadoArea = new ElementosChecklistImobilizadoArea(Fluxo)
                         };
 
                         return Json(Checklist);
@@ -528,7 +588,7 @@ namespace Hydra.Such.Portal.Controllers
 
         // 6. Used in the "Juridicos" paper-tab returns a List of ElementosChecklist according to ProcedimentosCcp.Estado (!= 6 or != 14)
         [HttpPost]
-        public JsonResult GetChecklistJuridicoAvaliacaoPecasOrContrato([FromBody] ProcedimentoCCPView data)
+        public JsonResult GetChecklistJuridicoAvaliacaoPecasOuContrato([FromBody] ProcedimentoCCPView data)
         {
             if (data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
             {
@@ -619,7 +679,7 @@ namespace Hydra.Such.Portal.Controllers
 
         // 8. Used in the "CA" paper-tab returns a List of ElementosChecklist according to ProcedimentosCcp.Estado (!= 8 or != 17)
         [HttpPost]
-        public JsonResult GetChecklistAberturaOrAutorizacao([FromBody] ProcedimentoCCPView data)
+        public JsonResult GetChecklistAberturaOuAutorizacao([FromBody] ProcedimentoCCPView data)
         {
             if (data.FluxoTrabalhoListaControlo != null && data.FluxoTrabalhoListaControlo.Count > 0)
             {
@@ -722,14 +782,71 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        [HttpPost]
+        public JsonResult GetUserFeatures()
+        {
+            List<AcessosUtilizador> UserAccesses = DBProcedimentosCCP.GetUserAccesses(User.Identity.Name);
+            if(UserAccesses != null)
+            {
+                List<string> UAccess = new List<string>();
+
+                foreach(var ua in UserAccesses)
+                {
+                    switch (ua.Funcionalidade)
+                    {
+                        case DBProcedimentosCCP._ElementoArea:
+                            UAccess.Add("IsElementArea");
+                            break;
+                        case DBProcedimentosCCP._ElementoPreArea0:
+                            UAccess.Add("IsElementPreArea0");
+                            break;
+                        case DBProcedimentosCCP._ElementoPreArea:
+                            UAccess.Add("IsElementPreArea");
+                            break;
+                        case DBProcedimentosCCP._ElementoCompras:
+                            UAccess.Add("IsElementCompras");
+                            break;
+                        case DBProcedimentosCCP._ElementoJuri:
+                            UAccess.Add("IsElementJuri");
+                            break;
+                        case DBProcedimentosCCP._ElementoContabilidade:
+                            UAccess.Add("IsElementContabilidade");
+                            break;
+                        case DBProcedimentosCCP._ElementoJuridico:
+                            UAccess.Add("IsElementJuridico");
+                            break;
+                        case DBProcedimentosCCP._ElementoCA:
+                            UAccess.Add("IsElementCA");
+                            break;
+                        case DBProcedimentosCCP._GestorProcesso:
+                            UAccess.Add("IsGestorProcesso");
+                            break;
+                        case DBProcedimentosCCP._SecretariadoCA:
+                            UAccess.Add("IsSecretariadoCA");
+                            break;
+                        case DBProcedimentosCCP._FechoProcesso:
+                            UAccess.Add("IsFechoProcesso");
+                            break;
+                    }
+                }
+
+                if (UAccess == null || UAccess.Count == 0)
+                    return Json(null);
+
+                return Json(UAccess.Distinct().ToList());
+            }
+
+            return Json(null);
+        }
+
         /*
-         *      In the following method the ErrorHandler will return:
+         *      In the following methods the ErrorHandler will return:
          *          0 -> SUCCESS
-         *          1 -> Procedimento already submitted
-         *          2 -> Unable to create Fluxo Lista Trabalho
-         *          3 -> Unable to update Procedimento
+         *          != 0 -> Error
          *          
          */
+
+        //  This method reflects the CommandButton "Submeter Processo" in the "Unidade Produtiva" tab of the NAV form
         [HttpPost]
         public JsonResult SubmitProcedimento([FromBody] ProcedimentoCCPView data)
         {
@@ -737,39 +854,24 @@ namespace Hydra.Such.Portal.Controllers
             {
                 // 1. Get the latest version in the Database
                 ProcedimentosCcp Procedimento = DBProcedimentosCCP.GetProcedimentoById(data.No);
-                string UserID = User.Identity.Name;
-                string UserName = DBProcedimentosCCP.GetUserName(UserID);
-                bool UserElementPreArea0 = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(UserID, DBProcedimentosCCP._ElementoPreArea0);
-                bool UserElementPreArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(UserID, DBProcedimentosCCP._ElementoPreArea);
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                bool IsElementPreArea0 = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(UserDetails.IdUtilizador, DBProcedimentosCCP._ElementoPreArea0);
+                bool IsElementPreArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(UserDetails.IdUtilizador, DBProcedimentosCCP._ElementoPreArea);
+                string UserEmail = "";
 
-                int errorCount = 1;
-
-                string UserEmail = DBProcedimentosCCP.GetUserEmail(UserID);
+                if(EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                    UserEmail = UserDetails.IdUtilizador;
 
                 // 2.a Check if Procedimento has been already submitted
-                if (UserElementPreArea0 && Procedimento.PréÁrea.HasValue && Procedimento.PréÁrea.Value)
+                if (IsElementPreArea0 && Procedimento.PréÁrea.HasValue && Procedimento.PréÁrea.Value)
                 {
-                    ErrorHandler ProcedimentoAlreadySubmitted = new ErrorHandler()
-                    {
-                        eReasonCode = errorCount,
-                        eMessage = "Procedimento já submetido!"
-                    };
-
-                    errorCount += 1;
-                    return Json(ProcedimentoAlreadySubmitted);
+                    return Json(ReturnHandlers.ProcedimentoAlreadySubmitted);
                 }
 
                 // 2.b Check if Procedimento has been already submitted
-                if(UserElementPreArea && Procedimento.SubmeterPréÁrea.HasValue && Procedimento.SubmeterPréÁrea.Value)
+                if(IsElementPreArea && Procedimento.SubmeterPréÁrea.HasValue && Procedimento.SubmeterPréÁrea.Value)
                 {
-                    ErrorHandler ProcedimentoAlreadySubmitted = new ErrorHandler()
-                    {
-                        eReasonCode = errorCount,
-                        eMessage = "Procedimento já submetido!"
-                    };
-
-                    errorCount += 1;
-                    return Json(ProcedimentoAlreadySubmitted);
+                    return Json(ReturnHandlers.ProcedimentoAlreadySubmitted);
                 }
 
                 // 3. Create Fluxo Trabalho
@@ -783,8 +885,8 @@ namespace Hydra.Such.Portal.Controllers
                     Data = DateTime.Now.Date,
                     Hora = DateTime.Now.TimeOfDay,
                     TipoEstado = 1,
-                    User = User.Identity.Name,
-                    NomeUser = DBProcedimentosCCP.GetUserName(UserID),
+                    User = UserDetails.IdUtilizador,
+                    NomeUser = UserDetails.Nome,
                     Comentario = data.ElementosChecklist.ChecklistArea.ComentarioArea,
                     EstadoSeguinte = data.Imobilizado.Value ? 1 : 4,
                 };
@@ -793,81 +895,46 @@ namespace Hydra.Such.Portal.Controllers
                 data.ElementosChecklist.ChecklistArea.NomeResponsavelArea = Fluxo.NomeUser;
                 data.ElementosChecklist.ChecklistArea.DataResponsavel = Fluxo.Data;
 
-                if (UserElementPreArea || UserElementPreArea0)
+                if (IsElementPreArea || IsElementPreArea0)
                     Fluxo.EstadoSeguinte = 0;
 
                 if(DBProcedimentosCCP.__CreateFluxoTrabalho(Fluxo) == null)
                 {
-                    ErrorHandler UnableToCreateFluxo = new ErrorHandler()
-                    {
-                        eReasonCode = errorCount,
-                        eMessage = "Não foi possível criar o Fluxo Trabalho Lista Controlo!"
-                    };
-
-                    errorCount += 1;
-                    return Json(UnableToCreateFluxo);
+                    return Json(ReturnHandlers.UnableToCreateFluxo);
                 }
+
+                data.FluxoTrabalhoListaControlo.Add(Fluxo);
 
                 data.Estado = data.Imobilizado.Value ? 1 : 4;
                 data.DataHoraEstado = Fluxo.Data + Fluxo.Hora;
-                data.UtilizadorEstado = UserID;
-                data.DataHoraEstado = DateTime.Now;
-                data.UtilizadorModificacao = UserID;
+                data.UtilizadorEstado = UserDetails.IdUtilizador;
+                data.UtilizadorModificacao = UserDetails.IdUtilizador;
 
                 if (DBProcedimentosCCP.__UpdateProcedimento(data) == null)
                 {
-                    ErrorHandler UnableUpdatingProcedimento = new ErrorHandler()
-                    {
-                        eReasonCode = errorCount,
-                        eMessage = "Não foi possível actualizar o Procedimento!"
-                    };
-
-                    errorCount += 1;
-                    return Json(UnableUpdatingProcedimento);
+                    return Json(ReturnHandlers.UnableToUpdateProcedimento);
                 }
 
-                if (string.IsNullOrEmpty(UserEmail) || !EmailAutomation.IsValidEmail(UserEmail))
+                if (!EmailAutomation.IsValidEmail(UserEmail))
                 {
-                    ErrorHandler InvalidUserEmailAddress = new ErrorHandler()
-                    {
-                        eReasonCode = errorCount,
-                        eMessage = "Utilizador sem endereço de email válido"
-                    };
-
-                    errorCount += 1;
-                    return Json(InvalidUserEmailAddress);
+                    return Json(ReturnHandlers.InvalidEmailAddres);
                 }
 
                 ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
                 if (EmailList == null)
                 {
-                    ErrorHandler DestinationEmailsAreEmpty = new ErrorHandler()
-                    {
-                        eReasonCode = errorCount,
-                        eMessage = "Falta configuração dos destinatários de emails!"
-                    };
-
-                    errorCount += 1;
-                    return Json(DestinationEmailsAreEmpty);
+                    return Json(ReturnHandlers.AddressListIsEmpty);
                 }
 
                 // 4. Send emails and updates the data object
-                if (!(UserElementPreArea || UserElementPreArea0))
+                if (!(IsElementPreArea || IsElementPreArea0))
                 {
-                    
                     // Prepare emails
                     if (data.Imobilizado.Value)
                     {
                         if (!EmailAutomation.IsValidEmail(EmailList.EmailContabilidade))
                         {
-                            ErrorHandler InvalidDestinationAddress = new ErrorHandler()
-                            {
-                                eReasonCode = errorCount,
-                                eMessage = "Verifique as configurações: Endereço de Email Contabilidade não preenchido"
-                            };
-
-                            errorCount += 1;
-                            return Json(InvalidDestinationAddress);
+                            return Json(ReturnHandlers.InvalidEmailAddres);
                         }
 
                         EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
@@ -878,25 +945,20 @@ namespace Hydra.Such.Portal.Controllers
                             TextoEmail = data.ElementosChecklist.ChecklistArea.ComentarioArea,
                             UtilizadorEmail = UserEmail,
                             DataHoraEmail = DateTime.Now,
-                            UtilizadorCriação = UserID,
+                            UtilizadorCriação = UserDetails.IdUtilizador,
                             DataHoraCriação = DateTime.Now
                         };
 
                         if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
                         {
-                            ErrorHandler UnableToCreateEmailProcedimento = new ErrorHandler()
-                            {
-                                eReasonCode = errorCount,
-                                eMessage = "Não foi possível escrever na Base de Dados o Email!"
-                            };
-
-                            errorCount += 1;
-                            return Json(UnableToCreateEmailProcedimento);
+                            return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
                         }
+
+                        data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
 
                         SendEmailsProcedimentos Email = new SendEmailsProcedimentos
                         {
-                            DisplayName = UserName,
+                            DisplayName = UserDetails.Nome,
                             Subject = ProcedimentoEmail.Assunto,
                             From = "CCP_NAV@such.pt"
                         };
@@ -911,7 +973,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         Email.BCC.Add(UserEmail);
                         
-                        Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserName);
+                        Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
                         
                         Email.IsBodyHtml = true;
                         Email.EmailProcedimento = ProcedimentoEmail;
@@ -920,70 +982,831 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
+                        AreaEmailRecipients DestinationEmails = new AreaEmailRecipients(data.CodigoAreaFuncional, EmailList);
 
+                        if(DestinationEmails.AreaID == -1)
+                        {
+                            return Json(ReturnHandlers.UnknownArea);
+                        }
+
+                        if (!EmailAutomation.IsValidEmail(DestinationEmails.ToAddress))
+                        {
+                            return Json(ReturnHandlers.InvalidEmailAddres);
+                        }
+
+                        EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                        {
+                            NºProcedimento = data.No,
+                            EmailDestinatário = DestinationEmails.ToAddress,
+                            Assunto = data.No + " - Novo pedido de aquisição",
+                            TextoEmail = data.ElementosChecklist.ChecklistArea.ComentarioArea,
+                            UtilizadorEmail = UserEmail,
+                            DataHoraEmail = DateTime.Now,
+                            UtilizadorCriação = UserDetails.IdUtilizador,
+                            DataHoraCriação = DateTime.Now
+                        };
+
+                        if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                        {
+                            return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                        }
+
+                        data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
+                        SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                        {
+                            DisplayName = UserDetails.Nome,
+                            Subject = ProcedimentoEmail.Assunto,
+                            From = "CCP_NAV@such.pt"
+                        };
+
+                        Email.To.Add(DestinationEmails.ToAddress);
+
+                        if (EmailAutomation.IsValidEmail(DestinationEmails.CCAddress))
+                            Email.CC.Add(DestinationEmails.CCAddress);
+
+                        Email.BCC.Add(UserEmail);
+                        Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+
+                        Email.IsBodyHtml = true;
+                        Email.EmailProcedimento = ProcedimentoEmail;
+
+                        Email.SendEmail();
                     }
                 }
                 else
                 {
+                    if (IsElementPreArea)
+                        data.SubmeterPreArea = true;
+                    else
+                        data.PreArea = true;
 
+                    if (DBProcedimentosCCP.__UpdateProcedimento(data) == null)
+                    {
+                        return Json(ReturnHandlers.UnableToUpdateProcedimento);
+                    }
+
+                    if (!EmailAutomation.IsValidEmail(UserDetails.ProcedimentosEmailEnvioParaArea))
+                    {
+                        return Json(ReturnHandlers.InvalidEmailAddres);
+                    }
+
+                    EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                    {
+                        NºProcedimento = data.No,
+                        EmailDestinatário = UserDetails.ProcedimentosEmailEnvioParaArea,
+                        Assunto = data.No + " - Novo pedido de aquisição",
+                        TextoEmail = "Foi registado um pedido de aquisição, que necessita ser submetido para aprovação",
+                        UtilizadorEmail = UserEmail,
+                        DataHoraEmail = DateTime.Now,
+                        UtilizadorCriação = UserDetails.IdUtilizador,
+                        DataHoraCriação = DateTime.Now
+                    };
+
+                    if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                    {
+                        return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                    }
+
+                    data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
+                    SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                    {
+                        DisplayName = UserDetails.Nome,
+                        Subject = ProcedimentoEmail.Assunto,
+                        From = "CCP_NAV@such.pt"
+                    };
+
+                    Email.To.Add(UserDetails.ProcedimentosEmailEnvioParaArea);
+                    if (EmailAutomation.IsValidEmail(UserDetails.ProcedimentosEmailEnvioParaArea2))
+                        Email.CC.Add(UserDetails.ProcedimentosEmailEnvioParaArea2);
+
+                    Email.BCC.Add(UserEmail);
+                    Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+
+                    Email.IsBodyHtml = true;
+                    Email.EmailProcedimento = ProcedimentoEmail;
+
+                    Email.SendEmail();
                 }
 
-                
+                return Json(ReturnHandlers.Success);
             }
-
-            return Json(null);
-        }
-    }
-
-    public class AreaEmailReceiver
-    {
-        public int AreaID { get; set; }
-        public string AreaName { get; set; }
-        public string ToAddress { get; set; }
-        public string CCAddress { get; set; }
-
-        public AreaEmailReceiver(string AreaFuncionalCode, ConfiguracaoCcp Addresses)
-        {
-            List<EnumData> Areas = EnumerablesFixed.Areas;
-            AreaID = Convert.ToInt32(AreaFuncionalCode.Substring(0,1));
-            AreaName = Areas.Find(a => a.Id == AreaID).Value ?? "";
-
-            switch (AreaID)
+            else
             {
-                case 0:
-                    ToAddress = Addresses.Email3Compras;
-                    CCAddress = "";
-                    break;
-                case 1:
-                    ToAddress = Addresses.Email5Compras;
-                    CCAddress = Addresses.Email6Compras;
-                    break;
-                case 2:
-                    ToAddress = Addresses.Email7Compras;
-                    CCAddress = Addresses.Email8Compras;
-                    break;
-                case 5:
-                    ToAddress = Addresses.Email4Compras;
-                    CCAddress = "";
-                    break;
-                default:
-                    if(Convert.ToInt32(AreaFuncionalCode.Substring(0, 2)) == 72)
+                return Json(ReturnHandlers.NoData);
+            }
+        }
+
+        #region The following methods map the MenuButton actions, named "Acções" in the "Imobilizado" tab on the NAV form
+        #region "Acções" MenuItem in the "Contabilidade" section
+        [HttpPost]
+        public JsonResult ConfirmProcedimento([FromBody] ProcedimentoCCPView data)
+        {
+            if(data != null)
+            {
+                if (data.Estado != 1)
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                };
+
+                bool IsElementContabilidade = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoContabilidade);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
+
+                if (!IsElementContabilidade && !IsGestorProcesso)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
+
+                //ProcedimentosCcp Procedimento = DBProcedimentosCCP.GetProcedimentoById(data.No);
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                string UserEmail = "";
+
+                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                {
+                    UserEmail = UserDetails.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+                // NAV Procedure ImobContabConfirmar.b
+                ErrorHandler UnableToConfirmAssetPurchase = DBProcedimentosCCP.AccountingConfirmsAssetPurchase(data, UserDetails, 1);
+                if (UnableToConfirmAssetPurchase.eReasonCode != 0)
+                {
+                    return Json(UnableToConfirmAssetPurchase);
+                }
+                // NAV ImobContabConfirmar.e
+
+                // send emails.b
+                ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
+                if (EmailList == null)
+                {
+                    return Json(ReturnHandlers.AddressListIsEmpty);
+                }
+
+                AreaEmailRecipients DestinationEmails = new AreaEmailRecipients(data.CodigoAreaFuncional, EmailList);
+
+                if (DestinationEmails.AreaID == -1)
+                {
+                    return Json(ReturnHandlers.UnknownArea);
+                }
+                EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                {
+                    NºProcedimento = data.No,
+                    Assunto = data.No + " - Aquisição de Imobilizado",
+                    UtilizadorEmail = UserEmail,
+                    DataHoraEmail = DateTime.Now,
+                    UtilizadorCriação = UserDetails.IdUtilizador,
+                    DataHoraCriação = DateTime.Now
+                };
+
+                SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                {
+                    DisplayName = UserDetails.Nome,
+                    Subject = data.No + " - Aquisição de Imobilizado",
+                    From = "CCP_NAV@such.pt"
+                };
+
+                if (data.ElementosChecklist.ChecklistImobilizadoContabilidade.ImobilizadoSimNao)
+                {
+                    if (EmailAutomation.IsValidEmail(DestinationEmails.ToAddress))
                     {
-                        AreaID = 72;
-                        AreaName = "Gestão de Parques de Estacionamento";
-                        ToAddress = Addresses.Email7Compras;
-                        CCAddress = Addresses.Email8Compras;
+                        Email.To.Add(DestinationEmails.ToAddress);
+                        ProcedimentoEmail.EmailDestinatário = DestinationEmails.ToAddress;
                     }
                     else
                     {
-                        AreaID = 0;
-                        AreaName = "";
-                        ToAddress = "";
-                        CCAddress = "";
+                        return Json(ReturnHandlers.InvalidEmailAddres);
                     }
-                    break;
+
+                    if (EmailAutomation.IsValidEmail(DestinationEmails.CCAddress))
+                        Email.CC.Add(DestinationEmails.CCAddress);
+                }
+                else
+                {
+                    FluxoTrabalhoListaControlo Fluxo = data.FluxoTrabalhoListaControlo.Where(e => e.Estado == 0).LastOrDefault();
+                    if(Fluxo != null)
+                    {
+                        ConfigUtilizadores FluxoUser = DBProcedimentosCCP.GetUserDetails(Fluxo.User);
+                        if(FluxoUser != null && EmailAutomation.IsValidEmail(FluxoUser.IdUtilizador))
+                        {
+                            Email.To.Add(FluxoUser.IdUtilizador);
+                            ProcedimentoEmail.EmailDestinatário = FluxoUser.IdUtilizador;
+
+                            if (EmailAutomation.IsValidEmail(FluxoUser.ProcedimentosEmailEnvioParaArea))
+                                Email.CC.Add(FluxoUser.ProcedimentosEmailEnvioParaArea);
+                        }
+                        else
+                        {
+                            return Json(ReturnHandlers.InvalidEmailAddres);
+                        }
+                    }
+                    else
+                    {
+                        Email.To.Add(UserEmail);
+                        ProcedimentoEmail.EmailDestinatário = UserEmail;
+
+                        if (EmailAutomation.IsValidEmail(UserDetails.ProcedimentosEmailEnvioParaArea))
+                            Email.CC.Add(UserDetails.ProcedimentosEmailEnvioParaArea);
+                    }
+                }
+
+                ProcedimentoEmail.TextoEmail = data.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade;
+                if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                {
+                    return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                }
+
+                data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
+                Email.BCC.Add(UserEmail);
+                Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+                Email.IsBodyHtml = true;
+                Email.EmailProcedimento = ProcedimentoEmail;
+
+                Email.SendEmail();
+                // send emails.e
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
+        [HttpPost]
+        public JsonResult ReturnToArea([FromBody] ProcedimentoCCPView data)
+        {
+            if(data != null)
+            {
+                bool IsElementContabilidade = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoContabilidade);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
+
+                if (!IsElementContabilidade && !IsGestorProcesso)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
+
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+
+                // NAV Procedure ImobContabConfirmar.b
+                ErrorHandler UnableToConfirmAssetPurchase = DBProcedimentosCCP.AccountingConfirmsAssetPurchase(data, UserDetails, 0);
+                if (UnableToConfirmAssetPurchase.eReasonCode != 0)
+                {
+                    return Json(UnableToConfirmAssetPurchase);
+                }
+                // NAV ImobContabConfirmar.e
+
+                if (data.FluxoTrabalhoListaControlo == null)
+                    data.FluxoTrabalhoListaControlo = DBProcedimentosCCP.GetAllCheklistControloProcedimento(data.No);
+
+                FluxoTrabalhoListaControlo Fluxo0 = data.FluxoTrabalhoListaControlo.Where(e => e.Estado == 0).LastOrDefault();
+
+                string UserEmail = "";
+
+                if(Fluxo0 != null)
+                {
+                    ConfigUtilizadores UserDetailsAux = DBProcedimentosCCP.GetUserDetails(Fluxo0.User);
+                    if (UserDetailsAux != null)
+                        UserDetails = UserDetailsAux;
+                }
+
+                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                {
+                    UserEmail = UserDetails.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+                EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                {
+                    NºProcedimento = data.No,
+                    EmailDestinatário  = UserEmail,
+                    Assunto = data.No + " - Aquisição de Imobilizado (Devolução)",
+                    TextoEmail = data.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade,
+                    UtilizadorEmail = UserEmail,
+                    DataHoraEmail = DateTime.Now,
+                    UtilizadorCriação = UserDetails.IdUtilizador,
+                    DataHoraCriação = DateTime.Now
+                };
+
+                if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                {
+                    return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                }
+
+                data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
+                SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                {
+                    DisplayName = UserDetails.Nome,
+                    Subject = ProcedimentoEmail.Assunto,
+                    From = "CCP_NAV@such.pt"
+                };
+
+                Email.To.Add(UserEmail);
+                if(EmailAutomation.IsValidEmail(UserDetails.ProcedimentosEmailEnvioParaArea))
+                    Email.CC.Add(UserDetails.ProcedimentosEmailEnvioParaArea);
+
+                string BCCAddress = DBProcedimentosCCP.GetUserEmail(User.Identity.Name);
+                if (BCCAddress != null)
+                    Email.BCC.Add(BCCAddress);
+
+                Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+                Email.IsBodyHtml = true;
+
+                Email.SendEmail();
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
+        #endregion
+        
+        #region "Acções" MenuItem in the "Area" section
+        public JsonResult GetPermission([FromBody] ProcedimentoCCPView data)
+        {
+            if(data != null)
+            {
+                bool IsElementArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoArea);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
+
+                if(!IsElementArea && !IsGestorProcesso)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
+
+                if(data.Estado != 2)
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
+
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                string UserEmail = "";
+
+                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                {
+                    UserEmail = UserDetails.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+                // NAV Procedure ImobAreaConfirmar.b
+                ErrorHandler PermissionDenied = DBProcedimentosCCP.AreaConfirmsAssetPurchase(data, UserDetails, 1);
+                if (PermissionDenied.eReasonCode != 0)
+                {
+                    return Json(PermissionDenied);
+                }
+                // NAV ImobAreaConfirmar.e
+
+                ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
+                if (EmailList == null)
+                {
+                    return Json(ReturnHandlers.AddressListIsEmpty);
+                }
+
+                if (!EmailAutomation.IsValidEmail(EmailList.EmailCa))
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+                EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                {
+                    NºProcedimento = data.No,
+                    Assunto = data.No + " - Autorização de aquisição de Imobilizado",
+                    UtilizadorEmail = UserEmail,
+                    EmailDestinatário = EmailList.EmailCa,
+                    TextoEmail = data.ElementosChecklist.ChecklistImobilizadoArea.ComentarioImobArea,
+                    DataHoraEmail = DateTime.Now,
+                    UtilizadorCriação = UserDetails.IdUtilizador,
+                    DataHoraCriação = DateTime.Now
+                };
+
+                if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                {
+                    return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                }
+
+                data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
+                SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                {
+                    DisplayName = UserDetails.Nome,
+                    Subject = ProcedimentoEmail.Assunto,
+                    From = "CCP_NAV@such.pt"
+                };
+
+                Email.To.Add(EmailList.EmailCa);
+                Email.BCC.Add(UserEmail);
+
+                Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+                Email.IsBodyHtml = true;
+
+                Email.EmailProcedimento = ProcedimentoEmail;
+
+                Email.SendEmail();
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.Success);
             }
         }
 
+        public JsonResult ReturnToAccounting([FromBody] ProcedimentoCCPView data)
+        {
+            if(data != null)
+            {
+                bool IsElementArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoArea);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
+
+                if (!IsElementArea && !IsGestorProcesso)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
+
+                if (data.Estado != 2)
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
+
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+
+                // NAV Procedure ImobAreaConfirmar.b
+                ErrorHandler PermissionDenied = DBProcedimentosCCP.AreaConfirmsAssetPurchase(data, UserDetails, 0);
+                if (PermissionDenied.eReasonCode != 0)
+                {
+                    return Json(PermissionDenied);
+                }
+                // NAV ImobAreaConfirmar.e
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
+
+        public JsonResult CloseProcedimentoArea([FromBody] ProcedimentoCCPView data)
+        {
+            // zpgm.28112017 - this action doens't have an implementation in NAV. Decide whether is relevant or not.
+            return Json(null);
+        }
+        #endregion
+
+        #endregion
+
+        #region The following methods map the MenuButtons, named "Acções" in the "Fundamentos Decisão" tab on the NAV form
+        #region MenuButton "Acções" in the "A preencher pelas compras" section
+        [HttpPost]
+        public JsonResult SubmitToAccounting([FromBody] ProcedimentoCCPView data)
+        {
+            if(data != null)
+            {
+                bool IsElementCompras = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoCompras);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
+
+                if (!IsElementCompras && !IsGestorProcesso)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
+
+                if (data.Estado < 4 || data.Estado > 6)
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
+
+                if (string.IsNullOrEmpty(data.NomeProcesso))
+                {
+                    return Json(ReturnHandlers.ProcessNameNotSet);
+                }
+
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                string UserEmail = "";
+
+                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                {
+                    UserEmail = UserDetails.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+                // NAV Procedure FDComprasConfirmar.b
+                ErrorHandler DecisionTaken = DBProcedimentosCCP.DecisionGroundsToBuy(data, UserDetails, 1);
+                if (DecisionTaken.eReasonCode != 0)
+                {
+                    return Json(DecisionTaken);
+                }
+                // NAV FDComprasConfirmar.e
+
+                ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
+                if (EmailList == null)
+                {
+                    return Json(ReturnHandlers.AddressListIsEmpty);
+                }
+
+                if (!EmailAutomation.IsValidEmail(EmailList.EmailFinanceiros))
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+                EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                {
+                    NºProcedimento = data.No,
+                    Assunto = data.No + " " + data.NomeProcesso + " - Parecer Financeiro",
+                    UtilizadorEmail = UserEmail,
+                    EmailDestinatário = EmailList.EmailFinanceiros,
+                    TextoEmail = data.ElementosChecklist.ChecklistFundamentoCompras.ComentarioFundamentoCompras,
+                    DataHoraEmail = DateTime.Now,
+                    UtilizadorCriação = UserDetails.IdUtilizador,
+                    DataHoraCriação = DateTime.Now
+                };
+
+                if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                {
+                    return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                }
+
+                data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
+                SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                {
+                    DisplayName = UserDetails.Nome,
+                    Subject = ProcedimentoEmail.Assunto,
+                    From = "CCP_NAV@such.pt"
+                };
+
+                Email.To.Add(EmailList.EmailFinanceiros);
+
+                if (EmailAutomation.IsValidEmail(EmailList.Email2Financeiros))
+                    Email.CC.Add(EmailList.Email2Financeiros);
+
+                Email.BCC.Add(UserEmail);
+
+                Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+                Email.IsBodyHtml = true;
+
+                Email.EmailProcedimento = ProcedimentoEmail;
+
+                Email.SendEmail();
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult SubmitToLegalDepartment([FromBody] ProcedimentoCCPView data)
+        {
+            if (data != null)
+            {
+                bool IsElementCompras = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoCompras);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
+
+                if (!IsElementCompras && !IsGestorProcesso)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
+
+                if (data.Estado < 4 || data.Estado > 6)
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
+
+                if (string.IsNullOrEmpty(data.NomeProcesso))
+                {
+                    return Json(ReturnHandlers.ProcessNameNotSet);
+                }
+
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                string UserEmail = "";
+
+                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                {
+                    UserEmail = UserDetails.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+                // NAV Procedure FDComprasConfirmar.b
+                ErrorHandler DecisionTaken = DBProcedimentosCCP.DecisionGroundsToBuy(data, UserDetails, 2);
+                if (DecisionTaken.eReasonCode != 0)
+                {
+                    return Json(DecisionTaken);
+                }
+                // NAV FDComprasConfirmar.e
+
+                ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
+                if (EmailList == null)
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                }
+
+                if (!EmailAutomation.IsValidEmail(EmailList.EmailJurididos))
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+                EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                {
+                    NºProcedimento = data.No,
+                    Assunto = data.No + " " + data.NomeProcesso + " - Parecer Juridico",
+                    UtilizadorEmail = UserEmail,
+                    EmailDestinatário = EmailList.EmailFinanceiros,
+                    TextoEmail = data.ElementosChecklist.ChecklistFundamentoCompras.ComentarioFundamentoCompras,
+                    DataHoraEmail = DateTime.Now,
+                    UtilizadorCriação = UserDetails.IdUtilizador,
+                    DataHoraCriação = DateTime.Now
+                };
+
+                if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                {
+                    return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                }
+
+                data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
+                SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                {
+                    DisplayName = UserDetails.Nome,
+                    Subject = ProcedimentoEmail.Assunto,
+                    From = "CCP_NAV@such.pt"
+                };
+
+                Email.To.Add(EmailList.EmailFinanceiros);
+
+                if (EmailAutomation.IsValidEmail(EmailList.Email2Juridicos))
+                    Email.CC.Add(EmailList.Email2Juridicos);
+
+                Email.BCC.Add(UserEmail);
+
+                Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+                Email.IsBodyHtml = true;
+
+                Email.EmailProcedimento = ProcedimentoEmail;
+
+                Email.SendEmail();
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult SubmitToArea([FromBody] ProcedimentoCCPView data)
+        {
+            if (data != null)
+            {
+                bool IsElementCompras = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoCompras);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
+
+                if (!IsElementCompras && !IsGestorProcesso)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
+
+                if (data.Estado < 4 || data.Estado > 6)
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
+
+                if (string.IsNullOrEmpty(data.NomeProcesso))
+                {
+                    return Json(ReturnHandlers.ProcessNameNotSet);
+                }
+
+                FluxoTrabalhoListaControlo Fluxo0 = new FluxoTrabalhoListaControlo();
+
+                if (data.FluxoTrabalhoListaControlo != null)
+                {
+                    Fluxo0 = data.FluxoTrabalhoListaControlo.Where(f => f.Estado == 0).LastOrDefault();
+                }
+                else
+                {
+                    Fluxo0 = DBProcedimentosCCP.GetChecklistControloProcedimento(data.No, 0);
+                }
+
+                
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(Fluxo0.User);
+                string UserEmail = "";
+
+                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                {
+                    UserEmail = UserDetails.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+                // NAV Procedure FDComprasConfirmar.b
+                ErrorHandler DecisionTaken = DBProcedimentosCCP.DecisionGroundsToBuy(data, DBProcedimentosCCP.GetUserDetails(User.Identity.Name), 3);
+                if (DecisionTaken.eReasonCode != 0)
+                {
+                    return Json(DecisionTaken);
+                }
+                // NAV FDComprasConfirmar.e
+
+                ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
+                if (EmailList == null)
+                {
+                    return Json(ReturnHandlers.AddressListIsEmpty);
+                }
+
+                if (!EmailAutomation.IsValidEmail(EmailList.EmailJurididos))
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+                EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                {
+                    NºProcedimento = data.No,
+                    Assunto = data.No + " " + data.NomeProcesso + " - Parecer Juridico",
+                    UtilizadorEmail = UserEmail,
+                    EmailDestinatário = EmailList.EmailFinanceiros,
+                    TextoEmail = data.ElementosChecklist.ChecklistFundamentoCompras.ComentarioFundamentoCompras,
+                    DataHoraEmail = DateTime.Now,
+                    UtilizadorCriação = User.Identity.Name,
+                    DataHoraCriação = DateTime.Now
+                };
+
+                if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                {
+                    return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                }
+
+                data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
+                SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                {
+                    DisplayName = UserDetails.Nome,
+                    Subject = ProcedimentoEmail.Assunto,
+                    From = "CCP_NAV@such.pt"
+                };
+
+                Email.To.Add(EmailList.EmailFinanceiros);
+
+                if (EmailAutomation.IsValidEmail(EmailList.Email2Juridicos))
+                    Email.CC.Add(EmailList.Email2Juridicos);
+
+                Email.BCC.Add(UserEmail);
+
+                Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+                Email.IsBodyHtml = true;
+
+                Email.EmailProcedimento = ProcedimentoEmail;
+
+                Email.SendEmail();
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult ReturnToAreaToJustifyProcess([FromBody] ProcedimentoCCPView data)
+        {
+            return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult SubmitToBoardForOpening([FromBody] ProcedimentoCCPView data)
+        {
+            return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult SubmitToBoardForGranting([FromBody] ProcedimentoCCPView data)
+        {
+            return Json(null);
+        } 
+        #endregion
+        #endregion
     }
+
+    
 }
