@@ -1071,6 +1071,7 @@ namespace Hydra.Such.Portal.Controllers
             int AreaId = int.Parse(requestParams["AreaId"].ToString());
             int Archived = int.Parse(requestParams["Archived"].ToString());
             string ContractNo = requestParams["ContractNo"].ToString();
+            int showLevel = int.Parse(requestParams["showLevel"].ToString());
 
             List<Contratos> ContractsList = null;
 
@@ -1085,6 +1086,19 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             List<ContractViewModel> result = new List<ContractViewModel>();
+
+            if (showLevel == 1)
+            {
+                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value == 4 || x.Estado.Value == 5);
+            }
+            else if (showLevel == 2)
+            {
+                ContractsList.RemoveAll(x => !(x.Estado.HasValue && x.Estado.Value == 5));
+            }
+            else
+            {
+                ContractsList.RemoveAll(x => !(x.Estado.HasValue && x.Estado.Value == 4));
+            }
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
