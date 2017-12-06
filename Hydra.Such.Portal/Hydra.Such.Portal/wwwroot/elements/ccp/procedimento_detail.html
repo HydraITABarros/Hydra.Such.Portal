@@ -486,7 +486,7 @@
                                     
                                     <div class="row break_clear">
                                         <div class="col-sm-3">
-                                            <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.precoBase}}" label="Preço Base?">
+                                            <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.precoBase}}" id="precoBase" label="Preço Base?">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -497,7 +497,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-sm-3">
-                                            <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.negociacao}}" label="Negociação?">
+                                            <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.negociacao}}" id="negociacao" label="Negociação?">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -2102,7 +2102,8 @@
                                 return;
                             }
 
-                            this._setFieldsEditability(data);
+                            debugger;;
+                            this._setFieldsEditability(this.data);
 
                             this.$.ajax_checklist_estado0.body = this.data;
                             this.$.ajax_checklist_estado0.generateRequest();
@@ -2352,11 +2353,24 @@
                 },
 
                 _setFieldsEditability(data) {
+                    debugger;;
+
                     var _self = this;
-                    console.log(123456789);
-                    if (data.estado != 1) {
+                    //console.log(123456789);
+                    //if (data.estado == 0) {
+                    //    _self.$.informacaoTecnica.disabled = false;
+                    //}
+                    if (data.estado != 0) {
                         //desabilitar um campo
                         //_self.$.no.disabled = false;
+                        _self.$.informacaoTecnica.disabled = true;
+                        _self.$.fundamentacaoAquisicao.disabled = true;
+                        _self.$.precoBase.disabled = true;
+                        _self.$.negociacao.disabled = true;
+                        _self.$.formAddElemento.disabled = true;
+                        _self.$.users.disabled = true;
+                        _self.$.gridElementosJuri.disabled = true;
+                        
 
                         //esconder um campo
                         //_self.$.codigoRegiao.hidden = true;

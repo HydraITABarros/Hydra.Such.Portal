@@ -46,7 +46,8 @@
     <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" id="ajax_unitmeasure" last-response="{{unitmeasureresult}}" auto  method="post" handle-as="json" content-type="application/json"></iron-ajax>
     <iron-ajax url="/Nutricao/NecessidadeCompras/GetGridValues" id="ajax_getgrid" last-response="{{data}}" on-response="_getgridResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
     <iron-ajax url="/Nutricao/NecessidadeCompras/UpdateShoppingNecessity" id="ajax_update" last-response="{{data}}" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
-  
+    <iron-ajax url="/PopulateDropdowns/GetLocations" id="grid_Locations_ajax" last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
     <div class="row">
         <div class="col-md-3">
             <vaadin-text-field id="prodUnitNoId" name="prodUnitNoName" label="Nº Unidade Produtiva" value="{{prodUnitNo}}" disabled>
@@ -64,22 +65,24 @@
         </div>
         <div class="row">
             <div class="col-md-3">
-                <vaadin-text-field id="codStockUnitId" name="codStockUnitName" label="Codigo Localização" value="{{codStockUnit}}"></vaadin-text-field>
+                <vaadin-combo-box items="[[locationsresult]]" id="codStockUnitId" on-value-changed="_localCodeOnChange" item-value-path="id" item-label-path="value" value="{{codStockUnit}}" label="Código Localização">
+                    <template>
+                        <table width="350px">
+                            <tr>
+                                <td width="30%">[[item.id]]</td>
+                                <td width="70%"><b>[[item.value]]</b></td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
             </div>
             <div class="col-md-3">
-                <vaadin-combo-box items="[[cbopenorderlines]]" id="mOpenOrderLinesId" on-value-changed="_openOrderLinesOnChange" item-value-path="line_No" item-label-path="numb" value="" label="Nº Produto">
+                <vaadin-combo-box items="[[cbopenorderlines]]" id="mOpenOrderLinesId" on-value-changed="_openOrderLinesOnChange" item-value-path="numb" item-label-path="numb" value="" label="Nº Produto">
                     <template>
-                        <table width="1200px">
+                        <table width="300px">
                             <tr>
-                                <td width="10%">[[item.line_No]]</td>
-                                <td width="10%"><b>[[item.numb]]</b></td>
-                                <td width="10%">[[item.buyFromVendorNo]]</td>
-                                <td width="20%">[[item.description]]</td>
-                                <td width="10%">[[item.unitofMeasureCode]]</td>
-                                <td width="10%">[[item.Quantity]]</td>
-                                <td width="10%">[[item.qtyperUnitofMeasure]]</td>
-                                <td width="10%">[[item.unitCost]]</td>
-                                <td width="10%">[[item.amount]]</td>
+                                <td width="20%"><b>[[item.numb]]</b></td>
+                                <td width="80%">[[item.description]]</td>
                             </tr>
                         </table>
                     </template>
@@ -155,7 +158,7 @@
         </template>
 
     </vaadin-grid-column>
-    <vaadin-grid-column resizable>
+    <vaadin-grid-column width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="productUnitDescription">Descrição</vaadin-grid-sorter>
             <vaadin-grid-filter path="productUnitDescription" />
@@ -169,7 +172,7 @@
             </template>
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column resizable>
+    <vaadin-grid-column width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="expectedReceptionDate">Data Receção Esperada</vaadin-grid-sorter>
             <vaadin-grid-filter path="expectedReceptionDate" />
@@ -184,7 +187,7 @@
             </template>
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column resizable>
+    <vaadin-grid-column width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="dateByPriceSupplier">Data p/ Preço Fornecedor</vaadin-grid-sorter>
             <vaadin-grid-filter path="dateByPriceSupplier" />
@@ -199,51 +202,53 @@
            
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column resizable>
+    <vaadin-grid-column width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
             <vaadin-grid-filter path="localCode" />
         </template>
         <template>
             <template is="dom-if" if="{{ item.selected }}">
-                <vaadin-text-field value="{{item.localCode}}"></vaadin-text-field>
-            </template>
-            <template is="dom-if" if="{{ !item.selected }}">
-                {{item.localCode}}
-            </template>
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="productNo">Nº Produto</vaadin-grid-sorter>
-            <vaadin-grid-filter path="productNo" />
-        </template>
-        <template>
-            <template is="dom-if" if="{{ item.selected }}">
-                <vaadin-combo-box items="[[cbopenorderlines]]" id="mOpenOrdLineId"  item-value-path="line_No" item-label-path="numb" value="{{item.productNo}}">
+                <vaadin-combo-box items="[[locationsresult]]" id="codStockUnitId" on-value-changed="_localCodeOnChange" item-value-path="id" item-label-path="value" value="{{item.localCode}}">
                     <template>
-                        <table width="1200px">
+                        <table width="350px">
                             <tr>
-                                <td width="10%">[[item.line_No]]</td>
-                                <td width="10%"><b>[[item.numb]]</b></td>
-                                <td width="10%">[[item.buyFromVendorNo]]</td>
-                                <td width="20%">[[item.description]]</td>
-                                <td width="10%">[[item.unitofMeasureCode]]</td>
-                                <td width="10%">[[item.Quantity]]</td>
-                                <td width="10%">[[item.qtyperUnitofMeasure]]</td>
-                                <td width="10%">[[item.unitCost]]</td>
-                                <td width="10%">[[item.amount]]</td>
+                                <td width="30%">[[item.id]]</td>
+                                <td width="70%"><b>[[item.value]]</b></td>
                             </tr>
                         </table>
                     </template>
                 </vaadin-combo-box>
             </template>
             <template is="dom-if" if="{{ !item.selected }}">
-                [[ _parseProductNo(item.productNo,item.dateByPriceSupplier,item.documentNo ) ]]
+                {{item.localCode}}
             </template>
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column resizable>
+    <vaadin-grid-column width="160px" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="productNo">Nº Produto</vaadin-grid-sorter>
+            <vaadin-grid-filter path="productNo" />
+        </template>
+        <template>
+            <template is="dom-if" if="{{ item.selected }}">
+                <vaadin-combo-box items="[[cbopenorderlines]]" id="mOpenOrderLinesId" on-value-changed="_openOrderLinesOnChange" item-value-path="numb" item-label-path="numb" value="{{item.productNo}}" >
+                    <template>
+                        <table width="300px">
+                            <tr>
+                                <td width="20%"><b>[[item.numb]]</b></td>
+                                <td width="80%">[[item.description]]</td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
+            </template>
+            <template is="dom-if" if="{{ !item.selected }}">
+                {{item.productNo}}
+            </template>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="supplierNo">Nº Forncedor</vaadin-grid-sorter>
             <vaadin-grid-filter path="supplierNo" />
@@ -258,7 +263,7 @@
            
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column resizable>
+    <vaadin-grid-column width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="description">Descrição Produto</vaadin-grid-sorter>
             <vaadin-grid-filter path="description" />
@@ -273,7 +278,7 @@
            
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column resizable>
+    <vaadin-grid-column width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="unitMeasureCode">Unidade Medida</vaadin-grid-sorter>
             <vaadin-grid-filter path="unitMeasureCode" />
@@ -297,7 +302,7 @@
            
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column resizable>
+    <vaadin-grid-column width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="quantity">Quantidade </vaadin-grid-sorter>
             <vaadin-grid-filter path="quantity" />
@@ -311,7 +316,7 @@
             </template>
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column resizable>
+    <vaadin-grid-column width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="quantitybyUnitMeasure">Quantidade por Unid. Medida</vaadin-grid-sorter>
             <vaadin-grid-filter path="quantitybyUnitMeasure" />
@@ -326,7 +331,7 @@
             
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column resizable>
+    <vaadin-grid-column width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="directUnitCost">Custo Unitário</vaadin-grid-sorter>
             <vaadin-grid-filter path="directUnitCost" />
@@ -341,7 +346,7 @@
           
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column resizable>
+    <vaadin-grid-column width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="totalValue">Valor Total</vaadin-grid-sorter>
             <vaadin-grid-filter path="totalValue" />
@@ -357,7 +362,7 @@
            
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column resizable>
+    <vaadin-grid-column width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="supplierProductCode">Codigo Produto Fornecedor</vaadin-grid-sorter>
             <vaadin-grid-filter path="supplierProductCode" />
@@ -372,7 +377,7 @@
             
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column resizable>
+    <vaadin-grid-column width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="supplierProductDescription">Descrição Produto Fornecedor</vaadin-grid-sorter>
             <vaadin-grid-filter path="supplierProductDescription" />
@@ -387,7 +392,7 @@
           
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column resizable>
+    <vaadin-grid-column width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="supplierName">Nome Fornecedor</vaadin-grid-sorter>
             <vaadin-grid-filter path="supplierName" />
