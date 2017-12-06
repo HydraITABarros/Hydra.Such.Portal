@@ -75,6 +75,10 @@ namespace Hydra.Such.Data.Database
         public string ContatoEntrega { get; set; }
         public string ResponsávelReceçãoReceção { get; set; }
         public string NºFatura { get; set; }
+        public DateTime? DataMercadoLocal { get; set; }
+        public DateTime? DataRequisição { get; set; }
+        public string NºConsultaMercado { get; set; }
+        public string NºEncomenda { get; set; }
 
         public Projetos NºProjetoNavigation { get; set; }
         public Viaturas ViaturaNavigation { get; set; }
