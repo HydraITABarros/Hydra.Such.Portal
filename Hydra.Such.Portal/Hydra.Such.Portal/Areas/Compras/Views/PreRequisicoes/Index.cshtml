@@ -140,6 +140,7 @@
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVJobNo" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVVendor" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         
         <iron-ajax url="/PreRequisicoes/CBVehicleFleetBool"
@@ -148,6 +149,14 @@
                    handle-as="json"
                    id="ajax_cbReqType"
                    on-response="_responseVehicleFleetBool"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetPlaceData"
+                   last-response="{{PlaceData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_getPlaceData"
+                   on-response="_responsePlaceData"
                    content-type="application/json"></iron-ajax>
 
 
@@ -383,7 +392,86 @@
                     <div class="panel-heading">Linhas Pré-Requisição</div>
                     <div class="row break_clear">
                         <div class="col-lg-2">
-                            <vaadin-text-field value="{{_CLDescription}}" id="_CLDescription" name="_CLDescription" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                            <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        </div>
+                        <div class="col-lg-2">
+                            <vaadin-text-field value="{{_Description}}" id="_Description" name="_Description" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        </div>
+                        <div class="col-lg-2">
+                            <vaadin-text-field value="{{_UnitMeasureCode}}" id="_UnitMeasureCode" name="_UnitMeasureCode" label="Código Unid. Medida" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        </div>
+                        <div class="col-lg-2">
+                            <vaadin-text-field value="{{_QuantityToRequire}}" id="_QuantityToRequire" name="_QuantityToRequire" label="Qt. a Requerer" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
+                        </div>
+                        <div class="col-lg-2">
+                            <vaadin-text-field value="{{_UnitCost}}" id="_UnitCost" name="_UnitCost" label="Custo Unitário" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
+                        </div>
+                    </div>
+                    <div class="row break_clear">
+                        <div class="col-lg-2">
+                            <vaadin-text-field value="{{_ProjectNo}}" id="_ProjectNo" name="_ProjectNo" label="Nº Ordem/Projeto" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        </div>
+                        <div class="col-lg-2">
+                            <vaadin-text-field value="{{_MaintenanceOrderLineNo}}" id="_MaintenanceOrderLineNo" name="_MaintenanceOrderLineNo" label="Nº Linha Ordem Manutenção" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        </div>
+                        <div class="col-lg-2">
+                            <vaadin-combo-box items="[[CBVehicle]]" id="_VehicleLines" item-value-path="id" item-label-path="id" value="{{_VehicleLines}}" label="Viatura">
+                                <template>
+                                    <b>[[item.id]]</b>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-lg-2">
+                            <vaadin-combo-box items="[[CBVendor]]" id="_CBVendor" item-value-path="id" item-label-path="value" value="{{_CBVendor}}" label="Nº Fornecedor" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <vaadin-combo-box items="[[LProjectRegionCodes]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="{{_CLRegion}}" label="Cód. Região" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-lg-2">
+                            <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="_CLFunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{_CLFunctionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                    </div>
+                    <div class="row break_clear">
+                        <div class="col-lg-2">
+                            <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{_CLResponsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
                         </div>
                     </div>
                 </div>
@@ -407,7 +495,6 @@
                     this.$.ajax_cbReqType.body = JSON.stringify(id);
                     this.$.ajax_cbReqType.generateRequest();
                 }
-                debugger;
             },
             _responseVehicleFleetBool: function (data) {
                 var self = this;
@@ -419,6 +506,14 @@
                     } else {
                         this.$.VehicleDiv.hidden = true;
                     }
+                }
+            },
+
+            _onSearchLocalDataCollection: function (e) {
+                var placeId = this.$.CollectionLocal.value;
+                if (placeId != "" && placeId > 0) {
+                    this.$.ajax_getPlaceData.body = JSON.stringify(placeId);
+                    this.$.ajax_getPlaceData.generateRequest();
                 }
             }
         });

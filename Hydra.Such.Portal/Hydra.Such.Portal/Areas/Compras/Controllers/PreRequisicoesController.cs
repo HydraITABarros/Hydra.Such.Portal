@@ -13,15 +13,6 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
     public class PreRequisicoesController : Controller
     {
-        private readonly NAVConfigurations _config;
-        private readonly NAVWSConfigurations _configws;
-
-        public PreRequisicoesController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
-        {
-            _config = appSettings.Value;
-            _configws = NAVWSConfigs.Value;
-        }
-
         [Area("Compras")]
         public IActionResult Index()
         {
@@ -34,6 +25,11 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             return Json(FleetBool);
         }
 
+        public JsonResult GetPlaceData([FromBody] int placeId)
+        {
+            bool? FleetBool = DBRequesitionType.GetById(placeId).Frota;
+            return Json(FleetBool);
+        }
 
     }
 }

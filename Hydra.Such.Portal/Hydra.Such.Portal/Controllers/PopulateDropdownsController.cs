@@ -1151,6 +1151,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetNAVVendor()
+        {
+            List<DDMessageString> result = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.No_,
+                value = x.Name
+
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetMealTypes()
         {
             List<DDMessage> result = DBMealTypes.GetAll().Select(x => new DDMessage()
