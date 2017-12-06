@@ -283,6 +283,19 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetContractPaymentTerms()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractPaymentTerms;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractTerminationTerms()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractTerminationTerms;
+            return Json(result);
+        }
+        [HttpPost]
         public JsonResult GetProposalsStatus()
         {
             List<EnumData> result = EnumerablesFixed.ProposalsStatus;
@@ -1108,6 +1121,18 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult TipoRequisicoesLista()
         {
             List<DDMessage> result = DBRequesitionType.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetMealTypes()
+        {
+            List<DDMessage> result = DBMealTypes.GetAll().Select(x => new DDMessage()
             {
                 id = x.Código,
                 value = x.Descrição

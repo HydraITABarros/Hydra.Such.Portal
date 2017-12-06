@@ -72,25 +72,22 @@
         </style>
 
         @*POPULATE GRID*@
-        <iron-ajax url="/Nutricao/ModelosReqSimplificada/GetReqTemplate"
-                   last-response="{{data}}"
-                   method="post"
-                   handle-as="json"
-                   id="itemHeader_databound"
-                   on-response="_getReqTemplateResponse"
-                   content-type="application/json"></iron-ajax>
-
-        <iron-ajax url="/Nutricao/ModelosReqSimplificada/DeleteReqTemplateLine" last-response="{{DelReqTemplateLineResponse}}" method="post" handle-as="json" id="deleteReqTemplateLine_ajax" on-response="_deleteReqTemplateLineResponse" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/ModelosReqSimplificada/UpdateReqTemplateLines" last-response="{{UpdReqTemplateLineResponse}}" method="post" handle-as="json" id="updateReqTemplateLines_ajax" on-response="_updateReqTemplateLinesResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax id="reqTemplateHeader_databound" url="/Nutricao/ModelosReqSimplificada/GetReqTemplate" last-response="{{data}}" on-response="_getReqTemplateResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax id="deleteReqTemplateLine_ajax" url="/Nutricao/ModelosReqSimplificada/DeleteReqTemplateLine" last-response="{{DelReqTemplateLineResponse}}" on-response="_deleteReqTemplateLineResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax id="updateReqTemplateLines_ajax" url="/Nutricao/ModelosReqSimplificada/UpdateReqTemplateLines" last-response="{{UpdReqTemplateLineResponse}}" on-response="_updateReqTemplateLinesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax id="createReqTemplateLine_ajax" url="/Nutricao/ModelosReqSimplificada/CreateReqTemplateLine" last-response="{{AddReqTemplateLineResponse}}" on-response="_createReqTemplateLineResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         @*POPULATE DROPDOWNS*@
-        @*<iron-ajax url="/PopulateDropdowns/GetNutritionReqTemplateTypes" last-response="{{CBRequisitionModelTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-            <iron-ajax url="/PopulateDropdowns/GetProductivityUnits" last-response="{{CBProductivityUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
+        @*<iron-ajax url="/PopulateDropdowns/GetNutritionReqTemplateTypes" last-response="{{CBRequisitionModelTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
+        
+        <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetMealTypes" last-response="{{CBMealTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenters}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        @*<iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
-        @*<iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBWarehouses}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
+        <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBWarehouses}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{CBUnitsOfMeasure}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="row">
@@ -117,7 +114,7 @@
                                         <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
                                     <div class="col-md-3 ">
-                                        <vaadin-text-field id="code" name="code" label="Código" value="{{data.code}}" disabled="true"></vaadin-text-field>
+                                        @*<vaadin-text-field id="code" name="code" label="Código" value="{{data.code}}" disabled="true"></vaadin-text-field>*@
                                     </div>
                                     <div class="col-md-3 ">
                                         @*<vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>*@
@@ -161,6 +158,16 @@
                                         </vaadin-combo-box>
                                     </div>
                                     <div class="col-md-3 ">
+                                        <vaadin-combo-box items='[[CBWarehouses]]' id="supplier" item-value-path="id" item-label-path="value" value="" label="Fornecedor" disabled="{{ !_permissions.update }}">
+                                            <template>
+                                                <table width="180px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
                                     </div>
                                 </div>
                             </div>
@@ -190,6 +197,128 @@
         <div class="panel panel-default">
             <div class="panel-heading">Linhas</div>
             <div class="panel-body">
+                <div>
+                    <div class="row break_clear">
+                        <div class="col-md-3 ">
+                            <vaadin-combo-box items='[[CBProducts]]' id="lineProductId" item-value-path="id" item-label-path="value" value="" label="Produto" disabled="{{ !_permissions.update }}"
+                                              on-value-changed="_onProductChanged">
+                                <template>
+                                    <table width="180px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-md-3 ">
+                            <vaadin-text-field value="" id="lineProductDescription" name="lineProductDescription" label="Descrição Produto" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        </div>
+                        <div class="col-md-3 ">
+                            <vaadin-combo-box items='[[CBUnitsOfMeasure]]' id="lineUnitOfMeasure" item-value-path="id" item-label-path="value" value="" label="Unidade de Medida" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <table width="180px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-md-3 ">
+                            <vaadin-text-field id="lineQuantity" name="lineQuantity" label="Quantidade" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        </div>
+                    </div>
+                    <div class="row break_clear">
+                        <div class="col-md-3 ">
+                            <vaadin-text-field id="lineUnitValue" name="lineUnitValue" label="Valor Unitário" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        </div>
+                        <div class="col-md-3 ">
+                            <vaadin-combo-box items='[[CBMealTypes]]' id="lineMealType" item-value-path="id" item-label-path="value" value="" label="Tipo de Refeição" disabled="{{ !_permissions.update }}"
+                                              on-value-changed="_onMealTypeChanged">
+                                <template>
+                                    <table width="180px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-md-3 ">
+                            <vaadin-text-field id="lineMealTypeDescription" name="lineMealTypeDescription" label="Descrição Tipo de Refeição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        </div>
+                        <div class="col-md-3 ">
+                            <vaadin-combo-box items='[[CBProjects]]' id="lineProjectId" item-value-path="id" item-label-path="value" value="" label="Projeto" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <table width="180px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                    </div>
+                    <div class="row break_clear">
+                        <div class="col-md-3 ">
+                            <vaadin-combo-box items="[[CBRegions]]" id="lineCodeRegion" item-value-path="id" item-label-path="value" value="" label="Cód. Região" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <table width="180px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-md-3 ">
+                            <vaadin-combo-box items="[[CBFunctionalAreas]]" id="lineCodeFunctionalArea" item-value-path="id" item-label-path="value" value="" label="Cód. Area Funcional" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <table width="180px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-md-3 ">
+                            <vaadin-combo-box items="[[CBResponsabilityCenters]]" id="lineCodeResponsabilityCenter" item-value-path="id" item-label-path="value" value="" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <table width="180px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-md-3 ">
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <div class="marginSpace">
+                        <template is="dom-if" if="{{ _permissions.update }}">
+                            <template is="dom-if" if="{{ !_isCreate }}">
+                                <paper-button raised id="btnCreate" class="btnSave" on-tap="_createReqTemplateLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                <paper-button raised id="btnImport" class="btnSave" on-tap="_notImplemented"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Importar</paper-button>
+                            </template>
+                        </template>
+                    </div>
+                </div>
+                <ul>
+                    <li>Cod.Serv.Cliente (quando preenchido este campo, preenche automáticamente o campo ‘Desc.Serv.Cliente)</li>
+                    <li>Desc.Serv.Cliente</li>
+                </ul>
                 <vaadin-grid id="gridTemplateLines" aria-label="TemplateLinesTable" items="[[data.lines]]" class="grid" active-item="{{_SelectedLine}}" multi-sort="true">
                     <vaadin-grid-column width="10%">
                         <template class="header">
@@ -200,17 +329,36 @@
                             {{item.requisitionTemplateLineId}}
                         </template>
                     </vaadin-grid-column>
+
+
                     <vaadin-grid-column width="30%">
                         <template class="header">
-                            <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="description" />
+                            <vaadin-grid-sorter path="productId">Código Produto</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="productId" />
                         </template>
                         <template>
                             <template is="dom-if" if="{{ item.selected }}">
-                                <vaadin-text-field value="{{ item.description }}" id="lineDescription" name="lineDescription" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                <vaadin-text-field value="{{ item.productId }}" id="grdLineproductId" name="grdLineproductId" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                             </template>
                             <template is="dom-if" if="{{ !item.selected }}">
-                                {{ item.description }}
+                                {{ item.productId }}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+
+
+
+                    <vaadin-grid-column width="30%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="productDescription">Descrição Produto</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="productDescription" />
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{ item.productDescription }}" id="grdLineProductDescription" name="grdLineProductDescription" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{ item.productDescription }}
                             </template>
                         </template>
                     </vaadin-grid-column>
@@ -317,7 +465,7 @@
                         observer: '_onLineSelected'
                     },
                 },
-                _formTypeChanged: function (isNewItemForm, oldValue) {
+                _formTypeChanged: function (isNewItemForm) {
                     if (isNewItemForm && this._permissions.update) {
                         this.$.requisitionTemplateId.disabled = false;
                     }
@@ -339,6 +487,12 @@
                         }
                     }
                 },
+                ready: function () {
+                    this.$.reqTemplateHeader_databound.body = JSON.stringify(@ViewBag.requisitionTemplateId);
+                    this.$.reqTemplateHeader_databound.generateRequest();
+
+                    this._isCreate = "@ViewBag.FormType" == "0";
+                },
                 _openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
@@ -347,39 +501,40 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
-                _validateData: function () {
+                _validateUserImputForHeader() {
                     if (true) {
                         return true;
                     }
-                    this._openToastError("Verifique os dados inseridos.");
+                    this._showErrorMessage("Verifique os dados inseridos.");
                     return false;
                 },
-
-                ready: function () {
-                    this.$.itemHeader_databound.body = JSON.stringify(@ViewBag.requisitionTemplateId);
-                    this.$.itemHeader_databound.generateRequest();
-
-                    this._isCreate = "@ViewBag.FormType" == "0";
+                _validateUserImputForLine() {
+                    return true;
+                    /*if (this.$.contactName.validate()) {
+                        return true;
+                    }
+                    this._showErrorMessage("Verifique os dados inseridos.");
+                    return false;*/
                 },
-
-                //CRUDS
+                
+                //CRUD
                 _createReqTemplate: function () {
-                    if (this._validateData()) {
-                        this.$.itemHeader_databound.url = "/Nutricao/ModelosReqSimplificada/CreateReqTemplate"
-                        this.$.itemHeader_databound.body = JSON.stringify(this.data);
-                        this.$.itemHeader_databound.generateRequest();
+                    if (this._validateUserImputForHeader()) {
+                        this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/CreateReqTemplate"
+                        this.$.reqTemplateHeader_databound.body = JSON.stringify(this.data);
+                        this.$.reqTemplateHeader_databound.generateRequest();
                     }
                 },
                 _updateReqTemplate: function () {
-                    if (this._validateData()) {
-                        this.$.itemHeader_databound.url = "/Nutricao/ModelosReqSimplificada/UpdateReqTemplate";
-                        this.$.itemHeader_databound.body = JSON.stringify(this.data);
-                        this.$.itemHeader_databound.generateRequest();
+                    if (this._validateUserImputForHeader()) {
+                        this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/UpdateReqTemplate";
+                        this.$.reqTemplateHeader_databound.body = JSON.stringify(this.data);
+                        this.$.reqTemplateHeader_databound.generateRequest();
                     }
                 },
                 _deleteReqTemplate: function () {
-                    this.$.itemHeader_databound.url = "/Nutricao/ModelosReqSimplificada/DeleteReqTemplate";
-                    var ajax_request = this.$.itemHeader_databound;
+                    this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/DeleteReqTemplate";
+                    var ajax_request = this.$.reqTemplateHeader_databound;
 
                     var itemToDelete = this.data;
 
@@ -410,13 +565,13 @@
                 _getReqTemplateResponse: function (data) {
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetReqTemplate") !== -1) {
-                            
+
                         } else if (data.detail.url.indexOf("CreateReqTemplate") !== -1) {
                             debugger;;
                             if (this.data.eReasonCode == "1"){
                                 this._isCreate = false;
                                 this._openToast(this.data.eMessage);
-                                this.$.itemHeader_databound.url = "/Nutricao/ModelosReqSimplificada/GetReqTemplate";
+                                this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/GetReqTemplate";
                             }
                             else {
                                 this._isCreate = true;
@@ -424,13 +579,13 @@
                             }
                         } else if (data.detail.url.indexOf("Update") !== -1) {
                             this._openToast(this.data.eMessage);
-                            this.$.itemHeader_databound.url = "/Nutricao/ModelosReqSimplificada/GetReqTemplate";
+                            this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/GetReqTemplate";
                         }
                         else if (data.detail.url.indexOf("Delete") !== -1) {
                             if (this.data.eReasonCode == "1") {
                                 this._isCreate = false;
                                 this._openToast(this.data.eMessage);
-                                this.$.itemHeader_databound.url = "/Nutricao/ModelosReqSimplificada/GetReqTemplate";
+                                this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/GetReqTemplate";
                                 setTimeout(function () {
                                     window.location.href = "/Nutricao/ModelosReqSimplificada";
                                 }, 2500);
@@ -445,7 +600,30 @@
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
                 },
+                _createReqTemplateLine: function () {
+                    if (this._validateUserImputForLine()) {
 
+                        var newReqTemplateLine = {
+                            requisitionTemplateId: this.data.requisitionTemplateId,
+                            productDescription: this.$.lineProductDescription.value,
+                            codeRegion: this.$.lineCodeRegion.value,
+                            codeFunctionalArea: this.$.lineCodeFunctionalArea.value,
+                            codeResponsabilityCenter: this.$.lineCodeResponsabilityCenter.value,
+                        };
+                        this.$.createReqTemplateLine_ajax.body = JSON.stringify(newReqTemplateLine);
+                        this.$.createReqTemplateLine_ajax.generateRequest();
+                    }
+                },
+                _createReqTemplateLineResponse: function (e) {
+                    if (this.AddReqTemplateLineResponse.eReasonCode == "1") {
+                        this._openToast(this.AddReqTemplateLineResponse.eMessage);
+                        this.data.lines.push(this.AddReqTemplateLineResponse);
+                        this.$.gridTemplateLines.clearCache();
+                    }
+                    else {
+                        this._openToastError(this.AddReqTemplateLineResponse.eMessage);
+                    }
+                },
                 _deleteReqTemplateLine: function (e) {
                     var index = this.data.lines.indexOf(e.model.item);
                     this.data.lines.splice(index, 1);
@@ -473,10 +651,29 @@
                         this._openToastError(this.UpdReqTemplateLineResponse.eMessage);
                     }
                 },
-
-
                 _notImplemented: function (e) {
                     alert("Funcionalidade não implementada. A aguardar especificação.");
+                },
+
+                _onProductChanged: function (e) {
+                    if (e.detail.value != null && e.detail.value != "") {
+                        var products = $.grep(this.CBProducts, function (x) { return x.id == e.detail.value; });
+                        if (products != null && products.length > 0)
+                        { 
+                            var product = products[0];
+                            this.$.lineProductDescription.value = product.value;
+                            this.$.lineUnitOfMeasure.value = product.extra;
+                        }
+                    }
+                },
+                _onMealTypeChanged : function(e) {
+                    if (e.detail.value != null && e.detail.value != "") {
+                        var mealTypes = $.grep(this.CBMealTypes, function (x) { return x.id == e.detail.value; });
+                        if (mealTypes != null && mealTypes.length > 0) {
+                            var mealType = mealTypes[0];
+                            this.$.lineMealTypeDescription.value = mealType.value;
+                        }
+                    }
                 },
             });
         });

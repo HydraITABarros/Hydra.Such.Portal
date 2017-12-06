@@ -395,7 +395,7 @@
                     if (e.detail.status === 200) {
                         (function fillComboText() {
                             if (!_this.LTipoHora) {
-                                setTimeout(fillCombosText, 600);
+                                setTimeout(fillComboText, 600);
                                 return;
                             }
                             e.detail.response.forEach(function (data) {
