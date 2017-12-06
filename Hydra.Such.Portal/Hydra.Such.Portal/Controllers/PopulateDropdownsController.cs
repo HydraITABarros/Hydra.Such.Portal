@@ -199,12 +199,11 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult OpenOrderLines( [FromBody] DateTime? date)
         {
             List<NAVOpenOrderLinesViewModels> result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date).ToList();
-           
             return Json(result);
         }
 
         [HttpPost]
-        public JsonResult getOpenOrderLine([FromBody] int line_No, string documentNO, DateTime? date)
+        public JsonResult getOpenOrderLine([FromBody] string numb, string documentNO, DateTime? date)
         {
             NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
             try
@@ -213,11 +212,11 @@ namespace Hydra.Such.Portal.Controllers
                 result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date).ToList();
                 if (result != null && result.Count > 0 &&
                     !string.IsNullOrEmpty(documentNO) &&
-                    line_No!= null && line_No > 0)
+                    !string.IsNullOrEmpty(numb))
                 {
                     foreach (NAVOpenOrderLinesViewModels item in result)
                     {
-                        if (documentNO == item.DocumentNO && line_No == item.Line_No)
+                        if (documentNO == item.DocumentNO && numb == item.Numb)
                         {
                             getorderline = item;
                         }

@@ -3,6 +3,7 @@
     ViewData["Title"] = "Detalhes";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
@@ -32,15 +33,15 @@
 <template>
 <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
 <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="/css/main.css" />
+<link rel="stylesheet" href="/css/main.css" />
 <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
-    <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
-<iron-ajax url="/Requisicoes/GestaoRequisicoes/GetGridValues" id="ajax_getgrid" auto last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+<paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+<iron-ajax url="/Compras/GestaoRequisicoes/GetGridValues" id="ajax_getgrid" auto last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
  
 <div class="subMenu">
     <paper-button class="tablinks" on-tap="_requestModels"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i>Linhas de Requisição</paper-button>
 </div><!--on-response="_gridListResponse"-->
-    <h2 class="separator">Requisições</h2>
+<h2 class="separator">Requisições</h2>
 <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
 <vaadin-grid-column width="160px" resizable>
     <template class="header">
@@ -48,49 +49,204 @@
         <vaadin-grid-filter path="requisitionNo" />
     </template>
     <template>
-            {{item.requisitionNo}}
+        {{item.requisitionNo}}
     </template>
 
 </vaadin-grid-column>
-    <vaadin-grid-column  width="160px" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
-            <vaadin-grid-filter path="state" />
-        </template>
-        <template>
-            {{item.state}}
-        </template>
-    </vaadin-grid-column>
-    
-    <vaadin-grid-column  width="160px" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="urgent">Urgente</vaadin-grid-sorter>
-            <vaadin-grid-filter path="urgent" />
-        </template>
-        <template>
-            {{item.urgent}}
-        </template>
-    </vaadin-grid-column>
-
-    <vaadin-grid-column width="160px" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="buyCash">Compra a Dinheiro</vaadin-grid-sorter>
-            <vaadin-grid-filter path="buyCash" />
-        </template>
-        <template>
-            {{item.buyCash}}
-        </template>
-    </vaadin-grid-column>
-    <vaadin-grid-column width="160px" resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
-            <vaadin-grid-filter path="comments" />
-        </template>
-        <template>
-            {{item.comments}}
-        </template>
-    </vaadin-grid-column>
 <vaadin-grid-column  width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
+        <vaadin-grid-filter path="state" />
+    </template>
+    <template>
+        {{item.state}}
+    </template>
+</vaadin-grid-column>
+    
+<vaadin-grid-column  width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="urgent">Urgente</vaadin-grid-sorter>
+        <vaadin-grid-filter path="urgent" />
+    </template>
+    <template>
+        {{item.urgent}}
+    </template>
+</vaadin-grid-column>
+
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="buyCash">Compra a Dinheiro</vaadin-grid-sorter>
+        <vaadin-grid-filter path="buyCash" />
+    </template>
+    <template>
+        {{item.buyCash}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="alreadyPerformed">Trabalho já executado</vaadin-grid-sorter>
+        <vaadin-grid-filter path="alreadyPerformed" />
+    </template>
+    <template>
+        {{item.alreadyPerformed}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="requestNutrition">Requisição Nutrição</vaadin-grid-sorter>
+        <vaadin-grid-filter path="requestNutrition" />
+    </template>
+    <template>
+        {{item.requestNutrition}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="relatedSearches">Orçamento</vaadin-grid-sorter>
+        <vaadin-grid-filter path="relatedSearches" />
+    </template>
+    <template>
+        {{item.relatedSearches}}
+    </template>
+</vaadin-grid-column>
+
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="localMarket">Mercado Local</vaadin-grid-sorter>
+        <vaadin-grid-filter path="localMarket" />
+    </template>
+    <template>
+        {{item.localMarket}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="localMarketRegion">Região Mercado Local</vaadin-grid-sorter>
+        <vaadin-grid-filter path="localMarketRegion" />
+    </template>
+    <template>
+        {{item.localMarketRegion}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="localMarketDate">Data Mercado Local</vaadin-grid-sorter>
+        <vaadin-grid-filter path="localMarketDate" />
+    </template>
+    <template>
+        {{item.localMarketDate}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="localMarketDate">Dimensões</vaadin-grid-sorter>
+        <vaadin-grid-filter path="localMarketDate" />
+    </template>
+    <template>
+        {{item.localMarketDate}}
+    </template>
+</vaadin-grid-column>
+
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
+        <vaadin-grid-filter path="comments" />
+    </template>
+    <template>
+        {{item.comments}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="marketInquiryNo">Nº Consulta Mercado</vaadin-grid-sorter>
+        <vaadin-grid-filter path="marketInquiryNo" />
+    </template>
+    <template>
+        {{item.marketInquiryNo}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="orderNo">Nº Encomenda</vaadin-grid-sorter>
+        <vaadin-grid-filter path="orderNo" />
+    </template>
+    <template>
+        {{item.orderNo}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="stockReplacement">Reposição Stock</vaadin-grid-sorter>
+        <vaadin-grid-filter path="stockReplacement" />
+    </template>
+    <template>
+        {{item.stockReplacement}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="reclamation">Reclamação</vaadin-grid-sorter>
+        <vaadin-grid-filter path="reclamation" />
+    </template>
+    <template>
+        {{item.reclamation}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
+        <vaadin-grid-filter path="requestReclaimNo" />
+    </template>
+    <template>
+        {{item.requestReclaimNo}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="requisitionDate">Data requisição</vaadin-grid-sorter>
+        <vaadin-grid-filter path="requisitionDate" />
+    </template>
+    <template>
+        {{item.requisitionDate}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="createUser">Utilizador Criação</vaadin-grid-sorter>
+        <vaadin-grid-filter path="createUser" />
+    </template>
+    <template>
+        {{item.createUser}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="approvers">Aprovadores</vaadin-grid-sorter>
+        <vaadin-grid-filter path="approvers" />
+    </template>
+    <template>
+        {{item.approvers}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="estimatedValue">Valor Estimado</vaadin-grid-sorter>
+        <vaadin-grid-filter path="estimatedValue" />
+    </template>
+    <template>
+        {{item.estimatedValue}}
+    </template>
+</vaadin-grid-column>
+<vaadin-grid-column width="160px" resizable>
+    <template class="header">
+        <vaadin-grid-sorter path="updateUser">Utilizador de Aprovação</vaadin-grid-sorter>
+        <vaadin-grid-filter path="updateUser" />
+    </template>
+    <template>
+        {{item.updateUser}}
+    </template>
+</vaadin-grid-column>
+@*<vaadin-grid-column  width="160px" resizable>
     <template class="header">
         <vaadin-grid-sorter path="area">Área</vaadin-grid-sorter>
         <vaadin-grid-filter path="area" />
@@ -197,9 +353,8 @@
     <template>
         {{item.immobilized}}
     </template>
-</vaadin-grid-column>
-    
-    <vaadin-grid-column  width="160px" resizable>
+</vaadin-grid-column>  
+<vaadin-grid-column  width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="localCollectionCode">Código Local Recolha</vaadin-grid-sorter>
             <vaadin-grid-filter path="localCollectionCode" />
@@ -208,8 +363,7 @@
             {{item.localCollectionCode}}
         </template>
     </vaadin-grid-column>
-    
-    <vaadin-grid-column  width="160px" resizable>
+<vaadin-grid-column  width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="localDeliveryCode">Código Local Entrega</vaadin-grid-sorter>
             <vaadin-grid-filter path="localDeliveryCode" />
@@ -218,7 +372,7 @@
             {{item.localDeliveryCode}}
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column  width="160px" resizable>
+<vaadin-grid-column  width="160px" resizable>
         <template class="header">
             <vaadin-grid-sorter path="requestModel">Modelo De Requisição</vaadin-grid-sorter>
             <vaadin-grid-filter path="requestModel" />
@@ -227,7 +381,7 @@
             {{item.requestModel}}
         </template>
     </vaadin-grid-column>
-    <vaadin-grid-column with="10%">
+<vaadin-grid-column with="10%">
     <template class="header">
     </template>
     <template>
@@ -235,7 +389,7 @@
             <paper-button class="btnRemove" raised on-tap="_delete" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
         </center>
     </template>
-</vaadin-grid-column>
+</vaadin-grid-column>*@
 </vaadin-grid>    
 </template>
 <script>
@@ -243,11 +397,12 @@
         Polymer({
             is: 'x-request',
             _requestModels: function () {
-                window.location.href = "/Requisicoes/GestaoRequisicoes/LinhasRequisicao";
+                window.location.href = "/Compras/GestaoRequisicoes/LinhasRequisicao";
             },
         });
     });
 
 </script>
 </dom-module>
+
 

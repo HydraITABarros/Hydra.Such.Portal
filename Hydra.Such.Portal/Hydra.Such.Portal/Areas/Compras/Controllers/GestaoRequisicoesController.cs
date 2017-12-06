@@ -2,39 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Hydra.Such.Data.ViewModel.Nutrition;
-using Hydra.Such.Data.Logic.Nutrition;
-using Hydra.Such.Portal.Configurations;
-using Hydra.Such.Data.Logic;
-using Hydra.Such.Data.NAV;
-using Microsoft.Extensions.Options;
 using Hydra.Such.Data.Database;
-using Hydra.Such.Data.ViewModel.Projects;
-using Hydra.Such.Data.Logic.Project;
+using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Request;
-using Hydra.Such.Data.ViewModel;
-using Hydra.Such.Data.ViewModel.Requisition;
+using Hydra.Such.Data.ViewModel.Compras;
+using Microsoft.AspNetCore.Mvc;
 
-
-namespace Hydra.Such.Portal.Areas.Requisicoes.Controllers
+namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
     public class GestaoRequisicoesController : Controller
     {
-        [Area("Requisicoes")]
+        [Area("Compras")]
         public IActionResult Index()
         {
             return View();
         }
-
-        [Area("Requisicoes")]
+        [Area("Compras")]
         public IActionResult Detalhes()
         {
             return View();
         }
-       
+
         [HttpPost]
-        [Area("Requisicoes")]
+        [Area("Compras")]
         public JsonResult GetGridValues()
         {
             List<RequisitionViewModel> result = DBRequest.GetAll().Select(x => new RequisitionViewModel()
@@ -78,46 +68,46 @@ namespace Hydra.Such.Portal.Areas.Requisicoes.Controllers
             return Json(result);
         }
 
-        [Area("Requisicoes")]
+        [Area("Compras")]
         public IActionResult LinhasRequisicao()
         {
             return View();
         }
 
         [HttpPost]
-        [Area("Requisicoes")]
+        [Area("Compras")]
         public JsonResult GridRequestLineValues()
         {
             List<RequisitionLineViewModel> result = DBRequestLine.GetAll().Select(x => new RequisitionLineViewModel()
             {
-                  RequestNo = x.NºRequisição,
-                  LineNo = x.NºLinha,
-                  Type = x.Tipo,
-                  Code = x.Código,
-                  Description = x.Descrição,
-                  UnitMeasureCode =x.CódigoUnidadeMedida,
-                  LocalCode = x.CódigoLocalização,
-                  localMarket = x.MercadoLocal,
-                  QuantityToRequire = x.QuantidadeARequerer,
-                  QuantityRequired = x.QuantidadeRequerida,
-                  QuantityToProvide = x.QuantidadeADisponibilizar,
-                  QuantityAvailable = x.QuantidadeDisponibilizada,
-                  QuantityReceivable = x.QuantidadeAReceber,
-                  QuantityReceived = x.QuantidadeRecebida,
-                  QuantityPending = x.QuantidadePendente,
-                  UnitCost = x.CustoUnitário,
-                  ExpectedReceivingDate = !x.DataReceçãoEsperada.HasValue ? "" : x.DataReceçãoEsperada.Value.ToString("yyyy-MM-dd"),
-                  Billable = x.Faturável,
-                  ProjectNo = x.NºProjeto,
-                  RegionCode = x.CódigoRegião,
-                  FunctionalAreaCode = x.CódigoÁreaFuncional,
-                  CenterResponsibilityCode = x.CódigoCentroResponsabilidade,
-                  FunctionalNo = x.NºFuncionário,
-                  Vehicle = x.Viatura,
-                  CreateDateTime = x.DataHoraCriação,
-                  CreateUser = x.UtilizadorCriação,
-                  UpdateDateTime = x.DataHoraModificação,
-                  UpdateUser = x.UtilizadorModificação
+                RequestNo = x.NºRequisição,
+                LineNo = x.NºLinha,
+                Type = x.Tipo,
+                Code = x.Código,
+                Description = x.Descrição,
+                UnitMeasureCode = x.CódigoUnidadeMedida,
+                LocalCode = x.CódigoLocalização,
+                localMarket = x.MercadoLocal,
+                QuantityToRequire = x.QuantidadeARequerer,
+                QuantityRequired = x.QuantidadeRequerida,
+                QuantityToProvide = x.QuantidadeADisponibilizar,
+                QuantityAvailable = x.QuantidadeDisponibilizada,
+                QuantityReceivable = x.QuantidadeAReceber,
+                QuantityReceived = x.QuantidadeRecebida,
+                QuantityPending = x.QuantidadePendente,
+                UnitCost = x.CustoUnitário,
+                ExpectedReceivingDate = !x.DataReceçãoEsperada.HasValue ? "" : x.DataReceçãoEsperada.Value.ToString("yyyy-MM-dd"),
+                Billable = x.Faturável,
+                ProjectNo = x.NºProjeto,
+                RegionCode = x.CódigoRegião,
+                FunctionalAreaCode = x.CódigoÁreaFuncional,
+                CenterResponsibilityCode = x.CódigoCentroResponsabilidade,
+                FunctionalNo = x.NºFuncionário,
+                Vehicle = x.Viatura,
+                CreateDateTime = x.DataHoraCriação,
+                CreateUser = x.UtilizadorCriação,
+                UpdateDateTime = x.DataHoraModificação,
+                UpdateUser = x.UtilizadorModificação
             }).ToList();
             //Apply User Dimensions Validations
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
