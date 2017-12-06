@@ -1277,8 +1277,11 @@
                         type: String,
                         notify: true,
                         value: ""
-                    }
-
+                    },
+                    _oldStatus: {
+                        type: Number,
+                        value: -1
+                    },
                 },
                 ready: function () {
                     //GET CONTRACT DATA
@@ -1356,7 +1359,22 @@
                 _update: function () {
 
                     if (this._validateData()) {
-                        this._executeRequest("/Contratos/UpdateContract", this.data)
+
+                        debugger;;
+                        if (this._oldStatus != this.data.status && this.data.status == 2) {
+                            if (this._oldStatus != 1) {
+                                this._openToastError("Apenas pode alterar uma proposta para o estado aberto quando esta se encontrava no estado aberta.");
+                            } else if (this.dataLines.lines.length == 0) {
+                                this._openToastError("É obrigatório possuir linhas para alterar o estado da proposta para aberta.");
+                            } else if (this.data.orderOrigin == "" || this.data.ordOrderSource == "") {
+                                this._openToastError("Para alterar a proposta para o estado aberta os campos Origem do Pedido e Origem do pedido descrição devem estar preenchidos.");
+                            } else {
+                                this._executeRequest("/Contratos/UpdateContract", this.data)
+                            }
+                        }
+                        else {
+                            this._executeRequest("/Contratos/UpdateContract", this.data)
+                        }
                     }
                 },
                 _delete: function () {
@@ -1434,6 +1452,7 @@
                         this._CLVersionStartDate = this.data.startData;
                         this._CLVersionEndDate = this.data.dueDate;
                         this._isCreate = false;
+                        this._oldStatus = this.data.status;
                     }
 
                     if (this.data.filed) {

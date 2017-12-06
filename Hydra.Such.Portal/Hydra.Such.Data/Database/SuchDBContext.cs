@@ -3176,6 +3176,8 @@ namespace Hydra.Such.Data.Database
             {
                 entity.HasKey(e => e.Código);
 
+                entity.Property(e => e.Contacto).HasMaxLength(20);
+
                 entity.Property(e => e.CódigoPostal)
                     .HasColumnName("Código Postal")
                     .HasMaxLength(20);

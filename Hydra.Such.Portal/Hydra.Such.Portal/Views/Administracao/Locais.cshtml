@@ -1,8 +1,11 @@
 ﻿
 @{
-    ViewData["Title"] = "Servicos";
+    ViewData["Title"] = "Locais";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
+
 
 @*grid*@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
@@ -25,11 +28,11 @@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
 
-<h1 class="title">Serviços</h1>
+<h1 class="title">@ViewData["Title"]</h1>
 
-<x-services></x-services>
+<x-places></x-places>
 
-<dom-module id="x-services">
+<dom-module id="x-places">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -52,7 +55,7 @@
         </custom-style>
 
         @*POPULATE GRID*@
-        <iron-ajax url="/Administracao/GetServices"
+        <iron-ajax url="/Administracao/GetPlace"
                    last-response="{{result}}"
                    method="post"
                    auto
@@ -60,9 +63,9 @@
                    id="page_databound_ajax"
                    content-type="application/json">
         </iron-ajax>
-        
+
         @*POPULATE Update*@
-        <iron-ajax url="/Administracao/UpdateServices"
+        <iron-ajax url="/Administracao/UpdatePlace"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -79,19 +82,35 @@
             <div class="col-lg-2">
                 <vaadin-text-field id="ddDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
             </div>
-            <div class="col-lg-2 alignPoga">
-                <paper-button id="btnAddNew" class="btnSave" on-tap="_createService" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+            <div class="col-lg-2">
+                <vaadin-text-field id="ddAddress" label="Endereço" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
             </div>
-        </div><br />
-        
-        <vaadin-grid id="gridServices" aria-label="gridServices" items="[[result]]" class="grid" multi-sort="true">
+            <div class="col-lg-2">
+                <vaadin-text-field id="ddPostalCode" label="Código Postal" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-text-field id="ddLocality" label="Localidade" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-text-field id="ddContact" label="Contato" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-text-field id="ddResponsibleReception" label="Responsável Receção" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-2 alignPoga">
+                <paper-button id="btnAddNew" class="btnSave" on-tap="_createPlaces" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+            </div>
+        </div>
+        <br />
+
+        <vaadin-grid id="gridPlaces" aria-label="gridPlaces" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.code}}" disabled></vaadin-text-field>   
+                    <vaadin-text-field value="{{item.code}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable>
@@ -100,7 +119,52 @@
                     <vaadin-grid-filter path="description" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.description}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>   
+                    <vaadin-text-field value="{{item.description}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="address">Endereço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="address" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.address}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="postalcode">Código Postal</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="postalcode" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.postalcode}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="locality">Localidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="locality" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.locality}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="contact">Contacto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contact" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.contact}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="responsiblereception">Responsável Receção</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsiblereception" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.responsiblerecept}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="10%" resizable>
@@ -108,7 +172,7 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile"  disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                        <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -135,7 +199,7 @@
         }
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-services',
+                is: 'x-places',
                 properties: {
                     _permissionsUpdate: {
                         type: Boolean,
@@ -164,7 +228,7 @@
                 _update: function () {
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
-                    this.$.gridServices.clearCache();
+                    this.$.gridPlaces.clearCache();
                 },
 
                 _updateResponse: function (e) {
@@ -173,9 +237,15 @@
 
                         this.openToast('Atualizado com sucesso!');
                         this.$.page_databound_ajax.generateRequest();
-                        this.$.gridServices.clearCache();
+                        this.$.gridPlaces.clearCache();
 
                         this.$.ddDescription.value = "";
+                        this.$.ddLocality.value = "";
+                        this.$.ddPostalCode.value = "";
+                        this.$.ddResponsibleReception.value = "";
+                        this.$.ddAddress.value = "";
+                        this.$.ddContact.value = "";
+
                     }
                     else {
                         this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
@@ -183,38 +253,40 @@
                 },
                 _cancel: function () {
                     this.$.page_databound_ajax.generateRequest();
-                    this.$.gridServices.clearCache();
+                    this.$.gridPlaces.clearCache();
                 },
 
-                _createService: function () {
-                    if (this.$.ddDescription.value == "" || this.$.ddDescription.value == null) {
-                        this.openToastError('É obrigatório preencher a Descrição.');
-                    } else {
+                _createPlaces: function () {
+                    
+                        
+                        var Line = {
+                            description: this.$.ddDescription.value,
+                            locality: this.$.ddLocality.value,
+                            postalcode: this.$.ddPostalCode.value,
+                            responsiblerecept: this.$.ddResponsibleReception.value,
+                            address: this.$.ddAddress.value,
+                            contact: this.$.ddContact.value
 
-                        var thisLine = {
-                            description: this.$.ddDescription.value
                         };
                         if (this.result == null) {
-                            this.result = thisLine;
+                            this.result = Line;
                         }
                         else {
-                            this.result.push(thisLine);
+                            this.result.push(Line);
                         }
                         this.$.ajax_update.body = JSON.stringify(this.result);
                         this.$.ajax_update.generateRequest();
-                        this.$.gridServices.clearCache();
-                    }
-
+                        this.$.gridPlaces.clearCache();
+                    
                 },
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
-                    this.$.gridServices.clearCache();
+                    this.$.gridPlaces.clearCache();
                 }
             });
         });
     </script>
 </dom-module>
-
