@@ -83,13 +83,16 @@
                 <vaadin-text-field id="ddDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
             </div>
             <div class="col-lg-2">
-                <vaadin-text-field id="ddLocality" label="Localidade" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
-            </div>
-            <div class="col-lg-2">
                 <vaadin-text-field id="ddAddress" label="Endereço" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
             </div>
             <div class="col-lg-2">
                 <vaadin-text-field id="ddPostalCode" label="Código Postal" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-text-field id="ddLocality" label="Localidade" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-text-field id="ddContact" label="Contato" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
             </div>
             <div class="col-lg-2">
                 <vaadin-text-field id="ddResponsibleReception" label="Responsável Receção" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
@@ -121,15 +124,6 @@
             </vaadin-grid-column>
             <vaadin-grid-column resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="locality">Localidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="locality" />
-                </template>
-                <template>
-                    <vaadin-text-field value="{{item.locality}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable>
-                <template class="header">
                     <vaadin-grid-sorter path="address">Endereço</vaadin-grid-sorter>
                     <vaadin-grid-filter path="address" />
                 </template>
@@ -144,6 +138,24 @@
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.postalcode}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="locality">Localidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="locality" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.locality}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="contact">Contacto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contact" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.contact}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable>
@@ -232,6 +244,8 @@
                         this.$.ddPostalCode.value = "";
                         this.$.ddResponsibleReception.value = "";
                         this.$.ddAddress.value = "";
+                        this.$.ddContact.value = "";
+
                     }
                     else {
                         this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
@@ -250,7 +264,9 @@
                             locality: this.$.ddLocality.value,
                             postalcode: this.$.ddPostalCode.value,
                             responsiblerecept: this.$.ddResponsibleReception.value,
-                            address: this.$.ddAddress.value
+                            address: this.$.ddAddress.value,
+                            contact: this.$.ddContact.value
+
                         };
                         if (this.result == null) {
                             this.result = Line;

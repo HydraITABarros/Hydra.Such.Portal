@@ -2076,6 +2076,7 @@ namespace Hydra.Such.Portal.Controllers
                 Address=x.Endereço,
                 Locality=x.Localidade,
                 Postalcode = x.CódigoPostal,
+                Contact=x.Contacto,
                 Responsiblerecept=x.ResponsávelReceção,
                 CreateDate = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
                 CreateUser= x.UtilizadorCriação
@@ -2097,6 +2098,7 @@ namespace Hydra.Such.Portal.Controllers
                     CódigoPostal=x.Postalcode,
                     Endereço=x.Address,
                     Localidade=x.Locality,
+                    Contacto=x.Contact,
                     ResponsávelReceção=x.Responsiblerecept
                 };
                 if (x.Code > 0)

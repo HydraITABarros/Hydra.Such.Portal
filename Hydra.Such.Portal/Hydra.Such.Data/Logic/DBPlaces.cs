@@ -157,6 +157,7 @@ namespace Hydra.Such.Data.Logic
                     Locality=item.Localidade,
                     Responsiblerecept = item.ResponsávelReceção,
                     Postalcode = item.CódigoPostal,
+                    Contact=item.Contacto,
                     CreateDate = item.DataHoraCriação.HasValue ? item.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
                     UpdateDate = item.DataHoraModificação.HasValue ? item.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
                     CreateUser = item.UtilizadorCriação,
@@ -190,7 +191,8 @@ namespace Hydra.Such.Data.Logic
                     DataHoraCriação = string.IsNullOrEmpty(item.CreateDate) ? (DateTime?)null : DateTime.Parse(item.CreateDate),
                     DataHoraModificação = string.IsNullOrEmpty(item.UpdateDate) ? (DateTime?)null : DateTime.Parse(item.UpdateDate),
                     UtilizadorCriação = item.CreateUser,
-                    UtilizadorModificação = item.UpdateUser
+                    UtilizadorModificação = item.UpdateUser,
+                    Contacto=item.Contact
                 };
             }
             return null;
