@@ -2049,6 +2049,64 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        #region TiposDeProjeto
+        public IActionResult Locais(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetPlaceData()
+        {
+            List<ProjectTypesModelView> result = DBProjectTypes.GetAll().Select(x => new ProjectTypesModelView()
+            {
+                Code = x.Código,
+                Description = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdatePlace([FromBody] List<ProjectTypesModelView> data)
+        {
+            List<TipoDeProjeto> results = DBProjectTypes.GetAll();
+            results.RemoveAll(x => data.Any(u => u.Code == x.Código));
+            results.ForEach(x => DBProjectTypes.Delete(x));
+            data.ForEach(x =>
+            {
+                TipoDeProjeto tpval = new TipoDeProjeto()
+                {
+                    Descrição = x.Description
+                };
+                if (x.Code > 0)
+                {
+                    tpval.Código = x.Code;
+                    tpval.DataHoraModificação = DateTime.Now;
+                    tpval.UtilizadorModificação = User.Identity.Name;
+                    DBProjectTypes.Update(tpval);
+                }
+                else
+                {
+                    tpval.DataHoraCriação = DateTime.Now;
+                    tpval.UtilizadorCriação = User.Identity.Name;
+                    DBProjectTypes.Create(tpval);
+                }
+            });
+            return Json(data);
+        }
+        #endregion
+
         #endregion
 
         public UserAccessesViewModel GetPermissions(string id)

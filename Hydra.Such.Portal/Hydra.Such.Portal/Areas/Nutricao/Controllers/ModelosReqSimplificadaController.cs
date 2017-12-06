@@ -181,6 +181,33 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
         [HttpPost]
         [Area("Nutricao")]
+        public JsonResult CreateReqTemplateLine([FromBody] SimplifiedReqTemplateLinesViewModel item)
+        {
+            if (item != null)
+            {
+                var createdItem = DBSimplifiedReqTemplateLines.Create(item.ParseToDB());
+                if (createdItem != null)
+                {
+                    item = createdItem.ParseToViewModel();
+                    item.eReasonCode = 1;
+                    item.eMessage = "Registo criado com sucesso.";
+                }
+                else
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao criar o registo.";
+                }
+            }
+            else
+            {
+                item.eReasonCode = 2;
+                item.eMessage = "A linha não pode ser nulo.";
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Nutricao")]
         public JsonResult DeleteReqTemplateLine([FromBody] SimplifiedReqTemplateLinesViewModel item)
         {
             ErrorHandler requestResponse = new ErrorHandler()
@@ -253,6 +280,18 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 updateResponse.eMessage = "Não existem linhas para atualizar.";
             }
             return Json(updateResponse);
+        }
+
+        [HttpPost]
+        public JsonResult GetServices()
+        {
+            List<Portal.Controllers.DDMessage> result = Data.Logic.ProjectDiary.DBServices.GetAll().Select(x => new Portal.Controllers.DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
         }
     }
 }
