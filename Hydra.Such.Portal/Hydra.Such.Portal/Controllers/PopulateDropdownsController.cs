@@ -220,6 +220,19 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetContractPaymentTerms()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractPaymentTerms;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContractTerminationTerms()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractTerminationTerms;
+            return Json(result);
+        }
+        [HttpPost]
         public JsonResult GetProposalsStatus()
         {
             List<EnumData> result = EnumerablesFixed.ProposalsStatus;

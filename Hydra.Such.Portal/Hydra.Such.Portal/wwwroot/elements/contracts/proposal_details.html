@@ -19,6 +19,7 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
 
 <dom-module id="x-proposalsdetails">
     <template>
@@ -58,6 +59,17 @@
 
             .marginSpace {
                 margin: 0px !important;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
             }
         </style>
 
@@ -133,7 +145,10 @@
 
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
+            <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
+            <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
+            <paper-button class="tablinks" on-tap="_updateToContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
+
         </div>
 
         <div class="row" style="display: {{ _showContractLines }};">
@@ -310,7 +325,10 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.oportunityNo}}" id="mOportunity" name="mOportunity" label="Nº Oportunidade" disabled> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-6 ">
+                                            <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
                                         </div>
                                     </div>
                                     <!--<div class="row break_clear">-->
@@ -338,16 +356,43 @@
                                             <div class="panel-body">
                                                 <div class="row break_clear">
                                                     <div class="col-md-3 ">
-                                                        <vaadin-date-picker label="Limite Esclarecimentos" id="mLimitClarificationDate" name="mLimitClarificationDate" value="{{data.limitClarificationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                        <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Limite Esclarecimentos</label>
+                                                        <br />
+                                                        <div class="row">
+                                                            <div class="col-md-8" style="padding-right: 5px;">
+                                                                <vaadin-date-picker id="mLimitClarificationDate" name="mLimitClarificationDate" value="{{data.limitClarificationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                            </div>
+                                                            <div class="col-md-4" style="padding-left: 0px;">
+                                                                <vaadin-text-field value="{{data.limitClarificationTime}}" id="mLimitClarificationTime" name="mLimitClarificationTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-3 ">
-                                                        <vaadin-date-picker label="Erros e Omissões" id="mErrorsOmissionsDate" name="mErrorsOmissionsDate" value="{{data.errorsOmissionsDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                        <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Erros e Omissões</label>
+                                                        <br />
+                                                        <div class="row">
+                                                            <div class="col-md-8" style="padding-right: 5px;">
+                                                                <vaadin-date-picker id="mErrorsOmissionsDate" name="mErrorsOmissionsDate" value="{{data.errorsOmissionsDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                            </div>
+                                                            <div class="col-md-4" style="padding-left: 0px;">
+                                                                <vaadin-text-field value="{{data.errorsOmissionsTime}}" id="mErrorsOmissionsTime" name="mErrorsOmissionsTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-3 ">
                                                         <vaadin-date-picker label="Entrega Proposta" id="mProposalDelivery" name="mProposalDelivery" value="{{data.proposalDelivery}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                                     </div>
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-date-picker label="Relatório Final" id="mFinalReportDate" name="mFinalReportDate" value="{{data.finalReportDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                    <div class="col-md-3">
+                                                        <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Relatório Final</label>
+                                                        <br />
+                                                        <div class="row">
+                                                            <div class="col-md-8" style="padding-right: 5px;">
+                                                                <vaadin-date-picker id="mFinalReportDate" name="mFinalReportDate" value="{{data.finalReportDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                            </div>
+                                                            <div class="col-md-4" style="padding-left: 0px;">
+                                                                <vaadin-text-field value="{{data.finalReportTime}}" id="mFinalReportTime" name="mFinalReportTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
+                                                            </div>
+                                                        </div>
                                                     </div>
 
                                                     <!--<div class="col-md-3 ">
@@ -1538,30 +1583,7 @@
                         notify: true,
                         value: ""
                     }
-                    //description: {
-                    //    type: String,
-                    //    value: ""
-                    //},
-                    //clientNo: {
-                    //    type: Number,
-                    //    value: 0
-                    //}
-                    //requestOrigin: {
-                    //    type: Number,
-                    //    value: 0
-                    //},
-                    //requestOriginDescription: {
-                    //    type: String,
-                    //    value: ""
-                    //},
-                    //proposalNo: {
-                    //    type: String,
-                    //    value: ""
-                    //},
-                    //startData: {
-                    //    type: String,
-                    //    value: ""
-                    //}
+
                 },
                 ready: function () {
                     //GET CONTRACT DATA
@@ -2100,14 +2122,20 @@
                     //this.$.gridUserAccesses.clearCache();
                 },
 
-                //Parse To Proposal
+                //Parse To Contract
                 _parseToContract: function (param) {
                     if (param != null) {
                         debugger;
+
                         if (this.$.mProposalNo.value != null && this.$.mProposalNo.value == "")
                         {
-                            this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3 });
-                            this.$.parseToContract_ajax.generateRequest();
+                            if (param.currentTarget.id == "parseContract") {
+                                this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3, "Parcial": false });
+                                this.$.parseToContract_ajax.generateRequest();
+                            } else {
+                                this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3, "Parcial": true });
+                                this.$.parseToContract_ajax.generateRequest();
+                            }
                         } else if (this.$.mProposalNo.value != "" && this.$.mProposalNo.value == null){
                             this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3 });
                             this.$.parseToContract_ajax.generateRequest();
@@ -2117,9 +2145,50 @@
                         
                     }
                 },
-
-
                 _responseParseToContract: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        debugger;
+                        this._openToast("Contrato " + this.numeration + " criado com sucesso");
+                        this.$.mProposalNo.value = this.numeration;
+                    }
+                    else {
+                        this._openToastError("Erro na criação da contrato.");
+                    }
+                },
+
+                 //Update Contract
+                _updateToContract: function (param) {
+                    if (param != null) {
+                        if (this.data.contractNo != "" && this.data.contractNo != undefined) {
+                            var _dataContract = this.data;
+                            var ajax_request = this.$.page_databound_ajax;
+                            bootbox.confirm({
+                                message: "Tem a certeza que pretende atualizar o contrato " + this.data.contractNo + "?",
+                                buttons: {
+                                    confirm: {
+                                        label: 'Sim',
+                                        className: 'btn-success'
+                                    },
+                                    cancel: {
+                                        label: 'Não',
+                                        className: 'btn-danger'
+                                    }
+                                },
+                                callback: function (result) {
+                                    if (result) {
+                                        ajax_request.url = "/Contratos/UpdateProposalContract";
+                                        ajax_request.body = JSON.stringify(_dataContract);
+                                        ajax_request.generateRequest();
+                                    }
+                                }
+                            });
+                        } else {
+                            this._openToastError("Esta proposta ainda não foi convertida para contrato.");
+                        }
+                    }
+                },
+                _responseUpdateToContract: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
                         debugger;

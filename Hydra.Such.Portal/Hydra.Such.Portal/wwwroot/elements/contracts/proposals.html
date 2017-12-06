@@ -74,6 +74,15 @@
                     {{item.contractNo}}
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="oportunityNo">Nº Oportunidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="oportunityNo" />
+                </template>
+                <template>
+                    {{item.oportunityNo}}
+                </template>
+            </vaadin-grid-column>
             <vaadin-grid-column width="110px">
                 <template class="header">
                     <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>

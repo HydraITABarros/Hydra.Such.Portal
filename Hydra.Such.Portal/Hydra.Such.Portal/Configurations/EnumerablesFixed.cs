@@ -448,12 +448,12 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 4,
-                Value = "Terminado"
+                Value = "Fechado"
             },
             new EnumData()
             {
                 Id = 5,
-                Value = "Fechado"
+                Value = "Terminado"
             } };
 
         public static readonly List<EnumData> ProjectCategories = new List<EnumData>(){
@@ -1447,6 +1447,63 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> ContractTerminationTerms = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Tx Inflação INE"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Tx Infl INE e factor act salarial CCT"
+            },
+             new EnumData
+            {
+                Id = 3,
+                Value = "Factor act salarial CCT"
+            },
+             new EnumData
+            {
+                Id = 4,
+                Value = "Outra"
+            },
+             new EnumData
+            {
+                Id = 5,
+                Value = "Nada Referido"
+            }
+        };
+
+        public static readonly List<EnumData> ContractPaymentTerms = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "3% p/pag 30D"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "1"
+            },
+             new EnumData
+            {
+                Id = 3,
+                Value = "5% p/pag 60D"
+            },
+             new EnumData
+            {
+                Id = 4,
+                Value = "Outra"
+            },
+             new EnumData
+            {
+                Id = 5,
+                Value = "Nada Referido"
+            }
+        };
     }
 
     public class EnumDataString

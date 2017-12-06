@@ -21,6 +21,7 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
 
 <link rel="import" href="/lib/iron-autogrow-textarea/iron-autogrow-textarea.html" />
 <dom-module id="x-oportunitydetails">
@@ -363,9 +364,11 @@
                                         
                                     </div>
                                     <div class="row break_clear">
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-6 ">
                                             <!--<textarea id="mNotes" name="mNotes" label="Notas" resize="true"></textarea>-->
-                                            <vaadin-text-field value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
+
+                                            <!--<vaadin-text-field value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
                                         </div>
                                     </div>
                                         <div class="row break_clear">
@@ -397,10 +400,34 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-3">                                                      
+                                                        <div class="col-md-3">
                                                             <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data Entrega Proposta</label>
                                                             <br />
-                                                            <vaadin-date-picker id="mProposalDelivery" name="mProposalDelivery" value="{{data.proposalDelivery}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker> 
+                                                            <vaadin-date-picker id="mProposalDelivery" name="mProposalDelivery" value="{{data.proposalDelivery}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Relatório Final</label>
+                                                            <br />
+                                                            <div class="row">
+                                                                <div class="col-md-8" style="padding-right: 5px;">
+                                                                    <vaadin-date-picker id="mFinalReportDate" name="mFinalReportDate" value="{{data.finalReportDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                                </div>
+                                                                <div class="col-md-4" style="padding-left: 0px;">
+                                                                    <vaadin-text-field value="{{data.finalReportTime}}" id="mFinalReportTime" name="mFinalReportTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Habilitação Documental</label>
+                                                            <br />
+                                                            <div class="row">
+                                                                <div class="col-md-8" style="padding-right: 5px;">
+                                                                    <vaadin-date-picker id="mDocumentationHabilitationDate" name="mDocumentationHabilitationDate" value="{{data.documentationHabilitationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                                </div>
+                                                                <div class="col-md-4" style="padding-left: 0px;">
+                                                                    <vaadin-text-field value="{{data.documentationHabilitationTime}}" id="mDocumentationHabilitationTime" name="mDocumentationHabilitationTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -2135,10 +2162,10 @@
                     debugger;
                     if (param != null) {
                         if (this.$.mProposalNo.value != null && this.$.mProposalNo.value == "") {
-                            this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 1, "HeaderType": 2 });
+                            this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 1, "HeaderType": 2, "Parcial": false  });
                             this.$.parseToContract_ajax.generateRequest();
                         } else if (this.$.mProposalNo.value != "" && this.$.mProposalNo.value == null) {
-                            this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 1, "HeaderType": 2 });
+                            this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 1, "HeaderType": 2, "Parcial": false  });
                             this.$.parseToContract_ajax.generateRequest();
                         } else {
                             this._openToastError("Esta versão de oportunidade já tem proposta associada");
