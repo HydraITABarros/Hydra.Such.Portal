@@ -28,7 +28,7 @@
 
 <h1 class="title">Pré-Requisição</h1>
 
-<x-prerequisitions></x-prerequisitions>
+<x-prerequisitions _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _prerequesitionno="@ViewBag.PreRequesitionNo"></x-prerequisitions>
 
 <dom-module id="x-prerequisitions">
     <template>
@@ -141,8 +141,27 @@
         <iron-ajax url="/PopulateDropdowns/GetViaturas" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVJobNo" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendor" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProducts" last-response="{{CBItems}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         
+        <iron-ajax url="/Contratos/GetPreRequesitionDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <!-- PROJECT Valitador -->
+        <iron-ajax url="/PreRequisicoes/ValidateNumeration"
+                   last-response="{{validateResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_validator_ajax"
+                   on-response="_responseValidatorProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/PreRequisicoes/CBVehicleFleetBool"
                    last-response="{{BooleanVehicleFleet}}"
                    method="post"
@@ -152,11 +171,19 @@
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/GetPlaceData"
-                   last-response="{{PlaceData}}"
+                   last-response="{{PlaceDataCollection}}"
                    method="post"
                    handle-as="json"
                    id="ajax_getPlaceData"
-                   on-response="_responsePlaceData"
+                   on-response="_responsePlaceDataCollection"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/GetPlaceData"
+                   last-response="{{PlaceDataDelivery}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_getPlaceDataDelivery"
+                   on-response="_responsePlaceDataDelivery"
                    content-type="application/json"></iron-ajax>
 
 
@@ -385,14 +412,42 @@
                                     </div>
                                 </div>
                             </iron-pages>
+                            <div class="marginSpace">
+                                <template is="dom-if" if="{{ _permissions.update }}">
+                                    <template is="dom-if" if="{{ _isCreate }}">
+                                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                    </template>
+                                    <template is="dom-if" if="{{ !_isCreate }}">
+                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                            <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                            <paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>
+                                        </template>
+                                    </template>
+                                    <template is="dom-if" if="{{ _permissions.delete }}">
+                                        <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                    </template>
+                                </template>
+                            </div>
                         </div>
                     </div>
                 </iron-form>
-                <div class="panel panel-default">
+                <div id="PreRequiLinesPanel" class="panel panel-default" hidden>
                     <div class="panel-heading">Linhas Pré-Requisição</div>
                     <div class="row break_clear">
                         <div class="col-lg-2">
                             <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                        </div>
+                        <div class="col-lg-2">
+                            <vaadin-combo-box items="[[CBItems]]" id="_CBItems" item-value-path="id" item-label-path="value" value="{{_CBItems}}" label="Cód. Produto" disabled="{{ !_permissions.update }}">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
                         </div>
                         <div class="col-lg-2">
                             <vaadin-text-field value="{{_Description}}" id="_Description" name="_Description" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
@@ -487,7 +542,20 @@
                 selected: {
                     type: Number,
                     value: 0
+                },
+                _permissions: {
+                    type: Array
+                },
+                _prerequesitionno: {
+                    type: String,
+                    notify: true,
+                    value: ""
                 }
+            },
+            ready: function () {
+                //GET CONTRACT DATA
+                this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionNo": this._prerequesitionno });
+                this.$.page_databound_ajax.generateRequest();
             },
             _onSearchTermChanged: function (value) {
                 var id = this.$.requesitionType.value;
@@ -515,7 +583,110 @@
                     this.$.ajax_getPlaceData.body = JSON.stringify(placeId);
                     this.$.ajax_getPlaceData.generateRequest();
                 }
-            }
+            },
+
+            _responsePlaceDataCollection: function (e) {
+                if (e.detail.status === 200) {
+                    this.$.CollectionAddress.value = this.PlaceDataCollection.address;
+                    this.$.CollectionPostalCode.value = this.PlaceDataCollection.postalcode;
+                    this.$.CollectionLocality.value = this.PlaceDataCollection.locality;
+                    this.$.CollectionContact.value = this.PlaceDataCollection.contact;
+                    this.$.CollectionReceptionResponsible.value = this.PlaceDataCollection.responsiblerecept;
+
+                }
+            },
+
+            _onSearchLocalDataDelivery: function (e) {
+                var placeId = this.$.DeliveryLocal.value;
+                if (placeId != "" && placeId > 0) {
+                    this.$.ajax_getPlaceDataDelivery.body = JSON.stringify(placeId);
+                    this.$.ajax_getPlaceDataDelivery.generateRequest();
+                }
+            },
+
+            _responsePlaceDataDelivery: function (e) {
+                if (e.detail.status === 200) {
+                    this.$.DeliveryAddress.value = this.PlaceDataDelivery.address;
+                    this.$.DeliveryPostalCode.value = this.PlaceDataDelivery.postalcode;
+                    this.$.DeliveryLocality.value = this.PlaceDataDelivery.locality;
+                    this.$.ReceptionReceptionResponsible.value = this.PlaceDataDelivery.responsiblerecept;
+                }
+            },
+
+            //CRUDS
+            _create: function () {
+                    this.$.page_validator_ajax.body = JSON.stringify(this.data);
+                    this.$.page_validator_ajax.generateRequest();
+            },
+
+            _responseValidatorProcessor: function (data) {
+                var self = this;
+                if (data.detail.status === 200) {
+                    if (this.validateResponse == "") {
+                        this._executeRequest("/PreRequisicoes/CreatePreRequesition", this.data)
+                    } else {
+                        this._openToastError("Ocorreu um erro desconhecido.");
+                    }
+                }
+            },
+
+            _responseProcessor: function (data) {
+                
+                if (data.detail.status === 200) {
+                    if (data.detail.url.indexOf("GetContractDetails") !== -1) {
+                        if (this.data.contractNo != "") {
+                            this.$.serviceclients_ajax.body = JSON.stringify(this.data.clientNo);
+                            this.$.serviceclients_ajax.generateRequest();
+
+                            this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
+                            this.$.contractLines_databound_ajax.generateRequest();
+                        }
+                    }
+                    else if (data.detail.url.indexOf("Create") !== -1) {
+                        this._createResponseProcessor();
+                    }
+                    else if (data.detail.url.indexOf("Update") !== -1) {
+                        if (this.data.eReasonCode == 1) {
+                            
+                            this._openToast("Contrato atualizado com sucesso.")
+                        } else {
+                            this._openToastError(this.data.eMessage);
+                        }
+                    }
+                    else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
+                        this._openToast(this.data.eMessage);
+                    }
+                } else {
+                    this._openToastError("Ocorreu um erro desconhecido.")
+                }
+            },
+
+
+            _createResponseProcessor: function () {
+                if (this.data.eReasonCode == 1) {
+                    this._isCreate = false;
+                    this._openToast("Contrato criado com sucesso.");
+
+                    var PreRequesitionNo = this.data.preRequesitionsNo;
+                    setTimeout(
+                        function () {
+                            window.location.href = "../PreRequisicao/" + preRequesitionsNo;
+                        }, 1000);
+
+                } else {
+                    this._openToast(this.data.eMessage);
+                }
+            },
+
+
+
+            //Helpers
+            _executeRequest: function (url, data) {
+                this.data.contractType = 3;
+                this.$.page_databound_ajax.url = url;
+                this.$.page_databound_ajax.body = JSON.stringify(data);
+                this.$.page_databound_ajax.generateRequest();
+            },
         });
     });
 </script>
