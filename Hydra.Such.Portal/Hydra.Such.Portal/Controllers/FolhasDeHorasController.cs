@@ -35,7 +35,17 @@ namespace Hydra.Such.Portal.Controllers
         #region Home
         public IActionResult Index()
         {
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         public FolhaDeHorasViewModel ParseDBtoViewModel(FolhasDeHoras FH)
@@ -51,58 +61,157 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetListFolhasDeHorasByArea([FromBody] int id)
         {
-            List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
 
-            result.ForEach(FH =>
+            if (UPerm != null && UPerm.Read.Value)
             {
-                FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
-                FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity.Where(y => y.Id == Convert.ToInt32(FH.DeslocacaoForaConcelho)).FirstOrDefault().Value;
-                FH.Estadotexto = FH.Estado == null ? "" : EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == FH.Estado).FirstOrDefault().Value;
-                //FH.Validadores = FH.Validadores == "" ? "" : FH.Validadores;
-            });
+                bool teste = UPerm.Create.Value;
+                ViewBag.UPermissions = UPerm;
 
-            return Json(result);
+                List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name, 0);
+
+                result.ForEach(FH =>
+                {
+                    FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
+                    FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
+                    FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity.Where(y => y.Id == Convert.ToInt32(FH.DeslocacaoForaConcelho)).FirstOrDefault().Value;
+                    FH.Estadotexto = FH.Estado == null ? "" : EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == FH.Estado).FirstOrDefault().Value;
+                    //FH.Validadores = FH.Validadores == "" ? "" : FH.Validadores;
+                });
+
+                return Json(result);
+            }
+
+            return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult GetListFolhasDeHoras([FromBody] HTML_FHViewModel HTML)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+
+                if (HTML.validacao == 1)
+                {
+                    List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByValidacao(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name, HTML.estado);
+
+                    result.ForEach(FH =>
+                    {
+                        FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
+                        FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
+                        FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity.Where(y => y.Id == Convert.ToInt32(FH.DeslocacaoForaConcelho)).FirstOrDefault().Value;
+                        FH.Estadotexto = FH.Estado == null ? "" : EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == FH.Estado).FirstOrDefault().Value;
+                    });
+
+                    return Json(result);
+                }
+                else
+                {
+                    if (HTML.integracaoajuda == 1)
+                    {
+                        List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByIntegracaoAjuda(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name, HTML.estado);
+
+                        result.ForEach(FH =>
+                        {
+                            FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
+                            FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
+                            FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity.Where(y => y.Id == Convert.ToInt32(FH.DeslocacaoForaConcelho)).FirstOrDefault().Value;
+                            FH.Estadotexto = FH.Estado == null ? "" : EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == FH.Estado).FirstOrDefault().Value;
+                        });
+
+                        return Json(result);
+                    }
+                    else
+                    {
+                        if (HTML.integracaokms == 1)
+                        {
+                            List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByIntegracaoKMS(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name, HTML.estado);
+
+                            result.ForEach(FH =>
+                            {
+                                FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
+                                FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
+                                FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity.Where(y => y.Id == Convert.ToInt32(FH.DeslocacaoForaConcelho)).FirstOrDefault().Value;
+                                FH.Estadotexto = FH.Estado == null ? "" : EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == FH.Estado).FirstOrDefault().Value;
+                            });
+
+                            return Json(result);
+                        }
+                        else
+                        {
+                            List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name, HTML.estado);
+
+                            result.ForEach(FH =>
+                            {
+                                FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
+                                FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
+                                FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity.Where(y => y.Id == Convert.ToInt32(FH.DeslocacaoForaConcelho)).FirstOrDefault().Value;
+                                FH.Estadotexto = FH.Estado == null ? "" : EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == FH.Estado).FirstOrDefault().Value;
+                            });
+
+                            return Json(result);
+                        }
+                    }
+                }
+            }
+
+            return Json(null);
         }
         #endregion
 
         #region Details
         //public IActionResult Detalhes(string id)
-        public IActionResult Detalhes([FromQuery] string FHNo, [FromQuery] int area)
+        public ActionResult Detalhes([FromQuery] string FHNo, [FromQuery] int area)
         {
-            string id = "";
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
 
-            if (FHNo == null || FHNo == "")
+            if (UPerm != null && UPerm.Read.Value)
             {
-                //Get Folha de Horas Numeration
-                Configuração Configs = DBConfigurations.GetById(1);
-                int FolhaDeHorasNumerationConfigurationId = Configs.NumeraçãoFolhasDeHoras.Value;
-                id = DBNumerationConfigurations.GetNextNumeration(FolhaDeHorasNumerationConfigurationId, true);
+                ViewBag.UPermissions = UPerm;
 
-                //Update Last Numeration Used
-                ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(FolhaDeHorasNumerationConfigurationId);
-                ConfigNumerations.ÚltimoNºUsado = id;
-                DBNumerationConfigurations.Update(ConfigNumerations);
-
-                FolhasDeHoras FH = new FolhasDeHoras()
+                if (FHNo == null || FHNo == "")
                 {
-                    NºFolhaDeHoras = id
-                };
+                    string id = "";
 
-                FH.Área = area;
-                FH.CódigoTipoKmS = "KM";
-                FH.CriadoPor = User.Identity.Name;
-                FH.DataHoraCriação = DateTime.Now;
-                FH.UtilizadorModificação = User.Identity.Name;
-                FH.DataHoraModificação = DateTime.Now;
+                    //Get Folha de Horas Numeration
+                    Configuração Configs = DBConfigurations.GetById(1);
+                    int FolhaDeHorasNumerationConfigurationId = Configs.NumeraçãoFolhasDeHoras.Value;
+                    id = DBNumerationConfigurations.GetNextNumeration(FolhaDeHorasNumerationConfigurationId, true);
 
-                DBFolhasDeHoras.Create(FH);
+                    //Update Last Numeration Used
+                    ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(FolhaDeHorasNumerationConfigurationId);
+                    ConfigNumerations.ÚltimoNºUsado = id;
+                    DBNumerationConfigurations.Update(ConfigNumerations);
 
-                FHNo = FH.NºFolhaDeHoras;
+                    FolhasDeHoras FH = new FolhasDeHoras()
+                    {
+                        NºFolhaDeHoras = id
+                    };
+
+                    FH.Área = area;
+                    FH.CódigoTipoKmS = "KM";
+                    FH.Estado = 0;
+                    FH.CriadoPor = User.Identity.Name;
+                    FH.DataHoraCriação = DateTime.Now;
+                    FH.UtilizadorModificação = User.Identity.Name;
+                    FH.DataHoraModificação = DateTime.Now;
+
+                    DBFolhasDeHoras.Create(FH);
+
+                    FHNo = FH.NºFolhaDeHoras;
+                }
+
+                ViewBag.FolhaDeHorasNo = FHNo == null ? "" : FHNo;
+
+                return View();
             }
-
-            ViewBag.FolhaDeHorasNo = FHNo == null ? "" : FHNo;
-            return View();
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         [HttpPost]
@@ -500,7 +609,7 @@ namespace Hydra.Such.Portal.Controllers
             bool result = false;
             try
             {
-                DBFolhasDeHoras.Update(new FolhasDeHoras()
+                if (DBFolhasDeHoras.Update(new FolhasDeHoras()
                 {
                     NºFolhaDeHoras = data.FolhaDeHorasNo,
                     Área = data.Area,
@@ -539,13 +648,18 @@ namespace Hydra.Such.Portal.Controllers
                     DataIntegraçãoEmRh = data.DataIntegracaoEmRH,
                     IntegradorEmRhKm = data.IntegradorEmRHKM,
                     DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM
-                });
-
-                result = true;
+                }) == null)
+                {
+                    result = false;
+                }
+                else
+                {
+                    result = true;
+                };
             }
             catch (Exception ex)
             {
-                //log
+                result = false;
             }
             return Json(result);
         }
@@ -572,8 +686,18 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult MovimentosDeFolhaDeHora(String FolhaDeHoraNo)
         {
-            ViewBag.FolhaDeHoraNo = FolhaDeHoraNo;
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                ViewBag.FolhaDeHoraNo = FolhaDeHoraNo;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         #endregion
@@ -1547,11 +1671,58 @@ namespace Hydra.Such.Portal.Controllers
                         new SqlParameter("@NoFH", data.FolhaDeHorasNo),
                         new SqlParameter("@NoUtilizador", data.EmpregadoNo)
                     };
+                        string teste = "";
 
-                        //ctx.execStoredProcedure("exec Validar_FH @ServerName, @DBName, @TableName, @NoFH, @NoUtilizador", parameters);
+                        /*
                         ctx.execStoredProcedureValidarFH("exec Validar_FH @NoFH, @NoUtilizador", parameters);
 
-                        result = true;
+                        if (DBFolhasDeHoras.Update(new FolhasDeHoras()
+                        {
+                            NºFolhaDeHoras = data.FolhaDeHorasNo,
+                            Área = data.Area,
+                            NºProjeto = data.ProjetoNo == "" ? null : data.ProjetoNo,
+                            NºEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                            DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
+                            DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
+                            TipoDeslocação = data.TipoDeslocacaoTexto == "" ? 1 : Convert.ToInt32(data.TipoDeslocacaoTexto),
+                            CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
+                            DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
+                            Validadores = data.Validadores == "" ? null : data.Validadores,
+                            Estado = 2, //VALIDAÇÂO
+                            CriadoPor = data.CriadoPor,
+                            DataHoraCriação = data.DataHoraCriacao,
+                            DataHoraÚltimoEstado = DateTime.Now, //VALIDAÇÂO
+                            DataHoraModificação = DateTime.Now, //VALIDAÇÂO
+                            UtilizadorModificação = User.Identity.Name, //VALIDAÇÂO
+                            NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                            Matrícula = data.Matricula == "" ? null : data.Matricula,
+                            Terminada = data.Terminada,
+                            TerminadoPor = data.TerminadoPor,
+                            DataHoraTerminado = data.DataHoraTerminado,
+                            Validado = true, //VALIDAÇÂO
+                            DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
+                            Observações = data.Observacoes,
+                            NºResponsável1 = data.Responsavel1No,
+                            NºResponsável2 = data.Responsavel2No,
+                            NºResponsável3 = data.Responsavel3No,
+                            ValidadoresRhKm = data.ValidadoresRHKM,
+                            CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
+                            CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
+                            CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
+                            Validador = User.Identity.Name, //VALIDAÇÂO
+                            DataHoraValidação = DateTime.Now, //VALIDAÇÂO
+                            IntegradorEmRh = data.IntegradorEmRH,
+                            DataIntegraçãoEmRh = data.DataIntegracaoEmRH,
+                            IntegradorEmRhKm = data.IntegradorEmRHKM,
+                            DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM
+                        }) == null)
+                        {
+                            result = false;
+                        }
+                        else
+                        {
+                            result = true;
+                        };*/
                     }
                 }
             }
