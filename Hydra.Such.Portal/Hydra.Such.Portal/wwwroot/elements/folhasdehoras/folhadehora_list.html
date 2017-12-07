@@ -50,7 +50,7 @@
             }
         </style>
 
-        <iron-ajax url="/FolhasDeHoras/GetListFolhasDeHorasByArea"
+        <iron-ajax url="/FolhasDeHoras/GetListFolhasDeHoras"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -59,8 +59,11 @@
         </iron-ajax>
 
         <div class="marginSpace">
-            <paper-button raised id="btnGoBack" class="btnDefault" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-            <paper-button class="btnDefault" raised on-tap="_create">Criar Novo</paper-button>
+            <paper-button raised id="btnGoBack" class="btnCreate" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+
+            <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button class="btnCreate" raised on-tap="_create">Criar Novo</paper-button>
+            </template>
         </div>
 
         <vaadin-grid aria-label="FolhasDeHorasGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
@@ -586,8 +589,6 @@
         </vaadin-grid>
     </template>
 
-
-
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
@@ -600,27 +601,53 @@
                         type: Number,
                         notify: true,
                         value: 0
-                    }
+                    },
+                    _folhadehoraid: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                    _estado: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _validacao: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _integracaoajuda: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _integracaokms: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
                 },
+
+
                 _rowSelected: function (item) {
                     if (item != null) {
-                        //window.location.href = "/FolhasDeHoras/Detalhes/" + item.folhaDeHorasNo;
                         window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + item.folhaDeHorasNo;
                     }
                 },
-                _create: function () {
-                    //debugger;
-                    //console.log(item.folhaDeHorasNo, this._areaid.value);
-                    window.location.href = "/FolhasDeHoras/Detalhes/?area=" + this._areaid;
 
-                    //if (item != null) {
-                    //    window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + item.folhaDeHorasNo + "&area=" + this._areaid.value;
-                    //}
+                _create: function () {
+                    window.location.href = "/FolhasDeHoras/Detalhes/?area=" + this._areaid;
                 },
+
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
+                    this.$.grid_databound_ajax.body = JSON.stringify({ area: parseInt(this._areaid), folhadehora: this._folhadehoraid, estado: parseInt(this._estado), validacao: parseInt(this._validacao), integracaoajuda: parseInt(this._integracaoajuda), integracaokms: parseInt(this._integracaokms) });
                     this.$.grid_databound_ajax.generateRequest();
                 },
+
                 _goBack: function (e) {
                     window.location = "../";
                 },
