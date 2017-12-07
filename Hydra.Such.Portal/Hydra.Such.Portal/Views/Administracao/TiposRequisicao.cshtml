@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Servicos";
+    ViewData["Title"] = "TiposRequisicao";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -24,74 +24,65 @@
 @*textfield*@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+@*checkbox*@
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
 
-<h1 class="title">Serviços</h1>
 
-<x-services></x-services>
+<h1 class="title">Tipos Requisição</h1>
 
-<dom-module id="x-services">
+<x-requesition-type></x-requesition-type>
+
+<dom-module id="x-requesition-type">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <custom-style>
-            <style is="custom-style">
-                input[readonly] {
-                    border: 2px solid transparent;
-                }
-
-                input {
-                    font: inherit;
-                }
-
-                paper-input {
-                    max-width: 450px !important;
-                }
-            </style>
-        </custom-style>
-
         @*POPULATE GRID*@
-        <iron-ajax url="/Administracao/GetServices"
+        <iron-ajax url="/Administracao/GetRequisitionTypes"
                    last-response="{{result}}"
                    method="post"
                    auto
                    handle-as="json"
                    id="page_databound_ajax"
-                   content-type="application/json">
-        </iron-ajax>
-        
-        @*POPULATE Update*@
-        <iron-ajax url="/Administracao/UpdateServices"
+                   content-type="application/json"></iron-ajax>
+        @*POPULATE GRID Update*@
+        <iron-ajax url="/Administracao/UpdateRequesitionTypes"
                    last-response="{{result}}"
                    method="post"
+                   on-response="_updateResponse"
                    handle-as="json"
                    id="ajax_update"
-                   on-response="_updateResponse"
-                   content-type="application/json">
-        </iron-ajax>
+                   content-type="application/json"></iron-ajax>
+
+
         <div class="row">
             <div class="col-lg-2">
                 <h2 class="separator">Novo Registo</h2>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-2">
-                <vaadin-text-field id="ddDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
-            </div>
-            <div class="col-lg-2 alignPoga">
-                <paper-button id="btnAddNew" class="btnSave" on-tap="_createService" disabled="{{ _permissionsCreate }}">Criar</paper-button>
-            </div>
-        </div><br />
-        
-        <vaadin-grid id="gridServices" aria-label="gridServices" items="[[result]]" class="grid" multi-sort="true">
+
+         <div class="row">
+             <div class="col-lg-2">
+                 <vaadin-text-field id="ddDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+             </div>
+             <div class="col-lg-2 alignPoga">
+                 <vaadin-checkbox id="chkFleet" checked="{{chkFleet}}" disabled="{{ _permissionsCreate }}">Frota</vaadin-checkbox>
+             </div>
+             <div class="col-lg-2 alignPoga">
+                 <paper-button id="btnAddNew" class="btnSave" on-tap="_createRequesitionType" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+             </div>
+         </div>
+        <br />
+        <vaadin-grid id="gridRequesitionType" aria-label="gridRequesitionType" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.code}}" disabled></vaadin-text-field>   
+                    <vaadin-text-field value="{{item.code}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable>
@@ -100,7 +91,16 @@
                     <vaadin-grid-filter path="description" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.description}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>   
+                    <vaadin-text-field value="{{item.description}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.fleet}}" disabled="{{ _permissionsUpdate }}">Frota</vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="10%" resizable>
@@ -108,7 +108,7 @@
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile"  disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                        <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -123,7 +123,7 @@
     </template>
 
     <script>
-        var CreateValue = true, UpdateValue = true, DeleteValue = true;
+         var CreateValue = true, UpdateValue = true, DeleteValue = true;
          if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' =="false") {
             CreateValue = false;
         }
@@ -133,9 +133,10 @@
         if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' =="false") {
             DeleteValue = false;
         }
+
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-services',
+                is: 'x-requesition-type',
                 properties: {
                     _permissionsUpdate: {
                         type: Boolean,
@@ -164,7 +165,7 @@
                 _update: function () {
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
-                    this.$.gridServices.clearCache();
+                    this.$.gridRequesitionType.clearCache();
                 },
 
                 _updateResponse: function (e) {
@@ -173,9 +174,10 @@
 
                         this.openToast('Atualizado com sucesso!');
                         this.$.page_databound_ajax.generateRequest();
-                        this.$.gridServices.clearCache();
+                        this.$.gridRequesitionType.clearCache();
 
                         this.$.ddDescription.value = "";
+                        this.chkFleet = false;
                     }
                     else {
                         this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
@@ -183,38 +185,40 @@
                 },
                 _cancel: function () {
                     this.$.page_databound_ajax.generateRequest();
-                    this.$.gridServices.clearCache();
+                    this.$.gridRequesitionType.clearCache();
                 },
 
-                _createService: function () {
+                _createRequesitionType: function () {
+                    debugger;
                     if (this.$.ddDescription.value == "" || this.$.ddDescription.value == null) {
                         this.openToastError('É obrigatório preencher a Descrição.');
                     } else {
-
-                        var thisLine = {
-                            description: this.$.ddDescription.value
-                        };
                         if (this.result == null) {
-                            this.result = thisLine;
+                            this.result.unshift({
+                                description: this.$.ddDescription.value,
+                                fleet: this.chkFleet
+                            });
                         }
                         else {
-                            this.result.push(thisLine);
+                            this.result.unshift({
+                                description: this.$.ddDescription.value,
+                                fleet: this.chkFleet
+                            });
                         }
+
                         this.$.ajax_update.body = JSON.stringify(this.result);
                         this.$.ajax_update.generateRequest();
-                        this.$.gridServices.clearCache();
+                        this.$.gridRequesitionType.clearCache();
                     }
-
                 },
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
-                    this.$.gridServices.clearCache();
+                    this.$.gridRequesitionType.clearCache();
                 }
             });
         });
     </script>
 </dom-module>
-

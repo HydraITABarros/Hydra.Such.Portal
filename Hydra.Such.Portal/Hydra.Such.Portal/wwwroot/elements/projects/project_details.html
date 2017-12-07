@@ -15,6 +15,7 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
 
 <dom-module id="x-projectdetails">
     <template>
@@ -351,8 +352,10 @@
                     <div class="col-lg-3">
                         <vaadin-date-picker label="Data Pedido" id="RequestDate" name="Date" value="{{data.requestDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                     </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.detailedDescription}}"  id="DetailedDescription" name="DetailedDescription" label="Descrição Detalhada" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    <div class="col-lg-6">
+                        <such-textarea rows="5" value="{{data.detailedDescription}}" id="DetailedDescription" name="DetailedDescription" label="Descrição Detalhada" disabled="{{ !_permissions.update }}"> </such-textarea>
+
+                        <!--<vaadin-text-field value="{{data.detailedDescription}}"  id="DetailedDescription" name="DetailedDescription" label="Descrição Detalhada" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
                     </div>
                 </div>
             </div>

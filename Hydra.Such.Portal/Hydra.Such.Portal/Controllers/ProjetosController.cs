@@ -14,6 +14,7 @@ using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.NAV;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Newtonsoft.Json.Linq;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -32,9 +33,17 @@ namespace Hydra.Such.Portal.Controllers
 
         #region Home
         [HttpPost]
-        public JsonResult GetListProjectsByArea([FromBody] int id)
+        public JsonResult GetListProjectsByArea([FromBody] JObject requestParams)
         {
-            List<ProjectListItemViewModel> result = DBProjects.GetAllByAreaToList(id);
+            int AreaId = int.Parse(requestParams["areaid"].ToString());
+            Boolean Ended = Boolean.Parse(requestParams["ended"].ToString());
+
+            List<ProjectListItemViewModel> result = DBProjects.GetAllByAreaToList(AreaId);
+
+            if (!Ended)
+            {
+                result.RemoveAll(x => x.Status == 5);
+            }
 
             result.ForEach(x =>
             {

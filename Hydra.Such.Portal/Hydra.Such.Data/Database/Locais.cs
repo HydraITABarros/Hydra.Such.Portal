@@ -18,6 +18,10 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
+        public string CódigoPostal { get; set; }
+        public string Localidade { get; set; }
+        public string ResponsávelReceção { get; set; }
+        public string Contacto { get; set; }
 
         public ICollection<PréRequisição> PréRequisiçãoCódigoLocalEntregaNavigation { get; set; }
         public ICollection<PréRequisição> PréRequisiçãoCódigoLocalRecolhaNavigation { get; set; }
