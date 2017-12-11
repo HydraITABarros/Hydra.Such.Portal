@@ -9,8 +9,21 @@ namespace Hydra.Such.Data.Logic.Request
     public class DBRequestLine
     {
         #region CRUD
-
-
+        
+        public static List<LinhasRequisição> GetByLineNo(int LineNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasRequisição.Where(x => x.NºLinha == LineNo).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         public static List<LinhasRequisição> GetAll()
         {
             try
