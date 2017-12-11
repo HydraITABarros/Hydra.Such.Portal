@@ -7,6 +7,8 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
 
 
@@ -20,6 +22,8 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
+
+
 
 <dom-module id="x-proposalsdetails">
     <template>
@@ -143,21 +147,155 @@
                    on-response="_addressResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/GetListContractsAllProposals"
+                   last-response="{{result_proposals}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax_proposals"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Contratos/GetProposalDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax_proposals_details"
+                   content-type="application/json"></iron-ajax>
+
+        <!-- Paper Dialog -->
+        <paper-dialog id="dialog_proposals" class="dialgoBox" modal>
+            <h2 class="dialogTitle">Propostas</h2>
+
+            <vaadin-grid aria-label="ContractsGrid" items="[[result_proposals]]" class="grid" active-item="{{_activeProposal}}" multi-sort="true">
+                <vaadin-grid-column width="120px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="contractNo" />
+                    </template>
+                    <template>
+                        {{item.contractNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="120px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="oportunityNo">Nº Oportunidade</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="oportunityNo" />
+                    </template>
+                    <template>
+                        {{item.oportunityNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="startData" />
+                    </template>
+                    <template>
+                        {{item.startData}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="dueDate">Data Fim</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="dueDate" />
+                    </template>
+                    <template>
+                        {{item.dueDate}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="200px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="contactNo">Nº Contacto</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="contactNo" />
+                    </template>
+                    <template>
+                        {{item.contactNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="200px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="clientNo" />
+                    </template>
+                    <template>
+                        {{item.clientNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="clientName" />
+                    </template>
+                    <template>
+                        {{item.clientName}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="160px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="description" />
+                    </template>
+                    <template>
+                        {{item.description}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="150px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="status" />
+                    </template>
+                    <template>
+                        {{item.statusDescription}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="200px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="codeRegion" />
+                    </template>
+                    <template>
+                        {{item.codeRegion}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="200px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="codeFunctionalArea">Cód. Área Funcional</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="codeFunctionalArea" />
+                    </template>
+                    <template>
+                        {{item.codeFunctionalArea}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="200px">
+                    <template class="header">
+                        <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="codeResponsabilityCenter" />
+                    </template>
+                    <template>
+                        {{item.codeResponsabilityCenter}}
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+            <div class="buttons">
+                <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            </div>
+        </paper-dialog>
+
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
             <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
             <paper-button class="tablinks" on-tap="_updateToContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
+            <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ !_showContractLines }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
 
         </div>
 
-        <div class="row" style="display: {{ _showContractLines }};">
+        <div class="row">
             <div class="col-lg-12">
-                <paper-button raised id="btnContractAdd" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                <paper-button raised id="btnContractArchive" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
-
+                <paper-button raised id="btnContractAdd" hidden="{{ _showContractLines }}" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                <paper-button raised id="btnContractArchive" hidden="{{ _showContractLines }}" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
             </div>
         </div>
+
+
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -195,8 +333,8 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <!--<div class="col-lg-3">
-                                            <vaadin-text-field id="contactNo" name="contactNo" label="Nº Contacto" value="{{data.contactNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                        </div>-->
+                                        <vaadin-text-field id="contactNo" name="contactNo" label="Nº Contacto" value="{{data.contactNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                    </div>-->
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" on-value-changed="_clientChange">
                                                 <template>
@@ -262,7 +400,7 @@
                                             <vaadin-text-field value="{{data.internalNumeration}}" id="mInternalNumeration" name="mInternalNumeration" label="Numeração Interna" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.totalProposalValue}}" pattern="^[1-9]\d*(\.\d+)?$"  error-message="Valor inválido" id="mTotalProposalValue" name="mTotalProposalValue" label="Valor Total" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.totalProposalValue}}" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" id="mTotalProposalValue" name="mTotalProposalValue" label="Valor Total" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBRegions]]" id="mCodeRegion" item-value-path="id" item-label-path="value" value="{{data.codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
@@ -331,25 +469,7 @@
                                             <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
                                         </div>
                                     </div>
-                                    <!--<div class="row break_clear">-->
-                                    <!--<div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRProjectNo" name="_CRProjectNo" value="{{_CRProjectNo}}" label="Nº Projeto" disabled="{{ !_permissions.update }}">
-                                            <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.value]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>-->
-                                    <!--<div class="col-md-3 ">
-                                        <vaadin-date-picker label="Data Inicio 1º Contrato" id="mStartDateFirstContract" name="startDateFirstContract" value="{{data.startDateFirstContract}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                    </div>-->
-                                    <!--<div class="col-md-3 ">
-                                        <vaadin-text-field value="{{data.firstContractReference}}" id="mFirstContractReference" name="firstContractReference" label="Referência 1º Contrato" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                    </div>-->
-                                    <!--</div>-->
+
                                     <div class="row break_clear">
                                         <div class="panel panel-default">
                                             <div class="panel-heading">Datas Limite Fases do Processo</div>
@@ -406,7 +526,7 @@
                                     </div>
                                 </div>
 
-                                
+
                                 <!--Envio-->
                                 <div>
                                     <div class="row break_clear">
@@ -460,7 +580,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.provisioningFee}}" id="mProvisioningFee" pattern="^[1-9]\d*(\.\d+)?$"  error-message="Valor inválido" name="provisioningFee" label="Taxa Aprovisionamento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.provisioningFee}}" id="mProvisioningFee" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" name="provisioningFee" label="Taxa Aprovisionamento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.mc}}" id="mc" name="mc" label="% MC" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
@@ -955,6 +1075,7 @@
 
                                             <!--<vaadin-date-picker id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
                                         </template>
+                                        <f =
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.versionStartDate}}
                                         </template>
@@ -1077,8 +1198,13 @@
             </div>
         </div>
 
+
+
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+
+
     </template>
 
 
@@ -1282,6 +1408,17 @@
                         type: Number,
                         value: -1
                     },
+                    _reviseStatus: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _revised: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _activeProposal: {
+                        observer: '_proposalSelected'
+                    },
                 },
                 ready: function () {
                     //GET CONTRACT DATA
@@ -1289,6 +1426,7 @@
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
                     this.$.page_databound_ajax.generateRequest();
+
 
                     if (this._contractno == "") {
                         this._isCreate = true;
@@ -1336,7 +1474,7 @@
                         this.$.mc.validate() &
                         this.$.mDisplacementFee.validate() &
                         this.$.mInvoicePeriods.validate() &
-                        this.$.mTotalProposalValue.validate() ) {
+                        this.$.mTotalProposalValue.validate()) {
                         return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");
@@ -1371,8 +1509,25 @@
                             } else {
                                 this._executeRequest("/Contratos/UpdateContract", this.data)
                             }
-                        }
-                        else {
+                        } if (this._oldStatus != this.data.status && this.data.status == 3) {
+                            this._executeRequest("/Contratos/UpdateContract", this.data)
+
+
+
+                            this.data.actionCode = 2;
+                            var databound = this.$.page_databound_ajax;
+                            var data = this.data;
+                            setTimeout(
+                                function () {
+                                    databound.url = "/Contratos/ArchiveContract";
+                                    databound.body = JSON.stringify(data);
+                                    databound.generateRequest();
+                                }, 2000);
+
+
+                            this._reviseStatus = true;
+
+                        } else {
                             this._executeRequest("/Contratos/UpdateContract", this.data)
                         }
                     }
@@ -1441,6 +1596,11 @@
                     if (this.data.contractNo == "" || this.data.contractNo == null) {
                         this.data.area = this._areaid;
                         this.$.versionNo.value = "1";
+
+                        this.$.grid_databound_ajax_proposals.body = JSON.stringify({ "AreaId": this._areaid });
+                        this.$.grid_databound_ajax_proposals.generateRequest();
+
+
                     } else {
                         this.$.shippingAddresses_ajax.body = JSON.stringify(this.data.codeShippingAddress);
                         this.$.shippingAddresses_ajax.generateRequest();
@@ -1477,17 +1637,21 @@
                                 this._openToast("Proposta atualizada com sucesso.");
                                 var contractNo = this.data.contractNo;
                                 var versionNo = this.data.versionNo;
-                                setTimeout(
-                                    function () {
-                                        window.location.href = "../DetalhesProposta/" + contractNo + "?version=" + versionNo;
-                                    }, 1000);
+                                //setTimeout(
+                                //    function () {
+                                //        window.location.href = "../DetalhesProposta/" + contractNo + "?version=" + versionNo;
+                                //    }, 1000);
                             } else {
                                 this._openToast(this.data.eMessage);
                             }
                         }
                         else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
                             debugger;
-                            this._openToast(this.data.eMessage);
+                            if (this.data.actionCode == 2) {
+                                this.data.actionCode = 1;
+                            } else {
+                                this._openToast(this.data.eMessage);
+                            }
                             var contractNo = this.data.contractNo;
                             var versionNo = this.data.versionNo;
                             setTimeout(
@@ -1578,7 +1742,7 @@
                     });
                     this.$.grid_ClientRequisitions.clearCache();
 
-                    
+
                 },
                 _deleteClientRequisition: function (data) {
                     var index = this.data.clientRequisitions.indexOf(data.model.item);
@@ -1841,8 +2005,7 @@
                     if (param != null) {
                         debugger;
 
-                        if (this.$.mProposalNo.value != null && this.$.mProposalNo.value == "")
-                        {
+                        if (this.$.mProposalNo.value != null && this.$.mProposalNo.value == "") {
                             if (param.currentTarget.id == "parseContract") {
                                 this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3, "Parcial": false });
                                 this.$.parseToContract_ajax.generateRequest();
@@ -1850,13 +2013,13 @@
                                 this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3, "Parcial": true });
                                 this.$.parseToContract_ajax.generateRequest();
                             }
-                        } else if (this.$.mProposalNo.value != "" && this.$.mProposalNo.value == null){
+                        } else if (this.$.mProposalNo.value != "" && this.$.mProposalNo.value == null) {
                             this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3 });
                             this.$.parseToContract_ajax.generateRequest();
                         } else {
                             this._openToastError("Esta versão de proposta já tem contrato associado");
                         }
-                        
+
                     }
                 },
                 _responseParseToContract: function (e) {
@@ -1871,7 +2034,7 @@
                     }
                 },
 
-                 //Update Contract
+                //Update Contract
                 _updateToContract: function (param) {
                     if (param != null) {
                         if (this.data.contractNo != "" && this.data.contractNo != undefined) {
@@ -1905,14 +2068,45 @@
                 _responseUpdateToContract: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
-                        debugger;
                         this._openToast("Contrato " + this.numeration + " criado com sucesso");
                         this.$.mProposalNo.value = this.numeration;
                     }
                     else {
                         this._openToastError("Erro na criação da contrato.");
                     }
-                }
+                },
+
+
+                _openProposals: function () {
+                    this.$.dialog_proposals.open();
+                },
+                _proposalSelected: function (item) {
+                    if (item != null) {
+                        var copy_request = this.$.grid_databound_ajax_proposals_details;
+                        var dialogObj = this.$.dialog_proposals;
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende copiar o contrato " + item.contractNo + "?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    copy_request.body = JSON.stringify({ "ContractNo": item.contractNo, "Version": item.versionNo } );
+                                    copy_request.generateRequest();
+                                    dialogObj.close();
+
+                                }
+                            }
+                        });
+                    }
+                },
             });
         });
     </script>
