@@ -41,20 +41,20 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public bool? CreateMarketSearch { get; set; }
         public bool? SubmitPrePurchase { get; set; }
         public bool? SendPrePurchase { get; set; }
-        public DateTime? LocalMarketDate { get; set; }
+        public string LocalMarketDate { get; set; }
         public string LocalMarketUser { get; set; }
         public bool? SendForPurchase { get; set; }
-        public DateTime? SendForPurchaseDate { get; set; }
+        public string SendForPurchaseDate { get; set; }
         public bool? PurchaseValidated { get; set; }
-        public bool? PruchaseRefused { get; set; }
+        public bool? PurchaseRefused { get; set; }
         public string ReasonToRejectionLocalMarket { get; set; }
-        public DateTime? RejectionLocalMarketDate { get; set; }
-        public int? PruchaseId { get; set; }
+        public string RejectionLocalMarketDate { get; set; }
+        public int? PurchaseId { get; set; }
         public string SupplierNo { get; set; }
         public string OpenOrderNo { get; set; }
         public int? OpenOrderLineNo { get; set; }
         public string QueryCreatedMarketNo { get; set; }
-        public string CreatedOderNo { get; set; }
+        public string CreatedOrderNo { get; set; }
         public string SupplierProductCode { get; set; }
         public string UnitNutritionProduction { get; set; }
         public string MarketLocalRegion { get; set; }
