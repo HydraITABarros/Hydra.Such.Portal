@@ -60,6 +60,8 @@
             <template is="dom-if" if="{{ !_disabledCreate }}">
                 <div class="marginSpace">
                     <paper-button class="btnSave" raised on-tap="_create">Criar Novo</paper-button>
+                    <paper-button class="btnCreate" id="showLost" raised on-tap="_showLosts">{{_showLostMessage}}</paper-button>
+                    <paper-button class="btnCreate" id="showAborted" raised on-tap="_showAborted">{{_showAbortedMessage}}</paper-button>
                 </div>
             </template>
         </template>
@@ -213,6 +215,18 @@
                     _disabledCreate: {
                         type: Boolean,
                         value: false
+                    },
+                    _showLostMessage: {
+                        type: String,
+                        value: "Exibir Perdidas"
+                    },
+                    _showAbortedMessage: {
+                        type: String,
+                        value: "Exibir Canceladas"
+                    },
+                    _showLevel: {
+                        type: Number,
+                        value: 1
                     }
                 },
                 _rowSelected: function (item) {
@@ -229,7 +243,8 @@
                     if (this._archived == 1) {
                         this._disabledCreate = true;
                     }
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
+                    debugger;;
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
                     this.$.grid_databound_ajax.generateRequest();
                 },
 
@@ -264,7 +279,43 @@
                     this.result.splice(index, 1);
                     this.$.ajax_delete_contract.body = JSON.stringify(data.model.item);
                     this.$.ajax_delete_contract.generateRequest();
-                }
+                },
+                _showAborted: function (item) {
+                    if (item != null) {
+                        if (this._showLevel == 2) {
+                            this._showLevel = 1;
+                        } else {
+                            this._showLevel = 2;
+                        }
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
+                        this.$.grid_databound_ajax.generateRequest();
+                        this._setButtonTexts();
+                    }
+                },
+                _showLosts: function (item) {
+                    if (item != null) {
+                        if (this._showLevel == 3) {
+                            this._showLevel = 1;
+                        } else {
+                            this._showLevel =3;
+                        }
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
+                        this.$.grid_databound_ajax.generateRequest();
+                        this._setButtonTexts();
+                    }
+                },
+                _setButtonTexts: function () {
+                    if (this._showLevel == 1) {
+                        this._showAbortedMessage = "Exibir Canceladas";
+                        this._showLostMessage = "Exibir Perdidas";
+                    } else if (this._showLevel == 2) {
+                        this._showAbortedMessage = "Vista Normal";
+                        this._showLostMessage = "Exibir Perdidas";
+                    } else {
+                        this._showAbortedMessage = "Exibir Canceladas";
+                        this._showLostMessage = "Vista Normal";
+                    }
+                },
             });
         });
     </script>

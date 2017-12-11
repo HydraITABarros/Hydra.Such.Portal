@@ -725,6 +725,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NumeraçãoPropostas).HasColumnName("Numeração Propostas");
 
+                entity.Property(e => e.NumeraçãoPréRequisições).HasColumnName("Numeração Pré Requisições");
+
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);
@@ -3175,6 +3177,8 @@ namespace Hydra.Such.Data.Database
             modelBuilder.Entity<Locais>(entity =>
             {
                 entity.HasKey(e => e.Código);
+
+                entity.Property(e => e.Contacto).HasMaxLength(20);
 
                 entity.Property(e => e.CódigoPostal)
                     .HasColumnName("Código Postal")

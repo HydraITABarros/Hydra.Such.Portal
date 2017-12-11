@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hydra.Such.Data.ViewModel.Requisition
+namespace Hydra.Such.Data.ViewModel.Compras
 {
     public class RequisitionLineViewModel
     {
@@ -34,5 +34,31 @@ namespace Hydra.Such.Data.ViewModel.Requisition
         public string CreateUser { get; set; }
         public DateTime? UpdateDateTime { get; set; }
         public string UpdateUser { get; set; }
+        public decimal? QtyByUnitOfMeasure { get; set; }
+        public decimal? UnitCostsould  { get; set; }
+        public decimal? BudgetValue { get; set; }
+        public int? MaintenanceOrderLineNo { get; set; }
+        public bool? CreateMarketSearch { get; set; }
+        public bool? SubmitPrePurchase { get; set; }
+        public bool? SendPrePurchase { get; set; }
+        public DateTime? LocalMarketDate { get; set; }
+        public string LocalMarketUser { get; set; }
+        public bool? SendForPurchase { get; set; }
+        public DateTime? SendForPurchaseDate { get; set; }
+        public bool? PurchaseValidated { get; set; }
+        public bool? PruchaseRefused { get; set; }
+        public string ReasonToRejectionLocalMarket { get; set; }
+        public DateTime? RejectionLocalMarketDate { get; set; }
+        public int? PruchaseId { get; set; }
+        public string SupplierNo { get; set; }
+        public string OpenOrderNo { get; set; }
+        public int? OpenOrderLineNo { get; set; }
+        public string QueryCreatedMarketNo { get; set; }
+        public string CreatedOderNo { get; set; }
+        public string SupplierProductCode { get; set; }
+        public string UnitNutritionProduction { get; set; }
+        public string MarketLocalRegion { get; set; }
+        public string CustomerNo { get; set; }
+        public string Approvers { get; set; }
     }
 }
