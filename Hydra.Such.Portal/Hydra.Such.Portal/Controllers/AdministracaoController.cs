@@ -2049,7 +2049,7 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
-        #region TiposDeProjeto
+        #region Locais
         public IActionResult Locais(string id)
         {
             UserAccessesViewModel UPerm = GetPermissions(id);
@@ -2067,40 +2067,54 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetPlaceData()
+        public JsonResult GetPlace()
         {
-            List<ProjectTypesModelView> result = DBProjectTypes.GetAll().Select(x => new ProjectTypesModelView()
+            List<PlacesViewModel> result = DBPlaces.GetAll().Select(x => new PlacesViewModel()
             {
                 Code = x.Código,
-                Description = x.Descrição
+                Description = x.Descrição,
+                Address=x.Endereço,
+                Locality=x.Localidade,
+                Postalcode = x.CódigoPostal,
+                Contact=x.Contacto,
+                Responsiblerecept=x.ResponsávelReceção,
+                CreateDate = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
+                CreateUser= x.UtilizadorCriação
             }).ToList();
             return Json(result);
         }
 
         [HttpPost]
-        public JsonResult UpdatePlace([FromBody] List<ProjectTypesModelView> data)
+        public JsonResult UpdatePlace([FromBody] List<PlacesViewModel> data)
         {
-            List<TipoDeProjeto> results = DBProjectTypes.GetAll();
+            List<Locais> results = DBPlaces.GetAll();
             results.RemoveAll(x => data.Any(u => u.Code == x.Código));
-            results.ForEach(x => DBProjectTypes.Delete(x));
+            results.ForEach(x => DBPlaces.Delete(x));
             data.ForEach(x =>
             {
-                TipoDeProjeto tpval = new TipoDeProjeto()
+                Locais localval = new Locais()
                 {
-                    Descrição = x.Description
+                    Descrição = x.Description,
+                    CódigoPostal=x.Postalcode,
+                    Endereço=x.Address,
+                    Localidade=x.Locality,
+                    Contacto=x.Contact,
+                    ResponsávelReceção=x.Responsiblerecept
                 };
                 if (x.Code > 0)
                 {
-                    tpval.Código = x.Code;
-                    tpval.DataHoraModificação = DateTime.Now;
-                    tpval.UtilizadorModificação = User.Identity.Name;
-                    DBProjectTypes.Update(tpval);
+                    localval.Código = x.Code;
+                    localval.UtilizadorCriação = x.CreateUser;
+                    localval.DataHoraCriação = string.IsNullOrEmpty(x.CreateDate) ? (DateTime?)null : DateTime.Parse(x.CreateDate);
+                    localval.DataHoraModificação = DateTime.Now;
+                    localval.UtilizadorModificação = User.Identity.Name;
+                    DBPlaces.Update(localval);
                 }
                 else
                 {
-                    tpval.DataHoraCriação = DateTime.Now;
-                    tpval.UtilizadorCriação = User.Identity.Name;
-                    DBProjectTypes.Create(tpval);
+                    localval.DataHoraCriação = DateTime.Now;
+                    localval.UtilizadorCriação = User.Identity.Name;
+                    DBPlaces.Create(localval);
                 }
             });
             return Json(data);

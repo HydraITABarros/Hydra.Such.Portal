@@ -16,4 +16,4 @@ else
 
 <link rel="import" href="/elements/folhasdehoras/folhadehora_details.html">
 
-<x-folhadehoradetails _folhadehoraid="@ViewBag.FolhaDeHorasNo" _areaid="1"></x-folhadehoradetails>
+<x-folhadehoradetails _folhadehoraid="@ViewBag.FolhaDeHorasNo" _areaid="1" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-folhadehoradetails>

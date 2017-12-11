@@ -1151,6 +1151,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetNAVVendor()
+        {
+            List<DDMessageString> result = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.No_,
+                value = x.Name
+
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetMealTypes()
         {
             List<DDMessage> result = DBMealTypes.GetAll().Select(x => new DDMessage()
@@ -1160,6 +1172,31 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
 
             return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetPlaces()
+        {
+            List<DDMessage> result = DBPlaces.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+
+
+        [HttpPost]
+        public JsonResult GetProducts()
+        {
+            List<DDMessageString> products = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+
+            return Json(products);
         }
     }
 
