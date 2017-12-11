@@ -1002,6 +1002,16 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturas()
+        {
+            List<DDMessageString> result = DBViatura.GetAllToList().Select(x => new DDMessageString()
+            {
+                id = x.Matrícula
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetViaturasApolices()
         {
             List<DDMessageString> result = DBCartoesEApolices.GetAllByType(1).Select(x => new DDMessageString()
@@ -1130,6 +1140,29 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetNAVJobNo()
+        {
+            List<DDMessageString> result = DBNAV2017Job.GetJob(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.No_
+
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetNAVVendor()
+        {
+            List<DDMessageString> result = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.No_,
+                value = x.Name
+
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetMealTypes()
         {
             List<DDMessage> result = DBMealTypes.GetAll().Select(x => new DDMessage()
@@ -1139,6 +1172,31 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
 
             return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetPlaces()
+        {
+            List<DDMessage> result = DBPlaces.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+
+
+        [HttpPost]
+        public JsonResult GetProducts()
+        {
+            List<DDMessageString> products = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+
+            return Json(products);
         }
     }
 

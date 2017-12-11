@@ -4,6 +4,7 @@ using Hydra.Such.Data.ViewModel.CCP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 
 namespace Hydra.Such.Data.Logic.CCP
 {
@@ -124,15 +125,15 @@ namespace Hydra.Such.Data.Logic.CCP
                     NºProcedimento = proc.Nº,
                     Estado0 = 1,
                     DataHoraCriação = proc.DataHoraCriação,
-                    UtilizadorCriação = proc.UtilizadorCriação,
+                    UtilizadorCriação = proc.UtilizadorCriação
                 };
-
-                _context.Add(proc.TemposPaCcp);
-                _context.SaveChanges();
 
                 _context.Add(proc);
                 _context.SaveChanges();
 
+                //_context.Add(proc.TemposPaCcp);
+                //_context.SaveChanges();
+                
                 ConfiguraçãoNumerações ConfigNum = DBNumerationConfigurations.GetById(NumeracaoProcedimento);
                 ConfigNum.ÚltimoNºUsado = proc.Nº;
                 DBNumerationConfigurations.Update(ConfigNum);
@@ -141,6 +142,7 @@ namespace Hydra.Such.Data.Logic.CCP
             }
             catch (Exception e)
             {
+                Debug.WriteLine(e.ToString());
                 return null;
             }
 

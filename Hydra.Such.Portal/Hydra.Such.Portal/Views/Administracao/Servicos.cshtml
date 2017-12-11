@@ -187,10 +187,10 @@
                 },
 
                 _createService: function () {
-                    debugger;
                     if (this.$.ddDescription.value == "" || this.$.ddDescription.value == null) {
                         this.openToastError('É obrigatório preencher a Descrição.');
                     } else {
+
                         var thisLine = {
                             description: this.$.ddDescription.value
                         };
@@ -204,6 +204,7 @@
                         this.$.ajax_update.generateRequest();
                         this.$.gridServices.clearCache();
                     }
+
                 },
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);
