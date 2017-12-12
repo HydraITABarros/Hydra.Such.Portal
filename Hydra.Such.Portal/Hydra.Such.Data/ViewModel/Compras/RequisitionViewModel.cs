@@ -74,6 +74,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string OrderNo { get; set; }
         public DateTime? RequisitionDate { get; set; }
         public string dimension { get; set; }
+        public decimal? Budget { get; set; }
         
 
     }

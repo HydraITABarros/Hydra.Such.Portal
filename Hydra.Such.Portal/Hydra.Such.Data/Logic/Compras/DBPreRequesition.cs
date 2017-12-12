@@ -9,13 +9,13 @@ namespace Hydra.Such.Data.Logic.Compras
 {
     public class DBPreRequesition
     {
-        public static List<PréRequisição> GetByNo(string PreRequesitionNo)
+        public static PréRequisição GetByNo(string PreRequesitionNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.PréRequisição.Where(x => x.NºPréRequisição == PreRequesitionNo).ToList();
+                    return ctx.PréRequisição.Where(x => x.NºPréRequisição == PreRequesitionNo).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -166,7 +166,7 @@ namespace Hydra.Such.Data.Logic.Compras
                  LocalidadeEntrega = x.DeliveryLocality,
                  ContatoEntrega = x.DeliveryContact,
                  ResponsávelReceçãoReceção = x.ReceptionReceptionResponsible,
-                 NºFatura = x.InvoiceNo,
+                 NºFatura = x.InvoiceNo
             };
             return result;
         }

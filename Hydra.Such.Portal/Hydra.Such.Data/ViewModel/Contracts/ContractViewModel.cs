@@ -103,5 +103,9 @@ namespace Hydra.Such.Data.ViewModel.Contracts
 
         public List<ContractClientRequisitionViewModel> ClientRequisitions { get; set; }
         public List<ContractInvoiceTextViewModel> InvoiceTexts { get; set; }
+
+
+
+        public int? ActionCode { get; set; }
     }
 }

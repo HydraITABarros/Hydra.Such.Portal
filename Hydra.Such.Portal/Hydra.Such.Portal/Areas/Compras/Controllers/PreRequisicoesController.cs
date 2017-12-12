@@ -19,16 +19,35 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         [Area("Compras")]
         public IActionResult Index(string PreRequesitionNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.PreRequesitionNo = PreRequesitionNo ?? "";
+                ViewBag.UPermissions = UPerm;
                 return View();
             }
             else
             {
                 return RedirectToAction("AccessDenied", "Error");
             }
+        }
+
+        [HttpPost]
+        public JsonResult GetPreRequesitionDetails([FromBody] PreRequesitionsViewModel data)
+        {
+            if (data != null)
+            {
+                PreRequesitionsViewModel result = new PreRequesitionsViewModel();
+                if (data.PreRequesitionsNo != "")
+                {
+                    PréRequisição PreRequisition = DBPreRequesition.GetByNo(data.PreRequesitionsNo);
+                    result = DBPreRequesition.ParseToViewModel(PreRequisition);
+                    
+                }
+                return Json(result);
+
+            }
+            return Json(false);
         }
 
         #region Populate CB
@@ -93,6 +112,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         pPreRequisicao.DataHoraCriação = DateTime.Now;
 
                         //Create Contract On Database
+                       
                         pPreRequisicao = DBPreRequesition.Create(pPreRequisicao);
 
                         if (pPreRequisicao == null)
