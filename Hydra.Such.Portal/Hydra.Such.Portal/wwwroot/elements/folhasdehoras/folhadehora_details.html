@@ -55,6 +55,16 @@
                 margin-top: 15px;
             }
 
+            .btn--confirm {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                background: #71BCC1;
+                color: white;
+                margin-top: 7px;
+            }
+
             /*ACORDEÃO*/
             paper-collapse-item {
                 --paper-item: {
@@ -117,7 +127,6 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <!--GetEmployeeNome-->
         <iron-ajax url="/FolhasDeHoras/GetEmployeeNome"
                    last-response="{{getEmpoyeeNAV}}"
                    method="post"
@@ -136,9 +145,24 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/IntegrarEmRHFolhaDeHoras"
+                   last-response="{{integrarEmRHFolhaDeHoras}}"
+                   method="post"
+                   handle-as="json"
+                   id="integraremrhfolhadehoras_ajax"
+                   on-response="_integraremrhfolhadehorasResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
-        <!--GetEmployeeNome-->
-        <!-- FOLHADEHORA Valitador -->
+        <iron-ajax url="/FolhasDeHoras/ValidarBotaoFolhaDeHoras"
+                   last-response="{{validarBotaoFolhaDeHorasValue}}"
+                   method="post"
+                   handle-as="json"
+                   id="validarbotaofolhadehoras_ajax"
+                   on-response="_validarbotaofolhadehorasResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/FolhasDeHoras/ValidateNumeration"
                    last-response="{{validateResponse}}"
                    method="post"
@@ -147,7 +171,7 @@
                    on-response="_responseValidatorProcessor"
                    content-type="application/json">
         </iron-ajax>
-        <!-- FOLHADEHORA Valitador -->
+
         <!--PERCURSO-->
         <iron-ajax url="/FolhasDeHoras/CreatePercurso"
                    last-response="{{PercursoCreated}}"
@@ -320,9 +344,13 @@
             <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_calcularAjudasCusto"><i class="fa fa-check-square" aria-hidden="true"></i> Calcular Aj Custo</paper-button>
-                <paper-button class="tablinks" on-tap=""><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
-                <paper-button class="tablinks" on-tap=""><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
                 <paper-button class="tablinks" on-tap="_validarFolhaDeHoras" disable="!_permissions.fH_Validar"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
+                <paper-button class="tablinks" on-tap="_integrarEmRH"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
+                <paper-button class="tablinks" on-tap=""><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
+
+
+
+                <paper-button id="botaotesteid" class="tablinks btn--confirm" on-tap="_teste" ><i class="fa fa-check-square" aria-hidden="true"></i> TESTE</paper-button>
             </template>
         </div>
 
@@ -331,7 +359,7 @@
 
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
             <paper-tab>Viagens</paper-tab>
-            <paper-tab>Mão-de-obra</paper-tab>
+            <paper-tab>Mão de Obra</paper-tab>
             <paper-tab>Presenças</paper-tab>
             <paper-tab>Detalhe</paper-tab>
         </paper-tabs>
@@ -820,7 +848,7 @@
             </div>
 
 
-            <!------------ MÃO-DE-OBRA ------------>
+            <!------------ MÃO DE OBRA ------------>
 
             <div class="panel panel-default">
                 <div class="panel-heading">Cabeçalho</div>
@@ -843,7 +871,7 @@
                 </div>
 
                 <paper-collapse-group>
-                    <paper-collapse-item class="panel-heading" header="Mão-De-Obra">
+                    <paper-collapse-item class="panel-heading" header="Mão de Obra">
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
@@ -892,7 +920,7 @@
                 </paper-collapse-group>
 
                 <div class="panel-body">
-                    <vaadin-grid id="tabMaoDeObra" aria-label="Tabela Mão-de-Obra" items="{{ data.folhaDeHorasMaoDeObra }}" class="editGrid">
+                    <vaadin-grid id="tabMaoDeObra" aria-label="Tabela Mão de Obra" items="{{ data.folhaDeHorasMaoDeObra }}" class="editGrid">
                         <vaadin-grid-column width="0px" hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="linhaNo" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
@@ -1442,10 +1470,6 @@
                     //GET FOLHADEHORA DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "folhaDeHorasNo": this._folhadehoraid });
                     this.$.page_databound_ajax.generateRequest();
-
-                    if (this._folhadehoraid == "") {
-                        this._isCreate = true;
-                    }
                 },
 
                 _showMessage: function (message) {
@@ -1457,29 +1481,54 @@
                     this.$.ToastMessageError.open();
                 },
 
+                _teste: function () {
+                    this._showMessage('TESTEEEEEEE!!!!!!!!!!!.');
+                },
+
                 //FOLHA DE HORAS
                 _updateFH: function () {
-                    if ((this.$.projetoNo.value != "") &
-                        (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") &
-                        (this.$.dataPartidaTexto.validate() & this.$.dataPartidaTexto.value != "") &
-                        (this.$.horaPartidaTexto.validate() & this.$.horaPartidaTexto.value != "") &
-                        (this.$.dataChegadaTexto.validate() & this.$.dataChegadaTexto.value != "") &
-                        (this.$.horaChegadaTexto.validate() & this.$.horaChegadaTexto.value != "")) {
-                        if (this.$.tipoDeslocacao.value == 1) {
-                            if (this.$.matricula.validate() & this.$.matricula.value != "") {
-                                this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
-                                this.$.page_updatefolhadehoras_ajax.generateRequest();
+                    if (this.$.projetoNo.value != "") {
+                        if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
+                            if (this.$.dataPartidaTexto.validate() & this.$.dataPartidaTexto.value != "") {
+                                if (this.$.horaPartidaTexto.validate() & this.$.horaPartidaTexto.value != "") {
+                                    if (this.$.dataChegadaTexto.validate() & this.$.dataChegadaTexto.value != "") {
+                                        if (this.$.horaChegadaTexto.validate() & this.$.horaChegadaTexto.value != "") {
+                                            if (this.$.tipoDeslocacao.value == 1) {
+                                                if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                                                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                                                    this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                                }
+                                                else {
+                                                    this._showErrorMessage('É obrigatório preencher o campo Matrícula.');
+                                                }
+                                            }
+                                            else {
+                                                this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                                                this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                            }
+                                        }
+                                        else {
+                                            this._showErrorMessage('É obrigatório preencher o campo Hora Fim.');
+                                        }
+                                    }
+                                    else {
+                                        this._showErrorMessage('É obrigatório preencher o campo Data Fim.');
+                                    }
+                                }
+                                else {
+                                    this._showErrorMessage('É obrigatório preencher o campo Hora Início.');
+                                }
                             }
-                            else
-                                this._showErrorMessage('É obrigatório preencher o campo Matrícula.');
+                            else {
+                                this._showErrorMessage('É obrigatório preencher o campo Data Início.');
+                            }
                         }
                         else {
-                            this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
-                            this.$.page_updatefolhadehoras_ajax.generateRequest();
+                            this._showErrorMessage('É obrigatório preencher o campo Nº Empregado.');
                         }
                     }
                     else {
-                        this._showErrorMessage('É necessário preencher todos os campos obrigatórios corretamente.');
+                        this._showErrorMessage('É obrigatório preencher o campo Nº Ordem/projecto.');
                     }
                 },
 
@@ -1509,50 +1558,109 @@
                 },
 
                 _validarFolhaDeHoras: function () {
-                    debugger;
-                    if ((this.$.folhaDeHorasNo.value != "") &
-                        (this.$.projetoNo.value != "") &
-                        (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "")) {
-                        this.$.validarfolhadehoras_ajax.body = JSON.stringify(this.data);
-                        //this.$.validarfolhadehoras_ajax.body = JSON.stringify({
-                        //    folhaDeHorasNo: this.$.folhaDeHorasNo.value,
-                        //    empregadoNo: this.$.empregadoNo.value
-                        //});
-                        this.$.validarfolhadehoras_ajax.generateRequest();
+                    if (this.$.projetoNo.value != "") {
+                        if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
+                            this.$.validarfolhadehoras_ajax.body = JSON.stringify(this.data);
+                            this.$.validarfolhadehoras_ajax.generateRequest();
+                        }
+                        else {
+                            this._showErrorMessage('É necessário preencher o campo Nº Empregado.');
+                        }
                     }
                     else {
-                        this._showErrorMessage('É necessário preencher todos os campos obrigatórios corretamente.');
+                        this._showErrorMessage('É necessário preencher o campo Nº Ordem/Projecto.');
                     }
                 },
 
-                //PERCURSO
-                _createPercurso: function () {
-                    if ((this.$.folhaDeHorasNo.value != "") &
-                        (this.$.projetoNo.value != "") &
-                        (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") &
-                        (this.$.codigoTipoKms.validate() & this.$.codigoTipoKms.value != "") &
-                        (this.$.percursoOrigem.validate() & this.$.percursoOrigem.value != "") &
-                        (this.$.percursoDestino.validate() & this.$.percursoDestino.value != "") &
-                        (this.$.percursoDataViagem.validate() & this.$.percursoDataViagem.value != "")) {
-                        this.$.page_createpercurso_ajax.body = JSON.stringify({
-                            noFolhaHoras: this.$.folhaDeHorasNo.value,
-                            codTipoCusto: this.$.codigoTipoKms.value,
-                            codOrigem: this.$.percursoOrigem.value,
-                            codDestino: this.$.percursoDestino.value,
-                            dataDespesa: this.$.percursoDataViagem.value
-                        });
-                        this.$.page_createpercurso_ajax.generateRequest();
-                        this.$.tabPercurso.clearCache();
+
+                _integrarEmRH: function () {
+                    if (this.$.projetoNo.value != "") {
+                        if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
+                            this.$.integraremrhfolhadehoras_ajax.body = JSON.stringify(this.data);
+                            this.$.integraremrhfolhadehoras_ajax.generateRequest();
+                        }
+                        else {
+                            this._showErrorMessage('É necessário preencher o campo Nº Empregado.');
+                        }
                     }
                     else {
-                        this._showErrorMessage('É necessário preencher todos os campos obrigatórios corretamente.');
+                        this._showErrorMessage('É necessário preencher o campo Nº Ordem/Projecto.');
+                    }
+                },
+
+                _validarBotaoFolhaDeHoras: function () {
+                    debugger;
+                    if (this.$.folhaDeHorasNo.value != "") {
+                        this.$.validarbotaofolhadehoras_ajax.body = JSON.stringify(this.data);
+                        this.$.validarbotaofolhadehoras_ajax.generateRequest();
+                    }
+                },
+
+
+                //PERCURSO
+                _createPercurso: function () {
+                    if (this.$.projetoNo.value != "") {
+                        if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
+                            if (this.$.codigoTipoKms.validate() & this.$.codigoTipoKms.value != "") {
+                                if (this.$.percursoOrigem.validate() & this.$.percursoOrigem.value != "") {
+                                    if (this.$.percursoDestino.validate() & this.$.percursoDestino.value != "") {
+                                        if (this.$.percursoDataViagem.validate() & this.$.percursoDataViagem.value != "") {
+                                            this.$.page_createpercurso_ajax.body = JSON.stringify({
+                                                noFolhaHoras: this.$.folhaDeHorasNo.value,
+                                                codTipoCusto: this.$.codigoTipoKms.value,
+                                                codOrigem: this.$.percursoOrigem.value,
+                                                codDestino: this.$.percursoDestino.value,
+                                                dataDespesa: this.$.percursoDataViagem.value
+                                            });
+                                            this.$.page_createpercurso_ajax.generateRequest();
+                                            this.$.tabPercurso.clearCache();
+                                        }
+                                        else {
+                                            this._showErrorMessage('É obrigatório preencher o campo Data Despesa.');
+                                        }
+                                    }
+                                    else {
+                                        this._showErrorMessage('É obrigatório preencher o campo Código Destino.');
+                                    }
+                                }
+                                else {
+                                    this._showErrorMessage('É obrigatório preencher o campo Código Origem.');
+                                }
+                            }
+                            else {
+                                this._showErrorMessage('É obrigatório preencher o campo Cód. Tipo KMs.');
+                            }
+                        }
+                        else {
+                            this._showErrorMessage('É obrigatório preencher o campo Nº Empregado.');
+                        }
+                    }
+                    else {
+                        this._showErrorMessage('É obrigatório preencher o campo Nº Ordem/Projecto.');
                     }
                 },
 
                 _deletePercurso: function (e) {
-                    this.$.page_deletepercurso_ajax.body = JSON.stringify(e.model.item.noLinha);
-                    this.$.page_deletepercurso_ajax.generateRequest();
-                    this.$.tabPercurso.clearCache();
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o Percurso? ",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                this.$.page_deletepercurso_ajax.body = JSON.stringify(e.model.item.noLinha);
+                                this.$.page_deletepercurso_ajax.generateRequest();
+                                this.$.tabPercurso.clearCache();
+                            }
+                        }
+                    });
                 },
 
                 _updatePercurso: function () {
@@ -1581,38 +1689,86 @@
 
                 //AJUDA
                 _createAjuda: function () {
-                    if ((this.$.folhaDeHorasNo.value != "") &
-                        (this.$.projetoNo.value != "") &
-                        (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") &
-                        (this.$.ajudaTipoCusto.validate() & this.$.ajudaTipoCusto.value != "") &
-                        (this.$.ajudaCodigoTipoCusto.validate() & this.$.ajudaCodigoTipoCusto.value != "") &
-                        (this.$.ajudaQuantidade.validate() & this.$.ajudaQuantidade.value != "") &
-                        (this.$.ajudaCustoUnitario.validate() & this.$.ajudaCustoUnitario.value != "") &
-                        (this.$.ajudaPrecoUnitario.validate() & this.$.ajudaPrecoUnitario.value != "") &
-                        (this.$.ajudaDataDespesa.validate() & this.$.ajudaDataDespesa.value != "") &
-                        (this.$.ajudaJustificacao.validate() & this.$.ajudaJustificacao.value != "")) {
-                        this.$.page_createajuda_ajax.body = JSON.stringify({
-                            noFolhaHoras: this.$.folhaDeHorasNo.value,
-                            tipoCusto: parseInt(this.$.ajudaTipoCusto.value),
-                            codTipoCusto: this.$.ajudaCodigoTipoCusto.value,
-                            quantidade: parseFloat(this.$.ajudaQuantidade.value),
-                            custoUnitario: parseFloat(this.$.ajudaCustoUnitario.value),
-                            precoUnitario: parseFloat(this.$.ajudaPrecoUnitario.value),
-                            dataDespesa: this.$.ajudaDataDespesa.value,
-                            observacao: this.$.ajudaJustificacao.value
-                        });
-                        this.$.page_createajuda_ajax.generateRequest();
-                        this.$.tabAjuda.clearCache();
+                    if (this.$.projetoNo.value != "") {
+                        if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
+                            if (this.$.ajudaTipoCusto.validate() & this.$.ajudaTipoCusto.value != "") {
+                                if (this.$.ajudaCodigoTipoCusto.validate() & this.$.ajudaCodigoTipoCusto.value != "") {
+                                    if (this.$.ajudaQuantidade.validate() & this.$.ajudaQuantidade.value != "") {
+                                        if (this.$.ajudaCustoUnitario.validate() & this.$.ajudaCustoUnitario.value != "") {
+                                            if (this.$.ajudaPrecoUnitario.validate() & this.$.ajudaPrecoUnitario.value != "") {
+                                                if (this.$.ajudaDataDespesa.validate() & this.$.ajudaDataDespesa.value != "") {
+                                                    if (this.$.ajudaJustificacao.validate() & this.$.ajudaJustificacao.value != "") {
+                                                        this.$.page_createajuda_ajax.body = JSON.stringify({
+                                                            noFolhaHoras: this.$.folhaDeHorasNo.value,
+                                                            tipoCusto: parseInt(this.$.ajudaTipoCusto.value),
+                                                            codTipoCusto: this.$.ajudaCodigoTipoCusto.value,
+                                                            quantidade: parseFloat(this.$.ajudaQuantidade.value),
+                                                            custoUnitario: parseFloat(this.$.ajudaCustoUnitario.value),
+                                                            precoUnitario: parseFloat(this.$.ajudaPrecoUnitario.value),
+                                                            dataDespesa: this.$.ajudaDataDespesa.value,
+                                                            observacao: this.$.ajudaJustificacao.value
+                                                        });
+                                                        this.$.page_createajuda_ajax.generateRequest();
+                                                        this.$.tabAjuda.clearCache();
+                                                    }
+                                                    else {
+                                                        this._showErrorMessage('É obrigatório preencher o campo Justificação.');
+                                                    }
+                                                }
+                                                else {
+                                                    this._showErrorMessage('É obrigatório preencher o campo Data Despesa.');
+                                                }
+                                            }
+                                            else {
+                                                this._showErrorMessage('É obrigatório preencher o campo Preço Unitário.');
+                                            }
+                                        }
+                                        else {
+                                            this._showErrorMessage('É obrigatório preencher o campo Custo Unitário.');
+                                        }
+                                    }
+                                    else {
+                                        this._showErrorMessage('É obrigatório preencher o campo Quantidade.');
+                                    }
+                                }
+                                else {
+                                    this._showErrorMessage('É obrigatório preencher o campo Cód. Tipo Custo.');
+                                }
+                            }
+                            else {
+                                this._showErrorMessage('É obrigatório preencher o campo Tipo Custo.');
+                            }
+                        }
+                        else {
+                            this._showErrorMessage('É obrigatório preencher o campo Nº Empregado.');
+                        }
                     }
                     else {
-                        this._showErrorMessage('É necessário preencher todos os campos obrigatórios corretamente.');
+                        this._showErrorMessage('É obrigatório preencher o campo Nº Ordem/Projecto.');
                     }
                 },
 
                 _deleteAjuda: function (e) {
-                    this.$.page_deleteajuda_ajax.body = JSON.stringify(this.$.folhaDeHorasNo.value, e.model.item.noLinha);
-                    this.$.page_deleteajuda_ajax.generateRequest();
-                    this.$.tabAjuda.clearCache();
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover a Ajuda? ",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                this.$.page_deleteajuda_ajax.body = JSON.stringify(this.$.folhaDeHorasNo.value, e.model.item.noLinha);
+                                this.$.page_deleteajuda_ajax.generateRequest();
+                                this.$.tabAjuda.clearCache();
+                            }
+                        }
+                    });
                 },
 
                 _updateAjuda: function () {
@@ -1672,36 +1828,72 @@
 
                 //MAODEOBRA
                 _createMaoDeObra: function () {
-                    if ((this.$.folhaDeHorasNo.value != "") &
-                        (this.$.projetoNo.value != "") &
-                        (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") &
-                        (this.$.maoDeObraDate.validate() & this.$.maoDeObraDate.value != "") &
-                        (this.$.maoDeObraCodigoTipoTrabalho.validate() & this.$.maoDeObraCodigoTipoTrabalho.value != "") &
-                        (this.$.maoDeObraHoraInicio.validate() & this.$.maoDeObraHoraInicio.value != "") &
-                        (this.$.maoDeObraHoraFim.validate() & this.$.maoDeObraHoraFim.value != "")) {
-                        this.$.page_createmaodeobra_ajax.body = JSON.stringify({
-                            folhaDeHorasNo: this.$.folhaDeHorasNo.value,
-                            date: this.$.maoDeObraDate.value,
-                            projetoNo: this.$.maoDeObraProjetoNo.value,
-                            empregadoNo: this.$.empregadoNo.value,
-                            codigoTipoTrabalho: this.$.maoDeObraCodigoTipoTrabalho.value,
-                            horaInicio: this.$.maoDeObraHoraInicio.value,
-                            horarioAlmoco: (this.$.maoDeObraHorarioAlmoco.value == "on" ? true : false),
-                            horaFim: this.$.maoDeObraHoraFim.value,
-                            horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false)
-                        });
-                        this.$.page_createmaodeobra_ajax.generateRequest();
-                        this.$.tabMaoDeObra.clearCache();
+                    if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
+                        if (this.$.maoDeObraDate.validate() & this.$.maoDeObraDate.value != "") {
+                            if (this.$.maoDeObraProjetoNo.value != "") {
+                                if (this.$.maoDeObraCodigoTipoTrabalho.validate() & this.$.maoDeObraCodigoTipoTrabalho.value != "") {
+                                    if (this.$.maoDeObraHoraInicio.validate() & this.$.maoDeObraHoraInicio.value != "") {
+                                        if (this.$.maoDeObraHoraFim.validate() & this.$.maoDeObraHoraFim.value != "") {
+                                            this.$.page_createmaodeobra_ajax.body = JSON.stringify({
+                                                folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                                                date: this.$.maoDeObraDate.value,
+                                                projetoNo: this.$.maoDeObraProjetoNo.value,
+                                                empregadoNo: this.$.empregadoNo.value,
+                                                codigoTipoTrabalho: this.$.maoDeObraCodigoTipoTrabalho.value,
+                                                horaInicio: this.$.maoDeObraHoraInicio.value,
+                                                horarioAlmoco: (this.$.maoDeObraHorarioAlmoco.value == "on" ? true : false),
+                                                horaFim: this.$.maoDeObraHoraFim.value,
+                                                horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false)
+                                            });
+                                            this.$.page_createmaodeobra_ajax.generateRequest();
+                                            this.$.tabMaoDeObra.clearCache();
+                                        }
+                                        else {
+                                            this._showErrorMessage('É obrigatório preencher o campo Hora de Fim.');
+                                        }
+                                    }
+                                    else {
+                                        this._showErrorMessage('É obrigatório preencher o campo Hora de Início.');
+                                    }
+                                }
+                                else {
+                                    this._showErrorMessage('É obrigatório preencher o campo Tipo Trabalho.');
+                                }
+                            }
+                            else {
+                                this._showErrorMessage('É obrigatório preencher o campo Nº Obra.');
+                            }
+                        }
+                        else {
+                            this._showErrorMessage('É obrigatório preencher o campo Nº Data.');
+                        }
                     }
                     else {
-                        this._showErrorMessage('É necessário preencher todos os campos obrigatórios corretamente.');
+                        this._showErrorMessage('É obrigatório preencher o campo Nº Empregado.');
                     }
                 },
 
                 _deleteMaoDeObra: function (e) {
-                    this.$.page_deletemaodeobra_ajax.body = JSON.stringify(e.model.item.linhaNo);
-                    this.$.page_deletemaodeobra_ajax.generateRequest();
-                    this.$.tabMaoDeObra.clearCache();
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover a Mão de Obra? ",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                this.$.page_deletemaodeobra_ajax.body = JSON.stringify(e.model.item.linhaNo);
+                                this.$.page_deletemaodeobra_ajax.generateRequest();
+                                this.$.tabMaoDeObra.clearCache();
+                            }
+                        }
+                    });
                 },
 
                 _updateMaoDeObra: function () {
@@ -1786,39 +1978,80 @@
 
                 //PRENSENÇAS
                 _createPresenca: function () {
-                    if ((this.$.folhaDeHorasNo.value != "") &
-                        (this.$.projetoNo.value != "") &
-                        (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") &
-                        (this.$.presencaDataTexto.validate() & this.$.presencaDataTexto.value != "") &
-                        (this.$.presencaHora1Entrada.validate() & this.$.presencaHora1Entrada.value != "") &
-                        (this.$.presencaHora1Saida.validate() & this.$.presencaHora1Saida.value != "") &
-                        (this.$.presencaHora2Entrada.validate() & this.$.presencaHora2Entrada.value != "") &
-                        (this.$.presencaHora2Saida.validate() & this.$.presencaHora2Saida.value != "") &
-                        (this.$.presencaObservacoes.validate() & this.$.presencaObservacoes.value != "")) {
-                        this.$.page_createpresenca_ajax.body = JSON.stringify({
-                            folhaDeHorasNo: this.$.folhaDeHorasNo.value,
-                            data: this.$.presencaDataTexto.value,
-                            hora1Entrada: this.$.presencaHora1Entrada.value,
-                            hora1Saida: this.$.presencaHora1Saida.value,
-                            hora2Entrada: this.$.presencaHora2Entrada.value,
-                            hora2Saida: this.$.presencaHora2Saida.value,
-                            observacoes: this.$.presencaObservacoes.value
-                        });
-                        this.$.page_createpresenca_ajax.generateRequest();
-                        this.$.tabPresenca.clearCache();
+                    if (this.$.projetoNo.value != "") {
+                        if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
+                            if (this.$.presencaDataTexto.validate() & this.$.presencaDataTexto.value != "") {
+                                if (this.$.presencaHora1Entrada.validate() & this.$.presencaHora1Entrada.value != "") {
+                                    if (this.$.presencaHora1Saida.validate() & this.$.presencaHora1Saida.value != "") {
+                                        if (this.$.presencaHora2Entrada.validate() & this.$.presencaHora2Entrada.value != "") {
+                                            if (this.$.presencaHora2Saida.validate() & this.$.presencaHora2Saida.value != "") {
+                                                if (this.$.presencaObservacoes.validate() & this.$.presencaObservacoes.value != "") {
+                                                    this.$.page_createpresenca_ajax.body = JSON.stringify({
+                                                        folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                                                        data: this.$.presencaDataTexto.value,
+                                                        hora1Entrada: this.$.presencaHora1Entrada.value,
+                                                        hora1Saida: this.$.presencaHora1Saida.value,
+                                                        hora2Entrada: this.$.presencaHora2Entrada.value,
+                                                        hora2Saida: this.$.presencaHora2Saida.value,
+                                                        observacoes: this.$.presencaObservacoes.value
+                                                    });
+                                                    this.$.page_createpresenca_ajax.generateRequest();
+                                                    this.$.tabPresenca.clearCache();
+                                                }
+                                                else {
+                                                    this._showErrorMessage('É obrigatório preencher o campo Observações.');
+                                                }
+                                            }
+                                            else {
+                                                this._showErrorMessage('É obrigatório preencher o campo 2ª Saída.');
+                                            }
+                                        }
+                                        else {
+                                            this._showErrorMessage('É obrigatório preencher o campo 2ª Entrada.');
+                                        }
+                                    }
+                                    else {
+                                        this._showErrorMessage('É obrigatório preencher o campo 1ª Saída.');
+                                    }
+                                }
+                                else {
+                                    this._showErrorMessage('É obrigatório preencher o campo 1ª Entrada.');
+                                }
+                            }
+                            else {
+                                this._showErrorMessage('É obrigatório preencher o campo Data.');
+                            }
+                        }
+                        else {
+                            this._showErrorMessage('É obrigatório preencher o campo Nº Empregado.');
+                        }
                     }
                     else {
-                        this._showErrorMessage('É necessário preencher todos os campos obrigatórios corretamente.');
+                        this._showErrorMessage('É obrigatório preencher o campo Nº Ordem/Projecto.');
                     }
                 },
 
                 _deletePresenca: function (e) {
-                    this.$.page_deletepresenca_ajax.body = JSON.stringify({
-                        folhaDeHorasNo: e.model.item.folhaDeHorasNo,
-                        data: e.model.item.dataTexto
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover a Presença? ",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                this.$.page_deletepresenca_ajax.body = JSON.stringify({ folhaDeHorasNo: e.model.item.folhaDeHorasNo, data: e.model.item.dataTexto });
+                                this.$.page_deletepresenca_ajax.generateRequest();
+                                this.$.tabPresenca.clearCache();
+                            }
+                        }
                     });
-                    this.$.page_deletepresenca_ajax.generateRequest();
-                    this.$.tabPresenca.clearCache();
                 },
 
                 _updatePresenca: function () {
@@ -1863,6 +2096,7 @@
                 },
 
 
+
                 //RESPONSES PROCESSORS
                 _responseProcessor: function (data) {
                     var self = this;
@@ -1880,6 +2114,10 @@
                     } else {
                         this._showErrorMessage('Ocorreu um erro ao criar a Folha de Hora.')
                     }
+
+                    debugger;
+                    //setTimeout(function () { }, 5000);
+                    this._validarBotaoFolhaDeHoras();
                 },
 
                 _createResponseProcessor: function () {
@@ -1943,6 +2181,29 @@
                     else {
                         this._showErrorMessage('Ocorreu um erro ao validar a Folha De Horas.');
                     }
+                },
+
+                _integraremrhfolhadehorasResponse: function (e) {
+                    if (this.integrarEmRHFolhaDeHoras) {
+                        this._showMessage('Folha de Horas Integrada em RH com sucesso.');
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao Integrada em RH na Folha De Horas.');
+                    }
+                },
+
+                _validarbotaofolhadehorasResponse: function () {
+                    debugger;
+                    var _self = this;
+
+                    if (this.validarBotaoFolhaDeHorasValue) {
+                        _self.$.botaotesteid.disabled = false;
+                    }
+                    else {
+                        _self.$.botaotesteid.disabled = true;
+                    }
+
                 },
 
                 //PERCURSO
@@ -2101,7 +2362,7 @@
 
                 _updateLinhaMaoDeObraResponse: function (e) {
                     if (this.LinhaMaoDeObraUpdated == 0) {
-                        this._showMessage('Mão-de-Obra atualizada com sucesso.');
+                        this._showMessage('Mão de Obra atualizada com sucesso.');
                     }
                     else {
                         if (this.MaoDeObraHoraInicioFim == 1 | this.MaoDeObraHoraInicioFim == 2) {
