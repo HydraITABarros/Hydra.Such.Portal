@@ -809,11 +809,51 @@ namespace Hydra.Such.Portal.Controllers
                         DiárioDeProjeto newdp = DBProjectDiary.GetAllByCode(User.Identity.Name, x.Code);
                         if (newdp != null)
                         {
-                            newdp.Registado = true;
-                            newdp.UtilizadorModificação = User.Identity.Name;
-                            newdp.DataHoraModificação = DateTime.Now;
-                            DBProjectDiary.Update(newdp);
+                            //newdp.Registado = true;
+                            //newdp.UtilizadorModificação = User.Identity.Name;
+                            //newdp.DataHoraModificação = DateTime.Now;
+                            DBProjectDiary.Delete(newdp);
+
+                            MovimentosDeProjeto ProjectMovement = new MovimentosDeProjeto()
+                            {
+                                NºLinha = newdp.NºLinha,
+                                NºProjeto = newdp.NºProjeto,
+                                Data = newdp.Data,
+                                TipoMovimento = newdp.TipoMovimento,
+                                Tipo = newdp.Tipo,
+                                Código = newdp.Código,
+                                Descrição = newdp.Descrição,
+                                Quantidade = newdp.Quantidade,
+                                CódUnidadeMedida = newdp.CódUnidadeMedida,
+                                CódLocalização = newdp.CódLocalização,
+                                GrupoContabProjeto = newdp.GrupoContabProjeto,
+                                CódigoRegião = newdp.CódigoRegião,
+                                CódigoÁreaFuncional = newdp.CódigoÁreaFuncional,
+                                CódigoCentroResponsabilidade = newdp.CódigoCentroResponsabilidade,
+                                Utilizador = User.Identity.Name,
+                                CustoUnitário = newdp.CustoUnitário,
+                                CustoTotal = newdp.CustoTotal,
+                                PreçoUnitário = newdp.PreçoUnitário,
+                                PreçoTotal = newdp.PreçoTotal,
+                                Faturável = newdp.Faturável,
+                                Registado = true,
+                                FaturaANºCliente = newdp.FaturaANºCliente,
+                                Moeda = newdp.Moeda,
+                                ValorUnitárioAFaturar = newdp.ValorUnitárioAFaturar,
+                                TipoRefeição = newdp.TipoRefeição,
+                                CódGrupoServiço = newdp.CódGrupoServiço,
+                                NºGuiaResíduos = newdp.NºGuiaResíduos,
+                                NºGuiaExterna = newdp.NºGuiaExterna,
+                                DataConsumo = newdp.DataConsumo,
+                                CódServiçoCliente = newdp.CódServiçoCliente,
+                                UtilizadorCriação = User.Identity.Name,
+                                DataHoraCriação = DateTime.Now
+                            };
+
+
                         }
+
+                        
                     }
                 });
             }
