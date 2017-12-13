@@ -525,7 +525,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         (cresp.Contains(x.CódigoCentroResponsabilidade) || x.CódigoCentroResponsabilidade == null) &&
                         x.IntegradoresEmRh.Contains(userName) &&
                         x.IntegradoEmRh == false &&
-                        x.Estado == Estado //2 = VALIDADO
+                        x.Estado == Estado //1 = VALIDADO
                     ).Select(FH => new FolhaDeHorasViewModel()
                     {
                         FolhaDeHorasNo = FH.NºFolhaDeHoras,
@@ -629,7 +629,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         (area.Contains(x.CódigoÁreaFuncional) || x.CódigoÁreaFuncional == null) &&
                         (cresp.Contains(x.CódigoCentroResponsabilidade) || x.CódigoCentroResponsabilidade == null) &&
                         x.IntegradoresEmRhkm.Contains(userName) &&
-                        x.IntegradoEmRhkm == false &&
+                        x.IntegradoEmRhKm == false &&
                         x.Estado == Estado // 2 == VALIDADO
                     ).Select(FH => new FolhaDeHorasViewModel()
                     {

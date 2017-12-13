@@ -143,17 +143,34 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
-                            List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name, HTML.estado);
-
-                            result.ForEach(FH =>
+                            if (HTML.estado == 1)
                             {
-                                FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
-                                FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity.Where(y => y.Id == Convert.ToInt32(FH.DeslocacaoForaConcelho)).FirstOrDefault().Value;
-                                FH.Estadotexto = FH.Estado == null ? "" : EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == FH.Estado).FirstOrDefault().Value;
-                            });
+                                List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByHistorico(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name, HTML.estado);
 
-                            return Json(result);
+                                result.ForEach(FH =>
+                                {
+                                    FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
+                                    FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
+                                    FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity.Where(y => y.Id == Convert.ToInt32(FH.DeslocacaoForaConcelho)).FirstOrDefault().Value;
+                                    FH.Estadotexto = FH.Estado == null ? "" : EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == FH.Estado).FirstOrDefault().Value;
+                                });
+
+                                return Json(result);
+                            }
+                            else
+                            {
+                                List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name, HTML.estado);
+
+                                result.ForEach(FH =>
+                                {
+                                    FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
+                                    FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
+                                    FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity.Where(y => y.Id == Convert.ToInt32(FH.DeslocacaoForaConcelho)).FirstOrDefault().Value;
+                                    FH.Estadotexto = FH.Estado == null ? "" : EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == FH.Estado).FirstOrDefault().Value;
+                                });
+
+                                return Json(result);
+                            }
                         }
                     }
                 }
@@ -545,7 +562,7 @@ namespace Hydra.Such.Portal.Controllers
                         DeslocaçãoForaConcelho = Convert.ToBoolean(data.DeslocacaoForaConcelhoTexto),
                         DeslocaçãoPlaneada = Convert.ToBoolean(data.DeslocacaoPlaneadaTexto),
                         Terminada = data.Terminada,
-                        Estado = 1,
+                        Estado = 0, // 0 = Criado
                         CriadoPor = User.Identity.Name,
                         DataHoraCriação = DateTime.Now,
                         CódigoRegião = data.CodigoRegiao,
@@ -622,7 +639,7 @@ namespace Hydra.Such.Portal.Controllers
                     CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
                     DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
                     Validadores = data.Validadores == "" ? null : data.Validadores,
-                    Estado = data.Estadotexto == "" ? 1 : Convert.ToInt32(data.Estadotexto),
+                    Estado = data.Estadotexto == "" ? 0 : Convert.ToInt32(data.Estadotexto),
                     CriadoPor = data.CriadoPor,
                     DataHoraCriação = data.DataHoraCriacao,
                     DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
@@ -1710,7 +1727,7 @@ namespace Hydra.Such.Portal.Controllers
                             CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
                             DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
                             Validadores = data.Validadores == "" ? null : data.Validadores,
-                            Estado = 2, //VALIDAÇÂO
+                            Estado = 1, //VALIDAÇÂO
                             CriadoPor = data.CriadoPor,
                             DataHoraCriação = data.DataHoraCriacao,
                             DataHoraÚltimoEstado = DateTime.Now, //VALIDAÇÂO
@@ -1777,7 +1794,14 @@ namespace Hydra.Such.Portal.Controllers
 
                         ctx.execStoredProcedureValidarFH("exec FH_IntegrarEmRH @NoFH, @NoUtilizador", parameters);
 
+
                         string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
+                        bool IntegradoEmRhKm = (bool)data.IntegradoEmRhKm;
+                        string TipoDeslocação = data.TipoDeslocacaoTexto;
+                        int Estado = (int)data.Estado;
+
+                        if (IntegradoEmRhKm || TipoDeslocação != "2")
+                            Estado = 2; // 2 = Registado
 
                         if (DBFolhasDeHoras.Update(new FolhasDeHoras()
                         {
@@ -1791,7 +1815,7 @@ namespace Hydra.Such.Portal.Controllers
                             CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
                             DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
                             Validadores = data.Validadores == "" ? null : data.Validadores,
-                            Estado = data.Estado,
+                            Estado = Estado,
                             CriadoPor = data.CriadoPor,
                             DataHoraCriação = data.DataHoraCriacao,
                             DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
@@ -1820,6 +1844,95 @@ namespace Hydra.Such.Portal.Controllers
                             IntegradoEmRhkm = data.IntegradoEmRhKm,
                             IntegradorEmRhKm = data.IntegradorEmRHKM,
                             DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM
+                        }) == null)
+                        {
+                            result = false;
+                        }
+                        else
+                        {
+                            result = true;
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult IntegrarEmRHKMFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
+        {
+            bool result = false;
+            try
+            {
+                if (!string.IsNullOrEmpty(data.FolhaDeHorasNo) && !string.IsNullOrEmpty(data.EmpregadoNo) && data.TipoDeslocacao == 2) //2 = "Viatura Própria"
+                {
+                    using (var ctx = new SuchDBContextExtention())
+                    {
+                        var parameters = new[]{
+                            //new SqlParameter("@ServerName", "SUCH-NAVSQL\\SQLNAV"),
+                            //new SqlParameter("@DBName", "EvolutionWEB"),
+                            //new SqlParameter("@TableName", "Job Ledger Entry"),
+                            new SqlParameter("@NoFH", data.FolhaDeHorasNo),
+                            new SqlParameter("@NoUtilizador", data.EmpregadoNo)
+                        };
+
+                        ctx.execStoredProcedureValidarFH("exec FH_IntegrarEmRHKM @NoFH, @NoUtilizador", parameters);
+
+                        string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
+                        bool IntegradoEmRh = (bool)data.IntegradoEmRh;
+                        int NoRegistos = 0;
+                        int Estado = (int)data.Estado;
+
+                        NoRegistos = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == data.FolhaDeHorasNo && x.TipoCusto == 2).Count();
+
+                        if (IntegradoEmRh || NoRegistos == 0)
+                            Estado = 2; // 2 = Registado
+
+                        if (DBFolhasDeHoras.Update(new FolhasDeHoras()
+                        {
+                            NºFolhaDeHoras = data.FolhaDeHorasNo,
+                            Área = data.Area,
+                            NºProjeto = data.ProjetoNo == "" ? null : data.ProjetoNo,
+                            NºEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                            DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
+                            DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
+                            TipoDeslocação = data.TipoDeslocacaoTexto == "" ? 1 : Convert.ToInt32(data.TipoDeslocacaoTexto),
+                            CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
+                            DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
+                            Validadores = data.Validadores == "" ? null : data.Validadores,
+                            Estado = Estado,
+                            CriadoPor = data.CriadoPor,
+                            DataHoraCriação = data.DataHoraCriacao,
+                            DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
+                            DataHoraModificação = DateTime.Now, //INTEGRAREMRHKM
+                            UtilizadorModificação = User.Identity.Name, //INTEGRAREMRHKM
+                            NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                            Matrícula = data.Matricula == "" ? null : data.Matricula,
+                            Terminada = data.Terminada,
+                            TerminadoPor = data.TerminadoPor,
+                            DataHoraTerminado = data.DataHoraTerminado,
+                            DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
+                            Observações = data.Observacoes,
+                            NºResponsável1 = data.Responsavel1No,
+                            NºResponsável2 = data.Responsavel2No,
+                            NºResponsável3 = data.Responsavel3No,
+                            ValidadoresRhKm = data.ValidadoresRHKM,
+                            CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
+                            CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
+                            CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
+                            Validado = data.Validado,
+                            Validador = data.Validador,
+                            DataHoraValidação = data.DataHoraValidacao,
+                            IntegradoEmRh = data.IntegradoEmRh,
+                            IntegradorEmRh = data.IntegradorEmRH,
+                            DataIntegraçãoEmRh = data.DataIntegracaoEmRH,
+                            IntegradoEmRhKm = true, //INTEGRAREMRHKM
+                            IntegradorEmRhKm = User.Identity.Name, //INTEGRAREMRHKM
+                            DataIntegraçãoEmRhKm = DateTime.Now //INTEGRAREMRHKM
                         }) == null)
                         {
                             result = false;
