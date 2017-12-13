@@ -1656,6 +1656,27 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         [HttpPost]
+        public JsonResult ValidarBotaoFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
+        {
+            bool result = false;
+            try
+            {
+                string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
+
+                if (data.Estado == 0 && data.Validadores.Contains(EmpregadoNome))
+                {
+                    result = true;
+                }
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        [HttpPost]
         public JsonResult ValidarFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
             bool result = false;
@@ -1672,10 +1693,10 @@ namespace Hydra.Such.Portal.Controllers
                         new SqlParameter("@NoFH", data.FolhaDeHorasNo),
                         new SqlParameter("@NoUtilizador", data.EmpregadoNo)
                     };
-                        string teste = "";
 
-                        /*
-                        ctx.execStoredProcedureValidarFH("exec Validar_FH @NoFH, @NoUtilizador", parameters);
+                        ctx.execStoredProcedureValidarFH("exec FH_Validar @NoFH, @NoUtilizador", parameters);
+
+                        string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
 
                         if (DBFolhasDeHoras.Update(new FolhasDeHoras()
                         {
@@ -1700,7 +1721,6 @@ namespace Hydra.Such.Portal.Controllers
                             Terminada = data.Terminada,
                             TerminadoPor = data.TerminadoPor,
                             DataHoraTerminado = data.DataHoraTerminado,
-                            Validado = true, //VALIDAÇÂO
                             DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
                             Observações = data.Observacoes,
                             NºResponsável1 = data.Responsavel1No,
@@ -1710,10 +1730,13 @@ namespace Hydra.Such.Portal.Controllers
                             CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
                             CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
                             CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
-                            Validador = User.Identity.Name, //VALIDAÇÂO
+                            Validado = true, //VALIDAÇÂO
+                            Validador = EmpregadoNome, //VALIDAÇÂO
                             DataHoraValidação = DateTime.Now, //VALIDAÇÂO
+                            IntegradoEmRh = data.IntegradoEmRh,
                             IntegradorEmRh = data.IntegradorEmRH,
                             DataIntegraçãoEmRh = data.DataIntegracaoEmRH,
+                            IntegradoEmRhKm = data.IntegradoEmRhKm,
                             IntegradorEmRhKm = data.IntegradorEmRHKM,
                             DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM
                         }) == null)
@@ -1723,7 +1746,88 @@ namespace Hydra.Such.Portal.Controllers
                         else
                         {
                             result = true;
-                        };*/
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult IntegrarEmRHFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
+        {
+            bool result = false;
+            try
+            {
+                if (!string.IsNullOrEmpty(data.FolhaDeHorasNo) && !string.IsNullOrEmpty(data.EmpregadoNo))
+                {
+                    using (var ctx = new SuchDBContextExtention())
+                    {
+                        var parameters = new[]{
+                        //new SqlParameter("@ServerName", "SUCH-NAVSQL\\SQLNAV"),
+                        //new SqlParameter("@DBName", "EvolutionWEB"),
+                        //new SqlParameter("@TableName", "Job Ledger Entry"),
+                        new SqlParameter("@NoFH", data.FolhaDeHorasNo),
+                        new SqlParameter("@NoUtilizador", data.EmpregadoNo)
+                    };
+
+                        ctx.execStoredProcedureValidarFH("exec FH_IntegrarEmRH @NoFH, @NoUtilizador", parameters);
+
+                        string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
+
+                        if (DBFolhasDeHoras.Update(new FolhasDeHoras()
+                        {
+                            NºFolhaDeHoras = data.FolhaDeHorasNo,
+                            Área = data.Area,
+                            NºProjeto = data.ProjetoNo == "" ? null : data.ProjetoNo,
+                            NºEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                            DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
+                            DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
+                            TipoDeslocação = data.TipoDeslocacaoTexto == "" ? 1 : Convert.ToInt32(data.TipoDeslocacaoTexto),
+                            CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
+                            DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
+                            Validadores = data.Validadores == "" ? null : data.Validadores,
+                            Estado = data.Estado,
+                            CriadoPor = data.CriadoPor,
+                            DataHoraCriação = data.DataHoraCriacao,
+                            DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
+                            DataHoraModificação = DateTime.Now, //INTEGRAREMRH
+                            UtilizadorModificação = User.Identity.Name, //INTEGRAREMRH
+                            NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                            Matrícula = data.Matricula == "" ? null : data.Matricula,
+                            Terminada = data.Terminada,
+                            TerminadoPor = data.TerminadoPor,
+                            DataHoraTerminado = data.DataHoraTerminado,
+                            DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
+                            Observações = data.Observacoes,
+                            NºResponsável1 = data.Responsavel1No,
+                            NºResponsável2 = data.Responsavel2No,
+                            NºResponsável3 = data.Responsavel3No,
+                            ValidadoresRhKm = data.ValidadoresRHKM,
+                            CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
+                            CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
+                            CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
+                            Validado = data.Validado,
+                            Validador = data.Validador,
+                            DataHoraValidação = data.DataHoraValidacao,
+                            IntegradoEmRh = true, //INTEGRAREMRH
+                            IntegradorEmRh = User.Identity.Name, //INTEGRAREMRH
+                            DataIntegraçãoEmRh = DateTime.Now, //INTEGRAREMRH
+                            IntegradoEmRhKm = data.IntegradoEmRhKm,
+                            IntegradorEmRhKm = data.IntegradorEmRHKM,
+                            DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM
+                        }) == null)
+                        {
+                            result = false;
+                        }
+                        else
+                        {
+                            result = true;
+                        };
                     }
                 }
             }

@@ -750,11 +750,11 @@
                                                 </div>
 
                                                 <div class="col-sm-9">
-                                                    <paper-tooltip for="propostaVarianteDescricao" position="bottom" offset="-10" animation-delay="1">
+                                                    <paper-tooltip for="descPropostaVariante" position="bottom" offset="-10" animation-delay="1">
                                                         Não aceitando propostas variantes o concorrente tem que apresentar exatamente o solicitado nas peças do procedimento, sendo um motivo de exclusão toda a proposta apresentada que não cumpra os requisitos. <br />
                                                         O Fornecedor não pode apresentar alternativas.
                                                     </paper-tooltip>
-                                                    <such-textarea rows="5" value="{{data.propostaVarianteDescricao}}" id="propostaVarianteDescricao" name="propostaVarianteDescricao" label="Descrição"> </such-textarea>
+                                                    <such-textarea rows="5" value="{{data.descPropostaVariante}}" id="descPropostaVariante" name="descPropostaVariante" label="Descrição"> </such-textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -961,24 +961,24 @@
                                     <div class="panel-heading">Contabilidade</div>
                                     <div class="panel-body">
                                         <div class="col-sm-6">
-                                            <such-textarea rows="5" value="{{data.contabilidade}}" id="contabilidadeComentario" name="contabilidadeComentario" label="Comentário"> </such-textarea>
+                                            <such-textarea rows="5" value="{{CLImobContab.checklistImobilizadoContabilidade.comentarioImobContabilidade}}" id="contabilidadeComentario" name="contabilidadeComentario" label="Comentário"> </such-textarea>
 
                                             <div class="row break_clear">
                                                 <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">O responsável dos serviços de contabilidade</label></div>
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.responsavelServicosContabilidade}}" id="responsavelServicosContabilidade" name="responsavelServicosContabilidade" label=""></vaadin-text-field>
+                                                    <vaadin-text-field value="{{CLImobContab.checklistImobilizadoContabilidade.responsavelImobContabilidade}}" id="responsavelServicosContabilidade" name="responsavelServicosContabilidade" label=""></vaadin-text-field>
                                                 </div>
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.responsavelServicosContabilidade2}}" id="responsavelServicosContabilidade2" name="responsavelServicosContabilidade2" label=""> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{CLImobContab.checklistImobilizadoContabilidade.nomeResponsavelImobContabilidade}}" id="responsavelServicosContabilidade2" name="responsavelServicosContabilidade2" label=""> </vaadin-text-field>
                                                 </div>
                                             </div>
 
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
-                                                    <vaadin-date-picker value="{{data.contabilidadeData}}" id="responsavelServicosContabilidade" name="responsavelServicosContabilidade" label="Data"> </vaadin-date-picker>
+                                                    <vaadin-date-picker value="{{CLImobContab.checklistImobilizadoContabilidade.dataImobContabilidade}}" id="responsavelServicosContabilidade" name="responsavelServicosContabilidade" label="Data"> </vaadin-date-picker>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <vaadin-combo-box value="{{data.cabimentoOrcamental}}" id="cabimentoOrcamental" label="Cabimento Orçamental?" items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue">
+                                                    <vaadin-combo-box value="{{CLImobContab.checklistImobilizadoContabilidade.imobilizadoSimNao}}" id="cabimentoOrcamental" label="Cabimento Orçamental?" items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue">
                                                         <template>
                                                             <paper-icon-item>
                                                                 <paper-item-body two-line>
@@ -2044,6 +2044,50 @@
                         type: Boolean,
                         value: true
                     },
+                    __isElementArea: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isElementPreArea: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isElementPreArea0: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isElementCompras: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isElementJuri: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isElementContabilidade: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isElementJuridico: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isElementCA: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isGestorProcesso: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isSecretariadoCA: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isFechoProcesso: {
+                        type: Boolean,
+                        value: false
+                    },
                 },
 
                 ready: function () {
@@ -2181,6 +2225,34 @@
                     if (this.userAllowed) {
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
                         this.$.page_databound_ajax.generateRequest();
+
+                        // set user permissions
+                        for (var i in this.UserAccesses) {
+                            switch (this.UserAccesses[i]) {
+                                case "IsElementArea": this.__isElementArea = true;
+                                    break;
+                                case "IsElementPreArea0": this.__isElementPreArea0 = true;
+                                    break;
+                                case "IsElementPreArea": this.__isElementPreArea = true;
+                                    break;
+                                case "IsElementCompras": this.__isElementCompras = true;
+                                    break;
+                                case "IsElementJuri": this.__isElementJuri = true;
+                                    break;
+                                case "IsElementContabilidade": this.__isElementContabilidade = true;
+                                    break;
+                                case "IsElementJuridico": this.__isElementJuridico = true;
+                                    break;
+                                case "IsElementCA": this.__isElementCA = true;
+                                    break;
+                                case "IsGestorProcesso": this.__isGestorProcesso = true;
+                                    break;
+                                case "IsSecretariadoCA": this.__isSecretariadoCA = true;
+                                    break;
+                                case "IsFechoProcesso": this.__isFechoProcesso = true;
+                                    break;
+                            }
+                        };
 
                         if (this._procedimentoid == "") {
                             this._isCreate = true;
@@ -2322,6 +2394,11 @@
                         return false;
                     }
 
+                    if (this.estimativaPreco == null || this.estimativaPreco == 0) {
+                        this._openToast("Obrigatório definir uma Estimativa de Preço, mesmo que não seja definido Preço Base!");
+                        return false;
+                    }
+
                     if (this.data.negociacao == null) {
                         this._openToast("Negociação: tem que indicar um valor (Sim/Não)!")
                         return false;
@@ -2342,8 +2419,18 @@
                         return false;
                     }
 
+                    if (this.data.precoMaisBaixo && this.data.propostaEconMaisVantajosa) {
+                        this._openToast("Preço Mais Baixo ou Proposta Economicamente mais vantajosa: apenas pode escolher uma das opções!");
+                        return false;
+                    }
+
                     if (this.data.propostaVariante == null) {
                         this._openToast("Proposta Variante: tem que indicar um valor (Sim/Não)!")
+                        return false;
+                    }
+
+                    if (this.fornecedorExclusivo && (this.descFornecedorExclusivo == null || this.descFornecedorExclusivo == "")) {
+                        this._openToast("Obrigatória a fundamentação da exclusividade do fornecedor!");
                         return false;
                     }
 
@@ -2386,7 +2473,19 @@
                     var _self = this;
 
                     // Disable controls 
-                    // 1. Procedimento status != 0
+                    // 1. Procedimento status != 0.b
+                    if (data.estado != 0) {
+                        $(_self.$.gridElementosJuri1).addClass('disabled');
+                        $(_self.$.buttonCriarElementoJuri1).addClass('disabled');
+                        $(_self.$.submitProcedimento).addClass('disabled');
+                        $(_self.$.gridElementosJuri2).addClass('disabled');
+                        $(_self.$.buttonCriarElementoJuri2).addClass('disabled');
+                    }
+
+                    _self.$.responsavelAreaApresentar.hidden = (data.estado == 0);
+                    _self.$.nomeResponsavelAreaApresentar.hidden = (data.estado == 0);
+                    _self.$.dataResponsavelApresentar.hidden = (data.estado == 0);
+
                     _self.$.informacaoTecnica.disabled = (data.estado != 0);
                     _self.$.fundamentacaoAquisicao.disabled = (data.estado != 0);
                     _self.$.precoBase.disabled = (data.estado != 0);
@@ -2398,43 +2497,34 @@
                     _self.$._chkSuplente.disabled = (data.estado != 0);
                     _self.$._chkSendMail.disabled = (data.estado != 0);
                     _self.$.comentarioAreaApresentar.disabled = (data.estado != 0);
-
-                    _self.$.responsavelAreaApresentar.hidden = (data.estado == 0);
-                    _self.$.nomeResponsavelAreaApresentar.hidden = (data.estado == 0);
-                    _self.$.dataResponsavelApresentar.hidden = (data.estado == 0);  
-
-                    if (data.estado != 0) {
-                        $(_self.$.gridElementosJuri1).addClass('disabled');
-                        $(_self.$.submitProcedimento).addClass('disabled');
-                        $(_self.$.buttonCriarElementoJuri1).addClass('disabled');
-                    }
-                 
-                    //debugger;;
-                    // original code.....
-                    //console.log(123456789);
-                    //if (data.estado == 0) {
-                    //    _self.$.informacaoTecnica.disabled = false;
-                    //}
-
+                    _self.$.precoMaisBaixo.disabled = (data.estado != 0); 
+                    _self.$.descPrecoMaisBaixo.disabled = (data.estado != 0);
+                    _self.$.propostaEconMaisVantajosa.disabled = (data.estado != 0);
+                    _self.$.descPropostaEconMaisVantajosa.disabled = (data.estado != 0);
+                    _self.$.propostaVariante.disabled = (data.estado != 0);
+                    _self.$.descPropostaVariante.disabled = (data.estado != 0);
+                    _self.$.abertoFechadoAoMercado.disabled = (data.estado != 0);
+                    _self.$.descAbertoFechadoAoMercado.disabled = (data.estado != 0);
+                    _self.$.prazoEntrega.disabled = (data.estado != 0);
+                    _self.$.locaisEntrega.disabled = (data.estado != 0);
+                    _self.$.observacoesAdicionais.disabled = (data.estado != 0);
+                    _self.$.estimativaPreco.disabled = (data.estado != 0);
+                    _self.$.fornecedoresSugeridos.disabled = (data.estado != 0);
+                    _self.$.fornecedorExclusivo.disabled = (data.estado != 0);
+                    _self.$.descFornecedorExclusivo.disabled = (data.estado != 0);
+                    _self.$.interlocutor.disabled = (data.estado != 0);
+                    // 1. Procedimento status != 0.e
                     
-                    //if (data.estado != 0) {
-                        //desabilitar um campo
-                        //_self.$.no.disabled = false;
-                        //_self.$.informacaoTecnica.disabled = true;
-                        //_self.$.fundamentacaoAquisicao.disabled = true;
-                        //_self.$.precoBase.disabled = true;
-                        //_self.$.negociacao.disabled = true;
-                        //_self.$.formAddElemento.disabled = true;
-                        //_self.$.users.disabled = true;
-                        //_self.$.gridElementosJuri.disabled = true;
-                        
+                    // 2. Procedimento status != 1.b
+                    _self.$.contabilidadeComentario.disabled = (data.estado != 1 || !_self.__isElementContabilidade);
+                    // 1. Procedimento status != 1.e
 
                         //esconder um campo
                         //_self.$.codigoRegiao.hidden = true;
 
                         //esconder uma seccao (adicionar id ao container da seccao)
                         //_self.$.seccaoTeste.hidden = true;
-                    //}
+                   
                 },
                 //Helpers
                 _executeRequest: function (url, data) {
