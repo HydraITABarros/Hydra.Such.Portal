@@ -169,11 +169,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DataHoraValidacao = FH.DataHoraValidação,
                         DataValidacaoTexto = FH.DataHoraValidação == null ? "" : FH.DataHoraValidação.Value.ToString("yyyy-MM-dd"),
                         HoraValidacaoTexto = FH.DataHoraValidação == null ? "" : FH.DataHoraValidação.Value.ToString("HH:mm:ss"),
+                        IntegradoEmRh = FH.IntegradoEmRh,
                         IntegradorEmRH = FH.IntegradorEmRh,
                         IntegradoresEmRH = FH.IntegradoresEmRh,
                         DataIntegracaoEmRH = FH.DataIntegraçãoEmRh,
                         DataIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh == null ? "" : FH.DataIntegraçãoEmRh.Value.ToString("yyyy-MM-dd"),
                         HoraIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh == null ? "" : FH.DataIntegraçãoEmRh.Value.ToString("HH:mm:ss"),
+                        IntegradoEmRhKm = FH.IntegradoEmRhKm,
                         IntegradorEmRHKM = FH.IntegradorEmRhKm,
                         IntegradoresEmRHKM = FH.IntegradoresEmRhkm,
                         DataIntegracaoEmRHKM = FH.DataIntegraçãoEmRhKm,
@@ -360,11 +362,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DataHoraValidacao = FH.DataHoraValidação,
                         DataValidacaoTexto = FH.DataHoraValidação == null ? "" : FH.DataHoraValidação.Value.ToString("yyyy-MM-dd"),
                         HoraValidacaoTexto = FH.DataHoraValidação == null ? "" : FH.DataHoraValidação.Value.ToString("HH:mm:ss"),
+                        IntegradoEmRh = FH.IntegradoEmRh,
                         IntegradorEmRH = FH.IntegradorEmRh,
                         IntegradoresEmRH = FH.IntegradoresEmRh,
                         DataIntegracaoEmRH = FH.DataIntegraçãoEmRh,
                         DataIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh == null ? "" : FH.DataIntegraçãoEmRh.Value.ToString("yyyy-MM-dd"),
                         HoraIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh == null ? "" : FH.DataIntegraçãoEmRh.Value.ToString("HH:mm:ss"),
+                        IntegradoEmRhKm = FH.IntegradoEmRhKm,
                         IntegradorEmRHKM = FH.IntegradorEmRhKm,
                         IntegradoresEmRHKM = FH.IntegradoresEmRhkm,
                         DataIntegracaoEmRHKM = FH.DataIntegraçãoEmRhKm,
@@ -462,11 +466,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DataHoraValidacao = FH.DataHoraValidação,
                         DataValidacaoTexto = FH.DataHoraValidação == null ? "" : FH.DataHoraValidação.Value.ToString("yyyy-MM-dd"),
                         HoraValidacaoTexto = FH.DataHoraValidação == null ? "" : FH.DataHoraValidação.Value.ToString("HH:mm:ss"),
+                        IntegradoEmRh = FH.IntegradoEmRh,
                         IntegradorEmRH = FH.IntegradorEmRh,
                         IntegradoresEmRH = FH.IntegradoresEmRh,
                         DataIntegracaoEmRH = FH.DataIntegraçãoEmRh,
                         DataIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh == null ? "" : FH.DataIntegraçãoEmRh.Value.ToString("yyyy-MM-dd"),
                         HoraIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh == null ? "" : FH.DataIntegraçãoEmRh.Value.ToString("HH:mm:ss"),
+                        IntegradoEmRhKm = FH.IntegradoEmRhKm,
                         IntegradorEmRHKM = FH.IntegradorEmRhKm,
                         IntegradoresEmRHKM = FH.IntegradoresEmRhkm,
                         DataIntegracaoEmRHKM = FH.DataIntegraçãoEmRhKm,
@@ -517,7 +523,9 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         (regiao.Contains(x.CódigoRegião) || x.CódigoRegião == null) &&
                         (area.Contains(x.CódigoÁreaFuncional) || x.CódigoÁreaFuncional == null) &&
                         (cresp.Contains(x.CódigoCentroResponsabilidade) || x.CódigoCentroResponsabilidade == null) &&
-                        x.Estado == Estado
+                        x.IntegradoresEmRh.Contains(userName) &&
+                        x.IntegradoEmRh == false &&
+                        x.Estado == Estado //2 = VALIDADO
                     ).Select(FH => new FolhaDeHorasViewModel()
                     {
                         FolhaDeHorasNo = FH.NºFolhaDeHoras,
@@ -563,11 +571,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DataHoraValidacao = FH.DataHoraValidação,
                         DataValidacaoTexto = FH.DataHoraValidação == null ? "" : FH.DataHoraValidação.Value.ToString("yyyy-MM-dd"),
                         HoraValidacaoTexto = FH.DataHoraValidação == null ? "" : FH.DataHoraValidação.Value.ToString("HH:mm:ss"),
+                        IntegradoEmRh = FH.IntegradoEmRh,
                         IntegradorEmRH = FH.IntegradorEmRh,
                         IntegradoresEmRH = FH.IntegradoresEmRh,
                         DataIntegracaoEmRH = FH.DataIntegraçãoEmRh,
                         DataIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh == null ? "" : FH.DataIntegraçãoEmRh.Value.ToString("yyyy-MM-dd"),
                         HoraIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh == null ? "" : FH.DataIntegraçãoEmRh.Value.ToString("HH:mm:ss"),
+                        IntegradoEmRhKm = FH.IntegradoEmRhKm,
                         IntegradorEmRHKM = FH.IntegradorEmRhKm,
                         IntegradoresEmRHKM = FH.IntegradoresEmRhkm,
                         DataIntegracaoEmRHKM = FH.DataIntegraçãoEmRhKm,
@@ -618,7 +628,9 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         (regiao.Contains(x.CódigoRegião) || x.CódigoRegião == null) &&
                         (area.Contains(x.CódigoÁreaFuncional) || x.CódigoÁreaFuncional == null) &&
                         (cresp.Contains(x.CódigoCentroResponsabilidade) || x.CódigoCentroResponsabilidade == null) &&
-                        x.Estado == Estado
+                        x.IntegradoresEmRhkm.Contains(userName) &&
+                        x.IntegradoEmRhKm == false &&
+                        x.Estado == Estado // 2 == VALIDADO
                     ).Select(FH => new FolhaDeHorasViewModel()
                     {
                         FolhaDeHorasNo = FH.NºFolhaDeHoras,
@@ -664,11 +676,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DataHoraValidacao = FH.DataHoraValidação,
                         DataValidacaoTexto = FH.DataHoraValidação == null ? "" : FH.DataHoraValidação.Value.ToString("yyyy-MM-dd"),
                         HoraValidacaoTexto = FH.DataHoraValidação == null ? "" : FH.DataHoraValidação.Value.ToString("HH:mm:ss"),
+                        IntegradoEmRh = FH.IntegradoEmRh,
                         IntegradorEmRH = FH.IntegradorEmRh,
                         IntegradoresEmRH = FH.IntegradoresEmRh,
                         DataIntegracaoEmRH = FH.DataIntegraçãoEmRh,
                         DataIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh == null ? "" : FH.DataIntegraçãoEmRh.Value.ToString("yyyy-MM-dd"),
                         HoraIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh == null ? "" : FH.DataIntegraçãoEmRh.Value.ToString("HH:mm:ss"),
+                        IntegradoEmRhKm = FH.IntegradoEmRhKm,
                         IntegradorEmRHKM = FH.IntegradorEmRhKm,
                         IntegradoresEmRHKM = FH.IntegradoresEmRhkm,
                         DataIntegracaoEmRHKM = FH.DataIntegraçãoEmRhKm,
