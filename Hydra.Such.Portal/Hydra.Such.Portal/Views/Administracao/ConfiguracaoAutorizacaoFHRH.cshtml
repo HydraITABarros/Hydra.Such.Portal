@@ -1,0 +1,520 @@
+﻿
+@{
+    ViewData["Title"] = "Configuração Autorização RH Folha de Horas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*grid*@
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
+@*textfield*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+
+
+@*combobox*@
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html" />
+@*toast*@
+<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
+@*layout*@
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+@*mixin*@
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+@*button*@
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+@*ironform*@
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+@*paperinput*@
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
+
+<h1 class="title">Configuração Autorização RH Folha de Horas</h1>
+
+<x-group-cont-product></x-group-cont-product>
+
+<dom-module id="x-group-cont-product">
+    <template>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="~/css/main.css" />
+        <style>
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            input {
+                font: inherit;
+            }
+
+            paper-input {
+                max-width: 450px !important;
+            }
+        </style>
+
+        <iron-ajax url="/Administracao/GetAutorizacaoFHRH"
+                   last-response="{{getResult}}"
+                   method="post"
+                   auto
+                   on-response="_getResponse"
+                   handle-as="json"
+                   id="ajax_GetAll"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/CreateAutorizacaoFHRH"
+                   last-response="{{createResult}}"
+                   method="post"
+                   on-response="_createResponse"
+                   handle-as="json"
+                   id="ajax_create"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/UpdateAutorizacaoFHRH"
+                   last-response="{{updateResult}}"
+                   method="post"
+                   on-response="_updateResponse"
+                   handle-as="json"
+                   id="ajax_update"
+                   content-type="application/json">
+        </iron-ajax>
+
+
+        <iron-ajax url="/Administracao/DeleteAutorizacaoFHRH"
+                   last-response="{{deleteResult}}"
+                   method="post"
+                   on-response="_deleteResponse"
+                   handle-as="json"
+                   id="ajax_delete"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetUtilizadores"
+                   last-response="{{LUtilizador}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="row">
+            <div class="col-lg-2">
+                <h2 class="separator">Novo Registo</h2>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-sm-3">
+                <vaadin-combo-box items="[[LUtilizador]]" id="empregado" name="empregado" item-value-path="id" item-label-path="value" label="Empregado" value="{{empregado}}" disabled="{{ _permissionsCreate }}">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+
+            <div class="col-sm-3">
+                <vaadin-combo-box items="[[LUtilizador]]" id="responsavel1" name="responsavel1" item-value-path="id" item-label-path="value" label="Responsável Nº 1" value="{{responsavel1}}" disabled="{{ _permissionsCreate }}">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+
+            <div class="col-sm-3">
+                <vaadin-combo-box items="[[LUtilizador]]" id="responsavel2" name="responsavel2" item-value-path="id" item-label-path="value" label="Responsável Nº 2" value="{{responsavel2}}" disabled="{{ _permissionsCreate }}">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+
+            <div class="col-sm-3">
+                <vaadin-combo-box items="[[LUtilizador]]" id="responsavel3" name="responsavel3" item-value-path="id" item-label-path="value" label="Responsável Nº 3" value="{{responsavel3}}" disabled="{{ _permissionsCreate }}">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-sm-3">
+                <vaadin-combo-box items="[[LUtilizador]]" id="validador1" name="validador1" item-value-path="id" item-label-path="value" label="Validador RH Nº 1" value="{{validador1}}" disabled="{{ _permissionsCreate }}">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+
+            <div class="col-sm-3">
+                <vaadin-combo-box items="[[LUtilizador]]" id="validador2" name="validador2" item-value-path="id" item-label-path="value" label="Validador RH Nº 2" value="{{validador2}}" disabled="{{ _permissionsCreate }}">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+
+            <div class="col-sm-3">
+                <vaadin-combo-box items="[[LUtilizador]]" id="validador3" name="validador3" item-value-path="id" item-label-path="value" label="Validador RH Nº 3" value="{{validador3}}" disabled="{{ _permissionsCreate }}">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+
+            <div class="col-sm-3 alignPoga">
+                <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+            </div>
+        </div>
+
+        <br />
+
+        <vaadin-grid id="gridAutorizacaoFHRH" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="empregado">Empregado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="empregado" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.empregado}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="responsavel1">Responsável Nº 1</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsavel1" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.responsavel1}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="responsavel2">Responsável Nº 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsavel2" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.responsavel2}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="responsavel3">Responsável Nº 3</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsavel3" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.responsavel3}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="validador1">Validador RH Nº 1</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="validador1" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.validador1}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="validador2">Validador RH Nº 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="validador2" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.validador2}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="validador3">Validador RH Nº 3</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="validador3" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.validador1}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="criadoPor">Criado Por</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="criadoPor" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.utilizadorCriacao}}" disabled="true"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="dataHoraCriacao">Data/Hora Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataHoraCriacao" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled="true"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="alteradoPor">Alterado Por</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="alteradoPor" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.utilizadorModificacao}}" disabled="true"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="dataHoraUltimaAlteracao">Data/Hora Última Alteração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataHoraUltimaAlteracao" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.dataHoraModificacao}}" disabled="true"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnRemove" raised on-tap="_delete" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <div class="marginSpace">
+            <paper-button raised id="btnGoBack" class="btnDefault" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+        </div>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
+
+    </template>
+
+    <script>
+        var CreateValue = true, UpdateValue = true, DeleteValue = true;
+
+        if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' == "false") {
+            CreateValue = false;
+        }
+
+        if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' == "false") {
+            UpdateValue = false;
+        }
+
+        if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' == "false") {
+            DeleteValue = false;
+        }
+
+        document.addEventListener('WebComponentsReady',
+        function () {
+            Polymer({
+                is: 'x-group-cont-product',
+                properties: {
+                    _permissionsUpdate: {
+                        type: Boolean,
+                        value: UpdateValue
+                    },
+
+                    _permissionsCreate: {
+                        type: Boolean,
+                        value: CreateValue
+                    },
+
+                    _permissionsDelete: {
+                        type: Boolean,
+                        value: DeleteValue
+                    },
+                },
+
+                ready: function () {
+                    this.$.ajax_GetAll.generateRequest();
+                },
+
+                openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+
+                _validateData: function (container) {
+                    debugger;
+
+                    var polymerDom = Polymer.dom(this.$[container]);
+                    var errors = 0;
+                    var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
+                    var formFields = polymerDom.querySelectorAll(formSelector);
+
+                    formFields.forEach(function (element) {
+                        if (!element.validate()) errors++;
+                    });
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
+                    return true;
+                },
+
+                _create: function () {
+                    debugger;
+                    if (this._validateData("configuracaoAutorizacaoFHRH")) {
+
+                        this.$.ajax_create.body = JSON.stringify(
+                            {
+                                codigo: this.$.codigo.value,
+                                descricao: this.$.descricao.value,
+                                codUnidadeMedida: this.$.codUnidadeMedida.value,
+                                horaViagem: this.$.horaViagem.checked,
+                                tipoHora: this.$.tipoHora.value
+                            }
+                        );
+                        this.$.ajax_create.generateRequest();
+                        this.$.gridoAutorizacaoFHRH.clearCache();
+                    }
+                },
+
+                _update: function () {
+                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.generateRequest();
+                    this.$.gridoAutorizacaoFHRH.clearCache();
+                },
+
+                _delete: function (e) {
+
+                    this.$.ajax_delete.body = JSON.stringify(e.model.item);
+                    this.$.ajax_delete.generateRequest();
+                    this.result = this.result.filter(function (item) {
+                        return item != e.model.item;
+                    });
+                    this.$.gridoAutorizacaoFHRH.clearCache();
+                },
+
+                _cancel: function () {
+                    this.$.ajax_GetAll.generateRequest();
+                    this.$.gridoAutorizacaoFHRH.clearCache();
+                },
+                _getAllResponse: function (e) {
+
+                    var _this = this;
+
+                    if (e.detail.status === 200) {
+                        (function fillComboText() {
+                            if (!_this.LTipoHora) {
+                                setTimeout(fillComboText, 600);
+                                return;
+                            }
+                            e.detail.response.forEach(function (data) {
+                                var tipoHora = _this.LTipoHora.filter(function (item) {
+                                    return item.id == data.tipoHora;
+                                });
+
+                                if (tipoHora && tipoHora[0]) {
+                                    data.tipoHoraText = tipoHora[0].value;
+                                }
+
+                            });
+                            _this.$.gridoAutorizacaoFHRH.clearCache();
+                        })();
+                    }
+                },
+                _updateResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        this.$.ajax_GetAll.generateRequest();
+                        this.openToast("Tabela atualizada.");
+                    }
+                    else {
+                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                    }
+                },
+
+                _createResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+
+                        this.$.codigo.value = "";
+                        this.$.descricao.value = "";
+                        this.$.codUnidadeMedida.value = "";
+                        this.$.horaViagem.checked = false;
+                        this.$.tipoHora.value = "";
+
+                        this.$.ajax_GetAll.generateRequest();
+                        this.openToast("Tabela atualizada.");
+                    }
+                    else {
+                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                    }
+                },
+
+                _deleteResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        this.$.ajax_GetAll.generateRequest();
+                        this.openToast("Tabela atualizada.");
+                    }
+                    else {
+                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                    }
+                },
+
+                _goBack: function (e) {
+                    window.location = "../";
+                }
+            });
+        });
+    </script>
+</dom-module>
