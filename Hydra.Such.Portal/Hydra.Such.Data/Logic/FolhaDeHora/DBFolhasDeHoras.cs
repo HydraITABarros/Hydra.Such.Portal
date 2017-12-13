@@ -629,7 +629,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         (area.Contains(x.CódigoÁreaFuncional) || x.CódigoÁreaFuncional == null) &&
                         (cresp.Contains(x.CódigoCentroResponsabilidade) || x.CódigoCentroResponsabilidade == null) &&
                         x.IntegradoresEmRhkm.Contains(userName) &&
-                        x.IntegradoEmRhKm == false &&
+                        x.IntegradoEmRhkm == false &&
                         x.Estado == Estado && // 1 == VALIDADO
                         x.TipoDeslocação == 2 // 2 == "Viatura Própria"
                     ).Select(FH => new FolhaDeHorasViewModel()
@@ -683,7 +683,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DataIntegracaoEmRH = FH.DataIntegraçãoEmRh,
                         DataIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh == null ? "" : FH.DataIntegraçãoEmRh.Value.ToString("yyyy-MM-dd"),
                         HoraIntegracaoEmRHTexto = FH.DataIntegraçãoEmRh == null ? "" : FH.DataIntegraçãoEmRh.Value.ToString("HH:mm:ss"),
-                        IntegradoEmRhKm = FH.IntegradoEmRhKm,
+                        IntegradoEmRhKm = FH.IntegradoEmRhkm,
                         IntegradorEmRHKM = FH.IntegradorEmRhKm,
                         IntegradoresEmRHKM = FH.IntegradoresEmRhkm,
                         DataIntegracaoEmRHKM = FH.DataIntegraçãoEmRhKm,

@@ -1930,7 +1930,7 @@ namespace Hydra.Such.Portal.Controllers
                             IntegradoEmRh = data.IntegradoEmRh,
                             IntegradorEmRh = data.IntegradorEmRH,
                             DataIntegraçãoEmRh = data.DataIntegracaoEmRH,
-                            IntegradoEmRhKm = true, //INTEGRAREMRHKM
+                            IntegradoEmRhkm = true, //INTEGRAREMRHKM
                             IntegradorEmRhKm = User.Identity.Name, //INTEGRAREMRHKM
                             DataIntegraçãoEmRhKm = DateTime.Now //INTEGRAREMRHKM
                         }) == null)
