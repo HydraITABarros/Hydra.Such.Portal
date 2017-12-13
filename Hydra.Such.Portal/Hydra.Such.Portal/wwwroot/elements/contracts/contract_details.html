@@ -1679,6 +1679,7 @@
                     }
 
                     if (data.detail.status === 200) {
+                        debugger;
                         if (data.detail.url.indexOf("GetContractDetails") !== -1) {
                             if (this.data.contractNo != "") {
                                 this.$.serviceclients_ajax.body = JSON.stringify(this.data.clientNo);
@@ -1689,6 +1690,7 @@
                             }
                         }
                         else if (data.detail.url.indexOf("Create") !== -1) {
+                            debugger;
                             this._createResponseProcessor();
                         }
                         else if (data.detail.url.indexOf("Update") !== -1) {
@@ -1708,6 +1710,7 @@
                     }
                 },
                 _createResponseProcessor: function () {
+                    debugger;
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
                         this._openToast("Contrato criado com sucesso.");
@@ -1715,6 +1718,7 @@
                         var contractNo = this.data.contractNo;
                         setTimeout(
                             function () {
+                                debugger;
                                 window.location.href = "../DetalhesContrato/" + contractNo;
                             }, 1000);
 

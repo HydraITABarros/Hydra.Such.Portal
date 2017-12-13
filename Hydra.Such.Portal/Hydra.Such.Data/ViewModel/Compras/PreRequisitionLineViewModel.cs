@@ -18,9 +18,9 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string FunctionalAreaCode { get; set; }
         public string CenterResponsibilityCode { get; set; }
         public string ProjectNo { get; set; }
-        public DateTime? CreateDateTime { get; set; }
+        public string CreateDateTime { get; set; }
         public string CreateUser { get; set; }
-        public DateTime? UpdateDateTime { get; set; }
+        public string UpdateDateTime { get; set; }
         public string UpdateUser { get; set; }
         public string Description2 { get; set; }
         public decimal? QtyByUnitOfMeasure { get; set; }
@@ -29,7 +29,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? UnitCost { get; set; }
         public decimal? SellUnityPrice { get; set; }
         public decimal? BudgetValue { get; set; }
-        public DateTime? ExpectedReceivingDate { get; set; }
+        public string ExpectedReceivingDate { get; set; }
         public bool? Billable { get; set; }
         public int? MaintenanceOrderLineNo { get; set; }
         public string EmployeeNo { get; set; }
@@ -40,5 +40,8 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string CustomerNo { get; set; }
         public string OpenOrderNo { get; set; }
         public int? OpenOrderLineNo { get; set; }
+
+        //EXTRAS
+        public bool Selected { get; set; }
     }
 }
