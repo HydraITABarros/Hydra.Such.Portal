@@ -11,6 +11,7 @@ namespace Hydra.Such.Data.Database
             DiárioDeProjeto = new HashSet<DiárioDeProjeto>();
             LinhasPEncomendaProcedimentosCcp = new HashSet<LinhasPEncomendaProcedimentosCcp>();
             LinhasRequisição = new HashSet<LinhasRequisição>();
+            MovimentosDeProjeto = new HashSet<MovimentosDeProjeto>();
         }
 
         public string NºRequisição { get; set; }
@@ -86,5 +87,6 @@ namespace Hydra.Such.Data.Database
         public ICollection<DiárioDeProjeto> DiárioDeProjeto { get; set; }
         public ICollection<LinhasPEncomendaProcedimentosCcp> LinhasPEncomendaProcedimentosCcp { get; set; }
         public ICollection<LinhasRequisição> LinhasRequisição { get; set; }
+        public ICollection<MovimentosDeProjeto> MovimentosDeProjeto { get; set; }
     }
 }
