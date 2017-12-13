@@ -61,6 +61,7 @@ namespace Hydra.Such.Portal.Controllers
                 else
                     cContract = DBContracts.GetByIdLastVersion(id);
 
+                //if (cContract != null && (cContract.Arquivado == true || cContract.EstadoAlteração == 2))
                 if (cContract != null && cContract.Arquivado == true)
                 {
                     UPerm.Update = false;
