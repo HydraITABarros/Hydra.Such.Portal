@@ -9,6 +9,7 @@ namespace Hydra.Such.Data.Database
         {
             DiárioDeProjeto = new HashSet<DiárioDeProjeto>();
             LinhasPEncomendaProcedimentosCcp = new HashSet<LinhasPEncomendaProcedimentosCcp>();
+            MovimentosDeProjeto = new HashSet<MovimentosDeProjeto>();
         }
 
         public string NºRequisição { get; set; }
@@ -71,5 +72,6 @@ namespace Hydra.Such.Data.Database
         public Viaturas ViaturaNavigation { get; set; }
         public ICollection<DiárioDeProjeto> DiárioDeProjeto { get; set; }
         public ICollection<LinhasPEncomendaProcedimentosCcp> LinhasPEncomendaProcedimentosCcp { get; set; }
+        public ICollection<MovimentosDeProjeto> MovimentosDeProjeto { get; set; }
     }
 }

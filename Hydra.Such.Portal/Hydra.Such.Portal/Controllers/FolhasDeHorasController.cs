@@ -1753,7 +1753,7 @@ namespace Hydra.Such.Portal.Controllers
                             IntegradoEmRh = data.IntegradoEmRh,
                             IntegradorEmRh = data.IntegradorEmRH,
                             DataIntegraçãoEmRh = data.DataIntegracaoEmRH,
-                            IntegradoEmRhKm = data.IntegradoEmRhKm,
+                            IntegradoEmRhkm = data.IntegradoEmRhKm,
                             IntegradorEmRhKm = data.IntegradorEmRHKM,
                             DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM
                         }) == null)
@@ -1841,7 +1841,7 @@ namespace Hydra.Such.Portal.Controllers
                             IntegradoEmRh = true, //INTEGRAREMRH
                             IntegradorEmRh = User.Identity.Name, //INTEGRAREMRH
                             DataIntegraçãoEmRh = DateTime.Now, //INTEGRAREMRH
-                            IntegradoEmRhKm = data.IntegradoEmRhKm,
+                            IntegradoEmRhkm = data.IntegradoEmRhKm,
                             IntegradorEmRhKm = data.IntegradorEmRHKM,
                             DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM
                         }) == null)

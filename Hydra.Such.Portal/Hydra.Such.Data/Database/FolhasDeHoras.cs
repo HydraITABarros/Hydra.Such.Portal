@@ -43,7 +43,7 @@ namespace Hydra.Such.Data.Database
         public string IntegradorEmRh { get; set; }
         public string IntegradoresEmRh { get; set; }
         public DateTime? DataIntegraçãoEmRh { get; set; }
-        public bool? IntegradoEmRhKm { get; set; }
+        public bool? IntegradoEmRhkm { get; set; }
         public string IntegradorEmRhKm { get; set; }
         public string IntegradoresEmRhkm { get; set; }
         public DateTime? DataIntegraçãoEmRhKm { get; set; }
