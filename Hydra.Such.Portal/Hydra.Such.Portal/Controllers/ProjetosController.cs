@@ -356,6 +356,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         //Update Project on NAV
                         Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, data, _configws);
+                        bool statusL = true;
                         try
                         {
                             TUpdateNavProj.Wait();
@@ -363,10 +364,11 @@ namespace Hydra.Such.Portal.Controllers
                         catch (Exception ex)
                         {
                             data.eReasonCode = 3;
-                            data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                            data.eMessage = ex.InnerException.Message;
+                            statusL = false;
                         }
 
-                        if (!TUpdateNavProj.IsCompletedSuccessfully)
+                        if (!TUpdateNavProj.IsCompletedSuccessfully && statusL)
                         {
                             data.eReasonCode = 3;
                             data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
