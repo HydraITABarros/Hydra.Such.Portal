@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Compras
 {
-    public class RequisitionViewModel
+    public class RequisitionViewModel : ErrorHandler
     {
         public string RequisitionNo { get; set; }
         public int? Area { get; set; }
@@ -75,7 +75,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public DateTime? RequisitionDate { get; set; }
         public string dimension { get; set; }
         public decimal? Budget { get; set; }
-        
 
+        public List<RequisitionLineViewModel> Lines { get; set; }
     }
 }

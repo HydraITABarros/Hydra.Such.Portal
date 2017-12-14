@@ -1530,6 +1530,31 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Nada Referido"
             }
         };
+
+        public static readonly List<EnumDataString> LocalMarketRegions = new List<EnumDataString>()
+        {
+            new EnumDataString
+            {
+                Id = "1",
+                Value = string.Empty
+            },
+            new EnumDataString
+            {
+                Id = "2",
+                Value = "Lisboa"
+            },
+             new EnumDataString
+            {
+                Id = "3",
+                Value = "Porto"
+            },
+             new EnumDataString
+            {
+                Id = "4",
+                Value = "Coimbra"
+            },
+        };
+
     }
 
     public class EnumDataString
