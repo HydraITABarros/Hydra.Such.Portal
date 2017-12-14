@@ -228,12 +228,12 @@
                             </vaadin-combo-box>
                         </div>
                         <div class="col-md-3 ">
-                            <vaadin-text-field id="lineQuantity" name="lineQuantity" label="Quantidade" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                            <vaadin-text-field id="lineQuantity" name="lineQuantity" label="Quantidade" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"> </vaadin-text-field>
                         </div>
                     </div>
                     <div class="row break_clear">
                         <div class="col-md-3 ">
-                            <vaadin-text-field id="lineUnitValue" name="lineUnitValue" label="Valor Unitário" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                            <vaadin-text-field id="lineUnitValue" name="lineUnitValue" label="Valor Unitário" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"> </vaadin-text-field>
                         </div>
                         <div class="col-md-3 ">
                             <vaadin-combo-box items='[[CBMealTypes]]' id="lineMealType" item-value-path="id" item-label-path="value" value="" label="Tipo de Refeição" disabled="{{ !_permissions.update }}"
@@ -315,10 +315,6 @@
                         </template>
                     </div>
                 </div>
-                <ul>
-                    <li>Cod.Serv.Cliente (quando preenchido este campo, preenche automáticamente o campo ‘Desc.Serv.Cliente)</li>
-                    <li>Desc.Serv.Cliente</li>
-                </ul>
                 <vaadin-grid id="gridTemplateLines" aria-label="TemplateLinesTable" items="[[data.lines]]" class="grid" active-item="{{_SelectedLine}}" multi-sort="true">
                     <vaadin-grid-column width="10%">
                         <template class="header">
@@ -329,8 +325,6 @@
                             {{item.requisitionTemplateLineId}}
                         </template>
                     </vaadin-grid-column>
-
-
                     <vaadin-grid-column width="30%">
                         <template class="header">
                             <vaadin-grid-sorter path="productId">Código Produto</vaadin-grid-sorter>
@@ -338,16 +332,26 @@
                         </template>
                         <template>
                             <template is="dom-if" if="{{ item.selected }}">
-                                <vaadin-text-field value="{{ item.productId }}" id="grdLineproductId" name="grdLineproductId" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                <vaadin-combo-box items="[[CBProducts]]" item-value-path="id" item-label-path="value" value="{{item.productId}}" on-value-changed="_onProductInGridChanged">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <table width="180px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
                             </template>
                             <template is="dom-if" if="{{ !item.selected }}">
                                 {{ item.productId }}
                             </template>
                         </template>
                     </vaadin-grid-column>
-
-
-
                     <vaadin-grid-column width="30%">
                         <template class="header">
                             <vaadin-grid-sorter path="productDescription">Descrição Produto</vaadin-grid-sorter>
@@ -359,6 +363,132 @@
                             </template>
                             <template is="dom-if" if="{{ !item.selected }}">
                                 {{ item.productDescription }}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="30%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="UnitOfMeasure">Unidade de Medida</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="UnitOfMeasure" />
+                        </template>
+                        @*<template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field value="{{ item.unitOfMeasure }}" id="grdLineUnitOfMeasure" name="grdLineUnitOfMeasure" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{ item.unitOfMeasure }}
+                    </template>
+                </template>*@
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-combo-box items="[[CBUnitsOfMeasure]]" item-value-path="id" item-label-path="value" value="{{item.unitOfMeasure}}">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <table width="180px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{ item.unitOfMeasure }}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="30%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="Quantity">Quantidade</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="Quantity" />
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{ item.quantity }}" id="grdLineQuantity" name="grdLineQuantity" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"> </vaadin-text-field>
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{ item.quantity }}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="30%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="UnitCost">Valor Unitário</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="UnitCost" />
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{ item.unitCost }}" id="grdLineUnitCost" name="grdLineUnitCost" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"> </vaadin-text-field>
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{ item.unitCost }}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="30%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="MealType">Tipo Refeição</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="MealType" />
+                        </template>
+                        @*<template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field value="{{ item.mealType }}" id="grdLineMealType" name="grdLineMealType" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{ item.mealType }}
+                    </template>
+                </template>*@
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-combo-box items="[[CBMealTypes]]" item-value-path="id" item-label-path="value" value="{{item.mealType}}" on-value-changed="_onMealTypeInGridChanged">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <table width="180px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{ item.mealType }}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="30%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="MealTypeDescription">Descrição Tipo Refeição</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="MealTypeDescription" />
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{ item.mealTypeDescription }}" id="grdLineMealTypeDescription" name="grdLineMealTypeDescription" disabled="{{ !_permissions.update }}"> Campo não implementado</vaadin-text-field>
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                Campo não implementado
+                            </template>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="30%">
+                        <template class="header">
+                            <vaadin-grid-sorter path="ProjectId">Cód. Projeto</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="ProjectId" />
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{ item.projectId }}" id="grdLineProjectId" name="grdLineProjectId" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{ item.projectId }}
                             </template>
                         </template>
                     </vaadin-grid-column>
@@ -505,16 +635,15 @@
                     if (true) {
                         return true;
                     }
-                    this._showErrorMessage("Verifique os dados inseridos.");
+                    this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
                 _validateUserImputForLine() {
-                    return true;
-                    /*if (this.$.contactName.validate()) {
+                    if (this.$.lineQuantity.validate()) {
                         return true;
                     }
-                    this._showErrorMessage("Verifique os dados inseridos.");
-                    return false;*/
+                    this._openToastError("Verifique os dados inseridos.");
+                    return false;
                 },
                 
                 //CRUD
@@ -605,7 +734,14 @@
 
                         var newReqTemplateLine = {
                             requisitionTemplateId: this.data.requisitionTemplateId,
+                            productId: this.$.lineProductId.value,
                             productDescription: this.$.lineProductDescription.value,
+                            unitOfMeasure: this.$.lineUnitOfMeasure.value,
+                            quantity: this.$.lineQuantity.value,
+                            unitCost: this.$.lineUnitValue.value,
+                            mealType: this.$.lineMealType.value,
+                            //mealTypeDescription = this.$.lineMealTypeDescription.value,
+                            projectId: this.$.lineProjectId.value,
                             codeRegion: this.$.lineCodeRegion.value,
                             codeFunctionalArea: this.$.lineCodeFunctionalArea.value,
                             codeResponsabilityCenter: this.$.lineCodeResponsabilityCenter.value,
@@ -619,17 +755,46 @@
                         this._openToast(this.AddReqTemplateLineResponse.eMessage);
                         this.data.lines.push(this.AddReqTemplateLineResponse);
                         this.$.gridTemplateLines.clearCache();
+
+                        this.$.lineProductId.value = "";
+                        this.$.lineProductDescription.value = "";
+                        this.$.lineUnitOfMeasure.value = "";
+                        this.$.lineQuantity.value = "";
+                        this.$.lineUnitValue.value = "";
+                        this.$.lineMealType.value = "";
+                        this.$.lineMealTypeDescription.value = "";
+                        this.$.lineProjectId.value = "";
+                        this.$.lineCodeRegion.value = "";
+                        this.$.lineCodeFunctionalArea.value = "";
+                        this.$.lineCodeResponsabilityCenter.value = "";
                     }
                     else {
                         this._openToastError(this.AddReqTemplateLineResponse.eMessage);
                     }
                 },
                 _deleteReqTemplateLine: function (e) {
-                    var index = this.data.lines.indexOf(e.model.item);
-                    this.data.lines.splice(index, 1);
-                    this.$.deleteReqTemplateLine_ajax.body = JSON.stringify(e.model.item);
-                    this.$.deleteReqTemplateLine_ajax.generateRequest();
-                    this.$.gridTemplateLines.clearCache();
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o registo?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                var index = this.data.lines.indexOf(e.model.item);
+                                this.data.lines.splice(index, 1);
+                                this.$.deleteReqTemplateLine_ajax.body = JSON.stringify(e.model.item);
+                                this.$.deleteReqTemplateLine_ajax.generateRequest();
+                                this.$.gridTemplateLines.clearCache();
+                            }
+                        }
+                    });
                 },
                 _deleteReqTemplateLineResponse: function (e) {
                     if (this.DelReqTemplateLineResponse.eReasonCode == "1") {
@@ -666,12 +831,35 @@
                         }
                     }
                 },
+                _onProductInGridChanged: function(e) {
+                    if (e.detail.value != null && e.detail.value != "") {
+                        var products = $.grep(this.CBProducts, function (x) { return x.id == e.detail.value; });
+                        if (products != null && products.length > 0) {
+                            var product = products[0];
+                            this.data.lines.find(x => x == this._SelectedLine).productId = product.id;
+                            this.data.lines.find(x => x == this._SelectedLine).productDescription = product.value;
+                            this.data.lines.find(x => x == this._SelectedLine).codeMeasureUnit = product.extra;
+                            this.$.gridTemplateLines.clearCache();
+                        }
+                    }
+                },
                 _onMealTypeChanged : function(e) {
                     if (e.detail.value != null && e.detail.value != "") {
                         var mealTypes = $.grep(this.CBMealTypes, function (x) { return x.id == e.detail.value; });
                         if (mealTypes != null && mealTypes.length > 0) {
                             var mealType = mealTypes[0];
                             this.$.lineMealTypeDescription.value = mealType.value;
+                        }
+                    }
+                },
+                _onMealTypeInGridChanged: function (e) {
+                    if (e.detail.value != null && e.detail.value != "") {
+                        var mealTypes = $.grep(this.CBMealTypes, function (x) { return x.id == e.detail.value; });
+                        if (mealTypes != null && mealTypes.length > 0) {
+                            var mealType = mealTypes[0];
+                            this.data.lines.find(x => x == this._SelectedLine).mealType = mealType.id;
+                            this.data.lines.find(x => x == this._SelectedLine).mealTypeDescription = mealType.value;
+                            this.$.gridTemplateLines.clearCache();
                         }
                     }
                 },

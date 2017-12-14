@@ -61,6 +61,7 @@ namespace Hydra.Such.Portal.Controllers
                 else
                     cContract = DBContracts.GetByIdLastVersion(id);
 
+                //if (cContract != null && (cContract.Arquivado == true || cContract.EstadoAlteração == 2))
                 if (cContract != null && cContract.Arquivado == true)
                 {
                     UPerm.Update = false;
@@ -327,6 +328,23 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         public IActionResult FolhaDeHoras_Validacao(string folhaDeHoraNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.FolhaDeHorasNo = folhaDeHoraNo ?? "";
+                ViewBag.UPermissions = UPerm;
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult FolhaDeHoras_Historico(string folhaDeHoraNo)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
 
