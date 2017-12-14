@@ -29,7 +29,7 @@
 <link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectList.html" />
-<h1 class="title">Linhas de Requisição </h1>
+<h1 class="title"> Requisição </h1>
 <x-requestlines></x-requestlines>
 
 <dom-module id="x-requestlines">
@@ -76,300 +76,189 @@
         <iron-ajax url="/PopulateDropdowns/GetAllClients" id="ajax_clients_options" last-response="{{cboClients}}"  auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetEmployees" id="ajax_employees_options" last-response="{{cboEmployees}}"  auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
-            <paper-tab>Geral</paper-tab>
-            <paper-tab>Mercado</paper-tab>
-            <paper-tab>Encomenda</paper-tab>
-            <paper-tab>Compras</paper-tab>
-        </paper-tabs>
-        <iron-pages selected="{{selected}}">
-            <!--Geral-->
-            <div>
-                <div class="row">
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="requestNoId" name="requestNoName" label="Nº Requisição" value="" disabled></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[cboProdCode]]" id="codeId" on-value-changed="_codeIdOnChange" item-value-path="id" item-label-path="value" value="" label="Código">
-                            <template>
-                                <table width="350px">
-                                    <tr>
-                                        <td width="30%">[[item.id]]</td>
-                                        <td width="70%"><b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="DescriptionId" name="DescriptionName" label="Descrição" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[cboClients]]" id="customerNoId" on-value-changed="_customerNoChange" item-value-path="id" item-label-path="value" value="" label="Nº Cliente">
-                            <template>
-                                <table width="350px">
-                                    <tr>
-                                        <td width="20%">[[item.id]]</td>
-                                        <td width="80%"><b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
+   
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">Linhas de Requisição</div> 
+            <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[locationsresult]]" id="localCodeId" on-value-changed="_localCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Localização">
+                        <template>
+                            <table width="350px">
+                                <tr>
+                                    <td width="30%">[[item.id]]</td>
+                                    <td width="70%"><b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
-                <div class="row break_clear">                
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[projectresult]]" id="projectId" on-value-changed="_projectNoOnChange" item-value-path="lineNo" item-label-path="projectNo" value="" label="Nº Projeto">
-                            <template>
-                                <table width="250px">
-                                    <tr>
-                                        <td width="20%">[[item.lineNo]]</td>
-                                        <td width="80%"><b>[[item.projectNo]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[cboSupplier]]" id="SupplierNoId" on-value-changed="_supplierNoOnChange" item-value-path="id" item-label-path="value" value="" label="Nº Fornecedor">
-                            <template>
-                                <table width="350px">
-                                    <tr>
-                                        <td width="20%">[[item.id]]</td>
-                                        <td width="80%"><b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[cboEmployees]]" id="employeesId" on-value-changed="_employeesChange" item-value-path="id" item-label-path="value" value="" label="Nº Funcionário">
-                            <template>
-                                <table width="250px">
-                                    <tr>
-                                        <td width="20%">[[item.id]]</td>
-                                        <td width="80%"><b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[vehicleresult]]" id="vehicleId" on-value-changed="_vehicleOnChange" item-value-path="matricula" item-label-path="matricula" value="" label="Viatura">
-                            <template>
-                                <table width="250px">
-                                    <tr>
-                                        <td width="20%">[[item.matricula]]</td>
-                                        <td width="80%"><b>[[item.CodigoTipoViatura]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[cboProdCode]]" id="codeId" on-value-changed="_codeIdOnChange" item-value-path="id" item-label-path="value" value="" label="Código">
+                        <template>
+                            <table width="350px">
+                                <tr>
+                                    <td width="30%">[[item.id]]</td>
+                                    <td width="70%"><b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
-                <div class="row break_clear">                  
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="unitNutritionProductionId" name="unitNutritionProductionName" label="Unidade Produtiva Nutrição" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[locationsresult]]" id="localCodeId" on-value-changed="_localCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Localização">
-                            <template>
-                                <table width="350px">
-                                    <tr>
-                                        <td width="30%">[[item.id]]</td>
-                                        <td width="70%"><b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[regionresult]]" id="regionCodeId" on-value-changed="_regionCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Região">
-                            <template>
-                                <table width="250px">
-                                    <tr>
-                                        <td width="20%">[[item.id]]</td>
-                                        <td width="80%"><b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[arearesult]]" id="functionalAreaCodeId" on-value-changed="_functionalAreaCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Área Funcional">
-                            <template>
-                                <table width="300px">
-                                    <tr>
-                                        <td width="20%">[[item.id]]</td>
-                                        <td width="80%"><b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="DescriptionId" name="DescriptionName" label="Descrição" value=""></vaadin-text-field>
                 </div>
-                <div class="row break_clear">                 
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[responsabilityresult]]" id="centerResponsibilityCodeId" on-value-changed="_centerResponsibilityCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Centro Responsabilidade">
-                            <template>
-                                <table width="250px">
-                                    <tr>
-                                        <td width="20%">[[item.id]]</td>
-                                        <td width="80%"><b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-combo-box items="[[unitofmeasureresult]]" id="unitMeasureCodeId" on-value-changed="_unitMeasureCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Unidade Medida">
-                            <template>
-                                <table width="250px">
-                                    <tr>
-                                        <td width="30%">[[item.id]]</td>
-                                        <td width="70%"><b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="supplierProductCodeId" name="supplierProductCodeName" label="Código Produto Fornecedor" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="maintenanceOrderLineNoId" name="maintenanceOrderLineNoName" label="Nº Linha Ordem Manutenção" value=""></vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="unitCostsouldId" name="unitCostsouldName" label="Preço Unitário Venda" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="unitCostId" name="unitCostName" label="Custo Unitário" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="budgetValueId" name="budgetValueName" label="Valor Orçamento" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="quantityToRequireId" name="quantityToRequireName" label="Quantidade A Requerer" value=""></vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">                   
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="quantityRequiredId" name="quantityRequiredName" label="Quantidade Requerida" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="quantityToProvideId" name="quantityToProvideName" label="Quantidade A Disponibilizar" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="quantityAvailableId" name="quantityAvailableName" label="Quantidade Disponibilizada" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="quantityReceivableId" name="quantityReceivableName" label="Quantidade A Receber" value=""></vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">                   
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="quantityReceivedId" name="quantityReceivedName" label="Quantidade Recebida" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="quantityPendingId" name="quantityPendingName" label="Quantidade Pendente" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="qtyByUnitOfMeasureId" name="qtyByUnitOfMeasureName" label="Qtd Por Unidade De Medida" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-date-picker label="Data Receção Esperada" id="expectedReceivingDateId" name="expectedReceivingDateName" value=""></vaadin-date-picker>
-                    </div>
-                </div>
-                <div class="row break_clear">                  
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="approversId" name="approversName" label="Aprovadores" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3  alignPoga">
-                        <vaadin-checkbox id="billableId">Faturável</vaadin-checkbox>
-                    </div>
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[unitofmeasureresult]]" id="unitMeasureCodeId" on-value-changed="_unitMeasureCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Unidade Medida">
+                        <template>
+                            <table width="250px">
+                                <tr>
+                                    <td width="30%">[[item.id]]</td>
+                                    <td width="70%"><b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
             </div>
-            <!--Mercado-->
-            <div>
-                <div class="row">
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="localMarketUserId" name="localMarketUserName" label="User Mercado Local" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="queryCreatedMarketNoId" name="queryCreatedMarketNoName" label="Nº de Consulta Mercado Criada" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3 alignPoga">
-                        <vaadin-checkbox id="localMarketId">Mercado Local</vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-3 alignPoga">
-                        <vaadin-checkbox id="createMarketSearchId">Criar Consulta Mercado</vaadin-checkbox>
-                    </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <vaadin-text-field id="quantityToRequireId" name="quantityToRequireName" label="Quantidade A Requerer" value=""></vaadin-text-field>
                 </div>
-                <div class="row break_clear">
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="marketLocalRegionId" name="marketLocalRegionName" label="Região Mercado Local" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-date-picker label="Data Mercado Local" id="localMarketDateId" name="localMarketDateName" value=""></vaadin-date-picker>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="reasonToRejectionLocalMarketId" name="reasonToRejectionLocalMarketName" label="Motivo Recusa Mercado Local" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-date-picker label="Data Recusa Mercado Local" id="rejectionLocalMarketDateId" name="rejectionLocalMarketDateName" value=""></vaadin-date-picker>
-                    </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="quantityRequiredId" name="quantityRequiredName" label="Quantidade Requerida" value=""></vaadin-text-field>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="quantityToProvideId" name="quantityToProvideName" label="Quantidade A Disponibilizar" value=""></vaadin-text-field>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="quantityAvailableId" name="quantityAvailableName" label="Quantidade Disponibilizada" value=""></vaadin-text-field>
                 </div>
             </div>
-            <!--Encomenda-->
-            <div>
-                <div class="row">
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="createdOrderNoId" name="createdOrderNoName" label="Nº Encomenda Criada" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="openOrderNoId" name="openOrderNoName" label="Nº Encomenda Aberto" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="openOrderLineNoId" name="openOrderLineNoName" label="Nº Linha Encomenda Aberto" value=""></vaadin-text-field>
-                    </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <vaadin-text-field id="quantityReceivableId" name="quantityReceivableName" label="Quantidade A Receber" value=""></vaadin-text-field>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="quantityReceivedId" name="quantityReceivedName" label="Quantidade Recebida" value=""></vaadin-text-field>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="unitCostId" name="unitCostName" label="Custo Unitário" value=""></vaadin-text-field>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="unitCostsouldId" name="unitCostsouldName" label="Preço Unitário Venda" value=""></vaadin-text-field>
                 </div>
             </div>
-            <!--Entrega-->
-            <div>
-                <div class="row">
-                    <div class="col-lg-3">
-                        <vaadin-text-field id="purchaseIdId" name="purchaseIdName" label="Id Compra" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3 alignPoga">
-                        <vaadin-checkbox id="purchaseValidatedId">Validado Compras</vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-3 alignPoga">
-                        <vaadin-checkbox id="purchaseRefusedId">Recusado Compras</vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-3 alignPoga">
-                        <vaadin-checkbox id="sendPrePurchaseId">Enviar Pré Compra</vaadin-checkbox>
-                    </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <vaadin-text-field id="budgetValueId" name="budgetValueName" label="Valor Orçamento" value=""></vaadin-text-field>
                 </div>
-                <div class="row">
-                    <div class="col-lg-3 alignPoga">
-                        <vaadin-checkbox id="submitPrePurchaseId">Enviado Pré Compra</vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-3 alignPoga">
-                        <vaadin-checkbox id="sendPrePurchaseId">Enviado Para Compras</vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-date-picker label="Data Envio Para Compras" id="sendForPurchaseDateId" name="sendForPurchaseDateName" value=""></vaadin-date-picker>
-                    </div>
+                <div class="col-lg-3 alignPoga">
+                    <vaadin-checkbox id="createMarketSearchId">Criar Consulta Mercado</vaadin-checkbox>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="openOrderLineNoId" name="openOrderLineNoName" label="Nº Linha Encomenda Aberto" value=""></vaadin-text-field>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="queryCreatedMarketNoId" name="queryCreatedMarketNoName" label="Nº de Consulta Mercado Criada" value=""></vaadin-text-field>
                 </div>
             </div>
-        </iron-pages>
-        <div class="marginSpace">
-            <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-        </div>
-        <br />
-        <vaadin-grid id="requestGrid" aria-label="ProfileModelsTabel" items="[[data]]" class="grid">
+            <div class="row">
+                <div class="col-lg-3 alignPoga">
+                    <vaadin-checkbox id="sendPrePurchaseId">Enviar Pré Compra</vaadin-checkbox>
+                </div>
+                <div class="col-lg-3 alignPoga">
+                    <vaadin-checkbox id="submitPrePurchaseId">Enviado Pré Compra</vaadin-checkbox>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[projectresult]]" id="projectId" on-value-changed="_projectNoOnChange" item-value-path="lineNo" item-label-path="projectNo" value="" label="Nº Projeto">
+                        <template>
+                            <table width="250px">
+                                <tr>
+                                    <td width="20%">[[item.lineNo]]</td>
+                                    <td width="80%"><b>[[item.projectNo]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="maintenanceOrderLineNoId" name="maintenanceOrderLineNoName" label="Nº Linha Ordem Manutenção" value=""></vaadin-text-field>
+                </div>
+            </div>
+            <div class="row">
+                <div  class="col-lg-3">
+                <vaadin-combo-box items="[[vehicleresult]]" id="vehicleId" on-value-changed="_vehicleOnChange" item-value-path="matricula" item-label-path="matricula" value="" label="Viatura">
+                    <template>
+                        <table width="250px">
+                            <tr>
+                                <td width="20%">[[item.matricula]]</td>
+                                <td width="80%"><b>[[item.CodigoTipoViatura]]</b></td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[cboSupplier]]" id="SupplierNoId" on-value-changed="_supplierNoOnChange" item-value-path="id" item-label-path="value" value="" label="Nº Fornecedor">
+                        <template>
+                            <table width="350px">
+                                <tr>
+                                    <td width="20%">[[item.id]]</td>
+                                    <td width="80%"><b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[regionresult]]" id="regionCodeId" on-value-changed="_regionCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Região">
+                        <template>
+                            <table width="250px">
+                                <tr>
+                                    <td width="20%">[[item.id]]</td>
+                                    <td width="80%"><b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[arearesult]]" id="functionalAreaCodeId" on-value-changed="_functionalAreaCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Área Funcional">
+                        <template>
+                            <table width="300px">
+                                <tr>
+                                    <td width="20%">[[item.id]]</td>
+                                    <td width="80%"><b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[responsabilityresult]]" id="centerResponsibilityCodeId" on-value-changed="_centerResponsibilityCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Centro Responsabilidade">
+                        <template>
+                            <table width="250px">
+                                <tr>
+                                    <td width="20%">[[item.id]]</td>
+                                    <td width="80%"><b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+               
+            </div>
+            <div class="marginSpace">
+                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </div> 
+            
+            <div class="row">
+            <vaadin-grid id="requestGrid" aria-label="ProfileModelsTabel" items="[[data]]" class="grid">
 
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
@@ -705,11 +594,17 @@
                 <template class="header">
                 </template>
                 <template>
-                    <paper-button class="btnRemove" raised  on-tap="_delete">Eliminar</paper-button>
+                    <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
                 </template>
             </vaadin-grid-column>
 
-        </vaadin-grid>
+            </vaadin-grid>
+            </div>
+            </div>
+            </div>
+        </div>
+    </div>
+       
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -725,55 +620,32 @@
                 },
                 _create() {
                         this.data.unshift({
-                            requestNo: this.$.requestNoId.value,
-                            type: this.$.typeId.value,
                             code: this.$.codeId.value,
                             description: this.$.descriptionId.value,
                             unitMeasureCode: this.$.unitMeasureCodeId.value,
                             localCode: this.$.localCodeId.value,
-                            localMarket: this.$.localMarketId.value,
                             quantityToRequire: this.$.quantityToRequireId.value,
                             quantityRequired: this.$.quantityRequiredId.value,
                             quantityToProvide: this.$.quantityToProvideId.value,
                             quantityAvailable: this.$.quantityAvailableId.value,
                             quantityReceivable: this.$.quantityReceivableId.value,
                             quantityReceived: this.$.quantityReceivedId.value,
-                            quantityPending: this.$.quantityPendingId.value,
                             unitCost: this.$.unitCostId.value,
-                            expectedReceivingDate: this.$.expectedReceivingDateId.value,
-                            billable: this.$.billableId.value,
-                            projectNo: this.$.projectNoId.value,
                             regionCode: this.$.regionCodeId.value,
                             functionalAreaCode: this.$.functionalAreaCodeId.value,
                             centerResponsibilityCode: this.$.centerResponsibilityCodeId.value,
-                            functionalNo: this.$.functionalNoId.value,
                             vehicle: this.$.vehicleId.value,
-                            qtyByUnitOfMeasure: this.$.qtyByUnitOfMeasureId.value,
                             unitCostsould: this.$.unitCostsouldId.value,
                             budgetValue: this.$.budgetValueId.value,
                             maintenanceOrderLineNo: this.$.maintenanceOrderLineNoId.value,
                             createMarketSearch: this.$.createMarketSearchId.value,
                             submitPrePurchase: this.$.submitPrePurchaseId.value,
                             sendPrePurchase: this.$.sendPrePurchaseId.value,
-                            localMarketDate: this.$.localMarketDateId.value,
-                            localMarketUser: this.$.localMarketUserId.value,
-                            sendForPurchase: this.$.sendForPurchaseId.value,
-                            sendForPurchaseDate: this.$.sendForPurchaseDateId.value,
-                            purchaseValidated: this.$.purchaseValidatedId.value,
-                            purchaseRefused: this.$.purchaseRefusedId.value,
-                            reasonToRejectionLocalMarket: this.$.reasonToRejectionLocalMarketId.value, 
-                            rejectionLocalMarketDate: this.$.rejectionLocalMarketDateId.value,
-                            purchaseId: this.$.purchaseIdId.value,
                             supplierNo:this.supplierNoId.value,
-                            openOrderNo: this.$.openOrderNoId.value,
                             openOrderLineNo: this.$.openOrderLineNoId.value,
                             queryCreatedMarketNo: this.$.queryCreatedMarketNoId.value,
-                            createdOrderNo: this.$.createdOrderNoId.value,
-                            supplierProductCode: this.$.supplierProductCodeId.value,
-                            unitNutritionProduction: this.$.unitNutritionProductionId.value,
-                            marketLocalRegion: this.$.marketLocalRegionId.value,
-                            customerNo: this.$.customerNoId.value,
-                            approvers: this.$.approversId.value,
+                            functionalNo: this.$.functionalNoId.value,
+                            projectNo: this.$.projectNoId.value
                                 });
                         // Save to DB
                         this.$.ajax_updatedata.body = JSON.stringify(this.data);
