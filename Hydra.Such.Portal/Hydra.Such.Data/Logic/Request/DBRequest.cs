@@ -28,27 +28,17 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
-        public static List<Requisição> GetAllApproved()
+        public static List<Requisição> GetByState(RequisitionStates state)
         {
             try
             {
-                return GetByState(3);
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
+                int stateValue = (int)state;
 
-        public static List<Requisição> GetByState(int state)
-        {
-            try
-            {
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.Requisição
                         .Include("LinhasRequisição")
-                        .Where(x => x.Estado == state)
+                        .Where(x => x.Estado == stateValue)
                         .ToList();
                 }
             }
@@ -143,7 +133,8 @@ namespace Hydra.Such.Data.Logic.Request
                 {
                     RequisitionNo = item.NºRequisição,
                     Area = item.Área,
-                    State = item.Estado,
+                    //State = item.Estado,
+                    State = item.Estado.HasValue && Enum.IsDefined(typeof(RequisitionStates), item.Estado.Value) ? (RequisitionStates)item.Estado.Value : (RequisitionStates?)null,
                     ProjectNo = item.NºProjeto,
                     RegionCode = item.CódigoRegião,
                     FunctionalAreaCode = item.CódigoÁreaFuncional,
@@ -233,7 +224,8 @@ namespace Hydra.Such.Data.Logic.Request
                 {
                     NºRequisição = item.RequisitionNo,
                     Área = item.Area,
-                    Estado = item.State,
+                    //Estado = item.State.HasValue ? (int)item.State.Value : (int?)null,
+                    Estado = item.State.HasValue ? (int)item.State.Value : (int?)null,
                     NºProjeto = item.ProjectNo,
                     CódigoRegião = item.RegionCode,
                     CódigoÁreaFuncional = item.FunctionalAreaCode,
