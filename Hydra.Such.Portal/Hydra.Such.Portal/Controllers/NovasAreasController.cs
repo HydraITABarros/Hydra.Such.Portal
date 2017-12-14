@@ -237,7 +237,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Folha De Horas
         public IActionResult FolhaDeHoras(string folhaDeHoraNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 6);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -254,7 +254,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult FolhaDeHoras_Index(string folhaDeHoraNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 6);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -271,7 +271,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult FolhaDeHoras_IntegracaoAjudaCusto(string folhaDeHoraNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 6);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -288,7 +288,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult FolhaDeHoras_IntegracaoKMS(string folhaDeHoraNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 6);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -305,7 +305,24 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult FolhaDeHoras_Validacao(string folhaDeHoraNo)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 6);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.FolhaDeHorasNo = folhaDeHoraNo ?? "";
+                ViewBag.UPermissions = UPerm;
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult FolhaDeHoras_Historico(string folhaDeHoraNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 6);
 
             if (UPerm != null && UPerm.Read.Value)
             {

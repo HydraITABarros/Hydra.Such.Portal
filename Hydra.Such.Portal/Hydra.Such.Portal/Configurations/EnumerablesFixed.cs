@@ -921,12 +921,12 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 1,
-                Value = "Registado"
+                Value = "Validado"
             },
             new EnumData()
             {
                 Id = 2,
-                Value = "Validado"
+                Value = "Registado"
             },
             new EnumData()
             {

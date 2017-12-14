@@ -233,7 +233,6 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                     DBRequestLine.Delete(line);
                 }
             }
-
             //Update or Create
             try
             {
@@ -368,10 +367,8 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             catch (Exception e)
             {
-                throw;
+                return Json(null);
             }
-
-
             return Json(dp);
         }
 
