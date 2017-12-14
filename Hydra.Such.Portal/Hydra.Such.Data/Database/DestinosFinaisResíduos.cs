@@ -8,6 +8,7 @@ namespace Hydra.Such.Data.Database
         public DestinosFinaisResíduos()
         {
             DiárioDeProjeto = new HashSet<DiárioDeProjeto>();
+            MovimentosDeProjeto = new HashSet<MovimentosDeProjeto>();
         }
 
         public int Código { get; set; }
@@ -18,5 +19,6 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorModificação { get; set; }
 
         public ICollection<DiárioDeProjeto> DiárioDeProjeto { get; set; }
+        public ICollection<MovimentosDeProjeto> MovimentosDeProjeto { get; set; }
     }
 }

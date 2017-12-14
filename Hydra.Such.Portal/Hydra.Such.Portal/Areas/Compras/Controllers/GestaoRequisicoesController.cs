@@ -7,6 +7,7 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.ViewModel.Compras;
 using Microsoft.AspNetCore.Mvc;
+using Hydra.Such.Data.ViewModel;
 
 namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
@@ -23,6 +24,30 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             return View();
         }
 
+        [Area("Compras")]
+        public IActionResult RequisicoesAprovadas()
+        {
+            return View();
+        }
+
+        [Area("Compras")]
+        public IActionResult DetalhesReqAprovada(string id)
+        {
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
+
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                ViewBag.RequisitionId = id;
+                
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         [HttpPost]
         [Area("Compras")]
         public JsonResult GetGridValues()
@@ -31,7 +56,8 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 RequisitionNo = x.NºRequisição,
                 Area = x.Área,
-                State = x.Estado,
+                //State = x.Estado,
+                State = x.Estado.HasValue && Enum.IsDefined(typeof(RequisitionStates), x.Estado.Value) ? (RequisitionStates)x.Estado.Value : (RequisitionStates?)null,
                 ProjectNo = x.NºProjeto,
                 RegionCode = x.CódigoRegião,
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
@@ -132,7 +158,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 Description = x.Descrição,
                 UnitMeasureCode = x.CódigoUnidadeMedida,
                 LocalCode = x.CódigoLocalização,
-                localMarket = x.MercadoLocal,
+                LocalMarket = x.MercadoLocal,
                 QuantityToRequire = x.QuantidadeARequerer,
                 QuantityRequired = x.QuantidadeRequerida,
                 QuantityToProvide = x.QuantidadeADisponibilizar,
@@ -208,7 +234,6 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                     DBRequestLine.Delete(line);
                 }
             }
-
             //Update or Create
             try
             {
@@ -226,7 +251,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                          newdp.Descrição = x.Description;
                           newdp.CódigoUnidadeMedida= x.UnitMeasureCode;
                           newdp.CódigoLocalização= x.LocalCode;
-                          newdp.MercadoLocal= x.localMarket;
+                          newdp.MercadoLocal= x.LocalMarket;
                           newdp.QuantidadeARequerer= x.QuantityToRequire;
                           newdp.QuantidadeRequerida= x.QuantityRequired;
                           newdp.QuantidadeADisponibilizar= x.QuantityToProvide;
@@ -286,7 +311,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         Descrição = x.Description,
                         CódigoUnidadeMedida = x.UnitMeasureCode,
                         CódigoLocalização = x.LocalCode,
-                        MercadoLocal = x.localMarket,
+                        MercadoLocal = x.LocalMarket,
                         QuantidadeARequerer = x.QuantityToRequire,
                         QuantidadeRequerida = x.QuantityRequired,
                         QuantidadeADisponibilizar = x.QuantityToProvide,
@@ -343,11 +368,80 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             catch (Exception e)
             {
-                throw;
+                return Json(null);
+            }
+            return Json(dp);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult GetApprovedRequisitions()
+        {
+            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Approved).ParseToViewModel();
+            
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
+            return Json(result);
+        }
+        
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult GetRequisition([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
+        {
+            string requisitionId = string.Empty;
+            int status = -1;
+            var test = Configurations.EnumerablesFixed.RequisitionStatesEnumData;
+            if (requestParams != null)
+            {
+                requisitionId = requestParams["requisitionId"].ToString();
+                status = int.Parse(requestParams["status"].ToString());
             }
 
+            bool statusIsValid = Configurations.EnumHelper.ValidateRange(typeof(RequisitionStates), status);
+            
+            RequisitionViewModel item;
+            if (!string.IsNullOrEmpty(requisitionId) && requisitionId != "0" && statusIsValid)
+            {
+                item = DBRequest.GetById(requisitionId).ParseToViewModel();
+                
+                //Ensure that the requisition has the expected status. Ex.: prevents from validating pending requisitions
+                RequisitionStates statusToCompare = (RequisitionStates)status;
+                if (item == null || item.State != statusToCompare)
+                    item = new RequisitionViewModel();
+            }
+            else
+                item = new RequisitionViewModel();
 
-            return Json(dp);
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult ValidateLocalMarketForRequisition([FromBody] RequisitionViewModel item)
+        {
+            item.eMessage = "Funcionalidade não implementada";
+            item.eReasonCode = 0;
+
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult ValidateRequisition([FromBody] RequisitionViewModel item)
+        {
+            item.eMessage = "Funcionalidade não implementada";
+            item.eReasonCode = 0;
+
+            return Json(item);
         }
     }
 }

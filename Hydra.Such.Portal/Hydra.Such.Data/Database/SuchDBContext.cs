@@ -57,6 +57,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Modelos> Modelos { get; set; }
         public virtual DbSet<MovimentosCafetariaRefeitório> MovimentosCafetariaRefeitório { get; set; }
         public virtual DbSet<MovimentosDeAprovação> MovimentosDeAprovação { get; set; }
+        public virtual DbSet<MovimentosDeProjeto> MovimentosDeProjeto { get; set; }
         public virtual DbSet<MovimentosTelefones> MovimentosTelefones { get; set; }
         public virtual DbSet<MovimentosTelemóveis> MovimentosTelemóveis { get; set; }
         public virtual DbSet<MovimentosViaturas> MovimentosViaturas { get; set; }
@@ -2211,6 +2212,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DeslocaçãoPlaneada).HasColumnName("Deslocação Planeada");
 
+                entity.Property(e => e.IntegradoEmRh).HasColumnName("IntegradoEmRH");
+
+                entity.Property(e => e.IntegradoEmRhkm).HasColumnName("IntegradoEmRHKM");
+
                 entity.Property(e => e.IntegradorEmRh)
                     .HasColumnName("Integrador em RH")
                     .HasMaxLength(50);
@@ -3478,6 +3483,178 @@ namespace Hydra.Such.Data.Database
                     .WithMany(p => p.MovimentosDeAprovação)
                     .HasForeignKey(d => d.GrupoAprovador)
                     .HasConstraintName("FK_Movimentos de Aprovação_Grupos Aprovação");
+            });
+
+            modelBuilder.Entity<MovimentosDeProjeto>(entity =>
+            {
+                entity.HasKey(e => e.NºLinha);
+
+                entity.ToTable("Movimentos De Projeto");
+
+                entity.Property(e => e.NºLinha).HasColumnName("Nº Linha");
+
+                entity.Property(e => e.AcertoDePreços).HasColumnName("Acerto de Preços");
+
+                entity.Property(e => e.CustoTotal).HasColumnName("Custo Total");
+
+                entity.Property(e => e.CustoUnitário).HasColumnName("Custo Unitário");
+
+                entity.Property(e => e.CódDestinoFinalResíduos).HasColumnName("Cód. Destino Final Resíduos");
+
+                entity.Property(e => e.CódGrupoServiço).HasColumnName("Cód. Grupo Serviço");
+
+                entity.Property(e => e.CódLocalização)
+                    .HasColumnName("Cód. Localização")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.CódServiçoCliente).HasColumnName("Cód Serviço Cliente");
+
+                entity.Property(e => e.CódUnidadeMedida)
+                    .HasColumnName("Cód. Unidade Medida")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.Código).HasMaxLength(20);
+
+                entity.Property(e => e.CódigoCentroResponsabilidade)
+                    .HasColumnName("Código Centro Responsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódigoRegião)
+                    .HasColumnName("Código Região")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódigoÁreaFuncional)
+                    .HasColumnName("Código Área Funcional")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Data).HasColumnType("date");
+
+                entity.Property(e => e.DataAutorizaçãoFaturação)
+                    .HasColumnName("Data Autorização Faturação")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataConsumo)
+                    .HasColumnName("Data Consumo")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataDocumentoCorrigido)
+                    .HasColumnName("Data Documento Corrigido")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraModificação)
+                    .HasColumnName("Data/Hora Modificação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Descrição).HasMaxLength(100);
+
+                entity.Property(e => e.DocumentoCorrigido)
+                    .HasColumnName("Documento Corrigido")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DocumentoOriginal)
+                    .HasColumnName("Documento Original")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.FaturaANºCliente)
+                    .HasColumnName("Fatura-a Nº Cliente")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.FaturaçãoAutorizada).HasColumnName("Faturação Autorizada");
+
+                entity.Property(e => e.GrupoContabProjeto)
+                    .HasColumnName("Grupo Contab. Projeto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Moeda).HasMaxLength(20);
+
+                entity.Property(e => e.Motorista).HasMaxLength(80);
+
+                entity.Property(e => e.NºDocumento)
+                    .HasColumnName("Nº Documento")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NºFolhaHoras)
+                    .HasColumnName("Nº Folha Horas")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NºFuncionário)
+                    .HasColumnName("Nº Funcionário")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NºGuiaExterna)
+                    .HasColumnName("Nº Guia Externa")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.NºGuiaResíduos)
+                    .HasColumnName("Nº Guia Resíduos")
+                    .HasMaxLength(80);
+
+                entity.Property(e => e.NºLinhaRequisição).HasColumnName("Nº Linha Requisição");
+
+                entity.Property(e => e.NºProjeto)
+                    .HasColumnName("Nº Projeto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NºRequisição)
+                    .HasColumnName("Nº Requisição")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.PreçoTotal).HasColumnName("Preço Total");
+
+                entity.Property(e => e.PreçoUnitário).HasColumnName("Preço Unitário");
+
+                entity.Property(e => e.QuantidadeDevolvida).HasColumnName("Quantidade Devolvida");
+
+                entity.Property(e => e.RequisiçãoInterna)
+                    .HasColumnName("Requisição Interna")
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.TipoMovimento).HasColumnName("Tipo Movimento");
+
+                entity.Property(e => e.TipoRecurso).HasColumnName("Tipo Recurso");
+
+                entity.Property(e => e.TipoRefeição).HasColumnName("Tipo Refeição");
+
+                entity.Property(e => e.Utilizador).HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorCriação)
+                    .HasColumnName("Utilizador Criação")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorModificação)
+                    .HasColumnName("Utilizador Modificação")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ValorUnitárioAFaturar).HasColumnName("Valor Unitário a Faturar");
+
+                entity.HasOne(d => d.CódDestinoFinalResíduosNavigation)
+                    .WithMany(p => p.MovimentosDeProjeto)
+                    .HasForeignKey(d => d.CódDestinoFinalResíduos)
+                    .HasConstraintName("FK_Movimentos De Projeto_Destinos Finais Resíduos");
+
+                entity.HasOne(d => d.NºProjetoNavigation)
+                    .WithMany(p => p.MovimentosDeProjeto)
+                    .HasForeignKey(d => d.NºProjeto)
+                    .HasConstraintName("FK_Movimentos De Projeto_Projetos");
+
+                entity.HasOne(d => d.NºRequisiçãoNavigation)
+                    .WithMany(p => p.MovimentosDeProjeto)
+                    .HasForeignKey(d => d.NºRequisição)
+                    .HasConstraintName("FK_Movimentos De Projeto_Requisição");
+
+                entity.HasOne(d => d.TipoRefeiçãoNavigation)
+                    .WithMany(p => p.MovimentosDeProjeto)
+                    .HasForeignKey(d => d.TipoRefeição)
+                    .HasConstraintName("FK_Movimentos De Projeto_Tipos Refeição");
+
+                entity.HasOne(d => d.Nº)
+                    .WithMany(p => p.MovimentosDeProjeto)
+                    .HasForeignKey(d => new { d.NºRequisição, d.NºLinhaRequisição })
+                    .HasConstraintName("FK_Movimentos De Projeto_Linhas Requisição");
             });
 
             modelBuilder.Entity<MovimentosTelefones>(entity =>

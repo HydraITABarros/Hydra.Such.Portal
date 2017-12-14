@@ -84,6 +84,11 @@
             .panel-body {
                 padding-top: 0px !important;
             }
+
+            paper-button.disabled {
+                cursor: not-allowed;
+                pointer-events: none;
+            }
         </style>
 
         <!-- DROPDOWNS POPULATE -->
@@ -154,14 +159,23 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/FolhasDeHoras/ValidarBotaoFolhaDeHoras"
-                   last-response="{{validarBotaoFolhaDeHorasValue}}"
+        <iron-ajax url="/FolhasDeHoras/IntegrarEmRHKMFolhaDeHoras"
+                   last-response="{{integrarEmRHKMFolhaDeHoras}}"
                    method="post"
                    handle-as="json"
-                   id="validarbotaofolhadehoras_ajax"
-                   on-response="_validarbotaofolhadehorasResponse"
+                   id="integraremrhkmfolhadehoras_ajax"
+                   on-response="_integraremrhkmfolhadehorasResponse"
                    content-type="application/json">
         </iron-ajax>
+
+        <!--<iron-ajax url="/FolhasDeHoras/ValidarBotaoFolhaDeHoras"
+               last-response="{{validarBotaoFolhaDeHorasValue}}"
+               method="post"
+               handle-as="json"
+               id="validarbotaofolhadehoras_ajax"
+               on-response="_validarbotaofolhadehorasResponse"
+               content-type="application/json">
+    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/ValidateNumeration"
                    last-response="{{validateResponse}}"
@@ -346,11 +360,11 @@
                 <paper-button class="tablinks" on-tap="_calcularAjudasCusto"><i class="fa fa-check-square" aria-hidden="true"></i> Calcular Aj Custo</paper-button>
                 <paper-button class="tablinks" on-tap="_validarFolhaDeHoras" disable="!_permissions.fH_Validar"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
                 <paper-button class="tablinks" on-tap="_integrarEmRH"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
-                <paper-button class="tablinks" on-tap=""><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
+                <paper-button class="tablinks" on-tap="_integrarEmRHKM"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
 
 
-
-                <paper-button id="botaotesteid" class="tablinks btn--confirm" on-tap="_teste" ><i class="fa fa-check-square" aria-hidden="true"></i> TESTE</paper-button>
+                <paper-button class="btnSave" id="botaotesteid" raised on-tap="_teste"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; TESTE 4</paper-button>
+                <!--<paper-button id="botaotesteid" class="tablinks" on-tap="_teste" ><i class="fa fa-check-square" aria-hidden="true"></i> TESTE</paper-button>-->
             </template>
         </div>
 
@@ -1588,12 +1602,26 @@
                     }
                 },
 
-                _validarBotaoFolhaDeHoras: function () {
-                    debugger;
-                    if (this.$.folhaDeHorasNo.value != "") {
-                        this.$.validarbotaofolhadehoras_ajax.body = JSON.stringify(this.data);
-                        this.$.validarbotaofolhadehoras_ajax.generateRequest();
+                _integrarEmRHKM: function () {
+                    if (this.$.projetoNo.value != "") {
+                        if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
+                            this.$.integraremrhkmfolhadehoras_ajax.body = JSON.stringify(this.data);
+                            this.$.integraremrhkmfolhadehoras_ajax.generateRequest();
+                        }
+                        else {
+                            this._showErrorMessage('É necessário preencher o campo Nº Empregado.');
+                        }
                     }
+                    else {
+                        this._showErrorMessage('É necessário preencher o campo Nº Ordem/Projecto.');
+                    }
+                },
+
+                _validarBotaoFolhaDeHoras(data) {
+                    debugger;
+                    var _self = this;
+
+                    $(_self.$.botaotesteid).addClass('disabled');
                 },
 
 
@@ -2115,9 +2143,9 @@
                         this._showErrorMessage('Ocorreu um erro ao criar a Folha de Hora.')
                     }
 
-                    debugger;
-                    //setTimeout(function () { }, 5000);
-                    this._validarBotaoFolhaDeHoras();
+                    //TESTE
+                    this._validarBotaoFolhaDeHoras(this.data);
+                    //
                 },
 
                 _createResponseProcessor: function () {
@@ -2193,18 +2221,21 @@
                     }
                 },
 
-                _validarbotaofolhadehorasResponse: function () {
-                    debugger;
-                    var _self = this;
-
-                    if (this.validarBotaoFolhaDeHorasValue) {
-                        _self.$.botaotesteid.disabled = false;
+                _integraremrhkmfolhadehorasResponse: function (e) {
+                    if (this.integrarEmRHKMFolhaDeHoras) {
+                        this._showMessage('Folha de Horas Integrada em RH KM com sucesso.');
+                        this.$.page_databound_ajax.generateRequest();
                     }
                     else {
-                        _self.$.botaotesteid.disabled = true;
+                        this._showErrorMessage('Ocorreu um erro ao Integrada em RH KM na Folha De Horas.');
                     }
-
                 },
+
+                //_validarbotaofolhadehorasResponse: function () {
+                //    var _self = this;
+
+                //    $(_self.$.botaotesteid).addClass('disabled');
+                //},
 
                 //PERCURSO
                 _createPercursoResponse: function (e) {
