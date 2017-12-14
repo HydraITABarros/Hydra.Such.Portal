@@ -62,12 +62,12 @@
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
         <iron-ajax url="/Compras/GestaoRequisicoes/GridRequestLineValues" id="ajax_getdata" auto last-response="{{data}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Compras/GestaoRequisicoes/CreateAndDeleteRequestLine" id="ajax_updatedata" last-response="{{data}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/GetGridValues" id="ajax_getgrid" auto last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/GetApprovedRequisitions" id="ajax_getgrid" auto last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Viaturas/GetList" id="grid_databound_ajax" last-response="{{vehicleresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Projetos/GetAllProjectDiary" id="grid_GetAllProject_ajax" last-response="{{projectresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" id="grid_FunctionalArea_ajax" last-response="{{arearesult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" id="grid_ResponsabilityCenter_ajax" last-response="{{responsabilityresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetRegionCode" id="grid_RegionCode_ajax" last-response="{{regionresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{arearesult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{responsabilityresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode"  last-response="{{regionresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" id="grid_Locations_ajax" last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" id="grid_unitofmeasure_ajax" last-response="{{unitofmeasureresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetrequestTypes" id="grid_requesttypes_ajax" last-response="{{requesttypesresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -266,16 +266,7 @@
                     <vaadin-grid-filter path="localCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[locationsresult]]" id="localCodeId" on-value-changed="_localCodeOnChange" item-value-path="id" item-label-path="value" value="{{item.localCode}}">
-                        <template>
-                            <table width="350px">
-                                <tr>
-                                    <td width="30%">[[item.id]]</td>
-                                    <td width="70%"><b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    [[_parseLocalCode(item.localCode)]]
                 </template>
             </vaadin-grid-column>
 
@@ -285,16 +276,7 @@
                     <vaadin-grid-filter path="code"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[cboSupplier]]" id="codeId" on-value-changed="_codeIdOnChange" item-value-path="id" item-label-path="value" value="{{item.code}}">
-                        <template>
-                            <table width="350px">
-                                <tr>
-                                    <td width="30%">[[item.id]]</td>
-                                    <td width="70%"><b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    [[_parseprodCode(item.code)]]
                 </template>
             </vaadin-grid-column>
 
@@ -304,7 +286,7 @@
                     <vaadin-grid-filter path="description"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field id="DescriptionId" name="DescriptionName" value="{{item.description}}"></vaadin-text-field>
+                    {{item.description}}
                 </template>
             </vaadin-grid-column>
 
@@ -314,16 +296,7 @@
                     <vaadin-grid-filter path="unitMeasureCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[unitofmeasureresult]]" id="unitMeasureCodeId" on-value-changed="_unitMeasureCodeOnChange" item-value-path="id" item-label-path="value" value="{{item.unitMeasureCode}}">
-                        <template>
-                            <table width="250px">
-                                <tr>
-                                    <td width="30%">[[item.id]]</td>
-                                    <td width="70%"><b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    {{item.unitMeasureCode}}
                 </template>
             </vaadin-grid-column>
 
@@ -333,7 +306,7 @@
                     <vaadin-grid-filter path="quantityToRequire"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field id="quantityToRequireId" name="quantityToRequireName" value="{{item.quantityToRequire}}"></vaadin-text-field>
+                    {{item.quantityToRequire}}
                 </template>
             </vaadin-grid-column>
 
@@ -343,7 +316,7 @@
                     <vaadin-grid-filter path="quantityRequired"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field id="quantityRequiredId" name="quantityRequiredName" value="{{item.quantityRequired}}"></vaadin-text-field>
+                    {{item.quantityRequired}}
                 </template>
             </vaadin-grid-column>
 
@@ -353,7 +326,7 @@
                     <vaadin-grid-filter path="quantityToProvide"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field id="quantityToProvideId" name="quantityToProvideName" value="{{item.quantityToProvide}}"></vaadin-text-field>
+                    {{item.quantityToProvide}}
                 </template>
             </vaadin-grid-column>
 
@@ -363,7 +336,7 @@
                     <vaadin-grid-filter path="quantityAvailable"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field id="quantityAvailableId" name="quantityAvailableName" value="{{item.quantityAvailable}}" disabled></vaadin-text-field>
+                    {{item.quantityAvailable}}
                 </template>
             </vaadin-grid-column>
 
@@ -373,7 +346,7 @@
                     <vaadin-grid-filter path="quantityReceivable"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field id="quantityReceivableId" name="quantityReceivableName" value="{{item.quantityReceivable}}"></vaadin-text-field>
+                    {{item.quantityReceivable}}
                 </template>
             </vaadin-grid-column>
 
@@ -383,7 +356,7 @@
                     <vaadin-grid-filter path="quantityReceived"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field id="quantityReceivedId" name="quantityReceivedName" value="{{item.quantityReceived}}"></vaadin-text-field>
+                    {{item.quantityReceived}}
                 </template>
             </vaadin-grid-column>
 
@@ -393,7 +366,7 @@
                     <vaadin-grid-filter path="unitCost"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field id="unitCostId" name="unitCostName" value="{{item.unitCost}}"></vaadin-text-field>
+                    {{item.unitCost}}
                 </template>
             </vaadin-grid-column>
 
@@ -403,7 +376,7 @@
                     <vaadin-grid-filter path="unitCostsould"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field id="unitCostsouldId" name="unitCostsouldName" value="{{item.unitCostsould}}"></vaadin-text-field>
+                    {{item.unitCostsould}}
                 </template>
             </vaadin-grid-column>
 
@@ -413,7 +386,7 @@
                     <vaadin-grid-filter path="budgetValue"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field id="budgetValueId" name="budgetValueName" value="{{item.budgetValue}}"></vaadin-text-field>
+                    {{item.budgetValue}}
                 </template>
             </vaadin-grid-column>
 
@@ -423,7 +396,7 @@
                     <vaadin-grid-filter path="createMarketSearch"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.createMarketSearch}}"></vaadin-checkbox>
+                    {{item.createMarketSearch}}
                 </template>
             </vaadin-grid-column>
 
@@ -433,7 +406,7 @@
                     <vaadin-grid-filter path="openOrderLineNo"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field id="openOrderLineNoId" name="openOrderLineNoName" value="{{item.openOrderLineNo}}"></vaadin-text-field>
+                    {{item.openOrderLineNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -443,7 +416,7 @@
                     <vaadin-grid-filter path="queryCreatedMarketNo"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field id="queryCreatedMarketNoId" name="queryCreatedMarketNoName" value="{{item.queryCreatedMarketNo}}"></vaadin-text-field>
+                    {{item.queryCreatedMarketNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -453,7 +426,7 @@
                     <vaadin-grid-filter path="submitPrePurchase"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.submitPrePurchase}}"></vaadin-checkbox>
+                    {{item.submitPrePurchase}}
                 </template>
             </vaadin-grid-column>
 
@@ -463,7 +436,7 @@
                     <vaadin-grid-filter path="sendPrePurchase"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.sendPrePurchase}}" disabled></vaadin-checkbox>
+                    {{item.sendPrePurchase}}
                 </template>
             </vaadin-grid-column>
 
@@ -473,16 +446,7 @@
                     <vaadin-grid-filter path="projectNo"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[projectresult]]" id="projectId" on-value-changed="_projectNoOnChange" item-value-path="lineNo" item-label-path="projectNo" value="{{item.projectNo}}">
-                        <template>
-                            <table width="250px">
-                                <tr>
-                                    <td width="20%">[[item.lineNo]]</td>
-                                    <td width="80%"><b>[[item.projectNo]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    {{item.projectNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -492,7 +456,7 @@
                     <vaadin-grid-filter path="maintenanceOrderLineNo"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-text-field id="maintenanceOrderLineNoId" name="maintenanceOrderLineNoName" value="{{item.maintenanceOrderLineNo}}" disabled></vaadin-text-field>
+                    {{item.maintenanceOrderLineNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -502,16 +466,7 @@
                     <vaadin-grid-filter path="vehicle"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[vehicleresult]]" id="vehicleId" on-value-changed="_vehicleOnChange" item-value-path="matricula" item-label-path="matricula" value="{{item.vehicle}}">
-                        <template>
-                            <table width="350px">
-                                <tr>
-                                    <td width="20%">[[item.matricula]]</td>
-                                    <td width="80%"><b>[[item.CodigoTipoViatura]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    {{item.vehicle}}
                 </template>
             </vaadin-grid-column>
 
@@ -521,16 +476,7 @@
                     <vaadin-grid-filter path="functionalNo"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[cboSupplier]]" id="SupplierNoId" on-value-changed="_supplierNoOnChange" item-value-path="id" item-label-path="value" value="{{item.functionalNo}}">
-                        <template>
-                            <table width="350px">
-                                <tr>
-                                    <td width="20%">[[item.id]]</td>
-                                    <td width="80%"><b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    {{item.functionalNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -540,35 +486,17 @@
                     <vaadin-grid-filter path="regionCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[regionresult]]" id="regionCodeId" on-value-changed="_regionCodeOnChange" item-value-path="id" item-label-path="value" value="{{item.regionCode}}">
-                        <template>
-                            <table width="250px">
-                                <tr>
-                                    <td width="20%">[[item.id]]</td>
-                                    <td width="80%"><b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    [[ _parseregion(item.regionCode)]]
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="functionalAreaCode">Código Área</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="functionalAreaCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[arearesult]]" id="functionalAreaCodeId" on-value-changed="_functionalAreaCodeOnChange" item-value-path="id" item-label-path="value" value="{{item.functionalAreaCode}}">
-                        <template>
-                            <table width="300px">
-                                <tr>
-                                    <td width="20%">[[item.id]]</td>
-                                    <td width="80%"><b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    [[ _parseArea(item.functionalAreaCode)]]
                 </template>
             </vaadin-grid-column>
 
@@ -578,16 +506,7 @@
                     <vaadin-grid-filter path="centerResponsibilityCode"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[responsabilityresult]]" id="centerResponsibilityCodeId" on-value-changed="_centerResponsibilityCodeOnChange" item-value-path="id" item-label-path="value" value="{{item.centerResponsibilityCode}}">
-                        <template>
-                            <table width="250px">
-                                <tr>
-                                    <td width="20%">[[item.id]]</td>
-                                    <td width="80%"><b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    [[ _parsecenterRespons(item.centerResponsibilityCode)]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="100px" resizable>
@@ -612,11 +531,70 @@
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-requestlines',
-                properties: {
-                    selected: {
-                        type: Number,
-                        value: 0
+                observers: [
+                    '_onCacheLoaded(responsabilityresult,regionresult,arearesult,locationsresult,cboProdCode,unitofmeasureresult)'
+                ],
+                _onCacheLoaded: function (responsabilityresult, regionresult, arearesult, locationsresult, cboProdCode, unitofmeasureresult) {
+                    if (!this.Flag) {
+                        this.$.ajax_getdata.generateRequest();
+                        }
+                        this.Flag = true;
+                },
+                _parseunitofmeasure: function (param) {
+                    if (param != undefined && this.unitofmeasureresult != undefined) {
+                        var sel = this.unitofmeasureresult.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
                     }
+                    return "";
+                },
+                _parseprodCode: function (param) {
+                    if (param != undefined && this.cboProdCode != undefined) {
+                        var sel = this.cboProdCode.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parsecenterRespons: function (param) {
+                    if (param != undefined && this.responsabilityresult != undefined) {
+                        var sel = this.responsabilityresult.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _parseregion: function (param) {
+                    if (param != undefined && this.regionresult != undefined) {
+                        var sel = this.regionresult.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+
+                },
+                _parseArea: function (param) {
+                    if (param != undefined && this.arearesul != undefined) {
+                        var sel = this.arearesult.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+
+                },
+                _parseLocalCode: function (param) {
+                    if (param != undefined && this.locationsresult != undefined) {
+                        var sel = this.locationsresult.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
                 },
                 _create() {
                         this.data.unshift({
