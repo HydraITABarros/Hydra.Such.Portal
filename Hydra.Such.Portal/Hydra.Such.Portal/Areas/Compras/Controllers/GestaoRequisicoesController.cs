@@ -56,7 +56,8 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 RequisitionNo = x.NºRequisição,
                 Area = x.Área,
-                State = x.Estado,
+                //State = x.Estado,
+                State = x.Estado.HasValue && Enum.IsDefined(typeof(RequisitionStates), x.Estado.Value) ? (RequisitionStates)x.Estado.Value : (RequisitionStates?)null,
                 ProjectNo = x.NºProjeto,
                 RegionCode = x.CódigoRegião,
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
@@ -376,8 +377,8 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         [Area("Compras")]
         public JsonResult GetApprovedRequisitions()
         {
-            List<RequisitionViewModel> result = DBRequest.GetAllApproved().ParseToViewModel();
-                
+            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Approved).ParseToViewModel();
+            
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
@@ -398,20 +399,23 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             string requisitionId = string.Empty;
             int status = -1;
-
+            var test = Configurations.EnumerablesFixed.RequisitionStatesEnumData;
             if (requestParams != null)
             {
                 requisitionId = requestParams["requisitionId"].ToString();
                 status = int.Parse(requestParams["status"].ToString());
             }
+
+            bool statusIsValid = Configurations.EnumHelper.ValidateRange(typeof(RequisitionStates), status);
             
             RequisitionViewModel item;
-            if (!string.IsNullOrEmpty(requisitionId) && requisitionId != "0" && status > -1)
+            if (!string.IsNullOrEmpty(requisitionId) && requisitionId != "0" && statusIsValid)
             {
                 item = DBRequest.GetById(requisitionId).ParseToViewModel();
-
-                //Ensure correct status
-                if(item == null || item.State != status)
+                
+                //Ensure that the requisition has the expected status. Ex.: prevents from validating pending requisitions
+                RequisitionStates statusToCompare = (RequisitionStates)status;
+                if (item == null || item.State != statusToCompare)
                     item = new RequisitionViewModel();
             }
             else

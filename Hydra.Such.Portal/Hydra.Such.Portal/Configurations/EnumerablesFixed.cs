@@ -1555,6 +1555,19 @@ namespace Hydra.Such.Portal.Configurations
             },
         };
 
+        public static List<EnumData> RequisitionStatesEnumData
+        {
+            get
+            {
+                List<EnumData> enumData = new List<EnumData>();
+                var items = EnumHelper.GetItemsFor(typeof(Data.ViewModel.Compras.RequisitionStates));
+                items.ForEach(x =>
+                    enumData.Add(new EnumData(x.Key, x.Value))
+                );
+                return enumData;
+            }
+        }
+        
     }
 
     public class EnumDataString

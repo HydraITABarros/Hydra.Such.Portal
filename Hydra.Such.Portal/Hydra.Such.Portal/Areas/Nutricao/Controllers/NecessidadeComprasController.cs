@@ -71,7 +71,8 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             {
                 RequisitionNo = x.NºRequisição,
                 Area = x.Área,
-                State = x.Estado,
+                //State = x.Estado,
+                State = x.Estado.HasValue && Enum.IsDefined(typeof(RequisitionStates), x.Estado.Value) ? (RequisitionStates)x.Estado.Value : (RequisitionStates?)null,
                 ProjectNo = x.NºProjeto,
                 RegionCode = x.CódigoRegião,
                 FunctionalAreaCode = x.CódigoÁreaFuncional,

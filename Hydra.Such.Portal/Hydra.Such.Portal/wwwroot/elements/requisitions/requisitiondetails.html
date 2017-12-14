@@ -131,6 +131,7 @@
 
         <iron-ajax url="/Compras/GestaoRequisicoes/GetRequisition"
                    last-response="{{Requisition}}"
+                   on-response="_responsePlaceDataCollection"
                    method="post"
                    handle-as="json"
                    id="requisition_datasource"
