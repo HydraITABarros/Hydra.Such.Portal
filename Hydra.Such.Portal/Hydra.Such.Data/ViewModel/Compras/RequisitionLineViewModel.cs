@@ -13,7 +13,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string Description { get; set; }
         public string UnitMeasureCode { get; set; }
         public string LocalCode { get; set; }
-        public bool? localMarket { get; set; }
+        public bool? LocalMarket { get; set; }
         public decimal? QuantityToRequire { get; set; }
         public decimal? QuantityRequired { get; set; }
         public decimal? QuantityToProvide { get; set; }
@@ -60,5 +60,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string MarketLocalRegion { get; set; }
         public string CustomerNo { get; set; }
         public string Approvers { get; set; }
+
+        //public PurchasesViewModel 
     }
 }

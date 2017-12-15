@@ -372,13 +372,13 @@
                             <vaadin-grid-filter path="UnitOfMeasure" />
                         </template>
                         @*<template>
-                    <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{ item.unitOfMeasure }}" id="grdLineUnitOfMeasure" name="grdLineUnitOfMeasure" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{ item.unitOfMeasure }}
-                    </template>
-                </template>*@
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{ item.unitOfMeasure }}" id="grdLineUnitOfMeasure" name="grdLineUnitOfMeasure" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{ item.unitOfMeasure }}
+                            </template>
+                        </template>*@
                         <template>
                             <template is="dom-if" if="{{ item.selected }}">
                                 <vaadin-combo-box items="[[CBUnitsOfMeasure]]" item-value-path="id" item-label-path="value" value="{{item.unitOfMeasure}}">
@@ -435,13 +435,13 @@
                             <vaadin-grid-filter path="MealType" />
                         </template>
                         @*<template>
-                    <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{ item.mealType }}" id="grdLineMealType" name="grdLineMealType" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{ item.mealType }}
-                    </template>
-                </template>*@
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-text-field value="{{ item.mealType }}" id="grdLineMealType" name="grdLineMealType" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{ item.mealType }}
+                            </template>
+                        </template>*@
                         <template>
                             <template is="dom-if" if="{{ item.selected }}">
                                 <vaadin-combo-box items="[[CBMealTypes]]" item-value-path="id" item-label-path="value" value="{{item.mealType}}" on-value-changed="_onMealTypeInGridChanged">

@@ -18,12 +18,12 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
     public class PreRequisicoesController : Controller
     {
         [Area("Compras")]
-        public IActionResult Index(string PreRequesitionNo)
+        public IActionResult Index()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
             if (UPerm != null && UPerm.Read.Value)
             {
-                ViewBag.PreRequesitionNo = PreRequesitionNo ?? "";
+                
                 ViewBag.UPermissions = UPerm;
                 return View();
             }
@@ -387,5 +387,34 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         }
         #endregion
 
+        
+        [Area("Compras")]
+        public IActionResult PréRequisiçõesDetalhes(string PreRequesitionNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.PreRequesitionNo = PreRequesitionNo ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetPreReqList()
+        {
+
+            List<PréRequisição> PreRequisition = null;
+            PreRequisition = DBPreRequesition.GetAll(User.Identity.Name);
+           
+
+            List<PreRequesitionsViewModel> result = new List<PreRequesitionsViewModel>();
+
+            PreRequisition.ForEach(x => result.Add(DBPreRequesition.ParseToViewModel(x)));
+            return Json(result);
+        }
     }
 }
