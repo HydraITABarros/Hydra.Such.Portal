@@ -1198,6 +1198,13 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(products);
         }
+
+        [HttpPost]
+        public JsonResult GetLocalMarketRegions()
+        {
+            List<EnumDataString> result = EnumerablesFixed.LocalMarketRegions;
+            return Json(result);
+        }
     }
 
 

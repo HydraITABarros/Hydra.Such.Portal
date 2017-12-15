@@ -140,6 +140,8 @@
             <div class="col-lg-3"><vaadin-text-field id="precoUnitarioCusto" value="{{precoUnitarioCusto}}" label="Preço Unitário Custo" type="number" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
             <div class="col-lg-3"><vaadin-text-field id="precoUnitarioVenda" value="{{precoUnitarioVenda}}" label="Preço Unitário Venda" type="number" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
 
+            <div class="col-lg-3"><vaadin-text-field id="rubricaSalarial" value="{{rubricaSalarial}}" label="Rúbrica Salarial" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+
             <div class="col-lg-2 alignPoga"><paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button></div>
         </div>
 
@@ -214,6 +216,17 @@
                 </template>
                 <template>
                     <vaadin-text-field value="{{item.precoUnitarioVenda}}" type="number" pattern="[0-9]*"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="rubricaSalarial">Rúbrica Salarial</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="rubricaSalarial" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.rubricaSalarial}}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -318,7 +331,8 @@
                                     descricao: this.$.descricao.value,
                                     precoUnitarioCusto: this.$.precoUnitarioCusto.value,
                                     precoUnitarioVenda: this.$.precoUnitarioVenda.value,
-                                    unidMedida: this.$.unidMedida.value
+                                    unidMedida: this.$.unidMedida.value,
+                                    rubricaSalarial: this.$.rubricaSalarial.value
                                 }
                             );
                             this.$.ajax_create.generateRequest();
@@ -394,6 +408,7 @@
                             this.$.precoUnitarioCusto.value = "";
                             this.$.precoUnitarioVenda.value = "";
                             this.$.unidMedida.value = "";
+                            this.$.rubricaSalarial.value = "";
                             this.$.ajax_GetAll.generateRequest();
                             this.openToast("Tabela atualizada.");
                         }

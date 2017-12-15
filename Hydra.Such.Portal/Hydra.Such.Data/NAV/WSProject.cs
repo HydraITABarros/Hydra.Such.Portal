@@ -135,7 +135,7 @@ namespace Hydra.Such.Data.NAV
             }
             catch (Exception ex)
             {
-                throw;
+                throw new Exception(ex.Message);
             }
 
         }

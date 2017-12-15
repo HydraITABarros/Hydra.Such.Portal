@@ -1859,6 +1859,22 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult ConfiguracaoAutorizacaoFHRH(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         [HttpPost]
         public JsonResult GetRHRecursosFH()
         {
@@ -1918,6 +1934,76 @@ namespace Hydra.Such.Portal.Controllers
             });
             return Json(data);
         }
+
+        [HttpPost]
+        public JsonResult GetAutorizacaoFHRH()
+        {
+            List<AutorizacaoFHRHViewModel> result = DBAutorizacaoFHRH.ParseListToViewModel(DBAutorizacaoFHRH.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateAutorizacaoFHRH([FromBody] AutorizacaoFHRHViewModel data)
+        {
+            bool result = false;
+            try
+            {
+                AutorizacaoFhRh autorizacao = new AutorizacaoFhRh();
+
+                autorizacao.NoEmpregado = data.NoEmpregado;
+                autorizacao.NoResponsavel1 = data.NoResponsavel1;
+                autorizacao.NoResponsavel2 = data.NoResponsavel2;
+                autorizacao.NoResponsavel3 = data.NoResponsavel3;
+                autorizacao.ValidadorRh1 = data.ValidadorRH1;
+                autorizacao.ValidadorRh2 = data.ValidadorRH2;
+                autorizacao.ValidadorRh3 = data.ValidadorRH3;
+                autorizacao.CriadoPor = User.Identity.Name;
+                autorizacao.DataHoraCriação = DateTime.Now;
+
+                var dbCreateResult = DBAutorizacaoFHRH.Create(autorizacao);
+                result = dbCreateResult != null ? true : false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteAutorizacaoFHRH([FromBody] AutorizacaoFHRHViewModel data)
+        {
+            var result = DBAutorizacaoFHRH.Delete(DBAutorizacaoFHRH.ParseToDB(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateAutorizacaoFHRH([FromBody] List<AutorizacaoFHRHViewModel> data)
+        {
+            List<AutorizacaoFhRh> results = DBAutorizacaoFHRH.GetAll();
+
+            data.RemoveAll(x => DBAutorizacaoFHRH.ParseListToViewModel(results).Any(
+                u =>
+                    u.NoEmpregado == x.NoEmpregado &&
+                    u.NoResponsavel1 == x.NoResponsavel1 &&
+                    u.NoResponsavel2 == x.NoResponsavel2 &&
+                    u.NoResponsavel3 == x.NoResponsavel3 &&
+                    u.ValidadorRH1 == x.ValidadorRH1 &&
+                    u.ValidadorRH2 == x.ValidadorRH2 &&
+                    u.ValidadorRH3 == x.ValidadorRH3 &&
+                    u.UtilizadorCriacao == x.UtilizadorCriacao &&
+                    u.DataHoraCriacao == x.DataHoraCriacao
+            ));
+
+            data.ForEach(x =>
+            {
+                AutorizacaoFhRh toUpdate = DBAutorizacaoFHRH.ParseToDB(x);
+                toUpdate.AlteradoPor = User.Identity.Name;
+                DBAutorizacaoFHRH.Update(toUpdate);
+            });
+            return Json(data);
+        }
+
         #endregion
 
         #region Configuracao Recursos Folha Horas

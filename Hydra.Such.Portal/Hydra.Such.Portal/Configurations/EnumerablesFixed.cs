@@ -921,12 +921,12 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 1,
-                Value = "Registado"
+                Value = "Validado"
             },
             new EnumData()
             {
                 Id = 2,
-                Value = "Validado"
+                Value = "Registado"
             },
             new EnumData()
             {
@@ -1530,6 +1530,44 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Nada Referido"
             }
         };
+
+        public static readonly List<EnumDataString> LocalMarketRegions = new List<EnumDataString>()
+        {
+            new EnumDataString
+            {
+                Id = "1",
+                Value = string.Empty
+            },
+            new EnumDataString
+            {
+                Id = "2",
+                Value = "Lisboa"
+            },
+             new EnumDataString
+            {
+                Id = "3",
+                Value = "Porto"
+            },
+             new EnumDataString
+            {
+                Id = "4",
+                Value = "Coimbra"
+            },
+        };
+
+        public static List<EnumData> RequisitionStatesEnumData
+        {
+            get
+            {
+                List<EnumData> enumData = new List<EnumData>();
+                var items = EnumHelper.GetItemsFor(typeof(Data.ViewModel.Compras.RequisitionStates));
+                items.ForEach(x =>
+                    enumData.Add(new EnumData(x.Key, x.Value))
+                );
+                return enumData;
+            }
+        }
+        
     }
 
     public class EnumDataString

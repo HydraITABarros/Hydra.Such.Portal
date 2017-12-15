@@ -1,0 +1,186 @@
+﻿@{
+    ViewData["Title"] = "Listagem de Requisições Aprovadas - Nutrição - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<h1 class="title">Requisições Aprovadas</h1>
+
+<x-requisitions></x-requisitions>
+<dom-module id="x-requisitions">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+        <iron-ajax url="/Compras/GestaoRequisicoes/GetApprovedRequisitions"
+                   last-response="{{Requisitions}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   id="grid_datasource"
+                   content-type="application/json"></iron-ajax>
+
+        <vaadin-grid id="grdRequisitions" aria-label="ProfileModelsTabel" items="[[Requisitions]]" class="grid" active-item="{{_SelectedLine}}">
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="requisitionNo">Nº Requisição </vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisitionNo" />
+                </template>
+                <template>
+                    {{item.requisitionNo}}
+                </template>
+
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="state" />
+                </template>
+                <template>
+                    {{item.state}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="urgent">Urgente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="urgent" />
+                </template>
+                <template>
+                    {{item.urgent}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="buyCash">Compras a Dinheiro</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="buyCash" />
+                </template>
+                <template>
+                    {{item.buyCash}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="alreadyPerformed">Trabalho já executado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="alreadyPerformed" />
+                </template>
+                <template>
+                    {{item.alreadyPerformed}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="requestNutrition">Requisição Nutrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requestNutrition" />
+                </template>
+                <template>
+                    {{item.requestNutrition}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="localMarketDate">Dimensões</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localMarketDate" />
+                </template>
+                <template>
+                    @*{{item.localMarketDate}}*@ Indefinido
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="comments" />
+                </template>
+                <template>
+                    {{item.comments}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="requisitionDate">Data requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisitionDate" />
+                </template>
+                <template>
+                    {{item.requisitionDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="createUser">Utilizador Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createUser" />
+                </template>
+                <template>
+                    {{item.createUser}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="approvers">Aprovadores</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="approvers" />
+                </template>
+                <template>
+                    {{item.approvers}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="estimatedValue">Valor Estimado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="estimatedValue" />
+                </template>
+                <template>
+                    {{item.estimatedValue}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="updateUser">Utilizador de Aprovação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="updateUser" />
+                </template>
+                <template>
+                    {{item.updateUser}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-requisitions',
+                properties: {
+                    _SelectedLine: {
+                        observer: '_rowSelected'
+                    },
+                    _filterActive: {
+                        type: Boolean,
+                        value: true
+                    }
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Compras/GestaoRequisicoes/DetalhesReqAprovada/" + item.requisitionNo;
+                    }
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                }
+            });
+        });
+    </script>
+</dom-module>
