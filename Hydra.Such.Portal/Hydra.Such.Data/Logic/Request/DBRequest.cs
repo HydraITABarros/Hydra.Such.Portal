@@ -11,8 +11,7 @@ namespace Hydra.Such.Data.Logic.Request
     public static class DBRequest
     {
         #region CRUD
-
-
+        
         public static List<Requisição> GetAll()
         {
             try
@@ -120,6 +119,21 @@ namespace Hydra.Such.Data.Logic.Request
             {
 
                 return false;
+            }
+        }
+
+        public static List<Requisição> GetAllModelRequest()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição.Where(x=> x.ModeloDeRequisição ==true).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
         }
         #endregion

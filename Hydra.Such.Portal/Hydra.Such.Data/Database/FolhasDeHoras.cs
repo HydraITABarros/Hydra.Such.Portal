@@ -60,7 +60,6 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorModificação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
 
-        public Projetos NºProjetoNavigation { get; set; }
         public ICollection<DistribuiçãoCustoFolhaDeHoras> DistribuiçãoCustoFolhaDeHoras { get; set; }
         public ICollection<MãoDeObraFolhaDeHoras> MãoDeObraFolhaDeHoras { get; set; }
         public ICollection<PercursosEAjudasCustoDespesasFolhaDeHoras> PercursosEAjudasCustoDespesasFolhaDeHoras { get; set; }

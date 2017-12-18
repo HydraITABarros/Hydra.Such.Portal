@@ -97,6 +97,20 @@ namespace Hydra.Such.Data.Logic.Request
                 return false;
             }
         }
+        public static List<LinhasRequisição> GetAllByRequisiçãos(string requisicao)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasRequisição.Where(x=> x.NºRequisição == requisicao).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         #endregion
 
         #region Parse Utilities
@@ -181,7 +195,7 @@ namespace Hydra.Such.Data.Logic.Request
                 return new LinhasRequisição()
                 {
                     NºRequisição = item.RequestNo,
-                    NºLinha = item.LineNo,
+                    NºLinha = (int)item.LineNo,
                     Tipo = item.Type,
                     Código = item.Code,
                     Descrição = item.Description,

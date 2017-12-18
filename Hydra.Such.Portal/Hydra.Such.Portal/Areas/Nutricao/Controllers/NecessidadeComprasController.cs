@@ -29,36 +29,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [Area("Nutricao")]
         public JsonResult GetGridValues()
         {
-            List<DailyRequisitionProductiveUnitViewModel> result = DBShoppingNecessity.GetAll().Select(x => new DailyRequisitionProductiveUnitViewModel()
-            {
-                LineNo = x.NºLinha,
-                Description = x.Descrição,
-                CreateDateTime = x.DataHoraCriação,
-                CreateUser = x.UtilizadorCriação,
-                DateByPriceSupplier = !x.DataPPreçoFornecedor.HasValue ? "" : x.DataPPreçoFornecedor.Value.ToString("yyyy-MM-dd"),
-                DirectUnitCost = x.CustoUnitárioDireto,
-                ExpectedReceptionDate = !x.DataReceçãoEsperada.HasValue ? "" : x.DataReceçãoEsperada.Value.ToString("yyyy-MM-dd"),
-                LocalCode = x.CodigoLocalização,
-                MealType = x.TipoRefeição,
-                OpenOrderNo = x.NºEncomendaAberto,
-                OrderLineOpenNo = x.NºLinhaEncomendaAberto,
-                ProductNo = x.NºProduto,
-                ProductUnitDescription = x.DescriçãoUnidadeProduto,
-                ProductionUnitNo = x.NºUnidadeProdutiva,
-                ProjectNo = x.NºProjeto,
-                Quantity = x.Quantidade,
-                QuantitybyUnitMeasure = x.QuantidadePorUnidMedida,
-                SupplierName = x.NomeFornecedor,
-                SupplierNo = x.NºFornecedor,
-                SupplierProductCode = x.CodigoProdutoFornecedor,
-                SupplierProductDescription = x.DescriçãoProdutoFornecedor,
-                TableSupplierPrice = x.TabelaPreçosFornecedor,
-                TotalValue = x.Valor,
-                UnitMeasureCode = x.CódUnidadeMedida,
-                UpdateDateTime = x.DataHoraModificação,
-                UpdateUser = x.UtilizadorCriação,
-                DocumentNo = x.NºDocumento
-            }).ToList();
+            List<DailyRequisitionProductiveUnitViewModel> result = DBShoppingNecessity.GetAll().ParseToViewModel();
             return Json(result);
         }
 
@@ -66,88 +37,19 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             [HttpPost]
         [Area("Nutricao")]
         public JsonResult GetModelRequisition()
-        {
-            List<RequisitionViewModel> result = DBRequest.GetAll().Select(x => new RequisitionViewModel()
             {
-                RequisitionNo = x.NºRequisição,
-                Area = x.Área,
-                //State = x.Estado,
-                State = x.Estado.HasValue && Enum.IsDefined(typeof(RequisitionStates), x.Estado.Value) ? (RequisitionStates)x.Estado.Value : (RequisitionStates?)null,
-                ProjectNo = x.NºProjeto,
-                RegionCode = x.CódigoRegião,
-                FunctionalAreaCode = x.CódigoÁreaFuncional,
-                CenterResponsibilityCode = x.CódigoCentroResponsabilidade,
-                LocalCode = x.CódigoLocalização,
-                EmployeeNo = x.NºFuncionário,
-                Vehicle = x.Viatura,
-                ReceivedDate = !x.DataReceção.HasValue ? "" : x.DataReceção.Value.ToString("yyyy-MM-dd"),
-                Urgent = x.Urgente,
-                Sample = x.Amostra,
-                Attachment = x.Anexo,
-                Immobilized = x.Imobilizado,
-                BuyCash = x.CompraADinheiro,
-                LocalCollectionCode = x.CódigoLocalRecolha,
-                LocalDeliveryCode = x.CódigoLocalEntrega,
-                Comments = x.Observações,
-                RequestModel = x.ModeloDeRequisição,
-                CreateUser = x.UtilizadorCriação,
-                CreateDate = x.DataHoraCriação,
-                UpdateUser = x.UtilizadorModificação,
-                UpdateDate = x.DataHoraModificação,
-                RelatedSearches = x.CabimentoOrçamental,
-                Exclusive = x.Exclusivo,
-                AlreadyPerformed = x.JáExecutado,
-                Equipment = x.Equipamento,
-                StockReplacement = x.ReposiçãoDeStock,
-                Reclamation = x.Reclamação,
-                RequestReclaimNo = x.NºRequisiçãoReclamada,
-                ResponsibleCreation = x.ResponsávelCriação,
-                ResponsibleApproval = x.ResponsávelAprovação,
-                ResponsibleValidation = x.ResponsávelValidação,
-                ResponsibleReception = x.ResponsávelReceção,
-                ApprovalDate = x.DataAprovação,
-                ValidationDate = x.DataValidação,
-                UnitFoodProduction = x.UnidadeProdutivaAlimentação,
-                RequestNutrition = x.RequisiçãoNutrição,
-                RequestforDetergents = x.RequisiçãoDetergentes,
-                ProcedureCcpNo = x.NºProcedimentoCcp,
-                Approvers = x.Aprovadores,
-                LocalMarket = x.MercadoLocal,
-                LocalMarketRegion = x.RegiãoMercadoLocal,
-                RepairWithWarranty = x.ReparaçãoComGarantia,
-                Emm = x.Emm,
-                WarehouseDeliveryDate = x.DataEntregaArmazém,
-                LocalCollection = x.LocalDeRecolha,
-                CollectionAddress = x.MoradaRecolha,
-                Collection2Address = x.Morada2Recolha,
-                CollectionPostalCode = x.CódigoPostalRecolha,
-                CollectionLocality = x.LocalidadeRecolha,
-                CollectionContact = x.ContatoRecolha,
-                CollectionResponsibleReception = x.ResponsávelReceçãoRecolha,
-                LocalDelivery = x.LocalEntrega,
-                DeliveryAddress = x.MoradaEntrega,
-                Delivery2Address = x.Morada2Entrega,
-                DeliveryPostalCode = x.CódigoPostalEntrega,
-                LocalityDelivery = x.LocalidadeEntrega,
-                DeliveryContact = x.ContatoEntrega,
-                ResponsibleReceptionReception = x.ResponsávelReceçãoReceção,
-                InvoiceNo = x.NºFatura,
-                LocalMarketDate = x.DataMercadoLocal,
-                MarketInquiryNo = x.NºConsultaMercado,
-                OrderNo = x.NºEncomenda,
-                RequisitionDate = x.DataRequisição
-            }).Where(x=> x.RequestModel == true).ToList();
-            //Apply User Dimensions Validations
-            List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            //Regions
-            if (CUserDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
-            //FunctionalAreas
-            if (CUserDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
-            //ResponsabilityCenter
-            if (CUserDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
+                List<RequisitionViewModel> result = DBRequest.GetAllModelRequest().ParseToViewModel();
+                //Apply User Dimensions Validations
+                List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                //Regions
+                if (CUserDimensions.Where(y => y.Dimensão == 1).Count() > 0)
+                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+                //FunctionalAreas
+                if (CUserDimensions.Where(y => y.Dimensão == 2).Count() > 0)
+                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+                //ResponsabilityCenter
+                if (CUserDimensions.Where(y => y.Dimensão == 3).Count() > 0)
+                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
             return Json(result);
         }
 
@@ -286,7 +188,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                     result.Aprovadores = "";
                     result.UtilizadorCriação = User.Identity.Name;
                     result.DataHoraCriação = DateTime.Now;
-                    result.Estado = 3;
+                    result.Estado = (int)RequisitionStates.Pending;
                     DBRequest.Create(result);
                 }
             }
