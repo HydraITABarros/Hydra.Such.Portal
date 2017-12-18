@@ -92,7 +92,7 @@
         </style>
 
         <!-- DROPDOWNS POPULATE -->
-        <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{LFolhaDeHoraEmployee}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetEmployees_FH" last-response="{{LFolhaDeHoraEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LFolhaDeHoraRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LFolhaDeHoraFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LFolhaDeHoraResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -104,7 +104,6 @@
         <iron-ajax url="/PopulateDropdowns/GetTipoTrabalhoList" last-response="{{LFolhaDeHoraTipoTrabalhoNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraDisplacementOutsideCity" last-response="{{LFolhaDeHoraDisplacementOutsideCity}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUtilizadores" last-response="{{LFolhaDeHoraValidators}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetEmployees_FH" last-response="{{LFolhaDeHoraEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraPercursoOrigemDestino" last-response="{{LFolhaDeHoraPercursoOrigemDestino}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraViaturasMatriculas" last-response="{{LFolhaDeHoraViaturaMatricula}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRHRecursosFH" last-response="{{LFolhaDeHoraGetRHRecursosFH}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -167,15 +166,6 @@
                    on-response="_integraremrhkmfolhadehorasResponse"
                    content-type="application/json">
         </iron-ajax>
-
-        <!--<iron-ajax url="/FolhasDeHoras/ValidarBotaoFolhaDeHoras"
-               last-response="{{validarBotaoFolhaDeHorasValue}}"
-               method="post"
-               handle-as="json"
-               id="validarbotaofolhadehoras_ajax"
-               on-response="_validarbotaofolhadehorasResponse"
-               content-type="application/json">
-    </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/ValidateNumeration"
                    last-response="{{validateResponse}}"
@@ -270,15 +260,6 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetCodTipoCusto"
-                   last-response="{{CodTipoCustoUpdated}}"
-                   auto
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
-
-
         <!--MAODEOBRA-->
         <iron-ajax url="/FolhasDeHoras/CreateMaoDeObra"
                    last-response="{{MaoDeObraCreated}}"
@@ -361,10 +342,6 @@
                 <paper-button class="tablinks" on-tap="_validarFolhaDeHoras" disable="!_permissions.fH_Validar"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
                 <paper-button class="tablinks" on-tap="_integrarEmRH"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
                 <paper-button class="tablinks" on-tap="_integrarEmRHKM"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
-
-
-                <paper-button class="btnSave" id="botaotesteid" raised on-tap="_teste"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; TESTE 4</paper-button>
-                <!--<paper-button id="botaotesteid" class="tablinks" on-tap="_teste" ><i class="fa fa-check-square" aria-hidden="true"></i> TESTE</paper-button>-->
             </template>
         </div>
 
@@ -387,16 +364,26 @@
                             <vaadin-text-field type="text" value="{{data.folhaDeHorasNo}}" id="folhaDeHorasNo" name="folhaDeHorasNo" label="Nº Folha Horas" disabled="true"></vaadin-text-field>
                         </div>
                         <div class="col-sm-3">
-                            <such-selectbox id="projetoNo" value="{{data.projetoNo}}" label="Nº Ordem/Projecto"
+                            <such-selectbox id="projetoNo" value="{{ data.projetoNo }}" label="Nº Ordem/Projecto"
+                                            items="[[LFolhaDeHoraNavProjectNo]]"
+                                            text-path="no"
+                                            value-path="no"
+                                            fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
+                                            disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                            </such-selectbox>
+                            <!--campo de teste só para mostrar o valor carregado-->
+                            <!--<vaadin-text-field type="text" value="{{data.projetoNo}}" id="projetoNo2" name="projetoNo2" label="TESTE" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
+                            <!--CAMPO ORIGINAL-->
+                            <!--<such-selectbox id="projetoNo" value="{{data.projetoNo}}" label="Nº Ordem/Projecto"
                                             items="[[LFolhaDeHoraNavProjectNo]]"
                                             text-path="no"
                                             value-path="no"
                                             fields='[{"field":"no","name":"Nº"},{"field":"description","name":"Descrição"},{"field":"customerNo","name":"Nº Cliente"},{"field":"globalDimension1","name":"Dimensão Global 1"},{"field":"globalDimension2","name":"Dimensão Global 2"}]'
                                             disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                            </such-selectbox>
+                            </such-selectbox>-->
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraEmployee]]" id="empregadoNo" item-value-path="id" item-label-path="value" value="{{data.empregadoNo}}" on-value-changed="_codeChange" label="Nº Empregado" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                            <vaadin-combo-box items="[[LFolhaDeHoraEmployees]]" id="empregadoNo" item-value-path="id" item-label-path="value" value="{{data.empregadoNo}}" on-value-changed="_codeChange" label="Nº Empregado" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -468,6 +455,7 @@
                     <template is="dom-if" if="{{ _permissions.update }}">
                         <div class="col-sm-1 alignPoga">
                             <paper-button class="btnSave" raised on-tap="_updateFH">Gravar</paper-button>
+                            <!--<paper-button class="btnSave" id="botaotesteid" raised on-tap="_teste"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; TESTE</paper-button>-->
                         </div>
                     </template>
                 </div>
@@ -1328,7 +1316,7 @@
                             <vaadin-text-field type="text" value="{{data.horaTerminadoTexto}}" id="horaTerminadoTexto" name="horaTerminadoTexto" disabled="true" label="Hora Terminado"></vaadin-text-field>
                         </div>
                         <div class="col-sm-3 alignPoga">
-                            <vaadin-checkbox checked="{{data.validadoTexto}}" disabled="true">Validado</vaadin-checkbox>
+                            <vaadin-checkbox checked="{{data.validado}}" disabled="true">Validado</vaadin-checkbox>
                         </div>
                     </div>
                     <div class="row break_clear">
@@ -1347,7 +1335,7 @@
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.integradorEmRH}}" id="integradorEmRH" name="integradorEmRH" disabled="true" label="Integradores Aj Custo"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.integradoresEmRH}}" id="integradoresEmRH" name="integradoresEmRH" disabled="true" label="Integradores Aj Custo"></vaadin-text-field>
                         </div>
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.integradorEmRH}}" id="integradorEmRH" name="integradorEmRH" disabled="true" label="Integrador Aj. Custo RH"></vaadin-text-field>
@@ -1617,12 +1605,6 @@
                     }
                 },
 
-                _validarBotaoFolhaDeHoras(data) {
-                    debugger;
-                    var _self = this;
-
-                    $(_self.$.botaotesteid).addClass('disabled');
-                },
 
 
                 //PERCURSO
@@ -2144,8 +2126,11 @@
                     }
 
                     //TESTE
-                    this._validarBotaoFolhaDeHoras(this.data);
-                    //
+                    //debugger;
+                    //var _self = this;
+
+                    //$(_self.$.botaotesteid).addClass('disabled');
+                    //this.$.empregadoNo.disabled = true;
                 },
 
                 _createResponseProcessor: function () {
@@ -2184,58 +2169,136 @@
                 },
 
                 //FOLHA DE HORAS
-                _updateFolhaDeHorasResponse: function (e) {
+                _updatefolhadehorasResponse: function (e) {
                     var self = this;
-                    if (data.detail.status === 200) {
-                        if (this.FolhaDeHorasUpdated) {
-                            this._showErrorMessage('Folha de Horas actualizada com sucesso.');
-                            this.$.page_databound_ajax.generateRequest();
 
-                        } else {
-                            this._showMessage('Ocorreu um erro ao actualizar a Folha De Horas.');
-                            setTimeout(
-                                function () {
-                                    window.location.replace("/");
-                                }, 2500);
-                        }
+                    if (this.FolhaDeHorasUpdated) {
+                        this._showMessage('Folha de Horas actualizada com sucesso.');
+
+                    } else {
+                        this._showErrorMessage('Ocorreu um erro ao actualizar a Folha De Horas.');
+                        setTimeout(
+                            function () {
+                                window.location.replace("/");
+                            }, 2500);
                     }
                 },
 
                 _validarfolhadehorasResponse: function (e) {
-                    if (this.validarFolhaDeHoras) {
+                    if (this.validarFolhaDeHoras == 0) {
                         this._showMessage('Folha de Horas validada com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao validar a Folha De Horas.');
+                        if (this.validarFolhaDeHoras == 1) {
+                            this._showErrorMessage('Não tem permissões para validar esta Folha de Horas.');
+                        }
+                        else {
+                            if (this.validarFolhaDeHoras == 2) {
+                                this._showErrorMessage('O projecto definido na Folha de Horas não existe no eSUCH e/ou Evolution.');
+                            }
+                            else {
+                                if (this.validarFolhaDeHoras == 3) {
+                                    this._showErrorMessage('O projecto definido na Mão de Obra não existe no eSUCH e/ou Evolution.');
+                                }
+                                else {
+                                    if (this.validarFolhaDeHoras == 4) {
+                                        this._showErrorMessage('Ocorreu um erro na passagem dos dados.');
+                                    }
+                                    else {
+                                        if (this.validarFolhaDeHoras == 5) {
+                                            this._showErrorMessage('Não pode validar esta Folha de Horas pois a mesma já se encontra Validada.');
+                                        }
+                                        else {
+                                            this._showErrorMessage('Ocorreu um erro ao validar a Folha De Horas.');
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
 
                 _integraremrhfolhadehorasResponse: function (e) {
-                    if (this.integrarEmRHFolhaDeHoras) {
+                    if (this.integrarEmRHFolhaDeHoras == 0) {
                         this._showMessage('Folha de Horas Integrada em RH com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao Integrada em RH na Folha De Horas.');
+                        if (this.integrarEmRHFolhaDeHoras == 1) {
+                            this._showErrorMessage('Não tem permissões para Integrar em RH esta Folha de Horas.');
+                        }
+                        else {
+                            if (this.integrarEmRHFolhaDeHoras == 4) {
+                                this._showErrorMessage('Ocorreu um erro na passagem dos dados.');
+                            }
+                            else {
+                                if (this.integrarEmRHFolhaDeHoras == 5) {
+                                    this._showErrorMessage('Não pode Integrar em RH esta Folha de Horas pois a mesma já se encontra Integrada em RH.');
+                                }
+                                else {
+                                    if (this.integrarEmRHFolhaDeHoras == 6) {
+                                        this._showErrorMessage('Preencha todos os campos obrigatórios.');
+                                    }
+                                    else {
+                                        if (this.integrarEmRHFolhaDeHoras == 7) {
+                                            this._showErrorMessage('Ocorreu um erro ao Integrar RH no eSUCH.');
+                                        }
+                                        else {
+                                            if (this.integrarEmRHFolhaDeHoras == 8) {
+                                                this._showErrorMessage('Primeiro terá que Validar a Folha de Horas.');
+                                            }
+                                            else {
+                                                this._showErrorMessage('Ocorreu um erro ao Integrada em RH na Folha De Horas.');
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
 
                 _integraremrhkmfolhadehorasResponse: function (e) {
-                    if (this.integrarEmRHKMFolhaDeHoras) {
+                    if (this.integrarEmRHKMFolhaDeHoras == 0) {
                         this._showMessage('Folha de Horas Integrada em RH KM com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao Integrada em RH KM na Folha De Horas.');
+                        if (this.integrarEmRHKMFolhaDeHoras == 1) {
+                            this._showErrorMessage('Não tem permissões para Integrar em RH KM esta Folha de Horas.');
+                        }
+                        else {
+                            if (this.integrarEmRHKMFolhaDeHoras == 4) {
+                                this._showErrorMessage('Ocorreu um erro na passagem dos dados.');
+                            }
+                            else {
+                                if (this.integrarEmRHKMFolhaDeHoras == 5) {
+                                    this._showErrorMessage('Não pode Integrar em RH KM esta Folha de Horas pois a mesma já se encontra Integrada em RH KM.');
+                                }
+                                else {
+                                    if (this.integrarEmRHKMFolhaDeHoras == 6) {
+                                        this._showErrorMessage('Preencha todos os campos obrigatórios.');
+                                    }
+                                    else {
+                                        if (this.integrarEmRHKMFolhaDeHoras == 7) {
+                                            this._showErrorMessage('Ocorreu um erro ao Integrar RH KM no eSUCH.');
+                                        }
+                                        else {
+                                            if (this.integrarEmRHKMFolhaDeHoras == 8) {
+                                                this._showErrorMessage('Primeiro terá que Validar a Folha de Horas.');
+                                            }
+                                            else {
+                                                this._showErrorMessage('Ocorreu um erro ao Integrada em RH KM na Folha De Horas.');
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
 
-                //_validarbotaofolhadehorasResponse: function () {
-                //    var _self = this;
-
-                //    $(_self.$.botaotesteid).addClass('disabled');
-                //},
 
                 //PERCURSO
                 _createPercursoResponse: function (e) {
@@ -2482,11 +2545,20 @@
                     if (this.getEmpoyeeNAV.empregadoNome != null) {
                         this.$.empregadoNome.value = this.getEmpoyeeNAV.empregadoNome;
 
-                        if (this.getEmpoyeeNAV.validadores == null) {
+                        if (this.getEmpoyeeNAV.validadores == null | this.getEmpoyeeNAV.validadores == "") {
+                            this.$.validadores.value = "";
                             this._showErrorMessage('O Empregado não tem validadore(s).');
                         }
                         else {
                             this.$.validadores.value = this.getEmpoyeeNAV.validadores;
+                        }
+
+                        if (this.getEmpoyeeNAV.integradoresEmRH == null | this.getEmpoyeeNAV.integradoresEmRH == "") {
+                            this.$.integradoresEmRH.value = "";
+                            this._showErrorMessage('O Empregado não tem Integradore(s) Aj Custo.');
+                        }
+                        else {
+                            this.$.integradoresEmRH.value = this.getEmpoyeeNAV.integradoresEmRH;
                         }
                     }
                 },
