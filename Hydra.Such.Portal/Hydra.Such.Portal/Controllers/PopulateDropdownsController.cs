@@ -196,7 +196,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult OpenOrderLines( [FromBody] DateTime? date)
+        public JsonResult OpenOrderLines([FromBody] DateTime? date)
         {
             List<NAVOpenOrderLinesViewModels> result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date).ToList();
             return Json(result);
@@ -207,7 +207,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
             try
-            { 
+            {
                 List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
                 result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date).ToList();
                 if (result != null && result.Count > 0 &&
@@ -228,7 +228,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 return Json(getorderline);
             }
-            
+
         }
 
         [HttpPost]
@@ -525,7 +525,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetEmployees_FH()
         {
-            List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAVCompanyName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
             {
                 id = x.No,
                 value = x.No + " - " + x.Name,
@@ -633,11 +633,12 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetNAVShippingAddressesByClientNo([FromBody] string ClientNo) { 
-            List<DDMessageString> result = DBNAV2017ShippingAddresses.GetByClientNo(ClientNo,_config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
+        public JsonResult GetNAVShippingAddressesByClientNo([FromBody] string ClientNo)
+        {
+            List<DDMessageString> result = DBNAV2017ShippingAddresses.GetByClientNo(ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
             {
                 id = X.Code,
-                value = X.Name + " - " + X.Address +" - " + X.City
+                value = X.Name + " - " + X.Address + " - " + X.City
             }).ToList();
             return Json(result);
         }

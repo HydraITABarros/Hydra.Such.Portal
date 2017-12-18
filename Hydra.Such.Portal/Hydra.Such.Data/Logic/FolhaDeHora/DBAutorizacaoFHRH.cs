@@ -86,20 +86,28 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
         public static AutorizacaoFhRh ParseToDB(AutorizacaoFHRHViewModel x)
         {
-            return new AutorizacaoFhRh()
+            try
             {
-                NoEmpregado = x.NoEmpregado,
-                NoResponsavel1 = x.NoResponsavel1,
-                NoResponsavel2 = x.NoResponsavel2,
-                NoResponsavel3 = x.NoResponsavel3,
-                ValidadorRh1 = x.ValidadorRH1,
-                ValidadorRh2 = x.ValidadorRH2,
-                ValidadorRh3 = x.ValidadorRH3,
-                CriadoPor = x.UtilizadorCriacao,
-                DataHoraCriação = x.DataHoraCriacao,
-                AlteradoPor = x.UtilizadorModificacao,
-                DataHoraÚltimaAlteração = x.DataHoraModificacao
-            };
+                return new AutorizacaoFhRh()
+                {
+                    NoEmpregado = x.NoEmpregado,
+                    NoResponsavel1 = x.NoResponsavel1,
+                    NoResponsavel2 = x.NoResponsavel2,
+                    NoResponsavel3 = x.NoResponsavel3,
+                    ValidadorRh1 = x.ValidadorRH1,
+                    ValidadorRh2 = x.ValidadorRH2,
+                    ValidadorRh3 = x.ValidadorRH3,
+                    CriadoPor = x.UtilizadorCriacao,
+                    DataHoraCriação = x.DataHoraCriacao,
+                    AlteradoPor = x.UtilizadorModificacao,
+                    DataHoraÚltimaAlteração = x.DataHoraModificacao
+                };
+            }
+            catch (Exception e)
+            {
+
+                return null;
+            }
         }
 
         public static AutorizacaoFHRHViewModel ParseToViewModel(AutorizacaoFhRh x)

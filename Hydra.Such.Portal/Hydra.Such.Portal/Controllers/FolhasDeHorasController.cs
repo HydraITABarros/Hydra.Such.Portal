@@ -212,6 +212,7 @@ namespace Hydra.Such.Portal.Controllers
                     FH.Área = area;
                     FH.CódigoTipoKmS = "KM";
                     FH.Estado = 0;
+                    FH.Validado = false;
                     FH.CriadoPor = User.Identity.Name;
                     FH.DataHoraCriação = DateTime.Now;
                     FH.UtilizadorModificação = User.Identity.Name;
@@ -467,7 +468,7 @@ namespace Hydra.Such.Portal.Controllers
                 return null;
             }
         }
-        
+
 
         [HttpPost]
         public JsonResult GetEmployeeNome([FromBody] string idEmployee)
@@ -487,22 +488,11 @@ namespace Hydra.Such.Portal.Controllers
                     FH.Responsavel1No = Autorizacao.NoResponsavel1;
                     FH.Responsavel2No = Autorizacao.NoResponsavel2;
                     FH.Responsavel3No = Autorizacao.NoResponsavel3;
-                    FH.Validadores = string.Concat(DBUserConfigurations.GetById(Autorizacao.ValidadorRh1).Nome + " - " + DBUserConfigurations.GetById(Autorizacao.ValidadorRh2).Nome + " - " + DBUserConfigurations.GetById(Autorizacao.ValidadorRh3).Nome);
+                    FH.Validadores = Autorizacao.NoResponsavel1 + " - " + Autorizacao.NoResponsavel2 + " - " + Autorizacao.NoResponsavel3;
+                    FH.IntegradoresEmRH = Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3;
                 };
 
                 FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAVDatabaseName, _config.NAVCompanyName).SingleOrDefault().Name;
-
-                //List<DDMessageString> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No == idEmployee).Select(x => new DDMessageString()
-                //{
-                //    id = x.No,
-                //    value = x.Name
-                //}).ToList();
-
-                //if (result.Count > 0)
-                //{
-                //    FH.EmpregadoNome = result[0].value;
-                //}
-
             }
             return Json(FH);
         }
@@ -1234,7 +1224,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             int result = 0;
             try
-            { 
+            {
                 TimeSpan HoraInicio = TimeSpan.Parse(data.HoraInicio);
                 TimeSpan HoraFim = TimeSpan.Parse(data.HoraFim);
                 bool Almoco = Convert.ToBoolean(data.HorarioAlmoco);
@@ -1297,7 +1287,7 @@ namespace Hydra.Such.Portal.Controllers
                     MaoDeObra.NºDeHoras = HorasTotal;
 
                     decimal HorasMinutosDecimal = Convert.ToDecimal(HorasTotal.TotalMinutes / 60);
-                    MaoDeObra.PreçoTotal = HorasMinutosDecimal  * Convert.ToDecimal(MaoDeObra.PreçoDeVenda);
+                    MaoDeObra.PreçoTotal = HorasMinutosDecimal * Convert.ToDecimal(MaoDeObra.PreçoDeVenda);
 
 
 
@@ -1696,80 +1686,98 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult ValidarFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
-            bool result = false;
+            int result = 0;
             try
             {
-                if (!string.IsNullOrEmpty(data.FolhaDeHorasNo) && !string.IsNullOrEmpty(data.EmpregadoNo))
+                if (string.IsNullOrEmpty(data.FolhaDeHorasNo) || string.IsNullOrEmpty(data.EmpregadoNo))
                 {
-                    using (var ctx = new SuchDBContextExtention())
+                    result = 6;
+                }
+                else
+                {
+                    if ((data.Validado == null ? false : (bool)data.Validado) || (int)data.Estado != 0)
                     {
-                        var parameters = new[]{
-                        //new SqlParameter("@ServerName", "SUCH-NAVSQL\\SQLNAV"),
-                        //new SqlParameter("@DBName", "EvolutionWEB"),
-                        //new SqlParameter("@TableName", "Job Ledger Entry"),
-                        new SqlParameter("@NoFH", data.FolhaDeHorasNo),
-                        new SqlParameter("@NoUtilizador", data.EmpregadoNo)
-                    };
-
-                        ctx.execStoredProcedureValidarFH("exec FH_Validar @NoFH, @NoUtilizador", parameters);
-
-                        string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
-
-                        if (DBFolhasDeHoras.Update(new FolhasDeHoras()
+                        result = 5;
+                    }
+                    else
+                    {
+                        if (!data.Validadores.Contains(User.Identity.Name))
                         {
-                            NºFolhaDeHoras = data.FolhaDeHorasNo,
-                            Área = data.Area,
-                            NºProjeto = data.ProjetoNo == "" ? null : data.ProjetoNo,
-                            NºEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
-                            DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
-                            DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
-                            TipoDeslocação = data.TipoDeslocacaoTexto == "" ? 1 : Convert.ToInt32(data.TipoDeslocacaoTexto),
-                            CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
-                            DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
-                            Validadores = data.Validadores == "" ? null : data.Validadores,
-                            Estado = 1, //VALIDAÇÂO
-                            CriadoPor = data.CriadoPor,
-                            DataHoraCriação = data.DataHoraCriacao,
-                            DataHoraÚltimoEstado = DateTime.Now, //VALIDAÇÂO
-                            DataHoraModificação = DateTime.Now, //VALIDAÇÂO
-                            UtilizadorModificação = User.Identity.Name, //VALIDAÇÂO
-                            NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
-                            Matrícula = data.Matricula == "" ? null : data.Matricula,
-                            Terminada = data.Terminada,
-                            TerminadoPor = data.TerminadoPor,
-                            DataHoraTerminado = data.DataHoraTerminado,
-                            DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
-                            Observações = data.Observacoes,
-                            NºResponsável1 = data.Responsavel1No,
-                            NºResponsável2 = data.Responsavel2No,
-                            NºResponsável3 = data.Responsavel3No,
-                            ValidadoresRhKm = data.ValidadoresRHKM,
-                            CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
-                            CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
-                            CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
-                            Validado = true, //VALIDAÇÂO
-                            Validador = EmpregadoNome, //VALIDAÇÂO
-                            DataHoraValidação = DateTime.Now, //VALIDAÇÂO
-                            IntegradoEmRh = data.IntegradoEmRh,
-                            IntegradorEmRh = data.IntegradorEmRH,
-                            DataIntegraçãoEmRh = data.DataIntegracaoEmRH,
-                            IntegradoEmRhkm = data.IntegradoEmRhKm,
-                            IntegradorEmRhKm = data.IntegradorEmRHKM,
-                            DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM
-                        }) == null)
-                        {
-                            result = false;
+                            result = 1;
                         }
                         else
                         {
-                            result = true;
-                        };
+                            using (var ctx = new SuchDBContextExtention())
+                            {
+                                var parameters = new[]
+                                {
+                                    new SqlParameter("@NoFH", data.FolhaDeHorasNo),
+                                    new SqlParameter("@NoUtilizador", data.EmpregadoNo)
+                                };
+                                result = ctx.execStoredProcedureFH("exec FH_Validar @NoFH, @NoUtilizador", parameters);
+
+                                if (result == 0)
+                                {
+                                    string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
+
+                                    if (DBFolhasDeHoras.Update(new FolhasDeHoras()
+                                    {
+                                        NºFolhaDeHoras = data.FolhaDeHorasNo,
+                                        Área = data.Area,
+                                        NºProjeto = data.ProjetoNo == "" ? null : data.ProjetoNo,
+                                        NºEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                                        DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
+                                        DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
+                                        TipoDeslocação = data.TipoDeslocacaoTexto == "" ? 1 : Convert.ToInt32(data.TipoDeslocacaoTexto),
+                                        CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
+                                        DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
+                                        Validadores = data.Validadores == "" ? null : data.Validadores,
+                                        Estado = 1, //VALIDAÇÂO
+                                        CriadoPor = data.CriadoPor,
+                                        DataHoraCriação = data.DataHoraCriacao,
+                                        DataHoraÚltimoEstado = DateTime.Now, //VALIDAÇÂO
+                                        DataHoraModificação = DateTime.Now, //VALIDAÇÂO
+                                        UtilizadorModificação = User.Identity.Name, //VALIDAÇÂO
+                                        NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                                        Matrícula = data.Matricula == "" ? null : data.Matricula,
+                                        Terminada = data.Terminada,
+                                        TerminadoPor = data.TerminadoPor,
+                                        DataHoraTerminado = data.DataHoraTerminado,
+                                        DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
+                                        Observações = data.Observacoes,
+                                        NºResponsável1 = data.Responsavel1No,
+                                        NºResponsável2 = data.Responsavel2No,
+                                        NºResponsável3 = data.Responsavel3No,
+                                        ValidadoresRhKm = data.ValidadoresRHKM,
+                                        CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
+                                        CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
+                                        CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
+                                        Validado = true, //VALIDAÇÂO
+                                        Validador = EmpregadoNome, //VALIDAÇÂO
+                                        DataHoraValidação = DateTime.Now, //VALIDAÇÂO
+                                        IntegradoEmRh = data.IntegradoEmRh,
+                                        IntegradorEmRh = data.IntegradorEmRH,
+                                        DataIntegraçãoEmRh = data.DataIntegracaoEmRH,
+                                        IntegradoEmRhkm = data.IntegradoEmRhKm,
+                                        IntegradorEmRhKm = data.IntegradorEmRHKM,
+                                        DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM
+                                    }) == null)
+                                    {
+                                        result = 6;
+                                    }
+                                    else
+                                    {
+                                        result = 0;
+                                    };
+                                }
+                            }
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                //log
+                result = 99;
             }
             return Json(result);
         }
@@ -1777,87 +1785,112 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult IntegrarEmRHFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
-            bool result = false;
+            int result = 0;
             try
             {
-                if (!string.IsNullOrEmpty(data.FolhaDeHorasNo) && !string.IsNullOrEmpty(data.EmpregadoNo))
+                if (string.IsNullOrEmpty(data.FolhaDeHorasNo) || string.IsNullOrEmpty(data.EmpregadoNo) || string.IsNullOrEmpty(data.ProjetoNo))
                 {
-                    using (var ctx = new SuchDBContextExtention())
+                    result = 6;
+                }
+                else
+                {
+                    if (data.IntegradoEmRh == null ? false : (bool)data.IntegradoEmRh)
                     {
-                        var parameters = new[]{
-                        //new SqlParameter("@ServerName", "SUCH-NAVSQL\\SQLNAV"),
-                        //new SqlParameter("@DBName", "EvolutionWEB"),
-                        //new SqlParameter("@TableName", "Job Ledger Entry"),
-                        new SqlParameter("@NoFH", data.FolhaDeHorasNo),
-                        new SqlParameter("@NoUtilizador", data.EmpregadoNo)
-                    };
-
-                        ctx.execStoredProcedureValidarFH("exec FH_IntegrarEmRH @NoFH, @NoUtilizador", parameters);
-
-
-                        string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
-                        bool IntegradoEmRhKm = (bool)data.IntegradoEmRhKm;
-                        string TipoDeslocação = data.TipoDeslocacaoTexto;
-                        int Estado = (int)data.Estado;
-
-                        if (IntegradoEmRhKm || TipoDeslocação != "2")
-                            Estado = 2; // 2 = Registado
-
-                        if (DBFolhasDeHoras.Update(new FolhasDeHoras()
+                        result = 5;
+                    }
+                    else
+                    {
+                        if ((int)data.Estado != 1)
                         {
-                            NºFolhaDeHoras = data.FolhaDeHorasNo,
-                            Área = data.Area,
-                            NºProjeto = data.ProjetoNo == "" ? null : data.ProjetoNo,
-                            NºEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
-                            DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
-                            DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
-                            TipoDeslocação = data.TipoDeslocacaoTexto == "" ? 1 : Convert.ToInt32(data.TipoDeslocacaoTexto),
-                            CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
-                            DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
-                            Validadores = data.Validadores == "" ? null : data.Validadores,
-                            Estado = Estado,
-                            CriadoPor = data.CriadoPor,
-                            DataHoraCriação = data.DataHoraCriacao,
-                            DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
-                            DataHoraModificação = DateTime.Now, //INTEGRAREMRH
-                            UtilizadorModificação = User.Identity.Name, //INTEGRAREMRH
-                            NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
-                            Matrícula = data.Matricula == "" ? null : data.Matricula,
-                            Terminada = data.Terminada,
-                            TerminadoPor = data.TerminadoPor,
-                            DataHoraTerminado = data.DataHoraTerminado,
-                            DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
-                            Observações = data.Observacoes,
-                            NºResponsável1 = data.Responsavel1No,
-                            NºResponsável2 = data.Responsavel2No,
-                            NºResponsável3 = data.Responsavel3No,
-                            ValidadoresRhKm = data.ValidadoresRHKM,
-                            CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
-                            CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
-                            CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
-                            Validado = data.Validado,
-                            Validador = data.Validador,
-                            DataHoraValidação = data.DataHoraValidacao,
-                            IntegradoEmRh = true, //INTEGRAREMRH
-                            IntegradorEmRh = User.Identity.Name, //INTEGRAREMRH
-                            DataIntegraçãoEmRh = DateTime.Now, //INTEGRAREMRH
-                            IntegradoEmRhkm = data.IntegradoEmRhKm,
-                            IntegradorEmRhKm = data.IntegradorEmRHKM,
-                            DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM
-                        }) == null)
-                        {
-                            result = false;
+                            result = 8;
                         }
                         else
                         {
-                            result = true;
-                        };
+                            if (!data.IntegradoresEmRH.Contains(User.Identity.Name))
+                            {
+                                result = 1;
+                            }
+                            else
+                            {
+                                using (var ctx = new SuchDBContextExtention())
+                                {
+                                    var parameters = new[]
+                                    {
+                                        new SqlParameter("@NoFH", data.FolhaDeHorasNo),
+                                        new SqlParameter("@NoUtilizador", data.EmpregadoNo)
+                                    };
+
+                                    result = ctx.execStoredProcedureFH("exec FH_IntegrarEmRH @NoFH, @NoUtilizador", parameters);
+
+                                    if (result == 0)
+                                    {
+                                        string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
+                                        bool IntegradoEmRhKm = (bool)data.IntegradoEmRhKm;
+                                        string TipoDeslocação = data.TipoDeslocacaoTexto;
+                                        int Estado = (int)data.Estado;
+
+                                        if (IntegradoEmRhKm || TipoDeslocação != "2")
+                                            Estado = 2; // 2 = Registado
+
+                                        if (DBFolhasDeHoras.Update(new FolhasDeHoras()
+                                        {
+                                            NºFolhaDeHoras = data.FolhaDeHorasNo,
+                                            Área = data.Area,
+                                            NºProjeto = data.ProjetoNo == "" ? null : data.ProjetoNo,
+                                            NºEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                                            DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
+                                            DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
+                                            TipoDeslocação = data.TipoDeslocacaoTexto == "" ? 1 : Convert.ToInt32(data.TipoDeslocacaoTexto),
+                                            CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
+                                            DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
+                                            Validadores = data.Validadores == "" ? null : data.Validadores,
+                                            Estado = Estado,
+                                            CriadoPor = data.CriadoPor,
+                                            DataHoraCriação = data.DataHoraCriacao,
+                                            DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
+                                            DataHoraModificação = DateTime.Now, //INTEGRAREMRH
+                                            UtilizadorModificação = User.Identity.Name, //INTEGRAREMRH
+                                            NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                                            Matrícula = data.Matricula == "" ? null : data.Matricula,
+                                            Terminada = data.Terminada,
+                                            TerminadoPor = data.TerminadoPor,
+                                            DataHoraTerminado = data.DataHoraTerminado,
+                                            DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
+                                            Observações = data.Observacoes,
+                                            NºResponsável1 = data.Responsavel1No,
+                                            NºResponsável2 = data.Responsavel2No,
+                                            NºResponsável3 = data.Responsavel3No,
+                                            ValidadoresRhKm = data.ValidadoresRHKM,
+                                            CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
+                                            CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
+                                            CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
+                                            Validado = data.Validado,
+                                            Validador = data.Validador,
+                                            DataHoraValidação = data.DataHoraValidacao,
+                                            IntegradoEmRh = true, //INTEGRAREMRH
+                                            IntegradorEmRh = User.Identity.Name, //INTEGRAREMRH
+                                            DataIntegraçãoEmRh = DateTime.Now, //INTEGRAREMRH
+                                            IntegradoEmRhkm = data.IntegradoEmRhKm,
+                                            IntegradorEmRhKm = data.IntegradorEmRHKM,
+                                            DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM
+                                        }) == null)
+                                        {
+                                            result = 7;
+                                        }
+                                        else
+                                        {
+                                            result = 0;
+                                        };
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                //log
+                result = 99;
             }
             return Json(result);
         }
@@ -1865,88 +1898,114 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult IntegrarEmRHKMFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
-            bool result = false;
+            int result = 0;
             try
             {
-                if (!string.IsNullOrEmpty(data.FolhaDeHorasNo) && !string.IsNullOrEmpty(data.EmpregadoNo) && data.TipoDeslocacao == 2) //2 = "Viatura Própria"
+                if (string.IsNullOrEmpty(data.FolhaDeHorasNo) || string.IsNullOrEmpty(data.EmpregadoNo) || string.IsNullOrEmpty(data.ProjetoNo) || data.TipoDeslocacao == 2) //2 = "Viatura Própria"
                 {
-                    using (var ctx = new SuchDBContextExtention())
+                    result = 6;
+                }
+                else
+                {
+                    if (data.IntegradoEmRhKm == null ? false : (bool)data.IntegradoEmRhKm)
                     {
-                        var parameters = new[]{
-                            //new SqlParameter("@ServerName", "SUCH-NAVSQL\\SQLNAV"),
-                            //new SqlParameter("@DBName", "EvolutionWEB"),
-                            //new SqlParameter("@TableName", "Job Ledger Entry"),
-                            new SqlParameter("@NoFH", data.FolhaDeHorasNo),
-                            new SqlParameter("@NoUtilizador", data.EmpregadoNo)
-                        };
-
-                        ctx.execStoredProcedureValidarFH("exec FH_IntegrarEmRHKM @NoFH, @NoUtilizador", parameters);
-
-                        string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
-                        bool IntegradoEmRh = (bool)data.IntegradoEmRh;
-                        int NoRegistos = 0;
-                        int Estado = (int)data.Estado;
-
-                        NoRegistos = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == data.FolhaDeHorasNo && x.TipoCusto == 2).Count();
-
-                        if (IntegradoEmRh || NoRegistos == 0)
-                            Estado = 2; // 2 = Registado
-
-                        if (DBFolhasDeHoras.Update(new FolhasDeHoras()
+                        result = 5;
+                    }
+                    else
+                    {
+                        if ((int)data.Estado != 1)
                         {
-                            NºFolhaDeHoras = data.FolhaDeHorasNo,
-                            Área = data.Area,
-                            NºProjeto = data.ProjetoNo == "" ? null : data.ProjetoNo,
-                            NºEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
-                            DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
-                            DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
-                            TipoDeslocação = data.TipoDeslocacaoTexto == "" ? 1 : Convert.ToInt32(data.TipoDeslocacaoTexto),
-                            CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
-                            DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
-                            Validadores = data.Validadores == "" ? null : data.Validadores,
-                            Estado = Estado,
-                            CriadoPor = data.CriadoPor,
-                            DataHoraCriação = data.DataHoraCriacao,
-                            DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
-                            DataHoraModificação = DateTime.Now, //INTEGRAREMRHKM
-                            UtilizadorModificação = User.Identity.Name, //INTEGRAREMRHKM
-                            NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
-                            Matrícula = data.Matricula == "" ? null : data.Matricula,
-                            Terminada = data.Terminada,
-                            TerminadoPor = data.TerminadoPor,
-                            DataHoraTerminado = data.DataHoraTerminado,
-                            DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
-                            Observações = data.Observacoes,
-                            NºResponsável1 = data.Responsavel1No,
-                            NºResponsável2 = data.Responsavel2No,
-                            NºResponsável3 = data.Responsavel3No,
-                            ValidadoresRhKm = data.ValidadoresRHKM,
-                            CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
-                            CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
-                            CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
-                            Validado = data.Validado,
-                            Validador = data.Validador,
-                            DataHoraValidação = data.DataHoraValidacao,
-                            IntegradoEmRh = data.IntegradoEmRh,
-                            IntegradorEmRh = data.IntegradorEmRH,
-                            DataIntegraçãoEmRh = data.DataIntegracaoEmRH,
-                            IntegradoEmRhkm = true, //INTEGRAREMRHKM
-                            IntegradorEmRhKm = User.Identity.Name, //INTEGRAREMRHKM
-                            DataIntegraçãoEmRhKm = DateTime.Now //INTEGRAREMRHKM
-                        }) == null)
-                        {
-                            result = false;
+                            result = 8;
                         }
                         else
                         {
-                            result = true;
-                        };
+                            if (!data.IntegradoresEmRHKM.Contains(User.Identity.Name))
+                            {
+                                result = 1;
+                            }
+                            else
+                            {
+                                using (var ctx = new SuchDBContextExtention())
+                                {
+                                    var parameters = new[]
+                                    {
+                                        new SqlParameter("@NoFH", data.FolhaDeHorasNo),
+                                        new SqlParameter("@NoUtilizador", data.EmpregadoNo)
+                                    };
+
+                                    result = ctx.execStoredProcedureFH("exec FH_IntegrarEmRHKM @NoFH, @NoUtilizador", parameters);
+
+                                    if (result == 0)
+                                    {
+                                        string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
+                                        bool IntegradoEmRh = (bool)data.IntegradoEmRh;
+                                        int NoRegistos = 0;
+                                        int Estado = (int)data.Estado;
+
+                                        NoRegistos = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == data.FolhaDeHorasNo && x.TipoCusto == 2).Count();
+
+                                        if (IntegradoEmRh || NoRegistos == 0)
+                                            Estado = 2; // 2 = Registado
+
+                                        if (DBFolhasDeHoras.Update(new FolhasDeHoras()
+                                        {
+                                            NºFolhaDeHoras = data.FolhaDeHorasNo,
+                                            Área = data.Area,
+                                            NºProjeto = data.ProjetoNo == "" ? null : data.ProjetoNo,
+                                            NºEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                                            DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
+                                            DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
+                                            TipoDeslocação = data.TipoDeslocacaoTexto == "" ? 1 : Convert.ToInt32(data.TipoDeslocacaoTexto),
+                                            CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
+                                            DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
+                                            Validadores = data.Validadores == "" ? null : data.Validadores,
+                                            Estado = Estado,
+                                            CriadoPor = data.CriadoPor,
+                                            DataHoraCriação = data.DataHoraCriacao,
+                                            DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
+                                            DataHoraModificação = DateTime.Now, //INTEGRAREMRHKM
+                                            UtilizadorModificação = User.Identity.Name, //INTEGRAREMRHKM
+                                            NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                                            Matrícula = data.Matricula == "" ? null : data.Matricula,
+                                            Terminada = data.Terminada,
+                                            TerminadoPor = data.TerminadoPor,
+                                            DataHoraTerminado = data.DataHoraTerminado,
+                                            DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
+                                            Observações = data.Observacoes,
+                                            NºResponsável1 = data.Responsavel1No,
+                                            NºResponsável2 = data.Responsavel2No,
+                                            NºResponsável3 = data.Responsavel3No,
+                                            ValidadoresRhKm = data.ValidadoresRHKM,
+                                            CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
+                                            CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
+                                            CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
+                                            Validado = data.Validado,
+                                            Validador = data.Validador,
+                                            DataHoraValidação = data.DataHoraValidacao,
+                                            IntegradoEmRh = data.IntegradoEmRh,
+                                            IntegradorEmRh = data.IntegradorEmRH,
+                                            DataIntegraçãoEmRh = data.DataIntegracaoEmRH,
+                                            IntegradoEmRhkm = true, //INTEGRAREMRHKM
+                                            IntegradorEmRhKm = User.Identity.Name, //INTEGRAREMRHKM
+                                            DataIntegraçãoEmRhKm = DateTime.Now //INTEGRAREMRHKM
+                                        }) == null)
+                                        {
+                                            result = 7;
+                                        }
+                                        else
+                                        {
+                                            result = 0;
+                                        };
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                //log
+                result = 99;
             }
             return Json(result);
         }
