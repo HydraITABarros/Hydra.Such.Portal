@@ -773,7 +773,7 @@
                     this.$.requisition_datasource.generateRequest();
                 },
                 isReadOnly: function () {
-                    return this._requisitionstatus == 3 ? true : !this._permissions.update;
+                    return this._requisitionstatus == 4 ? true : !this._permissions.update;
                 },
                 _onSearchTermChanged: function (value) {
                     var id = this.$.requisitionType.value;

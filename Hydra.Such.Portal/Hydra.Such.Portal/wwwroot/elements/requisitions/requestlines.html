@@ -1,0 +1,1020 @@
+﻿<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/elements/comboboxs/MovementTypeList.html" />
+<link rel="import" href="/elements/comboboxs/ProjectTypeList.html" />
+<link rel="import" href="/elements/comboboxs/ProjectList.html" />
+<h1 class="title"> Requisição </h1>
+<dom-module id="x-requestlines">
+    <template>
+
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <style>
+                    vaadin-combo-box {
+                        margin-top: 0px !important;
+                        width: 100% !important;
+                    }
+
+                    vaadin-date-picker {
+                        margin-top: 0px !important;
+                        width: 100% !important;
+                    }
+
+                    vaadin-text-field {
+                        margin-top: 0px !important;
+                        width: 100%;
+                    }
+
+                    paper-button {
+                        margin-top: 10px;
+                    }
+
+                    .break_clear {
+                        margin-top: 15px;
+                        margin-right: 0px !important;
+                        margin-left: 0px !important;
+                    }
+
+                    .break_frm {
+                        margin-top: 15px;
+                    }
+
+                    .label_custom {
+                        color: var(--valo-contrast-60pct) !important;
+                        font-weight: 500 !important;
+                        font-size: var(--valo-font-size-s) !important;
+                        margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                        margin-bottom: var(--valo-space-xs) !important;
+                        transition: color 0.4s !important;
+                        line-height: 1 !important;
+                        font-family: var(--valo-font-family) !important;
+                    }
+
+                    datetime-picker {
+                        border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                        background-color: var(--valo-contrast-5pct);
+                        color: var(--valo-contrast-60pct) !important;
+                        width: 100%;
+                    }
+
+                    .marginSpace {
+                        margin: 0px !important;
+                    }
+
+                    textarea {
+                        background-color: #f5f5f5;
+                        border: none;
+                        border-radius: 3px 4px;
+                        align-self: baseline;
+                        font-weight: 500;
+                    }
+
+                        textarea:hover {
+                            background-color: #eeeeee;
+                        }
+
+                        textarea:focus {
+                            background-color: white;
+                            border: none;
+                            outline: 1px solid #eeeeee;
+                            border-radius: 3px 4px;
+                        }
+
+                    datetime-picker {
+                        --datetime-selected-background: #71BCC1 !important;
+                        --datetime-background: #1f3133;
+                        --datetime-color: #eeeeee;
+                    }
+
+                    paper-collapse-item {
+                        --paper-item: {
+                padding: 0 0;
+            };
+                        --paper-collapse-item-header: {
+                 padding: 0 15px;
+                 color: #333;
+                 background-color: #f5f5f5;
+                 border-bottom: solid #ddd 1px;
+                 border-top-left-radius: 3px;
+                 border-top-right-radius: 3px;
+
+             };
+                    }
+
+                    .panel-body {
+                        padding-top: 0px !important;
+                    }
+        </style>
+        <paper-toast id="ToastError" style="background-color: red" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <iron-ajax url="/Compras/GestaoRequisicoes/GridRequestLineValues" id="ajax_getdata" auto last-response="{{data}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/CreateAndDeleteRequestLine" id="ajax_updatedata" last-response="{{data}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/GetApprovedRequisitions" id="ajax_getgrid" auto last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Viaturas/GetList" id="grid_databound_ajax" last-response="{{vehicleresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/GetAllProjectDiary" id="grid_GetAllProject_ajax" last-response="{{projectresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+         <iron-ajax url="/PopulateDropdowns/GetLocations" id="grid_Locations_ajax" last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" id="grid_unitofmeasure_ajax" last-response="{{unitofmeasureresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetrequestTypes" id="grid_requesttypes_ajax" last-response="{{requesttypesresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsCode" auto id="ajax_code_options" last-response="{{cboProdCode}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/getSupplier" id="ajax_supplier_options" last-response="{{cboSupplier}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllClients" id="ajax_clients_options" last-response="{{cboClients}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetEmployees" id="ajax_employees_options" last-response="{{cboEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{CBLocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVJobNo" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVVendor" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/GetRequisition" last-response="{{Requisition}}" on-response="_responsePlaceDataCollection" method="post" handle-as="json" id="requisition_datasource" content-type="application/json"></iron-ajax>
+
+
+        <div class="row">
+            <div class="col-md-12 col-md-12 col-lg-12">
+                <iron-form id="frmRequisitions">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Cabeçalho</div>
+                        <div class="panel-body">
+                            <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                                <paper-tab>Geral</paper-tab>
+                                <paper-tab>Reparação</paper-tab>
+                                <paper-tab>Recolha</paper-tab>
+                                <paper-tab>Entrega (Fornecedor)</paper-tab>
+                            </paper-tabs>
+
+                            <iron-pages selected="{{selected}}">
+                                <!--Geral-->
+                                <div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-2 ">
+                                            <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{Requisition.requisitionNo}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="requesitionType" item-value-path="id" item-label-path="value" value="{{Requisition.localMarketRegion}}" label="Região Mercado Local" disabled="{{ isReadOnly() }}">
+                                                <template>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+
+                                    </div>
+                                    <br />
+                                    <div class="row break_clear">
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.urgent}}" disabled="{{ isReadOnly() }}">Urgente</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.relatedSearches}}" disabled="{{ isReadOnly() }}">Orçamento</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.immobilized}}" disabled="{{ isReadOnly() }}">Imobilizado</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.exclusive}}" disabled="{{ isReadOnly() }}">Exclusivo</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.alreadyPerformed}}" disabled="{{ isReadOnly() }}">Já Executado</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.sample}}" disabled="{{ isReadOnly() }}">Amostra</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.equipment}}" disabled="{{ isReadOnly() }}">Equipamento</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.buyCash}}" disabled="{{ isReadOnly() }}">Compras a Dinheiro</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.stockReplacement}}" disabled="{{ isReadOnly() }}">Reposição de Stock</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <vaadin-checkbox checked="{{Requisition.reclamation}}" disabled="{{ isReadOnly() }}">Reclamação</vaadin-checkbox>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{Requisition.requestReclaimNo}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-combo-box items="[[LProjectRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{Requisition.regionCode}}" label="Cód. Região" disabled="{{ isReadOnly() }}" required error-message="Este campo é obrigatório">
+                                                <template>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="20%">[[item.id]]</td>
+                                                            <td width="80%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{Requisition.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ isReadOnly() }}" required error-message="Este campo é obrigatório">
+                                                <template>
+                                                    <table width="200px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{Requisition.centerResponsibilityCode}}" label="Cód. Centro Responsabilidade" disabled="{{ isReadOnly() }}" required error-message="Este campo é obrigatório">
+                                                <template>
+                                                    <table width="200px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-lg-3" id="VehicleDiv" hidden>
+                                            <vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{Requisition.vehicle}}" label="Viatura" disabled="{{ isReadOnly() }}">
+                                                <template>
+                                                    <b>[[item.id]]</b>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-combo-box items="[[CBJobNo]]" id="CBJobNo" item-value-path="id" item-label-path="id" value="{{Requisition.projectNo}}" label="Nº Ordem/Projeto" disabled="{{ isReadOnly() }}">
+                                                <template>
+                                                    <b>[[item.id]]</b>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled="{{ isReadOnly() }}"></vaadin-date-picker>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="Notes" name="Notes" label="Observações" value="{{Requisition.comments}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{Requisition.employeeNo}}" hidden disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Reparação-->
+                                <div>
+                                    <div class="col-lg-3 alignPoga">
+                                        <vaadin-checkbox checked="{{Requisition.repairWithWarranty}}" disabled="{{ isReadOnly() }}">Reparação com Garantia</vaadin-checkbox>
+                                    </div>
+                                    <div class="col-lg-3 alignPoga">
+                                        <vaadin-checkbox checked="{{Requisition.emm}}" disabled="{{ isReadOnly() }}">EMM</vaadin-checkbox>
+                                    </div>
+                                    <div class="col-md-3 ">
+                                        <vaadin-date-picker label="Data Entrega Armazém" id="DeliveryWarehouseDate" name="DeliveryWarehouseDate" value="{{Requisition.warehouseDeliveryDate}}" disabled="{{ isReadOnly() }}"></vaadin-date-picker>
+                                    </div>
+                                </div>
+                                <!--Recolha-->
+                                <div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-combo-box items="[[CBLocal]]" on-change="_onSearchLocalDataCollection" id="CollectionLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localCollection}}" label="Local de Recolha" disabled="{{ isReadOnly() }}">
+                                                <template>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="CollectionAddress" name="CollectionAddress" label="Morada" value="{{Requisition.collectionAddress}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="CollectionPostalCode" name="CollectionPostalCode" label="Código-Postal" value="{{Requisition.collectionPostalCode}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="CollectionLocality" name="CollectionLocality" label="Localidade" value="{{Requisition.collectionLocality}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="CollectionContact" name="CollectionContact" label="Contato" value="{{Requisition.collectionContact}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="CollectionReceptionResponsible" name="CollectionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReception}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Entrega (Fornecedor)-->
+                                <div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-combo-box items="[[CBLocal]]" on-change="_onSearchLocalDataDelivery" id="DeliveryLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localDelivery}}" label="Local de Entrega" disabled="{{ isReadOnly() }}">
+                                                <template>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="DeliveryAddress" name="DeliveryAddress" label="Morada" value="{{Requisition.deliveryAddress}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="DeliveryPostalCode" name="DeliveryPostalCode" label="Código-Postal" value="{{Requisition.deliveryPostalCode}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="DeliveryLocality" name="DeliveryLocality" label="Localidade" value="{{Requisition.localityDelivery}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ReceptionReceptionResponsible" name="ReceptionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReceptionReception}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="InvoiceNo" name="InvoiceNo" label="Nº Fatura" value="{{Requisition.invoiceNo}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </iron-pages>
+                        </div>
+                    </div>
+                </iron-form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Linhas de Requisição</div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <vaadin-combo-box items="[[locationsresult]]" id="localCodeId" on-value-changed="_localCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Localização">
+                                    <template>
+                                        <table width="350px">
+                                            <tr>
+                                                <td width="30%">[[item.id]]</td>
+                                                <td width="70%"><b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-lg-3">
+                                <vaadin-combo-box items="[[cboProdCode]]" id="codeId" on-value-changed="_codeIdOnChange" item-value-path="id" item-label-path="value" value="" label="Código">
+                                    <template>
+                                        <table width="350px">
+                                            <tr>
+                                                <td width="30%">[[item.id]]</td>
+                                                <td width="70%"><b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-lg-3">
+                                <vaadin-text-field id="descriptionId" name="DescriptionName" label="Descrição" value=""></vaadin-text-field>
+                            </div>
+                            <div class="col-lg-3">
+                                <vaadin-combo-box items="[[unitofmeasureresult]]" id="unitMeasureCodeId" on-value-changed="_unitMeasureCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Unidade Medida">
+                                    <template>
+                                        <table width="250px">
+                                            <tr>
+                                                <td width="30%">[[item.id]]</td>
+                                                <td width="70%"><b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <vaadin-text-field id="quantityToRequireId" name="quantityToRequireName" label="Quantidade A Requerer" value=""></vaadin-text-field>
+                            </div>
+                            <div class="col-lg-3">
+                                <vaadin-text-field id="quantityRequiredId" name="quantityRequiredName" label="Quantidade Requerida" value=""></vaadin-text-field>
+                            </div>
+                            <div class="col-lg-3">
+                                <vaadin-text-field id="quantityToProvideId" name="quantityToProvideName" label="Quantidade A Disponibilizar" value=""></vaadin-text-field>
+                            </div>
+                            <div class="col-lg-3">
+                                <vaadin-text-field id="quantityAvailableId" name="quantityAvailableName" label="Quantidade Disponibilizada" value=""></vaadin-text-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <vaadin-text-field id="quantityReceivableId" name="quantityReceivableName" label="Quantidade A Receber" value=""></vaadin-text-field>
+                            </div>
+                            <div class="col-lg-3">
+                                <vaadin-text-field id="quantityReceivedId" name="quantityReceivedName" label="Quantidade Recebida" value=""></vaadin-text-field>
+                            </div>
+                            <div class="col-lg-3">
+                                <vaadin-text-field id="unitCostId" name="unitCostName" label="Custo Unitário" value=""></vaadin-text-field>
+                            </div>
+                            <div class="col-lg-3">
+                                <vaadin-text-field id="unitCostsouldId" name="unitCostsouldName" label="Preço Unitário Venda" value=""></vaadin-text-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <vaadin-text-field id="budgetValueId" name="budgetValueName" label="Valor Orçamento" value=""></vaadin-text-field>
+                            </div>
+                            <div class="col-lg-3 alignPoga">
+                                <vaadin-checkbox id="createMarketSearchId">Criar Consulta Mercado</vaadin-checkbox>
+                            </div>
+                            <div class="col-lg-3">
+                                <vaadin-text-field id="openOrderLineNoId" name="openOrderLineNoName" label="Nº Linha Encomenda Aberto" value=""></vaadin-text-field>
+                            </div>
+                            <div class="col-lg-3">
+                                <vaadin-text-field id="queryCreatedMarketNoId" name="queryCreatedMarketNoName" label="Nº de Consulta Mercado Criada" value=""></vaadin-text-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 alignPoga">
+                                <vaadin-checkbox id="sendPrePurchaseId">Enviar Pré Compra</vaadin-checkbox>
+                            </div>
+                            <div class="col-lg-3 alignPoga">
+                                <vaadin-checkbox id="submitPrePurchaseId">Enviado Pré Compra</vaadin-checkbox>
+                            </div>
+                            <div class="col-lg-3">
+                                <vaadin-combo-box items="[[projectresult]]" id="projectId" on-value-changed="_projectNoOnChange" item-value-path="lineNo" item-label-path="projectNo" value="" label="Nº Projeto">
+                                    <template>
+                                        <table width="250px">
+                                            <tr>
+                                                <td width="20%">[[item.lineNo]]</td>
+                                                <td width="80%"><b>[[item.projectNo]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-lg-3">
+                                <vaadin-text-field id="maintenanceOrderLineNoId" name="maintenanceOrderLineNoName" label="Nº Linha Ordem Manutenção" value=""></vaadin-text-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <vaadin-combo-box items="[[vehicleresult]]" id="vehicleId" on-value-changed="_vehicleOnChange" item-value-path="matricula" item-label-path="matricula" value="" label="Viatura">
+                                    <template>
+                                        <table width="250px">
+                                            <tr>
+                                                <td width="20%">[[item.matricula]]</td>
+                                                <td width="80%"><b>[[item.CodigoTipoViatura]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <div class="col-lg-3">
+                                <vaadin-combo-box items="[[cboSupplier]]" id="supplierNoId" on-value-changed="_supplierNoOnChange" item-value-path="id" item-label-path="value" value="" label="Nº Fornecedor">
+                                    <template>
+                                        <table width="350px">
+                                            <tr>
+                                                <td width="20%">[[item.id]]</td>
+                                                <td width="80%"><b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+                            <!--<div class="col-lg-3">
+                            <vaadin-combo-box items="[[regionresult]]" id="regionCodeId" on-value-changed="_regionCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Região">
+                                <template>
+                                    <table width="250px">
+                                        <tr>
+                                            <td width="20%">[[item.id]]</td>
+                                            <td width="80%"><b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+                        <div class="col-lg-3">
+                            <vaadin-combo-box items="[[arearesult]]" id="functionalAreaCodeId" on-value-changed="_functionalAreaCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Área Funcional">
+                                <template>
+                                    <table width="300px">
+                                        <tr>
+                                            <td width="20%">[[item.id]]</td>
+                                            <td width="80%"><b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>-->
+                        </div>
+                    <!--<div class="row">
+                        <div class="col-lg-3">
+                            <vaadin-combo-box items="[[responsabilityresult]]" id="centerResponsibilityCodeId" on-value-changed="_centerResponsibilityCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Centro Responsabilidade">
+                                <template>
+                                    <table width="250px">
+                                        <tr>
+                                            <td width="20%">[[item.id]]</td>
+                                            <td width="80%"><b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                    </div>-->
+                    <div class="row">
+                        <div class="marginSpace">
+                            <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                        </div>
+                    </div>
+                    
+                    <br />
+                        <div class="row">
+                            <vaadin-grid id="requestGrid" aria-label="ProfileModelsTabel" items="[[data]]" class="grid">
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="localCode"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        [[_parseLocalCode(item.localCode)]]
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="code">Código do produto</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="code"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        [[_parseprodCode(item.code)]]
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="description"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.description}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="unitMeasureCode">Código Unidade Medida</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="unitMeasureCode"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        [[_parseunitofmeasure(item.unitMeasureCode)]]
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="quantityToRequire">Quantidade a Requerer</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantityToRequire"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.quantityToRequire}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="quantityRequired">Quantidade Requerida</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantityRequired"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.quantityRequired}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="quantityToProvide">Quantidade a Disponibilizar</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantityToProvide"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.quantityToProvide}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="quantityAvailable">Quantidade Disponibilizada</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantityAvailable"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.quantityAvailable}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="quantityReceivable">Quantidade a Receber</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantityReceivable"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.quantityReceivable}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="quantityReceived">Quantidade Recebida</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantityReceived"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.quantityReceived}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="unitCost"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.unitCost}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="unitCostsould">Preço Unitário Venda</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="unitCostsould"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.unitCostsould}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="budgetValue">Valor Orçamento</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="budgetValue"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.budgetValue}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <p class="alignCenter">Criar Consulta Mercado</p>
+                                        <vaadin-grid-filter path="createMarketSearch" value="[[_filterActive]]">
+                                            <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                                        </vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <vaadin-checkbox checked=" {{item.createMarketSearch}}" disabled></vaadin-checkbox>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="openOrderLineNo"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.openOrderLineNo}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="queryCreatedMarketNo">Nº de Consulta Mercado Criada</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="queryCreatedMarketNo"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.queryCreatedMarketNo}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <p class="alignCenter">Enviar Pré Compra</p>
+                                        <vaadin-grid-filter path="submitPrePurchase" value="[[_filterActive]]">
+                                            <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                                        </vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <vaadin-checkbox checked="{{item.submitPrePurchase}}" disabled></vaadin-checkbox>
+
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <p class="alignCenter">Enviado Pré Compra</p>
+                                        <vaadin-grid-filter path="sendPrePurchase" value="[[_filterActive]]">
+                                            <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                                        </vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <vaadin-checkbox checked=" {{item.sendPrePurchase}}" disabled></vaadin-checkbox>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="projectNo"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.projectNo}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="maintenanceOrderLineNo">Nº Linha Ordem Manutenção</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="maintenanceOrderLineNo"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.maintenanceOrderLineNo}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="vehicle">Viatura</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="vehicle"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.vehicle}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="supplierNo">Nº Fornecedor</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="supplierNo"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        [[ _parsesupplierNo(item.supplierNo)]]
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="regionCode"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        [[ _parseregion(item.regionCode)]]
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="functionalAreaCode"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        [[ _parseArea(item.functionalAreaCode)]]
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="centerResponsibilityCode">Código Centro Responsabilidade</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="centerResponsibilityCode"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        [[ _parsecenterRespons(item.centerResponsibilityCode)]]
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="100px" resizable>
+                                    <template class="header">
+                                    </template>
+                                    <template>
+                                        <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
+                                    </template>
+                                </vaadin-grid-column>
+
+                            </vaadin-grid>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+<script>
+    document.addEventListener('WebComponentsReady', function () {
+        Polymer({
+            is: 'x-requestlines',
+            properties: {
+                selected: {
+                    type: Number,
+                    value: 0
+                },
+                _permissions: {
+                    type: Array
+                },
+                _requisitionid: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                _requisitionstatus: {
+                    type: Number,
+                    notify: true,
+                    value: 0
+                },
+                _isCreate: {
+                    type: Boolean,
+                    value: true
+                },
+                _filterActive: {
+                    type: Boolean,
+                    value: true
+                }
+            },
+            observers: [
+                '_onCacheLoaded(LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,locationsresult,cboProdCode,unitofmeasureresult,cboSupplier,Requisition)'
+            ],
+            ready: function () {
+                //debugger;
+                    
+                this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                this.$.requisition_datasource.generateRequest();
+            },
+            isReadOnly: function () {
+                return this._requisitionstatus == 4 ? true : !this._permissions.update;
+            },
+            _onCacheLoaded: function (LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, locationsresult, cboProdCode, unitofmeasureresult, cboSupplier, Requisition) {
+                debugger;
+                if (!this.Flag) {
+                    this.$.ajax_getdata.body = JSON.stringify(this._requisitionid);
+                    this.$.ajax_getdata.generateRequest();
+                }
+                this.Flag = true;
+            },
+            _parsesupplierNo: function (param) {
+                if (param != undefined && this.cboSupplier != undefined) {
+                    debugger;
+                    var sel = this.cboSupplier.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
+            _parseunitofmeasure: function (param) {
+                if (param != undefined && this.unitofmeasureresult != undefined) {
+                    debugger;
+                    var sel = this.unitofmeasureresult.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
+            _parseprodCode: function (param) {
+                if (param != undefined && this.cboProdCode != undefined) {
+                    var sel = this.cboProdCode.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
+            _parsecenterRespons: function (param) {
+                if (param != undefined && this.LProjectResponsabilityCenterCodes != undefined) {
+                    var sel = this.LProjectResponsabilityCenterCodes.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
+            _parseregion: function (param) {
+                if (param != undefined && this.LProjectRegionCodes != undefined) {
+                    var sel = this.LProjectRegionCodes.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+
+            },
+            _parseArea: function (param) {
+                if (param != undefined && this.LProjectFunctionalAreaCodes != undefined) {
+                    var sel = this.LProjectFunctionalAreaCodes.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+
+            },
+            _parseLocalCode: function (param) {
+                if (param != undefined && this.locationsresult != undefined) {
+                    var sel = this.locationsresult.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
+            _create() {
+                debugger;
+                this.data.unshift({
+                    //requestNo: this.$.requisitionNo.value,
+                    code: this.$.codeId.value,
+                    description: this.$.descriptionId.value,
+                    unitMeasureCode: this.$.unitMeasureCodeId.value,
+                    localCode: this.$.localCodeId.value,
+                    quantityToRequire: this.$.quantityToRequireId.value,
+                    quantityRequired: this.$.quantityRequiredId.value,
+                    quantityToProvide: this.$.quantityToProvideId.value,
+                    quantityAvailable: this.$.quantityAvailableId.value,
+                    quantityReceivable: this.$.quantityReceivableId.value,
+                    quantityReceived: this.$.quantityReceivedId.value,
+                    unitCost: this.$.unitCostId.value,
+                    regionCode: this.$.RegionCode.value,
+                    functionalAreaCode: this.$.FunctionalAreaCode.value,
+                    centerResponsibilityCode: this.$.ResponsabilityCenterCode.value,
+                    vehicle: this.$.vehicleId.value,
+                    unitCostsould: this.$.unitCostsouldId.value,
+                    budgetValue: this.$.budgetValueId.value,
+                    maintenanceOrderLineNo: this.$.maintenanceOrderLineNoId.value,
+                    createMarketSearch: this.$.createMarketSearchId.value,
+                    submitPrePurchase: this.$.submitPrePurchaseId.value,
+                    sendPrePurchase: this.$.sendPrePurchaseId.value,
+                    supplierNo: this.$.supplierNoId.value,
+                    openOrderLineNo: this.$.openOrderLineNoId.value,
+                    queryCreatedMarketNo: this.$.queryCreatedMarketNoId.value,
+                    projectNo: this.$.projectId.value
+                });
+                // Save to DB
+                this.$.ajax_updatedata.body = JSON.stringify(this.data);
+                this.$.ajax_updatedata.generateRequest();
+                this.$.requestGrid.clearCache();
+            },
+            _delete: function (e) {
+                var index = this.data.indexOf(e.model.item);
+                this.data.splice(index, 1);
+                // Save to DB
+                this.$.ajax_updatedata.body = JSON.stringify(this.data);
+                this.$.ajax_updatedata.generateRequest();
+                this.$.requestGrid.clearCache();
+            },
+            _onSearchLocalDataCollection: function (e) {
+                var placeId = this.$.CollectionLocal.value;
+                if (placeId != "" && placeId > 0) {
+                    this.$.ajax_getPlaceData.body = JSON.stringify(placeId);
+                    this.$.ajax_getPlaceData.generateRequest();
+                }
+            },
+            _onSearchLocalDataDelivery: function (e) {
+                var placeId = this.$.DeliveryLocal.value;
+                if (placeId != "" && placeId > 0) {
+                    this.$.ajax_getPlaceDataDelivery.body = JSON.stringify(placeId);
+                    this.$.ajax_getPlaceDataDelivery.generateRequest();
+                }
+            },
+          
+
+        });
+    });
+</script>
+</dom-module>
+

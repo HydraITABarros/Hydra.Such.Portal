@@ -252,7 +252,16 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
-
+        [HttpPost]
+        public JsonResult GetRequestStatus()
+        {
+            List<DDMessageString> result = Configurations.EnumerablesFixed.RequisitionStatesEnumData.Select(x => new DDMessageString()
+            {
+                id =Convert.ToString(x.Id),
+                value = x.Value
+            }).ToList();
+            return Json(result);
+        }
         [HttpPost]
         public JsonResult GetPaymentTerms()
         {
