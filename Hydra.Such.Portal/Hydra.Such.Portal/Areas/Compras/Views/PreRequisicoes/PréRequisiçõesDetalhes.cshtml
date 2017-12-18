@@ -157,6 +157,8 @@
                    on-response="_responseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-request id="page_reqmodellines_ajax"></iron-request>
+
         <!-- PROJECT Valitador -->
         <iron-ajax url="/PreRequisicoes/ValidateNumeration"
                    last-response="{{validateResponse}}"
@@ -207,7 +209,7 @@
                    content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i> Copiar Requisição Modelo</paper-button>
+            <paper-button class="tablinks" on-tap="_reqmodel"><i class="fa fa-check-square" aria-hidden="true"></i> Requisição Modelo</paper-button>
             <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i> Requisições Pendentes</paper-button>
             <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Nova Requisição</paper-button>
         </div>
@@ -948,6 +950,14 @@
                 }
             },
 
+            _reqmodel: function (e) {
+                debugger;
+                if (e != null) {
+                    window.location.href = "../../../Compras/PreRequisicoes/RequisiçõesModeloLista/" + this.data.preRequesitionsNo;
+                   //this.$.page_reqmodellines_ajax.send({ url: "../../../Compras/PreRequisicoes/RequisiçõesModeloLista/", body: { "id": this.data.preRequesitionsNo } });
+                }
+
+            },
             //CRUDS
             _create: function () {
                 debugger;
@@ -1191,7 +1201,7 @@
                 var index = this.dataLines.lines.indexOf(e.model.item);
                 this.dataLines.lines.splice(index, 1);
 
-                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
+                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetReqModelList";
                 this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
                 this.$.prereqLines_databound_ajax.generateRequest();
 

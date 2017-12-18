@@ -124,6 +124,20 @@ namespace Hydra.Such.Data.Logic.Request
         }
         #endregion
 
+        public static List<Requisição> GetReqModel()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição.Where(x => x.ModeloDeRequisição == true).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         #region Parse Utilities
         public static RequisitionViewModel ParseToViewModel(this Requisição item)
         {
