@@ -1,14 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Compras
 {
-    public class RequisitionViewModel
+    public enum RequisitionStates
+    {
+        [Description("Pendente")]
+        Pending,
+        [Description("Recebido")]
+        Received,
+        [Description("Tratado")]
+        Treated,
+        [Description("Validado")]
+        Validated,
+        [Description("Aprovado")]
+        Approved,
+        [Description("Disponibilizado")]
+        Available
+    }
+
+    public class RequisitionViewModel : ErrorHandler
     {
         public string RequisitionNo { get; set; }
         public int? Area { get; set; }
-        public int? State { get; set; }
+        //public int? State { get; set; }
+        public RequisitionStates? State { get; set; }
         public string ProjectNo { get; set; }
         public string RegionCode { get; set; }
         public string FunctionalAreaCode { get; set; }
@@ -75,7 +93,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public DateTime? RequisitionDate { get; set; }
         public string dimension { get; set; }
         public decimal? Budget { get; set; }
-        
 
+        public List<RequisitionLineViewModel> Lines { get; set; }
     }
 }

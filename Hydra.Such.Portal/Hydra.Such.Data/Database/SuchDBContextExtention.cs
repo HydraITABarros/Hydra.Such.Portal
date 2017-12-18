@@ -49,26 +49,45 @@ namespace Hydra.Such.Data.Database
         }
 
 
-        public virtual bool execStoredProcedureValidarFH(String cmdText, SqlParameter[] parameters)
+        public virtual int execStoredProcedureFH(String cmdText, SqlParameter[] parameters)
         {
-
-            using (var connection = new SqlConnection("data source=10.101.1.10\\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;"))
+            int result = 0;
+            try
             {
-                connection.Open();
-
-                using (var command = new SqlCommand(cmdText, connection))
+                using (var connection = new SqlConnection("data source=10.101.1.10\\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;"))
                 {
-                    foreach (SqlParameter item in parameters)
-                    {
-                        command.Parameters.Add(item.ParameterName, System.Data.SqlDbType.NVarChar);
-                        command.Parameters[item.ParameterName].Value = item.Value == null ? "" : item.Value;
-                    }
+                    connection.Open();
 
-                    command.ExecuteScalar();
+                    using (var command = new SqlCommand(cmdText, connection))
+                    {
+                        foreach (SqlParameter item in parameters)
+                        {
+                            command.Parameters.Add(item.ParameterName, System.Data.SqlDbType.NVarChar);
+                            command.Parameters[item.ParameterName].Value = item.Value == null ? "" : item.Value;
+                        }
+
+                        var dataReader = command.ExecuteReader();
+
+                        if (dataReader.HasRows)
+                        {
+                            while (dataReader.Read())
+                            {
+                                result = dataReader.GetInt32(0);
+                            }
+                        }
+                        else
+                        {
+                            result = 99;
+                        }
+                        dataReader.Close();
+                    }
                 }
             }
-
-            return true;
+            catch (Exception ex)
+            {
+                return 99;
+            }
+            return result;
         }
     }
 }
