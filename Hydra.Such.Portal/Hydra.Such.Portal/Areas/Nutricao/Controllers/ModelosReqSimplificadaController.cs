@@ -131,7 +131,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 else
                 {
                     item.eReasonCode = 2;
-                    item.eMessage = "Ocorreu um erro ao atualizar o modelo de requisição simplificadoa.";
+                    item.eMessage = "Ocorreu um erro ao atualizar o modelo de requisição simplificada.";
                 }
             }
             else

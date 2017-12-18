@@ -136,6 +136,18 @@
                    handle-as="json"
                    id="requisition_datasource"
                    content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/ValidateLocalMarketForRequisition"
+                   last-response="{{Requisition}}"
+                   method="post"
+                   handle-as="json"
+                   id="validateLocalMarket_datasource"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/ValidateRequisition"
+                   last-response="{{Requisition}}"
+                   method="post"
+                   handle-as="json"
+                   id="validaterequisition_datasource"
+                   content-type="application/json"></iron-ajax>
 
 
         <div class="row break_frm">
@@ -377,7 +389,7 @@
                 </iron-form>
                 <div class="row break_clear marginSpace">
                     <paper-button raised id="btnLocalMarketValidation" style="width: 250px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>
-                    <paper-button raised id="btnValidate" on-tap="_validate"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
+                    <paper-button raised id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
                 </div>
                     <div id="PreRequiLinesPanel" class="panel panel-default">
                         <div class="panel-heading">Linhas</div>
@@ -765,15 +777,18 @@
                         type: Boolean,
                         value: true
                     },
+                    _requisitionstatesenum: {
+                        type: Array
+                    },
                 },
                 ready: function () {
                     //debugger;
-                    
                     this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
                     this.$.requisition_datasource.generateRequest();
                 },
                 isReadOnly: function () {
-                    return this._requisitionstatus == 4 ? true : !this._permissions.update;
+                    //debugger;
+                    return this._requisitionstatus == this._requisitionstatesenum.Approved ? true : !this._permissions.update;
                 },
                 _onSearchTermChanged: function (value) {
                     var id = this.$.requisitionType.value;
@@ -805,12 +820,11 @@
 
                 _responsePlaceDataCollection: function (e) {
                     if (e.detail.status === 200) {
-                        this.$.CollectionAddress.value = this.PlaceDataCollection.address;
-                        this.$.CollectionPostalCode.value = this.PlaceDataCollection.postalcode;
-                        this.$.CollectionLocality.value = this.PlaceDataCollection.locality;
-                        this.$.CollectionContact.value = this.PlaceDataCollection.contact;
-                        this.$.CollectionReceptionResponsible.value = this.PlaceDataCollection.responsiblerecept;
-
+                        //this.$.CollectionAddress.value = this.PlaceDataCollection.address;
+                        //this.$.CollectionPostalCode.value = this.PlaceDataCollection.postalcode;
+                        //this.$.CollectionLocality.value = this.PlaceDataCollection.locality;
+                        //this.$.CollectionContact.value = this.PlaceDataCollection.contact;
+                        //this.$.CollectionReceptionResponsible.value = this.PlaceDataCollection.responsiblerecept;
                     }
                 },
 
@@ -912,6 +926,17 @@
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
+                },
+
+                _validateLocalMarket: function () {
+                    alert("Funcionalidade não implementada e/ou a aguardar detalhes.");
+                    //this.$.validateLocalMarket_datasource.body = JSON.stringify(this.Requisition);
+                    //this.$.validateLocalMarket_datasource.generateRequest();
+                },
+                _validateRequisition: function () {
+                    alert("Funcionalidade não implementada e/ou a aguardar detalhes.");
+                    //this.$.validaterequisition_datasource.body = JSON.stringify(this.Requisition);
+                    //this.$.validaterequisition_datasource.generateRequest();
                 },
             });
         });
