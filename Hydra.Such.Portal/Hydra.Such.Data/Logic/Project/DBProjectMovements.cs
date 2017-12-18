@@ -214,7 +214,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.MovimentosDeProjeto.Where(x => x.NºProjeto == ProjectNo && x.Registado == true).ToList();
+                    return ctx.MovimentosDeProjeto.Where(x => x.NºProjeto == ProjectNo).ToList();
                 }
             }
             catch (Exception ex)

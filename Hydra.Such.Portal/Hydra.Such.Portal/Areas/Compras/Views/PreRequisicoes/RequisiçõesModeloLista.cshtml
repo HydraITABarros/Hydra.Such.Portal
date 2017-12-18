@@ -1,8 +1,9 @@
 ﻿
 @{
-    ViewData["Title"] = "PreRequisicoesLista";
+    ViewData["Title"] = "RequisiçõesModeloLista";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<h1 class="title">Modelo Requisições</h1>
 
 <link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
@@ -12,11 +13,10 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-<h1 class="title">Pré-Requisições</h1>
 
-<x-prereqlist _areaid="10" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-prereqlist>
+<x-reqmodellist _areaid="10" _prereqno="@ViewBag.PreReqNo" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-reqmodellist>
 
-<dom-module id="x-prereqlist">
+<dom-module id="x-reqmodellist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/css/main.css" />
@@ -46,73 +46,48 @@
             </style>
         </custom-style>
 
-        <iron-ajax url="/PreRequisicoes/GetPreReqList"
+        <iron-ajax url="/PreRequisicoes/GetReqModelList"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
                    id="grid_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Contratos/DeleteContract"
-                   last-response="{{deletedData}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_delete_contract"
-                   on-response="_responseDeleteProcessor"
-                   content-type="application/json"></iron-ajax>
-
         <template is="dom-if" if="{{ _permissions.create }}">
             <template is="dom-if" if="{{ !_disabledCreate }}">
                 <div class="marginSpace">
-                    <paper-button class="btnSave" raised on-tap="_create">Criar Novo</paper-button>
+                    <paper-button class="btnSave" raised on-tap="_create">Voltar</paper-button>
                 </div>
             </template>
         </template>
 
-        <vaadin-grid aria-label="PreReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+
+        <vaadin-grid aria-label="ReqModelGrid" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column width="120px">
                 <template class="header">
-                    <vaadin-grid-sorter path="preRequesitionsNo">Nº Pré-Requisição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="preRequesitionsNo" />
+                    <vaadin-grid-sorter path="requisitionNo">Nº Requisição Modelo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisitionNo" />
                 </template>
                 <template>
-                    {{item.preRequesitionsNo}}
+                    {{item.requisitionNo}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    <vaadin-grid-sorter path="requesitionType">Tipo Requisição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requesitionType" />
+                    <vaadin-grid-sorter path="requisitionDate">Data Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisitionDate" />
                 </template>
                 <template>
-                    {{item.requesitionType}}
+                    {{item.requisitionDate}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px">
                 <template class="header">
-                    <vaadin-grid-sorter path="claimedRequesitionNo">Nº Requisição Reclamada</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="claimedRequesitionNo" />
+                    <vaadin-grid-sorter path="comments">Comentários</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="comments" />
                 </template>
                 <template>
-                    {{item.claimedRequesitionNo}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
-                <template class="header">
-                    <vaadin-grid-sorter path="projectNo">Nº Ordem/Projeto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="projectNo" />
-                </template>
-                <template>
-                    {{item.projectNo}}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="200px">
-                <template class="header">
-                    <vaadin-grid-sorter path="receptionDate">Data Receção</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="receptionDate" />
-                </template>
-                <template>
-                    {{item.receptionDate}}
+                    {{item.comments}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px">
@@ -142,12 +117,21 @@
                     {{item.responsabilityCenterCode}}
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    <vaadin-grid-sorter path="createDate">Criado em</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createDate" />
+                </template>
+                <template>
+                    {{item.createDate}}
+                </template>
+            </vaadin-grid-column>
             <vaadin-grid-column width="10%" resizable>
                 <template class="header">
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove" raised on-tap="_deletePreReq" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                        <paper-button class="btnSave" raised on-tap="_SaveLines" disabled="{{_permissionsCreate}}">Guardar Linhas</paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -160,14 +144,12 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-prereqlist',
+                is: 'x-reqmodellist',
                 properties: {
                     _permissions: {
                         type: Array
                     },
-                    activeItem: {
-                        observer: '_rowSelected'
-                    },
+
                     _areaid: {
                         type: Number,
                         notify: true,
@@ -182,55 +164,22 @@
                         value: false
                     }
                 },
-                _rowSelected: function (item) {
-                    if (item != null) {
-                        window.location.href = "../../Compras/PreRequisicoes/PréRequisiçõesDetalhes/?PreRequesitionNo=" + item.preRequesitionsNo;
-                    }
-                },
-                _create: function (item) {
-                    debugger;
-                    if (item != null) {
-                        window.location.href = "../../Compras/PreRequisicoes/PréRequisiçõesDetalhes/";
-                    }
-                },
                 ready: function () {
                     this.$.grid_databound_ajax.generateRequest();
                 },
 
-                _responseDeleteProcessor: function (data) {
+                _SaveLines: function (e) {
                     debugger;
-                    var self = this;
-                    if (data.detail.status === 200) {
-                        this._openToast(this.deletedData.eMessage);
-                        if (this.deletedData.eReasonCode == 1) {
-                            setTimeout(
-                                function () {
-                                    window.location.href = "/";
-                                }, 2500);
-                        } else if (this.deletedData.eReasonCode == 2) {
-                            this._openToastError(this.deletedData.eMessage);
-                        }
-                    }
-                },
-
-                _openToast: function (message) {
-                    this.$.ToastMessageSuccess.text = message;
-                    this.$.ToastMessageSuccess.open();
-                },
-                _openToastError: function (message) {
-                    this.$.ToastMessageError.text = message;
-                    this.$.ToastMessageError.open();
-                },
-
-                _deleteOprotunity: function (data) {
-                    debugger;
-                    var index = this.result.indexOf(data.model.item);
+                    var index = this.result.indexOf(e.model.item);
                     this.result.splice(index, 1);
-                    this.$.ajax_delete_contract.body = JSON.stringify(data.model.item);
-                    this.$.ajax_delete_contract.generateRequest();
-                }
+
+                    this.$.grid_databound_ajax.url = "/PreRequisicoes/CopyReqModelLines";
+                    this.$.grid_databound_ajax.body = JSON.stringify(e.model.item);
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    //this.$.gridUserAccesses.clearCache();
+                },
             });
         });
     </script>
-
 </dom-module>

@@ -165,6 +165,16 @@
                 color: white;
                 background: #D5662F;
             }
+            /*zpgm*/
+            .btn--return {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                margin-top: 7px;
+                color: white;
+                background: #9E21FF;
+            }
             vaadin-grid.disabled:after {
                 content: "";
                 position: absolute;
@@ -665,11 +675,11 @@
                                             <vaadin-text-field type="text" value="{{CLArea.checklistArea.dataResponsavel}}" id="dataResponsavelApresentar" name="dataResponsavelApresentar" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
                                     </div>
+                                    <!--Elementos Checklist - Estado 0 - .e -->
                                     <div class="col-lg-6">
                                         <br />
                                         <paper-button raised id="submitProcedimento" class="btn--confirm pull-left" on-tap="_submitProcedimento"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Submeter</paper-button>
                                     </div>
-                                    <!--Elementos Checklist - Estado 0 - .e -->
                                     
                                     <div class="clearfix"></div>
                                 </div>
@@ -992,6 +1002,11 @@
                                             <div class="row break_clear"></div>
                                         </div>
                                         <div class="clearfix"></div>
+                                        <div class="col-lg-6">
+                                            <br />
+                                            <paper-button raised id="confirmImobilizadoContab" class="btn--confirm pull-left" on-tap="_confirmImobilizadoContab"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Confirmar</paper-button>
+                                            <paper-button raised id="returnToArea" class="btn--return pull-left" on-tap="_returnToArea"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Devolver Área</paper-button>
+                                        </div>
                                     </div>
 
                                 </div>

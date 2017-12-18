@@ -850,7 +850,7 @@ namespace Hydra.Such.Portal.Controllers
                                 DataHoraCriação = DateTime.Now
                             };
 
-
+                            DBProjectMovements.Create(ProjectMovement);
                         }
 
                         
@@ -869,7 +869,7 @@ namespace Hydra.Such.Portal.Controllers
             List<DiárioDeProjeto> dp = new List<DiárioDeProjeto>();
             if (projectNo != null && projectNo != "")
             {
-                dp = DBProjectDiary.GetRegisteredDiary(projectNo).Select(x => new DiárioDeProjeto()
+                dp = DBProjectMovements.GetRegisteredDiary(projectNo).Select(x => new DiárioDeProjeto()
                 {
                     NºProjeto = x.NºProjeto,
                     Data = x.Data,
@@ -942,7 +942,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProjectMovements([FromBody] string ProjectNo)
         {
-            List<ProjectDiaryViewModel> dp = DBProjectDiary.GetRegisteredDiary(ProjectNo).Select(x => new ProjectDiaryViewModel()
+            List<ProjectDiaryViewModel> dp = DBProjectMovements.GetRegisteredDiary(ProjectNo).Select(x => new ProjectDiaryViewModel()
             {
                 LineNo = x.NºLinha,
                 ProjectNo = x.NºProjeto,
@@ -973,7 +973,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo, bool allProjs)
         {
-            List<ProjectDiaryViewModel> dp = DBProjectDiary.GetRegisteredDiaryDp(ProjectNo, User.Identity.Name, allProjs).Select(x => new ProjectDiaryViewModel()
+            List<ProjectDiaryViewModel> dp = DBProjectMovements.GetRegisteredDiaryDp(ProjectNo, User.Identity.Name, allProjs).Select(x => new ProjectDiaryViewModel()
             {
                 LineNo = x.NºLinha,
                 ProjectNo = x.NºProjeto,
@@ -1023,7 +1023,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                List<ProjectDiaryViewModel> result = DBProjectDiary.GetAllTableByArea(User.Identity.Name, areaId).Select(x => new ProjectDiaryViewModel()
+                List<ProjectDiaryViewModel> result = DBProjectMovements.GetAllTableByArea(User.Identity.Name, areaId).Select(x => new ProjectDiaryViewModel()
                 {
                     LineNo = x.NºLinha,
                     ProjectNo = x.NºProjeto,
@@ -1109,9 +1109,9 @@ namespace Hydra.Such.Portal.Controllers
                                 //update to Invoiced = true
                                 foreach (var lst in NewList)
                                 {
-                                    DiárioDeProjeto upDate = DBProjectDiary.GetByLineNo(lst.LineNo, User.Identity.Name).FirstOrDefault();
+                                    MovimentosDeProjeto upDate = DBProjectMovements.GetByLineNo(lst.LineNo, User.Identity.Name).FirstOrDefault();
                                     upDate.Faturada = true;
-                                    DBProjectDiary.Update(upDate);
+                                    DBProjectMovements.Update(upDate);
                                 }
                                 InvoiceMessages Messages = new InvoiceMessages();
                                 Messages.ClientNo = lines.InvoiceToClientNo;
@@ -1161,9 +1161,9 @@ namespace Hydra.Such.Portal.Controllers
                                         //update to Invoiced = true
                                         foreach (var lst in NewList)
                                         {
-                                            DiárioDeProjeto upDate = DBProjectDiary.GetByLineNo(lst.LineNo, User.Identity.Name).FirstOrDefault();
+                                            MovimentosDeProjeto upDate = DBProjectMovements.GetByLineNo(lst.LineNo, User.Identity.Name).FirstOrDefault();
                                             upDate.Faturada = true;
-                                            DBProjectDiary.Update(upDate);
+                                            DBProjectMovements.Update(upDate);
 
                                             InvoiceMessages Messages = new InvoiceMessages();
                                             Messages.ClientNo = num_cliente;
