@@ -131,10 +131,21 @@
 
         <iron-ajax url="/Compras/GestaoRequisicoes/GetRequisition"
                    last-response="{{Requisition}}"
-                   on-response="_responsePlaceDataCollection"
                    method="post"
                    handle-as="json"
                    id="requisition_datasource"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/ValidateLocalMarketForRequisition"
+                   last-response="{{Requisition}}"
+                   method="post"
+                   handle-as="json"
+                   id="validateLocalMarket_datasource"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/ValidateRequisition"
+                   last-response="{{Requisition}}"
+                   method="post"
+                   handle-as="json"
+                   id="validaterequisition_datasource"
                    content-type="application/json"></iron-ajax>
 
 
@@ -377,7 +388,7 @@
                 </iron-form>
                 <div class="row break_clear marginSpace">
                     <paper-button raised id="btnLocalMarketValidation" style="width: 250px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>
-                    <paper-button raised id="btnValidate" on-tap="_validate"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
+                    <paper-button raised id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
                 </div>
                     <div id="PreRequiLinesPanel" class="panel panel-default">
                         <div class="panel-heading">Linhas</div>
@@ -765,15 +776,18 @@
                         type: Boolean,
                         value: true
                     },
+                    _requisitionstatesenum: {
+                        type: Array
+                    },
                 },
                 ready: function () {
                     //debugger;
-                    
                     this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
                     this.$.requisition_datasource.generateRequest();
                 },
                 isReadOnly: function () {
-                    return this._requisitionstatus == 3 ? true : !this._permissions.update;
+                    //debugger;
+                    return this._requisitionstatus == this._requisitionstatesenum.Approved ? true : !this._permissions.update;
                 },
                 _onSearchTermChanged: function (value) {
                     var id = this.$.requisitionType.value;
@@ -912,6 +926,13 @@
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
+                },
+
+                _validateLocalMarket: function (e) {
+                    alert("Funcionalidade não definida e/ou a aguardar detalhes.");
+                },
+                _validateRequisition: function (e) {
+                    alert("Funcionalidade não definida e/ou a aguardar detalhes.");
                 },
             });
         });

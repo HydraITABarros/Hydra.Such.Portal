@@ -8,11 +8,23 @@ using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.ViewModel.Compras;
 using Microsoft.AspNetCore.Mvc;
 using Hydra.Such.Data.ViewModel;
+using Hydra.Such.Data.NAV;
+using Hydra.Such.Portal.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
     public class GestaoRequisicoesController : Controller
     {
+        private readonly NAVConfigurations _config;
+        private readonly NAVWSConfigurations _configws;
+
+        public GestaoRequisicoesController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        {
+            _config = appSettings.Value;
+            _configws = NAVWSConfigs.Value;
+        }
+
         [Area("Compras")]
         public IActionResult Index()
         {
@@ -34,12 +46,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         public IActionResult DetalhesReqAprovada(string id)
         {
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
-
+            
+            
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
                 ViewBag.RequisitionId = id;
-                
+                ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
+
                 return View();
             }
             else
@@ -399,7 +413,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             string requisitionId = string.Empty;
             int status = -1;
-            var test = Configurations.EnumerablesFixed.RequisitionStatesEnumData;
+            
             if (requestParams != null)
             {
                 requisitionId = requestParams["requisitionId"].ToString();
@@ -407,16 +421,11 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
 
             bool statusIsValid = Configurations.EnumHelper.ValidateRange(typeof(RequisitionStates), status);
-            
+
             RequisitionViewModel item;
             if (!string.IsNullOrEmpty(requisitionId) && requisitionId != "0" && statusIsValid)
             {
                 item = DBRequest.GetById(requisitionId).ParseToViewModel();
-                
-                //Ensure that the requisition has the expected status. Ex.: prevents from validating pending requisitions
-                RequisitionStates statusToCompare = (RequisitionStates)status;
-                if (item == null || item.State != statusToCompare)
-                    item = new RequisitionViewModel();
             }
             else
                 item = new RequisitionViewModel();
@@ -428,18 +437,109 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         [Area("Compras")]
         public JsonResult ValidateLocalMarketForRequisition([FromBody] RequisitionViewModel item)
         {
-            item.eMessage = "Funcionalidade não implementada";
-            item.eReasonCode = 0;
-
+            //Validate
+            if (item != null)
+            {
+                //Ensure that the requisition has the expected status. Ex.: prevents from validating pending requisitions
+                if (item == null || item.State != RequisitionStates.Approved)
+                    item = new RequisitionViewModel();
+                var status = CreatePurchaseItemsFor(item);
+            }
+            else
+            {
+                item = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel validar o mercado local. A requisição não pode ser nula."
+                };
+            }
+            
             return Json(item);
+        }
+
+        private ErrorHandler CreatePurchaseItemsFor(RequisitionViewModel requisition)
+        {
+            ErrorHandler status = new ErrorHandler();
+            if (requisition != null && requisition.Lines.Count > 0)
+            {
+                /*
+                    Filtrar as linhas da requisição cujos campos ‘Mercado Local’ seja = true, ‘Validado Compras’=false e ‘Quandidade Requerida’ > 0;
+                */
+                var linesToValidate = requisition.Lines.Where(x => x.LocalMarket.Value && !x.PurchaseValidated.Value && x.QuantityRequired.Value > 0);
+                if (linesToValidate.Count() > 0)
+                {
+                    //Task<WSContacts.Create_Result> createPurchasesTask = NAVPurchaseService.CreateAsync(item, _configws);
+                    //try
+                    //{
+                    //    createPurchasesTask.Wait();
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    item.eReasonCode = 3;
+                    //    item.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
+                    //}
+                }
+                else
+                {
+                    status.eReasonCode = 3;
+                    status.eMessage = "Não existem linhas que cumpram os requisitos de validação do mercado local.";
+                }
+            }
+            return status;
         }
 
         [HttpPost]
         [Area("Compras")]
         public JsonResult ValidateRequisition([FromBody] RequisitionViewModel item)
         {
-            item.eMessage = "Funcionalidade não implementada";
-            item.eReasonCode = 0;
+            /*
+                Header	estado
+                Lines	onde ‘Quantidade Requerida’ seja > 0;
+	                ‘Quantidade a Disponibilizar’ = Quantidade Requerida’
+	                Responsável Validação = utilizador atual
+	                Data Validação = now
+
+                	Criar na tabela de workflow de registo de validação e respetiva submissão
+             */
+            if (item != null)
+            {
+                //Ensure that the requisition has the expected status. Ex.: prevents from validating pending requisitions
+                if (item == null || item.State != RequisitionStates.Approved)
+                {
+                    item = new RequisitionViewModel();
+                    item.eReasonCode = 3;
+                    item.eMessage = "O estado da requisição não permite a validação.";
+                }
+                else
+                {
+                    var linesToValidate = item.Lines
+                            .Where(x => x.QuantityRequired.Value > 0);
+
+                    if (linesToValidate.Count() > 0)
+                    {
+                        item.State = RequisitionStates.Validated;
+                        item.ResponsibleValidation = User.Identity.Name;
+                        item.ValidationDate = DateTime.Now;
+                        
+                        linesToValidate.ToList().ForEach(x =>
+                                x.QuantityToProvide = x.QuantityRequired
+                            );
+                    }
+                    else
+                    {
+                        item.eReasonCode = 3;
+                        item.eMessage = "Não existem linhas que cumpram os requisitos de validação.";
+                    }
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel validar. A requisição não pode ser nula."
+                };
+            }
 
             return Json(item);
         }
