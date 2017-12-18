@@ -23,6 +23,7 @@ namespace Hydra.Such.Data.Database
         public TimeSpan? InicioHoraJantar { get; set; }
         public TimeSpan? FimHoraJantar { get; set; }
         public int? NumeraçãoPréRequisições { get; set; }
+        public int? NumeraçãoRequisições { get; set; }
 
         public ConfiguraçãoNumerações NumeraçãoContratosNavigation { get; set; }
         public ConfiguraçãoNumerações NumeraçãoFolhasDeHorasNavigation { get; set; }

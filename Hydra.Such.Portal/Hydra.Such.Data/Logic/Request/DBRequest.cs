@@ -11,8 +11,7 @@ namespace Hydra.Such.Data.Logic.Request
     public static class DBRequest
     {
         #region CRUD
-
-
+        
         public static List<Requisição> GetAll()
         {
             try

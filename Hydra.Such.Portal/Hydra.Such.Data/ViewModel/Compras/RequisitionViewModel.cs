@@ -95,5 +95,10 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? Budget { get; set; }
 
         public List<RequisitionLineViewModel> Lines { get; set; }
+
+        private bool IsValidForLocalMarketForRequisition()
+        {
+            return false;
+        }
     }
 }

@@ -134,5 +134,14 @@ namespace Hydra.Such.Portal.Configurations
                 return value.ToString();
         }
 
+        public static Dictionary<string, int> GetItemsAsDictionary(Type enumType, bool excludeEmptyDescription = true)
+        {
+            Dictionary<string, int> items = new Dictionary<string, int>();
+            foreach (var item in Enum.GetValues(enumType))
+            {
+                items.Add(item.ToString(), (int)item);
+            }
+            return items;
+        }
     }
 }
