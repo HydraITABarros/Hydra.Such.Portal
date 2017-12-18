@@ -294,7 +294,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NoEmpregado)
                     .HasColumnName("No_Empregado")
-                    .HasMaxLength(20)
+                    .HasMaxLength(50)
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.AlteradoPor)
@@ -315,27 +315,27 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NoResponsavel1)
                     .HasColumnName("No_Responsavel_1")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.NoResponsavel2)
                     .HasColumnName("No_Responsavel_2")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.NoResponsavel3)
                     .HasColumnName("No_Responsavel_3")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.ValidadorRh1)
                     .HasColumnName("Validador_RH1")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.ValidadorRh2)
                     .HasColumnName("Validador_RH2")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.ValidadorRh3)
                     .HasColumnName("Validador_RH3")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<AutorizarFaturaçãoContratos>(entity =>
@@ -2281,11 +2281,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValidadoresRhKm)
                     .HasColumnName("Validadores RH KM")
                     .HasMaxLength(200);
-
-                entity.HasOne(d => d.NºProjetoNavigation)
-                    .WithMany(p => p.FolhasDeHoras)
-                    .HasForeignKey(d => d.NºProjeto)
-                    .HasConstraintName("FK_Folhas de Horas_Projetos");
             });
 
             modelBuilder.Entity<GruposAprovação>(entity =>

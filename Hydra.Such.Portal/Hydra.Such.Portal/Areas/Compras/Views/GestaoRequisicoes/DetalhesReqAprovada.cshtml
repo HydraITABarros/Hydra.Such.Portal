@@ -5,5 +5,9 @@
 <link rel="import" href="~/elements/requisitions/requisitiondetails.html">
 <h1 class="title">Detalhes Requisição Aprovada</h1>
 
-<x-requisitiondetails _requisitionid="@ViewBag.RequisitionId" _requisitionstatus="3" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-requisitiondetails>
+<x-requisitiondetails _requisitionid="@ViewBag.RequisitionId" 
+                      _requisitionstatus="@ViewBag.ApprovedRequisitionEnumValue" 
+                      _requisitionstatesenum='@Html.Raw(Json.Serialize(ViewBag.RequisitionStatesEnumString))' 
+                      _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+</x-requisitiondetails>
 

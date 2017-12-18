@@ -7,7 +7,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
     public class RequisitionLineViewModel
     {
         public string RequestNo { get; set; }
-        public int LineNo { get; set; }
+        public int? LineNo { get; set; }
         public int? Type { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
