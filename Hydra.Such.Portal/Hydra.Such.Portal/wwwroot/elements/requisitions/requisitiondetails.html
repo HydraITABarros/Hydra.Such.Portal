@@ -131,6 +131,7 @@
 
         <iron-ajax url="/Compras/GestaoRequisicoes/GetRequisition"
                    last-response="{{Requisition}}"
+                   on-response="_responsePlaceDataCollection"
                    method="post"
                    handle-as="json"
                    id="requisition_datasource"
@@ -819,11 +820,11 @@
 
                 _responsePlaceDataCollection: function (e) {
                     if (e.detail.status === 200) {
-                        this.$.CollectionAddress.value = this.PlaceDataCollection.address;
-                        this.$.CollectionPostalCode.value = this.PlaceDataCollection.postalcode;
-                        this.$.CollectionLocality.value = this.PlaceDataCollection.locality;
-                        this.$.CollectionContact.value = this.PlaceDataCollection.contact;
-                        this.$.CollectionReceptionResponsible.value = this.PlaceDataCollection.responsiblerecept;
+                        //this.$.CollectionAddress.value = this.PlaceDataCollection.address;
+                        //this.$.CollectionPostalCode.value = this.PlaceDataCollection.postalcode;
+                        //this.$.CollectionLocality.value = this.PlaceDataCollection.locality;
+                        //this.$.CollectionContact.value = this.PlaceDataCollection.contact;
+                        //this.$.CollectionReceptionResponsible.value = this.PlaceDataCollection.responsiblerecept;
 
                     }
                 },
