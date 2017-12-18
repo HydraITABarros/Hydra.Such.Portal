@@ -825,7 +825,6 @@
                         //this.$.CollectionLocality.value = this.PlaceDataCollection.locality;
                         //this.$.CollectionContact.value = this.PlaceDataCollection.contact;
                         //this.$.CollectionReceptionResponsible.value = this.PlaceDataCollection.responsiblerecept;
-
                     }
                 },
 
@@ -932,8 +931,11 @@
                 _validateLocalMarket: function (e) {
                     alert("Funcionalidade não definida e/ou a aguardar detalhes.");
                 },
-                _validateRequisition: function (e) {
-                    alert("Funcionalidade não definida e/ou a aguardar detalhes.");
+                _validateRequisition: function () {
+                    //debugger;
+                    //alert("Funcionalidade não definida e/ou a aguardar detalhes.");
+                    this.$.validaterequisition_datasource.body = JSON.stringify(this.Requisition);
+                    this.$.validaterequisition_datasource.generateRequest();
                 },
             });
         });
