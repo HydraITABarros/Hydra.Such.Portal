@@ -65,6 +65,11 @@
                 margin-top: 7px;
             }
 
+            paper-button.disabled {
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+
             /*ACORDEÃO*/
             paper-collapse-item {
                 --paper-item: {
@@ -85,7 +90,7 @@
                 padding-top: 0px !important;
             }
 
-            paper-button.disabled {
+            .desativado {
                 cursor: not-allowed;
                 pointer-events: none;
             }
@@ -334,6 +339,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/UpdateLinhaPresenca"
+                   last-response="{{LinhaPresencaUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatelinhapresenca_ajax"
+                   on-response="_updateLinhaPresencaResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -342,6 +355,10 @@
                 <paper-button class="tablinks" on-tap="_validarFolhaDeHoras" disable="!_permissions.fH_Validar"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
                 <paper-button class="tablinks" on-tap="_integrarEmRH"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
                 <paper-button class="tablinks" on-tap="_integrarEmRHKM"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
+
+                <!--TESTE-->
+                <!--<paper-button id="botaotesteid" class="btnSave" on-tap="_teste"> TESTE</paper-button>-->
+                <!--FIM TESTE-->
             </template>
         </div>
 
@@ -375,12 +392,12 @@
                             <!--<vaadin-text-field type="text" value="{{data.projetoNo}}" id="projetoNo2" name="projetoNo2" label="TESTE" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <!--CAMPO ORIGINAL-->
                             <!--<such-selectbox id="projetoNo" value="{{data.projetoNo}}" label="Nº Ordem/Projecto"
-                                            items="[[LFolhaDeHoraNavProjectNo]]"
-                                            text-path="no"
-                                            value-path="no"
-                                            fields='[{"field":"no","name":"Nº"},{"field":"description","name":"Descrição"},{"field":"customerNo","name":"Nº Cliente"},{"field":"globalDimension1","name":"Dimensão Global 1"},{"field":"globalDimension2","name":"Dimensão Global 2"}]'
-                                            disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                            </such-selectbox>-->
+                                        items="[[LFolhaDeHoraNavProjectNo]]"
+                                        text-path="no"
+                                        value-path="no"
+                                        fields='[{"field":"no","name":"Nº"},{"field":"description","name":"Descrição"},{"field":"customerNo","name":"Nº Cliente"},{"field":"globalDimension1","name":"Dimensão Global 1"},{"field":"globalDimension2","name":"Dimensão Global 2"}]'
+                                        disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                        </such-selectbox>-->
                         </div>
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraEmployees]]" id="empregadoNo" item-value-path="id" item-label-path="value" value="{{data.empregadoNo}}" on-value-changed="_codeChange" label="Nº Empregado" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
@@ -455,7 +472,6 @@
                     <template is="dom-if" if="{{ _permissions.update }}">
                         <div class="col-sm-1 alignPoga">
                             <paper-button class="btnSave" raised on-tap="_updateFH">Gravar</paper-button>
-                            <!--<paper-button class="btnSave" id="botaotesteid" raised on-tap="_teste"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; TESTE</paper-button>-->
                         </div>
                     </template>
                 </div>
@@ -900,13 +916,13 @@
                                     </vaadin-combo-box>
                                 </div>
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="maoDeObraHoraInicio" label="Hora de Início" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" on-blur="_MaoDeObraHoraInicioFim" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="maoDeObraHoraInicio" label="Hora de Início" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-1 alignPoga">
                                     <vaadin-checkbox id="maoDeObraHorarioAlmoco" checked="{{chkAlmoco}}" disabled="{{ !_permissions.update }}">Almoço</vaadin-checkbox>
                                 </div>
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="maoDeObraHoraFim" label="Hora de Fim" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" on-blur="_MaoDeObraHoraInicioFim" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="maoDeObraHoraFim" label="Hora de Fim" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-1 alignPoga">
                                     <vaadin-checkbox id="maoDeObraHorarioJantar" checked="{{chkJantar}}" disabled="{{ !_permissions.update }}">Jantar</vaadin-checkbox>
@@ -1170,7 +1186,7 @@
                                 <vaadin-grid-filter path="dataTexto" />
                             </template>
                             <template>
-                                <vaadin-date-picker id="tabPresencaDataTexto" name="tabPresencaDataTexto" value="{{item.dataTexto}}" disabled="{{ !_permissions.update }}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" style="text-align:right;"></vaadin-date-picker>
+                                <vaadin-date-picker id="tabPresencaDataTexto" name="tabPresencaDataTexto" value="{{item.dataTexto}}" disabled="true" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" style="text-align:right;"></vaadin-date-picker>
                             </template>
                         </vaadin-grid-column>
 
@@ -1180,7 +1196,7 @@
                                 <vaadin-grid-filter path="hora1Entrada" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabPresencaHora1Entrada" value="{{item.hora1Entrada}}" disabled="{{ !_permissions.update }}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <vaadin-text-field id="tabPresencaHora1Entrada" name="tabPresencaHora1Entrada" value="{{item.hora1Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" style="text-align:right;"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
@@ -1190,7 +1206,7 @@
                                 <vaadin-grid-filter path="hora1Saida" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabPresencaHora1Saida" value="{{item.hora1Saida}}" disabled="{{ !_permissions.update }}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <vaadin-text-field id="tabPresencaHora1Saida" name="tabPresencaHora1Saida" value="{{item.hora1Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" style="text-align:right;"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
@@ -1200,7 +1216,7 @@
                                 <vaadin-grid-filter path="hora2Entrada" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabPresencaHora2Entrada" value="{{item.hora2Entrada}}" disabled="{{ !_permissions.update }}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <vaadin-text-field id="tabPresencaHora2Entrada" name="tabPresencaHora2Entrada" value="{{item.hora2Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" style="text-align:right;"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
@@ -1210,7 +1226,7 @@
                                 <vaadin-grid-filter path="hora2Saida" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabPresencaHora2Saida" value="{{item.hora2Saida}}" disabled="{{ !_permissions.update }}" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" style="text-align:right;"></vaadin-text-field>
+                                <vaadin-text-field id="tabPresencaHora2Saida" name="tabPresencaHora2Saida" value="{{item.hora2Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" style="text-align:right;"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
@@ -1220,7 +1236,7 @@
                                 <vaadin-grid-filter path="observacoes" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabPresencaObservacoes" value="{{item.observacoes}}" disabled="{{ !_permissions.update }}" maxlength="200" style="text-align:left;"></vaadin-text-field>
+                                <vaadin-text-field id="tabPresencaObservacoes" name="tabPresencaObservacoes" value="{{item.observacoes}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" maxlength="200" style="text-align:left;"></vaadin-text-field>
                             </template>
                         </vaadin-grid-column>
 
@@ -1234,11 +1250,11 @@
                             </vaadin-grid-column>
                         </template>
 
-                        <template is="dom-if" if="{{ _permissions.update }}">
+                        <!--<template is="dom-if" if="{{ _permissions.update }}">
                             <div class="col-sm-1 alignPoga">
                                 <paper-button class="btnSave" raised on-tap="_updatePresenca">Guardar</paper-button>
                             </div>
-                        </template>
+                        </template>-->
                 </div>
             </div>
 
@@ -1349,7 +1365,7 @@
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.integradorEmRHKM}}" id="integradorEmRHKM" name="integradorEmRHKM" disabled="true" label="Integradores KMs RH"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.integradoresEmRHKM}}" id="integradoresEmRHKM" name="integradorEmRHKM" disabled="true" label="Integradores KMs RH"></vaadin-text-field>
                         </div>
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.integradorEmRHKM}}" id="integradorEmRHKM" name="integradorEmRHKM" disabled="true" label="Integrador KMs RH"></vaadin-text-field>
@@ -1469,6 +1485,11 @@
                 },
 
                 ready: function () {
+                    //TESTE
+                    //var _self = this;
+                    //$(_self.$.botaotesteid).addClass('disabled');
+                    //FIM DO TESTE
+
                     //GET FOLHADEHORA DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "folhaDeHorasNo": this._folhadehoraid });
                     this.$.page_databound_ajax.generateRequest();
@@ -1651,8 +1672,14 @@
                 },
 
                 _deletePercurso: function (e) {
+                    var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
+
+                    var percursoFH = this.$.folhaDeHorasNo.value;
+                    var percursoNoLinha = e.model.item.noLinha;
+                    var ajax_request = this.$.page_deletepercurso_ajax;
+
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende remover o Percurso? ",
+                        message: "Tem a certeza que pretende remover o Percurso?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -1663,10 +1690,13 @@
                                 className: 'btn-danger'
                             }
                         },
-                        callback: function (result) {
-                            if (result) {
-                                this.$.page_deletepercurso_ajax.body = JSON.stringify(e.model.item.noLinha);
-                                this.$.page_deletepercurso_ajax.generateRequest();
+                        callback: function (deletePercurso) {
+                            if (deletePercurso) {
+                                ajax_request.body = JSON.stringify({
+                                    noFolhaHoras: percursoFH,
+                                    noLinha: percursoNoLinha
+                                });
+                                ajax_request.generateRequest();
                                 this.$.tabPercurso.clearCache();
                             }
                         }
@@ -1759,8 +1789,14 @@
                 },
 
                 _deleteAjuda: function (e) {
+                    var index = this.data.folhaDeHorasAjuda.indexOf(e.model.item);
+
+                    var ajudaFH = this.$.folhaDeHorasNo.value;
+                    var ajudaNoLinha = e.model.item.noLinha;
+                    var ajax_request = this.$.page_deleteajuda_ajax;
+
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende remover a Ajuda? ",
+                        message: "Tem a certeza que pretende remover a Ajuda?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -1771,10 +1807,13 @@
                                 className: 'btn-danger'
                             }
                         },
-                        callback: function (result) {
-                            if (result) {
-                                this.$.page_deleteajuda_ajax.body = JSON.stringify(this.$.folhaDeHorasNo.value, e.model.item.noLinha);
-                                this.$.page_deleteajuda_ajax.generateRequest();
+                        callback: function (deleteAjuda) {
+                            if (deleteAjuda) {
+                                ajax_request.body = JSON.stringify({
+                                    noFolhaHoras: ajudaFH,
+                                    noLinha: ajudaNoLinha
+                                });
+                                ajax_request.generateRequest();
                                 this.$.tabAjuda.clearCache();
                             }
                         }
@@ -1884,8 +1923,14 @@
                 },
 
                 _deleteMaoDeObra: function (e) {
+                    var index = this.data.folhaDeHorasMaoDeObra.indexOf(e.model.item);
+
+                    var maoDeObraFH = this.$.folhaDeHorasNo.value;
+                    var maoDeObraNoLinha = e.model.item.linhaNo;
+                    var ajax_request = this.$.page_deletemaodeobra_ajax;
+
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende remover a Mão de Obra? ",
+                        message: "Tem a certeza que pretende remover a Mão de Obra?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -1896,10 +1941,13 @@
                                 className: 'btn-danger'
                             }
                         },
-                        callback: function (result) {
-                            if (result) {
-                                this.$.page_deletemaodeobra_ajax.body = JSON.stringify(e.model.item.linhaNo);
-                                this.$.page_deletemaodeobra_ajax.generateRequest();
+                        callback: function (deleteMaoDeObra) {
+                            if (deleteMaoDeObra) {
+                                ajax_request.body = JSON.stringify({
+                                    folhaDeHorasNo: maoDeObraFH,
+                                    linhaNo: maoDeObraNoLinha
+                                });
+                                ajax_request.generateRequest();
                                 this.$.tabMaoDeObra.clearCache();
                             }
                         }
@@ -1936,7 +1984,6 @@
                     this.$.page_updatelinhamaodeobra_ajax.generateRequest();
                     this.$.tabMaoDeObra.clearCache();
                 },
-
 
                 _MaoDeObraData: function () {
                     if (this.$.maoDeObraDate.value != "") {
@@ -2042,8 +2089,14 @@
                 },
 
                 _deletePresenca: function (e) {
+                    var index = this.data.folhaDeHorasPresenca.indexOf(e.model.item);
+
+                    var presencaFH = this.$.folhaDeHorasNo.value;
+                    var presencaData = e.model.item.dataTexto;
+                    var ajax_request = this.$.page_deletepresenca_ajax;
+
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende remover a Presença? ",
+                        message: "Tem a certeza que pretende remover a Presença?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -2054,10 +2107,13 @@
                                 className: 'btn-danger'
                             }
                         },
-                        callback: function (result) {
-                            if (result) {
-                                this.$.page_deletepresenca_ajax.body = JSON.stringify({ folhaDeHorasNo: e.model.item.folhaDeHorasNo, data: e.model.item.dataTexto });
-                                this.$.page_deletepresenca_ajax.generateRequest();
+                        callback: function (deletePresenca) {
+                            if (deletePresenca) {
+                                ajax_request.body = JSON.stringify({
+                                    folhaDeHorasNo: presencaFH,
+                                    data: presencaData
+                                });
+                                ajax_request.generateRequest();
                                 this.$.tabPresenca.clearCache();
                             }
                         }
@@ -2067,6 +2123,22 @@
                 _updatePresenca: function () {
                     this.$.page_updatepresenca_ajax.body = JSON.stringify(this.data);
                     this.$.page_updatepresenca_ajax.generateRequest();
+                    this.$.tabPresenca.clearCache();
+                },
+
+                _updateLinhaPresenca: function (e) {
+                    var index = this.data.folhaDeHorasPresenca.indexOf(e.model.item);
+
+                    this.$.page_updatelinhapresenca_ajax.body = JSON.stringify({
+                        folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                        data: e.model.item.dataTexto,
+                        hora1Entrada: e.model.item.hora1Entrada,
+                        hora1Saida: e.model.item.hora1Saida,
+                        hora2Entrada: e.model.item.hora2Entrada,
+                        hora2Saida: e.model.item.hora2Saida,
+                        observacoes: e.model.item.observacoes
+                    });
+                    this.$.page_updatelinhapresenca_ajax.generateRequest();
                     this.$.tabPresenca.clearCache();
                 },
 
@@ -2129,8 +2201,19 @@
                     //debugger;
                     //var _self = this;
 
+                    //var _self = this;
                     //$(_self.$.botaotesteid).addClass('disabled');
+
+
+                    //this.$.botaotesteid.toggleAttribute('disabled') = true;
+
+
+                    //$(_self.$.botaotesteid).addClass(' desativado');
+                    //this.$.page_databound_ajax.generateRequest();
+                    //this.$.botaotesteid.disabled = true;
+                    //this.$.page_databound_ajax.generateRequest();
                     //this.$.empregadoNo.disabled = true;
+                    //this.$.page_databound_ajax.generateRequest();
                 },
 
                 _createResponseProcessor: function () {
@@ -2316,11 +2399,16 @@
                 },
 
                 _deletePercursoResponse: function (e) {
+                    var self = this;
+
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
                     if (this.PercursoDeleted) {
                         this._showMessage('Percurso removido com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
-                    }
-                    else {
+                    } else {
                         this._showErrorMessage('Ocorreu um erro ao eliminar Percurso.');
                     }
                 },
@@ -2364,12 +2452,17 @@
                     }
                 },
 
-                _deleteAjudaResponse: function (e) {
+                _deleteAjudaResponse: function (data) {
+                    var self = this;
+
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
                     if (this.AjudaDeleted) {
                         this._showMessage('Ajuda removida com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
-                    }
-                    else {
+                    } else {
                         this._showErrorMessage('Ocorreu um erro ao eliminar Ajuda.');
                     }
                 },
@@ -2435,6 +2528,12 @@
                 },
 
                 _deleteMaoDeObraResponse: function (e) {
+                    var self = this;
+
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
                     if (this.MaoDeObraDeleted) {
                         this._showMessage('Mão de Obra removida com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
@@ -2516,6 +2615,12 @@
                 },
 
                 _deletePresencaResponse: function (e) {
+                    var self = this;
+
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
                     if (this.PresencaDeleted) {
                         this._showMessage('Presença removida com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
@@ -2535,6 +2640,15 @@
                     }
                 },
 
+                _updateLinhaPresencaResponse: function (e) {
+                    if (this.LinhaPresencaUpdated) {
+                        this._showMessage('Presença atualizada com sucesso.');
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao actualiazar a Presença.');
+                    }
+                    this.$.page_databound_ajax.generateRequest();
+                },
 
                 //EMPREGADO FUNÇÕES
                 _codeChange: function (e) {

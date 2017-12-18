@@ -50,12 +50,14 @@ namespace Hydra.Such.Data.ViewModel.FH
         public string DataValidacaoTexto { get; set; }
         public string HoraValidacaoTexto { get; set; }
         public bool? IntegradoEmRh { get; set; }
+        public string IntegradoEmRhTexto { get; set; }
         public string IntegradorEmRH { get; set; }
         public string IntegradoresEmRH { get; set; }
         public DateTime? DataIntegracaoEmRH { get; set; }
         public string DataIntegracaoEmRHTexto { get; set; }
         public string HoraIntegracaoEmRHTexto { get; set; }
         public bool? IntegradoEmRhKm { get; set; }
+        public string IntegradoEmRhKmTexto { get; set; }
         public string IntegradorEmRHKM { get; set; }
         public string IntegradoresEmRHKM { get; set; }
         public DateTime? DataIntegracaoEmRHKM { get; set; }

@@ -83,6 +83,41 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
+        public static FolhasDeHoras UpdateDetalhes(string NoFolhaHoras)
+        {
+            try
+            {
+                decimal CustoTotalAjudaCusto = 0;
+                decimal CustoTotalHoras = 0;
+                decimal CustoTotalKm = 0;
+                decimal NumTotalKm = 0;
+                FolhasDeHoras FolhaDeHora = DBFolhasDeHoras.GetById(NoFolhaHoras);
+
+                CustoTotalAjudaCusto = DBLinhasFolhaHoras.GetCustoTotalAjudaCustoByFolhaHoraNo(NoFolhaHoras);
+                CustoTotalHoras = DBMaoDeObraFolhaDeHoras.GetCustoTotalHorasByFolhaHoraNo(NoFolhaHoras);
+                CustoTotalKm = DBLinhasFolhaHoras.GetCustoTotalKMByFolhaHoraNo(NoFolhaHoras);
+                NumTotalKm = DBLinhasFolhaHoras.GetNoTotalKmByFolhaHoraNo(NoFolhaHoras);
+
+                using (var ctx = new SuchDBContext())
+                {
+                    FolhaDeHora.CustoTotalAjudaCusto = CustoTotalAjudaCusto;
+                    FolhaDeHora.CustoTotalHoras = CustoTotalHoras;
+                    FolhaDeHora.CustoTotalKm = CustoTotalKm;
+                    FolhaDeHora.NumTotalKm = NumTotalKm;
+                    FolhaDeHora.DataHoraModificação = DateTime.Now;
+
+                    ctx.FolhasDeHoras.Update(FolhaDeHora);
+                    ctx.SaveChanges();
+                }
+
+                return FolhaDeHora;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static bool Delete(string FolhaDeHoraNo)
         {
             try
