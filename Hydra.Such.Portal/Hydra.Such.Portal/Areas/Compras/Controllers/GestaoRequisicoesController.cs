@@ -63,6 +63,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 ViewBag.UPermissions = userPermissions;
                 ViewBag.RequisitionId = id;
+                ViewBag.ApprovedRequisitionEnumValue = (int)RequisitionStates.Approved;
                 ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
 
                 return View();
