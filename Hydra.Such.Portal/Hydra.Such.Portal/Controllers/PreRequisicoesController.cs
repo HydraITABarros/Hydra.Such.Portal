@@ -1,30 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.Logic.Compras;
-using Microsoft.Extensions.Options;
-using Hydra.Such.Portal.Configurations;
-using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Database;
-using Hydra.Such.Portal.Controllers;
 using Hydra.Such.Data.Logic.Request;
 
-namespace Hydra.Such.Portal.Areas.Compras.Controllers
+namespace Hydra.Such.Portal.Controllers
 {
     public class PreRequisicoesController : Controller
     {
-        [Area("Compras")]
         public IActionResult Index()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
             if (UPerm != null && UPerm.Read.Value)
             {
-                
+
                 ViewBag.UPermissions = UPerm;
                 return View();
             }
@@ -58,15 +52,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 {
                     PréRequisição PreRequisition = DBPreRequesition.GetByNo(data.PreRequesitionsNo);
                     result = DBPreRequesition.ParseToViewModel(PreRequisition);
-                    
+
                 }
                 return Json(result);
 
             }
             return Json(false);
         }
-
-        [Area("Compras")]
+        
         public IActionResult PréRequisiçõesDetalhes(string PreRequesitionNo)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
@@ -393,7 +386,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             return Json(PlacesData);
         }
         #endregion
-        
+
         #region Numeração
         [HttpPost]
         public JsonResult ValidateNumeration([FromBody] PreRequesitionsViewModel data)
@@ -421,7 +414,6 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
 
         #region Requesition Model Lines
         
-        [Area("Compras")]
         public IActionResult RequisiçõesModeloLista(string id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
@@ -458,7 +450,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             RequesitionLines.ForEach(x => result.Add(DBRequestLine.ParseToViewModel(x)));
 
             LinhasPréRequisição newlines = new LinhasPréRequisição();
-            foreach(var line in result)
+            foreach (var line in result)
             {
                 newlines.CódigoLocalização = line.LocalCode;
                 newlines.CódigoProdutoFornecedor = line.SupplierProductCode;
@@ -475,9 +467,11 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 newlines.CódigoCentroResponsabilidade = line.CenterResponsibilityCode;
             }
 
-           
+
             return Json(result);
         }
         #endregion
+
+
     }
 }

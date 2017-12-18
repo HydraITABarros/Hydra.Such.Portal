@@ -1,10 +1,4 @@
 ﻿
-@{
-    ViewData["Title"] = "PréRequisiçõesDetalhes";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-
 <link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
 <link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
@@ -28,11 +22,6 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
 
-
-
-<h1 class="title">Pré-Requisição</h1>
-
-<x-prerequisitions _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _prerequesitionno="@ViewBag.PreRequesitionNo"></x-prerequisitions>
 
 <dom-module id="x-prerequisitions">
     <template>
@@ -836,6 +825,8 @@
                     </div>
                     <br />
                 </div>
+
+
             </div>
         </div>
 
@@ -1051,7 +1042,7 @@
                     var PreRequesitionNo = this.data.preRequesitionsNo;
                     setTimeout(
                         function () {
-                            window.location.href = "../../PreRequisicoes/PréRequisiçõesDetalhes/?PreRequesitionNo=" + PreRequesitionNo;
+                            window.location.href = "PreRequisicoesDetalhes/?PreRequesitionNo=" + PreRequesitionNo;
                         }, 1000);
 
                 } else {
@@ -1084,7 +1075,7 @@
 
             _createNewPreReq: function (item) {
                 if (item != null) {
-                    window.location.href = "../../PreRequisicoes/PréRequisiçõesDetalhes/";
+                    window.location.href = "../PreRequisicoesDetalhes/";
                 }
             },
             //Helpers
@@ -1198,10 +1189,11 @@
                 this.$.prereqLines_databound_ajax.generateRequest();
             },
             _deleteContractLine: function (e) {
+                debugger;
                 var index = this.dataLines.lines.indexOf(e.model.item);
                 this.dataLines.lines.splice(index, 1);
 
-                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetReqModelList";
+                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
                 this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
                 this.$.prereqLines_databound_ajax.generateRequest();
 
