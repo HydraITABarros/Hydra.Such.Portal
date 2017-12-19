@@ -2674,6 +2674,14 @@
                         else {
                             this.$.integradoresEmRH.value = this.getEmpoyeeNAV.integradoresEmRH;
                         }
+
+                        if (this.getEmpoyeeNAV.integradoresEmRHKM == null | this.getEmpoyeeNAV.integradoresEmRHKM == "") {
+                            this.$.integradoresEmRHKM.value = "";
+                            this._showErrorMessage('O Empregado não tem Integradore(s) KMs RH.');
+                        }
+                        else {
+                            this.$.integradoresEmRHKM.value = this.getEmpoyeeNAV.integradoresEmRHKM;
+                        }
                     }
                 },
 

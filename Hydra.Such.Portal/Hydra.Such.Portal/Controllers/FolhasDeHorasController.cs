@@ -493,6 +493,7 @@ namespace Hydra.Such.Portal.Controllers
                     FH.Responsavel3No = Autorizacao.NoResponsavel3;
                     FH.Validadores = Autorizacao.NoResponsavel1 + " - " + Autorizacao.NoResponsavel2 + " - " + Autorizacao.NoResponsavel3;
                     FH.IntegradoresEmRH = Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3;
+                    FH.IntegradoresEmRHKM = Autorizacao.ValidadorRhKm1 + " - " + Autorizacao.ValidadorRhKm2;
                 };
 
                 FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAVDatabaseName, _config.NAVCompanyName).SingleOrDefault().Name;
@@ -1839,48 +1840,65 @@ namespace Hydra.Such.Portal.Controllers
                                 if (result == 0)
                                 {
                                     string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
+                                    string TipoDeslocação = data.TipoDeslocacaoTexto;
+                                    int Estado = (int)data.Estado;
+                                    int NoRegistos = 0;
+
+                                    NoRegistos = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == data.FolhaDeHorasNo && x.TipoCusto == 2).Count();
+
+                                    if (TipoDeslocação != "2" && NoRegistos == 0)
+                                        Estado = 2; // 2 = Registado
+                                    else
+                                        Estado = 1; //VALIDADO
 
                                     if (DBFolhasDeHoras.Update(new FolhasDeHoras()
                                     {
                                         NºFolhaDeHoras = data.FolhaDeHorasNo,
                                         Área = data.Area,
                                         NºProjeto = data.ProjetoNo == "" ? null : data.ProjetoNo,
+                                        ProjetoDescricao = data.ProjetoDescricao,
                                         NºEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                                        NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
                                         DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
                                         DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
                                         TipoDeslocação = data.TipoDeslocacaoTexto == "" ? 1 : Convert.ToInt32(data.TipoDeslocacaoTexto),
                                         CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
+                                        Matrícula = data.Matricula == "" ? null : data.Matricula,
                                         DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
-                                        Validadores = data.Validadores == "" ? null : data.Validadores,
-                                        Estado = 1, //VALIDAÇÂO
+                                        DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
+                                        Terminada = data.Terminada,
+                                        Estado = Estado, //VALIDAÇÂO
                                         CriadoPor = data.CriadoPor,
                                         DataHoraCriação = data.DataHoraCriacao,
-                                        DataHoraÚltimoEstado = DateTime.Now, //VALIDAÇÂO
-                                        DataHoraModificação = DateTime.Now, //VALIDAÇÂO
-                                        UtilizadorModificação = User.Identity.Name, //VALIDAÇÂO
-                                        NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
-                                        Matrícula = data.Matricula == "" ? null : data.Matricula,
-                                        Terminada = data.Terminada,
+                                        CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
+                                        CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
+                                        CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
                                         TerminadoPor = data.TerminadoPor,
                                         DataHoraTerminado = data.DataHoraTerminado,
-                                        DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
+                                        Validado = true, //VALIDAÇÂO
+                                        Validadores = data.Validadores == "" ? null : data.Validadores,
+                                        Validador = EmpregadoNome, //VALIDAÇÂO
+                                        DataHoraValidação = DateTime.Now, //VALIDAÇÂO
+                                        IntegradoEmRh = data.IntegradoEmRh,
+                                        IntegradoresEmRh = data.IntegradoresEmRH,
+                                        IntegradorEmRh = data.IntegradorEmRH,
+                                        DataIntegraçãoEmRh = data.DataIntegracaoEmRH,
+                                        IntegradoEmRhkm = data.IntegradoEmRhKm,
+                                        IntegradoresEmRhkm = data.IntegradoresEmRHKM,
+                                        IntegradorEmRhKm = data.IntegradorEmRHKM,
+                                        DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM,
+                                        CustoTotalAjudaCusto = data.CustoTotalAjudaCusto,
+                                        CustoTotalHoras = data.CustoTotalHoras,
+                                        CustoTotalKm = data.CustoTotalKM,
+                                        NumTotalKm = data.NumTotalKM,
                                         Observações = data.Observacoes,
                                         NºResponsável1 = data.Responsavel1No,
                                         NºResponsável2 = data.Responsavel2No,
                                         NºResponsável3 = data.Responsavel3No,
                                         ValidadoresRhKm = data.ValidadoresRHKM,
-                                        CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
-                                        CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
-                                        CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
-                                        Validado = true, //VALIDAÇÂO
-                                        Validador = EmpregadoNome, //VALIDAÇÂO
-                                        DataHoraValidação = DateTime.Now, //VALIDAÇÂO
-                                        IntegradoEmRh = data.IntegradoEmRh,
-                                        IntegradorEmRh = data.IntegradorEmRH,
-                                        DataIntegraçãoEmRh = data.DataIntegracaoEmRH,
-                                        IntegradoEmRhkm = data.IntegradoEmRhKm,
-                                        IntegradorEmRhKm = data.IntegradorEmRHKM,
-                                        DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM
+                                        DataHoraÚltimoEstado = DateTime.Now, //VALIDAÇÂO
+                                        DataHoraModificação = DateTime.Now, //VALIDAÇÂO
+                                        UtilizadorModificação = User.Identity.Name //VALIDAÇÂO
                                     }) == null)
                                     {
                                         result = 6;
@@ -1889,8 +1907,8 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         result = 0;
                                     };
+                                    }
                                 }
-                            }
                         }
                     }
                 }
@@ -1957,42 +1975,49 @@ namespace Hydra.Such.Portal.Controllers
                                             NºFolhaDeHoras = data.FolhaDeHorasNo,
                                             Área = data.Area,
                                             NºProjeto = data.ProjetoNo == "" ? null : data.ProjetoNo,
+                                            ProjetoDescricao = data.ProjetoDescricao,
                                             NºEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                                            NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
                                             DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
                                             DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
                                             TipoDeslocação = data.TipoDeslocacaoTexto == "" ? 1 : Convert.ToInt32(data.TipoDeslocacaoTexto),
                                             CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
+                                            Matrícula = data.Matricula == "" ? null : data.Matricula,
                                             DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
-                                            Validadores = data.Validadores == "" ? null : data.Validadores,
-                                            Estado = Estado,
+                                            DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
+                                            Terminada = data.Terminada,
+                                            Estado = Estado, //INTEGRAREMRH
                                             CriadoPor = data.CriadoPor,
                                             DataHoraCriação = data.DataHoraCriacao,
-                                            DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
-                                            DataHoraModificação = DateTime.Now, //INTEGRAREMRH
-                                            UtilizadorModificação = User.Identity.Name, //INTEGRAREMRH
-                                            NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
-                                            Matrícula = data.Matricula == "" ? null : data.Matricula,
-                                            Terminada = data.Terminada,
+                                            CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
+                                            CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
+                                            CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
                                             TerminadoPor = data.TerminadoPor,
                                             DataHoraTerminado = data.DataHoraTerminado,
-                                            DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
+                                            Validado = data.Validado,
+                                            Validadores = data.Validadores == "" ? null : data.Validadores,
+                                            Validador = data.Validador,
+                                            DataHoraValidação = data.DataHoraValidacao,
+                                            IntegradoEmRh = true, //INTEGRAREMRH
+                                            IntegradoresEmRh = data.IntegradoresEmRH,
+                                            IntegradorEmRh = User.Identity.Name, //INTEGRAREMRH
+                                            DataIntegraçãoEmRh = DateTime.Now, //INTEGRAREMRH
+                                            IntegradoEmRhkm = data.IntegradoEmRhKm,
+                                            IntegradoresEmRhkm = data.IntegradoresEmRHKM,
+                                            IntegradorEmRhKm = data.IntegradorEmRHKM,
+                                            DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM,
+                                            CustoTotalAjudaCusto = data.CustoTotalAjudaCusto,
+                                            CustoTotalHoras = data.CustoTotalHoras,
+                                            CustoTotalKm = data.CustoTotalKM,
+                                            NumTotalKm = data.NumTotalKM,
                                             Observações = data.Observacoes,
                                             NºResponsável1 = data.Responsavel1No,
                                             NºResponsável2 = data.Responsavel2No,
                                             NºResponsável3 = data.Responsavel3No,
                                             ValidadoresRhKm = data.ValidadoresRHKM,
-                                            CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
-                                            CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
-                                            CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
-                                            Validado = data.Validado,
-                                            Validador = data.Validador,
-                                            DataHoraValidação = data.DataHoraValidacao,
-                                            IntegradoEmRh = true, //INTEGRAREMRH
-                                            IntegradorEmRh = User.Identity.Name, //INTEGRAREMRH
-                                            DataIntegraçãoEmRh = DateTime.Now, //INTEGRAREMRH
-                                            IntegradoEmRhkm = data.IntegradoEmRhKm,
-                                            IntegradorEmRhKm = data.IntegradorEmRHKM,
-                                            DataIntegraçãoEmRhKm = data.DataIntegracaoEmRHKM
+                                            DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
+                                            UtilizadorModificação = User.Identity.Name, //INTEGRAREMRH
+                                            DataHoraModificação = DateTime.Now //INTEGRAREMRH
                                         }) == null)
                                         {
                                             result = 7;
@@ -2072,42 +2097,49 @@ namespace Hydra.Such.Portal.Controllers
                                             NºFolhaDeHoras = data.FolhaDeHorasNo,
                                             Área = data.Area,
                                             NºProjeto = data.ProjetoNo == "" ? null : data.ProjetoNo,
+                                            ProjetoDescricao = data.ProjetoDescricao,
                                             NºEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
+                                            NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
                                             DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
                                             DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
                                             TipoDeslocação = data.TipoDeslocacaoTexto == "" ? 1 : Convert.ToInt32(data.TipoDeslocacaoTexto),
                                             CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
+                                            Matrícula = data.Matricula == "" ? null : data.Matricula,
                                             DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
-                                            Validadores = data.Validadores == "" ? null : data.Validadores,
-                                            Estado = Estado,
+                                            DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
+                                            Terminada = data.Terminada,
+                                            Estado = Estado, //INTEGRAREMRHKM
                                             CriadoPor = data.CriadoPor,
                                             DataHoraCriação = data.DataHoraCriacao,
-                                            DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
-                                            DataHoraModificação = DateTime.Now, //INTEGRAREMRHKM
-                                            UtilizadorModificação = User.Identity.Name, //INTEGRAREMRHKM
-                                            NomeEmpregado = data.EmpregadoNo == "" ? null : data.EmpregadoNo,
-                                            Matrícula = data.Matricula == "" ? null : data.Matricula,
-                                            Terminada = data.Terminada,
+                                            CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
+                                            CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
+                                            CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
                                             TerminadoPor = data.TerminadoPor,
                                             DataHoraTerminado = data.DataHoraTerminado,
-                                            DeslocaçãoPlaneada = data.DeslocacaoPlaneada,
+                                            Validado = data.Validado,
+                                            Validadores = data.Validadores == "" ? null : data.Validadores,
+                                            Validador = data.Validador,
+                                            DataHoraValidação = data.DataHoraValidacao,
+                                            IntegradoEmRh = data.IntegradoEmRh,
+                                            IntegradoresEmRh = data.IntegradoresEmRH,
+                                            IntegradorEmRh = data.IntegradorEmRH,
+                                            DataIntegraçãoEmRh = data.DataIntegracaoEmRH,
+                                            IntegradoEmRhkm = true, //INTEGRAREMRHKM
+                                            IntegradoresEmRhkm = data.IntegradoresEmRHKM,
+                                            IntegradorEmRhKm = User.Identity.Name, //INTEGRAREMRHKM
+                                            DataIntegraçãoEmRhKm = DateTime.Now, //INTEGRAREMRHKM
+                                            CustoTotalAjudaCusto = data.CustoTotalAjudaCusto,
+                                            CustoTotalHoras = data.CustoTotalHoras,
+                                            CustoTotalKm = data.CustoTotalKM,
+                                            NumTotalKm = data.NumTotalKM,
                                             Observações = data.Observacoes,
                                             NºResponsável1 = data.Responsavel1No,
                                             NºResponsável2 = data.Responsavel2No,
                                             NºResponsável3 = data.Responsavel3No,
                                             ValidadoresRhKm = data.ValidadoresRHKM,
-                                            CódigoRegião = data.CodigoRegiao == "" ? null : data.CodigoRegiao,
-                                            CódigoÁreaFuncional = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional,
-                                            CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade == "" ? null : data.CodigoCentroResponsabilidade,
-                                            Validado = data.Validado,
-                                            Validador = data.Validador,
-                                            DataHoraValidação = data.DataHoraValidacao,
-                                            IntegradoEmRh = data.IntegradoEmRh,
-                                            IntegradorEmRh = data.IntegradorEmRH,
-                                            DataIntegraçãoEmRh = data.DataIntegracaoEmRH,
-                                            IntegradoEmRhkm = true, //INTEGRAREMRHKM
-                                            IntegradorEmRhKm = User.Identity.Name, //INTEGRAREMRHKM
-                                            DataIntegraçãoEmRhKm = DateTime.Now //INTEGRAREMRHKM
+                                            DataHoraÚltimoEstado = data.DataHoraUltimoEstado,
+                                            UtilizadorModificação = User.Identity.Name, //INTEGRAREMRHKM
+                                            DataHoraModificação = DateTime.Now //INTEGRAREMRHKM
                                         }) == null)
                                         {
                                             result = 7;
