@@ -138,7 +138,10 @@
         <iron-ajax url="/PopulateDropdowns/GetNAVVendor" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProducts" last-response="{{CBItems}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{CBPurchaseHeader}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        
 
         <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails"
                    last-response="{{data}}"
@@ -486,8 +489,20 @@
                         <div id="PreRequiLinesPanel" class="panel panel-default" style="display: {{ _showPreReqLines }};">
                             <div class="panel-heading">Linhas Pré-Requisição</div>
                             <div class="row break_clear" style="display: {{ _showPreReqLinesForm }};">
-                                <div class="col-lg-2">
+                                <!--<div class="col-lg-2">
                                     <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                </div>-->
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBLocations]]" id="_CBItems" item-value-path="id" item-label-path="value" value="{{_LocalCode}}" label="Cód. Localização" disabled="{{ !_permissions.update }}">
+                                        <template>
+                                            <table width="200px">
+                                                <tr>
+                                                    <td width="40%">[[item.id]]</td>
+                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
                                 </div>
                                 <div class="col-lg-2">
                                     <vaadin-combo-box items="[[CBItems]]" id="_CBItems" item-value-path="id" item-label-path="value" value="{{_CBItems}}" label="Cód. Produto" disabled="{{ !_permissions.update }}">
@@ -585,6 +600,18 @@
                                     </vaadin-combo-box>
                                 </div>
                                 <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBPurchaseHeader]]" id="_CBPurchaseHeader" item-value-path="id" item-label-path="id" value="{{_CBPurchaseHeader}}" label="Nº Encomenda Aberto" on-change="_PopulatePurchaseLines" disabled="{{ !_permissions.update }}">
+                                        <template>
+                                            <table width="200px">
+                                                <tr>
+                                                    <td width="60%"> <b>[[item.id]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                
+                                <div class="col-lg-2">
                                     <br />
                                     <paper-button raised id="btnPreReqLine" class="btnSave" on-tap="_createPreReqLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </div>
@@ -599,10 +626,18 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.localCode}}" id="_CLGridLocalCode" name="_CLGridLocalCode" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                            </template>
+                                                <vaadin-combo-box items="[[CBLocations]]" id="_CBLocalizations" item-value-path="id" item-label-path="value" value="{{item.localCode}}" disabled="{{ !_permissions.update }}">
+                                                    <template>
+                                                        <table width="200px">
+                                                            <tr>
+                                                                <td width="40%">[[item.id]]</td>
+                                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>                                            </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.localCode}}
+                                                [[ _clFormatLocation(item.localCode) ]]
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
@@ -1251,7 +1286,16 @@
                             }
                             return "";
                         },
-
+                        
+                        _clFormatLocation: function(param) {
+                            if (param != undefined) {
+                                var sel = this.CBLocations.find(x => x.id == param);
+                                if (sel != undefined) {
+                                    return sel.value;
+                                }
+                            }
+                            return "";
+                        },
                         _clFormatRegion: function (param) {
                             if (param != undefined) {
                                 var sel = this.LProjectRegionCodes.find(x => x.id == param);
@@ -1298,7 +1342,8 @@
                                 supplierNo: this._CBVendor,
                                 regionCode: this._CLRegion,
                                 functionalAreaCode: this._CLFunctionalAreaCode,
-                                CenterResponsibilityCode: this._CLResponsabilityCenterCode
+                                centerResponsibilityCode: this._CLResponsabilityCenterCode,
+                                openOrderNo: this._CBPurchaseHeader
 
                             });
                             this.$.grid_prereqlines.clearCache();
@@ -1352,6 +1397,11 @@
                                     }
                                 }
                             }
+                        },
+
+                        _PopulatePurchaseLines: function (data) {
+                            debugger;
+                            var PurchaseNo = this._CBPurchaseHeader;
                         },
 
                         _SaveLines: function (e) {

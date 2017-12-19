@@ -9,7 +9,7 @@ namespace Hydra.Such.Data.Logic
 {
    public class DBNAV2017OpenOrderLines
     {
-        public static List<NAVOpenOrderLinesViewModels> GetAll(string NAVDatabaseName, string NAVCompanyName, DateTime? Date)
+        public static List<NAVOpenOrderLinesViewModels> GetAll(string NAVDatabaseName, string NAVCompanyName, DateTime? Date, string PurchaseHeaderNo)
         {
             try
             {
@@ -20,7 +20,8 @@ namespace Hydra.Such.Data.Logic
                     var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
-                        new SqlParameter("@DateSupplierPrice", Date)
+                        new SqlParameter("@DateSupplierPrice", Date),
+                        new SqlParameter("@PurchaseHeaderNo", PurchaseHeaderNo)
                     };
 
                     IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017LinhasEncomendaAberto @DBName, @CompanyName, @DateSupplierPrice", parameters);

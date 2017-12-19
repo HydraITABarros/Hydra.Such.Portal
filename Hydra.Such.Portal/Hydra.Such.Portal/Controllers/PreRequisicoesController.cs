@@ -147,7 +147,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.Viatura = x.Vehicle;
                             CLine.NºFornecedor = x.SupplierNo;
                             CLine.CódigoProdutoFornecedor = x.SupplierProductCode;
-
+                            
                             CLine.UnidadeProdutivaNutrição = x.UnitNutritionProduction;
                             CLine.NºCliente = x.CustomerNo;
                             CLine.NºEncomendaAberto = x.OpenOrderNo;

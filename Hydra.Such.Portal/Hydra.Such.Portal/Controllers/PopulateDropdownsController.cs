@@ -198,7 +198,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult OpenOrderLines([FromBody] DateTime? date)
         {
-            List<NAVOpenOrderLinesViewModels> result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date).ToList();
+            List<NAVOpenOrderLinesViewModels> result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "").ToList();
             return Json(result);
         }
 
@@ -209,7 +209,7 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
-                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date).ToList();
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "").ToList();
                 if (result != null && result.Count > 0 &&
                     !string.IsNullOrEmpty(documentNO) &&
                     !string.IsNullOrEmpty(numb))
@@ -1207,6 +1207,17 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
 
             return Json(products);
+        }
+
+        [HttpPost]
+        public JsonResult GetPurchaseHeader()
+        {
+            List<DDMessageString> Pheader = DBNAV2017PurchaseHeader.GetPurchaseHeader(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.No_
+            }).ToList();
+
+            return Json(Pheader);
         }
 
         [HttpPost]
