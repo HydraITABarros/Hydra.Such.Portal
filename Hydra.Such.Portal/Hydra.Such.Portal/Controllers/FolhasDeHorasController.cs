@@ -649,7 +649,7 @@ namespace Hydra.Such.Portal.Controllers
                     NomeEmpregado = EmpregadoNome,
                     DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
                     DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
-                    TipoDeslocação = data.TipoDeslocacaoTexto == "" ? 1 : Convert.ToInt32(data.TipoDeslocacaoTexto),
+                    TipoDeslocação = data.TipoDeslocacao,
                     CódigoTipoKmS = data.CodigoTipoKms == "" ? null : data.CodigoTipoKms,
                     Matrícula = data.Matricula == "" ? null : data.Matricula,
                     DeslocaçãoForaConcelho = data.DeslocacaoForaConcelho,
@@ -1791,7 +1791,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
 
-                if (data.Estado == 0 && data.Validadores.Contains(EmpregadoNome))
+                if (data.Estado == 0 && data.Validadores.ToLower().Contains(EmpregadoNome.ToLower()))
                 {
                     result = true;
                 }
@@ -1822,7 +1822,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
-                        if (!data.Validadores.Contains(User.Identity.Name))
+                        if (!data.Validadores.ToLower().Contains(User.Identity.Name.ToLower()))
                         {
                             result = 1;
                         }
@@ -1944,7 +1944,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
-                            if (!data.IntegradoresEmRH.Contains(User.Identity.Name))
+                            if (!data.IntegradoresEmRH.ToLower().Contains(User.Identity.Name.ToLower()))
                             {
                                 result = 1;
                             }
@@ -2064,7 +2064,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
-                            if (!data.IntegradoresEmRHKM.Contains(User.Identity.Name))
+                            if (!data.IntegradoresEmRHKM.ToLower().Contains(User.Identity.Name.ToLower()))
                             {
                                 result = 1;
                             }
