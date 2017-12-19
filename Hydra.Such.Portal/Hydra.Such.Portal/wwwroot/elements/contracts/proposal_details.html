@@ -107,6 +107,7 @@
         <iron-ajax url="/PopulateDropdowns/GetRequestOrigin" last-response="{{CBRequestOrigin}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsStatus" last-response="{{CBProposalsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContacts" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
 
 
         <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" last-response="{{numeration}}" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -294,6 +295,17 @@
                 <paper-button raised id="btnContractArchive" hidden="{{ _showContractLines }}" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
             </div>
         </div>
+        <template is="dom-if" if="{{ _showAreas }}">
+            <div class="row">
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[LAreas]]" id="areaId" item-value-path="id" item-label-path="value" value="{{ _areaid }}" label="Área" required error-message="Este campo é obrigatório">
+                        <template>
+                            <b>[[item.value]]</b>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+            </div>
+        </template>
 
 
 
@@ -1419,10 +1431,13 @@
                     _activeProposal: {
                         observer: '_proposalSelected'
                     },
+                    _showAreas: {
+                        type: Boolean,
+                        value: false
+                    },
                 },
                 ready: function () {
                     //GET CONTRACT DATA
-                    debugger;
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
                     this.$.page_databound_ajax.generateRequest();
@@ -1431,6 +1446,9 @@
                     if (this._contractno == "") {
                         this._isCreate = true;
                     }
+
+                    this._showAreas = this._areaid == 4;
+
                 },
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -1441,7 +1459,6 @@
                     this.$.ToastError.open();
                 },
                 _validateData: function () {
-                    debugger;
                     if (this.$.contractNo.validate() &
                         this.$.Description.validate() &
                         this.$.mClients.validate() &
@@ -1488,17 +1505,13 @@
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
-                        debugger;
                         this.data.contractType = 2;
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
                         this.$.page_validator_ajax.generateRequest();
                     }
                 },
                 _update: function () {
-
                     if (this._validateData()) {
-
-                        debugger;;
                         if (this._oldStatus != this.data.status && this.data.status == 2) {
                             if (this._oldStatus != 1) {
                                 this._openToastError("Apenas pode alterar uma proposta para o estado aberto quando esta se encontrava no estado aberta.");
@@ -1533,7 +1546,6 @@
                     }
                 },
                 _delete: function () {
-                    debugger;;
                     var _dataContract = this.data;
                     var ajax_request = this.$.ajax_delete_contract;
                     bootbox.confirm({
@@ -1591,7 +1603,6 @@
                 //Responses Processors
                 _responseProcessor: function (data) {
                     var self = this;
-                    debugger;
                     //Set AreaId
                     if (this.data.contractNo == "" || this.data.contractNo == null) {
                         this.data.area = this._areaid;
@@ -1646,7 +1657,6 @@
                             }
                         }
                         else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
-                            debugger;
                             if (this.data.actionCode == 2) {
                                 this.data.actionCode = 1;
                             } else {
@@ -1687,7 +1697,6 @@
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.validateResponse == "") {
-                            debugger;;
                             this._executeRequest("/Contratos/CreateContract", this.data)
                         } else {
                             this._openToastError("Ocorreu um erro desconhecido.");
@@ -1753,7 +1762,6 @@
 
                 //Invoice Texts Functions
                 _createInvoiceText: function () {
-                    debugger;
                     this.data.invoiceTexts.unshift({
                         contractNo: this.data.contractNo,
                         invoiceGroup: this._IRInvoiceGroup,
@@ -1771,7 +1779,6 @@
 
                 //Helpers
                 _executeRequest: function (url, data) {
-                    debugger;;
                     this.data.contractType = 2;
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
@@ -2003,8 +2010,6 @@
                 //Parse To Contract
                 _parseToContract: function (param) {
                     if (param != null) {
-                        debugger;
-
                         if (this.$.mProposalNo.value != null && this.$.mProposalNo.value == "") {
                             if (param.currentTarget.id == "parseContract") {
                                 this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3, "Parcial": false });
@@ -2025,7 +2030,6 @@
                 _responseParseToContract: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
-                        debugger;
                         this._openToast("Contrato " + this.numeration + " criado com sucesso");
                         this.$.mProposalNo.value = this.numeration;
                     }

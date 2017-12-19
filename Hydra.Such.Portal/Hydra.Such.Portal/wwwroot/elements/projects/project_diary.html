@@ -47,7 +47,6 @@
                 font: inherit;
             }
         </style>
-
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
             <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
@@ -1288,7 +1287,6 @@
 
                 },
                 _responseProcessor: function () {
-                    debugger;;
                     if (this.projdata.status >= 4) {
                         this.$.dpDate.disabled = true;
                         this.$.projectMovementList.disabled = true;
@@ -1382,8 +1380,6 @@
                 },
 
                 _update: function () {
-
-                    debugger;;
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
                 },

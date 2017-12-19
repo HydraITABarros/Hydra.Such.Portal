@@ -222,7 +222,6 @@
                     }
                 },
                 ready: function () {
-                    debugger;
                     if (this._archived == 1) {
                         this._disabledCreate = true;
                     }
@@ -232,7 +231,6 @@
                 },
 
                 _responseDeleteProcessor: function (data) {
-                    debugger;
                     var self = this;
                     if (data.detail.status === 200) {
                         this._openToast(this.deletedData.eMessage);
@@ -257,7 +255,6 @@
                 },
 
                 _deleteOprotunity: function (data) {
-                    debugger;
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
                     this.$.ajax_delete_contract.body = JSON.stringify(data.model.item);

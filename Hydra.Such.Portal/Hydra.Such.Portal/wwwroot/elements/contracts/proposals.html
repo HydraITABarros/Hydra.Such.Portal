@@ -243,13 +243,11 @@
                     if (this._archived == 1) {
                         this._disabledCreate = true;
                     }
-                    debugger;;
                     this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
                     this.$.grid_databound_ajax.generateRequest();
                 },
 
                 _responseDeleteProcessor: function (data) {
-                    debugger;
                     var self = this;
                     if (data.detail.status === 200) {
                         this._openToast(this.deletedData.eMessage);
@@ -274,7 +272,6 @@
                 },
 
                 _deleteOprotunity: function (data) {
-                    debugger;
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
                     this.$.ajax_delete_contract.body = JSON.stringify(data.model.item);

@@ -40,12 +40,12 @@ namespace Hydra.Such.Data.Database
         public string Validador { get; set; }
         public DateTime? DataHoraValidação { get; set; }
         public bool? IntegradoEmRh { get; set; }
-        public string IntegradorEmRh { get; set; }
         public string IntegradoresEmRh { get; set; }
+        public string IntegradorEmRh { get; set; }
         public DateTime? DataIntegraçãoEmRh { get; set; }
         public bool? IntegradoEmRhkm { get; set; }
-        public string IntegradorEmRhKm { get; set; }
         public string IntegradoresEmRhkm { get; set; }
+        public string IntegradorEmRhKm { get; set; }
         public DateTime? DataIntegraçãoEmRhKm { get; set; }
         public decimal? CustoTotalAjudaCusto { get; set; }
         public decimal? CustoTotalHoras { get; set; }

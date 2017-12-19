@@ -336,6 +336,14 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValidadorRh3)
                     .HasColumnName("Validador_RH3")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.ValidadorRhkm1)
+                    .HasColumnName("Validador_RHKM1")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ValidadorRhkm2)
+                    .HasColumnName("Validador_RHKM2")
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<AutorizarFaturaçãoContratos>(entity =>
@@ -1045,6 +1053,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.AssinadoPeloCliente).HasColumnName("Assinado pelo Cliente");
 
+                entity.Property(e => e.AudiênciaPrévia)
+                    .HasColumnName("Audiência Prévia")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.CondiçõesPagamento).HasColumnName("Condições Pagamento");
 
                 entity.Property(e => e.CondiçõesPagamentoOutra)
@@ -1266,6 +1278,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.ValorBaseProcedimento).HasColumnName("Valor Base Procedimento");
 
                 entity.Property(e => e.ValorTotalProposta).HasColumnName("Valor Total Proposta");
 
@@ -3305,11 +3319,6 @@ namespace Hydra.Such.Data.Database
                     .HasForeignKey(d => d.NºFolhaDeHoras)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Mão de Obra Folha de Horas_Folhas de Horas");
-
-                entity.HasOne(d => d.NºProjetoNavigation)
-                    .WithMany(p => p.MãoDeObraFolhaDeHoras)
-                    .HasForeignKey(d => d.NºProjeto)
-                    .HasConstraintName("FK_Mão de Obra Folha de Horas_Projetos");
             });
 
             modelBuilder.Entity<Marcas>(entity =>
@@ -5407,6 +5416,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.ValorEstimado).HasColumnName("Valor Estimado");
 
                 entity.Property(e => e.Viatura).HasMaxLength(10);
 

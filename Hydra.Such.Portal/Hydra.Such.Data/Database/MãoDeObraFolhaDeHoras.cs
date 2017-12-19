@@ -35,6 +35,5 @@ namespace Hydra.Such.Data.Database
 
         public CatálogoManutenção CódigoTipoOmNavigation { get; set; }
         public FolhasDeHoras NºFolhaDeHorasNavigation { get; set; }
-        public Projetos NºProjetoNavigation { get; set; }
     }
 }

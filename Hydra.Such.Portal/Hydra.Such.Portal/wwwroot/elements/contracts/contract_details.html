@@ -92,6 +92,7 @@
 
         <iron-ajax url="/PopulateDropdowns/GetContractPaymentTerms" last-response="{{CBContractPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractTerminationTerms" last-response="{{CBContractTerminationTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
 
 
         <!-- PROJECT CRUDS -->
@@ -139,7 +140,17 @@
                 <paper-button raised id="btnContractArchive" class="" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Consulta de arquivos</paper-button>
             </div>
         </div>
-
+        <template is="dom-if" if="{{ _showAreas }}">
+            <div class="row">
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[LAreas]]" id="areaId" item-value-path="id" item-label-path="value" value="{{ _areaid }}" label="Área" required error-message="Este campo é obrigatório">
+                        <template>
+                            <b>[[item.value]]</b>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+            </div>
+        </template>
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
                 <iron-form id="formContract">
@@ -1544,19 +1555,24 @@
                         type: Boolean,
                         value: false
                     },
-                    
+                    _showAreas: {
+                        type: Boolean,
+                        value: false
+                    },
                 },
                 ready: function () {
                     //GET CONTRACT DATA
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
                     this.$.page_databound_ajax.generateRequest();
-
-                    debugger;;
+                    
                     if (!this._permissions.update) {
                         this._lockFields = true;
                         this._contractStatusLocked = true;
                     }
+
+                    this._showAreas = this._areaid == 4;
+
                 },
                 _openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
@@ -1708,7 +1724,7 @@
                     
 
                     if (data.detail.status === 200) {
-                        debugger;
+               
                         if (data.detail.url.indexOf("GetContractDetails") !== -1) {
                             if (this.data.contractNo != "") {
                                 this.$.serviceclients_ajax.body = JSON.stringify(this.data.clientNo);
@@ -1719,7 +1735,6 @@
                             }
                         }
                         else if (data.detail.url.indexOf("Create") !== -1) {
-                            debugger;
                             this._createResponseProcessor();
                         }
                         else if (data.detail.url.indexOf("Update") !== -1) {
@@ -1739,7 +1754,6 @@
                     }
                 },
                 _createResponseProcessor: function () {
-                    debugger;
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
                         this._openToast("Contrato criado com sucesso.");
@@ -1747,7 +1761,6 @@
                         var contractNo = this.data.contractNo;
                         setTimeout(
                             function () {
-                                debugger;
                                 window.location.href = "../DetalhesContrato/" + contractNo;
                             }, 1000);
 
