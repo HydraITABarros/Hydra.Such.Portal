@@ -196,6 +196,32 @@
                     </template>
                 </vaadin-combo-box>
             </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-sm-3">
+                <vaadin-combo-box items="[[LUtilizador]]" id="validadorkm1" name="validadorkm1" item-value-path="id" item-label-path="value" label="Validador RH KM Nº 1" disabled="{{ _permissionsCreate }}">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+
+            <div class="col-sm-3">
+                <vaadin-combo-box items="[[LUtilizador]]" id="validadorkm2" name="validadorkm2" item-value-path="id" item-label-path="value" label="Validador RH KM Nº 2" disabled="{{ _permissionsCreate }}">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
 
             <div class="col-sm-3 alignPoga">
                 <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button>
@@ -320,6 +346,42 @@
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.validadorRH3}}" disabled="{{ _permissionsUpdate }}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="validadorRH1">Validador RH KM Nº 1</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="validadorRH1" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.validadorRHKM1}}" disabled="{{ _permissionsUpdate }}">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="validadorRH2">Validador RH KM Nº 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="validadorRH2" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.validadorRHKM2}}" disabled="{{ _permissionsUpdate }}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -491,7 +553,9 @@
                                 noResponsavel3: this.$.responsavel3.value,
                                 validadorRH1: this.$.validador1.value,
                                 validadorRH2: this.$.validador2.value,
-                                validadorRH3: this.$.validador3.value
+                                validadorRH3: this.$.validador3.value,
+                                validadorRHKM1: this.$.validadorkm1.value,
+                                validadorRHKM2: this.$.validadorkm2.value
                             }
                         );
                         this.$.ajax_create.generateRequest();
@@ -568,6 +632,8 @@
                         this.$.validador1.value = "";
                         this.$.validador2.value = "";
                         this.$.validador3.value = "";
+                        this.$.validadorkm1.value = "";
+                        this.$.validadorkm2.value = "";
 
                         this.$.ajax_GetAll.generateRequest();
                         this.openToast("Tabela atualizada.");

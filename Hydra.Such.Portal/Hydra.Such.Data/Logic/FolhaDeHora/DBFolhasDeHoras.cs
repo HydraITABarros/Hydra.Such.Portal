@@ -83,6 +83,41 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
+        public static FolhasDeHoras UpdateDetalhes(string NoFolhaHoras)
+        {
+            try
+            {
+                decimal CustoTotalAjudaCusto = 0;
+                decimal CustoTotalHoras = 0;
+                decimal CustoTotalKm = 0;
+                decimal NumTotalKm = 0;
+                FolhasDeHoras FolhaDeHora = DBFolhasDeHoras.GetById(NoFolhaHoras);
+
+                CustoTotalAjudaCusto = DBLinhasFolhaHoras.GetCustoTotalAjudaCustoByFolhaHoraNo(NoFolhaHoras);
+                CustoTotalHoras = DBMaoDeObraFolhaDeHoras.GetCustoTotalHorasByFolhaHoraNo(NoFolhaHoras);
+                CustoTotalKm = DBLinhasFolhaHoras.GetCustoTotalKMByFolhaHoraNo(NoFolhaHoras);
+                NumTotalKm = DBLinhasFolhaHoras.GetNoTotalKmByFolhaHoraNo(NoFolhaHoras);
+
+                using (var ctx = new SuchDBContext())
+                {
+                    FolhaDeHora.CustoTotalAjudaCusto = CustoTotalAjudaCusto;
+                    FolhaDeHora.CustoTotalHoras = CustoTotalHoras;
+                    FolhaDeHora.CustoTotalKm = CustoTotalKm;
+                    FolhaDeHora.NumTotalKm = NumTotalKm;
+                    FolhaDeHora.DataHoraModificação = DateTime.Now;
+
+                    ctx.FolhasDeHoras.Update(FolhaDeHora);
+                    ctx.SaveChanges();
+                }
+
+                return FolhaDeHora;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static bool Delete(string FolhaDeHoraNo)
         {
             try
@@ -303,12 +338,12 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 string regiao = "";
                 string area = "";
                 string cresp = "";
-                string userName = "";
+                //string userName = "";
 
                 regiao = GetDimensionRegiao(NAVDatabaseName, NAVCompanyName, user);
                 area = GetDimensionArea(NAVDatabaseName, NAVCompanyName, user);
                 cresp = GetDimensionCresp(NAVDatabaseName, NAVCompanyName, user);
-                userName = DBUserConfigurations.GetById(user).Nome;
+                //userName = DBUserConfigurations.GetById(user).Nome;
 
                 using (var ctx = new SuchDBContext())
                 {
@@ -406,12 +441,12 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 string regiao = "";
                 string area = "";
                 string cresp = "";
-                string userName = "";
+                //string userName = "";
 
                 regiao = GetDimensionRegiao(NAVDatabaseName, NAVCompanyName, user);
                 area = GetDimensionArea(NAVDatabaseName, NAVCompanyName, user);
                 cresp = GetDimensionCresp(NAVDatabaseName, NAVCompanyName, user);
-                userName = DBUserConfigurations.GetById(user).Nome;
+                //userName = DBUserConfigurations.GetById(user).Nome;
 
                 using (var ctx = new SuchDBContext())
                 {
@@ -419,7 +454,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         (regiao.Contains(x.CódigoRegião) || x.CódigoRegião == null) &&
                         (area.Contains(x.CódigoÁreaFuncional) || x.CódigoÁreaFuncional == null) &&
                         (cresp.Contains(x.CódigoCentroResponsabilidade) || x.CódigoCentroResponsabilidade == null) &&
-                        x.Validadores.Contains(userName) &&
+                        x.Validadores.Contains(user) &&
                         x.Estado == Estado
                     ).Select(FH => new FolhaDeHorasViewModel()
                     {
@@ -510,12 +545,12 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 string regiao = "";
                 string area = "";
                 string cresp = "";
-                string userName = "";
+                //string userName = "";
 
                 regiao = GetDimensionRegiao(NAVDatabaseName, NAVCompanyName, user);
                 area = GetDimensionArea(NAVDatabaseName, NAVCompanyName, user);
                 cresp = GetDimensionCresp(NAVDatabaseName, NAVCompanyName, user);
-                userName = DBUserConfigurations.GetById(user).Nome;
+                //userName = DBUserConfigurations.GetById(user).Nome;
 
                 using (var ctx = new SuchDBContext())
                 {
@@ -523,7 +558,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         (regiao.Contains(x.CódigoRegião) || x.CódigoRegião == null) &&
                         (area.Contains(x.CódigoÁreaFuncional) || x.CódigoÁreaFuncional == null) &&
                         (cresp.Contains(x.CódigoCentroResponsabilidade) || x.CódigoCentroResponsabilidade == null) &&
-                        x.IntegradoresEmRh.Contains(userName) &&
+                        x.IntegradoresEmRh.Contains(user) &&
                         x.IntegradoEmRh == false &&
                         x.Estado == Estado //1 = VALIDADO
                     ).Select(FH => new FolhaDeHorasViewModel()
@@ -615,12 +650,12 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 string regiao = "";
                 string area = "";
                 string cresp = "";
-                string userName = "";
+                //string userName = "";
 
                 regiao = GetDimensionRegiao(NAVDatabaseName, NAVCompanyName, user);
                 area = GetDimensionArea(NAVDatabaseName, NAVCompanyName, user);
                 cresp = GetDimensionCresp(NAVDatabaseName, NAVCompanyName, user);
-                userName = DBUserConfigurations.GetById(user).Nome;
+                //userName = DBUserConfigurations.GetById(user).Nome;
 
                 using (var ctx = new SuchDBContext())
                 {
@@ -628,7 +663,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         (regiao.Contains(x.CódigoRegião) || x.CódigoRegião == null) &&
                         (area.Contains(x.CódigoÁreaFuncional) || x.CódigoÁreaFuncional == null) &&
                         (cresp.Contains(x.CódigoCentroResponsabilidade) || x.CódigoCentroResponsabilidade == null) &&
-                        x.IntegradoresEmRhkm.Contains(userName) &&
+                        x.IntegradoresEmRhkm.Contains(user) &&
                         x.IntegradoEmRhkm == false &&
                         x.Estado == Estado && // 1 == VALIDADO
                         x.TipoDeslocação == 2 // 2 == "Viatura Própria"
@@ -721,12 +756,12 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 string regiao = "";
                 string area = "";
                 string cresp = "";
-                string userName = "";
+                //string userName = "";
 
                 regiao = GetDimensionRegiao(NAVDatabaseName, NAVCompanyName, user);
                 area = GetDimensionArea(NAVDatabaseName, NAVCompanyName, user);
                 cresp = GetDimensionCresp(NAVDatabaseName, NAVCompanyName, user);
-                userName = DBUserConfigurations.GetById(user).Nome;
+                //userName = DBUserConfigurations.GetById(user).Nome;
 
                 using (var ctx = new SuchDBContext())
                 {
