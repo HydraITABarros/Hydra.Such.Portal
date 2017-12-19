@@ -348,9 +348,9 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.FolhasDeHoras.Where(x => 
-                        (regiao.Contains(x.CódigoRegião) || x.CódigoRegião == null) &&
-                        (area.Contains(x.CódigoÁreaFuncional) || x.CódigoÁreaFuncional == null) && 
-                        (cresp.Contains(x.CódigoCentroResponsabilidade) || x.CódigoCentroResponsabilidade == null) &&
+                        (regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
+                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) && 
+                        (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
                         x.Estado == Estado
                     ).Select(FH => new FolhaDeHorasViewModel()
                     {
@@ -451,10 +451,10 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.FolhasDeHoras.Where(x =>
-                        (regiao.Contains(x.CódigoRegião) || x.CódigoRegião == null) &&
-                        (area.Contains(x.CódigoÁreaFuncional) || x.CódigoÁreaFuncional == null) &&
-                        (cresp.Contains(x.CódigoCentroResponsabilidade) || x.CódigoCentroResponsabilidade == null) &&
-                        x.Validadores.Contains(user) &&
+                        (regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
+                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
+                        (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
+                        x.Validadores.ToLower().Contains(user.ToLower()) &&
                         x.Estado == Estado
                     ).Select(FH => new FolhaDeHorasViewModel()
                     {
@@ -555,10 +555,10 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.FolhasDeHoras.Where(x =>
-                        (regiao.Contains(x.CódigoRegião) || x.CódigoRegião == null) &&
-                        (area.Contains(x.CódigoÁreaFuncional) || x.CódigoÁreaFuncional == null) &&
-                        (cresp.Contains(x.CódigoCentroResponsabilidade) || x.CódigoCentroResponsabilidade == null) &&
-                        x.IntegradoresEmRh.Contains(user) &&
+                        (regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
+                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
+                        (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
+                        x.IntegradoresEmRh.ToLower().Contains(user.ToLower()) &&
                         x.IntegradoEmRh == false &&
                         x.Estado == Estado //1 = VALIDADO
                     ).Select(FH => new FolhaDeHorasViewModel()
@@ -660,10 +660,10 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.FolhasDeHoras.Where(x =>
-                        (regiao.Contains(x.CódigoRegião) || x.CódigoRegião == null) &&
-                        (area.Contains(x.CódigoÁreaFuncional) || x.CódigoÁreaFuncional == null) &&
-                        (cresp.Contains(x.CódigoCentroResponsabilidade) || x.CódigoCentroResponsabilidade == null) &&
-                        x.IntegradoresEmRhkm.Contains(user) &&
+                        (regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
+                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
+                        (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
+                        x.IntegradoresEmRhkm.ToLower().Contains(user.ToLower()) &&
                         x.IntegradoEmRhkm == false &&
                         x.Estado == Estado && // 1 == VALIDADO
                         x.TipoDeslocação == 2 // 2 == "Viatura Própria"
@@ -766,9 +766,9 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.FolhasDeHoras.Where(x =>
-                        (regiao.Contains(x.CódigoRegião) || x.CódigoRegião == null) &&
-                        (area.Contains(x.CódigoÁreaFuncional) || x.CódigoÁreaFuncional == null) &&
-                        (cresp.Contains(x.CódigoCentroResponsabilidade) || x.CódigoCentroResponsabilidade == null) &&
+                        (regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
+                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
+                        (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
                         x.Estado == Estado // 2 == REGISTADO
                     ).Select(FH => new FolhaDeHorasViewModel()
                     {
