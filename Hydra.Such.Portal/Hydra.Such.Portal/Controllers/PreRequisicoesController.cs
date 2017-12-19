@@ -8,6 +8,7 @@ using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.Request;
+using Newtonsoft.Json.Linq;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -441,37 +442,79 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        public JsonResult CopyReqModelLines([FromBody] RequisitionViewModel data)
+        public JsonResult CopyReqModelLines([FromBody] RequisitionViewModel data, string id)
         {
             List<LinhasRequisição> RequesitionLines = new List<LinhasRequisição>();
-            RequesitionLines = DBRequestLine.GetAll();
+            RequesitionLines = DBRequestLine.GetAllByRequisiçãos(data.RequisitionNo);
 
             List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
             RequesitionLines.ForEach(x => result.Add(DBRequestLine.ParseToViewModel(x)));
-
-            LinhasPréRequisição newlines = new LinhasPréRequisição();
-            foreach (var line in result)
+            
+            try
             {
-                newlines.CódigoLocalização = line.LocalCode;
-                newlines.CódigoProdutoFornecedor = line.SupplierProductCode;
-                newlines.Descrição = line.Description;
-                newlines.CódigoUnidadeMedida = line.UnitMeasureCode;
-                newlines.QuantidadeARequerer = line.QuantityToRequire;
-                newlines.CustoUnitário = line.UnitCost;
-                newlines.NºProjeto = line.ProjectNo;
-                newlines.NºLinhaOrdemManutenção = line.MaintenanceOrderLineNo;
-                newlines.Viatura = line.Vehicle;
-                newlines.NºFornecedor = line.SupplierNo;
-                newlines.CódigoRegião = line.RegionCode;
-                newlines.CódigoÁreaFuncional = line.FunctionalAreaCode;
-                newlines.CódigoCentroResponsabilidade = line.CenterResponsibilityCode;
+                foreach (var line in result)
+                {
+                    LinhasPréRequisição newlines = new LinhasPréRequisição();
+
+                    newlines.NºPréRequisição = data.PreRequisitionNo;
+                    newlines.CódigoLocalização = line.LocalCode;
+                    newlines.CódigoProdutoFornecedor = line.SupplierProductCode;
+                    newlines.Descrição = line.Description;
+                    newlines.CódigoUnidadeMedida = line.UnitMeasureCode;
+                    newlines.QuantidadeARequerer = line.QuantityToRequire;
+                    newlines.CustoUnitário = line.UnitCost;
+                    newlines.NºProjeto = line.ProjectNo;
+                    newlines.NºLinhaOrdemManutenção = line.MaintenanceOrderLineNo;
+                    newlines.Viatura = line.Vehicle;
+                    newlines.NºFornecedor = line.SupplierNo;
+                    newlines.CódigoRegião = line.RegionCode;
+                    newlines.CódigoÁreaFuncional = line.FunctionalAreaCode;
+                    newlines.CódigoCentroResponsabilidade = line.CenterResponsibilityCode;
+
+                    DBPreRequesitionLines.Create(newlines);
+                }
             }
+            catch (Exception ex)
+            {
 
-
+                throw;
+            }
+            
             return Json(result);
+        }
+
+        public JsonResult GetPendingReq([FromBody] JObject requestParams)
+        {
+            int AreaNo = int.Parse(requestParams["AreaNo"].ToString());
+
+            List<Requisição> RequisitionModel = null;
+            RequisitionModel = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, AreaNo, (int)RequisitionStates.Pending);
+            
+            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+
+            RequisitionModel.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
+            return Json(result);
+
+        }
+
+        public JsonResult GetPendingReqLines([FromBody] JObject requestParams)
+        {
+            string ReqNo = requestParams["ReqNo"].ToString();
+
+            List<LinhasRequisição> RequisitionLines = null;
+            RequisitionLines = DBRequestLine.GetAllByRequisiçãos(ReqNo);
+
+            List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
+
+            RequisitionLines.ForEach(x => result.Add(DBRequestLine.ParseToViewModel(x)));
+            return Json(result);
+
         }
         #endregion
 
+        #region Requisition
+
+        #endregion
 
     }
 }

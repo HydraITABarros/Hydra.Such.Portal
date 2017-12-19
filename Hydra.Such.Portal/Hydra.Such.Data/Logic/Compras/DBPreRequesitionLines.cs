@@ -151,7 +151,7 @@ namespace Hydra.Such.Data.Logic.Compras
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
                 CenterResponsibilityCode = x.CódigoCentroResponsabilidade,
                 ProjectNo = x.NºProjeto,
-                CreateDateTime = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
+                CreateDateTime = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd HH:mm:ss") : "",
                 CreateUser = x.UtilizadorCriação,
                 UpdateDateTime = x.DataHoraModificação.HasValue ? x.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
                 UpdateUser = x.UtilizadorModificação,

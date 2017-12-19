@@ -45,7 +45,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string Comments { get; set; }
         public bool? RequestModel { get; set; }
         public string CreateUser { get; set; }
-        public DateTime? CreateDate { get; set; }
+        public string CreateDate { get; set; }
         public string UpdateUser { get; set; }
         public DateTime? UpdateDate { get; set; }
         public bool? RelatedSearches { get; set; }
@@ -90,10 +90,12 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? EstimatedValue { get; set; }
         public string MarketInquiryNo { get; set; }
         public string OrderNo { get; set; }
-        public DateTime? RequisitionDate { get; set; }
+        public string RequisitionDate { get; set; }
         public string dimension { get; set; }
         public decimal? Budget { get; set; }
 
+        public string PreRequisitionNo { get; set; }
+        
         public List<RequisitionLineViewModel> Lines { get; set; }
 
         private bool IsValidForLocalMarketForRequisition()

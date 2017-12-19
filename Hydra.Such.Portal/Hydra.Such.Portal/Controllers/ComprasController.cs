@@ -6,7 +6,9 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-
+using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel.Compras;
+using Hydra.Such.Data.Logic.Request;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -48,6 +50,7 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
             if (UPerm != null && UPerm.Read.Value)
             {
+                ViewBag.Area = 10;
                 ViewBag.UPermissions = UPerm;
                 return View();
             }
@@ -62,6 +65,7 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
             if (UPerm != null && UPerm.Read.Value)
             {
+                ViewBag.Area = 10;
                 ViewBag.PreRequesitionNo = PreRequesitionNo ?? "";
                 ViewBag.UPermissions = UPerm;
                 return View();
@@ -71,6 +75,24 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+        #endregion
+
+        #region Pending Requesitions
+        public IActionResult RequisicoesPendentes()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 10;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         #endregion
     }
 }
