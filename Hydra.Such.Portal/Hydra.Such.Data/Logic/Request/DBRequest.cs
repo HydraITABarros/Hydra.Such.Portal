@@ -152,6 +152,21 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
+
+        public static List<Requisição> GetReqByUserAreaStatus(string UserName, int AreaId, int Status)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && x.Área == AreaId && x.Estado == Status).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         #region Parse Utilities
         public static RequisitionViewModel ParseToViewModel(this Requisição item)
         {
@@ -181,7 +196,7 @@ namespace Hydra.Such.Data.Logic.Request
                     Comments = item.Observações,
                     RequestModel = item.ModeloDeRequisição,
                     CreateUser = item.UtilizadorCriação,
-                    CreateDate = item.DataHoraCriação,
+                    CreateDate = !item.DataHoraCriação.HasValue ? "" : item.DataHoraCriação.Value.ToString("yyyy-MM-dd HH:mm:ss"),
                     UpdateUser = item.UtilizadorModificação,
                     UpdateDate = item.DataHoraModificação,
                     RelatedSearches = item.CabimentoOrçamental,
@@ -226,7 +241,7 @@ namespace Hydra.Such.Data.Logic.Request
                     // EstimatedValue = item.,
                     MarketInquiryNo = item.NºConsultaMercado,
                     OrderNo = item.NºEncomenda,
-                    RequisitionDate = item.DataRequisição,
+                    RequisitionDate = !item.DataRequisição.HasValue ? "" : item.DataRequisição.Value.ToString("yyyy-MM-dd"),
                     //dimension = item.,
                     //Budget = item.,
                     Lines = item.LinhasRequisição.ToList().ParseToViewModel(),
@@ -272,7 +287,7 @@ namespace Hydra.Such.Data.Logic.Request
                     Observações = item.Comments,
                     ModeloDeRequisição = item.RequestModel,
                     UtilizadorCriação = item.CreateUser,
-                    DataHoraCriação = item.CreateDate,
+                    DataHoraCriação = string.IsNullOrEmpty(item.CreateDate) ? (DateTime?)null : DateTime.Parse(item.CreateDate),
                     UtilizadorModificação = item.UpdateUser,
                     DataHoraModificação = item.UpdateDate,
                     CabimentoOrçamental = item.RelatedSearches,
@@ -317,7 +332,7 @@ namespace Hydra.Such.Data.Logic.Request
                     // EstimatedValue = item.,
                     NºConsultaMercado = item.MarketInquiryNo,
                     NºEncomenda = item.OrderNo,
-                    DataRequisição = item.RequisitionDate,
+                    DataRequisição = item.RequisitionDate != null ? DateTime.Parse(item.RequisitionDate) : (DateTime?)null,
                     //dimension = item.,
                     //Budget = item.,
                 };
