@@ -140,6 +140,7 @@
         <iron-ajax url="/PopulateDropdowns/GetProducts" last-response="{{CBItems}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{CBPurchaseHeader}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         
 
@@ -1402,6 +1403,9 @@
                         _PopulatePurchaseLines: function (data) {
                             debugger;
                             var PurchaseNo = this._CBPurchaseHeader;
+                            this.$.purchaselines_ajax.body = JSON.stringify(PurchaseNo);
+                            this.$.purchaselines_ajax.generateRequest();
+                            
                         },
 
                         _SaveLines: function (e) {

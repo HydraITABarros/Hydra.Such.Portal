@@ -232,6 +232,24 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult getOpenOrderLineByHeader([FromBody] string PurchaseHeaderNo)
+        {
+            NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
+            try
+            {
+                List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, DateTime.Now, PurchaseHeaderNo).ToList();
+                
+                return Json(result);
+            }
+            catch (Exception e)
+            {
+                return Json(getorderline);
+            }
+
+        }
+
+        [HttpPost]
         public JsonResult getSupplier([FromBody] string suppliercode)
         {
             List<DDMessageString> result = DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, suppliercode).Select(x => new DDMessageString()

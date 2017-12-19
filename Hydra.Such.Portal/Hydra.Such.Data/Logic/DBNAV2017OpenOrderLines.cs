@@ -24,7 +24,7 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@PurchaseHeaderNo", PurchaseHeaderNo)
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017LinhasEncomendaAberto @DBName, @CompanyName, @DateSupplierPrice", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017LinhasEncomendaAberto @DBName, @CompanyName, @DateSupplierPrice, @PurchaseHeaderNo", parameters);
 
                     foreach (dynamic temp in data)
                     {
