@@ -1,10 +1,4 @@
-﻿
-@{
-    ViewData["Title"] = "PreRequisicoesLista";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
@@ -12,9 +6,7 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-<h1 class="title">Pré-Requisições</h1>
 
-<x-prereqlist _areaid="10" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-prereqlist>
 
 <dom-module id="x-prereqlist">
     <template>
@@ -184,13 +176,13 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "../../Compras/PreRequisicoes/PréRequisiçõesDetalhes/?PreRequesitionNo=" + item.preRequesitionsNo;
+                        window.location.href = "PreRequisicoesDetalhes/?PreRequesitionNo=" + item.preRequesitionsNo;
                     }
                 },
                 _create: function (item) {
                     debugger;
                     if (item != null) {
-                        window.location.href = "../../Compras/PreRequisicoes/PréRequisiçõesDetalhes/";
+                        window.location.href = "PreRequisicoesDetalhes/";
                     }
                 },
                 ready: function () {

@@ -12,6 +12,8 @@ namespace Hydra.Such.Data.ViewModel.FH
         public string ValidadorRH1 { get; set; }
         public string ValidadorRH2 { get; set; }
         public string ValidadorRH3 { get; set; }
+        public string ValidadorRHKM1 { get; set; }
+        public string ValidadorRHKM2 { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataHoraCriacao { get; set; }
         public string UtilizadorModificacao { get; set; }
