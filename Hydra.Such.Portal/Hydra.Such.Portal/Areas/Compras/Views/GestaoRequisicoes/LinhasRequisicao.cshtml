@@ -4,6 +4,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="import" href="~/elements/requisitions/requestlines.html">
-<h1 class="title">Detalhes Requisição Aprovada</h1>
+<h1 class="title">Requisição Aprovada</h1>
 
 <x-requestlines _requisitionid="@ViewBag.RequisitionId" _requisitionstatus="4" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-requestlines>

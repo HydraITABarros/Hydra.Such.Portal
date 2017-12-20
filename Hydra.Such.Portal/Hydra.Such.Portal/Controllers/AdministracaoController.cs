@@ -1957,6 +1957,8 @@ namespace Hydra.Such.Portal.Controllers
                 autorizacao.ValidadorRh1 = data.ValidadorRH1;
                 autorizacao.ValidadorRh2 = data.ValidadorRH2;
                 autorizacao.ValidadorRh3 = data.ValidadorRH3;
+                autorizacao.ValidadorRhKm1 = data.ValidadorRHKM1;
+                autorizacao.ValidadorRhKm2 = data.ValidadorRHKM2;
                 autorizacao.CriadoPor = User.Identity.Name;
                 autorizacao.DataHoraCriação = DateTime.Now;
 
@@ -1991,6 +1993,8 @@ namespace Hydra.Such.Portal.Controllers
                     u.ValidadorRH1 == x.ValidadorRH1 &&
                     u.ValidadorRH2 == x.ValidadorRH2 &&
                     u.ValidadorRH3 == x.ValidadorRH3 &&
+                    u.ValidadorRHKM1 == x.ValidadorRHKM1 &&
+                    u.ValidadorRHKM2 == x.ValidadorRHKM2 &&
                     u.UtilizadorCriacao == x.UtilizadorCriacao &&
                     u.DataHoraCriacao == x.DataHoraCriacao
             ));

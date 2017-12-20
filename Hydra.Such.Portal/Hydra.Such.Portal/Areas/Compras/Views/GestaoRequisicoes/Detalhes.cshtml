@@ -42,9 +42,7 @@
     <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
     <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
        
-        <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_requestModels"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i>Linhas de Requisição</paper-button>
-        </div><!--on-response="_gridListResponse"-->
+      
         <h2 class="separator">Requisições</h2>
         <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="160px" resizable>
@@ -292,9 +290,6 @@
                     this.$.ajax_getgrid.generateRequest();
                 }
                 this.Flag = true;
-            },
-            _requestModels: function () {
-                window.location.href = "/Compras/GestaoRequisicoes/LinhasRequisicao";
             },
             _parsestate:function (param1) {
                 if (param1 != undefined) {

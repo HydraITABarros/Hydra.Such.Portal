@@ -1,30 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.Logic.Compras;
-using Microsoft.Extensions.Options;
-using Hydra.Such.Portal.Configurations;
-using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Database;
-using Hydra.Such.Portal.Controllers;
 using Hydra.Such.Data.Logic.Request;
+using Newtonsoft.Json.Linq;
 
-namespace Hydra.Such.Portal.Areas.Compras.Controllers
+namespace Hydra.Such.Portal.Controllers
 {
     public class PreRequisicoesController : Controller
     {
-        [Area("Compras")]
         public IActionResult Index()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
             if (UPerm != null && UPerm.Read.Value)
             {
-                
+
                 ViewBag.UPermissions = UPerm;
                 return View();
             }
@@ -58,15 +53,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 {
                     PréRequisição PreRequisition = DBPreRequesition.GetByNo(data.PreRequesitionsNo);
                     result = DBPreRequesition.ParseToViewModel(PreRequisition);
-                    
+
                 }
                 return Json(result);
 
             }
             return Json(false);
         }
-
-        [Area("Compras")]
+        
         public IActionResult PréRequisiçõesDetalhes(string PreRequesitionNo)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
@@ -153,7 +147,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             CLine.Viatura = x.Vehicle;
                             CLine.NºFornecedor = x.SupplierNo;
                             CLine.CódigoProdutoFornecedor = x.SupplierProductCode;
-
+                            
                             CLine.UnidadeProdutivaNutrição = x.UnitNutritionProduction;
                             CLine.NºCliente = x.CustomerNo;
                             CLine.NºEncomendaAberto = x.OpenOrderNo;
@@ -393,8 +387,8 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             return Json(PlacesData);
         }
         #endregion
-        
-        #region Numeração
+
+        #region Numeração Pré-Requisição
         [HttpPost]
         public JsonResult ValidateNumeration([FromBody] PreRequesitionsViewModel data)
         {
@@ -408,11 +402,11 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             //Validate if ProjectNo is valid
             if (!(data.PreRequesitionsNo == "" || data.PreRequesitionsNo == null) && !CfgNumeration.Manual.Value)
             {
-                return Json("A numeração configurada para contratos não permite inserção manual.");
+                return Json("A numeração configurada para pré-requisições não permite inserção manual.");
             }
             else if (data.PreRequesitionsNo == "" && !CfgNumeration.Automático.Value)
             {
-                return Json("É obrigatório inserir o Nº de Contrato.");
+                return Json("É obrigatório inserir o Nº Pré-Requisição.");
             }
 
             return Json("");
@@ -421,7 +415,6 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
 
         #region Requesition Model Lines
         
-        [Area("Compras")]
         public IActionResult RequisiçõesModeloLista(string id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
@@ -449,35 +442,185 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             return Json(result);
         }
 
-        public JsonResult CopyReqModelLines([FromBody] RequisitionViewModel data)
+        public JsonResult CopyReqModelLines([FromBody] RequisitionViewModel data, string id)
         {
             List<LinhasRequisição> RequesitionLines = new List<LinhasRequisição>();
-            RequesitionLines = DBRequestLine.GetAll();
+            RequesitionLines = DBRequestLine.GetAllByRequisiçãos(data.RequisitionNo);
 
             List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
             RequesitionLines.ForEach(x => result.Add(DBRequestLine.ParseToViewModel(x)));
-
-            LinhasPréRequisição newlines = new LinhasPréRequisição();
-            foreach(var line in result)
+            
+            try
             {
-                newlines.CódigoLocalização = line.LocalCode;
-                newlines.CódigoProdutoFornecedor = line.SupplierProductCode;
-                newlines.Descrição = line.Description;
-                newlines.CódigoUnidadeMedida = line.UnitMeasureCode;
-                newlines.QuantidadeARequerer = line.QuantityToRequire;
-                newlines.CustoUnitário = line.UnitCost;
-                newlines.NºProjeto = line.ProjectNo;
-                newlines.NºLinhaOrdemManutenção = line.MaintenanceOrderLineNo;
-                newlines.Viatura = line.Vehicle;
-                newlines.NºFornecedor = line.SupplierNo;
-                newlines.CódigoRegião = line.RegionCode;
-                newlines.CódigoÁreaFuncional = line.FunctionalAreaCode;
-                newlines.CódigoCentroResponsabilidade = line.CenterResponsibilityCode;
-            }
+                foreach (var line in result)
+                {
+                    LinhasPréRequisição newlines = new LinhasPréRequisição();
 
-           
+                    newlines.NºPréRequisição = data.PreRequisitionNo;
+                    newlines.CódigoLocalização = line.LocalCode;
+                    newlines.CódigoProdutoFornecedor = line.SupplierProductCode;
+                    newlines.Descrição = line.Description;
+                    newlines.CódigoUnidadeMedida = line.UnitMeasureCode;
+                    newlines.QuantidadeARequerer = line.QuantityToRequire;
+                    newlines.CustoUnitário = line.UnitCost;
+                    newlines.NºProjeto = line.ProjectNo;
+                    newlines.NºLinhaOrdemManutenção = line.MaintenanceOrderLineNo;
+                    newlines.Viatura = line.Vehicle;
+                    newlines.NºFornecedor = line.SupplierNo;
+                    newlines.CódigoRegião = line.RegionCode;
+                    newlines.CódigoÁreaFuncional = line.FunctionalAreaCode;
+                    newlines.CódigoCentroResponsabilidade = line.CenterResponsibilityCode;
+                    newlines.NºEncomendaAberto = line.OpenOrderNo;
+                    newlines.NºLinhaEncomendaAberto = line.OpenOrderLineNo;
+                    DBPreRequesitionLines.Create(newlines);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
             return Json(result);
         }
+
+        public JsonResult GetPendingReq([FromBody] JObject requestParams)
+        {
+            int AreaNo = int.Parse(requestParams["AreaNo"].ToString());
+
+            List<Requisição> RequisitionModel = null;
+            RequisitionModel = DBRequest.GetReqByUserAreaStatus(User.Identity.Name, AreaNo, (int)RequisitionStates.Pending);
+            
+            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+
+            RequisitionModel.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
+            return Json(result);
+
+        }
+
+        public JsonResult GetPendingReqLines([FromBody] JObject requestParams)
+        {
+            string ReqNo = requestParams["ReqNo"].ToString();
+
+            List<LinhasRequisição> RequisitionLines = null;
+            RequisitionLines = DBRequestLine.GetAllByRequisiçãos(ReqNo);
+
+            List<RequisitionLineViewModel> result = new List<RequisitionLineViewModel>();
+
+            RequisitionLines.ForEach(x => result.Add(DBRequestLine.ParseToViewModel(x)));
+            return Json(result);
+
+        }
+        #endregion
+
+        #region Requisition
+        
+        [HttpPost]
+        public JsonResult CreateRequesition([FromBody] PreRequesitionsViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequesitionsNo);
+                    data.eMessage = "";
+
+                    if (data.Complaint == true && (data.ClaimedRequesitionNo == "" || data.ClaimedRequesitionNo == null))
+                    {
+                        data.eReasonCode = 2;
+                        data.eMessage = "O campo Nº Requisição Reclamada deve ser preenchido.";
+                        return Json(data);
+                    }
+                   
+                    if (data.MoneyBuy == true)
+                    {
+                        if(PreRequesitionLines != null)
+                        {
+                            foreach (var lines in PreRequesitionLines)
+                            {
+                                if (lines.CustoUnitário == null || (lines.NºFornecedor == null || lines.NºFornecedor == ""))
+                                {
+                                    data.eReasonCode = 3;
+                                    data.eMessage = "Os campos Custo Unitário e Nº Fornecedor das linhas devem ser todos preenchidos.";
+                                    return Json(data);
+                                }
+                            }
+                        }
+                    }
+
+                    if (data.Equipment == true)
+                    {
+                        if (data.CollectionLocal == null || String.IsNullOrEmpty(data.CollectionAddress) || String.IsNullOrEmpty(data.CollectionPostalCode) || String.IsNullOrEmpty(data.CollectionLocality) || String.IsNullOrEmpty(data.CollectionContact) || String.IsNullOrEmpty(data.CollectionReceptionResponsible))
+                        {
+                            data.eReasonCode = 4;
+                            data.eMessage = "Os campos de Recolha devem ser todos preenchidos.";
+                            return Json(data);
+                        }
+                        else if (data.DeliveryLocal == null || String.IsNullOrEmpty(data.DeliveryAddress) || String.IsNullOrEmpty(data.DeliveryPostalCode) || String.IsNullOrEmpty(data.DeliveryLocality) || String.IsNullOrEmpty(data.CollectionReceptionResponsible) || String.IsNullOrEmpty(data.InvoiceNo))
+                        {
+                            data.eReasonCode = 4;
+                            data.eMessage = "Os campos de Entrega (Fornecedor) devem ser todos preenchidos.";
+                            return Json(data);
+                        }
+                    }
+
+                    List<PreRequisitionLineViewModel> GroupedList = new List<PreRequisitionLineViewModel>();
+                    
+                    PreRequesitionLines.ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
+
+                    List<PreRequisitionLineViewModel> newlist = GroupedList.OrderBy(x => x.OpenOrderNo).ToList();
+
+                    //Get Contract Numeration
+                    Configuração Configs = DBConfigurations.GetById(1);
+                    int ProjectNumerationConfigurationId = 0;
+                    ProjectNumerationConfigurationId = Configs.NumeraçãoRequisições.Value;
+
+
+                    string RequisitionNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, true);
+                    if (RequisitionNo != null)
+                    {
+
+                    }
+                    else
+                    {
+                        data.eReasonCode = 0;
+                        data.eMessage = "A numeração configurada não é compativel com a inserida.";
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 0;
+                data.eMessage = "Ocorreu um erro ao criar o contrato";
+            }
+
+            return Json(data);
+        }
+
+        #endregion
+
+        #region Numeração Requisição
+        [HttpPost]
+        public JsonResult ValidateNumerationReq([FromBody] PreRequesitionsViewModel data)
+        {
+            //Get Project Numeration
+            Configuração Cfg = DBConfigurations.GetById(1);
+            int ProjectNumerationConfigurationId = 0;
+            ProjectNumerationConfigurationId = Cfg.NumeraçãoRequisições.Value;
+
+            ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+
+            //Validate if ProjectNo is valid
+            if (!CfgNumeration.Automático.Value)
+            {
+                return Json("É obrigatório inserir o Nº Requisição.");
+            }
+
+            return Json("");
+        }
+
+
         #endregion
     }
 }

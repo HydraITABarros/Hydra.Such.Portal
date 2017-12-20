@@ -868,10 +868,9 @@
                 }
             },
             observers: [
-                '_onCacheLoaded(LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,locationsresult,cboProdCode,unitofmeasureresult,cboSupplier,Requisition)'
+                '_onCacheLoaded(data,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,locationsresult,cboProdCode,unitofmeasureresult,cboSupplier,Requisition)'
             ],
             ready: function () {
-                //debugger;
                     
                 this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
                 this.$.requisition_datasource.generateRequest();
@@ -879,17 +878,15 @@
             isReadOnly: function () {
                 return this._requisitionstatus == 4 ? true : !this._permissions.update;
             },
-            _onCacheLoaded: function (LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, locationsresult, cboProdCode, unitofmeasureresult, cboSupplier, Requisition) {
-                debugger;
+            _onCacheLoaded: function (data,LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, locationsresult, cboProdCode, unitofmeasureresult, cboSupplier, Requisition) {
                 if (!this.Flag) {
-                    this.$.ajax_getdata.body = JSON.stringify(this._requisitionid);
+                    //this.$.ajax_getdata.body = JSON.stringify(this._requisitionid);
                     this.$.ajax_getdata.generateRequest();
                 }
                 this.Flag = true;
             },
             _parsesupplierNo: function (param) {
                 if (param != undefined && this.cboSupplier != undefined) {
-                    debugger;
                     var sel = this.cboSupplier.find(x => x.id == param);
                     if (sel != undefined) {
                         return sel.value;
@@ -899,7 +896,6 @@
             },
             _parseunitofmeasure: function (param) {
                 if (param != undefined && this.unitofmeasureresult != undefined) {
-                    debugger;
                     var sel = this.unitofmeasureresult.find(x => x.id == param);
                     if (sel != undefined) {
                         return sel.value;
@@ -954,10 +950,10 @@
                 }
                 return "";
             },
-            _create() {
+            _create: function (){
                 debugger;
                 this.data.unshift({
-                    //requestNo: this.$.requisitionNo.value,
+                    requestNo: this.$.requisitionNo.value,
                     code: this.$.codeId.value,
                     description: this.$.descriptionId.value,
                     unitMeasureCode: this.$.unitMeasureCodeId.value,

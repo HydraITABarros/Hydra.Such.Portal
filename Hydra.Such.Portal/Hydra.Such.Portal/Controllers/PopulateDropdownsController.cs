@@ -198,7 +198,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult OpenOrderLines([FromBody] DateTime? date)
         {
-            List<NAVOpenOrderLinesViewModels> result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date).ToList();
+            List<NAVOpenOrderLinesViewModels> result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "").ToList();
             return Json(result);
         }
 
@@ -209,7 +209,7 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
-                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date).ToList();
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "").ToList();
                 if (result != null && result.Count > 0 &&
                     !string.IsNullOrEmpty(documentNO) &&
                     !string.IsNullOrEmpty(numb))
@@ -223,6 +223,28 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
                 return Json(getorderline);
+            }
+            catch (Exception e)
+            {
+                return Json(getorderline);
+            }
+
+        }
+
+        [HttpPost]
+        public JsonResult getOpenOrderLineByHeader([FromBody] string PurchaseHeaderNo)
+        {
+            NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
+            try
+            {
+                List<DDMessage> result = new List<DDMessage>();
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, DateTime.Now, PurchaseHeaderNo).Select(x => new DDMessage()
+                {
+                    id = x.Line_No,
+                    value = x.Description
+                }).ToList(); ;
+                
+                return Json(result);
             }
             catch (Exception e)
             {
@@ -1207,6 +1229,17 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
 
             return Json(products);
+        }
+
+        [HttpPost]
+        public JsonResult GetPurchaseHeader()
+        {
+            List<DDMessageString> Pheader = DBNAV2017PurchaseHeader.GetPurchaseHeader(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.No_
+            }).ToList();
+
+            return Json(Pheader);
         }
 
         [HttpPost]

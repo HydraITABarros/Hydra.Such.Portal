@@ -1288,7 +1288,6 @@
 
                 },
                 _responseProcessor: function () {
-                    debugger;;
                     if (this.projdata.status >= 4) {
                         this.$.dpDate.disabled = true;
                         this.$.projectMovementList.disabled = true;
@@ -1382,8 +1381,6 @@
                 },
 
                 _update: function () {
-
-                    debugger;;
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
                 },

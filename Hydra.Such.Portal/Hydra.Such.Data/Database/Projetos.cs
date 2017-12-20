@@ -11,7 +11,6 @@ namespace Hydra.Such.Data.Database
             DistribuiçãoCustoFolhaDeHoras = new HashSet<DistribuiçãoCustoFolhaDeHoras>();
             DiárioCafetariaRefeitório = new HashSet<DiárioCafetariaRefeitório>();
             DiárioDeProjeto = new HashSet<DiárioDeProjeto>();
-            FolhasDeHoras = new HashSet<FolhasDeHoras>();
             LinhasPréRequisição = new HashSet<LinhasPréRequisição>();
             LinhasRequisição = new HashSet<LinhasRequisição>();
             LinhasRequisiçõesSimplificadas = new HashSet<LinhasRequisiçõesSimplificadas>();
@@ -72,7 +71,6 @@ namespace Hydra.Such.Data.Database
         public ICollection<DistribuiçãoCustoFolhaDeHoras> DistribuiçãoCustoFolhaDeHoras { get; set; }
         public ICollection<DiárioCafetariaRefeitório> DiárioCafetariaRefeitório { get; set; }
         public ICollection<DiárioDeProjeto> DiárioDeProjeto { get; set; }
-        public ICollection<FolhasDeHoras> FolhasDeHoras { get; set; }
         public ICollection<LinhasPréRequisição> LinhasPréRequisição { get; set; }
         public ICollection<LinhasRequisição> LinhasRequisição { get; set; }
         public ICollection<LinhasRequisiçõesSimplificadas> LinhasRequisiçõesSimplificadas { get; set; }

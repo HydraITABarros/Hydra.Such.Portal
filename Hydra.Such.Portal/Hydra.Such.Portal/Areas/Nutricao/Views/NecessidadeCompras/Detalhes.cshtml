@@ -40,23 +40,21 @@
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_requestModels"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Modelos de Requisições</paper-button>
+            <paper-button class="tablinks" on-tap="_requestModels"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Copiar Modelos de requisição</paper-button>
             <paper-button class="tablinks" on-tap="_addRequesition"><i class="fa fa-get-pocket" aria-hidden="true"></i> Geração de requisições </paper-button>
-            <paper-button class="tablinks" on-tap="_addRequesitionLines"><i class="fa fa-check-square" aria-hidden="true"></i> Criação Linhas Requisição</paper-button>
         </div><!--on-response="_gridListResponse"-->
 
         <iron-ajax url="/PopulateDropdowns/OpenOrderLines" id="ajax_nOrderLines" last-response="{{cbopenorderlines}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLine" id="ajax_result" last-response="{{result}}" on-response="_resultResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLine" id="ajax_result2" last-response="{{result2}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getSupplier" id="ajax_supplierresult" last-response="{{supplierresult}}" on-response="_supplierResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" id="ajax_unitmeasure" last-response="{{unitmeasureresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{unitmeasureresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/NecessidadeCompras/GetGridValues" id="ajax_getgrid" last-response="{{data}}" on-response="_getgridResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/NecessidadeCompras/UpdateShoppingNecessity" id="ajax_update" last-response="{{data}}" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/NecessidadeCompras/UpdateShoppingNecessity" id="ajax_update" last-response="{{updatedata}}" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/NecessidadeCompras/GenerateRequesition" id="ajax_requesitionupdate" last-response="{{datarequesition}}" method="post" on-response="_requesitionResponse" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/NecessidadeCompras/GenerateRequesitionLines" id="ajax_requesitionLineupdate" last-response="{{datarequesitionline}}" method="post" on-response="_requesitionLineResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/NecessidadeCompras/GetModelRequisition" last-response="{{resultModelRequisition}}" auto method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetLocations" id="grid_Locations_ajax" last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/NecessidadeCompras/GetProductivityUnits" id="grid_ProductivityUnits_ajax" last-response="{{produnitresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations"  last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/NecessidadeCompras/GetProductivityUnits" last-response="{{produnitresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
        <iron-ajax url="/Nutricao/NecessidadeCompras/GenerateByRequesition" id="grid_generatebyreq_ajax" last-response="{{genbyreqresult}}"  on-response="_benbyreqResponse"  method="post" handle-as="json" content-type="application/json"></iron-ajax>
    
         
@@ -122,18 +120,18 @@
                 </vaadin-combo-box>
             </div>
             <div class="col-md-3">
-                <vaadin-text-field id="qtyID" name="qtyName" label="Quantidade" value="{{qty}}"></vaadin-text-field>
+                <vaadin-text-field id="qtyID" name="qtyName" label="Quantidade" class="alignRight" value="{{qty}}"></vaadin-text-field>
             </div>
             <div class="col-md-3">
-                <vaadin-text-field id="QtyforMeasId" name="QtyforMeasName" label="Quantidade por Unid. Medida " value="{{QtyforMeas}}" disabled></vaadin-text-field>
+                <vaadin-text-field id="QtyforMeasId" name="QtyforMeasName" label="Quantidade por Unid. Medida " class="alignRight" value="{{QtyforMeas}}" disabled></vaadin-text-field>
             </div>
             <div class="col-md-3 ">
-                <vaadin-text-field id="unitCostId" name="unitCostName" label="Custo Unitário" value="{{unitCost}}" disabled></vaadin-text-field>
+                <vaadin-text-field id="unitCostId" name="unitCostName" label="Custo Unitário" class="alignRight" value="{{unitCost}}" disabled><div slot="suffix">€</div></vaadin-text-field>
             </div>
         </div>
         <div class="row">
             <div class="col-md-3">
-                <vaadin-text-field id="amountId" name="amountName" label="Valor total" value="{{amount}}" disabled></vaadin-text-field>
+                <vaadin-text-field id="amountId" name="amountName" class="alignRight" label="Valor total" value="{{amount}}" disabled> <div slot="suffix">€</div></vaadin-text-field>
             </div>
             <div class="col-md-3">
                 <vaadin-text-field id="supplierProdCodeId" name="supplierProdCodeName" label="Codigo Produto Fornecedor" value=""></vaadin-text-field>
@@ -322,7 +320,7 @@
         </template>
         <template>
             <template is="dom-if" if="{{ item.selected }}">
-                <vaadin-text-field value="{{item.quantity}}"></vaadin-text-field>
+                <vaadin-text-field value="{{item.quantity}}" class="alignRight"></vaadin-text-field>
             </template>
             <template is="dom-if" if="{{ !item.selected }}">
                 {{item.quantity}}
@@ -336,7 +334,7 @@
         </template>
         <template>
             <template is="dom-if" if="{{ item.selected }}">
-                <vaadin-text-field value="{{item.quantitybyUnitMeasure}}" disabled></vaadin-text-field>
+                <vaadin-text-field value="{{item.quantitybyUnitMeasure}}" class="alignRight" disabled></vaadin-text-field>
             </template>
             <template is="dom-if" if="{{ !item.selected }}">
                 {{item.quantitybyUnitMeasure}}
@@ -350,10 +348,10 @@
         </template>
         <template>
             <template is="dom-if" if="{{ item.selected }}">
-                <vaadin-text-field value="{{item.directUnitCost}}" disabled></vaadin-text-field>
+                <vaadin-text-field value="{{item.directUnitCost}}" class="alignRight" disabled><div slot="suffix">€</div></vaadin-text-field>
             </template>
             <template is="dom-if" if="{{ !item.selected }}">
-                {{item.directUnitCost}}
+                {{item.directUnitCost}}€
             </template>
         </template>
     </vaadin-grid-column>
@@ -364,10 +362,10 @@
         </template>
         <template>
             <template is="dom-if" if="{{ item.selected }}">
-                <vaadin-text-field value="{{item.totalValue}}" disabled></vaadin-text-field>
+                <vaadin-text-field value="{{item.totalValue}}" class="alignRight" disabled><div slot="suffix">€</div></vaadin-text-field>
             </template>
             <template is="dom-if" if="{{ !item.selected }}">
-                {{item.totalValue}}
+                {{item.totalValue}}€
             </template>
         </template>
     </vaadin-grid-column>
@@ -471,8 +469,9 @@
         <paper-button class="btnSave"  raised on-tap="_confirm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
         <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
     </div>
-
     </paper-dialog>
+
+
     <div class="marginSpace">
             <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
             <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
@@ -568,11 +567,11 @@
             },
 
             _onCacheLoaded: function (locationsresult) {
-                debugger;
                 if (!this.Flag) {
                     var prodUnitId = @ViewBag.ProductivityUnitId;
                     var prodUnitDesc = @Html.Raw(Json.Serialize(ViewBag.ProductivityUnitDesc));
                     if (prodUnitId != null && prodUnitDesc != "") {
+                        this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
                         this.$.ajax_getgrid.generateRequest();
                         this.$.grid_databound_ajax.generateRequest();
                     }
@@ -603,14 +602,13 @@
                     }
                 }
             },
-            _getgridResponse: function(data) {
+            _getgridResponse: function (data) {
                 if (data != null) {
-                    if (e.detail.status === 200) {
+                    if (data.detail.status === 200) {
                         for (var i = 0; i < this.data.length; i++) {
                             this.$.ajax_nOrderLines.body = JSON.stringify(this.data[i].dateByPriceSupplier);
                             this.$.ajax_nOrderLines.generateRequest();
                         }
-                        this._openToast("Atualizado com sucesso.");
                     } else {
                         this._openToastError("Occorreu um erro ao atualizar o Diário de requisição Unid. Produtiva.");
                     }
@@ -618,6 +616,7 @@
             },
             _openOrderLinesOnChange: function(e) {
                 if (e.detail.value) {
+                    debugger;
                     this.$.ajax_result.body = JSON.stringify(e.detail.value);
                     this.$.documentNoId.value = this.$.mOpenOrderLinesId.selectedItem.documentNO;
                     this.$.ajax_result.params = {
@@ -629,6 +628,7 @@
             },
             _resultResponse: function(result) {
                 if (result != null) {
+                    debugger;;
                     this.$.supplierNoId.value = this.result.buyFromVendorNo;
                     this.$.prodCodId.value = this.result.description;
                     this.$.qtyID.value = 0;
@@ -636,7 +636,10 @@
                     this.$.unitCostId.value = this.result.unitCost;
                     this.$.amountId.value = this.result.amount;
                     this.$.unitofMeasureCodeId.value = this.result.unitofMeasureCode;
-                    this.$.codStockUnitId.value = this.result.locationCode;
+                    if (this.result.locationCode != "") {
+                        this.$.codStockUnitId.value = this.result.locationCode;
+                    }
+                    
                 }
                 this.$.ajax_supplierresult.body = JSON.stringify(this.$.supplierNoId.value);
                 this.$.ajax_supplierresult.generateRequest();
@@ -644,39 +647,6 @@
             _supplierResponse: function(supplierresult) {
                 if (supplierresult != null) {
                     this.$.SupplierNameId.value = this.supplierresult[0].value;
-                }
-            },
-            _addRequesitionLines() {
-                this.data.unshift({
-                    productionUnitNo: this.$.prodUnitNoId.value,
-                    productUnitDescription: this.$.descriptionUnitId.value,
-                    expectedReceptionDate: this.$.dpExpectedReceiptId.value,
-                    dateByPriceSupplier: this.$.dpVendedorPriceId.value,
-                    localCode: this.$.codStockUnitId.value,
-                    productNo: this.$.mOpenOrderLinesId.value,
-                    supplierNo: this.$.supplierNoId.value,
-                    description: this.$.prodCodId.value,
-                    unitMeasureCode: this.$.unitofMeasureCodeId.value,
-                    quantity: this.$.qtyID.value,
-                    quantitybyUnitMeasure: this.$.QtyforMeasId.value,
-                    directUnitCost: this.$.unitCostId.value,
-                    totalValue: this.$.amountId.value,
-                    supplierProductCode: this.$.supplierProdCodeId.value,
-                    supplierProductDescription: this.$.supplierProdDescriptionId.value,
-                    supplierName: this.$.SupplierNameId.value,
-                    documentNo: this.$.documentNoId.value
-                });
-                var array = [];
-                for (var i = 0; i < this.data.length; i++) {
-                    if (this.data[i].quantity > 0) {
-                        array.push(this.data[i]);
-                    }
-                }
-                if (array != null && array != []) {
-                    this.$.ajax_requesitionLineupdate.body = JSON.stringify(array);
-                    this.$.ajax_requesitionLineupdate.generateRequest();
-                } else {
-                    this._openToastError("Não foi possivel criar Linhas de Requisição.");
                 }
             },
             _addRequesition() {
@@ -705,16 +675,14 @@
                         supplierName: this.$.SupplierNameId.value,
                         documentNo: this.$.documentNoId.value
                     });
-                    for (var i = 0; i < this.data.length; i++) {
-                        var t = this.data[i];
-                    }
-
+                   
                     // Save to DB
-                    this.$.ajax_requesitionupdate.body = JSON.stringify(t);
-                    this.$.ajax_requesitionupdate.generateRequest();
+                   
+                        this.$.ajax_requesitionupdate.body = JSON.stringify(this.data);
+                        this.$.ajax_requesitionupdate.generateRequest();
+                    
                 } else {
-                    this._openToastError(
-                        "Os campos Data Receção Esperada e Data p/ Preço Fornecedor são obrigatorios.");
+                    this._openToastError("Os campos Data Receção Esperada e Data p/ Preço Fornecedor são obrigatorios.");
                 }
             },
             _add() {
@@ -743,21 +711,23 @@
                         supplierName: this.$.SupplierNameId.value,
                         documentNo: this.$.documentNoId.value
                     });
+                  
 
                     // Save to DB
                     this.$.ajax_update.body = JSON.stringify(this.data);
                     this.$.ajax_update.generateRequest();
                     this.$.gridneedshopping.clearCache();
                 } else {
-                    this._openToastError(
-                        "Os campos Data Receção Esperada e Data p/ Preço Fornecedor são obrigatorios.");
+                    this._openToastError( "Os campos Data Receção Esperada e Data p/ Preço Fornecedor são obrigatorios.");
                 }
             },
             _update: function() {
                 this.$.ajax_update.body = JSON.stringify(this.data);
                 this.$.ajax_update.generateRequest();
             },
-            _cancel: function() {
+            _cancel: function () {
+                var prodUnitId = @ViewBag.ProductivityUnitId;
+                this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
                 this.$.ajax_getgrid.generateRequest();
                 this.$.gridneedshopping.clearCache();
             },
@@ -770,12 +740,17 @@
                 this.$.gridneedshopping.clearCache();
             },
             _updateResponse: function(e) {
-                var self = this;
                 if (e.detail.status === 200) {
-
-                    this.$.ajax_getgrid.generateRequest();
-                    this.$.gridneedshopping.clearCache();
-                    this._openToast("Diário requisição Unid. Produtiva foi atualizado.");
+                    if (this.updatedata.eReasonCode === 1) {
+                        this._openToast(this.updatedata.eMessage);
+                        var prodUnitId = @ViewBag.ProductivityUnitId;
+                        this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
+                        this.$.ajax_getgrid.generateRequest();
+                        this.$.gridneedshopping.clearCache();
+                        this.$.dialog.close();
+                    } else {
+                        this._openToastError(this.updatedata.eMessage);
+                    }
                 } else {
                     this._openToastError("Occorreu um erro ao atualizar.");
                 }
@@ -799,22 +774,6 @@
                     this.$.ajax_result2.body = JSON.stringify(param);
                     this.$.ajax_result2.params = { "documentNO": param2, "date": param1 };
                     this.$.ajax_result2.generateRequest();
-                }
-            },
-            ajax_requesitionupdate: function(e) {
-                var self = this;
-                if (e.detail.status === 200) {
-                    this._openToast("A Requisição foi gerada.");
-                } else {
-                    this._openToastError("Occorreu um erro ao gerar a Requisição.");
-                }
-            },
-            ajax_requesitionLineupdate: function(e) {
-                var self = this;
-                if (e.detail.status === 200) {
-                    this._openToast("A(s) Linha(s) de Requisição foi ou foram Criada(s).");
-                } else {
-                    this._openToastError("Occorreu um erro ao criar a(s) Linha(s) de Requisição.");
                 }
             },
             _openToast: function(message) {
@@ -860,7 +819,6 @@
                 return "";
             },
             _confirm: function (selectedItem, selectedItems) {
-                debugger;
                 if (this.selectedItems != null && this.selectedItems != "") {
                     var selItms = this.selectedItems;
                     this.$.grid_generatebyreq_ajax.body = JSON.stringify(selItms);
@@ -873,30 +831,36 @@
             _benbyreqResponse: function (e) {
                 var self = this;
                 if (e.detail.status === 200) {
-
-                    this.$.ajax_getgrid.generateRequest();
-                    this.$.gridneedshopping.clearCache();
-                    this._openToast("Criado com Sucesso.");
-                } else {
+                    if (this.genbyreqresult.eReasonCode === 1) {
+                        var prodUnitId = @ViewBag.ProductivityUnitId;
+                        this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
+                        this.$.ajax_getgrid.generateRequest();
+                        this.$.gridneedshopping.clearCache();
+                        this._openToast(this.genbyreqresult.eMessage);
+                    }
+                    else
+                    {
+                        this._openToastError(this.genbyreqresult.eMessage);
+                    }
+                }
+                else
+                {
                     this._openToastError("Occorreu um erro ao atualizar o Diário de requisição Unid. Produtiva.");
                 }
             },
             _requesitionResponse: function (e) {
-                var self = this;
+                debugger;
                 if (e.detail.status === 200) {
-                    this._openToast("Criado Requisição criada com Sucesso.");
+                    if (this.datarequesition.eReasonCode === 1) {
+                        this._openToast(this.datarequesition.eMessage);
+                    } else {
+                        this._openToastError(this.datarequesition.eMessage);
+                    }
                 } else {
-                    this._openToastError("Occorreu um erro ao criar a Requisição.");
+                    this._openToastError("Occorreu um erro na geração de requisições.");
                 }
-            },
-            _requesitionLineResponse: function (e) {
-                var self = this;
-                if (e.detail.status === 200) {
-                    this._openToast("Foi ou Foram Criada(s) a(s) Linha(s) Requisição com Sucesso.");
-                } else {
-                    this._openToastError("Occorreu um erro ao criar a(s) Linha(s) Requisição.");
-                }
-            },
+               
+            }
          });
     });
     </script>
