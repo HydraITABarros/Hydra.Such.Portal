@@ -331,31 +331,75 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                     eMessage = "Não é possivel validar o mercado local. A requisição não pode ser nula."
                 };
             }
-            
             return Json(item);
         }
 
         private ErrorHandler CreatePurchaseItemsFor(RequisitionViewModel requisition)
         {
             ErrorHandler status = new ErrorHandler();
-            if (requisition != null && requisition.Lines.Count > 0)
+            if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0)
             {
                 /*
                     Filtrar as linhas da requisição cujos campos ‘Mercado Local’ seja = true, ‘Validado Compras’=false e ‘Quandidade Requerida’ > 0;
+                    18-12-2017: Indicação para agrupar por fornecedor para criação de cabeçalhos e linhas na tab. Compras do NAV.
                 */
-                var linesToValidate = requisition.Lines.Where(x => x.LocalMarket.Value && !x.PurchaseValidated.Value && x.QuantityRequired.Value > 0);
-                if (linesToValidate.Count() > 0)
+                var supplierProducts = requisition.Lines
+                    .Where(x => x.LocalMarket.Value && !x.PurchaseValidated.Value && x.QuantityRequired.Value > 0)
+                    .GroupBy(x => x.SupplierNo,
+                             x => x,
+                             (key, items) => new PurchFromSupplierDTO
+                             {
+                                 SupplierId = key,
+                                 RequisitionId = requisition.RequisitionNo,
+                                 CenterResponsibilityCode = requisition.CenterResponsibilityCode,
+                                 FunctionalAreaCode = requisition.FunctionalAreaCode,
+                                 RegionCode = requisition.RegionCode,
+                                 Lines = items.Select(line => new PurchFromSupplierLinesDTO()
+                                     {
+                                         Type = line.Type,
+                                         Code = line.Code,
+                                         Description = line.Description,
+                                         ProjectNo = line.ProjectNo,
+                                         QuantityRequired = line.QuantityRequired,
+                                         UnitCost = line.UnitCost
+                                     })
+                                     .ToList()
+                             })
+                    .ToList();
+
+                if (supplierProducts.Count() > 0)
                 {
-                    //Task<WSContacts.Create_Result> createPurchasesTask = NAVPurchaseService.CreateAsync(item, _configws);
-                    //try
-                    //{
-                    //    createPurchasesTask.Wait();
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    item.eReasonCode = 3;
-                    //    item.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
-                    //}
+                    supplierProducts.ForEach(purchFromSupplier =>
+                        {
+                        Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderService.CreateAsync(purchFromSupplier, _configws);
+                            try
+                            {
+                                createPurchaseHeaderTask.Wait();
+                                if (createPurchaseHeaderTask.IsCompletedSuccessfully)
+                                {
+                                    purchFromSupplier.NAVPurchaseId = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
+                                    Task<WSPurchaseInvLine.CreateMultiple_Result> createPurchaseLinesTask = NAVPurchaseLineService.CreateMultipleAsync(purchFromSupplier, _configws);
+                                    try
+                                    {
+                                        createPurchaseLinesTask.Wait();
+                                        if (createPurchaseLinesTask.IsCompletedSuccessfully)
+                                        {
+                                            
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        requisition.eReasonCode = 3;
+                                        requisition.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                requisition.eReasonCode = 3;
+                                requisition.eMessage = "Ocorreu um erro ao criar o contacto no NAV.";
+                            }
+                        });
                 }
                 else
                 {
@@ -418,7 +462,6 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                     eMessage = "Não é possivel validar. A requisição não pode ser nula."
                 };
             }
-
             return Json(item);
         }
     }
