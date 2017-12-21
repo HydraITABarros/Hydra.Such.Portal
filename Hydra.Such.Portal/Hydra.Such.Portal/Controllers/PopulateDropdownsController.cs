@@ -1097,6 +1097,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetOrigemDestinoFH()
+        {
+            List<DDMessageString> result = DBOrigemDestinoFh.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetCodTipoCustoByTipoCusto([FromBody]DDMessage tipoCusto)
         {
 

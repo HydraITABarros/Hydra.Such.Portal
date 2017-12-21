@@ -1,31 +1,39 @@
 ﻿<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
 
 <link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 
-<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button.html">
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button-group.html">
 <link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 
-<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/neon-animation/web-animations.html">
+
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<!--SUCH-->
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
 
 <h1 class="title">Folha de Horas</h1>
 
@@ -35,6 +43,7 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
+
         <style>
             vaadin-combo-box {
                 margin-top: 0px !important;
@@ -352,7 +361,7 @@
                 <paper-button class="tablinks" on-tap="_integrarEmRHKM"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
 
                 <!--TESTE-->
-                <!--<paper-button id="botaotesteid" class="btnSave" on-tap="_teste"> TESTE</paper-button>-->
+                <paper-button id="botaotesteid" class="btnSave" on-tap="_teste"> TESTE</paper-button>
                 <!--FIM TESTE-->
             </template>
         </div>
@@ -383,16 +392,17 @@
                                             fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
                                             disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             </such-selectbox>
+
                             <!--campo de teste só para mostrar o valor carregado-->
                             <!--<vaadin-text-field type="text" value="{{data.projetoNo}}" id="projetoNo2" name="projetoNo2" label="TESTE" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
                             <!--CAMPO ORIGINAL-->
                             <!--<such-selectbox id="projetoNo" value="{{data.projetoNo}}" label="Nº Ordem/Projecto"
-                                        items="[[LFolhaDeHoraNavProjectNo]]"
-                                        text-path="no"
-                                        value-path="no"
-                                        fields='[{"field":"no","name":"Nº"},{"field":"description","name":"Descrição"},{"field":"customerNo","name":"Nº Cliente"},{"field":"globalDimension1","name":"Dimensão Global 1"},{"field":"globalDimension2","name":"Dimensão Global 2"}]'
-                                        disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                        </such-selectbox>-->
+                                            items="[[LFolhaDeHoraNavProjectNo]]"
+                                            text-path="no"
+                                            value-path="no"
+                                            fields='[{"field":"no","name":"Nº"},{"field":"description","name":"Descrição"},{"field":"customerNo","name":"Nº Cliente"},{"field":"globalDimension1","name":"Dimensão Global 1"},{"field":"globalDimension2","name":"Dimensão Global 2"}]'
+                                            disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                            </such-selectbox>-->
                         </div>
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraEmployees]]" id="empregadoNo" item-value-path="id" item-label-path="value" value="{{data.empregadoNo}}" on-value-changed="_codeChange" label="Nº Empregado" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
@@ -1481,11 +1491,12 @@
 
                 ready: function () {
                     //TESTE
-                    //debugger;
-                    //var _self = this;
+                    debugger;
+                    this._permissions.create = false;
 
 
-                    //$(_self.$.botaotesteid).addClass('disabled');
+                    var _self = this;
+                    $(_self.$.botaotesteid).addClass('disabled');
 
                     //$(_self.$.botaotesteid).classList.add("disabled");
                     //this.$.botaotesteid.classList.add("disabled");
