@@ -76,13 +76,13 @@ namespace WSPurchaseInvLine
         
         private string document_NoField;
         
-        private int line_NoField;
-        
-        private bool line_NoFieldSpecified;
-        
         private Type typeField;
         
         private bool typeFieldSpecified;
+        
+        private int line_NoField;
+        
+        private bool line_NoFieldSpecified;
         
         private string noField;
         
@@ -107,6 +107,10 @@ namespace WSPurchaseInvLine
         private string state_MessageField;
         
         private string job_NoField;
+        
+        private string unit_of_MeasureField;
+        
+        private string location_CodeField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
@@ -166,34 +170,6 @@ namespace WSPurchaseInvLine
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=3)]
-        public int Line_No
-        {
-            get
-            {
-                return this.line_NoField;
-            }
-            set
-            {
-                this.line_NoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool Line_NoSpecified
-        {
-            get
-            {
-                return this.line_NoFieldSpecified;
-            }
-            set
-            {
-                this.line_NoFieldSpecified = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
         public Type Type
         {
             get
@@ -217,6 +193,34 @@ namespace WSPurchaseInvLine
             set
             {
                 this.typeFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public int Line_No
+        {
+            get
+            {
+                return this.line_NoField;
+            }
+            set
+            {
+                this.line_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Line_NoSpecified
+        {
+            get
+            {
+                return this.line_NoFieldSpecified;
+            }
+            set
+            {
+                this.line_NoFieldSpecified = value;
             }
         }
         
@@ -387,6 +391,34 @@ namespace WSPurchaseInvLine
                 this.job_NoField = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
+        public string Unit_of_Measure
+        {
+            get
+            {
+                return this.unit_of_MeasureField;
+            }
+            set
+            {
+                this.unit_of_MeasureField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
+        public string Location_Code
+        {
+            get
+            {
+                return this.location_CodeField;
+            }
+            set
+            {
+                this.location_CodeField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -489,10 +521,10 @@ namespace WSPurchaseInvLine
         Document_No,
         
         /// <remarks/>
-        Line_No,
+        Type,
         
         /// <remarks/>
-        Type,
+        Line_No,
         
         /// <remarks/>
         No,
@@ -520,6 +552,12 @@ namespace WSPurchaseInvLine
         
         /// <remarks/>
         Job_No,
+        
+        /// <remarks/>
+        Unit_of_Measure,
+        
+        /// <remarks/>
+        Location_Code,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]

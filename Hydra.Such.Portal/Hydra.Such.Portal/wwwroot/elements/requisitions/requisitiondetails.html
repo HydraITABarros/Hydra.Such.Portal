@@ -141,12 +141,14 @@
                    method="post"
                    handle-as="json"
                    id="validateLocalMarket_datasource"
+                   on-response="_validateLocalMarketResponse"
                    content-type="application/json"></iron-ajax>
         <iron-ajax url="/Compras/GestaoRequisicoes/ValidateRequisition"
                    last-response="{{Requisition}}"
                    method="post"
                    handle-as="json"
                    id="validaterequisition_datasource"
+                   on-response="_validateRequisitionResponse"
                    content-type="application/json"></iron-ajax>
 
 
@@ -937,6 +939,22 @@
                     alert("Funcionalidade não implementada e/ou a aguardar detalhes.");
                     this.$.validaterequisition_datasource.body = JSON.stringify(this.Requisition);
                     this.$.validaterequisition_datasource.generateRequest();
+                },
+                _validateLocalMarketResponse: function (e) {
+                    if (this.Requisition.eReasonCode == "1") {
+                        this._openToast(this.Requisition.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.Requisition.eMessage);
+                    }
+                },
+                _validateRequisitionResponse: function (e) {
+                    if (this.Requisition.eReasonCode == "1") {
+                        this._openToast(this.Requisition.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.Requisition.eMessage);
+                    }
                 },
             });
         });
