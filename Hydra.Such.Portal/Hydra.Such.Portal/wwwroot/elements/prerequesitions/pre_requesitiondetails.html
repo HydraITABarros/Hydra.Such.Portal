@@ -141,6 +141,7 @@
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{CBPurchaseHeader}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         
 
@@ -218,13 +219,29 @@
                    on-response="_clResponsePreReqModel"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PreRequisicoes/ValidateNumerationReq"
+                   last-response="{{validateReqResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_validator_req_ajax"
+                   on-response="_responseReqValidatorProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/CreateRequisicions"
+                   last-response="{{createdreq}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_create_requisition_ajax"
+                   on-response="_response_requisicion_created"
+                   content-type="application/json"></iron-ajax>
+
         <!--//-------------------------------------------------------------//-->
         <template is="dom-if" if="{{ !_isCreate }}">
             <template is="dom-if" if="{{ _permissions.update }}">
                 <div class="subMenu">
                     <paper-button class="tablinks" on-tap="_reqmodel"><i class="fa fa-check-square" aria-hidden="true"></i> Requisição Modelo</paper-button>
                     <paper-button class="tablinks" on-tap="_pendingreq"><i class="fa fa-check-square" aria-hidden="true"></i> Requisições Pendentes</paper-button>
-                    <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Requisição</paper-button>
+                    <paper-button class="tablinks" on-tap="_createnewreq"><i class="fa fa-check-square" aria-hidden="true"></i> Criar Requisição</paper-button>
                 </div>
             </template>
         </template>
@@ -611,7 +628,18 @@
                                         </template>
                                     </vaadin-combo-box>
                                 </div>
-                                
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBPurchaseLine]]" id="_CBPurchaseLine" item-value-path="id" item-label-path="value" value="{{_CBPurchaseLine}}" label="Nº Linha Encomenda Aberto" disabled="{{ !_permissions.update }}">
+                                        <template>
+                                            <table width="200px">
+                                                <tr>
+                                                    <td width="40%">[[item.id]]</td>
+                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
                                 <div class="col-lg-2">
                                     <br />
                                     <paper-button raised id="btnPreReqLine" class="btnSave" on-tap="_createPreReqLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
@@ -871,6 +899,71 @@
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
+                                    <vaadin-grid-column width="110px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="openOrderNo" />
+                                        </template>
+                                        <template>
+                                            {{item.openOrderNo}}
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="110px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="openOrderLineNo" />
+                                        </template>
+                                        <template>
+                                            {{item.openOrderLineNo}}
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <!--<vaadin-grid-column width="200px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="openOrderNo" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-combo-box items="[[CBPurchaseHeader]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
+                                                        <template>
+                                                            <table width="200px">
+                                                                <tr>
+                                                                    <td width="60%"> <b>[[item.id]]</b></td>
+                                                                </tr>
+                                                            </table>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                [[ _clFormatOpenOrderNo(item.openOrderNo) ]]
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="200px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="openOrderLineNo" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-combo-box items="[[CBPurchaseLineGrid]]" id="_CBGridPurchaseLine" item-value-path="id" item-label-path="value" value="{{item.openOrderLineNo}}" disabled="{{ !_permissions.update }}">
+                                                    <template>
+                                                        <table width="200px">
+                                                            <tr>
+                                                                <td width="40%">[[item.id]]</td>
+                                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                [[ _clFormatOpenOrderLineNo(item.openOrderLineNo) ]]
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>-->
+
                                     <vaadin-grid-column resizable>
                                         <template class="header">
                                         </template>
@@ -1020,15 +1113,15 @@
                                 type: String,
                                 notify: true,
                                 value: "none"
-                            },
+                            }
                         },
                         ready: function () {
                             //GET CONTRACT DATA
-                            debugger;
+                            
                             if (this._prerequesitionno != null && this._prerequesitionno != "") {
                                 this._isCreate = false;
                             }
-                            debugger;
+                            
                             this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
                             this.$.page_databound_ajax.generateRequest();
                         },
@@ -1040,10 +1133,10 @@
                             }
                         },
                         _responseVehicleFleetBool: function (data) {
-                            debugger;
+                            
                             var self = this;
                             if (data.detail.status === 200) {
-                                debugger;
+                                
                                 var BoolFleet = this.BooleanVehicleFleet;
                                 if (BoolFleet == true) {
                                     this.$.VehicleDiv.hidden = false;
@@ -1090,16 +1183,23 @@
                         },
 
                         _reqmodel: function (e) {
-                            debugger;
+                            
                             if (e != null) {
                                 this.$.dialog.open();
                                 this.$.grid_datareqmodel_ajax.generateRequest();
                             }
 
                         },
+
+                        _createnewreq: function (e) {
+                            debugger;
+                            this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
+                            this.$.page_validator_req_ajax.generateRequest();
+                        },
+
                         //CRUDS
                         _create: function () {
-                            debugger;
+                            
                             this.$.page_validator_ajax.body = JSON.stringify(this.data);
                             this.$.page_validator_ajax.generateRequest();
                         },
@@ -1143,8 +1243,19 @@
                             }
                         },
 
-                        _responseProcessor: function (data) {
+                        _responseReqValidatorProcessor: function (data) {
+                            var self = this;
                             debugger;
+                            if (data.detail.status === 200) {
+                                if (this.validateReqResponse == "") {
+                                    this._executeRequest("/PreRequisicoes/CreateRequesition", this.data)
+                                } else {
+                                    this._openToastError(this.validateReqResponse);
+                                }
+                            }
+                        },
+                        _responseProcessor: function (data) {
+                            
                             if (data.detail.status === 200) {
                                 if (data.detail.url.indexOf("GetPreRequesitionDetails") !== -1) {
                                     var id = this.data.requesitionType;
@@ -1188,14 +1299,14 @@
                                     this._openToast("Linhas Pré-Requisição criadas com sucesso")
                                     this.$.dialog.close();
                                     this.$.grid_prereqlines.clearCache();
-                                    debugger;
+                                    
                                     this.$.prereqLines_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
                                     this.$.prereqLines_databound_ajax.generateRequest();
                                 }
                             }
                         },
                         _createResponseProcessor: function () {
-                            debugger;
+                            
                             if (this.data.eReasonCode == 1) {
                                 this._isCreate = false;
                                 this._openToast("Contrato criado com sucesso.");
@@ -1315,6 +1426,25 @@
                             }
                             return "";
                         },
+                        _clFormatOpenOrderNo: function (param) {
+                            if (param != undefined) {
+                                var sel = this.CBPurchaseHeader.find(x => x.id == param);
+                                if (sel != undefined) {
+                                    return sel.id;
+                                }
+                            }
+                            return "";
+                        },
+
+                        _clFormatOpenOrderLineNo: function (param) {
+                            if (param != undefined) {
+                                var sel = this.CBPurchaseLine.find(x => x.id == param);
+                                if (sel != undefined) {
+                                    return sel.value;
+                                }
+                            }
+                            return "";
+                        },
 
                         _clFormatResponsabilityCenter: function (param) {
                             if (param != undefined) {
@@ -1328,7 +1458,7 @@
 
                         //Pre Requesition Lines
                         _createPreReqLine: function () {
-                            debugger;
+                            
                             this.dataLines.lines.unshift({
                                 preRequisitionLineNo: this.data.preRequesitionsNo,
                                 localCode: this._LocalCode,
@@ -1344,7 +1474,8 @@
                                 regionCode: this._CLRegion,
                                 functionalAreaCode: this._CLFunctionalAreaCode,
                                 centerResponsibilityCode: this._CLResponsabilityCenterCode,
-                                openOrderNo: this._CBPurchaseHeader
+                                openOrderNo: this._CBPurchaseHeader,
+                                openOrderLineNo: this._CBPurchaseLine
 
                             });
                             this.$.grid_prereqlines.clearCache();
@@ -1360,7 +1491,7 @@
                             this.$.prereqLines_databound_ajax.generateRequest();
                         },
                         _deleteContractLine: function (e) {
-                            debugger;
+                            
                             var index = this.dataLines.lines.indexOf(e.model.item);
                             this.dataLines.lines.splice(index, 1);
 
@@ -1401,15 +1532,25 @@
                         },
 
                         _PopulatePurchaseLines: function (data) {
-                            debugger;
+                            
                             var PurchaseNo = this._CBPurchaseHeader;
+                            this._CBPurchaseLine = "";
                             this.$.purchaselines_ajax.body = JSON.stringify(PurchaseNo);
                             this.$.purchaselines_ajax.generateRequest();
                             
+                            
+                        },
+
+                        _PopulatePurchaseLinesGrid: function (data) {
+                            
+                            var PurchaseNo = data.model.item.openOrderNo;
+                            this.dataLines.openOrderLineNo = "";
+                            this.$.purchaselinesgrid_ajax.body = JSON.stringify(PurchaseNo);
+                            this.$.purchaselinesgrid_ajax.generateRequest();
                         },
 
                         _SaveLines: function (e) {
-                            debugger;
+                            
                             var index = this.result.indexOf(e.model.item);
                             this.result.splice(index, 1);
                             e.model.item.preRequisitionNo = this.data.preRequesitionsNo;

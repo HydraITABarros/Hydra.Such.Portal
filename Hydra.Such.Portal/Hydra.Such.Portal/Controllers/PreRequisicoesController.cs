@@ -388,7 +388,7 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
-        #region Numeração
+        #region Numeração Pré-Requisição
         [HttpPost]
         public JsonResult ValidateNumeration([FromBody] PreRequesitionsViewModel data)
         {
@@ -402,11 +402,11 @@ namespace Hydra.Such.Portal.Controllers
             //Validate if ProjectNo is valid
             if (!(data.PreRequesitionsNo == "" || data.PreRequesitionsNo == null) && !CfgNumeration.Manual.Value)
             {
-                return Json("A numeração configurada para contratos não permite inserção manual.");
+                return Json("A numeração configurada para pré-requisições não permite inserção manual.");
             }
             else if (data.PreRequesitionsNo == "" && !CfgNumeration.Automático.Value)
             {
-                return Json("É obrigatório inserir o Nº de Contrato.");
+                return Json("É obrigatório inserir o Nº Pré-Requisição.");
             }
 
             return Json("");
@@ -470,7 +470,8 @@ namespace Hydra.Such.Portal.Controllers
                     newlines.CódigoRegião = line.RegionCode;
                     newlines.CódigoÁreaFuncional = line.FunctionalAreaCode;
                     newlines.CódigoCentroResponsabilidade = line.CenterResponsibilityCode;
-
+                    newlines.NºEncomendaAberto = line.OpenOrderNo;
+                    newlines.NºLinhaEncomendaAberto = line.OpenOrderLineNo;
                     DBPreRequesitionLines.Create(newlines);
                 }
             }
@@ -513,8 +514,113 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Requisition
+        
+        [HttpPost]
+        public JsonResult CreateRequesition([FromBody] PreRequesitionsViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequesitionsNo);
+                    data.eMessage = "";
+
+                    if (data.Complaint == true && (data.ClaimedRequesitionNo == "" || data.ClaimedRequesitionNo == null))
+                    {
+                        data.eReasonCode = 2;
+                        data.eMessage = "O campo Nº Requisição Reclamada deve ser preenchido.";
+                        return Json(data);
+                    }
+                   
+                    if (data.MoneyBuy == true)
+                    {
+                        if(PreRequesitionLines != null)
+                        {
+                            foreach (var lines in PreRequesitionLines)
+                            {
+                                if (lines.CustoUnitário == null || (lines.NºFornecedor == null || lines.NºFornecedor == ""))
+                                {
+                                    data.eReasonCode = 3;
+                                    data.eMessage = "Os campos Custo Unitário e Nº Fornecedor das linhas devem ser todos preenchidos.";
+                                    return Json(data);
+                                }
+                            }
+                        }
+                    }
+
+                    if (data.Equipment == true)
+                    {
+                        if (data.CollectionLocal == null || String.IsNullOrEmpty(data.CollectionAddress) || String.IsNullOrEmpty(data.CollectionPostalCode) || String.IsNullOrEmpty(data.CollectionLocality) || String.IsNullOrEmpty(data.CollectionContact) || String.IsNullOrEmpty(data.CollectionReceptionResponsible))
+                        {
+                            data.eReasonCode = 4;
+                            data.eMessage = "Os campos de Recolha devem ser todos preenchidos.";
+                            return Json(data);
+                        }
+                        else if (data.DeliveryLocal == null || String.IsNullOrEmpty(data.DeliveryAddress) || String.IsNullOrEmpty(data.DeliveryPostalCode) || String.IsNullOrEmpty(data.DeliveryLocality) || String.IsNullOrEmpty(data.CollectionReceptionResponsible) || String.IsNullOrEmpty(data.InvoiceNo))
+                        {
+                            data.eReasonCode = 4;
+                            data.eMessage = "Os campos de Entrega (Fornecedor) devem ser todos preenchidos.";
+                            return Json(data);
+                        }
+                    }
+
+                    List<PreRequisitionLineViewModel> GroupedList = new List<PreRequisitionLineViewModel>();
+                    
+                    PreRequesitionLines.ForEach(x => GroupedList.Add(DBPreRequesitionLines.ParseToViewModel(x)));
+
+                    List<PreRequisitionLineViewModel> newlist = GroupedList.OrderBy(x => x.OpenOrderNo).ToList();
+
+                    //Get Contract Numeration
+                    Configuração Configs = DBConfigurations.GetById(1);
+                    int ProjectNumerationConfigurationId = 0;
+                    ProjectNumerationConfigurationId = Configs.NumeraçãoRequisições.Value;
+
+
+                    string RequisitionNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, true);
+                    if (RequisitionNo != null)
+                    {
+
+                    }
+                    else
+                    {
+                        data.eReasonCode = 0;
+                        data.eMessage = "A numeração configurada não é compativel com a inserida.";
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 0;
+                data.eMessage = "Ocorreu um erro ao criar o contrato";
+            }
+
+            return Json(data);
+        }
 
         #endregion
 
+        #region Numeração Requisição
+        [HttpPost]
+        public JsonResult ValidateNumerationReq([FromBody] PreRequesitionsViewModel data)
+        {
+            //Get Project Numeration
+            Configuração Cfg = DBConfigurations.GetById(1);
+            int ProjectNumerationConfigurationId = 0;
+            ProjectNumerationConfigurationId = Cfg.NumeraçãoRequisições.Value;
+
+            ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+
+            //Validate if ProjectNo is valid
+            if (!CfgNumeration.Automático.Value)
+            {
+                return Json("É obrigatório inserir o Nº Requisição.");
+            }
+
+            return Json("");
+        }
+
+
+        #endregion
     }
 }

@@ -237,8 +237,12 @@ namespace Hydra.Such.Portal.Controllers
             NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
             try
             {
-                List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
-                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, DateTime.Now, PurchaseHeaderNo).ToList();
+                List<DDMessage> result = new List<DDMessage>();
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, DateTime.Now, PurchaseHeaderNo).Select(x => new DDMessage()
+                {
+                    id = x.Line_No,
+                    value = x.Description
+                }).ToList(); ;
                 
                 return Json(result);
             }
