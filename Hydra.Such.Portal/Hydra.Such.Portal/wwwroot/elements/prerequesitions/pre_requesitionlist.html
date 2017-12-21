@@ -162,7 +162,6 @@
                     },
                     _areaid: {
                         type: Number,
-                        notify: true,
                         value: 0
                     },
                     _prereqno: {
@@ -186,6 +185,8 @@
                     }
                 },
                 ready: function () {
+                    debugger;
+                    this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
                     this.$.grid_databound_ajax.generateRequest();
                 },
 
