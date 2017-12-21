@@ -30,13 +30,23 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [Area("Nutricao")]
         public IActionResult Detalhes(int id)
         {
-            if (id != null && id >0)
-            {
-                UnidadesProdutivas ProductivityUnitDB = DBProductivityUnits.GetById(id);
-                ViewBag.ProductivityUnitId = ProductivityUnitDB.NºUnidadeProdutiva;
-                ViewBag.ProductivityUnitDesc = ProductivityUnitDB.Descrição;
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 2, 2);
+            if (UPerm != null && UPerm.Read.Value)
+            {  
+                ViewBag.UPermissions = UPerm;
+                if (id != null && id > 0)
+                {
+                    ViewBag.ProductivityUnityNo = id;
+                    UnidadesProdutivas ProductivityUnitDB = DBProductivityUnits.GetById(id);
+                    ViewBag.ProductivityUnitId = ProductivityUnitDB.NºUnidadeProdutiva;
+                    ViewBag.ProductivityUnitDesc = ProductivityUnitDB.Descrição;
+                }
+                return View();
             }
-            return View();
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
         [HttpPost]
