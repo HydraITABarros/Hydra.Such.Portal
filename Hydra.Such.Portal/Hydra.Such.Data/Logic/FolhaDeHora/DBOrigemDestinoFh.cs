@@ -121,6 +121,47 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
+        public static OrigemDestinoFh ParseToDB(OrigemDestinoFHViewModel x)
+        {
+            try
+            {
+                return new OrigemDestinoFh()
+                {
+                    Código = x.Codigo,
+                    Descrição = x.Descricao,
+                    CriadoPor = x.CriadoPor,
+                    DataHoraCriação = x.DataHoraCriacao,
+                    AlteradoPor = x.AlteradoPor,
+                    DataHoraÚltimaAlteração = x.DataHoraUltimaAlteracao
+                };
+            }
+            catch (Exception e)
+            {
+
+                return null;
+            }
+        }
+
+        public static OrigemDestinoFHViewModel ParseToViewModel(OrigemDestinoFh x)
+        {
+            return new OrigemDestinoFHViewModel()
+            {
+                Codigo = x.Código,
+                Descricao = x.Descrição,
+                CriadoPor = x.CriadoPor,
+                DataHoraCriacao = x.DataHoraCriação,
+                AlteradoPor = x.AlteradoPor,
+                DataHoraUltimaAlteracao = x.DataHoraÚltimaAlteração
+            };
+        }
+
+        public static List<OrigemDestinoFHViewModel> ParseListToViewModel(List<OrigemDestinoFh> x)
+        {
+            List<OrigemDestinoFHViewModel> result = new List<OrigemDestinoFHViewModel>();
+
+            x.ForEach(y => result.Add(ParseToViewModel(y)));
+            return result;
+        }
         #endregion
     }
 }
