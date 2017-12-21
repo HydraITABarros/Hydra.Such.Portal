@@ -30,7 +30,7 @@ namespace Hydra.Such.Data.Logic
                     {
                         result.Add(new NAVOpenOrderLinesViewModels()
                         {
-                              id = index++, 
+                              id = index++,
                               DocumentType = (int)temp.DocumentType,
                               DocumentNO =(string)temp.DocumentNO,
                               Line_No = (int)temp.Line_No,

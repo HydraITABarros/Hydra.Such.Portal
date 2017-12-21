@@ -18,5 +18,7 @@ namespace Hydra.Such.Data.NAV
         public string WS_PreInvoiceLine_URL { get; set; }
         public string WS_PrePurchase_URL { get; set; }
         public string WS_Contacts_URL { get; set; }
+        public string WS_PurchaseInvHeader_URL { get; set; }
+        public string WS_PurchaseInvLine_URL { get; set; }
     }
 }

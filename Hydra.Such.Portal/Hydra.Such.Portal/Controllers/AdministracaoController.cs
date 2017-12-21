@@ -1934,7 +1934,9 @@ namespace Hydra.Such.Portal.Controllers
             });
             return Json(data);
         }
+        #endregion
 
+        #region AutorizacaoFHRH
         [HttpPost]
         public JsonResult GetAutorizacaoFHRH()
         {
@@ -2004,6 +2006,164 @@ namespace Hydra.Such.Portal.Controllers
                 AutorizacaoFhRh toUpdate = DBAutorizacaoFHRH.ParseToDB(x);
                 toUpdate.AlteradoPor = User.Identity.Name;
                 DBAutorizacaoFHRH.Update(toUpdate);
+            });
+            return Json(data);
+        }
+
+        #endregion
+
+        #region OrigemDestinoFH
+        public IActionResult ConfiguracaoOrigemDestinoFH(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetOrigemDestinoFH()
+        {
+            List<OrigemDestinoFHViewModel> result = DBOrigemDestinoFh.ParseListToViewModel(DBOrigemDestinoFh.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateOrigemDestinoFH([FromBody] OrigemDestinoFHViewModel data)
+        {
+            bool result = false;
+            try
+            {
+                OrigemDestinoFh OrigemDestinoFH = new OrigemDestinoFh();
+
+                OrigemDestinoFH.Código = data.Codigo;
+                OrigemDestinoFH.Descrição = data.Descricao;
+                OrigemDestinoFH.CriadoPor = User.Identity.Name;
+                OrigemDestinoFH.DataHoraCriação = DateTime.Now;
+
+                var dbCreateResult = DBOrigemDestinoFh.Create(OrigemDestinoFH);
+                result = dbCreateResult != null ? true : false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteOrigemDestinoFH([FromBody] OrigemDestinoFHViewModel data)
+        {
+            var result = DBOrigemDestinoFh.Delete(DBOrigemDestinoFh.ParseToDB(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateOrigemDestinoFH([FromBody] List<OrigemDestinoFHViewModel> data)
+        {
+            List<OrigemDestinoFh> results = DBOrigemDestinoFh.GetAll();
+
+            data.RemoveAll(x => DBOrigemDestinoFh.ParseListToViewModel(results).Any(
+                u =>
+                    u.Codigo == x.Codigo &&
+                    u.Descricao == x.Descricao &&
+                    u.CriadoPor == x.CriadoPor &&
+                    u.DataHoraCriacao == x.DataHoraCriacao
+            ));
+
+            data.ForEach(x =>
+            {
+                OrigemDestinoFh toUpdate = DBOrigemDestinoFh.ParseToDB(x);
+                toUpdate.AlteradoPor = User.Identity.Name;
+                DBOrigemDestinoFh.Update(toUpdate);
+            });
+            return Json(data);
+        }
+
+        #endregion
+
+        #region DistanciaFH
+        public IActionResult ConfiguracaoDistanciaFH(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetDistanciaFH()
+        {
+            List<DistanciaFHViewModel> result = DBDistanciaFh.ParseListToViewModel(DBDistanciaFh.GetAll());
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateDistanciaFH([FromBody] DistanciaFHViewModel data)
+        {
+            bool result = false;
+            try
+            {
+                DistanciaFh DistanciaFH = new DistanciaFh();
+
+                DistanciaFH.CódigoOrigem = data.Origem;
+                DistanciaFH.CódigoDestino = data.Destino;
+                DistanciaFH.Distância = data.Distancia;
+                DistanciaFH.CriadoPor = User.Identity.Name;
+                DistanciaFH.DataHoraCriação = DateTime.Now;
+
+                var dbCreateResult = DBDistanciaFh.Create(DistanciaFH);
+                result = dbCreateResult != null ? true : false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteDistanciaFH([FromBody] DistanciaFHViewModel data)
+        {
+            var result = DBDistanciaFh.Delete(DBDistanciaFh.ParseToDB(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateDistanciaFH([FromBody] List<DistanciaFHViewModel> data)
+        {
+            List<DistanciaFh> results = DBDistanciaFh.GetAll();
+
+            data.RemoveAll(x => DBDistanciaFh.ParseListToViewModel(results).Any(
+                u =>
+                    u.Origem == x.Origem &&
+                    u.Destino == x.Destino &&
+                    u.Distancia == x.Distancia &&
+                    u.CriadoPor == x.CriadoPor &&
+                    u.DataHoraCriacao == x.DataHoraCriacao
+            ));
+
+            data.ForEach(x =>
+            {
+                DistanciaFh toUpdate = DBDistanciaFh.ParseToDB(x);
+                toUpdate.AlteradoPor = User.Identity.Name;
+                DBDistanciaFh.Update(toUpdate);
             });
             return Json(data);
         }
