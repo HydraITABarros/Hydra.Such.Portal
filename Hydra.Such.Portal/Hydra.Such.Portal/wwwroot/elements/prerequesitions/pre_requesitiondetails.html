@@ -141,7 +141,7 @@
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{CBPurchaseHeader}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" on-response="_responsePurchaseLinesProcessor" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         
 
@@ -899,7 +899,7 @@
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
-                                    <vaadin-grid-column width="110px" resizable>
+                                    <!--<vaadin-grid-column width="110px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
                                             <vaadin-grid-filter path="openOrderNo" />
@@ -916,8 +916,8 @@
                                         <template>
                                             {{item.openOrderLineNo}}
                                         </template>
-                                    </vaadin-grid-column>
-                                    <!--<vaadin-grid-column width="200px" resizable>
+                                    </vaadin-grid-column>-->
+                                    <vaadin-grid-column width="200px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
                                             <vaadin-grid-filter path="openOrderNo" />
@@ -962,7 +962,7 @@
                                                 [[ _clFormatOpenOrderLineNo(item.openOrderLineNo) ]]
                                             </template>
                                         </template>
-                                    </vaadin-grid-column>-->
+                                    </vaadin-grid-column>
 
                                     <vaadin-grid-column resizable>
                                         <template class="header">
@@ -1103,7 +1103,10 @@
                             _SelectedLine: {
                                 observer: '_lineSelected'
                             },
-
+                            _areaid: {
+                                type: Number,
+                                value: 0
+                            },
                             _showPreReqLines: {
                                 type: String,
                                 notify: true,
@@ -1121,7 +1124,7 @@
                             if (this._prerequesitionno != null && this._prerequesitionno != "") {
                                 this._isCreate = false;
                             }
-                            
+
                             this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
                             this.$.page_databound_ajax.generateRequest();
                         },
@@ -1193,13 +1196,14 @@
 
                         _createnewreq: function (e) {
                             debugger;
+                            this.data.area = this._areaid
                             this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
                             this.$.page_validator_req_ajax.generateRequest();
                         },
 
                         //CRUDS
                         _create: function () {
-                            
+                            this.data.area = this._areaid;
                             this.$.page_validator_ajax.body = JSON.stringify(this.data);
                             this.$.page_validator_ajax.generateRequest();
                         },
@@ -1255,7 +1259,7 @@
                             }
                         },
                         _responseProcessor: function (data) {
-                            
+                            debugger;
                             if (data.detail.status === 200) {
                                 if (data.detail.url.indexOf("GetPreRequesitionDetails") !== -1) {
                                     var id = this.data.requesitionType;
@@ -1277,13 +1281,21 @@
                                         this.$.prereqLines_databound_ajax.generateRequest();
                                     }
                                 }
-                                if (data.detail.url.indexOf("Create") !== -1) {
+                                if (data.detail.url.indexOf("CreatePreRequesition") !== -1) {
                                     this._createResponseProcessor();
                                 }
                                 else if (data.detail.url.indexOf("Update") !== -1) {
                                     if (this.data.eReasonCode == 1) {
 
                                         this._openToast("Pré-Requisição atualizada com sucesso.")
+                                    } else {
+                                        this._openToastError(this.data.eMessage);
+                                    }
+                                }
+                                if (data.detail.url.indexOf("CreateRequesition") !== -1){
+                                    if (this.data.eReasonCode == 1) {
+                                        this._openToast(this.data.eMessage);
+
                                     } else {
                                         this._openToastError(this.data.eMessage);
                                     }
@@ -1548,6 +1560,10 @@
                             this.$.purchaselinesgrid_ajax.body = JSON.stringify(PurchaseNo);
                             this.$.purchaselinesgrid_ajax.generateRequest();
                         },
+
+                        //_responsePurchaseLinesProcessor: function (data) {
+                        //    if()
+                        //},
 
                         _SaveLines: function (e) {
                             

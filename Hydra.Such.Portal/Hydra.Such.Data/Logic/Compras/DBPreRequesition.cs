@@ -25,13 +25,13 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static List<PréRequisição> GetAll(string User)
+        public static List<PréRequisição> GetAll(string User, int area)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.PréRequisição.Where(x => x.UtilizadorCriação == User).ToList();
+                    return ctx.PréRequisição.Where(x => x.UtilizadorCriação == User && x.Área == area).ToList();
                 }
             }
             catch (Exception ex)
