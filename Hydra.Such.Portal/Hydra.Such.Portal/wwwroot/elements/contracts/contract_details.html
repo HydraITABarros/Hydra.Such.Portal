@@ -20,6 +20,8 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
 <dom-module id="x-contractdetails">
     <template>
@@ -60,6 +62,23 @@
             .marginSpace {
                 margin: 0px !important;
             }
+
+            paper-collapse-item {
+                --paper-item: { padding: 0 0;};
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: #333;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+
+                    } --paper-collapse-toogle-icon: {
+                    //display: none;
+                    } --paper-collapse-item-content {
+
+                    }
+            }
         </style>
 
 
@@ -93,6 +112,9 @@
         <iron-ajax url="/PopulateDropdowns/GetContractPaymentTerms" last-response="{{CBContractPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractTerminationTerms" last-response="{{CBContractTerminationTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContractTerminationDeadlineNotice" last-response="{{LTerminationDeadlineNotice}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
+        <iron-ajax url="/Contratos/GetContractNavData" last-response="{{dataNav}}" id="navData_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
 
 
         <!-- PROJECT CRUDS -->
@@ -260,6 +282,7 @@
                                     <div class="row break_clear">
                                         <div class="col-md-6 ">
                                             <!--<vaadin-text-field value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
+
                                             <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
 
                                         </div>
@@ -267,132 +290,144 @@
 
                                     <div class="row break_clear">
                                         <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                Versão Atual do Contrato
-                                            </div>
-                                            <div class="panel-body">
-                                                <div class="row break_clear">
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-text-field value="{{data.clientRequisitionNo}}" id="mClientRequisitionNo" name="clientRequisitionNo" label="Nº Requisição do Cliente" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                            <paper-collapse-group>
+                                                <paper-collapse-item header="Versão Atual do Contrato">
+                                                    <div class="panel-body">
+                                                        <div class="row break_clear">
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-text-field value="{{data.clientRequisitionNo}}" id="mClientRequisitionNo" name="clientRequisitionNo" label="Nº Requisição do Cliente" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-text-field value="{{data.promiseNo}}" id="mPromiseNo" name="promiseNo" label="Nº Compromisso" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-date-picker label="Data Inicial" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-combo-box items="[[CBStatus]]" id="mStatus" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled="{{ _lockFields }}">
+                                                                    <template>
+                                                                        <paper-icon-item>
+                                                                            <paper-item-body two-line>
+                                                                                <div>[[item.value]]</div>
+                                                                            </paper-item-body>
+                                                                        </paper-icon-item>
+                                                                    </template>
+                                                                </vaadin-combo-box>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row break_clear">
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-date-picker label="Data Receção Requisição" id="mReceiptDateRequisition" name="receiptDateRequisition" value="{{data.receiptDateRequisition}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-date-picker label="Data Expiração" id="dueDate" name="dueDate" value="{{data.dueDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-combo-box items="[[CBChangeStatus]]" id="mChangeStatus" item-value-path="id" item-label-path="value" value="{{data.changeStatus}}" label="Estado Alteração" disabled="{{ _contractStatusLocked }}">
+                                                                    <template>
+                                                                        <paper-icon-item>
+                                                                            <paper-item-body two-line>
+                                                                                <div>[[item.value]]</div>
+                                                                            </paper-item-body>
+                                                                        </paper-icon-item>
+                                                                    </template>
+                                                                </vaadin-combo-box>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-text-field value="{{data.promiseNo}}" id="mPromiseNo" name="promiseNo" label="Nº Compromisso" disabled="{{ _lockFields }}"> </vaadin-text-field>
-                                                    </div>
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-date-picker label="Data Inicial" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
-                                                    </div>
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-combo-box items="[[CBStatus]]" id="mStatus" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled="{{ _lockFields }}">
-                                                            <template>
-                                                                <paper-icon-item>
-                                                                    <paper-item-body two-line>
-                                                                        <div>[[item.value]]</div>
-                                                                    </paper-item-body>
-                                                                </paper-icon-item>
-                                                            </template>
-                                                        </vaadin-combo-box>
-                                                    </div>
-                                                </div>
-                                                <div class="row break_clear">
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-date-picker label="Data Receção Requisição" id="mReceiptDateRequisition" name="receiptDateRequisition" value="{{data.receiptDateRequisition}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
-                                                    </div>
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
-                                                    </div>
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-date-picker label="Data Expiração" id="dueDate" name="dueDate" value="{{data.dueDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
-                                                    </div>
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-combo-box items="[[CBChangeStatus]]" id="mChangeStatus" item-value-path="id" item-label-path="value" value="{{data.changeStatus}}" label="Estado Alteração" disabled="{{ _contractStatusLocked }}">
-                                                            <template>
-                                                                <paper-icon-item>
-                                                                    <paper-item-body two-line>
-                                                                        <div>[[item.value]]</div>
-                                                                    </paper-item-body>
-                                                                </paper-icon-item>
-                                                            </template>
-                                                        </vaadin-combo-box>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                </paper-collapse-item>
+                                            </paper-collapse-group>
                                         </div>
                                     </div>
 
                                     <div class="row break_clear">
                                         <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                Dados do contrato em vigor
-                                            </div>
-                                            <div class="panel-body">
-                                                <div class="row break_clear">
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-text-field value="{{data.relatedContract}}" maxlength="20" id="relatedContract" name="relatedContract" label="Referência do contrato" disabled="{{ _lockFields }}"> </vaadin-text-field>
-                                                    </div>
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-date-picker label="Data Inicio Contrato" id="contractStartDate" name="contractStartDate" value="{{data.contractStartDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
-                                                    </div>
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-date-picker label="Data Final Contrato" id="contractEndDate" name="contractEndDate" value="{{data.contractEndDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
-                                                    </div>
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-date-picker label="Data envio cliente" id="customerShipmentDate" name="customerShipmentDate" value="{{data.customerShipmentDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
-                                                    </div>
-                                                </div>
-                                                <div class="row break_clear">
-                                                    <div class="col-md-3 ">
-                                                        <!--<vaadin-text-field value="{{data.terminationTermNotice}}" id="terminationTermNotice" name="terminationTermNotice" label="Rescisão (Prazo de Aviso)" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
-                                                        <vaadin-combo-box items="[[CBContractTerminationTerms]]" id="terminationTermNotice" item-value-path="id" item-label-path="value" value="{{data.terminationTermNotice}}" label="Rescisão (Prazo de Aviso)" disabled="{{ _lockFields }}">
-                                                            <template>
-                                                                <paper-icon-item>
-                                                                    <paper-item-body two-line>
-                                                                        <div>[[item.value]]</div>
-                                                                    </paper-item-body>
-                                                                </paper-icon-item>
-                                                            </template>
-                                                        </vaadin-combo-box>
-                                                    </div>
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-text-field value="{{data.renovationConditions}}" id="renovationConditions" name="renovationConditions" label="Condições para renovação" disabled="{{ _lockFields }}"> </vaadin-text-field>
-                                                    </div>
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-text-field value="{{data.renovationConditionsAnother}}" id="renovationConditionsAnother" name="renovationConditionsAnother" label="Condições para renovação (Outras)" disabled="{{ _lockFields }}"> </vaadin-text-field>
-                                                    </div>
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-combo-box items="[[CBContractPaymentTerms]]" id="paymentTerms" item-value-path="id" item-label-path="value" value="{{data.paymentTerms}}" label="Condições Pagamento" disabled="{{ _lockFields }}">
-                                                            <template>
-                                                                <paper-icon-item>
-                                                                    <paper-item-body two-line>
-                                                                        <div>[[item.value]]</div>
-                                                                    </paper-item-body>
-                                                                </paper-icon-item>
-                                                            </template>
-                                                        </vaadin-combo-box>
-                                                    </div>
-                                                </div>
-                                                <div class="row break_clear">
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-text-field value="{{data.paymentTermsAnother}}" id="paymentTermsAnother" name="paymentTermsAnother" label="Condições Pagamento (Outras)" disabled="{{ _lockFields }}"> </vaadin-text-field>
-                                                    </div>
-                                                    <div class="col-md-3 alignPoga">
-                                                        <vaadin-checkbox checked="{{data.customerSigned}}" id="mCustomerSigned" disabled="{{ _lockFields }}">Assinado Cliente</vaadin-checkbox>
-                                                    </div>
-                                                    <div class="col-md-3 alignPoga">
-                                                        <vaadin-checkbox checked="{{data.interests}}" id="mJuros" disabled="{{ _lockFields }}">Juros</vaadin-checkbox>
-                                                    </div>
-                                                    <div class="col-md-3 ">
-                                                        <vaadin-date-picker label="Data Assinatura" id="signatureDate" name="signatureDate" value="{{data.signatureDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
-                                                    </div>
-                                                </div>
-                                                <div class=" row break_clear">
+                                            <paper-collapse-group>
+                                                <paper-collapse-item header="Dados do contrato em vigor">
+                                                    <div class="panel-body">
+                                                        <div class="row break_clear">
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-text-field value="{{data.relatedContract}}" maxlength="20" id="relatedContract" name="relatedContract" label="Referência do contrato" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-date-picker label="Data Inicio Contrato" id="contractStartDate" name="contractStartDate" value="{{data.contractStartDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-date-picker label="Data Final Contrato" id="contractEndDate" name="contractEndDate" value="{{data.contractEndDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-date-picker label="Data envio cliente" id="customerShipmentDate" name="customerShipmentDate" value="{{data.customerShipmentDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row break_clear">
+                                                            <div class="col-md-3 ">
+                                                                <!--<vaadin-text-field value="{{data.terminationTermNotice}}" id="terminationTermNotice" name="terminationTermNotice" label="Rescisão (Prazo de Aviso)" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
+                                                                <vaadin-combo-box items="[[LTerminationDeadlineNotice]]" id="terminationTermNotice" item-value-path="id" item-label-path="value" value="{{data.terminationTermNotice}}" label="Rescisão (Prazo de Aviso)" disabled="{{ _lockFields }}">
+                                                                    <template>
+                                                                        <paper-icon-item>
+                                                                            <paper-item-body two-line>
+                                                                                <div>[[item.value]]</div>
+                                                                            </paper-item-body>
+                                                                        </paper-icon-item>
+                                                                    </template>
+                                                                </vaadin-combo-box>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-combo-box items="[[CBContractTerminationTerms]]" id="renovationConditions" item-value-path="id" item-label-path="value" value="{{data.renovationConditions}}" label="Condições para renovação" disabled="{{ _lockFields }}">
+                                                                    <template>
+                                                                        <paper-icon-item>
+                                                                            <paper-item-body two-line>
+                                                                                <div>[[item.value]]</div>
+                                                                            </paper-item-body>
+                                                                        </paper-icon-item>
+                                                                    </template>
+                                                                </vaadin-combo-box>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-text-field value="{{data.renovationConditionsAnother}}" id="renovationConditionsAnother" name="renovationConditionsAnother" label="Condições para renovação (Outras)" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-combo-box items="[[CBContractPaymentTerms]]" id="paymentTerms" item-value-path="id" item-label-path="value" value="{{data.paymentTerms}}" label="Condições Pagamento" disabled="{{ _lockFields }}">
+                                                                    <template>
+                                                                        <paper-icon-item>
+                                                                            <paper-item-body two-line>
+                                                                                <div>[[item.value]]</div>
+                                                                            </paper-item-body>
+                                                                        </paper-icon-item>
+                                                                    </template>
+                                                                </vaadin-combo-box>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row break_clear">
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-text-field value="{{data.paymentTermsAnother}}" id="paymentTermsAnother" name="paymentTermsAnother" label="Condições Pagamento (Outras)" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-md-3 alignPoga">
+                                                                <vaadin-checkbox checked="{{data.customerSigned}}" id="mCustomerSigned" disabled="{{ _lockFields }}">Assinado Cliente</vaadin-checkbox>
+                                                            </div>
+                                                            <div class="col-md-3 alignPoga">
+                                                                <vaadin-checkbox checked="{{data.interests}}" id="mJuros" disabled="{{ _lockFields }}">Juros</vaadin-checkbox>
+                                                            </div>
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-date-picker label="Data Assinatura" id="signatureDate" name="signatureDate" value="{{data.signatureDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                            </div>
+                                                        </div>
+                                                        <div class=" row break_clear">
+                                                            <div class="col-md-3 ">
+                                                                <vaadin-text-field value="{{data.contractMaxDuration}}" id="contractMaxDuration" name="contractMaxDuration" label="Duração máxima contrato" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-md-6 ">
+                                                                <such-textarea rows="5" value="{{data.contractDurationDescription}}" id="contractDurationDescription" name="contractDurationDescription" label="Descrição Duração Contrato" disabled="{{ _lockFields }}"> </such-textarea>
 
-                                                    <div class="col-md-6 ">
-                                                        <such-textarea rows="5" value="{{data.contractDurationDescription}}" id="contractDurationDescription" name="contractDurationDescription" label="Descrição Duração Contrato" disabled="{{ _lockFields }}"> </such-textarea>
-
-                                                        <!--<vaadin-text-field value="{{data.contractDurationDescription}}" id="contractDurationDescription" name="contractDurationDescription" label="Descrição Duração Contrato" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
+                                                                <!--<vaadin-text-field value="{{data.contractDurationDescription}}" id="contractDurationDescription" name="contractDurationDescription" label="Descrição Duração Contrato" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
+                                                </paper-collapse-item>
+                                            </paper-collapse-group>
                                         </div>
                                     </div>
                                 </div>
@@ -403,6 +438,7 @@
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
+                                            "
                                             <vaadin-combo-box items="[[CBServiceObjects]]" id="mServiceObject" item-value-path="id" item-label-path="value" value="{{data.serviceObject}}" label="Objeto Serviço" disabled="{{ _lockFields }}">
                                                 <template>
                                                     <b>[[item.value]]</b>
@@ -412,164 +448,168 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="panel panel-default">
-                                            <div class="panel-heading">Requisições Cliente</div>
-                                            <div class="panel-body">
-                                                <template is="dom-if" if="{{ !_lockFields }}">
-                                                    <div class="row">
-                                                        <div class="col-lg-2">
-                                                            <vaadin-date-picker label="Inicio Compromisso" id="_CRStartDate" name="_CRStartDate" value="{{_CRStartDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
-                                                        </div>
-                                                        <div class="col-lg-2">
-                                                            <vaadin-date-picker label="Fim Compromisso" id="_CREndDate" name="_CREndDate" value="{{_CREndDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
-                                                        </div>
-                                                        <div class="col-lg-2">
-                                                            <vaadin-text-field value="{{_CRRequisitionNo}}" id="_CRRequisitionNo" name="_CRRequisitionNo" label="Nº Requisição Cliente" disabled="{{ _lockFields }}"> </vaadin-text-field>
-                                                        </div>
-                                                        <div class="col-lg-2">
-                                                            <vaadin-date-picker label="Data Requisição" id="_CRRequisitionDate" name="_CRRequisitionDate" value="{{_CRRequisitionDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
-                                                        </div>
-                                                        <div class="col-lg-2">
-                                                            <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
-                                                        </div>
-                                                        <div class="col-lg-2">
-                                                            <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
-                                                                <template>
-                                                                    <b>[[item.value]]</b>
+                                            <paper-collapse-group>
+                                                <paper-collapse-item header="Requisições Cliente">
+                                                    <div class="panel-body">
+                                                        <template is="dom-if" if="{{ !_lockFields }}">
+                                                            <div class="row">
+                                                                <div class="col-lg-2">
+                                                                    <vaadin-date-picker label="Inicio Compromisso" id="_CRStartDate" name="_CRStartDate" value="{{_CRStartDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                                                </div>
+                                                                <div class="col-lg-2">
+                                                                    <vaadin-date-picker label="Fim Compromisso" id="_CREndDate" name="_CREndDate" value="{{_CREndDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                </div>
+                                                                <div class="col-lg-2">
+                                                                    <vaadin-text-field value="{{_CRRequisitionNo}}" id="_CRRequisitionNo" name="_CRRequisitionNo" label="Nº Requisição Cliente" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                </div>
+                                                                <div class="col-lg-2">
+                                                                    <vaadin-date-picker label="Data Requisição" id="_CRRequisitionDate" name="_CRRequisitionDate" value="{{_CRRequisitionDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                </div>
+                                                                <div class="col-lg-2">
+                                                                    <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                                                </div>
+                                                                <div class="col-lg-2">
+                                                                    <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
+                                                                        <template>
+                                                                            <b>[[item.value]]</b>
+                                                                        </template>
+                                                                    </vaadin-combo-box>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row break_frm">
+                                                                <div class="col-lg-2">
+                                                                    <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRProjectNo" name="_CRProjectNo" value="{{_CRProjectNo}}" label="Nº Projeto" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
+                                                                        <template>
+                                                                            <paper-icon-item>
+                                                                                <paper-item-body two-line>
+                                                                                    <div>[[item.value]]</div>
+                                                                                </paper-item-body>
+                                                                            </paper-icon-item>
+                                                                        </template>
+                                                                    </vaadin-combo-box>
+                                                                </div>
+                                                                <div class="col-lg-2">
+                                                                    <vaadin-date-picker label="Data Última Fatura" id="_CRLastInvoiceDate" name="_CRLastInvoiceDate" value="{{_CRLastInvoiceDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                </div>
+                                                                <div class="col-lg-1">
+                                                                    <paper-button class="btnSave" raised on-tap="_createClientRequisition">Criar</paper-button>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                        <!-- VAADIN GRID  Requisições Cliente -->
+                                                        <vaadin-grid aria-label="ClientRequisitions" id="grid_ClientRequisitions" items="[[data.clientRequisitions]]" class="grid" multi-sort="true" disabled="{{ _lockFields }}">
+                                                            <vaadin-grid-column>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="startDate">Inicio Compromisso</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="startDate" />
                                                                 </template>
-                                                            </vaadin-combo-box>
-                                                        </div>
+                                                                <template>
+                                                                    <input type="date" id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFields }}">
+                                                                    <!--<vaadin-date-picker id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                            <vaadin-grid-column>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="endDate">Fim Compromisso</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="endDate" />
+                                                                </template>
+                                                                <template>
+                                                                    <input type="date" id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFields }}">
+
+                                                                    <!--<vaadin-date-picker id="_CRGridEndDate" name="_CRGridEndDate" value="{{item.endDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                            <vaadin-grid-column>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="clientRequisitionNo">Nº Requisição Cliente</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="clientRequisitionNo" />
+                                                                </template>
+                                                                <template>
+                                                                    <vaadin-text-field value="{{item.clientRequisitionNo}}" id="_CRGridRequisitionNo" name="_CRGridRequisitionNo" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                            <vaadin-grid-column>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="requisitionDate">Data Requisição</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="requisitionDate" />
+                                                                </template>
+                                                                <template>
+                                                                    <input type="date" id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ _lockFields }}">
+
+                                                                    <!--<vaadin-date-picker id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                            <vaadin-grid-column>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="promiseNo">Nº Compromisso</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="promiseNo" />
+                                                                </template>
+                                                                <template>
+                                                                    <vaadin-text-field value="{{item.promiseNo}}" id="_CRGridPromiseNo" name="_CRGridPromiseNo" disabled="{{ _lockFields }}"> </vaadin-text-field>
+
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                            <vaadin-grid-column>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="invoiceGroup" />
+                                                                </template>
+                                                                <template>
+                                                                    <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRGridInvoiceGroup" name="_CRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ _lockFields }}">
+                                                                        <template>
+                                                                            <table width="180px">
+                                                                                <tr>
+                                                                                    <td width="20%">[[item.id]]</td>
+                                                                                    <td width="80%"> <b>[[item.value]]</b></td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </template>
+                                                                    </vaadin-combo-box>
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                            <vaadin-grid-column>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="projectNo" />
+                                                                </template>
+                                                                <template>
+                                                                    <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRGridProjectNo" name="_CRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
+                                                                        <template>
+                                                                            <paper-icon-item>
+                                                                                <paper-item-body two-line>
+                                                                                    <div>[[item.value]]</div>
+                                                                                </paper-item-body>
+                                                                            </paper-icon-item>
+                                                                        </template>
+                                                                    </vaadin-combo-box>
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                            <vaadin-grid-column>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="lastInvoiceDate">Data Última Fatura</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="lastInvoiceDate" />
+                                                                </template>
+                                                                <template>
+                                                                    <input type="date" id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ _lockFields }}">
+                                                                    <!--<vaadin-date-picker id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                            <vaadin-grid-column>
+                                                                <template class="header">
+                                                                </template>
+                                                                <template>
+                                                                    <center>
+                                                                        <template is="dom-if" if="{{ !_lockFields }}">
+                                                                            <paper-button class="btnRemove" raised on-tap="_deleteClientRequisition">Eliminar</paper-button>
+                                                                        </template>
+                                                                        mp
+                                                                    </center>
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                        </vaadin-grid>
                                                     </div>
-                                                    <div class="row break_frm">
-                                                        <div class="col-lg-2">
-                                                            <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRProjectNo" name="_CRProjectNo" value="{{_CRProjectNo}}" label="Nº Projeto" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
-                                                                <template>
-                                                                    <paper-icon-item>
-                                                                        <paper-item-body two-line>
-                                                                            <div>[[item.value]]</div>
-                                                                        </paper-item-body>
-                                                                    </paper-icon-item>
-                                                                </template>
-                                                            </vaadin-combo-box>
-                                                        </div>
-                                                        <div class="col-lg-2">
-                                                            <vaadin-date-picker label="Data Última Fatura" id="_CRLastInvoiceDate" name="_CRLastInvoiceDate" value="{{_CRLastInvoiceDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
-                                                        </div>
-                                                        <div class="col-lg-1">
-                                                            <paper-button class="btnSave" raised on-tap="_createClientRequisition">Criar</paper-button>
-                                                        </div>
-                                                    </div>
-                                                </template>
-                                                <!-- VAADIN GRID  Requisições Cliente -->
-                                                <vaadin-grid aria-label="ClientRequisitions" id="grid_ClientRequisitions" items="[[data.clientRequisitions]]" class="grid" multi-sort="true" disabled="{{ _lockFields }}">
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="startDate">Inicio Compromisso</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="startDate" />
-                                                        </template>
-                                                        <template>
-                                                            <input type="date" id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFields }}">
-                                                            <!--<vaadin-date-picker id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="endDate">Fim Compromisso</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="endDate" />
-                                                        </template>
-                                                        <template>
-                                                            <input type="date" id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFields }}">
-
-                                                            <!--<vaadin-date-picker id="_CRGridEndDate" name="_CRGridEndDate" value="{{item.endDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="clientRequisitionNo">Nº Requisição Cliente</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="clientRequisitionNo" />
-                                                        </template>
-                                                        <template>
-                                                            <vaadin-text-field value="{{item.clientRequisitionNo}}" id="_CRGridRequisitionNo" name="_CRGridRequisitionNo" disabled="{{ _lockFields }}"> </vaadin-text-field>
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="requisitionDate">Data Requisição</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="requisitionDate" />
-                                                        </template>
-                                                        <template>
-                                                            <input type="date" id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ _lockFields }}">
-
-                                                            <!--<vaadin-date-picker id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="promiseNo">Nº Compromisso</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="promiseNo" />
-                                                        </template>
-                                                        <template>
-                                                            <vaadin-text-field value="{{item.promiseNo}}" id="_CRGridPromiseNo" name="_CRGridPromiseNo" disabled="{{ _lockFields }}"> </vaadin-text-field>
-
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="invoiceGroup" />
-                                                        </template>
-                                                        <template>
-                                                            <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRGridInvoiceGroup" name="_CRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ _lockFields }}">
-                                                                <template>
-                                                                    <table width="180px">
-                                                                        <tr>
-                                                                            <td width="20%">[[item.id]]</td>
-                                                                            <td width="80%"> <b>[[item.value]]</b></td>
-                                                                        </tr>
-                                                                    </table>
-                                                                </template>
-                                                            </vaadin-combo-box>
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="projectNo" />
-                                                        </template>
-                                                        <template>
-                                                            <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRGridProjectNo" name="_CRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
-                                                                <template>
-                                                                    <paper-icon-item>
-                                                                        <paper-item-body two-line>
-                                                                            <div>[[item.value]]</div>
-                                                                        </paper-item-body>
-                                                                    </paper-icon-item>
-                                                                </template>
-                                                            </vaadin-combo-box>
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="lastInvoiceDate">Data Última Fatura</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="lastInvoiceDate" />
-                                                        </template>
-                                                        <template>
-                                                            <input type="date" id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ _lockFields }}">
-                                                            <!--<vaadin-date-picker id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                        </template>
-                                                        <template>
-                                                            <center>
-                                                                <template is="dom-if" if="{{ !_lockFields }}">
-                                                                    <paper-button class="btnRemove" raised on-tap="_deleteClientRequisition">Eliminar</paper-button>
-                                                                </template>
-                                                            </center>
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                </vaadin-grid>
-                                            </div>
+                                                </paper-collapse-item>
+                                            </paper-collapse-group>
                                         </div>
                                     </div>
                                 </div>
@@ -645,6 +685,7 @@
                                         </div>
 
                                     </div>
+
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
                                             <vaadin-checkbox checked="{{data.batchInvoices}}" id="mergeInvoices" disabled="{{ _lockFields }}">Juntar Faturas</vaadin-checkbox>
@@ -654,109 +695,150 @@
                                         </div>
 
                                     </div>
+
                                     <div class="row break_clear">
                                         <div class="panel panel-default">
-                                            <div class="panel-heading">Textos Fatura</div>
-                                            <div class="panel-body">
-
-                                                <template is="dom-if" if="{{ !_lockFields }}">
-                                                    <div class="row">
-                                                        <div class="col-md-3 ">
-                                                            <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_IRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_IRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}">
-                                                                <template>
-                                                                    <paper-icon-item>
-                                                                        <paper-item-body two-line>
-                                                                            <div>[[item.value]]</div>
-                                                                        </paper-item-body>
-                                                                    </paper-icon-item>
-                                                                </template>
-                                                            </vaadin-combo-box>
+                                            <paper-collapse-group>
+                                                <paper-collapse-item header="Detalhes NAV">
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <vaadin-text-field value="{{data.totalProposalValue}}" id="_TotalProposalValue" name="_TotalProposalValue" label="Valor Total Proposta" disabled> </vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <vaadin-text-field value="{{data.lastInvoiceDate}}" id="_LastInvoiceDate" name="_LastInvoiceDate" label="Texto Fatura" disabled> </vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <vaadin-text-field value="{{dataNav.nBilledInvoices}}" id="_IRnBilledInvoices" name="_IRnBilledInvoices" label="Nº Faturas Registadas" disabled> </vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <vaadin-text-field value="{{dataNav.nCreditNotes}}" id="_NCreditNotes" name="_NCreditNotes" label="N Notas Crédito Registadas" disabled> </vaadin-text-field>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-md-3 ">
-                                                            <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_IRProjectNo" name="_IRProjectNo" value="{{_IRProjectNo}}" label="Nº Projeto" disabled="{{ _lockFields }}">
-                                                                <template>
-                                                                    <paper-icon-item>
-                                                                        <paper-item-body two-line>
-                                                                            <div>[[item.value]]</div>
-                                                                        </paper-item-body>
-                                                                    </paper-icon-item>
-                                                                </template>
-                                                            </vaadin-combo-box>
-                                                        </div>
-                                                        <div class="col-md-3 ">
-                                                            <vaadin-text-field value="{{_IRInvoiceText}}" id="_IRInvoiceText" name="_IRInvoiceText" label="Texto Fatura" disabled="{{ _lockFields }}"> </vaadin-text-field>
-                                                        </div>
-                                                        <div class="col-lg-1">
-                                                            <paper-button class="btnSave" raised on-tap="_createInvoiceText">Criar</paper-button>
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <vaadin-text-field value="{{dataNav.vBilled}}" id="_NBilled" name="_NBilled" label="Valor Faturado" disabled> </vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <vaadin-text-field value="{{dataNav.vCreditNotes}}" id="_VCreditNotes" name="_VCreditNotes" label="Valor Notas de Crédito" disabled> </vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <vaadin-text-field value="{{dataNav.vPeriod}}" id="_VPeriod" name="_VPeriod" label="Valor do Período" disabled> </vaadin-text-field>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </template>
+                                                </paper-collapse-item>
+                                            </paper-collapse-group>
+                                        </div>
+                                    </div>
 
-                                                <!-- VAADIN GRID  Textos Fatura -->
-                                                <vaadin-grid aria-label="InvoiceTexts" id="grid_invoiceTexts" items="[[data.invoiceTexts]]" class="grid" multi-sort="true">
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="invoiceGroup" />
-                                                        </template>
-                                                        <template>
-                                                            <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_IRGridInvoiceGroup" name="_IRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ _lockFields }}">
-                                                                <template>
-                                                                    <paper-icon-item>
-                                                                        <paper-item-body two-line>
-                                                                            <div>[[item.value]]</div>
-                                                                        </paper-item-body>
-                                                                    </paper-icon-item>
-                                                                </template>
-                                                            </vaadin-combo-box>
+                                    <div class="row break_clear">
+                                        <div class="panel panel-default">
+                                            <paper-collapse-group>
+                                                <paper-collapse-item header="Textos Fatura">
+                                                    <div class="panel-body">
 
+                                                        <template is="dom-if" if="{{ !_lockFields }}">
+                                                            <div class="row">
+                                                                <div class="col-md-3 ">
+                                                                    <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_IRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_IRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}">
+                                                                        <template>
+                                                                            <paper-icon-item>
+                                                                                <paper-item-body two-line>
+                                                                                    <div>[[item.value]]</div>
+                                                                                </paper-item-body>
+                                                                            </paper-icon-item>
+                                                                        </template>
+                                                                    </vaadin-combo-box>
+                                                                </div>
+                                                                <div class="col-md-3 ">
+                                                                    <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_IRProjectNo" name="_IRProjectNo" value="{{_IRProjectNo}}" label="Nº Projeto" disabled="{{ _lockFields }}">
+                                                                        <template>
+                                                                            <paper-icon-item>
+                                                                                <paper-item-body two-line>
+                                                                                    <div>[[item.value]]</div>
+                                                                                </paper-item-body>
+                                                                            </paper-icon-item>
+                                                                        </template>
+                                                                    </vaadin-combo-box>
+                                                                </div>
+                                                                <div class="col-md-3 ">
+                                                                    <vaadin-text-field value="{{_IRInvoiceText}}" id="_IRInvoiceText" name="_IRInvoiceText" label="Texto Fatura" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                </div>
+                                                                <div class="col-lg-1">
+                                                                    <paper-button class="btnSave" raised on-tap="_createInvoiceText">Criar</paper-button>
+                                                                </div>
+                                                            </div>
                                                         </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="projectNo" />
-                                                        </template>
-                                                        <template>
-                                                            <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_IRGridProjectNo" name="_IRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
+
+                                                        <!-- VAADIN GRID  Textos Fatura -->
+                                                        <vaadin-grid aria-label="InvoiceTexts" id="grid_invoiceTexts" items="[[data.invoiceTexts]]" class="grid" multi-sort="true">
+                                                            <vaadin-grid-column>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="invoiceGroup" />
+                                                                </template>
                                                                 <template>
-                                                                    <paper-icon-item>
-                                                                        <paper-item-body two-line>
-                                                                            <div>[[item.value]]</div>
-                                                                        </paper-item-body>
-                                                                    </paper-icon-item>
+                                                                    <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_IRGridInvoiceGroup" name="_IRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ _lockFields }}">
+                                                                        <template>
+                                                                            <paper-icon-item>
+                                                                                <paper-item-body two-line>
+                                                                                    <div>[[item.value]]</div>
+                                                                                </paper-item-body>
+                                                                            </paper-icon-item>
+                                                                        </template>
+                                                                    </vaadin-combo-box>
+
                                                                 </template>
-                                                            </vaadin-combo-box>
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="invoiceText">Texto Fatura</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="invoiceText" />
-                                                        </template>
-                                                        <template>
-                                                            <vaadin-text-field value="{{item.invoiceText}}" id="_IRGridInvoiceText" name="_IRGridInvoiceText" disabled="{{ _lockFields }}"> </vaadin-text-field>
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                        </template>
-                                                        <template>
-                                                            <center>
-                                                                <template is="dom-if" if="{{ !_lockFields }}">
-                                                                    <paper-button class="btnRemove" raised on-tap="_deleteInvoiceText">Eliminar</paper-button>
+                                                            </vaadin-grid-column>
+                                                            <vaadin-grid-column>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="projectNo" />
                                                                 </template>
-                                                            </center>
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                </vaadin-grid>
-                                            </div>
+                                                                <template>
+                                                                    <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_IRGridProjectNo" name="_IRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
+                                                                        <template>
+                                                                            <paper-icon-item>
+                                                                                <paper-item-body two-line>
+                                                                                    <div>[[item.value]]</div>
+                                                                                </paper-item-body>
+                                                                            </paper-icon-item>
+                                                                        </template>
+                                                                    </vaadin-combo-box>
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                            <vaadin-grid-column>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="invoiceText">Texto Fatura</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="invoiceText" />
+                                                                </template>
+                                                                <template>
+                                                                    <vaadin-text-field value="{{item.invoiceText}}" id="_IRGridInvoiceText" name="_IRGridInvoiceText" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                            <vaadin-grid-column>
+                                                                <template class="header">
+                                                                </template>
+                                                                <template>
+                                                                    <center>
+                                                                        <template is="dom-if" if="{{ !_lockFields }}">
+                                                                            <paper-button class="btnRemove" raised on-tap="_deleteInvoiceText">Eliminar</paper-button>
+                                                                        </template>
+                                                                    </center>
+                                                                </template>
+                                                            </vaadin-grid-column>
+                                                        </vaadin-grid>
+                                                    </div>
+                                                </paper-collapse-item>
+                                            </paper-collapse-group>
                                         </div>
                                     </div>
                                 </div>
                             </iron-pages>
                             <div class="marginSpace" style="display: {{ _showButtons }};">
                                 <!--<template is="dom-if" if="{{ !_contractStatusLocked }}">-->
+
                                 <template is="dom-if" if="{{ _isCreate }}">
                                     <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </template>
@@ -894,7 +976,6 @@
                             <div class="col-lg-2">
                                 <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periocidade" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                             </div>
-
                         </div>
 
                         <div class="row" style="display: {{ _showContractLinesForm }};">
@@ -1450,7 +1531,7 @@
                         notify: true,
                         value: ""
                     },
-                    
+
                     _showButtons: {
                         type: String,
                         notify: true,
@@ -1565,7 +1646,7 @@
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo });
                     this.$.page_databound_ajax.generateRequest();
-                    
+
                     if (!this._permissions.update) {
                         this._lockFields = true;
                         this._contractStatusLocked = true;
@@ -1721,10 +1802,10 @@
                     if (this.data.filed) {
                         this._permissions.update = false;
                     }
-                    
+
 
                     if (data.detail.status === 200) {
-               
+
                         if (data.detail.url.indexOf("GetContractDetails") !== -1) {
                             if (this.data.contractNo != "") {
                                 this.$.serviceclients_ajax.body = JSON.stringify(this.data.clientNo);
@@ -1732,6 +1813,10 @@
 
                                 this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
                                 this.$.contractLines_databound_ajax.generateRequest();
+
+                                this.$.navData_ajax.body = JSON.stringify(this.data);
+                                this.$.navData_ajax.generateRequest();
+                                
                             }
                         }
                         else if (data.detail.url.indexOf("Create") !== -1) {
@@ -2111,7 +2196,7 @@
 
 
 
-                
+
             });
         });
     </script>

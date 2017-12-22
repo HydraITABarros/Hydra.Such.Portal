@@ -107,9 +107,10 @@
         <iron-ajax url="/PopulateDropdowns/GetRequestOrigin" last-response="{{CBRequestOrigin}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsStatus" last-response="{{CBProposalsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContacts" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnit" last-response="{{LFetchUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-
+        
         <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" last-response="{{numeration}}" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
@@ -345,8 +346,8 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <!--<div class="col-lg-3">
-                                        <vaadin-text-field id="contactNo" name="contactNo" label="Nº Contacto" value="{{data.contactNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                    </div>-->
+            <vaadin-text-field id="contactNo" name="contactNo" label="Nº Contacto" value="{{data.contactNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+        </div>-->
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" on-value-changed="_clientChange">
                                                 <template>
@@ -477,11 +478,27 @@
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.oportunityNo}}" id="mOportunity" name="mOportunity" label="Nº Oportunidade" disabled> </vaadin-text-field>
                                         </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field value="{{data.baseValueProcedure}}" id="mBaseValueProcedure" name="mBaseValueProcedure" pattern="^[1-9]\d*(\.\d+)?$" label="Valor Base Procedimento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-combo-box items="[[LFetchUnits]]" id="mFetchUnits" item-value-path="id" item-label-path="value" value="{{data.provisionUnit}}" label="Unidade Prestação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                                <template>
+                                                    <table width="300px">
+                                                        <tr>
+                                                            <td width="30%">[[item.id]]</td>
+                                                            <td width="70%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
                                         <div class="col-md-6 ">
                                             <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
                                         </div>
                                     </div>
-
                                     <div class="row break_clear">
                                         <div class="panel panel-default">
                                             <div class="panel-heading">Datas Limite Fases do Processo</div>
@@ -531,6 +548,18 @@
                                                 <div class="row break_clear">
                                                     <div class="col-md-3 ">
                                                         <vaadin-date-picker label="Habilitação Documental" id="mDocumentationHabilitationDate" name="mDocumentationHabilitationDate" value="{{data.documentationHabilitationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Audiência Prévia</label>
+                                                        <br />
+                                                        <div class="row">
+                                                            <div class="col-md-8" style="padding-right: 5px;">
+                                                                <vaadin-date-picker id="mPreviousHearing" name="mPreviousHearing" value="{{data.previousHearing}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                            </div>
+                                                            <div class="col-md-4" style="padding-left: 0px;">
+                                                                <vaadin-text-field value="{{data.previousHearingTime}}" id="mPreviousHearingTime" name="mPreviousHearingTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

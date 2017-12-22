@@ -761,8 +761,8 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
                     Percurso1.DataDespesa = data.DataDespesa;
                     Percurso1.Observacao = data.Observacao;
-                    Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    //Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    //Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
                     Percurso1.UtilizadorCriacao = User.Identity.Name;
@@ -784,8 +784,8 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso2.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
                     Percurso2.DataDespesa = data.DataDespesa;
                     Percurso2.Observacao = data.Observacao;
-                    Percurso2.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso2.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    //Percurso2.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    //Percurso2.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso2.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso2.CustoTotal = Percurso2.Distancia * Percurso2.CustoUnitario;
                     Percurso2.UtilizadorCriacao = User.Identity.Name;
@@ -813,8 +813,8 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
                     Percurso1.DataDespesa = data.DataDespesa;
                     Percurso1.Observacao = data.Observacao;
-                    Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    //Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    //Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
                     Percurso1.UtilizadorCriacao = User.Identity.Name;
@@ -858,7 +858,7 @@ namespace Hydra.Such.Portal.Controllers
                         DataDespesa = x.DataDespesa,
                         Observacao = x.Observacao,
                         Distancia = x.Distancia,
-                        DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(x.CodOrigem, x.CodDestino),
+                        //DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(x.CodOrigem, x.CodDestino),
                         CustoUnitario = x.CustoUnitario,
                         CustoTotal = x.Distancia * x.CustoUnitario,
                         UtilizadorCriacao = x.UtilizadorCriacao,
@@ -892,7 +892,7 @@ namespace Hydra.Such.Portal.Controllers
                 Percurso.DataDespesa = data.DataDespesa;
                 Percurso.Observacao = data.Observacao;
                 Percurso.Distancia = data.Distancia;
-                Percurso.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                //Percurso.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                 Percurso.CustoUnitario = data.CustoUnitario;
                 Percurso.CustoTotal = data.Distancia * data.CustoUnitario;
                 Percurso.UtilizadorModificacao = User.Identity.Name;

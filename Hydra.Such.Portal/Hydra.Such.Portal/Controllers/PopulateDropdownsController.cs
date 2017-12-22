@@ -64,6 +64,14 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        
+        [HttpPost]
+        public JsonResult GetProposalsFetchUnit()
+        {
+            List<EnumData> result = EnumerablesFixed.ProposalsFetchUnit;
+            return Json(result);
+        }
+
         [HttpPost]
         public JsonResult GetFeatures()
         {
@@ -291,6 +299,16 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetContractTerminationDeadlineNotice()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractTerminationDeadlineNotice;
+            return Json(result);
+        }
+
+
+
+        
         [HttpPost]
         public JsonResult GetContractPaymentTerms()
         {

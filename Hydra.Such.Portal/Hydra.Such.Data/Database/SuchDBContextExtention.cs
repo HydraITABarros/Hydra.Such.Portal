@@ -11,7 +11,7 @@ namespace Hydra.Such.Data.Database
         public virtual IEnumerable<dynamic> execStoredProcedure(String cmdText, SqlParameter[] parameters)
         {
 
-            using (var connection = new SqlConnection("data source=10.101.1.10\\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;"))
+            using (var connection = new SqlConnection("data source=10.101.1.10\\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH_TST;user id=such_portal_user;password=SuchPW.2K17;"))
             {
                 connection.Open();
 
@@ -54,7 +54,7 @@ namespace Hydra.Such.Data.Database
             int result = 0;
             try
             {
-                using (var connection = new SqlConnection("data source=10.101.1.10\\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;"))
+                using (var connection = new SqlConnection("data source=10.101.1.10\\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH_TST;user id=such_portal_user;password=SuchPW.2K17;"))
                 {
                     connection.Open();
 

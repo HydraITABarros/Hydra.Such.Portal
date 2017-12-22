@@ -376,6 +376,10 @@
 
                                     </div>
                                     <div class="row break_clear">
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field value="{{data.baseValueProcedure}}" id="mBaseValueProcedure" name="mBaseValueProcedure" pattern="^[1-9]\d*(\.\d+)?$" label="Valor Base Procedimento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        </div>
                                         <div class="col-md-6 ">
                                             <!--<textarea id="mNotes" name="mNotes" label="Notas" resize="true"></textarea>-->
                                             <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>

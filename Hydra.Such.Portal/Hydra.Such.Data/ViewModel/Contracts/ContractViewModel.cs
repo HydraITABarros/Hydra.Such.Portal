@@ -99,7 +99,10 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string ProposalDelivery { get; set; }
         public string LastReport { get; set; }
         public string NextInvoicePeriod { get; set; }
-        
+        public decimal? BaseValueProcedure { get; set; }
+        public string PreviousHearing { get; set; }
+        public string PreviousHearingTime { get; set; }
+
 
         public List<ContractClientRequisitionViewModel> ClientRequisitions { get; set; }
         public List<ContractInvoiceTextViewModel> InvoiceTexts { get; set; }
