@@ -25,6 +25,12 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
+<link rel="import" href="/lib/vaadin-context-menu/vaadin-context-menu.html" />
+<link rel="import" href="/lib/vaadin-list-box/vaadin-list-box.html" />
+<link rel="import" href="/lib/vaadin-item/vaadin-item.html" />
+<!--<link rel="import" href="/lib/paper-menu/paper-menu.html" />-->
+<!--<link rel="import" href="/lib/paper-item/paper-item.html" />-->
+
 <dom-module id="x-procedimentodetails">
     <template>
         <!-- STYLES -->
@@ -164,6 +170,41 @@
                 margin-top: 7px;
                 color: white;
                 background: #D5662F;
+            }
+            /*zpgm*/
+            .btn--return {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                margin-top: 7px;
+                color: white;
+                background: #9E21FF;
+            }
+
+            .btn--cntxt-menu {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                margin-top: 7px;
+                color: white;
+                background: #FF7259;
+            }
+
+            vaadin-grid.disabled:after {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+                cursor: not-allowed;
+            }
+            paper-button.disabled {
+                cursor: not-allowed;
+                pointer-events: none;
             }
         </style>
 
@@ -430,10 +471,10 @@
                         <div class="col-sm-3">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <vaadin-text-field type="text" value="{{data.ano}}" id="ano" name="ano" label="Ano"> </vaadin-text-field>
+                                    <vaadin-text-field type="text" value="{{data.ano}}" id="ano" name="ano" label="Ano" disabled="true"> </vaadin-text-field>
                                 </div>
                                 <div class="col-sm-6">
-                                    <vaadin-text-field type="text" value="{{data.referencia}}" id="referencia" name="referencia" label="Referência"> </vaadin-text-field>
+                                    <vaadin-text-field type="text" value="{{data.referencia}}" id="referencia" name="referencia" label="Referência" disabled="true"> </vaadin-text-field>
                                 </div>
                             </div>
                         </div>
@@ -477,10 +518,10 @@
                                             <paper-tooltip for="informacaoTecnica" position="top" offset="-1" animation-delay="1">
                                                 Descrição da prestação de serviços ou bem a adquirir
                                             </paper-tooltip>
-                                            <vaadin-text-field type="text" value="{{data.informacaoTecnica}}" id="informacaoTecnica" name="informacaoTecnica" label="Informação Técnica"> </vaadin-text-field>
+                                            <such-textarea rows="3" value="{{data.informacaoTecnica}}" id="informacaoTecnica" name="informacaoTecnica" label="Informação Técnica"> </such-textarea>
                                         </div>
                                         <div class="col-sm-6">
-                                            <vaadin-text-field type="text" value="{{data.fundamentacaoAquisicao}}" id="fundamentacaoAquisicao" name="fundamentacaoAquisicao" label="Fundamentação Aquisição"> </vaadin-text-field>
+                                            <such-textarea rows="3" value="{{data.fundamentacaoAquisicao}}" id="fundamentacaoAquisicao" name="fundamentacaoAquisicao" label="Fundamentação Aquisição"> </such-textarea>
                                         </div>
                                     </div>
                                     
@@ -538,16 +579,16 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <br />
-                                            <paper-button class="btnSave" raised on-tap="_createElementoJuri"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                            <paper-button class="btnSave" id="buttonCriarElementoJuri1" raised on-tap="_createElementoJuri"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                         </div>
                                     </div>
-                                    <vaadin-grid id="gridElementosJuri" aria-label="gridElementosJuri" items="{{data.elementosJuri}}" class="grid" style="height:170px;">
+                                    <vaadin-grid id="gridElementosJuri1" aria-label="gridElementosJuri1" items="{{data.elementosJuri}}" class="grid" style="height:170px;">
                                         <vaadin-grid-column width="20%">
                                             <template class="header">
                                                 Utilizador
                                             </template>
                                             <template>
-                                                <vaadin-text-field type="text" value="{{ item.utilizador }}"></vaadin-text-field>
+                                                <vaadin-text-field id="idElemento1" type="text" value="{{ item.utilizador }}"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="20%">
@@ -555,7 +596,7 @@
                                                 Nome
                                             </template>
                                             <template>
-                                                <vaadin-text-field type="text" value="{{ item.nomeEmpregado }}"></vaadin-text-field>
+                                                <vaadin-text-field id="nomeElementoJuri1" type="text" value="{{ item.nomeEmpregado }}"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="8%">
@@ -566,7 +607,7 @@
                                             </template>
                                             <template>
                                                 <center>
-                                                    <vaadin-checkbox checked="{{item.presidente}}"></vaadin-checkbox>
+                                                    <vaadin-checkbox id="isPresidente1" checked="{{item.presidente}}"></vaadin-checkbox>
                                                 </center>
                                             </template>
                                         </vaadin-grid-column>
@@ -578,7 +619,7 @@
                                             </template>
                                             <template>
                                                 <center>
-                                                    <vaadin-checkbox checked="{{item.vogal}}"></vaadin-checkbox>
+                                                    <vaadin-checkbox id="isVogal1" checked="{{item.vogal}}"></vaadin-checkbox>
                                                 </center>
                                             </template>
                                         </vaadin-grid-column>
@@ -590,7 +631,7 @@
                                             </template>
                                             <template>
                                                 <center>
-                                                    <vaadin-checkbox checked="{{item.suplente}}"></vaadin-checkbox>
+                                                    <vaadin-checkbox id="isSuplente1" checked="{{item.suplente}}"></vaadin-checkbox>
                                                 </center>
                                             </template>
                                         </vaadin-grid-column>
@@ -602,7 +643,7 @@
                                             </template>
                                             <template>
                                                 <center>
-                                                    <vaadin-checkbox checked="{{item.enviarEmail}}"></vaadin-checkbox>
+                                                    <vaadin-checkbox id="doSendMail1" checked="{{item.enviarEmail}}"></vaadin-checkbox>
                                                 </center>
                                             </template>
                                         </vaadin-grid-column>
@@ -611,7 +652,7 @@
                                                 Endereço Email
                                             </template>
                                             <template>
-                                                <vaadin-text-field type="text" value="{{ item.email }}"></vaadin-text-field>
+                                                <vaadin-text-field id="emailElemento1" type="text" value="{{ item.email }}"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="10%">
@@ -619,7 +660,7 @@
                                             </template>
                                             <template>
                                                 <!--<center>-->
-                                                <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                                <paper-button raised class="btnRemove" id="deleteJuri1" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                                                 <!--</center>-->
                                             </template>
                                         </vaadin-grid-column>
@@ -634,25 +675,29 @@
                                     <!--Elementos Checklist - Estado 0 - .b -->
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <vaadin-text-field type="text" value="{{CLArea.checklistArea.comentarioArea}}" id="comentarioAreaApresentar" name="comentarioAreaApresentar" label="Comentário"> </vaadin-text-field>
+                                            <such-textarea rows="5" value="{{CLArea.checklistArea.comentarioArea}}" id="comentarioAreaApresentar" name="comentarioAreaApresentar" label="Comentário"> </such-textarea>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <vaadin-text-field type="text" value="{{CLArea.checklistArea.responsavelArea}}" id="responsavelAreaApresentar" name="responsavelAreaApresentar" label="O Responsável da Área pela apresentação da informação "> </vaadin-text-field>
+                                            <vaadin-text-field type="text" value="{{CLArea.checklistArea.responsavelArea}}" id="responsavelAreaApresentar" name="responsavelAreaApresentar" label="O Responsável da Área pela apresentação da informação " disabled="true"> </vaadin-text-field>
                                         </div>
                                         <br />
                                         <div class="col-sm-6">
-                                            <vaadin-text-field type="text" value="{{CLArea.checklistArea.nomeResponsavelArea}}" id="nomeResponsavelAreaApresentar" name="nomeResponsavelAreaApresentar"> </vaadin-text-field>
+                                            <vaadin-text-field type="text" value="{{CLArea.checklistArea.nomeResponsavelArea}}" id="nomeResponsavelAreaApresentar" name="nomeResponsavelAreaApresentar" disabled="true"> </vaadin-text-field>
                                         </div>
-
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-3">
-                                            <vaadin-text-field type="text" value="{{CLArea.checklistArea.dataResponsavel}}" id="dataResponsavelApresentar" name="dataResponsavelApresentar" label="Data"> </vaadin-text-field>
+                                            <vaadin-text-field type="text" value="{{CLArea.checklistArea.dataResponsavel}}" id="dataResponsavelApresentar" name="dataResponsavelApresentar" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <!--Elementos Checklist - Estado 0 - .e -->
+                                    <div class="col-lg-6">
+                                        <br />
+                                        <paper-button raised id="submitProcedimento" class="btn--confirm pull-left" on-tap="_submitProcedimento"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Submeter</paper-button>
+                                    </div>
+                                    
                                     <div class="clearfix"></div>
                                 </div>
                             </paper-collapse-item>
@@ -732,11 +777,11 @@
                                                 </div>
 
                                                 <div class="col-sm-9">
-                                                    <paper-tooltip for="propostaVarianteDescricao" position="bottom" offset="-10" animation-delay="1">
+                                                    <paper-tooltip for="descPropostaVariante" position="bottom" offset="-10" animation-delay="1">
                                                         Não aceitando propostas variantes o concorrente tem que apresentar exatamente o solicitado nas peças do procedimento, sendo um motivo de exclusão toda a proposta apresentada que não cumpra os requisitos. <br />
                                                         O Fornecedor não pode apresentar alternativas.
                                                     </paper-tooltip>
-                                                    <such-textarea rows="5" value="{{data.propostaVarianteDescricao}}" id="propostaVarianteDescricao" name="propostaVarianteDescricao" label="Descrição"> </such-textarea>
+                                                    <such-textarea rows="5" value="{{data.descPropostaVariante}}" id="descPropostaVariante" name="descPropostaVariante" label="Descrição"> </such-textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -943,24 +988,24 @@
                                     <div class="panel-heading">Contabilidade</div>
                                     <div class="panel-body">
                                         <div class="col-sm-6">
-                                            <such-textarea rows="5" value="{{data.contabilidade}}" id="contabilidadeComentario" name="contabilidadeComentario" label="Comentário"> </such-textarea>
+                                            <such-textarea rows="5" value="{{CLImobContab.checklistImobilizadoContabilidade.comentarioImobContabilidade}}" id="contabilidadeComentario" name="contabilidadeComentario" label="Comentário"> </such-textarea>
 
                                             <div class="row break_clear">
                                                 <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">O responsável dos serviços de contabilidade</label></div>
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.responsavelServicosContabilidade}}" id="responsavelServicosContabilidade" name="responsavelServicosContabilidade" label=""></vaadin-text-field>
+                                                    <vaadin-text-field value="{{CLImobContab.checklistImobilizadoContabilidade.responsavelImobContabilidade}}" id="responsavelServicosContabilidade" name="responsavelServicosContabilidade" label=""></vaadin-text-field>
                                                 </div>
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.responsavelServicosContabilidade2}}" id="responsavelServicosContabilidade2" name="responsavelServicosContabilidade2" label=""> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{CLImobContab.checklistImobilizadoContabilidade.nomeResponsavelImobContabilidade}}" id="responsavelServicosContabilidade2" name="responsavelServicosContabilidade2" label=""> </vaadin-text-field>
                                                 </div>
                                             </div>
 
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
-                                                    <vaadin-date-picker value="{{data.contabilidadeData}}" id="responsavelServicosContabilidade" name="responsavelServicosContabilidade" label="Data"> </vaadin-date-picker>
+                                                    <vaadin-date-picker value="{{CLImobContab.checklistImobilizadoContabilidade.dataImobContabilidade}}" id="responsavelServicosContabilidade" name="responsavelServicosContabilidade" label="Data"> </vaadin-date-picker>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <vaadin-combo-box value="{{data.cabimentoOrcamental}}" id="cabimentoOrcamental" label="Cabimento Orçamental?" items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue">
+                                                    <vaadin-combo-box value="{{CLImobContab.checklistImobilizadoContabilidade.imobilizadoSimNao}}" id="cabimentoOrcamental" label="Cabimento Orçamental?" items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue">
                                                         <template>
                                                             <paper-icon-item>
                                                                 <paper-item-body two-line>
@@ -974,6 +1019,43 @@
                                             <div class="row break_clear"></div>
                                         </div>
                                         <div class="clearfix"></div>
+                                        <!--<div class="col-lg-6">
+                                            <br />
+                                            <paper-button raised id="confirmImobilizadoContab" class="btn--confirm pull-left" on-tap="_confirmImobilizadoContab"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Confirmar</paper-button>
+                                            <paper-button raised id="returnToArea" class="btn--return pull-left" on-tap="_returnToArea"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Devolver Área</paper-button>
+                                        </div>-->
+                                        <div class="clearfix"></div>
+                                        <div class="col-lg-6">
+                                            <br />
+                                            <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
+                                                <template>
+                                                    <style>
+                                                        .my-menu {
+                                                            padding: 8px 0;
+                                                            background: #fff;
+                                                        }
+
+                                                        .my-menu-item {
+                                                            display: block;
+                                                            padding: 8px 24px;
+                                                            text-decoration: none;
+                                                            color: #000;
+                                                        }
+
+                                                            .my-menu-item:hover {
+                                                                background: #FFD5D3;
+                                                            }
+                                                    </style>
+                                                    <vaadin-list-box>
+                                                        <vaadin-item class="my-menu-item" on-tap="_confirmImobilizadoContab">Confirmar</vaadin-item>
+                                                        <vaadin-item class="my-menu-item" on-tap="_returnToArea">Devolver à Área</vaadin-item>
+                                                    </vaadin-list-box>
+                                                </template>
+
+                                                <paper-button raised id="actionButton1" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
+                                                <!--<button>Show Context Menu</button>-->
+                                            </vaadin-context-menu>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -1049,7 +1131,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-xs-12">
-                                            <vaadin-grid id="gridElementosJuri" aria-label="gridElementosJuri" items="{{data.elementosJuri}}" class="grid" style="height:170px;">
+                                            <vaadin-grid id="gridElementosJuri2" aria-label="gridElementosJuri2" items="{{data.elementosJuri}}" class="grid" style="height:170px;">
                                                 <vaadin-grid-column width="20%">
                                                     <template class="header">
                                                         Utilizador
@@ -1971,7 +2053,7 @@
 
     <script>
         document.addEventListener('WebComponentsReady', function () {
-            //debugger;;
+            ////debugger;;
             Polymer({
                 is: 'x-procedimentodetails',
                 properties: {
@@ -2026,22 +2108,73 @@
                         type: Boolean,
                         value: true
                     },
+                    __isElementArea: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isElementPreArea: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isElementPreArea0: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isElementCompras: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isElementJuri: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isElementContabilidade: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isElementJuridico: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isElementCA: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isGestorProcesso: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isSecretariadoCA: {
+                        type: Boolean,
+                        value: false
+                    },
+                    __isFechoProcesso: {
+                        type: Boolean,
+                        value: false
+                    },
+                },
+
+                _testFunction1: function () {
+                    this._openToast("Success: Confirmar");
+                },
+                _testFunction2: function () {
+                    this._openToast("Success: Devolver à àrea");
                 },
 
                 ready: function () {
-                    debugger;;
+                    //debugger;;
                     this.$.ajax_userpermissions.body = this.data;
                     this.$.ajax_userpermissions.generateRequest();                               
                 },
 
                 _openToast: function (message) {
-                    //debugger;;
+                    ////debugger;;
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
 
                 _validateData: function () {
-                    //debugger;;
+                    ////debugger;;
                     if (false) {
                         this._openToast(validate);
                         return false;
@@ -2051,7 +2184,7 @@
 
                 //CRUDS
                 _create: function () {
-                    //debugger;;
+                    ////debugger;;
                     this.data.tipoProcedimento = this._procedimentotypeid;
 
                     if (this._validateData()) {
@@ -2060,14 +2193,14 @@
                 },
 
                 _update: function () {
-                    //debugger;;
+                    ////debugger;;
                     if (this._onUpdateValidateElementoJuri()) {
                         this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data)
                     }
                 },
 
                 _delete: function () {
-                    //debugger;;
+                    ////debugger;;
                     var Procedimento = this.data;
                     var ajax_request = this.$.ajax_delete_procedimento;
                     bootbox.confirm({
@@ -2102,7 +2235,7 @@
                                 return;
                             }
 
-                            debugger;;
+                            //debugger;;
                             this._setFieldsEditability(this.data);
 
                             this.$.ajax_checklist_estado0.body = this.data;
@@ -2120,7 +2253,7 @@
                 },
 
                 _createResponseProcessor: function () {
-                    //debugger;;
+                    ////debugger;;
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
                         this._openToast("Procedimento criado com sucesso.");
@@ -2134,7 +2267,7 @@
                 },
 
                 _responseDeleteProcessor: function (data) {
-                    //debugger;;
+                    ////debugger;;
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.deletedData.eReasonCode == 4) {
@@ -2164,6 +2297,34 @@
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
                         this.$.page_databound_ajax.generateRequest();
 
+                        // set user permissions
+                        for (var i in this.UserAccesses) {
+                            switch (this.UserAccesses[i]) {
+                                case "IsElementArea": this.__isElementArea = true;
+                                    break;
+                                case "IsElementPreArea0": this.__isElementPreArea0 = true;
+                                    break;
+                                case "IsElementPreArea": this.__isElementPreArea = true;
+                                    break;
+                                case "IsElementCompras": this.__isElementCompras = true;
+                                    break;
+                                case "IsElementJuri": this.__isElementJuri = true;
+                                    break;
+                                case "IsElementContabilidade": this.__isElementContabilidade = true;
+                                    break;
+                                case "IsElementJuridico": this.__isElementJuridico = true;
+                                    break;
+                                case "IsElementCA": this.__isElementCA = true;
+                                    break;
+                                case "IsGestorProcesso": this.__isGestorProcesso = true;
+                                    break;
+                                case "IsSecretariadoCA": this.__isSecretariadoCA = true;
+                                    break;
+                                case "IsFechoProcesso": this.__isFechoProcesso = true;
+                                    break;
+                            }
+                        };
+
                         if (this._procedimentoid == "") {
                             this._isCreate = true;
                         }
@@ -2177,7 +2338,7 @@
 
                 // Create Elemento Juri
                 _onUpdateValidateElementoJuri: function () {
-                    //debugger;;
+                    ////debugger;;
                     for (var i in this.data.elementosJuri) {
                         if (!this.data.elementosJuri[i].presidente && !this.data.elementosJuri[i].vogal && !this.data.elementosJuri[i].suplente) {
                             this._openToast("Não escolheu qual a responsabilidade do utilizador: " + this.data.elementosJuri[i].utilizador + ".");
@@ -2204,7 +2365,7 @@
                     return true;
                 },
                 _validateElementoJuriData: function () {
-                    //debugger;;
+                    ////debugger;;
                     if (this._userName == "") {
                         this._openToast("Não escolheu um utilizador!");
                         return false;
@@ -2221,7 +2382,7 @@
                         return true;
                 },
                 _createElementoJuri: function () {
-                    //debugger;;
+                    ////debugger;;
                     if (this._validateElementoJuriData()) {
                         this.$.ajax_createelementojuri.body = JSON.stringify({
                             noProcedimento: this.data.no,
@@ -2237,7 +2398,7 @@
                     }
                 },
                 _createElementoJuriResponse: function (e) {
-                    //debugger;;
+                    ////debugger;;
                     if (this.ElementoCreated.eReasonCode == 0) {
                         this._openToast('Elemento Júri adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
@@ -2254,7 +2415,7 @@
                     }
                 },
                 _deleteElementoJuri: function (e) {
-                    //debugger;;
+                    ////debugger;;
                     var index = this.data.elementosJuri.indexOf(e.model.item);
                     this.data.elementosJuri.splice(index, 1);
                     this.$.ajax_deleteelementojuri.body = JSON.stringify({
@@ -2266,7 +2427,7 @@
 
                 },
                 _deleteElementoJuriResponse: function (e) {
-                    //debugger;;
+                    ////debugger;;
                     if (this.ElementoDeleted) {
                         this._openToast('Elemento Juri eliminado com sucesso');
 
@@ -2277,7 +2438,7 @@
 
                 // Checklist Fluxo Trabalho
                 _checklistResponseEstado0: function (e) {
-                    debugger;;
+                    //debugger;;
 
                     if (this.CLArea != null) {
                         //this._openToast(this.ChecklistArea.comentarioAreaApresentar);
@@ -2304,6 +2465,11 @@
                         return false;
                     }
 
+                    if (this.estimativaPreco == null || this.estimativaPreco == 0) {
+                        this._openToast("Obrigatório definir uma Estimativa de Preço, mesmo que não seja definido Preço Base!");
+                        return false;
+                    }
+
                     if (this.data.negociacao == null) {
                         this._openToast("Negociação: tem que indicar um valor (Sim/Não)!")
                         return false;
@@ -2324,8 +2490,18 @@
                         return false;
                     }
 
+                    if (this.data.precoMaisBaixo && this.data.propostaEconMaisVantajosa) {
+                        this._openToast("Preço Mais Baixo ou Proposta Economicamente mais vantajosa: apenas pode escolher uma das opções!");
+                        return false;
+                    }
+
                     if (this.data.propostaVariante == null) {
                         this._openToast("Proposta Variante: tem que indicar um valor (Sim/Não)!")
+                        return false;
+                    }
+
+                    if (this.fornecedorExclusivo && (this.descFornecedorExclusivo == null || this.descFornecedorExclusivo == "")) {
+                        this._openToast("Obrigatória a fundamentação da exclusividade do fornecedor!");
                         return false;
                     }
 
@@ -2344,44 +2520,89 @@
                     return true;
                 },
                 _submitProcedimento: function () {
-                    if (this._onSubmitValidateProcedimento()) {
+                    if (this.data.estado != 0) {
+                        this._openToast("Não permitido neste estado!");
+                        return;
+                    }
 
+                    if (this._onSubmitValidateProcedimento()) {
+                        this.$.ajax_submitprocedimento.body = this.data;
+                        this.$.ajax_submitprocedimento.generateRequest();
                     }
                 },
                 _submitProcedimentoResponse: function (e) {
-
+                    if (this.ProcedimentoSubmitted.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " submetido com sucesso!");
+                    } else {
+                        this._openToast(ProcedimentoSubmitted.eMessage);
+                    }
                 },
 
                 _setFieldsEditability(data) {
-                    debugger;;
+                    //debugger;;
 
                     var _self = this;
-                    //console.log(123456789);
+
                     //if (data.estado == 0) {
-                    //    _self.$.informacaoTecnica.disabled = false;
+                    //    $(_self.$.actionButton1).addClass('disabled');
                     //}
+                    // Disable controls 
+                    // 1. Procedimento status != 0.b
                     if (data.estado != 0) {
-                        //desabilitar um campo
-                        //_self.$.no.disabled = false;
-                        _self.$.informacaoTecnica.disabled = true;
-                        _self.$.fundamentacaoAquisicao.disabled = true;
-                        _self.$.precoBase.disabled = true;
-                        _self.$.negociacao.disabled = true;
-                        _self.$.formAddElemento.disabled = true;
-                        _self.$.users.disabled = true;
-                        _self.$.gridElementosJuri.disabled = true;
-                        
+                        $(_self.$.gridElementosJuri1).addClass('disabled');
+                        $(_self.$.buttonCriarElementoJuri1).addClass('disabled');
+                        $(_self.$.submitProcedimento).addClass('disabled');
+                        $(_self.$.gridElementosJuri2).addClass('disabled');
+                        $(_self.$.buttonCriarElementoJuri2).addClass('disabled');
+                    }
+
+                    _self.$.responsavelAreaApresentar.hidden = (data.estado == 0);
+                    _self.$.nomeResponsavelAreaApresentar.hidden = (data.estado == 0);
+                    _self.$.dataResponsavelApresentar.hidden = (data.estado == 0);
+
+                    _self.$.informacaoTecnica.disabled = (data.estado != 0);
+                    _self.$.fundamentacaoAquisicao.disabled = (data.estado != 0);
+                    _self.$.precoBase.disabled = (data.estado != 0);
+                    _self.$.negociacao.disabled = (data.estado != 0);
+                    _self.$.prazo.disabled = (data.estado != 0);
+                    _self.$.users.disabled = (data.estado != 0);
+                    _self.$._chkPresidente.disabled = (data.estado != 0);
+                    _self.$._chkVogal.disabled = (data.estado != 0);
+                    _self.$._chkSuplente.disabled = (data.estado != 0);
+                    _self.$._chkSendMail.disabled = (data.estado != 0);
+                    _self.$.comentarioAreaApresentar.disabled = (data.estado != 0);
+                    _self.$.precoMaisBaixo.disabled = (data.estado != 0); 
+                    _self.$.descPrecoMaisBaixo.disabled = (data.estado != 0);
+                    _self.$.propostaEconMaisVantajosa.disabled = (data.estado != 0);
+                    _self.$.descPropostaEconMaisVantajosa.disabled = (data.estado != 0);
+                    _self.$.propostaVariante.disabled = (data.estado != 0);
+                    _self.$.descPropostaVariante.disabled = (data.estado != 0);
+                    _self.$.abertoFechadoAoMercado.disabled = (data.estado != 0);
+                    _self.$.descAbertoFechadoAoMercado.disabled = (data.estado != 0);
+                    _self.$.prazoEntrega.disabled = (data.estado != 0);
+                    _self.$.locaisEntrega.disabled = (data.estado != 0);
+                    _self.$.observacoesAdicionais.disabled = (data.estado != 0);
+                    _self.$.estimativaPreco.disabled = (data.estado != 0);
+                    _self.$.fornecedoresSugeridos.disabled = (data.estado != 0);
+                    _self.$.fornecedorExclusivo.disabled = (data.estado != 0);
+                    _self.$.descFornecedorExclusivo.disabled = (data.estado != 0);
+                    _self.$.interlocutor.disabled = (data.estado != 0);
+                    // 1. Procedimento status != 0.e
+                    
+                    // 2. Procedimento status != 1.b
+                    _self.$.contabilidadeComentario.disabled = (data.estado != 1 || !_self.__isElementContabilidade);
+                    // 1. Procedimento status != 1.e
 
                         //esconder um campo
                         //_self.$.codigoRegiao.hidden = true;
 
                         //esconder uma seccao (adicionar id ao container da seccao)
                         //_self.$.seccaoTeste.hidden = true;
-                    }
+                   
                 },
                 //Helpers
                 _executeRequest: function (url, data) {
-                    ////debugger;;
+                    //////debugger;;
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();

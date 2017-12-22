@@ -595,6 +595,14 @@ namespace Hydra.Such.Portal.Controllers
                         
                         cContract.DataHoraModificação = null;
                         cContract.Arquivado = false;
+
+                        if (data.ActionCode.HasValue && data.ActionCode.Value == 2)
+                        {
+                            cContract.Estado = 1;
+                            cContract.DataHoraModificação = DateTime.Now;
+                            cContract.UtilizadorModificação = User.Identity.Name;
+                        }
+
                         DBContracts.Create(cContract);
 
                         //Duplicate Contract Lines
@@ -1106,9 +1114,44 @@ namespace Hydra.Such.Portal.Controllers
             result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
             return Json(result);
         }
+
+        public JsonResult GetListContractsAllProposals([FromBody] JObject requestParams)
+        {
+            int AreaId = int.Parse(requestParams["AreaId"].ToString());
+
+            List<Contratos> ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 2);
+            
+            List<ContractViewModel> result = new List<ContractViewModel>();
+
+            ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
+
+            List<EnumData> status = EnumerablesFixed.ProposalsStatus;
+            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
+            return Json(result);
+        }
+
+        public JsonResult GetProposalDetails([FromBody] JObject requestParams)
+        {
+            int contractVersion = int.Parse(requestParams["Version"].ToString());
+            string contractNo = requestParams["ContractNo"].ToString();
+            
+
+            ContractViewModel result = DBContracts.ParseToViewModel(DBContracts.GetByIdAndVersion(contractNo, contractVersion), _config.NAVDatabaseName, _config.NAVCompanyName);
+
+            List<EnumData> status = EnumerablesFixed.ProposalsStatus;
+            result.StatusDescription = status.Where(y => y.Id == result.Status).Select(y => y.Value).FirstOrDefault();
+
+            result.ContractNo = "";
+            result.ContractReference = "";
+            result.VersionNo = 1;
+            result.OportunityNo = "";
+            return Json(result);
+        }
+
         
+
         #endregion
-        
+
 
         public JsonResult ParseContractType([FromBody] JObject requestParams)
         {

@@ -1,14 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Compras
 {
-    public class RequisitionViewModel
+    public enum RequisitionStates
+    {
+        [Description("Pendente")]
+        Pending,
+        [Description("Recebido")]
+        Received,
+        [Description("Tratado")]
+        Treated,
+        [Description("Validado")]
+        Validated,
+        [Description("Aprovado")]
+        Approved,
+        [Description("Disponibilizado")]
+        Available
+    }
+
+    public class RequisitionViewModel : ErrorHandler
     {
         public string RequisitionNo { get; set; }
         public int? Area { get; set; }
-        public int? State { get; set; }
+        //public int? State { get; set; }
+        public RequisitionStates? State { get; set; }
         public string ProjectNo { get; set; }
         public string RegionCode { get; set; }
         public string FunctionalAreaCode { get; set; }
@@ -27,7 +45,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string Comments { get; set; }
         public bool? RequestModel { get; set; }
         public string CreateUser { get; set; }
-        public DateTime? CreateDate { get; set; }
+        public string CreateDate { get; set; }
         public string UpdateUser { get; set; }
         public DateTime? UpdateDate { get; set; }
         public bool? RelatedSearches { get; set; }
@@ -52,7 +70,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string LocalMarketRegion { get; set; }
         public bool? RepairWithWarranty { get; set; }
         public bool? Emm { get; set; }
-        public DateTime? WarehouseDeliveryDate { get; set; }
+        public string WarehouseDeliveryDate { get; set; }
         public int? LocalCollection { get; set; }
         public string CollectionAddress{ get; set; }
         public string Collection2Address{ get; set; }
@@ -72,9 +90,17 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? EstimatedValue { get; set; }
         public string MarketInquiryNo { get; set; }
         public string OrderNo { get; set; }
-        public DateTime? RequisitionDate { get; set; }
+        public string RequisitionDate { get; set; }
         public string dimension { get; set; }
-        
+        public decimal? Budget { get; set; }
 
+        public string PreRequisitionNo { get; set; }
+        
+        public List<RequisitionLineViewModel> Lines { get; set; }
+
+        private bool IsValidForLocalMarketForRequisition()
+        {
+            return false;
+        }
     }
 }

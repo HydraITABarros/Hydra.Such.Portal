@@ -11,10 +11,10 @@ namespace Hydra.Such.Data.Database
             DistribuiçãoCustoFolhaDeHoras = new HashSet<DistribuiçãoCustoFolhaDeHoras>();
             DiárioCafetariaRefeitório = new HashSet<DiárioCafetariaRefeitório>();
             DiárioDeProjeto = new HashSet<DiárioDeProjeto>();
-            FolhasDeHoras = new HashSet<FolhasDeHoras>();
             LinhasPréRequisição = new HashSet<LinhasPréRequisição>();
             LinhasRequisição = new HashSet<LinhasRequisição>();
             LinhasRequisiçõesSimplificadas = new HashSet<LinhasRequisiçõesSimplificadas>();
+            MovimentosDeProjeto = new HashSet<MovimentosDeProjeto>();
             MãoDeObraFolhaDeHoras = new HashSet<MãoDeObraFolhaDeHoras>();
             ProjetosFaturação = new HashSet<ProjetosFaturação>();
             PréRequisição = new HashSet<PréRequisição>();
@@ -71,10 +71,10 @@ namespace Hydra.Such.Data.Database
         public ICollection<DistribuiçãoCustoFolhaDeHoras> DistribuiçãoCustoFolhaDeHoras { get; set; }
         public ICollection<DiárioCafetariaRefeitório> DiárioCafetariaRefeitório { get; set; }
         public ICollection<DiárioDeProjeto> DiárioDeProjeto { get; set; }
-        public ICollection<FolhasDeHoras> FolhasDeHoras { get; set; }
         public ICollection<LinhasPréRequisição> LinhasPréRequisição { get; set; }
         public ICollection<LinhasRequisição> LinhasRequisição { get; set; }
         public ICollection<LinhasRequisiçõesSimplificadas> LinhasRequisiçõesSimplificadas { get; set; }
+        public ICollection<MovimentosDeProjeto> MovimentosDeProjeto { get; set; }
         public ICollection<MãoDeObraFolhaDeHoras> MãoDeObraFolhaDeHoras { get; set; }
         public ICollection<ProjetosFaturação> ProjetosFaturação { get; set; }
         public ICollection<PréRequisição> PréRequisição { get; set; }

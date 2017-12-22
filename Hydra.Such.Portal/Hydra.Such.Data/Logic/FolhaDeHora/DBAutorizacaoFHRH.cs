@@ -83,5 +83,62 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 return false;
             }
         }
+
+        public static AutorizacaoFhRh ParseToDB(AutorizacaoFHRHViewModel x)
+        {
+            try
+            {
+                return new AutorizacaoFhRh()
+                {
+                    NoEmpregado = x.NoEmpregado,
+                    NoResponsavel1 = x.NoResponsavel1,
+                    NoResponsavel2 = x.NoResponsavel2,
+                    NoResponsavel3 = x.NoResponsavel3,
+                    ValidadorRh1 = x.ValidadorRH1,
+                    ValidadorRh2 = x.ValidadorRH2,
+                    ValidadorRh3 = x.ValidadorRH3,
+                    ValidadorRhKm1 = x.ValidadorRHKM1,
+                    ValidadorRhKm2 = x.ValidadorRHKM2,
+                    CriadoPor = x.UtilizadorCriacao,
+                    DataHoraCriação = x.DataHoraCriacao,
+                    AlteradoPor = x.UtilizadorModificacao,
+                    DataHoraÚltimaAlteração = x.DataHoraModificacao
+                };
+            }
+            catch (Exception e)
+            {
+
+                return null;
+            }
+        }
+
+        public static AutorizacaoFHRHViewModel ParseToViewModel(AutorizacaoFhRh x)
+        {
+            return new AutorizacaoFHRHViewModel()
+            {
+                NoEmpregado = x.NoEmpregado,
+                NoResponsavel1 = x.NoResponsavel1,
+                NoResponsavel2 = x.NoResponsavel2,
+                NoResponsavel3 = x.NoResponsavel3,
+                ValidadorRH1 = x.ValidadorRh1,
+                ValidadorRH2 = x.ValidadorRh2,
+                ValidadorRH3 = x.ValidadorRh3,
+                ValidadorRHKM1 = x.ValidadorRhKm1,
+                ValidadorRHKM2 = x.ValidadorRhKm2,
+                UtilizadorCriacao = x.CriadoPor,
+                DataHoraCriacao = x.DataHoraCriação,
+                UtilizadorModificacao = x.AlteradoPor,
+                DataHoraModificacao = x.DataHoraÚltimaAlteração
+            };
+        }
+
+        public static List<AutorizacaoFHRHViewModel> ParseListToViewModel(List<AutorizacaoFhRh> x)
+        {
+            List<AutorizacaoFHRHViewModel> result = new List<AutorizacaoFHRHViewModel>();
+
+            x.ForEach(y => result.Add(ParseToViewModel(y)));
+            return result;
+        }
+
     }
 }

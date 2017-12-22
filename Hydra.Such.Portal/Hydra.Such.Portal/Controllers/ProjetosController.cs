@@ -356,6 +356,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         //Update Project on NAV
                         Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, data, _configws);
+                        bool statusL = true;
                         try
                         {
                             TUpdateNavProj.Wait();
@@ -363,10 +364,11 @@ namespace Hydra.Such.Portal.Controllers
                         catch (Exception ex)
                         {
                             data.eReasonCode = 3;
-                            data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                            data.eMessage = ex.InnerException.Message;
+                            statusL = false;
                         }
 
-                        if (!TUpdateNavProj.IsCompletedSuccessfully)
+                        if (!TUpdateNavProj.IsCompletedSuccessfully && statusL)
                         {
                             data.eReasonCode = 3;
                             data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
@@ -807,11 +809,51 @@ namespace Hydra.Such.Portal.Controllers
                         DiárioDeProjeto newdp = DBProjectDiary.GetAllByCode(User.Identity.Name, x.Code);
                         if (newdp != null)
                         {
-                            newdp.Registado = true;
-                            newdp.UtilizadorModificação = User.Identity.Name;
-                            newdp.DataHoraModificação = DateTime.Now;
-                            DBProjectDiary.Update(newdp);
+                            //newdp.Registado = true;
+                            //newdp.UtilizadorModificação = User.Identity.Name;
+                            //newdp.DataHoraModificação = DateTime.Now;
+                            DBProjectDiary.Delete(newdp);
+
+                            MovimentosDeProjeto ProjectMovement = new MovimentosDeProjeto()
+                            {
+                                NºLinha = newdp.NºLinha,
+                                NºProjeto = newdp.NºProjeto,
+                                Data = newdp.Data,
+                                TipoMovimento = newdp.TipoMovimento,
+                                Tipo = newdp.Tipo,
+                                Código = newdp.Código,
+                                Descrição = newdp.Descrição,
+                                Quantidade = newdp.Quantidade,
+                                CódUnidadeMedida = newdp.CódUnidadeMedida,
+                                CódLocalização = newdp.CódLocalização,
+                                GrupoContabProjeto = newdp.GrupoContabProjeto,
+                                CódigoRegião = newdp.CódigoRegião,
+                                CódigoÁreaFuncional = newdp.CódigoÁreaFuncional,
+                                CódigoCentroResponsabilidade = newdp.CódigoCentroResponsabilidade,
+                                Utilizador = User.Identity.Name,
+                                CustoUnitário = newdp.CustoUnitário,
+                                CustoTotal = newdp.CustoTotal,
+                                PreçoUnitário = newdp.PreçoUnitário,
+                                PreçoTotal = newdp.PreçoTotal,
+                                Faturável = newdp.Faturável,
+                                Registado = true,
+                                FaturaANºCliente = newdp.FaturaANºCliente,
+                                Moeda = newdp.Moeda,
+                                ValorUnitárioAFaturar = newdp.ValorUnitárioAFaturar,
+                                TipoRefeição = newdp.TipoRefeição,
+                                CódGrupoServiço = newdp.CódGrupoServiço,
+                                NºGuiaResíduos = newdp.NºGuiaResíduos,
+                                NºGuiaExterna = newdp.NºGuiaExterna,
+                                DataConsumo = newdp.DataConsumo,
+                                CódServiçoCliente = newdp.CódServiçoCliente,
+                                UtilizadorCriação = User.Identity.Name,
+                                DataHoraCriação = DateTime.Now
+                            };
+
+                            DBProjectMovements.Create(ProjectMovement);
                         }
+
+                        
                     }
                 });
             }
@@ -827,7 +869,7 @@ namespace Hydra.Such.Portal.Controllers
             List<DiárioDeProjeto> dp = new List<DiárioDeProjeto>();
             if (projectNo != null && projectNo != "")
             {
-                dp = DBProjectDiary.GetRegisteredDiary(projectNo).Select(x => new DiárioDeProjeto()
+                dp = DBProjectMovements.GetRegisteredDiary(projectNo).Select(x => new DiárioDeProjeto()
                 {
                     NºProjeto = x.NºProjeto,
                     Data = x.Data,
@@ -900,7 +942,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProjectMovements([FromBody] string ProjectNo)
         {
-            List<ProjectDiaryViewModel> dp = DBProjectDiary.GetRegisteredDiary(ProjectNo).Select(x => new ProjectDiaryViewModel()
+            List<ProjectDiaryViewModel> dp = DBProjectMovements.GetRegisteredDiary(ProjectNo).Select(x => new ProjectDiaryViewModel()
             {
                 LineNo = x.NºLinha,
                 ProjectNo = x.NºProjeto,
@@ -931,7 +973,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo, bool allProjs)
         {
-            List<ProjectDiaryViewModel> dp = DBProjectDiary.GetRegisteredDiaryDp(ProjectNo, User.Identity.Name, allProjs).Select(x => new ProjectDiaryViewModel()
+            List<ProjectDiaryViewModel> dp = DBProjectMovements.GetRegisteredDiaryDp(ProjectNo, User.Identity.Name, allProjs).Select(x => new ProjectDiaryViewModel()
             {
                 LineNo = x.NºLinha,
                 ProjectNo = x.NºProjeto,
@@ -981,7 +1023,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                List<ProjectDiaryViewModel> result = DBProjectDiary.GetAllTableByArea(User.Identity.Name, areaId).Select(x => new ProjectDiaryViewModel()
+                List<ProjectDiaryViewModel> result = DBProjectMovements.GetAllTableByArea(User.Identity.Name, areaId).Select(x => new ProjectDiaryViewModel()
                 {
                     LineNo = x.NºLinha,
                     ProjectNo = x.NºProjeto,
@@ -1067,9 +1109,9 @@ namespace Hydra.Such.Portal.Controllers
                                 //update to Invoiced = true
                                 foreach (var lst in NewList)
                                 {
-                                    DiárioDeProjeto upDate = DBProjectDiary.GetByLineNo(lst.LineNo, User.Identity.Name).FirstOrDefault();
+                                    MovimentosDeProjeto upDate = DBProjectMovements.GetByLineNo(lst.LineNo, User.Identity.Name).FirstOrDefault();
                                     upDate.Faturada = true;
-                                    DBProjectDiary.Update(upDate);
+                                    DBProjectMovements.Update(upDate);
                                 }
                                 InvoiceMessages Messages = new InvoiceMessages();
                                 Messages.ClientNo = lines.InvoiceToClientNo;
@@ -1119,9 +1161,9 @@ namespace Hydra.Such.Portal.Controllers
                                         //update to Invoiced = true
                                         foreach (var lst in NewList)
                                         {
-                                            DiárioDeProjeto upDate = DBProjectDiary.GetByLineNo(lst.LineNo, User.Identity.Name).FirstOrDefault();
+                                            MovimentosDeProjeto upDate = DBProjectMovements.GetByLineNo(lst.LineNo, User.Identity.Name).FirstOrDefault();
                                             upDate.Faturada = true;
-                                            DBProjectDiary.Update(upDate);
+                                            DBProjectMovements.Update(upDate);
 
                                             InvoiceMessages Messages = new InvoiceMessages();
                                             Messages.ClientNo = num_cliente;

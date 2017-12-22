@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Nutrition
 {
-   public class DailyRequisitionProductiveUnitViewModel
+   public class DailyRequisitionProductiveUnitViewModel : ErrorHandler
     {
         public int LineNo { get; set; }
         public int? ProductionUnitNo  { get; set; }

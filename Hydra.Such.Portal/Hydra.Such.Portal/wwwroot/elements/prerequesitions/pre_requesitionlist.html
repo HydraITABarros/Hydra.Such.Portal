@@ -1,0 +1,229 @@
+﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+
+<dom-module id="x-prereqlist">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+            </style>
+        </custom-style>
+
+        <iron-ajax url="/PreRequisicoes/GetPreReqList"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/DeleteContract"
+                   last-response="{{deletedData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_contract"
+                   on-response="_responseDeleteProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <template is="dom-if" if="{{ _permissions.create }}">
+            <template is="dom-if" if="{{ !_disabledCreate }}">
+                <div class="marginSpace">
+                    <paper-button class="btnSave" raised on-tap="_create">Criar Novo</paper-button>
+                </div>
+            </template>
+        </template>
+
+        <vaadin-grid aria-label="PreReqGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="120px">
+                <template class="header">
+                    <vaadin-grid-sorter path="preRequesitionsNo">Nº Pré-Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="preRequesitionsNo" />
+                </template>
+                <template>
+                    {{item.preRequesitionsNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    <vaadin-grid-sorter path="requesitionType">Tipo Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requesitionType" />
+                </template>
+                <template>
+                    {{item.requesitionType}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    <vaadin-grid-sorter path="claimedRequesitionNo">Nº Requisição Reclamada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="claimedRequesitionNo" />
+                </template>
+                <template>
+                    {{item.claimedRequesitionNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="projectNo">Nº Ordem/Projeto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projectNo" />
+                </template>
+                <template>
+                    {{item.projectNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="receptionDate">Data Receção</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="receptionDate" />
+                </template>
+                <template>
+                    {{item.receptionDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px">
+                <template class="header">
+                    <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regionCode" />
+                </template>
+                <template>
+                    {{item.regionCode}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="functionalAreaCode" />
+                </template>
+                <template>
+                    {{item.functionalAreaCode}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsabilityCenterCode" />
+                </template>
+                <template>
+                    {{item.responsabilityCenterCode}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="10%" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnRemove" raised on-tap="_deletePreReq" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-prereqlist',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _areaid: {
+                        type: Number,
+                        value: 0
+                    },
+                    _prereqno: {
+                        type: String,
+                        value: false
+                    },
+                    _disabledCreate: {
+                        type: Boolean,
+                        value: false
+                    }
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "PreRequisicoesDetalhes/?PreRequesitionNo=" + item.preRequesitionsNo;
+                    }
+                },
+                _create: function (item) {
+                    debugger;
+                    if (item != null) {
+                        window.location.href = "PreRequisicoesDetalhes/";
+                    }
+                },
+                ready: function () {
+                    debugger;
+                    this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
+                    this.$.grid_databound_ajax.generateRequest();
+                },
+
+                _responseDeleteProcessor: function (data) {
+                    debugger;
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        this._openToast(this.deletedData.eMessage);
+                        if (this.deletedData.eReasonCode == 1) {
+                            setTimeout(
+                                function () {
+                                    window.location.href = "/";
+                                }, 2500);
+                        } else if (this.deletedData.eReasonCode == 2) {
+                            this._openToastError(this.deletedData.eMessage);
+                        }
+                    }
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _deleteOprotunity: function (data) {
+                    debugger;
+                    var index = this.result.indexOf(data.model.item);
+                    this.result.splice(index, 1);
+                    this.$.ajax_delete_contract.body = JSON.stringify(data.model.item);
+                    this.$.ajax_delete_contract.generateRequest();
+                }
+            });
+        });
+    </script>
+
+</dom-module>

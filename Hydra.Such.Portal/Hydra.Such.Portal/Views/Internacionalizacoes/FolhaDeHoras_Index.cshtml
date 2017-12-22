@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewData["Title"] = "Internacionalizações - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="title">Internacionalizações - Folha de Horas</h1>
+
+<link rel="import" href="/elements/submenu/subMenuItemView.html">
+
+<ul class="list-unstyled">
+    <x-submenu link="@Url.Action("FolhaDeHoras", "Internacionalizacoes")" image="folhadehoras.png" title="Folhas de Horas"></x-submenu>
+    <x-submenu link="@Url.Action("FolhaDeHoras_Validacao", "Internacionalizacoes")" image="folhadehoras.png" title="Validação"></x-submenu>
+    <x-submenu link="@Url.Action("FolhaDeHoras_IntegracaoAjudaCusto", "Internacionalizacoes")" image="folhadehoras.png" title="Integração Aj Custo RH"></x-submenu>
+    <x-submenu link="@Url.Action("FolhaDeHoras_IntegracaoKMS", "Internacionalizacoes")" image="folhadehoras.png" title="Integração KMs RH"></x-submenu>
+    <x-submenu link="@Url.Action("FolhaDeHoras_Historico", "Internacionalizacoes")" image="folhadehoras.png" title="Histórico"></x-submenu>
+</ul>
+
+
+

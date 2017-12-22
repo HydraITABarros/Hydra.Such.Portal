@@ -196,20 +196,21 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult OpenOrderLines( [FromBody] DateTime? date)
+        public JsonResult OpenOrderLines([FromBody] DateTime? date)
         {
-            List<NAVOpenOrderLinesViewModels> result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date).ToList();
+            List<NAVOpenOrderLinesViewModels> result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "").ToList();
             return Json(result);
         }
 
         [HttpPost]
         public JsonResult getOpenOrderLine([FromBody] string numb, string documentNO, DateTime? date)
         {
+            int count = 0;
             NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
             try
-            { 
+            {
                 List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
-                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date).ToList();
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "").ToList();
                 if (result != null && result.Count > 0 &&
                     !string.IsNullOrEmpty(documentNO) &&
                     !string.IsNullOrEmpty(numb))
@@ -222,13 +223,50 @@ namespace Hydra.Such.Portal.Controllers
                         }
                     }
                 }
+                if (result != null && result.Count > 0 &&
+                    string.IsNullOrEmpty(documentNO) &&
+                    !string.IsNullOrEmpty(numb))
+                {
+                    
+                    foreach (NAVOpenOrderLinesViewModels item in result)
+                    {
+                        if (numb == item.Numb)
+                        {
+                            count++;
+                            getorderline = item;
+                        }
+                    }
+                }
+                int t = count;
                 return Json(getorderline);
             }
             catch (Exception e)
             {
                 return Json(getorderline);
             }
-            
+
+        }
+
+        [HttpPost]
+        public JsonResult getOpenOrderLineByHeader([FromBody] string PurchaseHeaderNo)
+        {
+            NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
+            try
+            {
+                List<DDMessage> result = new List<DDMessage>();
+                result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, DateTime.Now, PurchaseHeaderNo).Select(x => new DDMessage()
+                {
+                    id = x.Line_No,
+                    value = x.Description
+                }).ToList(); ;
+                
+                return Json(result);
+            }
+            catch (Exception e)
+            {
+                return Json(getorderline);
+            }
+
         }
 
         [HttpPost]
@@ -252,7 +290,16 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
-
+        [HttpPost]
+        public JsonResult GetRequestStatus()
+        {
+            List<DDMessageString> result = Configurations.EnumerablesFixed.RequisitionStatesEnumData.Select(x => new DDMessageString()
+            {
+                id =Convert.ToString(x.Id),
+                value = x.Value
+            }).ToList();
+            return Json(result);
+        }
         [HttpPost]
         public JsonResult GetPaymentTerms()
         {
@@ -525,7 +572,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetEmployees_FH()
         {
-            List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAVCompanyName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = DBNAV2009Employees.GetAll("", _config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageRelated()
             {
                 id = x.No,
                 value = x.No + " - " + x.Name,
@@ -633,11 +680,12 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetNAVShippingAddressesByClientNo([FromBody] string ClientNo) { 
-            List<DDMessageString> result = DBNAV2017ShippingAddresses.GetByClientNo(ClientNo,_config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
+        public JsonResult GetNAVShippingAddressesByClientNo([FromBody] string ClientNo)
+        {
+            List<DDMessageString> result = DBNAV2017ShippingAddresses.GetByClientNo(ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
             {
                 id = X.Code,
-                value = X.Name + " - " + X.Address +" - " + X.City
+                value = X.Name + " - " + X.Address + " - " + X.City
             }).ToList();
             return Json(result);
         }
@@ -1069,6 +1117,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetOrigemDestinoFH()
+        {
+            List<DDMessageString> result = DBOrigemDestinoFh.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetCodTipoCustoByTipoCusto([FromBody]DDMessage tipoCusto)
         {
 
@@ -1151,6 +1210,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetNAVVendor()
+        {
+            List<DDMessageString> result = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.No_,
+                value = x.Name
+
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetMealTypes()
         {
             List<DDMessage> result = DBMealTypes.GetAll().Select(x => new DDMessage()
@@ -1159,6 +1230,49 @@ namespace Hydra.Such.Portal.Controllers
                 value = x.Descrição
             }).ToList();
 
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetPlaces()
+        {
+            List<DDMessage> result = DBPlaces.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
+
+
+        [HttpPost]
+        public JsonResult GetProducts()
+        {
+            List<DDMessageString> products = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+
+            return Json(products);
+        }
+
+        [HttpPost]
+        public JsonResult GetPurchaseHeader()
+        {
+            List<DDMessageString> Pheader = DBNAV2017PurchaseHeader.GetPurchaseHeader(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.No_
+            }).ToList();
+
+            return Json(Pheader);
+        }
+
+        [HttpPost]
+        public JsonResult GetLocalMarketRegions()
+        {
+            List<EnumDataString> result = EnumerablesFixed.LocalMarketRegions;
             return Json(result);
         }
     }

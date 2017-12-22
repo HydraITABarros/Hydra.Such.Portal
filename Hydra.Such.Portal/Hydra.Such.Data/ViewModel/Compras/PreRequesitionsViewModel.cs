@@ -42,7 +42,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string ReceptionResponsible { get; set; }
         public DateTime? ApprovalDate { get; set; }
         public DateTime? ValidationDate { get; set; }
-        public DateTime? ReceptionDate { get; set; }
+        public string ReceptionDate { get; set; }
         public string FoodProductionUnit { get; set; }
         public bool? NutritionRequesition { get; set; }
         public bool? DetergentsRequisition { get; set; }
@@ -52,7 +52,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string LocalMarketRegion { get; set; }
         public bool? WarrantyRepair { get; set; }
         public bool? EMM { get; set; }
-        public DateTime? DeliveryWarehouseDate { get; set; }
+        public string DeliveryWarehouseDate { get; set; }
         public int? CollectionLocal { get; set; }
         public string CollectionAddress { get; set; }
         public string CollectionAddress2 { get; set; }
@@ -68,5 +68,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string DeliveryContact { get; set; }
         public string ReceptionReceptionResponsible { get; set; }
         public string InvoiceNo { get; set; }
+        public int eReasonCode { get; set; }
+        public string eMessage { get; set; }
     }
 }
