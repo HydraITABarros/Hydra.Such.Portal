@@ -23,11 +23,14 @@ namespace Hydra.Such.Data.ViewModel.Compras
     /// </summary>
     public class PurchFromSupplierLinesDTO
     {
+        //public int? LineId { get; set; }
+        //public int? NAVLineId { get; set; }
         public int? Type { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
         public decimal? QuantityRequired { get; set; }
         public decimal? UnitCost { get; set; }
         public string ProjectNo { get; set; }
+        public string LocationCode { get; set; }
     }
 }

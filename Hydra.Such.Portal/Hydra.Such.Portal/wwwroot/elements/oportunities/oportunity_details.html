@@ -27,88 +27,88 @@
 <dom-module id="x-oportunitydetails">
     <template>
 
-        
+
         <!-- STYLES -->
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
         <style>
-    vaadin-combo-box {
-        margin-top: 0px !important;
-        width: 100% !important;
-    }
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
 
-    vaadin-date-picker {
-        margin-top: 0px !important;
-        width: 100% !important;
-    }
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
 
-    vaadin-text-field {
-        margin-top: 0px !important;
-        width: 100%;
-    }
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
 
-    paper-button {
-        margin-top: 10px;
-    }
+            paper-button {
+                margin-top: 10px;
+            }
 
-    .break_clear {
-        margin-top: 15px;
-        margin-right: 0px !important;
-        margin-left: 0px !important;
-    }
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
 
-    .break_frm {
-        margin-top: 15px;
-    }
+            .break_frm {
+                margin-top: 15px;
+            }
 
-    .label_custom {
-        color: var(--valo-contrast-60pct) !important;
-        font-weight: 500 !important;
-        font-size: var(--valo-font-size-s) !important;
-        margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
-        margin-bottom: var(--valo-space-xs) !important;
-        transition: color 0.4s !important;
-        line-height: 1 !important;
-        font-family: var(--valo-font-family) !important;
-    }
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
 
-    datetime-picker {
-        border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
-        background-color: var(--valo-contrast-5pct);
-        color: var(--valo-contrast-60pct) !important;
-        width: 100%;
-    }
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
 
-    .marginSpace {
-        margin: 0px !important;
-    }
+            .marginSpace {
+                margin: 0px !important;
+            }
 
-    textarea {
-        background-color: #f5f5f5;
-        border: none;
-        border-radius: 3px 4px;
-        align-self: baseline;
-        font-weight: 500;
-    }
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
 
-    textarea:hover {
-        background-color: #eeeeee;
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
 
-    }
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
 
-    textarea:focus {
-        background-color: white;
-        border: none;
-        outline: 1px solid #eeeeee;
-        border-radius:3px 4px;
-    }
-    datetime-picker {
-        --datetime-selected-background: #71BCC1 !important;
-        --datetime-background: #1f3133;
-        --datetime-color: #eeeeee;
-    }
-    </style>
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+        </style>
 
         </style>
 
@@ -146,6 +146,7 @@
         <iron-ajax url="/PopulateDropdowns/GetRequestOrigin" last-response="{{CBRequestOrigin}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsStatus" last-response="{{CBProposalsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContacts" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
 
 
         <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" last-response="{{numeration}}" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -198,6 +199,17 @@
 
             </div>
         </div>
+        <template is="dom-if" if="{{ _showAreas }}">
+            <div class="row">
+                <div class="col-lg-3">
+                    <vaadin-combo-box items="[[LAreas]]" id="areaId" item-value-path="id" item-label-path="value" value="{{ _areaid }}" label="Área" required error-message="Este campo é obrigatório">
+                        <template>
+                            <b>[[item.value]]</b>
+                        </template>
+                    </vaadin-combo-box>
+                </div>
+            </div>
+        </template>
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -235,10 +247,10 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <!--<div class="col-lg-3">
-                                            <vaadin-text-field id="contactNo" name="contactNo" label="Nº Contacto" value="{{data.contactNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                        </div>-->
+                                        <vaadin-text-field id="contactNo" name="contactNo" label="Nº Contacto" value="{{data.contactNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                    </div>-->
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"  on-value-changed="_clientChange">
+                                            <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" on-value-changed="_clientChange">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -361,9 +373,13 @@
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
-                                        
+
                                     </div>
                                     <div class="row break_clear">
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field value="{{data.baseValueProcedure}}" id="mBaseValueProcedure" name="mBaseValueProcedure" pattern="^[1-9]\d*(\.\d+)?$" label="Valor Base Procedimento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        </div>
                                         <div class="col-md-6 ">
                                             <!--<textarea id="mNotes" name="mNotes" label="Notas" resize="true"></textarea>-->
                                             <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
@@ -371,62 +387,61 @@
                                             <!--<vaadin-text-field value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </vaadin-text-field>-->
                                         </div>
                                     </div>
-                                        <div class="row break_clear">
-                                            <div class="panel panel-default">
-                                                <div class="panel-heading">Datas Limite Fases do Processo</div>
-                                                <div class="panel-body">
-                                                    <div class="row break_clear">
-                                                        <div class="col-md-3 ">
-                                                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Limite Esclarecimentos</label>
-                                                            <br />
-                                                            <div class="row">
-                                                                <div class="col-md-8" style="padding-right: 5px;">
-                                                                    <vaadin-date-picker id="mLimitClarificationDate" name="mLimitClarificationDate" value="{{data.limitClarificationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                                </div>
-                                                                <div class="col-md-4" style="padding-left: 0px;">
-                                                                    <vaadin-text-field value="{{data.limitClarificationTime}}" id="mLimitClarificationTime" name="mLimitClarificationTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
-                                                                </div>
+                                    <div class="row break_clear">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">Datas Limite Fases do Processo</div>
+                                            <div class="panel-body">
+                                                <div class="row break_clear">
+                                                    <div class="col-md-3 ">
+                                                        <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Limite Esclarecimentos</label>
+                                                        <br />
+                                                        <div class="row">
+                                                            <div class="col-md-8" style="padding-right: 5px;">
+                                                                <vaadin-date-picker id="mLimitClarificationDate" name="mLimitClarificationDate" value="{{data.limitClarificationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                            </div>
+                                                            <div class="col-md-4" style="padding-left: 0px;">
+                                                                <vaadin-text-field value="{{data.limitClarificationTime}}" id="mLimitClarificationTime" name="mLimitClarificationTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-3 ">
-                                                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Erros e Omissões</label>
-                                                            <br />
-                                                            <div class="row">
-                                                                <div class="col-md-8" style="padding-right: 5px;">
-                                                                    <vaadin-date-picker id="mErrorsOmissionsDate" name="mErrorsOmissionsDate" value="{{data.errorsOmissionsDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                                </div>
-                                                                <div class="col-md-4" style="padding-left: 0px;">
-                                                                    <vaadin-text-field value="{{data.errorsOmissionsTime}}" id="mErrorsOmissionsTime" name="mErrorsOmissionsTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
-                                                                </div>
+                                                    </div>
+                                                    <div class="col-md-3 ">
+                                                        <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Erros e Omissões</label>
+                                                        <br />
+                                                        <div class="row">
+                                                            <div class="col-md-8" style="padding-right: 5px;">
+                                                                <vaadin-date-picker id="mErrorsOmissionsDate" name="mErrorsOmissionsDate" value="{{data.errorsOmissionsDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                            </div>
+                                                            <div class="col-md-4" style="padding-left: 0px;">
+                                                                <vaadin-text-field value="{{data.errorsOmissionsTime}}" id="mErrorsOmissionsTime" name="mErrorsOmissionsTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-3">
-                                                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data Entrega Proposta</label>
-                                                            <br />
-                                                            <vaadin-date-picker id="mProposalDelivery" name="mProposalDelivery" value="{{data.proposalDelivery}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Relatório Final</label>
-                                                            <br />
-                                                            <div class="row">
-                                                                <div class="col-md-8" style="padding-right: 5px;">
-                                                                    <vaadin-date-picker id="mFinalReportDate" name="mFinalReportDate" value="{{data.finalReportDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                                </div>
-                                                                <div class="col-md-4" style="padding-left: 0px;">
-                                                                    <vaadin-text-field value="{{data.finalReportTime}}" id="mFinalReportTime" name="mFinalReportTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
-                                                                </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data Entrega Proposta</label>
+                                                        <br />
+                                                        <vaadin-date-picker id="mProposalDelivery" name="mProposalDelivery" value="{{data.proposalDelivery}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Relatório Final</label>
+                                                        <br />
+                                                        <div class="row">
+                                                            <div class="col-md-8" style="padding-right: 5px;">
+                                                                <vaadin-date-picker id="mFinalReportDate" name="mFinalReportDate" value="{{data.finalReportDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                            </div>
+                                                            <div class="col-md-4" style="padding-left: 0px;">
+                                                                <vaadin-text-field value="{{data.finalReportTime}}" id="mFinalReportTime" name="mFinalReportTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-3">
-                                                            <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Habilitação Documental</label>
-                                                            <br />
-                                                            <div class="row">
-                                                                <div class="col-md-8" style="padding-right: 5px;">
-                                                                    <vaadin-date-picker id="mDocumentationHabilitationDate" name="mDocumentationHabilitationDate" value="{{data.documentationHabilitationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                                </div>
-                                                                <div class="col-md-4" style="padding-left: 0px;">
-                                                                    <vaadin-text-field value="{{data.documentationHabilitationTime}}" id="mDocumentationHabilitationTime" name="mDocumentationHabilitationTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
-                                                                </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label part="label" id="vaadin-text-field-label-21" class="label_custom">Data/Hora Habilitação Documental</label>
+                                                        <br />
+                                                        <div class="row">
+                                                            <div class="col-md-8" style="padding-right: 5px;">
+                                                                <vaadin-date-picker id="mDocumentationHabilitationDate" name="mDocumentationHabilitationDate" value="{{data.documentationHabilitationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                            </div>
+                                                            <div class="col-md-4" style="padding-left: 0px;">
+                                                                <vaadin-text-field value="{{data.documentationHabilitationTime}}" id="mDocumentationHabilitationTime" name="mDocumentationHabilitationTime" disabled="{{ !_permissions.update }}" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"> </vaadin-text-field>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -434,174 +449,174 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
                                 <!--Faturação-->
                                 <!--<div>
-                                    <div class="row break_clear">
-                                        <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBServiceObjects]]" id="mServiceObject" item-value-path="id" item-label-path="value" value="{{data.serviceObject}}" label="Objeto Serviço" disabled="{{ !_permissions.update }}">
-                                                <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
+                                <div class="row break_clear">
+                                    <div class="col-md-3 ">
+                                        <vaadin-combo-box items="[[CBServiceObjects]]" id="mServiceObject" item-value-path="id" item-label-path="value" value="{{data.serviceObject}}" label="Objeto Serviço" disabled="{{ !_permissions.update }}">
+                                            <template>
+                                                <table width="180px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+                                </div>
+                                <div class="row break_clear">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">Requisições Cliente</div>
+                                        <div class="panel-body">
+                                            <template is="dom-if" if="{{ _permissions.update }}">
+                                                <div class="row">
+                                                    <div class="col-lg-2">
+                                                        <vaadin-date-picker label="Inicio Compromisso" id="_CRStartDate" name="_CRStartDate" value="{{_CRStartDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                    </div>
+
+                                                    <div class="col-lg-2">
+                                                        <vaadin-text-field value="{{_CRRequisitionNo}}" id="_CRRequisitionNo" name="_CRRequisitionNo" label="Nº Requisição Cliente" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <vaadin-date-picker label="Data Requisição" id="_CRRequisitionDate" name="_CRRequisitionDate" value="{{_CRRequisitionDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ !_permissions.update }}">
+                                                            <template>
+                                                                <table width="180px">
+                                                                    <tr>
+                                                                        <td width="40%">[[item.id]]</td>
+                                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                                    </tr>
+                                                                </table>
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+                                                </div>
+                                                <div class="row break_frm">
+
+                                                    <div class="col-lg-2">
+                                                        <vaadin-date-picker label="Data Última Fatura" id="_CRLastInvoiceDate" name="_CRLastInvoiceDate" value="{{_CRLastInvoiceDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                    </div>
+                                                    <div class="col-lg-1">
+                                                        <paper-button class="btnSave" raised on-tap="_createClientRequisition">Criar</paper-button>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                             VAADIN GRID  Requisições Cliente
+                                            <vaadin-grid aria-label="ClientRequisitions" id="grid_ClientRequisitions" items="[[data.clientRequisitions]]" class="grid" multi-sort="true" disabled="{{ !_permissions.update }}">
+                                                <vaadin-grid-column>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="startDate">Inicio Compromisso</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="startDate" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-date-picker id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="endDate">Fim Compromisso</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="endDate" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-date-picker id="_CRGridEndDate" name="_CRGridEndDate" value="{{item.endDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="clientRequisitionNo">Nº Requisição Cliente</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="clientRequisitionNo" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field value="{{item.clientRequisitionNo}}" id="_CRGridRequisitionNo" name="_CRGridRequisitionNo" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="requisitionDate">Data Requisição</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="requisitionDate" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-date-picker id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="promiseNo">Nº Compromisso</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="promiseNo" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field value="{{item.promiseNo}}" id="_CRGridPromiseNo" name="_CRGridPromiseNo" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="invoiceGroup" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRGridInvoiceGroup" name="_CRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ !_permissions.update }}">
+                                                            <template>
+                                                                <table width="180px">
+                                                                    <tr>
+                                                                        <td width="40%">[[item.id]]</td>
+                                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                                    </tr>
+                                                                </table>
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="projectNo" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRGridProjectNo" name="_CRGridProjectNo" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}">
+                                                            <template>
+                                                                <paper-icon-item>
+                                                                    <paper-item-body two-line>
+                                                                        <div>[[item.value]]</div>
+                                                                    </paper-item-body>
+                                                                </paper-icon-item>
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="lastInvoiceDate">Data Última Fatura</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="lastInvoiceDate" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-date-picker id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column>
+                                                    <template class="header">
+                                                    </template>
+                                                    <template>
+                                                        <center>
+                                                            <template is="dom-if" if="{{ _permissions.update }}">
+                                                                <paper-button class="btnRemove" raised on-tap="_deleteClientRequisition">Eliminar</paper-button>
+                                                            </template>
+                                                        </center>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
                                         </div>
                                     </div>
-                                    <div class="row break_clear">
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading">Requisições Cliente</div>
-                                            <div class="panel-body">
-                                                <template is="dom-if" if="{{ _permissions.update }}">
-                                                    <div class="row">
-                                                        <div class="col-lg-2">
-                                                            <vaadin-date-picker label="Inicio Compromisso" id="_CRStartDate" name="_CRStartDate" value="{{_CRStartDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                        </div>
-                                                        
-                                                        <div class="col-lg-2">
-                                                            <vaadin-text-field value="{{_CRRequisitionNo}}" id="_CRRequisitionNo" name="_CRRequisitionNo" label="Nº Requisição Cliente" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                                        </div>
-                                                        <div class="col-lg-2">
-                                                            <vaadin-date-picker label="Data Requisição" id="_CRRequisitionDate" name="_CRRequisitionDate" value="{{_CRRequisitionDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                        </div>
-                                                        <div class="col-lg-2">
-                                                            <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
-                                                        </div>
-                                                        <div class="col-lg-2">
-                                                            <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ !_permissions.update }}">
-                                                                <template>
-                                                                    <table width="180px">
-                                                                        <tr>
-                                                                            <td width="40%">[[item.id]]</td>
-                                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                                        </tr>
-                                                                    </table>
-                                                                </template>
-                                                            </vaadin-combo-box>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row break_frm">
-                                                       
-                                                        <div class="col-lg-2">
-                                                            <vaadin-date-picker label="Data Última Fatura" id="_CRLastInvoiceDate" name="_CRLastInvoiceDate" value="{{_CRLastInvoiceDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                        </div>
-                                                        <div class="col-lg-1">
-                                                            <paper-button class="btnSave" raised on-tap="_createClientRequisition">Criar</paper-button>
-                                                        </div>
-                                                    </div>
-                                                </template>
-                                                 VAADIN GRID  Requisições Cliente 
-                                                <vaadin-grid aria-label="ClientRequisitions" id="grid_ClientRequisitions" items="[[data.clientRequisitions]]" class="grid" multi-sort="true" disabled="{{ !_permissions.update }}">
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="startDate">Inicio Compromisso</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="startDate" />
-                                                        </template>
-                                                        <template>
-                                                            <vaadin-date-picker id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="endDate">Fim Compromisso</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="endDate" />
-                                                        </template>
-                                                        <template>
-                                                            <vaadin-date-picker id="_CRGridEndDate" name="_CRGridEndDate" value="{{item.endDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="clientRequisitionNo">Nº Requisição Cliente</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="clientRequisitionNo" />
-                                                        </template>
-                                                        <template>
-                                                            <vaadin-text-field value="{{item.clientRequisitionNo}}" id="_CRGridRequisitionNo" name="_CRGridRequisitionNo" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="requisitionDate">Data Requisição</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="requisitionDate" />
-                                                        </template>
-                                                        <template>
-                                                            <vaadin-date-picker id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="promiseNo">Nº Compromisso</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="promiseNo" />
-                                                        </template>
-                                                        <template>
-                                                            <vaadin-text-field value="{{item.promiseNo}}" id="_CRGridPromiseNo" name="_CRGridPromiseNo" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="invoiceGroup" />
-                                                        </template>
-                                                        <template>
-                                                            <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRGridInvoiceGroup" name="_CRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ !_permissions.update }}">
-                                                                <template>
-                                                                    <table width="180px">
-                                                                        <tr>
-                                                                            <td width="40%">[[item.id]]</td>
-                                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                                        </tr>
-                                                                    </table>
-                                                                </template>
-                                                            </vaadin-combo-box>
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="projectNo" />
-                                                        </template>
-                                                        <template>
-                                                            <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRGridProjectNo" name="_CRGridProjectNo" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}">
-                                                                <template>
-                                                                    <paper-icon-item>
-                                                                        <paper-item-body two-line>
-                                                                            <div>[[item.value]]</div>
-                                                                        </paper-item-body>
-                                                                    </paper-icon-item>
-                                                                </template>
-                                                            </vaadin-combo-box>
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                            <vaadin-grid-sorter path="lastInvoiceDate">Data Última Fatura</vaadin-grid-sorter>
-                                                            <vaadin-grid-filter path="lastInvoiceDate" />
-                                                        </template>
-                                                        <template>
-                                                            <vaadin-date-picker id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                    <vaadin-grid-column>
-                                                        <template class="header">
-                                                        </template>
-                                                        <template>
-                                                            <center>
-                                                                <template is="dom-if" if="{{ _permissions.update }}">
-                                                                    <paper-button class="btnRemove" raised on-tap="_deleteClientRequisition">Eliminar</paper-button>
-                                                                </template>
-                                                            </center>
-                                                        </template>
-                                                    </vaadin-grid-column>
-                                                </vaadin-grid>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>-->
-
+                                </div>
+                            </div>-->
                                 <!--Envio-->
                                 <div>
                                     <div class="row break_clear">
@@ -625,7 +640,7 @@
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.shippingZipCode}}" id="shippingZipCode" name="shippingZipCode" label="Envio-a Cód. Postal" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                         </div>
-                                        
+
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
@@ -702,111 +717,111 @@
                                             <vaadin-checkbox checked="{{data.contractLinesInBilling}}" disabled="{{ !_permissions.update }}">Linhas Contrato em Fact.</vaadin-checkbox>
                                         </div>
                                         <!--<div class="col-md-3  alignPoga">
-                                            <vaadin-checkbox checked="{{data.fixedVowsAgreement}}" disabled="{{ !_permissions.update }}">Contrato Avença Fixa</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-md-3  alignPoga">
-                                            <vaadin-checkbox checked="{{data.variableAvengeAgrement}}" disabled="{{ !_permissions.update }}">Contrato Avença Variável</vaadin-checkbox>
-                                        </div>-->
-                                        </div>
+                                        <vaadin-checkbox checked="{{data.fixedVowsAgreement}}" disabled="{{ !_permissions.update }}">Contrato Avença Fixa</vaadin-checkbox>
+                                    </div>
+                                    <div class="col-md-3  alignPoga">
+                                        <vaadin-checkbox checked="{{data.variableAvengeAgrement}}" disabled="{{ !_permissions.update }}">Contrato Avença Variável</vaadin-checkbox>
+                                    </div>-->
+                                    </div>
                                     <!--<div class="row break_clear">
-                                            <div class="panel panel-default">
-                                                <div class="panel-heading">Textos Fatura</div>
-                                                <div class="panel-body">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">Textos Fatura</div>
+                                        <div class="panel-body">
 
-                                                    <template is="dom-if" if="{{ _permissions.update }}">
-                                                        <div class="row">
-                                                            <div class="col-md-3 ">
-                                                                <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_IRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_IRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ !_permissions.update }}">
-                                                                    <template>
-                                                                        <paper-icon-item>
-                                                                            <paper-item-body two-line>
-                                                                                <div>[[item.value]]</div>
-                                                                            </paper-item-body>
-                                                                        </paper-icon-item>
-                                                                    </template>
-                                                                </vaadin-combo-box>
-                                                            </div>
-                                                            <div class="col-md-3 ">
-                                                                <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_IRProjectNo" name="_IRProjectNo" value="{{_IRProjectNo}}" label="Nº Projeto" disabled="{{ !_permissions.update }}">
-                                                                    <template>
-                                                                        <paper-icon-item>
-                                                                            <paper-item-body two-line>
-                                                                                <div>[[item.value]]</div>
-                                                                            </paper-item-body>
-                                                                        </paper-icon-item>
-                                                                    </template>
-                                                                </vaadin-combo-box>
-                                                            </div>
-                                                            <div class="col-md-3 ">
-                                                                <vaadin-text-field value="{{_IRInvoiceText}}" id="_IRInvoiceText" name="_IRInvoiceText" label="Texto Fatura" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                                            </div>
-                                                            <div class="col-lg-1">
-                                                                <paper-button class="btnSave" raised on-tap="_createInvoiceText">Criar</paper-button>
-                                                            </div>
-                                                        </div>
-                                                    </template>
-
-                                                     VAADIN GRID  Textos Fatura 
-                                                    <vaadin-grid aria-label="InvoiceTexts" id="grid_invoiceTexts" items="[[data.invoiceTexts]]" class="grid" multi-sort="true">
-                                                        <vaadin-grid-column>
-                                                            <template class="header">
-                                                                <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
-                                                                <vaadin-grid-filter path="invoiceGroup" />
-                                                            </template>
+                                            <template is="dom-if" if="{{ _permissions.update }}">
+                                                <div class="row">
+                                                    <div class="col-md-3 ">
+                                                        <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_IRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_IRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ !_permissions.update }}">
                                                             <template>
-                                                                <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_IRGridInvoiceGroup" name="_IRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ !_permissions.update }}">
-                                                                    <template>
-                                                                        <paper-icon-item>
-                                                                            <paper-item-body two-line>
-                                                                                <div>[[item.value]]</div>
-                                                                            </paper-item-body>
-                                                                        </paper-icon-item>
-                                                                    </template>
-                                                                </vaadin-combo-box>
-
+                                                                <paper-icon-item>
+                                                                    <paper-item-body two-line>
+                                                                        <div>[[item.value]]</div>
+                                                                    </paper-item-body>
+                                                                </paper-icon-item>
                                                             </template>
-                                                        </vaadin-grid-column>
-                                                        <vaadin-grid-column>
-                                                            <template class="header">
-                                                                <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
-                                                                <vaadin-grid-filter path="projectNo" />
-                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+                                                    <div class="col-md-3 ">
+                                                        <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_IRProjectNo" name="_IRProjectNo" value="{{_IRProjectNo}}" label="Nº Projeto" disabled="{{ !_permissions.update }}">
                                                             <template>
-                                                                <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_IRGridProjectNo" name="_IRGridProjectNo" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}">
-                                                                    <template>
-                                                                        <paper-icon-item>
-                                                                            <paper-item-body two-line>
-                                                                                <div>[[item.value]]</div>
-                                                                            </paper-item-body>
-                                                                        </paper-icon-item>
-                                                                    </template>
-                                                                </vaadin-combo-box>
+                                                                <paper-icon-item>
+                                                                    <paper-item-body two-line>
+                                                                        <div>[[item.value]]</div>
+                                                                    </paper-item-body>
+                                                                </paper-icon-item>
                                                             </template>
-                                                        </vaadin-grid-column>
-                                                        <vaadin-grid-column>
-                                                            <template class="header">
-                                                                <vaadin-grid-sorter path="invoiceText">Texto Fatura</vaadin-grid-sorter>
-                                                                <vaadin-grid-filter path="invoiceText" />
-                                                            </template>
-                                                            <template>
-                                                                <vaadin-text-field value="{{item.invoiceText}}" id="_IRGridInvoiceText" name="_IRGridInvoiceText" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                                            </template>
-                                                        </vaadin-grid-column>
-                                                        <vaadin-grid-column>
-                                                            <template class="header">
-                                                            </template>
-                                                            <template>
-                                                                <center>
-                                                                    <template is="dom-if" if="{{ _permissions.update }}">
-                                                                        <paper-button class="btnRemove" raised on-tap="_deleteInvoiceText">Eliminar</paper-button>
-                                                                    </template>
-                                                                </center>
-                                                            </template>
-                                                        </vaadin-grid-column>
-                                                    </vaadin-grid>
+                                                        </vaadin-combo-box>
+                                                    </div>
+                                                    <div class="col-md-3 ">
+                                                        <vaadin-text-field value="{{_IRInvoiceText}}" id="_IRInvoiceText" name="_IRInvoiceText" label="Texto Fatura" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                                    </div>
+                                                    <div class="col-lg-1">
+                                                        <paper-button class="btnSave" raised on-tap="_createInvoiceText">Criar</paper-button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>-->
+                                            </template>
+
+                                             VAADIN GRID  Textos Fatura
+                                            <vaadin-grid aria-label="InvoiceTexts" id="grid_invoiceTexts" items="[[data.invoiceTexts]]" class="grid" multi-sort="true">
+                                                <vaadin-grid-column>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="invoiceGroup" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_IRGridInvoiceGroup" name="_IRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ !_permissions.update }}">
+                                                            <template>
+                                                                <paper-icon-item>
+                                                                    <paper-item-body two-line>
+                                                                        <div>[[item.value]]</div>
+                                                                    </paper-item-body>
+                                                                </paper-icon-item>
+                                                            </template>
+                                                        </vaadin-combo-box>
+
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="projectNo" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_IRGridProjectNo" name="_IRGridProjectNo" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}">
+                                                            <template>
+                                                                <paper-icon-item>
+                                                                    <paper-item-body two-line>
+                                                                        <div>[[item.value]]</div>
+                                                                    </paper-item-body>
+                                                                </paper-icon-item>
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="invoiceText">Texto Fatura</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="invoiceText" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field value="{{item.invoiceText}}" id="_IRGridInvoiceText" name="_IRGridInvoiceText" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column>
+                                                    <template class="header">
+                                                    </template>
+                                                    <template>
+                                                        <center>
+                                                            <template is="dom-if" if="{{ _permissions.update }}">
+                                                                <paper-button class="btnRemove" raised on-tap="_deleteInvoiceText">Eliminar</paper-button>
+                                                            </template>
+                                                        </center>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </div>
+                                    </div>
+                                </div>-->
                                 </div>
                             </iron-pages>
                             <div class="marginSpace">
@@ -1594,35 +1609,14 @@
                         type: String,
                         notify: true,
                         value: ""
-                    }
-                    //description: {
-                    //    type: String,
-                    //    value: ""
-                    //},
-                    //clientNo: {
-                    //    type: Number,
-                    //    value: 0
-                    //}
-                    //requestOrigin: {
-                    //    type: Number,
-                    //    value: 0
-                    //},
-                    //requestOriginDescription: {
-                    //    type: String,
-                    //    value: ""
-                    //},
-                    //proposalNo: {
-                    //    type: String,
-                    //    value: ""
-                    //},
-                    //startData: {
-                    //    type: String,
-                    //    value: ""
-                    //}
+                    },
+                    _showAreas: {
+                        type: Boolean,
+                        value: false
+                    },
                 },
                 ready: function () {
                     //GET CONTRACT DATA
-                    debugger;
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo, "ContractType": 1 });
                     this.$.page_databound_ajax.generateRequest();
@@ -1630,6 +1624,9 @@
                     if (this._contractno == "") {
                         this._isCreate = true;
                     }
+
+                    this._showAreas = this._areaid == 4;
+
                 },
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -1640,7 +1637,6 @@
                     this.$.ToastError.open();
                 },
                 _validateData: function () {
-                    debugger;
                     if (this.$.contractNo.validate() &
                         this.$.Description.validate() &
                         this.$.mClients.validate() &
@@ -1693,20 +1689,17 @@
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
-                        debugger;
                         this.data.contractType = 1;
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
                         this.$.page_validator_ajax.generateRequest();
                     }
                 },
                 _update: function () {
-                    debugger;;
                     if (this._validateData()) {
                         this._executeRequest("/Contratos/UpdateContract", this.data)
                     }
                 },
                 _delete: function () {
-                    debugger;;
                     var _dataContract = this.data;
                     var ajax_request = this.$.ajax_delete_contract;
                     bootbox.confirm({
@@ -1758,13 +1751,11 @@
                 //Responses Processors
                 _responseProcessor: function (data) {
                     var self = this;
-                    debugger;
                     //Set AreaId
                     if (this.data.contractNo == "" || this.data.contractNo == null) {
                         this.data.area = this._areaid;
                         this.$.versionNo.value = "1";
                     } else {
-                        debugger;;
                         this.$.shippingAddresses_ajax.body = JSON.stringify(this.data.codeShippingAddress);
                         this.$.shippingAddresses_ajax.generateRequest();
 
@@ -1808,7 +1799,6 @@
                             }
                         }
                         else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
-                            debugger;
                             this._openToast(this.data.eMessage);
                             var contractNo = this.data.contractNo;
                             var versionNo = this.data.versionNo;
@@ -1823,7 +1813,7 @@
                 },
 
                 _createResponseProcessor: function (data) {
-                    debugger;
+                   
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
                         this._openToast("Oportunidade guardada com sucesso.");
@@ -1846,7 +1836,6 @@
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.validateResponse == "") {
-                            debugger;;
                             this._executeRequest("/Contratos/CreateContract", this.data)
                         } else {
                             this._openToastError("Ocorreu um erro desconhecido.");
@@ -1910,7 +1899,6 @@
 
                 //Invoice Texts Functions
                 _createInvoiceText: function () {
-                    debugger;
                     this.data.invoiceTexts.unshift({
                         contractNo: this.data.contractNo,
                         invoiceGroup: this._IRInvoiceGroup,
@@ -1928,7 +1916,6 @@
 
                 //Helpers
                 _executeRequest: function (url, data) {
-                    debugger;;
                     this.data.contractType = 1;
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
@@ -2159,7 +2146,6 @@
 
                 //Parse To Proposal
                 _parseToContract: function (param) {
-                    debugger;
                     if (param != null) {
                         if (this.$.mProposalNo.value != null && this.$.mProposalNo.value == "") {
                             this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 1, "HeaderType": 2, "Parcial": false  });
@@ -2176,7 +2162,6 @@
                 _responseParseToContract: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
-                        debugger;
                         this._openToast("Proposta " + this.numeration + " criada com sucesso");
                         this.$.mProposalNo.value = this.numeration;
                     }

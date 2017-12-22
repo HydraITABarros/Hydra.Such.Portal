@@ -180,6 +180,23 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
+        public static List<Contratos> GetAllByContractType(int ContractType)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Contratos.Where(x => x.TipoContrato == ContractType).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+
         public static List<Contratos> GetAllAvencaFixa()
         {
             try
@@ -282,7 +299,10 @@ namespace Hydra.Such.Data.Logic.Contracts
                 DataHoraModificação = x.UpdateDate != null ? DateTime.Parse(x.UpdateDate) : (DateTime?)null,
                 UtilizadorCriação = x.CreateUser,
                 UtilizadorModificação = x.UpdateUser,
-                Arquivado = x.Filed
+                Arquivado = x.Filed,
+                ValorBaseProcedimento = x.BaseValueProcedure,
+                AudiênciaPrévia = x.PreviousHearing != null ? DateTime.Parse(x.PreviousHearing) : (DateTime?)null ,
+
             };
             
             if (result.DataHoraLimiteEsclarecimentos != null)
@@ -309,11 +329,16 @@ namespace Hydra.Such.Data.Logic.Contracts
             if (result.DataHoraHabilitaçãoDocumental != null)
             {
                 result.DataHoraHabilitaçãoDocumental = result.DataHoraHabilitaçãoDocumental.Value.Date;
-                result.DataHoraHabilitaçãoDocumental = result.DataHoraHabilitaçãoDocumental.Value.Add(TimeSpan.Parse(x.DocumentationHabilitationTime));
+                result.DataHoraHabilitaçãoDocumental = result.DataHoraHabilitaçãoDocumental.Value.Add(TimeSpan.Parse(x.PreviousHearingTime));
                 Console.WriteLine(result.DataHoraHabilitaçãoDocumental.Value.ToString());
             }
 
-
+            if (result.AudiênciaPrévia != null)
+            {
+                result.AudiênciaPrévia = result.AudiênciaPrévia.Value.Date;
+                result.AudiênciaPrévia = result.AudiênciaPrévia.Value.Add(TimeSpan.Parse(x.PreviousHearingTime));
+                Console.WriteLine(result.DataHoraHabilitaçãoDocumental.Value.ToString());
+            }
 
             return result;
 
@@ -412,6 +437,9 @@ namespace Hydra.Such.Data.Logic.Contracts
                 //TotalValue = x.ValorTotalProposta,
                 //ClarificationLimite = x.DataHoraLimiteEsclarecimentos.HasValue ? x.DataHoraLimiteEsclarecimentos.Value.ToString("yyyy-MM-dd HH:mm:ss") : "",
                 //NextInvoicePeriod = x.PróximoPeríodoFact
+                BaseValueProcedure = x.ValorBaseProcedimento,
+                PreviousHearing = x.AudiênciaPrévia.HasValue ? x.AudiênciaPrévia.Value.ToString("yyyy-MM-dd") : "",
+                PreviousHearingTime = x.AudiênciaPrévia.HasValue ? x.AudiênciaPrévia.Value.ToString("HH:mm") : "",
             };
 
             result.ClientName = DBNAV2017Clients.GetClientNameByNo(x.NºCliente, NAVDatabaseName, NAVCompanyName);

@@ -64,6 +64,14 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        
+        [HttpPost]
+        public JsonResult GetProposalsFetchUnit()
+        {
+            List<EnumData> result = EnumerablesFixed.ProposalsFetchUnit;
+            return Json(result);
+        }
+
         [HttpPost]
         public JsonResult GetFeatures()
         {
@@ -205,6 +213,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult getOpenOrderLine([FromBody] string numb, string documentNO, DateTime? date)
         {
+            int count = 0;
             NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
             try
             {
@@ -222,6 +231,21 @@ namespace Hydra.Such.Portal.Controllers
                         }
                     }
                 }
+                if (result != null && result.Count > 0 &&
+                    string.IsNullOrEmpty(documentNO) &&
+                    !string.IsNullOrEmpty(numb))
+                {
+                    
+                    foreach (NAVOpenOrderLinesViewModels item in result)
+                    {
+                        if (numb == item.Numb)
+                        {
+                            count++;
+                            getorderline = item;
+                        }
+                    }
+                }
+                int t = count;
                 return Json(getorderline);
             }
             catch (Exception e)
@@ -313,6 +337,16 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetContractTerminationDeadlineNotice()
+        {
+            List<EnumData> result = EnumerablesFixed.ContractTerminationDeadlineNotice;
+            return Json(result);
+        }
+
+
+
+        
         [HttpPost]
         public JsonResult GetContractPaymentTerms()
         {

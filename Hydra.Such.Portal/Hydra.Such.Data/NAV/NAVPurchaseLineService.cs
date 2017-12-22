@@ -46,6 +46,7 @@ namespace Hydra.Such.Data.NAV
                     Direct_Unit_Cost = purchLine.UnitCost.HasValue ? purchLine.UnitCost.Value : 0,
                     Direct_Unit_CostSpecified = true,
                     Job_No = purchLine.ProjectNo,
+                    Location_Code = purchLine.LocationCode
                 })
                 .ToArray();
 
