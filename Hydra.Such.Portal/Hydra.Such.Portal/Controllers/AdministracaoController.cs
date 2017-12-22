@@ -2078,7 +2078,7 @@ namespace Hydra.Such.Portal.Controllers
                 Postalcode = x.CódigoPostal,
                 Contact=x.Contacto,
                 Responsiblerecept=x.ResponsávelReceção,
-                CreateDate = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
+                CreateDate = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd hh:mm:ss.ff") : "",
                 CreateUser= x.UtilizadorCriação
             }).ToList();
             return Json(result);
