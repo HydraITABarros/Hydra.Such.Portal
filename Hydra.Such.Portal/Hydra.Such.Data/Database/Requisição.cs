@@ -80,6 +80,8 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataRequisição { get; set; }
         public string NºConsultaMercado { get; set; }
         public string NºEncomenda { get; set; }
+        public bool? Orçamento { get; set; }
+        public decimal? ValorEstimado { get; set; }
 
         public Projetos NºProjetoNavigation { get; set; }
         public Viaturas ViaturaNavigation { get; set; }

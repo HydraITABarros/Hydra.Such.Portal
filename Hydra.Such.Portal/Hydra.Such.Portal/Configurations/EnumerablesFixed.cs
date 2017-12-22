@@ -442,6 +442,85 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> ProposalsFetchUnit = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Nutrição"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Tratamento de Roupa"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Tratamento de Resíduos"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Limpeza Hospitalar"
+            },
+            new EnumData()
+            {
+                Id = 5,
+                Value = "Manutenção"
+            },
+            new EnumData()
+            {
+                Id = 6,
+                Value = "Segurança e Controlo Técnico"
+            },
+            new EnumData()
+            {
+                Id = 7,
+                Value = "Projetos e Obras"
+            },
+            new EnumData()
+            {
+                Id = 8,
+                Value = "Energia"
+            },
+            new EnumData()
+            {
+                Id = 9,
+                Value = "Manutenção e Segurança e Controlo Técnico"
+            },
+            new EnumData()
+            {
+                Id = 10,
+                Value = "Manutenção, Segurança e Controlo Técnico e Energia"
+            },
+            new EnumData()
+            {
+                Id = 11,
+                Value = "Manutenção e Energia"
+            },
+            new EnumData()
+            {
+                Id = 12,
+                Value = "Segurança e Controlo Técnico e Energia"
+            },
+            new EnumData()
+            {
+                Id = 13,
+                Value = "Tratamento de Roupa e Tratamento de Resíduos"
+            },
+            new EnumData()
+            {
+                Id = 13,
+                Value = "Tratamento de Resíduos e Limpeza Hospitalar"
+            },
+            new EnumData()
+            {
+                Id = 13,
+                Value = "Outra"
+            },
+        };
+
+
         public static readonly List<EnumData> ProjectStatus = new List<EnumData>(){
             new EnumData()
             {
@@ -1470,6 +1549,55 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 2,
                 Value = "Depósito"
+            }
+        };
+
+        public static readonly List<EnumData> ContractTerminationDeadlineNotice = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "30 dias"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "60 dias"
+            },
+             new EnumData
+            {
+                Id = 3,
+                Value = "180 dias"
+            },
+             new EnumData
+            {
+                Id = 4,
+                Value = "1 ano"
+            },
+             new EnumData
+            {
+                Id = 5,
+                Value = "2 anos"
+            },
+             new EnumData
+            {
+                Id = 6,
+                Value = "3 anos"
+            },
+             new EnumData
+            {
+                Id = 7,
+                Value = "5 anos"
+            },
+             new EnumData
+            {
+                Id = 8,
+                Value = "Outra"
+            },
+             new EnumData
+            {
+                Id = 9,
+                Value = "Nada Referido"
             }
         };
 
