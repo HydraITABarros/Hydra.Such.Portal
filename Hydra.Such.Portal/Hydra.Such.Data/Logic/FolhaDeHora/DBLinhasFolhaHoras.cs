@@ -92,6 +92,78 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
+        public static decimal GetNoTotalKmByFolhaHoraNo(string FolhaHoraNo)
+        {
+            decimal NoTotalKm = 0;
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    List<LinhasFolhaHoras> result = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 1).ToList();
+                    result.ForEach(x =>
+                    {
+                        if (x.Distancia != null)
+                            NoTotalKm = NoTotalKm + (decimal)x.Distancia;
+                    });
+
+
+                    return NoTotalKm;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
+        public static decimal GetCustoTotalKMByFolhaHoraNo(string FolhaHoraNo)
+        {
+            decimal CustoTotalKM = 0;
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    List<LinhasFolhaHoras> result = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 1).ToList();
+                    result.ForEach(x =>
+                    {
+                        if (x.CustoTotal != null)
+                        CustoTotalKM = CustoTotalKM + (decimal)x.CustoTotal;
+                    });
+
+
+                    return CustoTotalKM;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
+        public static decimal GetCustoTotalAjudaCustoByFolhaHoraNo(string FolhaHoraNo)
+        {
+            decimal CustoTotalAjudaCusto = 0;
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    List<LinhasFolhaHoras> result = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 2).ToList();
+                    result.ForEach(x =>
+                    {
+                        if (x.CustoTotal != null)
+                            CustoTotalAjudaCusto = CustoTotalAjudaCusto + (decimal)x.CustoTotal;
+                    });
+
+
+                    return CustoTotalAjudaCusto;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
         public static List<LinhasFolhaHoras> GetAll()
         {
             try
@@ -146,13 +218,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static bool DeletePercurso(int PercursoNo)
+        public static bool DeletePercurso(string NoFolhaHoras, int PercursoNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.LinhasFolhaHoras.RemoveRange(ctx.LinhasFolhaHoras.Where(x => x.NoLinha == PercursoNo));
+                    ctx.LinhasFolhaHoras.RemoveRange(ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == NoFolhaHoras && x.NoLinha == PercursoNo));
                     ctx.SaveChanges();
                 }
 

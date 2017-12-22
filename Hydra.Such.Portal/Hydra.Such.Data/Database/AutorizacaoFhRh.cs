@@ -12,8 +12,8 @@ namespace Hydra.Such.Data.Database
         public string ValidadorRh1 { get; set; }
         public string ValidadorRh2 { get; set; }
         public string ValidadorRh3 { get; set; }
-        public string ValidadorRhkm1 { get; set; }
-        public string ValidadorRhkm2 { get; set; }
+        public string ValidadorRhKm1 { get; set; }
+        public string ValidadorRhKm2 { get; set; }
         public string CriadoPor { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public string AlteradoPor { get; set; }

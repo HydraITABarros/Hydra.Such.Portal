@@ -7,5 +7,11 @@
     "jquery-validation": "1.14.0",
     "jquery-validation-unobtrusive": "3.2.6",
     "polymer": "v2.1.0"
+  },
+  "resolutions": {
+    "webcomponentsjs": "^v1.0.19",
+    "iron-selector": "^2.0.0",
+    "iron-a11y-keys-behavior": "^2.0.0",
+    "polymer": "^2.0"
   }
 }

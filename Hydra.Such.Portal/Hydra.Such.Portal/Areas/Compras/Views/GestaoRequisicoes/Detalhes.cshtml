@@ -42,9 +42,7 @@
     <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
     <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
        
-        <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_requestModels"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i>Linhas de Requisição</paper-button>
-        </div><!--on-response="_gridListResponse"-->
+      
         <h2 class="separator">Requisições</h2>
         <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
             <vaadin-grid-column width="160px" resizable>
@@ -66,38 +64,42 @@
                     [[ _parsestate(item.state)]]
                 </template>
             </vaadin-grid-column>
-
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="urgent">Urgente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="urgent" />
+                    <p class="alignCenter">Urgente</p>
+                    <vaadin-grid-filter path="urgent" value="[[_filterActive]]">
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>
                 </template>
                 <template>
-                    {{item.urgent}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="buyCash">Compra a Dinheiro</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="buyCash" />
-                </template>
-                <template>
-                    {{item.buyCash}}
+                    <vaadin-checkbox checked="{{item.urgent}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="alreadyPerformed">Trabalho já executado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="alreadyPerformed" />
+                    <p class="alignCenter">Compra a Dinheiro</p>
+                    <vaadin-grid-filter path="buyCash" value="[[_filterActive]]">
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>
                 </template>
                 <template>
-                    {{item.alreadyPerformed}}
+                    <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <p class="alignCenter">Faturável</p>
+                    <p class="alignCenter">Trabalho já executado</p>
+                    <vaadin-grid-filter path="alreadyPerformed" value="[[_filterActive]]">
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.alreadyPerformed}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <p class="alignCenter">Requisição Nutrição</p>
                     <vaadin-grid-filter path="requestNutrition" value="[[_filterActive]]">
                         <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
                     </vaadin-grid-filter>
@@ -115,14 +117,15 @@
                     {{item.budget}}
                 </template>
             </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable>
+        <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="localMarket">Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="localMarket" />
+                    <p class="alignCenter">Mercado Local</p>
+                    <vaadin-grid-filter path="localMarket" value="[[_filterActive]]">
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>
                 </template>
                 <template>
-                    {{item.localMarket}}
+                    <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
@@ -140,10 +143,10 @@
                     <vaadin-grid-filter path="localMarketDate" />
                 </template>
                 <template>
-                    {{item.localMarketDate}}
+                    [[ _parseDateFormat(item.localMarketDate)]]
                 </template>
             </vaadin-grid-column>
-        <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable>
             <template class="header">
                 <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
                 <vaadin-grid-filter path="regionCode" />
@@ -152,7 +155,7 @@
                 [[ _parseregion(item.regionCode)]]
             </template>
         </vaadin-grid-column>
-        <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable>
             <template class="header">
                 <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
                 <vaadin-grid-filter path="functionalAreaCode" />
@@ -161,7 +164,7 @@
                 [[ _parseArea(item.functionalAreaCode)]]
             </template>
         </vaadin-grid-column>
-        <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable>
             <template class="header">
                 <vaadin-grid-sorter path="centerResponsibilityCode">Código Centro Responsabilidade</vaadin-grid-sorter>
                 <vaadin-grid-filter path="centerResponsibilityCode" />
@@ -199,20 +202,24 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="stockReplacement">Reposição Stock</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="stockReplacement" />
+                    <p class="alignCenter">Reposição Stock</p>
+                    <vaadin-grid-filter path="stockReplacement" value="[[_filterActive]]">
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>
                 </template>
                 <template>
-                    {{item.stockReplacement}}
+                    <vaadin-checkbox checked="{{item.stockReplacement}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="reclamation">Reclamação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="reclamation" />
+                    <p class="alignCenter">Reclamação</p>
+                    <vaadin-grid-filter path="reclamation" value="[[_filterActive]]">
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>
                 </template>
                 <template>
-                    {{item.reclamation}}
+                    <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
@@ -230,7 +237,7 @@
                     <vaadin-grid-filter path="requisitionDate" />
                 </template>
                 <template>
-                    {{item.requisitionDate}}
+                    [[ _parseDateFormat(item.requisitionDate)]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable>
@@ -293,9 +300,6 @@
                 }
                 this.Flag = true;
             },
-            _requestModels: function () {
-                window.location.href = "/Compras/GestaoRequisicoes/LinhasRequisicao";
-            },
             _parsestate:function (param1) {
                 if (param1 != undefined) {
                     if (this.resultstatus != null) {
@@ -314,7 +318,6 @@
                 }
             },
             _parseregion: function (param) {
-                debugger;
                 if (param != undefined && this.RegionData != undefined ) {
                     var sel = this.RegionData.find(x => x.id == param);
                     if (sel != undefined) {
@@ -325,7 +328,6 @@
 
             },
             _parseArea: function (param) {
-                debugger;
                 if (param != undefined && this.FunctionalAreaCodeData != undefined ) {
                     var sel = this.FunctionalAreaCodeData.find(x => x.id == param);
                     if (sel != undefined) {
@@ -335,8 +337,16 @@
                 return "";
 
             },
+            _parseDateFormat: function (date) {
+                if (date != null && date != "") {
+                    var Date = date.split("T");
+                    if (Date != "" && Date != undefined) {
+                        var x = Date[0].split("-");
+                        return x[2] + "-" + x[1] + "-" + x[0];
+                    }
+                }
+            },
             _parsecenterRespons: function (param) {
-                debugger;
                 if (param != undefined && this.ResponsabilityCenterData != undefined ) {
                     var sel = this.ResponsabilityCenterData.find(x => x.id == param);
                     if (sel != undefined) {

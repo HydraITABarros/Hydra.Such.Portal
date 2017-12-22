@@ -84,25 +84,33 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
-        public static Requisição Update(Requisição ObjectToUpdate)
+        public static Requisição Update(Requisição objectToUpdate, bool updateLines = false)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ObjectToUpdate.DataHoraModificação = DateTime.Now;
-                    ctx.Requisição.Update(ObjectToUpdate);
+                    if (updateLines && objectToUpdate.LinhasRequisição != null)
+                        DBRequestLine.Update(objectToUpdate.LinhasRequisição.ToList(), ctx);
+                    
+                    objectToUpdate.DataHoraModificação = DateTime.Now;
+                    ctx.Requisição.Update(objectToUpdate);
                     ctx.SaveChanges();
                 }
 
-                return ObjectToUpdate;
+                return objectToUpdate;
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
+
+        public static Requisição UpdateHeaderAndLines(Requisição item)
+        {
+            return Update(item, true);
+        }
+
         public static bool Delete(Requisição ObjectToDelete)
         {
             try
@@ -152,6 +160,21 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
+
+        public static List<Requisição> GetReqByUserAreaStatus(string UserName, int AreaId, int Status)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição.Where(x => x.UtilizadorCriação == UserName && x.Área == AreaId && x.Estado == Status).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         #region Parse Utilities
         public static RequisitionViewModel ParseToViewModel(this Requisição item)
         {
@@ -181,7 +204,7 @@ namespace Hydra.Such.Data.Logic.Request
                     Comments = item.Observações,
                     RequestModel = item.ModeloDeRequisição,
                     CreateUser = item.UtilizadorCriação,
-                    CreateDate = item.DataHoraCriação,
+                    CreateDate = !item.DataHoraCriação.HasValue ? "" : item.DataHoraCriação.Value.ToString("yyyy-MM-dd HH:mm:ss"),
                     UpdateUser = item.UtilizadorModificação,
                     UpdateDate = item.DataHoraModificação,
                     RelatedSearches = item.CabimentoOrçamental,
@@ -206,7 +229,7 @@ namespace Hydra.Such.Data.Logic.Request
                     LocalMarketRegion = item.RegiãoMercadoLocal,
                     RepairWithWarranty = item.ReparaçãoComGarantia,
                     Emm = item.Emm,
-                    WarehouseDeliveryDate = item.DataEntregaArmazém,
+                    WarehouseDeliveryDate = !item.DataEntregaArmazém.HasValue ? "" : item.DataEntregaArmazém.Value.ToString("yyyy-MM-dd"),
                     LocalCollection = item.LocalDeRecolha,
                     CollectionAddress = item.MoradaRecolha,
                     Collection2Address = item.Morada2Recolha,
@@ -226,7 +249,7 @@ namespace Hydra.Such.Data.Logic.Request
                     // EstimatedValue = item.,
                     MarketInquiryNo = item.NºConsultaMercado,
                     OrderNo = item.NºEncomenda,
-                    RequisitionDate = item.DataRequisição,
+                    RequisitionDate = !item.DataRequisição.HasValue ? "" : item.DataRequisição.Value.ToString("yyyy-MM-dd"),
                     //dimension = item.,
                     //Budget = item.,
                     Lines = item.LinhasRequisição.ToList().ParseToViewModel(),
@@ -272,7 +295,7 @@ namespace Hydra.Such.Data.Logic.Request
                     Observações = item.Comments,
                     ModeloDeRequisição = item.RequestModel,
                     UtilizadorCriação = item.CreateUser,
-                    DataHoraCriação = item.CreateDate,
+                    DataHoraCriação = string.IsNullOrEmpty(item.CreateDate) ? (DateTime?)null : DateTime.Parse(item.CreateDate),
                     UtilizadorModificação = item.UpdateUser,
                     DataHoraModificação = item.UpdateDate,
                     CabimentoOrçamental = item.RelatedSearches,
@@ -297,7 +320,7 @@ namespace Hydra.Such.Data.Logic.Request
                     RegiãoMercadoLocal = item.LocalMarketRegion,
                     ReparaçãoComGarantia = item.RepairWithWarranty,
                     Emm = item.Emm,
-                    DataEntregaArmazém = item.WarehouseDeliveryDate,
+                    DataEntregaArmazém = string.IsNullOrEmpty(item.WarehouseDeliveryDate) ? (DateTime?)null : DateTime.Parse(item.WarehouseDeliveryDate),
                     LocalDeRecolha = item.LocalCollection,
                     MoradaRecolha = item.CollectionAddress,
                     Morada2Recolha = item.Collection2Address,
@@ -317,9 +340,10 @@ namespace Hydra.Such.Data.Logic.Request
                     // EstimatedValue = item.,
                     NºConsultaMercado = item.MarketInquiryNo,
                     NºEncomenda = item.OrderNo,
-                    DataRequisição = item.RequisitionDate,
+                    DataRequisição = item.RequisitionDate != null ? DateTime.Parse(item.RequisitionDate) : (DateTime?)null,
                     //dimension = item.,
                     //Budget = item.,
+                    LinhasRequisição = item.Lines.ParseToDB(),
                 };
             }
             return null;

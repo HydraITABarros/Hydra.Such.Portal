@@ -56,6 +56,30 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
+        public static decimal GetCustoTotalHorasByFolhaHoraNo(string FolhaHoraNo)
+        {
+            decimal CustoTotalHoras = 0;
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    List<MãoDeObraFolhaDeHoras> result = DBMaoDeObraFolhaDeHoras.GetAll().Where(x => x.NºFolhaDeHoras == FolhaHoraNo).ToList();
+                    result.ForEach(x =>
+                    {
+                        if (x.PreçoTotal != null)
+                        CustoTotalHoras = CustoTotalHoras + (decimal)x.PreçoTotal;
+                    });
+
+
+                    return CustoTotalHoras;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
         public static MãoDeObraFolhaDeHoras Create(MãoDeObraFolhaDeHoras ObjectToCreate)
         {
             try
@@ -95,13 +119,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static bool Delete(int MaoDeObraNo)
+        public static bool Delete(string FolhaDeHoras, int MaoDeObraLinha)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.MãoDeObraFolhaDeHoras.RemoveRange(ctx.MãoDeObraFolhaDeHoras.Where(x => x.NºLinha == MaoDeObraNo));
+                    ctx.MãoDeObraFolhaDeHoras.RemoveRange(ctx.MãoDeObraFolhaDeHoras.Where(x => x.NºFolhaDeHoras == FolhaDeHoras && x.NºLinha == MaoDeObraLinha));
                     ctx.SaveChanges();
                 }
 

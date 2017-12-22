@@ -10,7 +10,21 @@ namespace Hydra.Such.Data.Logic.Nutrition
     public static class DBShoppingNecessity
     {
         #region CRUD
-      
+        public static List<DiárioRequisiçãoUnidProdutiva> GetAllById(int NºUnidadeProdutiva)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.DiárioRequisiçãoUnidProdutiva.Where(x => x.NºUnidadeProdutiva == NºUnidadeProdutiva).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
 
         public static List<DiárioRequisiçãoUnidProdutiva> GetAll()
         {
