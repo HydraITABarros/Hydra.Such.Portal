@@ -1959,8 +1959,8 @@ namespace Hydra.Such.Portal.Controllers
                 autorizacao.ValidadorRh1 = data.ValidadorRH1;
                 autorizacao.ValidadorRh2 = data.ValidadorRH2;
                 autorizacao.ValidadorRh3 = data.ValidadorRH3;
-                autorizacao.ValidadorRhKm1 = data.ValidadorRHKM1;
-                autorizacao.ValidadorRhKm2 = data.ValidadorRHKM2;
+                autorizacao.ValidadorRhkm1 = data.ValidadorRHKM1;
+                autorizacao.ValidadorRhkm2 = data.ValidadorRHKM2;
                 autorizacao.CriadoPor = User.Identity.Name;
                 autorizacao.DataHoraCriação = DateTime.Now;
 
@@ -2107,12 +2107,12 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        [HttpPost]
-        public JsonResult GetDistanciaFH()
-        {
-            List<DistanciaFHViewModel> result = DBDistanciaFh.ParseListToViewModel(DBDistanciaFh.GetAll());
-            return Json(result);
-        }
+        //[HttpPost]
+        //public JsonResult GetDistanciaFH()
+        //{
+        //    //List<DistanciaFHViewModel> result = DBDistanciaFh.ParseListToViewModel(DBDistanciaFh.GetAll());
+        //    return Json(result);
+        //}
 
         [HttpPost]
         public JsonResult CreateDistanciaFH([FromBody] DistanciaFHViewModel data)
@@ -2128,8 +2128,8 @@ namespace Hydra.Such.Portal.Controllers
                 DistanciaFH.CriadoPor = User.Identity.Name;
                 DistanciaFH.DataHoraCriação = DateTime.Now;
 
-                var dbCreateResult = DBDistanciaFh.Create(DistanciaFH);
-                result = dbCreateResult != null ? true : false;
+                //var dbCreateResult = DBDistanciaFh.Create(DistanciaFH);
+                //result = dbCreateResult != null ? true : false;
             }
             catch (Exception ex)
             {
@@ -2138,35 +2138,35 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        [HttpPost]
-        public JsonResult DeleteDistanciaFH([FromBody] DistanciaFHViewModel data)
-        {
-            var result = DBDistanciaFh.Delete(DBDistanciaFh.ParseToDB(data));
-            return Json(result);
-        }
+        //[HttpPost]
+        //public JsonResult DeleteDistanciaFH([FromBody] DistanciaFHViewModel data)
+        //{
+        //    //var result = DBDistanciaFh.Delete(DBDistanciaFh.ParseToDB(data));
+        //    //return Json(result);
+        //}
 
-        [HttpPost]
-        public JsonResult UpdateDistanciaFH([FromBody] List<DistanciaFHViewModel> data)
-        {
-            List<DistanciaFh> results = DBDistanciaFh.GetAll();
+        //[HttpPost]
+        //public JsonResult UpdateDistanciaFH([FromBody] List<DistanciaFHViewModel> data)
+        //{
+        //    List<DistanciaFh> results = DBDistanciaFh.GetAll();
 
-            data.RemoveAll(x => DBDistanciaFh.ParseListToViewModel(results).Any(
-                u =>
-                    u.Origem == x.Origem &&
-                    u.Destino == x.Destino &&
-                    u.Distancia == x.Distancia &&
-                    u.CriadoPor == x.CriadoPor &&
-                    u.DataHoraCriacao == x.DataHoraCriacao
-            ));
+        //    data.RemoveAll(x => DBDistanciaFh.ParseListToViewModel(results).Any(
+        //        u =>
+        //            u.Origem == x.Origem &&
+        //            u.Destino == x.Destino &&
+        //            u.Distancia == x.Distancia &&
+        //            u.CriadoPor == x.CriadoPor &&
+        //            u.DataHoraCriacao == x.DataHoraCriacao
+        //    ));
 
-            data.ForEach(x =>
-            {
-                DistanciaFh toUpdate = DBDistanciaFh.ParseToDB(x);
-                toUpdate.AlteradoPor = User.Identity.Name;
-                DBDistanciaFh.Update(toUpdate);
-            });
-            return Json(data);
-        }
+        //    data.ForEach(x =>
+        //    {
+        //        DistanciaFh toUpdate = DBDistanciaFh.ParseToDB(x);
+        //        toUpdate.AlteradoPor = User.Identity.Name;
+        //        DBDistanciaFh.Update(toUpdate);
+        //    });
+        //    return Json(data);
+        //}
 
         #endregion
 

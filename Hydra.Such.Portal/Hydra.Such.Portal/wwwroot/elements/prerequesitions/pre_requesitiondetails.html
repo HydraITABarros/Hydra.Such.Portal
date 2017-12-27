@@ -141,7 +141,9 @@
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{CBPurchaseHeader}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" on-response="_responsePurchaseLinesProcessor" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
+        <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         
 
@@ -1318,7 +1320,7 @@
                             }
                         },
                         _createResponseProcessor: function () {
-                            
+                           
                             if (this.data.eReasonCode == 1) {
                                 this._isCreate = false;
                                 this._openToast("Contrato criado com sucesso.");
@@ -1336,12 +1338,13 @@
 
                         _responseDeleteProcessor: function (data) {
                             var self = this;
+                            debugger;
                             if (data.detail.status === 200) {
                                 this._openToast(this.deletedData.eMessage);
                                 if (this.deletedData.eReasonCode == 1) {
                                     setTimeout(
                                         function () {
-                                            window.location.href = "/";
+                                            window.location.href = "../../Compras/PreRequisicoesLista";
                                         }, 2500);
                                 } else if (this.deletedData.eReasonCode == 2) {
                                     this._openToastError(this.deletedData.eMessage);
@@ -1450,7 +1453,8 @@
 
                         _clFormatOpenOrderLineNo: function (param) {
                             if (param != undefined) {
-                                var sel = this.CBPurchaseLine.find(x => x.id == param);
+                                debugger;
+                                var sel = this.CBPurchaseLineGrid.find(x => x.id == param);
                                 if (sel != undefined) {
                                     return sel.value;
                                 }
@@ -1524,7 +1528,14 @@
                                 if (sel != undefined) {
 
                                     this.dataLines.lines.find(x => x == item).selected = true;
+
+                                    var PurchaseNo = item.openOrderNo;
+                                    this.$.purchaselinesgrid_ajax.body = JSON.stringify(PurchaseNo);
+                                    this.$.purchaselinesgrid_ajax.generateRequest();
+
                                     this.$.grid_prereqlines.clearCache();
+
+
                                 }
                             }
                         },
@@ -1554,16 +1565,23 @@
                         },
 
                         _PopulatePurchaseLinesGrid: function (data) {
-                            
+                            debugger;
                             var PurchaseNo = data.model.item.openOrderNo;
                             this.dataLines.openOrderLineNo = "";
                             this.$.purchaselinesgrid_ajax.body = JSON.stringify(PurchaseNo);
                             this.$.purchaselinesgrid_ajax.generateRequest();
                         },
 
-                        //_responsePurchaseLinesProcessor: function (data) {
-                        //    if()
-                        //},
+                        _responsePurchaseLinesProcessor: function (data) {
+                            debugger;
+                            if (this.CBPurchaseLineGrid != null) {
+                                var oSel = this.dataLines.lines.find(x => x.selected);
+                                if (oSel != undefined) {
+                                    oSel.openOrderLineNo = this.CBPurchaseLineGrid;
+                                }
+                                this.$.grid_prereqlines.clearCache();
+                            }
+                        },
 
                         _SaveLines: function (e) {
                             
