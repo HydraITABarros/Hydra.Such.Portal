@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel.Approvals;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,6 +78,46 @@ namespace Hydra.Such.Data.Logic.Approvals
 
                 return null;
             }
+        }
+
+        public static bool DeleteFromMovementExcept(int movementNo, string user)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.UtilizadoresMovimentosDeAprovação.RemoveRange(ctx.UtilizadoresMovimentosDeAprovação.Where(y => y.NºMovimento == movementNo && y.Utilizador != user));
+                    ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+        #endregion
+
+
+
+        #region Parses
+        public static UserApprovalMovementViewModel ParseToViewModel(UtilizadoresMovimentosDeAprovação x)
+        {
+            return new UserApprovalMovementViewModel()
+            {
+                MovementNo = x.NºMovimento,
+                UserId = x.Utilizador
+            };
+        }
+        public static UtilizadoresMovimentosDeAprovação ParseToDatabase(UserApprovalMovementViewModel x)
+        {
+            return new UtilizadoresMovimentosDeAprovação()
+            {
+                NºMovimento = x.MovementNo,
+                Utilizador = x.UserId
+            };
         }
         #endregion
     }
