@@ -634,14 +634,14 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
-                _validateUserImputForHeader() {
+                _validateUserInputForHeader() {
                     if (true) {
                         return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
-                _validateUserImputForLine() {
+                _validateUserInputForLine() {
                     if (this.$.lineQuantity.validate()) {
                         return true;
                     }
@@ -651,14 +651,14 @@
 
                 //CRUD
                 _createReqTemplate: function () {
-                    if (this._validateUserImputForHeader()) {
+                    if (this._validateUserInputForHeader()) {
                         this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/CreateReqTemplate"
                         this.$.reqTemplateHeader_databound.body = JSON.stringify(this.data);
                         this.$.reqTemplateHeader_databound.generateRequest();
                     }
                 },
                 _updateReqTemplate: function () {
-                    if (this._validateUserImputForHeader()) {
+                    if (this._validateUserInputForHeader()) {
                         this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/UpdateReqTemplate";
                         this.$.reqTemplateHeader_databound.body = JSON.stringify(this.data);
                         this.$.reqTemplateHeader_databound.generateRequest();
@@ -733,7 +733,7 @@
                     }
                 },
                 _createReqTemplateLine: function () {
-                    if (this._validateUserImputForLine()) {
+                    if (this._validateUserInputForLine()) {
 
                         var newReqTemplateLine = {
                             requisitionTemplateId: this.data.requisitionTemplateId,
