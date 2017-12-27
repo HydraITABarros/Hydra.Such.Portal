@@ -119,14 +119,14 @@
             }
         </style>
 
-        <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{CBLocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetViaturas" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetNAVJobNo" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetNAVVendor" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{CBLocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <!--<iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <!--<iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <!--<iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <!--<iron-ajax url="/PopulateDropdowns/GetViaturas" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <!--<iron-ajax url="/PopulateDropdowns/GetNAVJobNo" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <!--<iron-ajax url="/PopulateDropdowns/GetNAVVendor" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <!--<iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetProducts" last-response="{{CBItems}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Compras/GestaoRequisicoes/GetRequisition"
@@ -150,6 +150,30 @@
                    id="validaterequisition_datasource"
                    on-response="_validateRequisitionResponse"
                    content-type="application/json"></iron-ajax>
+
+
+
+        <iron-ajax url="/Compras/GestaoRequisicoes/GridRequestLineValues" id="ajax_getdata" auto last-response="{{data}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/CreateAndDeleteRequestLine" id="ajax_updatedata" last-response="{{data}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/GetApprovedRequisitions" id="ajax_getgrid" auto last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Viaturas/GetList" id="grid_databound_ajax" last-response="{{vehicleresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Projetos/GetAllProjectDiary" id="grid_GetAllProject_ajax" last-response="{{projectresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations" id="grid_Locations_ajax" last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" id="grid_unitofmeasure_ajax" last-response="{{unitofmeasureresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetrequestTypes" id="grid_requesttypes_ajax" last-response="{{requesttypesresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsCode" auto id="ajax_code_options" last-response="{{cboProdCode}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/getSupplier" id="ajax_supplier_options" last-response="{{cboSupplier}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllClients" id="ajax_clients_options" last-response="{{cboClients}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetEmployees" id="ajax_employees_options" last-response="{{cboEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{CBLocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVJobNo" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVVendor" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/GetRequisition" last-response="{{Requisition}}" on-response="_responsePlaceDataCollection" method="post" handle-as="json" id="requisition_datasource" content-type="application/json"></iron-ajax>
 
 
         <div class="row break_frm">
@@ -792,126 +816,6 @@
                     //debugger;
                     return this._requisitionstatus == this._requisitionstatesenum.Approved ? true : !this._permissions.update;
                 },
-                _onSearchTermChanged: function (value) {
-                    var id = this.$.requisitionType.value;
-                    if (id != "" && id > 0) {
-                        this.$.ajax_cbReqType.body = JSON.stringify(id);
-                        this.$.ajax_cbReqType.generateRequest();
-                    }
-                },
-                _responseVehicleFleetBool: function (data) {
-                    var self = this;
-                    if (data.detail.status === 200) {
-                        debugger;
-                        var BoolFleet = this.BooleanVehicleFleet;
-                        if (BoolFleet == true) {
-                            this.$.VehicleDiv.hidden = false;
-                        } else {
-                            this.$.VehicleDiv.hidden = true;
-                        }
-                    }
-                },
-
-                _onSearchLocalDataCollection: function (e) {
-                    var placeId = this.$.CollectionLocal.value;
-                    if (placeId != "" && placeId > 0) {
-                        this.$.ajax_getPlaceData.body = JSON.stringify(placeId);
-                        this.$.ajax_getPlaceData.generateRequest();
-                    }
-                },
-
-                _responsePlaceDataCollection: function (e) {
-                    if (e.detail.status === 200) {
-                        //this.$.CollectionAddress.value = this.PlaceDataCollection.address;
-                        //this.$.CollectionPostalCode.value = this.PlaceDataCollection.postalcode;
-                        //this.$.CollectionLocality.value = this.PlaceDataCollection.locality;
-                        //this.$.CollectionContact.value = this.PlaceDataCollection.contact;
-                        //this.$.CollectionReceptionResponsible.value = this.PlaceDataCollection.responsiblerecept;
-                    }
-                },
-
-                _onSearchLocalDataDelivery: function (e) {
-                    var placeId = this.$.DeliveryLocal.value;
-                    if (placeId != "" && placeId > 0) {
-                        this.$.ajax_getPlaceDataDelivery.body = JSON.stringify(placeId);
-                        this.$.ajax_getPlaceDataDelivery.generateRequest();
-                    }
-                },
-
-                _responsePlaceDataDelivery: function (e) {
-                    if (e.detail.status === 200) {
-                        this.$.DeliveryAddress.value = this.PlaceDataDelivery.address;
-                        this.$.DeliveryPostalCode.value = this.PlaceDataDelivery.postalcode;
-                        this.$.DeliveryLocality.value = this.PlaceDataDelivery.locality;
-                        this.$.ReceptionReceptionResponsible.value = this.PlaceDataDelivery.responsiblerecept;
-                    }
-                },
-
-                //CRUDS
-                _create: function () {
-                    debugger;
-                    this.$.page_validator_ajax.body = JSON.stringify(this.data);
-                    this.$.page_validator_ajax.generateRequest();
-                },
-
-                _responseValidatorProcessor: function (data) {
-                    var self = this;
-                    if (data.detail.status === 200) {
-                        if (this.validateResponse == "") {
-                            this._executeRequest("/PreRequisicoes/CreatePrerequisition", this.data)
-                        } else {
-                            this._openToastError("Ocorreu um erro desconhecido.");
-                        }
-                    }
-                },
-
-                _responseProcessor: function (data) {
-
-                    if (data.detail.status === 200) {
-                        //if (data.detail.url.indexOf("GetContractDetails") !== -1) {
-                        //    if (this.data.contractNo != "") {
-                        //        this.$.serviceclients_ajax.body = JSON.stringify(this.data.clientNo);
-                        //        this.$.serviceclients_ajax.generateRequest();
-
-                        //        this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
-                        //        this.$.contractLines_databound_ajax.generateRequest();
-                        //    }
-                        //}
-                        if (data.detail.url.indexOf("Create") !== -1) {
-                            this._createResponseProcessor();
-                        }
-                        else if (data.detail.url.indexOf("Update") !== -1) {
-                            if (this.data.eReasonCode == 1) {
-
-                                this._openToast("Contrato atualizado com sucesso.")
-                            } else {
-                                this._openToastError(this.data.eMessage);
-                            }
-                        }
-                        else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
-                            this._openToast(this.data.eMessage);
-                        }
-                    } else {
-                        this._openToastError("Ocorreu um erro desconhecido.")
-                    }
-                },
-                
-                _createResponseProcessor: function () {
-                    debugger;
-                    if (this.data.eReasonCode == 1) {
-                        this._isCreate = false;
-                        this._openToast("Contrato criado com sucesso.");
-
-                        var PrerequisitionNo = this.data.prerequisitionsNo;
-                        setTimeout(
-                            function () {
-                                window.location.href = "/PreRequisicao/" + PrerequisitionNo;
-                            }, 1000);
-
-                    } else {
-                        this._openToast(this.data.eMessage);
-                    }
-                },
 
                 _openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
@@ -921,22 +825,11 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
-
-                //Helpers
-                _executeRequest: function (url, data) {
-                    this.data.contractType = 3;
-                    this.$.page_databound_ajax.url = url;
-                    this.$.page_databound_ajax.body = JSON.stringify(data);
-                    this.$.page_databound_ajax.generateRequest();
-                },
-
                 _validateLocalMarket: function () {
-                    alert("Funcionalidade não implementada e/ou a aguardar detalhes.");
                     this.$.validateLocalMarket_datasource.body = JSON.stringify(this.Requisition);
                     this.$.validateLocalMarket_datasource.generateRequest();
                 },
                 _validateRequisition: function () {
-                    alert("Funcionalidade não implementada e/ou a aguardar detalhes.");
                     this.$.validaterequisition_datasource.body = JSON.stringify(this.Requisition);
                     this.$.validaterequisition_datasource.generateRequest();
                 },

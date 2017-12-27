@@ -38,9 +38,9 @@
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
         <iron-ajax url="/Compras/GestaoRequisicoes/GetApprovedRequisitions" id="ajax_getgrid" auto last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" id="ajax_getstatus" auto last-response="{{resultstatus}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-    <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-    <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-    <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
        
       
         <h2 class="separator">Requisições</h2>
@@ -283,13 +283,13 @@
         Polymer({
             is: 'x-request',
             properties: {
-            _filterActive: {
-                type: Boolean,
-                value: true
+                _filterActive: {
+                    type: Boolean,
+                    value: true
                 },
-            _SelectedLine: {
-                observer: '_rowSelected'
-            }
+                _SelectedLine: {
+                    observer: '_rowSelected'
+                }
             },
             observers: [
                 '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData)'

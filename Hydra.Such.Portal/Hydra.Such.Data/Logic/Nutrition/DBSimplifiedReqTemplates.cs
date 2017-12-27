@@ -118,7 +118,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     RequisitionTemplateId = item.NºRequisição,
                     Description = "Não implementado",//item.Descrição
 
-
+                    LocationCode = item.CódLocalização,
                     CodeRegion = item.CódigoRegião,
                     CodeFunctionalArea = item.CódigoÁreaFuncional,
                     CodeResponsabilityCenter = item.CódigoCentroResponsabilidade,
@@ -152,6 +152,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     //Descrição = item.Description,
                     CódigoRegião = item.CodeRegion,
                     CódigoÁreaFuncional = item.CodeFunctionalArea,
+                    CódLocalização = item.LocationCode,
                     CódigoCentroResponsabilidade = item.CodeResponsabilityCenter,
                     DataHoraCriação = string.IsNullOrEmpty(item.CreateDate) ? (DateTime?)null : DateTime.Parse(item.CreateDate),
                     DataHoraModificação = string.IsNullOrEmpty(item.UpdateDate) ? (DateTime?)null : DateTime.Parse(item.UpdateDate),
