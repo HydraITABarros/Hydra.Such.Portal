@@ -34,7 +34,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<DiárioDesperdíciosAlimentares> DiárioDesperdíciosAlimentares { get; set; }
         public virtual DbSet<DiárioMovimentosViaturas> DiárioMovimentosViaturas { get; set; }
         public virtual DbSet<DiárioRequisiçãoUnidProdutiva> DiárioRequisiçãoUnidProdutiva { get; set; }
-        public virtual DbSet<DistanciaFh> DistanciaFh { get; set; }
         public virtual DbSet<DistribuiçãoCustoFolhaDeHoras> DistribuiçãoCustoFolhaDeHoras { get; set; }
         public virtual DbSet<ElementosJuri> ElementosJuri { get; set; }
         public virtual DbSet<EmailsProcedimentosCcp> EmailsProcedimentosCcp { get; set; }
@@ -99,8 +98,11 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<TipoTrabalhoFh> TipoTrabalhoFh { get; set; }
         public virtual DbSet<UnidadesProdutivas> UnidadesProdutivas { get; set; }
         public virtual DbSet<UtilizadoresGruposAprovação> UtilizadoresGruposAprovação { get; set; }
+        public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
+
+        // Unable to generate entity type for table 'dbo.Distancia_FH'. Please see the warning messages.
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -337,13 +339,13 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Validador_RH3")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.ValidadorRhKm1)
-                    .HasColumnName("Validador_RHKM1")
-                    .HasMaxLength(50);
+                //entity.Property(e => e.ValidadorRhkm1)
+                //    .HasColumnName("Validador_RHKM1")
+                //    .HasMaxLength(50);
 
-                entity.Property(e => e.ValidadorRhKm2)
-                    .HasColumnName("Validador_RHKM2")
-                    .HasMaxLength(50);
+                //entity.Property(e => e.ValidadorRhkm2)
+                //    .HasColumnName("Validador_RHKM2")
+                //    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<AutorizarFaturaçãoContratos>(entity =>
@@ -1053,6 +1055,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.AssinadoPeloCliente).HasColumnName("Assinado pelo Cliente");
 
+                entity.Property(e => e.AudiênciaPrévia)
+                    .HasColumnName("Audiência Prévia")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.CondiçõesPagamento).HasColumnName("Condições Pagamento");
 
                 entity.Property(e => e.CondiçõesPagamentoOutra)
@@ -1274,6 +1280,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.ValorBaseProcedimento).HasColumnName("Valor Base Procedimento");
 
                 entity.Property(e => e.ValorTotalProposta).HasColumnName("Valor Total Proposta");
 
@@ -1762,39 +1770,6 @@ namespace Hydra.Such.Data.Database
                     .WithMany(p => p.DiárioRequisiçãoUnidProdutiva)
                     .HasForeignKey(d => d.TipoRefeição)
                     .HasConstraintName("FK_Diário Requisição Unid. Produtiva_Tipos Refeição");
-            });
-
-            modelBuilder.Entity<DistanciaFh>(entity =>
-            {
-                entity.HasKey(e => new { e.CódigoOrigem, e.CódigoDestino });
-
-                entity.ToTable("Distancia_FH");
-
-                entity.Property(e => e.CódigoOrigem)
-                    .HasColumnName("Código_Origem")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.CódigoDestino)
-                    .HasColumnName("Código_Destino")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.AlteradoPor)
-                    .HasColumnName("Alterado Por")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.CriadoPor)
-                    .HasColumnName("Criado Por")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.DataHoraCriação)
-                    .HasColumnName("Data/Hora Criação")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataHoraÚltimaAlteração)
-                    .HasColumnName("Data/Hora Última Alteração")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.Distância).HasColumnType("decimal(, 20)");
             });
 
             modelBuilder.Entity<DistribuiçãoCustoFolhaDeHoras>(entity =>
@@ -3313,11 +3288,6 @@ namespace Hydra.Such.Data.Database
                     .HasForeignKey(d => d.NºFolhaDeHoras)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Mão de Obra Folha de Horas_Folhas de Horas");
-
-                entity.HasOne(d => d.NºProjetoNavigation)
-                    .WithMany(p => p.MãoDeObraFolhaDeHoras)
-                    .HasForeignKey(d => d.NºProjeto)
-                    .HasConstraintName("FK_Mão de Obra Folha de Horas_Projetos");
             });
 
             modelBuilder.Entity<Marcas>(entity =>
@@ -3458,17 +3428,12 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Data/Hora Modificação")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.GrupoAprovador).HasColumnName("Grupo Aprovador");
+                entity.Property(e => e.MotivoDeRecusa)
+                    .IsRequired()
+                    .HasColumnName("Motivo de Recusa")
+                    .HasColumnType("text");
 
                 entity.Property(e => e.Número).HasMaxLength(20);
-
-                entity.Property(e => e.UtilizadorAprovador)
-                    .HasColumnName("Utilizador Aprovador")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.UtilizadorAprovação)
-                    .HasColumnName("Utilizador Aprovação")
-                    .HasMaxLength(50);
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
@@ -3481,11 +3446,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorSolicitou)
                     .HasColumnName("Utilizador Solicitou")
                     .HasMaxLength(50);
-
-                entity.HasOne(d => d.GrupoAprovadorNavigation)
-                    .WithMany(p => p.MovimentosDeAprovação)
-                    .HasForeignKey(d => d.GrupoAprovador)
-                    .HasConstraintName("FK_Movimentos de Aprovação_Grupos Aprovação");
             });
 
             modelBuilder.Entity<MovimentosDeProjeto>(entity =>
@@ -5416,6 +5376,8 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.ValorEstimado).HasColumnName("Valor Estimado");
+
                 entity.Property(e => e.Viatura).HasMaxLength(10);
 
                 entity.HasOne(d => d.NºProjetoNavigation)
@@ -6383,6 +6345,23 @@ namespace Hydra.Such.Data.Database
                     .HasForeignKey(d => d.GrupoAprovação)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Utilizadores Grupos Aprovação_Grupos Aprovação");
+            });
+
+            modelBuilder.Entity<UtilizadoresMovimentosDeAprovação>(entity =>
+            {
+                entity.HasKey(e => new { e.NºMovimento, e.Utilizador });
+
+                entity.ToTable("Utilizadores Movimentos de Aprovação");
+
+                entity.Property(e => e.NºMovimento).HasColumnName("Nº Movimento");
+
+                entity.Property(e => e.Utilizador).HasMaxLength(50);
+
+                entity.HasOne(d => d.NºMovimentoNavigation)
+                    .WithMany(p => p.UtilizadoresMovimentosDeAprovação)
+                    .HasForeignKey(d => d.NºMovimento)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Utilizadores Movimentos de Aprovação_Movimentos de Aprovação");
             });
 
             modelBuilder.Entity<Viaturas>(entity =>

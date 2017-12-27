@@ -84,25 +84,33 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
-        public static Requisição Update(Requisição ObjectToUpdate)
+        public static Requisição Update(Requisição objectToUpdate, bool updateLines = false)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ObjectToUpdate.DataHoraModificação = DateTime.Now;
-                    ctx.Requisição.Update(ObjectToUpdate);
+                    if (updateLines && objectToUpdate.LinhasRequisição != null)
+                        DBRequestLine.Update(objectToUpdate.LinhasRequisição.ToList(), ctx);
+                    
+                    objectToUpdate.DataHoraModificação = DateTime.Now;
+                    ctx.Requisição.Update(objectToUpdate);
                     ctx.SaveChanges();
                 }
 
-                return ObjectToUpdate;
+                return objectToUpdate;
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
+
+        public static Requisição UpdateHeaderAndLines(Requisição item)
+        {
+            return Update(item, true);
+        }
+
         public static bool Delete(Requisição ObjectToDelete)
         {
             try
@@ -335,6 +343,7 @@ namespace Hydra.Such.Data.Logic.Request
                     DataRequisição = item.RequisitionDate != null ? DateTime.Parse(item.RequisitionDate) : (DateTime?)null,
                     //dimension = item.,
                     //Budget = item.,
+                    LinhasRequisição = item.Lines.ParseToDB(),
                 };
             }
             return null;

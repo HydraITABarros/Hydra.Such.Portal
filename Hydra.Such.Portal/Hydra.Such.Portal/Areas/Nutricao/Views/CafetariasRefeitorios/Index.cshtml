@@ -42,6 +42,10 @@
                    on-response="_onDeleteCoffeeShopResponse"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetNutritionCoffeShopTypes" id="types_ajax" last-response="{{coffeShopTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{responsabilityCenters}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{regions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{products}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <div class="marginSpace">
             <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
@@ -62,7 +66,7 @@
                     <vaadin-grid-filter path="type" />
                 </template>
                 <template>
-                    {{item.type}}
+                    [[_getTypeDescription(item.type)]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="30%">
@@ -125,7 +129,7 @@
                     <vaadin-grid-filter path="codeRegion" />
                 </template>
                 <template>
-                    {{item.codeRegion}}
+                    [[_getRegionDescription(item.codeRegion)]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="30%">
@@ -134,7 +138,16 @@
                     <vaadin-grid-filter path="codeFunctionalArea" />
                 </template>
                 <template>
-                    {{item.codeFunctionalArea}}
+                    [[_getFunctionalAreaDescription(item.codeFunctionalArea)]]
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeResponsabilityCenter">Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeResponsabilityCenter" />
+                </template>
+                <template>
+                    [[_getResponsabilityCenterDescription(item.codeResponsabilityCenter)]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="30%">
@@ -236,6 +249,42 @@
                             this._openToastError(this.deletedData.eMessage);
                         }
                     }
+                },
+                _getTypeDescription: function (id) {
+                    if (id != undefined && this.coffeShopTypes != undefined) {
+                        var sel = this.coffeShopTypes.find(x => x.id == id);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _getRegionDescription: function (id) {
+                    if (id != undefined && this.regions != undefined) {
+                        var sel = this.regions.find(x => x.id == id);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _getFunctionalAreaDescription: function (id) {
+                    if (id != undefined && this.functionalAreas != undefined) {
+                        var sel = this.functionalAreas.find(x => x.id == id);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _getResponsabilityCenterDescription: function (id) {
+                    if (id != undefined && this.responsabilityCenters != undefined) {
+                        var sel = this.responsabilityCenters.find(x => x.id == id);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
                 },
             });
         });

@@ -2299,6 +2299,41 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        #region Configurações Aprovações
+        public IActionResult ConfiguracaoAprovacoes(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        [HttpPost]
+        public JsonResult GetApproval()
+        {
+            List<ApprovalViewModel> result = DBApprovalsConfigurations.GetAll().Select(x => new ApprovalViewModel()
+            {
+                Id = x.Id,
+                Type = x.Tipo,
+                Area = x.Área,
+                ValueApproval = x.ValorAprovação,
+                GroupApproval = x.GrupoAprovação,
+                LevelApproval = x.NívelAprovação,
+                UserApproval = x.UtilizadorAprovação,
+                CreateDate = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
+                CreateUser = x.UtilizadorCriação,
+            }).ToList();
+            return Json(result);
+        }
+        #endregion
+
         #region Locais
         public IActionResult Locais(string id)
         {
@@ -2328,7 +2363,7 @@ namespace Hydra.Such.Portal.Controllers
                 Postalcode = x.CódigoPostal,
                 Contact=x.Contacto,
                 Responsiblerecept=x.ResponsávelReceção,
-                CreateDate = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
+                CreateDate = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd hh:mm:ss.ff") : "",
                 CreateUser= x.UtilizadorCriação
             }).ToList();
             return Json(result);

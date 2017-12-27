@@ -8,7 +8,6 @@ namespace Hydra.Such.Data.Database
         public GruposAprovação()
         {
             ConfiguraçãoAprovações = new HashSet<ConfiguraçãoAprovações>();
-            MovimentosDeAprovação = new HashSet<MovimentosDeAprovação>();
             UtilizadoresGruposAprovação = new HashSet<UtilizadoresGruposAprovação>();
         }
 
@@ -20,7 +19,6 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorModificação { get; set; }
 
         public ICollection<ConfiguraçãoAprovações> ConfiguraçãoAprovações { get; set; }
-        public ICollection<MovimentosDeAprovação> MovimentosDeAprovação { get; set; }
         public ICollection<UtilizadoresGruposAprovação> UtilizadoresGruposAprovação { get; set; }
     }
 }

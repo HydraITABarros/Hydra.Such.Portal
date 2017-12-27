@@ -77,9 +77,16 @@ namespace Hydra.Such.Portal.Controllers
 
             if (Archived == 0 || ContractNo == "")
             {
-                ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 3);
-                ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
-
+                if (AreaId == 4)
+                {
+                    ContractsList = DBContracts.GetAllByContractType(3);
+                    ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+                }
+                else
+                {
+                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 3);
+                    ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+                }
             }
             else
             {
@@ -377,6 +384,19 @@ namespace Hydra.Such.Portal.Controllers
                                 : (DateTime?)DateTime.Parse(data.NextInvoiceDate);
                             ContratoDB.PróximoPeríodoFact = data.NextBillingPeriod;
                             ContratoDB.NºContato = data.ContactNo;
+                            ContratoDB.ValorBaseProcedimento = data.BaseValueProcedure;
+                            ContratoDB.AudiênciaPrévia = data.PreviousHearing == ""
+                                ? null
+                                : (DateTime?)DateTime.Parse(data.PreviousHearing);
+
+                            if (ContratoDB.AudiênciaPrévia != null)
+                            {
+                                ContratoDB.AudiênciaPrévia = ContratoDB.AudiênciaPrévia.Value.Date;
+                                if (data.PreviousHearingTime != null)
+                                {
+                                    ContratoDB.AudiênciaPrévia = ContratoDB.AudiênciaPrévia.Value.Add(TimeSpan.Parse(data.PreviousHearingTime));
+                                }
+                            }
 
                             if (ContratoDB.DataHoraLimiteEsclarecimentos != null)
                             {
@@ -696,6 +716,18 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(data);
         }
+        
+        [HttpPost]
+        public JsonResult GetContractNavData([FromBody] ContractViewModel data)
+        {
+            if (data != null)
+            {
+                NAVContractDetailsViewModel result = DBNAV2017ContractDetails.GetContractByNo(data.ContractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+                
+                return Json(result);
+            }
+            return Json(false);
+        }
 
         [HttpPost]
         public JsonResult GetContractLines([FromBody] ContractViewModel data)
@@ -797,8 +829,16 @@ namespace Hydra.Such.Portal.Controllers
 
             if (Archived == 0 || ContractNo == "")
             {
-                ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId , 1);
-                ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+                if (AreaId == 4)
+                {
+                    ContractsList = DBContracts.GetAllByContractType(2);
+                    ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+                }
+                else
+                {
+                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 2);
+                    ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+                }
             }
             else
             {
@@ -1085,8 +1125,16 @@ namespace Hydra.Such.Portal.Controllers
 
             if (Archived == 0 || ContractNo == "")
             {
-                ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 2);
-                ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+                if (AreaId == 4)
+                {
+                    ContractsList = DBContracts.GetAllByContractType(2);
+                    ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+                }
+                else
+                {
+                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 2);
+                    ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+                }
             }
             else
             {
@@ -1148,9 +1196,10 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        
+
 
         #endregion
+
 
 
         public JsonResult ParseContractType([FromBody] JObject requestParams)

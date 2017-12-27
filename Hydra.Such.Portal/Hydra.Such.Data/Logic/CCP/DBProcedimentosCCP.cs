@@ -870,6 +870,24 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
         }
+        public static FluxoTrabalhoListaControlo GetChecklistControloProcedimento(string ProcedimentoID, int ProcedimentoState, DateTime FluxoDate, TimeSpan FluxoHour)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                return _context.FluxoTrabalhoListaControlo.Where(
+                    f => f.No == ProcedimentoID && 
+                    f.Estado == ProcedimentoState && 
+                    f.Data == FluxoDate &&
+                    f.Hora == FluxoHour).LastOrDefault();
+            }
+            catch (Exception e)
+            {
+
+                return null;
+            }
+        }
 
         public static FluxoTrabalhoListaControlo __CreateFluxoTrabalho(string ProcedimentoID, DateTime SubmissionDate, int EstadoType, string Comment, string UserID, bool Imob)
         {
@@ -1233,7 +1251,8 @@ namespace Hydra.Such.Data.Logic.CCP
                 FluxoTrabalhoListaControlo Fluxo0 = GetChecklistControloProcedimento(Procedimento.No, 0);
                 if (Fluxo0 != null)
                 {
-                    Fluxo0.Resposta = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade;
+
+                    Fluxo0.Resposta = Procedimento.ComentarioImobContabilidade;
                     Fluxo0.TipoResposta = Procedimento.Estado;
                     Fluxo0.UtilizadorModificacao = UserDetails.IdUtilizador;
                     Fluxo0.DataHoraModificacao = DateTime.Now;
@@ -1249,7 +1268,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 FluxoTrabalhoListaControlo Fluxo0 = Procedimento.FluxoTrabalhoListaControlo.Where(s => s.Estado == 0).LastOrDefault();
                 if (Fluxo0 != null)
                 {
-                    Fluxo0.Resposta = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade;
+                    Fluxo0.Resposta = Procedimento.ComentarioImobContabilidade;
                     Fluxo0.TipoResposta = Procedimento.Estado;
                     Fluxo0.UtilizadorModificacao = UserDetails.IdUtilizador;
                     Fluxo0.DataHoraModificacao = DateTime.Now;
@@ -1267,9 +1286,12 @@ namespace Hydra.Such.Data.Logic.CCP
                 Estado = 1,
                 Data = DateTime.Now.Date,
                 Hora = DateTime.Now.TimeOfDay,
-                Comentario = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade,
-                Comentario2 = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade2,
-                ImobSimNao = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ImobilizadoSimNao,
+
+                
+                Comentario = Procedimento.ComentarioImobContabilidade,
+                Comentario2 = Procedimento.ComentarioImobContabilidade2,
+                ImobSimNao = Procedimento.ImobilizadoSimNao,
+
                 User = UserDetails.IdUtilizador,
                 TipoEstado = Procedimento.Estado,
 
@@ -1279,7 +1301,8 @@ namespace Hydra.Such.Data.Logic.CCP
 
             if (StateToCheck == 1)
             {
-                if (Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ImobilizadoSimNao)
+                
+                if (Procedimento.ImobilizadoSimNao)
                     NewFluxo1.EstadoSeguinte = 4;
                 else
                     NewFluxo1.EstadoSeguinte = 2;
@@ -1300,7 +1323,8 @@ namespace Hydra.Such.Data.Logic.CCP
             {
                 if (StateToCheck == 1)
                 {
-                    if (Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ImobilizadoSimNao)
+                    
+                    if (Procedimento.ImobilizadoSimNao)
                         Procedimento.Estado = 4;
                     else
                         Procedimento.Estado = 1;
@@ -1309,7 +1333,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 else
                 {
                     Procedimento.Estado = 0;
-                    Procedimento.ComentarioEstado = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade;
+                    Procedimento.ComentarioEstado = Procedimento.ComentarioImobContabilidade;
                 }
 
                 if (Procedimento.TemposPaCcp.Estado1Tg - Procedimento.TemposPaCcp.Estado1 != 0)
@@ -1375,7 +1399,8 @@ namespace Hydra.Such.Data.Logic.CCP
                 FluxoTrabalhoListaControlo Fluxo1 = GetChecklistControloProcedimento(Procedimento.No, 1);
                 if(Fluxo1 != null)
                 {
-                    Fluxo1.Resposta = Procedimento.ElementosChecklist.ChecklistImobilizadoArea.ComentarioImobArea;
+                    
+                    Fluxo1.Resposta = Procedimento.ComentarioImobArea;
                     Fluxo1.TipoEstado = StateToCheck;
                     Fluxo1.UtilizadorModificacao = UserDetails.IdUtilizador;
                     Fluxo1.DataHoraModificacao = DateTime.Now;
@@ -1391,7 +1416,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 FluxoTrabalhoListaControlo Fluxo1 = Procedimento.FluxoTrabalhoListaControlo.Where(s => s.Estado == 1).LastOrDefault();
                 if (Fluxo1 != null)
                 {
-                    Fluxo1.Resposta = Procedimento.ElementosChecklist.ChecklistImobilizadoContabilidade.ComentarioImobContabilidade;
+                    Fluxo1.Resposta = Procedimento.ComentarioImobContabilidade;
                     Fluxo1.TipoResposta = Procedimento.Estado;
                     Fluxo1.UtilizadorModificacao = UserDetails.IdUtilizador;
                     Fluxo1.DataHoraModificacao = DateTime.Now;
@@ -1409,7 +1434,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 Estado = 2,
                 Data = DateTime.Now.Date,
                 Hora = DateTime.Now.TimeOfDay,
-                Comentario = Procedimento.ElementosChecklist.ChecklistImobilizadoArea.ComentarioImobArea,
+                Comentario = Procedimento.ComentarioImobArea,
                 User = UserDetails.IdUtilizador,
                 TipoEstado = Procedimento.Estado,
 
@@ -1451,7 +1476,7 @@ namespace Hydra.Such.Data.Logic.CCP
                         break;
                     case 0:
                         Procedimento.Estado = 1;
-                        Procedimento.ComentarioEstado = Procedimento.ElementosChecklist.ChecklistImobilizadoArea.ComentarioImobArea;
+                        Procedimento.ComentarioEstado = Procedimento.ComentarioImobArea;
                         break;
                 }
 
@@ -1518,7 +1543,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 FluxoTrabalhoListaControlo Fluxo2 = GetChecklistControloProcedimento(Procedimento.No, 2);
                 if (Fluxo2 != null)
                 {
-                    Fluxo2.Resposta = Procedimento.ElementosChecklist.ChecklistFundamentoCompras.ComentarioFundamentoCompras;
+                    Fluxo2.Resposta = Procedimento.ComentarioFundamentoCompras;
                     Fluxo2.TipoResposta = StateToCheck == 0 ? 0 : 1;
                     Fluxo2.UtilizadorModificacao = UserDetails.IdUtilizador;
                     Fluxo2.DataHoraModificacao = DateTime.Now;
@@ -1534,7 +1559,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 FluxoTrabalhoListaControlo Fluxo2 = Procedimento.FluxoTrabalhoListaControlo.Where(s => s.Estado == 2).LastOrDefault();
                 if (Fluxo2 != null)
                 {
-                    Fluxo2.Resposta = Procedimento.ElementosChecklist.ChecklistFundamentoCompras.ComentarioFundamentoCompras;
+                    Fluxo2.Resposta = Procedimento.ComentarioFundamentoCompras;
                     Fluxo2.TipoResposta = StateToCheck == 0 ? 0 : 1;
                     Fluxo2.UtilizadorModificacao = UserDetails.IdUtilizador;
                     Fluxo2.DataHoraModificacao = DateTime.Now;
@@ -1552,7 +1577,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 Estado = 4,
                 Data = DateTime.Now.Date,
                 Hora = DateTime.Now.TimeOfDay,
-                Comentario = Procedimento.ElementosChecklist.ChecklistFundamentoCompras.ComentarioFundamentoCompras,
+                Comentario = Procedimento.ComentarioFundamentoCompras,
                 User = UserDetails.IdUtilizador,
                 TipoEstado = 1,
 
@@ -1626,7 +1651,7 @@ namespace Hydra.Such.Data.Logic.CCP
                         break;
                     case 0:
                         Procedimento.Estado = Procedimento.Imobilizado.Value ? 2 : 0;
-                        Procedimento.ComentarioEstado = Procedimento.ElementosChecklist.ChecklistFundamentoCompras.ComentarioFundamentoCompras;
+                        Procedimento.ComentarioEstado = Procedimento.ComentarioFundamentoCompras;
                         break;
                 };
 

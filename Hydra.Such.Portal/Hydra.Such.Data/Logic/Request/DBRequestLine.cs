@@ -79,6 +79,16 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
+
+        public static void Update(List<LinhasRequisição> items, SuchDBContext ctx)
+        {
+            if (items != null)
+            {
+                items.ForEach(item => item.DataHoraModificação = DateTime.Now);
+                ctx.LinhasRequisição.UpdateRange(items);
+            }
+        }
+
         public static bool Delete(LinhasRequisição ObjectToDelete)
         {
             try
