@@ -119,8 +119,10 @@ namespace Hydra.Such.Tester
 
         public static void ApprovalTest()
         {
-            var x = ApprovalMovementsManager.StartApprovalMovement(1,1,1232, "REQ0001","hydra06@such.pt");
+            //var x = ApprovalMovementsManager.StartApprovalMovement(1,1,1000, "REQ0002","hydra06@such.pt");
+            //var x = ApprovalMovementsManager.ApproveMovement(6, "hydra06@such.pt");
 
+            //var x = ApprovalMovementsManager.RejectMovement(2, "hydra06@such.pt", "O Valor não faz sentido face á dificuldade do projeto");
             Console.ReadLine();
         }
 
