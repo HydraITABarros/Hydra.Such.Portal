@@ -1684,6 +1684,20 @@ namespace Hydra.Such.Portal.Configurations
         };
       
 
+        public static readonly List<EnumData> ApprovalTypes = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Requisições"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Requisições Simplificadas"
+            }
+        };
+
         public static List<EnumData> RequisitionStatesEnumData
         {
             get
