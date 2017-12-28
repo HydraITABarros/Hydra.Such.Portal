@@ -341,30 +341,36 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 item = new RequisitionLineViewModel();
                 item.eReasonCode = 2;
-                item.eMessage = "A linha não pode ser nula.";
+                item.eMessage = "Ocorreu um erro: a linha não pode ser nula.";
             }
             return Json(item);
         }
 
         [HttpPost]
         [Area("Compras")]
-        public JsonResult DeleteReqTemplateLine([FromBody] RequisitionLineViewModel item)
+        public JsonResult DeleteRequisitionLine([FromBody] RequisitionLineViewModel item)
         {
-            ErrorHandler requestResponse = new ErrorHandler()
-            {
-                eReasonCode = 2,
-                eMessage = "Ocorreu um erro ao eliminar o registo.",
-            };
-
             if (item != null)
             {
                 if (DBRequestLine.Delete(item.ParseToDB()))
                 {
-                    requestResponse.eReasonCode = 1;
-                    requestResponse.eMessage = "Registo eliminado com sucesso.";
+                    item.eReasonCode = 1;
+                    item.eMessage = "Registo eliminado com sucesso.";
+                }
+                else
+                {
+                    item = new RequisitionLineViewModel();
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao eliminar o registo.";
                 }
             }
-            return Json(requestResponse);
+            else
+            {
+                item = new RequisitionLineViewModel();
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: a linha não pode ser nula.";
+            }
+            return Json(item);
         }
 
 

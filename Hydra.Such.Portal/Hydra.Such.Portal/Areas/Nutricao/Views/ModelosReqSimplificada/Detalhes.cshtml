@@ -776,6 +776,8 @@
                     }
                 },
                 _deleteReqTemplateLine: function (e) {
+                    var ajax_request = this.$.deleteReqTemplateLine_ajax;
+
                     bootbox.confirm({
                         message: "Tem a certeza que pretende remover o registo?",
                         buttons: {
@@ -790,11 +792,8 @@
                         },
                         callback: function (result) {
                             if (result) {
-                                var index = this.data.lines.indexOf(e.model.item);
-                                this.data.lines.splice(index, 1);
-                                this.$.deleteReqTemplateLine_ajax.body = JSON.stringify(e.model.item);
-                                this.$.deleteReqTemplateLine_ajax.generateRequest();
-                                this.$.gridTemplateLines.clearCache();
+                                ajax_request.body = JSON.stringify(e.model.item);
+                                ajax_request.generateRequest();
                             }
                         }
                     });
@@ -802,6 +801,17 @@
                 _deleteReqTemplateLineResponse: function (e) {
                     if (this.DelReqTemplateLineResponse.eReasonCode == "1") {
                         this._openToast(this.DelReqTemplateLineResponse.eMessage);
+
+                        try {
+                            var reqLines = this.data.lines;
+                            var index = reqLines.indexOf(this.DelReqTemplateLineResponse);
+                            reqLines.splice(index, 1);
+
+                            this.$.gridTemplateLines.clearCache();
+                        }
+                        catch (err) {
+                            //refresh page or inform user;
+                        }
                     }
                     else {
                         this._openToastError(this.DelReqTemplateLineResponse.eMessage);

@@ -213,21 +213,28 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [Area("Nutricao")]
         public JsonResult DeleteReqTemplateLine([FromBody] SimplifiedReqTemplateLinesViewModel item)
         {
-            ErrorHandler requestResponse = new ErrorHandler()
-            {
-                eReasonCode = 2,
-                eMessage = "Ocorreu um erro ao eliminar o registo.",
-            };
-
             if (item != null)
             {
                 if (DBSimplifiedReqTemplateLines.Delete(item.ParseToDB()))
                 {
-                    requestResponse.eReasonCode = 1;
-                    requestResponse.eMessage = "Registo eliminado com sucesso.";
+                    item.eReasonCode = 1;
+                    item.eMessage = "Registo eliminado com sucesso.";
+                }
+                else
+                {
+                    item = new SimplifiedReqTemplateLinesViewModel();
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao eliminar o registo.";
                 }
             }
-            return Json(requestResponse);
+            else
+            {
+                item = new SimplifiedReqTemplateLinesViewModel();
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: a linha não pode ser nula.";
+            }
+
+            return Json(item);
         }
 
         [HttpPost]

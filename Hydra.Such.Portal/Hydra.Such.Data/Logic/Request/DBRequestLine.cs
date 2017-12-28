@@ -205,7 +205,7 @@ namespace Hydra.Such.Data.Logic.Request
                 return new LinhasRequisição()
                 {
                     NºRequisição = item.RequestNo,
-                    //NºLinha = (int)item.LineNo,
+                    NºLinha = item.LineNo.HasValue ? item.LineNo.Value : 0,
                     Tipo = item.Type,
                     Código = item.Code,
                     Descrição = item.Description,
