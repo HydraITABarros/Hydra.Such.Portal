@@ -2319,7 +2319,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetApproval()
         {
-            List<ApprovalViewModel> result = DBApprovalsConfigurations.GetAll().Select(x => new ApprovalViewModel()
+            List<ApprovalViewModel> result = DBApprovalConfigurations.GetAll().Select(x => new ApprovalViewModel()
             {
                 Id = x.Id,
                 Type = x.Tipo,
@@ -2336,9 +2336,9 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult UpdateApproval([FromBody] List<ApprovalViewModel> data)
         {
-            List<ConfiguraçãoAprovações> results = DBApprovalsConfigurations.GetAll();
+            List<ConfiguraçãoAprovações> results = DBApprovalConfigurations.GetAll();
             results.RemoveAll(x => data.Any(u => u.Id == x.Id));
-            results.ForEach(x => DBApprovalsConfigurations.Delete(x));
+            results.ForEach(x => DBApprovalConfigurations.Delete(x));
             data.ForEach(x =>
             {
                 ConfiguraçãoAprovações aprovConfig = new ConfiguraçãoAprovações()
@@ -2357,13 +2357,13 @@ namespace Hydra.Such.Portal.Controllers
                     aprovConfig.DataHoraCriação = string.IsNullOrEmpty(x.CreateDate) ? (DateTime?)null : DateTime.Parse(x.CreateDate);
                     aprovConfig.DataHoraModificação = DateTime.Now;
                     aprovConfig.UtilizadorModificação = User.Identity.Name;
-                    DBApprovalsConfigurations.Update(aprovConfig);
+                    DBApprovalConfigurations.Update(aprovConfig);
                 }
                 else
                 {
                     aprovConfig.DataHoraCriação = DateTime.Now;
                     aprovConfig.UtilizadorCriação = User.Identity.Name;
-                    DBApprovalsConfigurations.Create(aprovConfig);
+                    DBApprovalConfigurations.Create(aprovConfig);
                 }
             });
             return Json(data);
