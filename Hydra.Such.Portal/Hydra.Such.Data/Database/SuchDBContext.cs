@@ -339,13 +339,13 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Validador_RH3")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.ValidadorRhkm1)
-                    .HasColumnName("Validador_RHKM1")
-                    .HasMaxLength(50);
+                //entity.Property(e => e.ValidadorRhkm1)
+                //    .HasColumnName("Validador_RHKM1")
+                //    .HasMaxLength(50);
 
-                entity.Property(e => e.ValidadorRhkm2)
-                    .HasColumnName("Validador_RHKM2")
-                    .HasMaxLength(50);
+                //entity.Property(e => e.ValidadorRhkm2)
+                //    .HasColumnName("Validador_RHKM2")
+                //    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<AutorizarFaturaçãoContratos>(entity =>

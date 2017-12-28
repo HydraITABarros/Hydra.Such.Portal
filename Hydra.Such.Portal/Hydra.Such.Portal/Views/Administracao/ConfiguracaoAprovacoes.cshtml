@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "ConfiguracaoAprovacoes";
+    ViewData["Title"] = "Configuracão Aprovacões";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -27,9 +27,9 @@
 
 <h1 class="title">@ViewData["Title"]</h1>
 
-<x-Approvals></x-Approvals>
+<x-approvals></x-approvals>
 
-<dom-module id="x-Approvals">
+<dom-module id="x-approvals">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -62,7 +62,7 @@
         </iron-ajax>
 
         @*POPULATE Update*@
-        <iron-ajax url="/Administracao/UpdatePlace"
+        <iron-ajax url="/Administracao/UpdateApproval"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -70,6 +70,23 @@
                    on-response="_updateResponse"
                    content-type="application/json">
         </iron-ajax>
+
+        @*CRUD NEW PROFILEMODEL*@
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode"
+                   last-response="{{RegionData}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
+                   last-response="{{FunctionalTipo}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="row">
             <div class="col-lg-2">
                 <h2 class="separator">Novo Registo</h2>
@@ -77,10 +94,28 @@
         </div>
         <div class="row">
             <div class="col-lg-2">
-                <vaadin-text-field id="ddType" label="Tipo" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                <vaadin-combo-box items="[[FunctionalTipo]]" id="ddType" item-value-path="id" item-label-path="value" value="{{ddType}}" label="Área" disabled="{{ _permissionsCreate }}">
+                    <template>
+                        <table width="200px">
+                            <tr>
+                                <td width="40%">[[item.id]]</td>
+                                <td width="60%"> <b>[[item.value]]</b></td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
             </div>
             <div class="col-lg-2">
-                <vaadin-text-field id="ddArea" label="Área" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                <vaadin-combo-box items="[[FunctionalAreas]]" id="ddAreas" item-value-path="id" item-label-path="value" value="{{ddAreas}}" label="Área" disabled="{{ _permissionsCreate }}">
+                    <template>
+                        <table width="200px">
+                            <tr>
+                                <td width="40%">[[item.id]]</td>
+                                <td width="60%"> <b>[[item.value]]</b></td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
             </div>
             <div class="col-lg-2">
                 <vaadin-text-field id="ddLevelApproval" label="Nivel Aprovação" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
@@ -95,7 +130,7 @@
                 <vaadin-text-field id="ddGroupApproval" label="Grupo Aprovação" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
             </div>
             <div class="col-lg-2 alignPoga">
-                <paper-button id="btnAddNew" class="btnSave" on-tap="_createApprova" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                <paper-button id="btnAddNew" class="btnSave" on-tap="_createApprovals" disabled="{{ _permissionsCreate }}">Criar</paper-button>
             </div>
         </div>
         <br />
@@ -196,7 +231,7 @@
         }
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-Approvals',
+                is: 'x-approvals',
                 properties: {
                     _permissionsUpdate: {
                         type: Boolean,
@@ -210,6 +245,18 @@
                         type: Boolean,
                         value: DeleteValue
                     },
+                    ddFunctionalArea: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+
+                    ddType: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    }
+              
                 },
                 ready: function () {
                     this.$.page_databound_ajax.generateRequest();
@@ -253,16 +300,15 @@
                     this.$.gridPlaces.clearCache();
                 },
 
-                _createPlaces: function () {
-
+                _createApprovals: function () {
 
                         var Line = {
-                            description: this.$.ddDescription.value,
-                            locality: this.$.ddLocality.value,
-                            postalcode: this.$.ddPostalCode.value,
-                            responsiblerecept: this.$.ddResponsibleReception.value,
-                            address: this.$.ddAddress.value,
-                            contact: this.$.ddContact.value
+                            Type=this.$.ddType,
+                            Area=this.$.ddArea,
+                            LevelApproval=this.$.ddLevelApproval,
+                            UserApproval=this.$.ddUserApproval,
+                            GroupApproval=this.$.ddGroupApproval,
+                            ValueApproval=this.$.ddValueApproval
 
                         };
                         if (this.result == null) {

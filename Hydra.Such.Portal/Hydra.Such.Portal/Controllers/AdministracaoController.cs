@@ -20,6 +20,7 @@ using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.Logic.Compras;
+using Hydra.Such.Data.Logic.Approvals;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -2107,12 +2108,12 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        [HttpPost]
-        public JsonResult GetDistanciaFH()
-        {
-            List<DistanciaFHViewModel> result = DBDistanciaFh.ParseListToViewModel(DBDistanciaFh.GetAll());
-            return Json(result);
-        }
+        //[HttpPost]
+        //public JsonResult GetDistanciaFH()
+        //{
+        //    List<DistanciaFHViewModel> result = DBDistanciaFh.ParseListToViewModel(DBDistanciaFh.GetAll());
+        //    return Json(result);
+        //}
 
         [HttpPost]
         public JsonResult CreateDistanciaFH([FromBody] DistanciaFHViewModel data)
@@ -2128,8 +2129,8 @@ namespace Hydra.Such.Portal.Controllers
                 DistanciaFH.CriadoPor = User.Identity.Name;
                 DistanciaFH.DataHoraCriação = DateTime.Now;
 
-                var dbCreateResult = DBDistanciaFh.Create(DistanciaFH);
-                result = dbCreateResult != null ? true : false;
+                //var dbCreateResult = DBDistanciaFh.Create(DistanciaFH);
+                //result = dbCreateResult != null ? true : false;
             }
             catch (Exception ex)
             {
@@ -2138,35 +2139,35 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        [HttpPost]
-        public JsonResult DeleteDistanciaFH([FromBody] DistanciaFHViewModel data)
-        {
-            var result = DBDistanciaFh.Delete(DBDistanciaFh.ParseToDB(data));
-            return Json(result);
-        }
+        //[HttpPost]
+        //public JsonResult DeleteDistanciaFH([FromBody] DistanciaFHViewModel data)
+        //{
+        //    var result = DBDistanciaFh.Delete(DBDistanciaFh.ParseToDB(data));
+        //    return Json(result);
+        //}
 
-        [HttpPost]
-        public JsonResult UpdateDistanciaFH([FromBody] List<DistanciaFHViewModel> data)
-        {
-            List<DistanciaFh> results = DBDistanciaFh.GetAll();
+        //[HttpPost]
+        //public JsonResult UpdateDistanciaFH([FromBody] List<DistanciaFHViewModel> data)
+        //{
+        //    List<DistanciaFh> results = DBDistanciaFh.GetAll();
 
-            data.RemoveAll(x => DBDistanciaFh.ParseListToViewModel(results).Any(
-                u =>
-                    u.Origem == x.Origem &&
-                    u.Destino == x.Destino &&
-                    u.Distancia == x.Distancia &&
-                    u.CriadoPor == x.CriadoPor &&
-                    u.DataHoraCriacao == x.DataHoraCriacao
-            ));
+        //    data.RemoveAll(x => DBDistanciaFh.ParseListToViewModel(results).Any(
+        //        u =>
+        //            u.Origem == x.Origem &&
+        //            u.Destino == x.Destino &&
+        //            u.Distancia == x.Distancia &&
+        //            u.CriadoPor == x.CriadoPor &&
+        //            u.DataHoraCriacao == x.DataHoraCriacao
+        //    ));
 
-            data.ForEach(x =>
-            {
-                DistanciaFh toUpdate = DBDistanciaFh.ParseToDB(x);
-                toUpdate.AlteradoPor = User.Identity.Name;
-                DBDistanciaFh.Update(toUpdate);
-            });
-            return Json(data);
-        }
+        //    data.ForEach(x =>
+        //    {
+        //        DistanciaFh toUpdate = DBDistanciaFh.ParseToDB(x);
+        //        toUpdate.AlteradoPor = User.Identity.Name;
+        //        DBDistanciaFh.Update(toUpdate);
+        //    });
+        //    return Json(data);
+        //}
 
         #endregion
 
@@ -2331,6 +2332,41 @@ namespace Hydra.Such.Portal.Controllers
                 CreateUser = x.UtilizadorCriação,
             }).ToList();
             return Json(result);
+        }
+        [HttpPost]
+        public JsonResult UpdateApproval([FromBody] List<ApprovalViewModel> data)
+        {
+            List<ConfiguraçãoAprovações> results = DBApprovalsConfigurations.GetAll();
+            results.RemoveAll(x => data.Any(u => u.Id == x.Id));
+            results.ForEach(x => DBApprovalsConfigurations.Delete(x));
+            data.ForEach(x =>
+            {
+                ConfiguraçãoAprovações aprovConfig = new ConfiguraçãoAprovações()
+                {
+                    Tipo = x.Type,
+                    NívelAprovação = x.LevelApproval,
+                    ValorAprovação = x.ValueApproval,
+                    GrupoAprovação = x.GroupApproval,
+                    UtilizadorAprovação = x.UserApproval,
+                    Área = x.Area
+                };
+                if (x.Id > 0)
+                {
+                    aprovConfig.Id = x.Id;
+                    aprovConfig.UtilizadorCriação = x.CreateUser;
+                    aprovConfig.DataHoraCriação = string.IsNullOrEmpty(x.CreateDate) ? (DateTime?)null : DateTime.Parse(x.CreateDate);
+                    aprovConfig.DataHoraModificação = DateTime.Now;
+                    aprovConfig.UtilizadorModificação = User.Identity.Name;
+                    DBApprovalsConfigurations.Update(aprovConfig);
+                }
+                else
+                {
+                    aprovConfig.DataHoraCriação = DateTime.Now;
+                    aprovConfig.UtilizadorCriação = User.Identity.Name;
+                    DBApprovalsConfigurations.Create(aprovConfig);
+                }
+            });
+            return Json(data);
         }
         #endregion
 

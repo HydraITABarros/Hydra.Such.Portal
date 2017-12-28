@@ -6,7 +6,7 @@ using System.Linq;
 using Hydra.Such.Data.ViewModel;
 
 
-namespace Hydra.Such.Data.Logic
+namespace Hydra.Such.Data.Logic.Approvals
 {
     public static class DBApprovalsConfigurations
     {
