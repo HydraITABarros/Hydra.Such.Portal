@@ -20,6 +20,7 @@ using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.Logic.Compras;
+using Hydra.Such.Data.Logic.Approvals;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1959,8 +1960,8 @@ namespace Hydra.Such.Portal.Controllers
                 autorizacao.ValidadorRh1 = data.ValidadorRH1;
                 autorizacao.ValidadorRh2 = data.ValidadorRH2;
                 autorizacao.ValidadorRh3 = data.ValidadorRH3;
-                autorizacao.ValidadorRhkm1 = data.ValidadorRHKM1;
-                autorizacao.ValidadorRhkm2 = data.ValidadorRHKM2;
+                //autorizacao.ValidadorRhkm1 = data.ValidadorRHKM1;
+                //autorizacao.ValidadorRhkm2 = data.ValidadorRHKM2;
                 autorizacao.CriadoPor = User.Identity.Name;
                 autorizacao.DataHoraCriação = DateTime.Now;
 
@@ -2110,7 +2111,7 @@ namespace Hydra.Such.Portal.Controllers
         //[HttpPost]
         //public JsonResult GetDistanciaFH()
         //{
-        //    //List<DistanciaFHViewModel> result = DBDistanciaFh.ParseListToViewModel(DBDistanciaFh.GetAll());
+        //    List<DistanciaFHViewModel> result = DBDistanciaFh.ParseListToViewModel(DBDistanciaFh.GetAll());
         //    return Json(result);
         //}
 
@@ -2141,8 +2142,8 @@ namespace Hydra.Such.Portal.Controllers
         //[HttpPost]
         //public JsonResult DeleteDistanciaFH([FromBody] DistanciaFHViewModel data)
         //{
-        //    //var result = DBDistanciaFh.Delete(DBDistanciaFh.ParseToDB(data));
-        //    //return Json(result);
+        //    var result = DBDistanciaFh.Delete(DBDistanciaFh.ParseToDB(data));
+        //    return Json(result);
         //}
 
         //[HttpPost]
@@ -2318,7 +2319,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetApproval()
         {
-            List<ApprovalViewModel> result = DBApprovalsConfigurations.GetAll().Select(x => new ApprovalViewModel()
+            List<ApprovalViewModel> result = DBApprovalConfigurations.GetAll().Select(x => new ApprovalViewModel()
             {
                 Id = x.Id,
                 Type = x.Tipo,
@@ -2331,6 +2332,41 @@ namespace Hydra.Such.Portal.Controllers
                 CreateUser = x.UtilizadorCriação,
             }).ToList();
             return Json(result);
+        }
+        [HttpPost]
+        public JsonResult UpdateApproval([FromBody] List<ApprovalViewModel> data)
+        {
+            List<ConfiguraçãoAprovações> results = DBApprovalConfigurations.GetAll();
+            results.RemoveAll(x => data.Any(u => u.Id == x.Id));
+            results.ForEach(x => DBApprovalConfigurations.Delete(x));
+            data.ForEach(x =>
+            {
+                ConfiguraçãoAprovações aprovConfig = new ConfiguraçãoAprovações()
+                {
+                    Tipo = x.Type,
+                    NívelAprovação = x.LevelApproval,
+                    ValorAprovação = x.ValueApproval,
+                    GrupoAprovação = x.GroupApproval,
+                    UtilizadorAprovação = x.UserApproval,
+                    Área = x.Area
+                };
+                if (x.Id > 0)
+                {
+                    aprovConfig.Id = x.Id;
+                    aprovConfig.UtilizadorCriação = x.CreateUser;
+                    aprovConfig.DataHoraCriação = string.IsNullOrEmpty(x.CreateDate) ? (DateTime?)null : DateTime.Parse(x.CreateDate);
+                    aprovConfig.DataHoraModificação = DateTime.Now;
+                    aprovConfig.UtilizadorModificação = User.Identity.Name;
+                    DBApprovalConfigurations.Update(aprovConfig);
+                }
+                else
+                {
+                    aprovConfig.DataHoraCriação = DateTime.Now;
+                    aprovConfig.UtilizadorCriação = User.Identity.Name;
+                    DBApprovalConfigurations.Create(aprovConfig);
+                }
+            });
+            return Json(data);
         }
         #endregion
 

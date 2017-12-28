@@ -1,5 +1,6 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.Approvals;
+using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Approvals;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,20 @@ namespace Hydra.Such.Portal.Extensions
 {
     public class ApprovalMovementsManager
     {
-        public static bool StartApprovalMovement(int type, int area, decimal value, string number, string requestUser)
+        //100 - Fluxo Iniciado com suceso
+        //101 - Não existem configurações de numerações compativeis
+        //102 - Erro desconhecido
+        public static ErrorHandler StartApprovalMovement(int type, int area, decimal value, string number, string requestUser)
         {
             try
             {
+                ErrorHandler result = new ErrorHandler() {
+                    eReasonCode = 100,
+                    eMessage = "Fluxo Iniciado com suceso"
+                };
+
                 //Get Compatible ApprovalConfigurations
-                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValue(type, area, value);
+                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDate(type, area, value, DateTime.Now);
                 int lowLevel = ApprovalConfigurations.Where(x => x.NívelAprovação.HasValue).OrderBy(x => x.NívelAprovação.Value).Select(x => x.NívelAprovação.Value).FirstOrDefault();
                 ApprovalConfigurations.RemoveAll(x => x.NívelAprovação != lowLevel);
 
@@ -80,7 +89,7 @@ namespace Hydra.Such.Portal.Extensions
                             From = "plataforma@such.pt"
                         };
 
-                        Email.To.Add("abarros@hydra.pt");
+                        Email.To.Add(e);
 
                         Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação na Plataforma!");
 
@@ -92,19 +101,24 @@ namespace Hydra.Such.Portal.Extensions
                 }
                 else
                 {
-                    //?????????????????????????????????????
-                    //Não existem configurações compativeis
-                    //?????????????????????????????????????
+                    result.eReasonCode = 101;
+                    result.eMessage = "Não existem configurações de numerações compativeis.";
                 }
-                return true;
+                return result;
             }
             catch (Exception ex)
             {
-                return false;
+                return new ErrorHandler()
+                {
+                    eReasonCode = 102,
+                    eMessage = "Ocorreu um erro desconhecido."
+                };
             }
         }
 
-        public static bool ApproveMovement(int movementNo, string ApproveUser)
+        // 100 - Tarefa aprovada com sucesso
+        // 101 - Erro desconhecido
+        public static ErrorHandler ApproveMovement(int movementNo, string ApproveUser)
         {
             try
             {
@@ -120,7 +134,7 @@ namespace Hydra.Such.Portal.Extensions
                 DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, ApproveUser);
 
                 //Get Next Level Configuration
-                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValue(ApprovalMovement.Type.Value, ApprovalMovement.Area.Value, ApprovalMovement.Value.Value);
+                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDate(ApprovalMovement.Type.Value, ApprovalMovement.Area.Value, ApprovalMovement.Value.Value, DateTime.Now);
                 ApprovalConfigurations.RemoveAll(x => !x.NívelAprovação.HasValue || x.NívelAprovação <= ApprovalMovement.Level);
 
                 if (ApprovalConfigurations.Count > 0)
@@ -134,6 +148,7 @@ namespace Hydra.Such.Portal.Extensions
                     ApprovalMovement.UserUpdate = null;
                     ApprovalMovement.DateTimeCreate = DateTime.Now;
                     ApprovalMovement.UserCreate = ApproveUser;
+                    ApprovalMovement.Status = 1;
                     ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Create(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
 
                     //Create User ApprovalMovements
@@ -218,15 +233,26 @@ namespace Hydra.Such.Portal.Extensions
 
                     Email.SendEmail();
                 }
-                return true;
+                return new ErrorHandler()
+                {
+                    eReasonCode = 100,
+                    eMessage = "A tarefa foi aprovada com sucesso."
+                };
             }
             catch (Exception ex)
             {
-                return false;
+                return new ErrorHandler()
+                {
+                    eReasonCode = 101,
+                    eMessage = "Ocorreu um erro desconhecido ao aprovar a tarefa."
+                };
             }
         }
 
-        public static bool RejectMovement(int movementNo, string rejectUser, string rejectReason)
+
+        //100 - Tarefa rejeitada com sucesso
+        //101 - Erro desconhecido
+        public static ErrorHandler RejectMovement(int movementNo, string rejectUser, string rejectReason)
         {
             try
             {
@@ -269,14 +295,22 @@ namespace Hydra.Such.Portal.Extensions
                 Email.EmailApproval = EmailApproval;
 
                 Email.SendEmail();
-                return true;
+                return new ErrorHandler() {
+                    eReasonCode = 100,
+                    eMessage = "Tarefa rejeitada com sucesso."
+                };
             }
             catch (Exception ex)
             {
-                return false;
+                return new ErrorHandler()
+                {
+                    eReasonCode = 101,
+                    eMessage = "Ocorreu um erro desconhecido."
+                };
             }
         }
 
+        
         public static string MakeEmailBodyContent(string BodyText)
         {
             string Body = @"<html>" +

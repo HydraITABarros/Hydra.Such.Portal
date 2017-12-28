@@ -1,0 +1,139 @@
+﻿
+@{
+    ViewData["Title"] = "Aprovações - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+
+<h1 class="title">Pedidos de aprovação</h1>
+
+<x-approvals></x-approvals>
+<dom-module id="x-approvals">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        @*POPULATE GRID*@
+        <iron-ajax url="/Approvals/GetListApprovals"
+                   last-response="{{result}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound"
+                   content-type="application/json"></iron-ajax>
+
+
+        <vaadin-grid aria-label="ApprovalsTable" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="10%">
+                <template class="header">
+                    <vaadin-grid-sorter path="id">Nº Aprovação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="id" />
+                </template>
+                <template>
+                    {{item.movementNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="typeText">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="typeText" />
+                </template>
+                <template>
+                    {{item.typeText}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="areaText">Área</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="areaText" />
+                </template>
+                <template>
+                    {{item.areaText}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="number">Número</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="number" />
+                </template>
+                <template>
+                    {{item.number}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="requestUser">Solicitado Por</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requestUser" />
+                </template>
+                <template>
+                    {{item.requestUser}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="value">Valor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="value" />
+                </template>
+                <template>
+                    {{item.value}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="statusText">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="statusText" />
+                </template>
+                <template>
+                    {{item.statusText}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="30%">
+                <template class="header">
+                    <vaadin-grid-sorter path="level">Nivel</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="level" />
+                </template>
+                <template>
+                    {{item.level}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-approvals',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    }
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Administracao/ConfiguracaoUtilizadoresDetalhes/" + item.idUtilizador;
+                    }
+                },
+                _create: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Administracao/ConfiguracaoUtilizadoresDetalhes/0";
+                    }
+                }
+            });
+        });
+    </script>
+
+</dom-module>
+
+

@@ -48,6 +48,7 @@ namespace Hydra.Such.Data.Logic.Approvals
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToCreate.NºMovimento = new Int32();
                     ObjectToCreate.DataHoraCriação = DateTime.Now;
                     ctx.MovimentosDeAprovação.Add(ObjectToCreate);
                     ctx.SaveChanges();
@@ -83,9 +84,24 @@ namespace Hydra.Such.Data.Logic.Approvals
         }
         #endregion
 
+        public static List<MovimentosDeAprovação> GetAllAssignedToUserFilteredByStatus(string userId, int status)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.UtilizadoresMovimentosDeAprovação.Where(x => x.Utilizador == userId).Select(x => x.NºMovimentoNavigation).Where(x => x.Estado == status).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
 
+                return null;
+            }
+        }
 
         #region Parses
+
         public static ApprovalMovementsViewModel ParseToViewModel(MovimentosDeAprovação x)
         {
             return new ApprovalMovementsViewModel()
@@ -106,6 +122,16 @@ namespace Hydra.Such.Data.Logic.Approvals
                 Level = x.Nivel
             };
         }
+
+        public static List<ApprovalMovementsViewModel> ParseToViewModel(this List<MovimentosDeAprovação> items)
+        {
+            List<ApprovalMovementsViewModel> places = new List<ApprovalMovementsViewModel>();
+            if (items != null)
+                items.ForEach(x =>
+                    places.Add(ParseToViewModel(x)));
+            return places;
+        }
+
         public static MovimentosDeAprovação ParseToDatabase(ApprovalMovementsViewModel x)
         {
             return new MovimentosDeAprovação()
@@ -126,6 +152,16 @@ namespace Hydra.Such.Data.Logic.Approvals
                 Nivel = x.Level
             };
         }
+
+        public static List<MovimentosDeAprovação> ParseToDatabase(this List<ApprovalMovementsViewModel> items)
+        {
+            List<MovimentosDeAprovação> places = new List<MovimentosDeAprovação>();
+            if (items != null)
+                items.ForEach(x =>
+                    places.Add(ParseToDatabase(x)));
+            return places;
+        }
+
         #endregion
 
 
