@@ -46,6 +46,14 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetApprovalTypes()
+        {
+            List<EnumData> result = EnumerablesFixed.ApprovalTypes;
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetNumerations()
         {
             List<DDMessage> result = DBNumerationConfigurations.GetAll().Select(x => new DDMessage()

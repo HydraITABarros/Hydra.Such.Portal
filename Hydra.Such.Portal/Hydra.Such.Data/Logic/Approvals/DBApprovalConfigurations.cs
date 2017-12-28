@@ -85,13 +85,13 @@ namespace Hydra.Such.Data.Logic.Approvals
         #endregion
 
 
-        public static List<ConfiguraçãoAprovações> GetByTypeAreaValue(int type, int area, decimal value)
+        public static List<ConfiguraçãoAprovações> GetByTypeAreaValueDate(int type, int area, decimal value,DateTime fDate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<ConfiguraçãoAprovações> result = ctx.ConfiguraçãoAprovações.Where(x => x.Tipo == type && x.Área == area && (x.ValorAprovação >= value || x.ValorAprovação == 0)).ToList();
+                    List<ConfiguraçãoAprovações> result = ctx.ConfiguraçãoAprovações.Where(x => x.Tipo == type && x.Área == area && (x.ValorAprovação >= value || x.ValorAprovação == 0) && (x.DataInicial <= fDate && x.DataFinal >= fDate)).ToList();
                     return result;
                 }
             }
@@ -122,7 +122,9 @@ namespace Hydra.Such.Data.Logic.Approvals
                 CreateDate = x.DataHoraCriação,
                 CreateUser = x.UtilizadorCriação,
                 UpdateDate = x.DataHoraModificação,
-                UpdateUser = x.UtilizadorModificação
+                UpdateUser = x.UtilizadorModificação,
+                StartDate = x.DataInicial,
+                EndDate = x.DataFinal
             };
         }
         public static ConfiguraçãoAprovações ParseToDatabase(ApprovalConfigurationsViewModel x)
@@ -139,7 +141,9 @@ namespace Hydra.Such.Data.Logic.Approvals
                 DataHoraCriação = x.CreateDate,
                 UtilizadorCriação = x.CreateUser,
                 DataHoraModificação = x.UpdateDate,
-                UtilizadorModificação = x.UpdateUser
+                UtilizadorModificação = x.UpdateUser,
+                DataInicial = x.StartDate,
+                DataFinal = x.EndDate
             };
         }
         #endregion
