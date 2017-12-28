@@ -169,8 +169,15 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/RegistByType"
+                   last-response="{{regist}}"
+                   id="regist_datasource"
+                   on-response="_registTypeResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
         
-
+    
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -412,6 +419,11 @@
                 <div class="row break_clear marginSpace">
                     <paper-button raised id="btnLocalMarketValidation" style="width: 250px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>
                     <paper-button raised id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
+                    <paper-button raised id="btnRegistProvide" style="width: 150px !important;" on-tap="_RegistProvide"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Disponibilizar</paper-button>
+                    <paper-button raised id="btnRegistToReceive"  on-tap="_RegistToReceive"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Receber</paper-button>
+                    <paper-button raised id="btnOverrideValidation"  on-tap="_OverrideValidation"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anular Validação</paper-button>
+                    <paper-button raised id="btnCancelApproval"  on-tap="_CancelApproval"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anular Aprovação</paper-button>
+                    <paper-button raised id="btnCloseRequest"  on-tap="_CloseRequest"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Fechar Requisição</paper-button>
                 </div>
                     <div id="PreRequiLinesPanel" class="panel panel-default">
                         <!--<div class="panel-heading">Linhas</div>
@@ -532,7 +544,7 @@
                                                 </vaadin-combo-box>
                                             </div>
                                             <div class="col-lg-3">
-                                                <vaadin-combo-box items="[[CBProducts]]" id="codeId" on-value-changed="_codeIdOnChange" item-value-path="id" item-label-path="value" value="" label="Código">
+                                                <vaadin-combo-box items="[[CBProducts]]" id="codeId" on-value-changed="_codeIdOnChange" item-value-path="id" item-label-path="id" value="" label="Código">
                                                     <template>
                                                         <table width="350px">
                                                             <tr>
@@ -672,7 +684,7 @@
                                                         <vaadin-grid-filter path="code"></vaadin-grid-filter>
                                                     </template>
                                                     <template>
-                                                        [[_getProductDescription(item.code)]]
+                                                        {{item.code}}
                                                     </template>
                                                 </vaadin-grid-column>
 
@@ -1022,6 +1034,12 @@
                         this._openToastError(this.Requisition.eMessage);
                     }
                 },
+                _CancelApproval: function () {
+                    debugger;
+                    this.$.regist_datasource.body = JSON.stringify(this.Requisition);
+                    this.$.regist_datasource.params = { "registType": "Anular Aprovacao" };
+                    this.$.regist_datasource.generateRequest();
+                },
                 _validateRequisitionResponse: function (e) {
                     if (this.Requisition.eReasonCode == "1") {
                         this._openToast(this.Requisition.eMessage);
@@ -1043,15 +1061,6 @@
                 _getUnitOfMeasureDescription: function (param) {
                     if (param != undefined && this.unitofmeasureresult != undefined) {
                         var sel = this.unitofmeasureresult.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _getProductDescription: function (param) {
-                    if (param != undefined && this.CBProducts != undefined) {
-                        var sel = this.CBProducts.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
                         }
@@ -1218,6 +1227,19 @@
                         this._openToastError(this.DelReqLineResponse.eMessage);
                     }
                 },
+                _codeIdOnChange: function (e) {
+                    var prodval = "";
+                    if (e.detail.value != null && this.CBProducts != null) {
+                        for (var i = 0; i < this.CBProducts.length; i++) {
+                            if (e.detail.value == this.CBProducts[i].id) {
+                                prodval = this.CBProducts[i].value;
+                            }
+                        }
+                        if (prodval != "") {
+                            this.$.descriptionId.value = prodval;
+                        }
+                    }
+                }
             });
         });
     </script>

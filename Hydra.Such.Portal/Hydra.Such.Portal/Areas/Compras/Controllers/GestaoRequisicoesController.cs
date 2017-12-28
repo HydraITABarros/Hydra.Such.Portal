@@ -77,13 +77,15 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         [Area("Compras")]
         public IActionResult LinhasRequisicao(string id)
         {
-
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
+
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
                 ViewBag.RequisitionId = id;
+                ViewBag.ApprovedRequisitionEnumValue = (int)RequisitionStates.Approved;
+                ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
 
                 return View();
             }
@@ -367,6 +369,37 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             return Json(requestResponse);
         }
 
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult RegistByType([FromBody] RequisitionViewModel item, string registType)
+        {
+            if (item != null)
+            {
+               
+                switch (registType)
+                {
+                    case "Anular Aprovacao":
+                       
+                    break;
+                    case "Anular Validacao":
+
+                    break;
+                    case "Receber":
+
+                    break;
+                    case "Disponibilizar":
+
+                    break;
+                    case "Fechar Requisicao":
+
+                    break;
+                    default:
+                    break;
+                }
+            }
+            return Json(item);
+        }
 
         [HttpPost]
         [Area("Compras")]
