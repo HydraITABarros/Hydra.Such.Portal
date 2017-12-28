@@ -1682,6 +1682,7 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Coimbra"
             },
         };
+      
 
         public static readonly List<EnumData> ApprovalTypes = new List<EnumData>()
         {

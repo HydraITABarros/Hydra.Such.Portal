@@ -72,15 +72,15 @@
         </iron-ajax>
 
         @*CRUD NEW PROFILEMODEL*@
-        <iron-ajax url="/PopulateDropdowns/GetRegionCode"
-                   last-response="{{RegionData}}"
+        <iron-ajax url="/PopulateDropdowns/GetTypeRequisition"
+                   last-response="{{TypeRequisition}}"
                    auto
                    method="post"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
-                   last-response="{{FunctionalTipo}}"
+        <iron-ajax url="/PopulateDropdowns/GetAdminArea"
+                   last-response="{{AdminArea}}"
                    auto
                    method="post"
                    handle-as="json"
@@ -94,7 +94,7 @@
         </div>
         <div class="row">
             <div class="col-lg-2">
-                <vaadin-combo-box items="[[FunctionalTipo]]" id="ddType" item-value-path="id" item-label-path="value" value="{{ddType}}" label="Área" disabled="{{ _permissionsCreate }}">
+                <vaadin-combo-box items="[[TypeRequisition]]" id="ddType" item-value-path="id" item-label-path="value" value="{{ddType}}" label="Área" disabled="{{ _permissionsCreate }}">
                     <template>
                         <table width="200px">
                             <tr>
@@ -106,7 +106,7 @@
                 </vaadin-combo-box>
             </div>
             <div class="col-lg-2">
-                <vaadin-combo-box items="[[FunctionalAreas]]" id="ddAreas" item-value-path="id" item-label-path="value" value="{{ddAreas}}" label="Área" disabled="{{ _permissionsCreate }}">
+                <vaadin-combo-box items="[[AdminArea]]" id="ddAreas" item-value-path="id" item-label-path="value" value="{{ddAreas}}" label="Área" disabled="{{ _permissionsCreate }}">
                     <template>
                         <table width="200px">
                             <tr>
@@ -255,7 +255,7 @@
                         type: String,
                         notify: true,
                         value: ""
-                    }
+                    },
               
                 },
                 ready: function () {
@@ -302,22 +302,7 @@
 
                 _createApprovals: function () {
 
-                        var Line = {
-                            Type=this.$.ddType,
-                            Area=this.$.ddArea,
-                            LevelApproval=this.$.ddLevelApproval,
-                            UserApproval=this.$.ddUserApproval,
-                            GroupApproval=this.$.ddGroupApproval,
-                            ValueApproval=this.$.ddValueApproval
-
-                        };
-                        if (this.result == null) {
-                            this.result = Line;
-                        }
-                        else {
-                            this.result.push(Line);
-                        }
-                        this.$.ajax_update.body = JSON.stringify(this.result);
+                       
                         this.$.ajax_update.generateRequest();
                         this.$.gridPlaces.clearCache();
 
