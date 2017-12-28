@@ -561,7 +561,6 @@
                     <br />
                         <div class="row">
                             <vaadin-grid id="requestGrid" aria-label="ProfileModelsTabel" items="[[data]]" class="grid">
-
                                 <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
@@ -701,6 +700,18 @@
                                     </template>
                                     <template>
                                         <vaadin-checkbox checked=" {{item.createMarketSearch}}" disabled></vaadin-checkbox>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="130px" resizable>
+                                    <template class="header">
+                                        <p class="alignCenter">Mercado Local</p>
+                                        <vaadin-grid-filter path="localMarket">
+                                            <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                                        </vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <vaadin-checkbox checked=" {{item.localMarket}}" disabled></vaadin-checkbox>
                                     </template>
                                 </vaadin-grid-column>
 
@@ -1007,8 +1018,6 @@
                     this.$.ajax_getPlaceDataDelivery.generateRequest();
                 }
             },
-          
-
         });
     });
 </script>

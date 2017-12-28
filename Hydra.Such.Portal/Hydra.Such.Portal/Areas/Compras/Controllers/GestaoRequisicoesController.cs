@@ -318,6 +318,58 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
 
         [HttpPost]
         [Area("Compras")]
+        public JsonResult CreateRequisitionLine([FromBody] RequisitionLineViewModel item)
+        {
+            if (item != null)
+            {
+                item.CreateUser = User.Identity.Name;
+                var createdItem = DBRequestLine.Create(item.ParseToDB());
+                if (createdItem != null)
+                {
+                    item = createdItem.ParseToViewModel();
+                    item.eReasonCode = 1;
+                    item.eMessage = "Registo criado com sucesso.";
+                }
+                else
+                {
+                    item = new RequisitionLineViewModel();
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao criar o registo.";
+                }
+            }
+            else
+            {
+                item = new RequisitionLineViewModel();
+                item.eReasonCode = 2;
+                item.eMessage = "A linha não pode ser nula.";
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult DeleteReqTemplateLine([FromBody] RequisitionLineViewModel item)
+        {
+            ErrorHandler requestResponse = new ErrorHandler()
+            {
+                eReasonCode = 2,
+                eMessage = "Ocorreu um erro ao eliminar o registo.",
+            };
+
+            if (item != null)
+            {
+                if (DBRequestLine.Delete(item.ParseToDB()))
+                {
+                    requestResponse.eReasonCode = 1;
+                    requestResponse.eMessage = "Registo eliminado com sucesso.";
+                }
+            }
+            return Json(requestResponse);
+        }
+
+
+        [HttpPost]
+        [Area("Compras")]
         public JsonResult ValidateLocalMarketForRequisition([FromBody] RequisitionViewModel item)
         {
             //Validate

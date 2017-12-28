@@ -334,29 +334,14 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null)
                 {
                     //Verify if contract have Invoices Or Projects
-                    //bool haveContracts = DBContracts.GetAllByContractNo(data.ContractNo).Count > 0;
-                    //bool haveInvoices = DBContractInvoices.GetByContractNo(data.ContractNo).Count > 0;
-
-                    //if (haveContracts || haveInvoices)
-                    //{
-                    //    result.eReasonCode = 2;
-                    //    result.eMessage = "Não é possivel remover o contrato pois possui faturas e/ou projetos associados.";
-                    //}
-                    //else
-                    //{
-                    //// Delete Contract Lines
-                    //DBContractLines.DeleteAllFromContract(data.ContractNo);
-
-                    //// Delete Contract Invoice Texts
-                    //DBContractInvoiceText.DeleteAllFromContract(data.ContractNo);
-
-                    //// Delete Contract Client Requisitions
-                    //DBContractClientRequisition.DeleteAllFromContract(data.ContractNo);
-
+                    List<LinhasPréRequisição> lines = DBPreRequesitionLines.GetAllByNo(data.PreRequesitionsNo);
+                    foreach(var linestodelete in lines)
+                    {
+                        DBPreRequesitionLines.Delete(linestodelete);
+                    }
                     // Delete Contract 
                     DBPreRequesition.DeleteByPreRequesitionNo(data.PreRequesitionsNo);
-
-
+                    
                     result.eReasonCode = 1;
                     result.eMessage = "Contrato eliminado com sucesso.";
                     //}

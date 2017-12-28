@@ -158,7 +158,7 @@
                                         </vaadin-combo-box>
                                     </div>
                                     <div class="col-md-3 ">
-                                        <vaadin-combo-box items='[[CBWarehouses]]' id="supplier" item-value-path="id" item-label-path="value" value="" label="Fornecedor" disabled="{{ !_permissions.update }}">
+                                        <vaadin-combo-box items='[[CBWarehouses]]' id="supplier" item-value-path="id" item-label-path="value" value="{{data.locationCode}}" label="Localização" disabled="{{ !_permissions.update }}">
                                             <template>
                                                 <table width="180px">
                                                     <tr>
@@ -327,12 +327,12 @@
                     </vaadin-grid-column>
                     <vaadin-grid-column width="30%">
                         <template class="header">
-                            <vaadin-grid-sorter path="productId">Código Produto</vaadin-grid-sorter>
+                            <vaadin-grid-sorter path="productId">Produto</vaadin-grid-sorter>
                             <vaadin-grid-filter path="productId" />
                         </template>
                         <template>
                             <template is="dom-if" if="{{ item.selected }}">
-                                <vaadin-combo-box items="[[CBProducts]]" item-value-path="id" item-label-path="value" value="{{item.productId}}" on-value-changed="_onProductInGridChanged">
+                                <vaadin-combo-box items="[[CBProducts]]" item-value-path="id" item-label-path="value" value="{{item.productId}}" on-value-changed="_onProductInGridChanged" disabled="{{ !_permissions.update }}">
                                     <template>
                                         <paper-icon-item>
                                             <paper-item-body two-line>
@@ -348,7 +348,7 @@
                                 </vaadin-combo-box>
                             </template>
                             <template is="dom-if" if="{{ !item.selected }}">
-                                {{ item.productId }}
+                                [[_getProductDescription(item.productId)]]
                             </template>
                         </template>
                     </vaadin-grid-column>
@@ -371,17 +371,9 @@
                             <vaadin-grid-sorter path="UnitOfMeasure">Unidade de Medida</vaadin-grid-sorter>
                             <vaadin-grid-filter path="UnitOfMeasure" />
                         </template>
-                        @*<template>
-                            <template is="dom-if" if="{{ item.selected }}">
-                                <vaadin-text-field value="{{ item.unitOfMeasure }}" id="grdLineUnitOfMeasure" name="grdLineUnitOfMeasure" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                            </template>
-                            <template is="dom-if" if="{{ !item.selected }}">
-                                {{ item.unitOfMeasure }}
-                            </template>
-                        </template>*@
                         <template>
                             <template is="dom-if" if="{{ item.selected }}">
-                                <vaadin-combo-box items="[[CBUnitsOfMeasure]]" item-value-path="id" item-label-path="value" value="{{item.unitOfMeasure}}">
+                                <vaadin-combo-box items="[[CBUnitsOfMeasure]]" item-value-path="id" item-label-path="value" value="{{item.unitOfMeasure}}" disabled="{{ !_permissions.update }}">
                                     <template>
                                         <paper-icon-item>
                                             <paper-item-body two-line>
@@ -396,8 +388,8 @@
                                     </template>
                                 </vaadin-combo-box>
                             </template>
-                            <template is="dom-if" if="{{ !item.selected }}">
-                                {{ item.unitOfMeasure }}
+                            <template is="dom-if" if="{{ !item.selected }}">                                
+                                [[_getUnitOfMeasureDescription(item.unitOfMeasure)]]
                             </template>
                         </template>
                     </vaadin-grid-column>
@@ -434,17 +426,9 @@
                             <vaadin-grid-sorter path="MealType">Tipo Refeição</vaadin-grid-sorter>
                             <vaadin-grid-filter path="MealType" />
                         </template>
-                        @*<template>
-                            <template is="dom-if" if="{{ item.selected }}">
-                                <vaadin-text-field value="{{ item.mealType }}" id="grdLineMealType" name="grdLineMealType" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                            </template>
-                            <template is="dom-if" if="{{ !item.selected }}">
-                                {{ item.mealType }}
-                            </template>
-                        </template>*@
                         <template>
                             <template is="dom-if" if="{{ item.selected }}">
-                                <vaadin-combo-box items="[[CBMealTypes]]" item-value-path="id" item-label-path="value" value="{{item.mealType}}" on-value-changed="_onMealTypeInGridChanged">
+                                <vaadin-combo-box items="[[CBMealTypes]]" item-value-path="id" item-label-path="value" value="{{item.mealType}}" on-value-changed="_onMealTypeInGridChanged" disabled="{{ !_permissions.update }}">
                                     <template>
                                         <paper-icon-item>
                                             <paper-item-body two-line>
@@ -460,11 +444,11 @@
                                 </vaadin-combo-box>
                             </template>
                             <template is="dom-if" if="{{ !item.selected }}">
-                                {{ item.mealType }}
+                                [[_getMealTypeDescription(item.mealType)]]
                             </template>
                         </template>
                     </vaadin-grid-column>
-                    <vaadin-grid-column width="30%">
+                    @*<vaadin-grid-column width="30%">
                         <template class="header">
                             <vaadin-grid-sorter path="MealTypeDescription">Descrição Tipo Refeição</vaadin-grid-sorter>
                             <vaadin-grid-filter path="MealTypeDescription" />
@@ -477,24 +461,37 @@
                                 Campo não implementado
                             </template>
                         </template>
-                    </vaadin-grid-column>
+                    </vaadin-grid-column>*@
                     <vaadin-grid-column width="30%">
                         <template class="header">
-                            <vaadin-grid-sorter path="ProjectId">Cód. Projeto</vaadin-grid-sorter>
+                            <vaadin-grid-sorter path="ProjectId">Projeto</vaadin-grid-sorter>
                             <vaadin-grid-filter path="ProjectId" />
                         </template>
                         <template>
                             <template is="dom-if" if="{{ item.selected }}">
-                                <vaadin-text-field value="{{ item.projectId }}" id="grdLineProjectId" name="grdLineProjectId" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" value="{{item.projectId}}" disabled="{{ !_permissions.update }}">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <table width="180px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
                             </template>
                             <template is="dom-if" if="{{ !item.selected }}">
-                                {{ item.projectId }}
+                                [[_getProjectDescription(item.projectId)]]
                             </template>
                         </template>
                     </vaadin-grid-column>
                     <vaadin-grid-column width="30%">
                         <template class="header">
-                            <vaadin-grid-sorter path="codeRegion">Código Região</vaadin-grid-sorter>
+                            <vaadin-grid-sorter path="codeRegion">Região</vaadin-grid-sorter>
                             <vaadin-grid-filter path="codeRegion" />
                         </template>
                         <template>
@@ -510,13 +507,13 @@
                                 </vaadin-combo-box>
                             </template>
                             <template is="dom-if" if="{{ !item.selected }}">
-                                {{ item.codeRegion }}
+                                [[_getRegionDescription(item.codeRegion)]]
                             </template>
                         </template>
                     </vaadin-grid-column>
                     <vaadin-grid-column width="30%">
                         <template class="header">
-                            <vaadin-grid-sorter path="codeFunctionalArea">Código Área Funcional</vaadin-grid-sorter>
+                            <vaadin-grid-sorter path="codeFunctionalArea">Área Funcional</vaadin-grid-sorter>
                             <vaadin-grid-filter path="codeFunctionalArea" />
                         </template>
                         <template>
@@ -532,13 +529,13 @@
                                 </vaadin-combo-box>
                             </template>
                             <template is="dom-if" if="{{ !item.selected }}">
-                                {{ item.codeFunctionalArea }}
+                                [[_getFunctionalAreaDescription(item.codeFunctionalArea)]]
                             </template>
                         </template>
                     </vaadin-grid-column>
                     <vaadin-grid-column width="30%">
                         <template class="header">
-                            <vaadin-grid-sorter path="codeResponsabilityCenter">Código Centro Responsabilidade</vaadin-grid-sorter>
+                            <vaadin-grid-sorter path="codeResponsabilityCenter">Centro Responsabilidade</vaadin-grid-sorter>
                             <vaadin-grid-filter path="codeResponsabilityCenter" />
                         </template>
                         <template>
@@ -554,7 +551,7 @@
                                 </vaadin-combo-box>
                             </template>
                             <template is="dom-if" if="{{ !item.selected }}">
-                                {{ item.codeResponsabilityCenter }}
+                                [[_getResponsabilityCenterDescription(item.codeResponsabilityCenter)]]
                             </template>
                         </template>
                     </vaadin-grid-column>
@@ -617,11 +614,17 @@
                         }
                     }
                 },
-                ready: function () {
+                observers: [
+                    '_onCacheLoaded(CBProducts,CBFunctionalAreas,CBResponsabilityCenters,CBRegions,CBUnitsOfMeasure, CBMealTypes, CBProjects)'
+                ],
+                _onCacheLoaded: function (products, functionalAreas, responsabilityCenters, regions, unitsOfMeasure, mealTypes, projects) {
                     this.$.reqTemplateHeader_databound.body = JSON.stringify(@ViewBag.requisitionTemplateId);
                     this.$.reqTemplateHeader_databound.generateRequest();
 
                     this._isCreate = "@ViewBag.FormType" == "0";
+                },
+                ready: function () {
+
                 },
                 _openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
@@ -631,31 +634,31 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
-                _validateUserImputForHeader() {
+                _validateUserInputForHeader() {
                     if (true) {
                         return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
-                _validateUserImputForLine() {
+                _validateUserInputForLine() {
                     if (this.$.lineQuantity.validate()) {
                         return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
-                
+
                 //CRUD
                 _createReqTemplate: function () {
-                    if (this._validateUserImputForHeader()) {
+                    if (this._validateUserInputForHeader()) {
                         this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/CreateReqTemplate"
                         this.$.reqTemplateHeader_databound.body = JSON.stringify(this.data);
                         this.$.reqTemplateHeader_databound.generateRequest();
                     }
                 },
                 _updateReqTemplate: function () {
-                    if (this._validateUserImputForHeader()) {
+                    if (this._validateUserInputForHeader()) {
                         this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/UpdateReqTemplate";
                         this.$.reqTemplateHeader_databound.body = JSON.stringify(this.data);
                         this.$.reqTemplateHeader_databound.generateRequest();
@@ -730,7 +733,7 @@
                     }
                 },
                 _createReqTemplateLine: function () {
-                    if (this._validateUserImputForLine()) {
+                    if (this._validateUserInputForLine()) {
 
                         var newReqTemplateLine = {
                             requisitionTemplateId: this.data.requisitionTemplateId,
@@ -819,12 +822,75 @@
                 _notImplemented: function (e) {
                     alert("Funcionalidade não implementada. A aguardar especificação.");
                 },
-
+                //Get Descriptions
+                _getProductDescription: function (id) {
+                    if (id != undefined && this.CBProducts != undefined) {
+                        var sel = this.CBProducts.find(x => x.id == id);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _getUnitOfMeasureDescription: function(id) {
+                    if (id != undefined && this.CBUnitsOfMeasure != undefined) {
+                        var sel = this.CBUnitsOfMeasure.find(x => x.id == id);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _getMealTypeDescription: function(id) {
+                    if (id != undefined && this.CBMealTypes != undefined) {
+                        var sel = this.CBMealTypes.find(x => x.id == id);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _getProjectDescription: function (id) {
+                    if (id != undefined && this.CBProjects != undefined) {
+                        var sel = this.CBProjects.find(x => x.id == id);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _getRegionDescription: function (id) {
+                    if (id != undefined && this.CBRegions != undefined) {
+                        var sel = this.CBRegions.find(x => x.id == id);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _getFunctionalAreaDescription: function (id) {
+                    if (id != undefined && this.CBFunctionalAreas != undefined) {
+                        var sel = this.CBFunctionalAreas.find(x => x.id == id);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+                _getResponsabilityCenterDescription: function (id) {
+                    if (id != undefined && this.CBResponsabilityCenters != undefined) {
+                        var sel = this.CBResponsabilityCenters.find(x => x.id == id);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
                 _onProductChanged: function (e) {
                     if (e.detail.value != null && e.detail.value != "") {
                         var products = $.grep(this.CBProducts, function (x) { return x.id == e.detail.value; });
                         if (products != null && products.length > 0)
-                        { 
+                        {
                             var product = products[0];
                             this.$.lineProductDescription.value = product.value;
                             this.$.lineUnitOfMeasure.value = product.extra;

@@ -11,6 +11,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string CodeRegion { get; set; }
         public string CodeFunctionalArea { get; set; }
         public string CodeResponsabilityCenter { get; set; }
+        public string LocationCode { get; set; }
         public string CreateDate { get; set; }
         public string UpdateDate { get; set; }
         public string CreateUser { get; set; }

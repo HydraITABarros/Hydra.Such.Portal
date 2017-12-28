@@ -110,6 +110,9 @@
                 }
         </style>
 
+        <iron-ajax url="/PopulateDropdowns/GetRequestStatus" last-response="{{CBStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
         <iron-ajax url="/PreRequisicoes/GetPendingReq"
                    last-response="{{result}}"
                    method="post"
@@ -141,12 +144,13 @@
                     <vaadin-grid-filter path="state" />
                 </template>
                 <template>
-                    {{item.state}}
+                    [[ _clFormatState(item.state) ]]
+                    
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="requisitionDate">Data Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="RequisitionDate">Data Requisição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="requisitionDate" />
                 </template>
                 <template>
@@ -250,7 +254,7 @@
                 </vaadin-grid-column>
                 <vaadin-grid-column width="110px" resizable>
                     <template class="header">
-                        <vaadin-grid-sorter path="queryCreatedMarketNo">Nº Conaulta Mercado</vaadin-grid-sorter>
+                        <vaadin-grid-sorter path="queryCreatedMarketNo">Nº Consulta Mercado</vaadin-grid-sorter>
                         <vaadin-grid-filter path="queryCreatedMarketNo" />
                     </template>
                     <template>
@@ -307,6 +311,27 @@
                         this.$.grid_datareqlines_ajax.body = JSON.stringify({ "ReqNo": item.requisitionNo });
                         this.$.grid_datareqlines_ajax.generateRequest();
                     }
+                },
+                ready: function () {
+                    debugger;
+                    _clFormatState(this.result.state);
+                },
+
+                _clFormatState: function (param) {
+                    if (param != undefined) {
+                        var sel = this.CBStatus.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
+                },
+
+                _GoToReq: function (e) {
+                    debugger;
+                    var index = this.result.indexOf(e.model.item);
+                    this.result.splice(index, 1);
+                    window.location.href = "/Compras/GestaoRequisicoes/LinhasRequisicao/" + e.model.item.requisitionNo;
                 },
 
                 ready: function () {

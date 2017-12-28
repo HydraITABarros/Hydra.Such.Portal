@@ -278,88 +278,7 @@
                    on-response="_responseProcessor"
                    content-type="application/json">
         </iron-ajax>
-        <!-- Data from Fluxo Trabalho.b -->
-        <iron-ajax url="/ProcedimentosCcps/GetChecklistArea"
-                   last-response="{{CLArea}}"           
-                   method="post"
-                   handle-as="json"
-                   id="ajax_checklist_estado0"
-                   on-response="_checklistResponseEstado0"
-                   content-type="application/json">
-        </iron-ajax> <!-- FluxoTrabalho.Estado == 0 -->
-        <iron-ajax url="/ProcedimentosCcps/GetChecklistImobilizadoContabilidade"
-                   last-response="{{CLImobContab}}"     
-                   method="post"
-                   handle-as="json"
-                   id="ajax_checklist_estado1"
-                   on-response="_checklistResponseEstado1"
-                   content-type="application/json">
-        </iron-ajax> <!-- FluxoTrabalho.Estado == 1 -->   
-        <iron-ajax url="/ProcedimentosCcps/GetChecklistImobilizadoArea"
-                   last-response="{{CLImobArea}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_checklist_estado2"
-                   on-response="_checklistResponseEstado2"
-                   content-type="application/json">
-        </iron-ajax> <!-- FluxoTrabalho.Estado == 2 -->
-        <iron-ajax url="/ProcedimentosCcps/GetChecklistImobilizadoCA"
-                   last-response="{{CLImobCA}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_checklist_estado3"
-                   on-response="_checklistResponseEstado3"
-                   content-type="application/json">
-        </iron-ajax> <!-- FluxoTrabalho.Estado == 3 -->
-        <iron-ajax url="/ProcedimentosCcps/GetChecklistFundamentoCompras"
-                   last-response="{{CLFundamentoCompras}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_checklist_estado4"
-                   on-response="_checklistResponseEstado4"
-                   content-type="application/json">
-        </iron-ajax> <!-- FluxoTrabalho.Estado == 4 -->
-        <iron-ajax url="/ProcedimentosCcps/GetChecklistFundamentoFinanceiros"
-                   last-response="{{CLFundamentoFinanceiros}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_checklist_estado5"
-                   on-response="_checklistResponseEstado5"
-                   content-type="application/json">
-        </iron-ajax> <!-- FluxoTrabalho.Estado == 5 -->
-        <iron-ajax url="/ProcedimentosCcps/GetChecklistJuridicoAvaliacaoPecasOuContrato"
-                   last-response="{{CLAvaliacaoJuridico}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_checklist_estado6ou14"
-                   on-response="_checklistResponseEstado6ou14"
-                   content-type="application/json">
-        </iron-ajax> <!-- FluxoTrabalho.Estado == 6 || 14 -->
-        <iron-ajax url="/ProcedimentosCcps/GetChecklistFundamentacaoArea"
-                   last-response="{{CLFundamentacaoArea}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_checklist_estado7"
-                   on-response="_checklistResponseEstado7"
-                   content-type="application/json">
-        </iron-ajax> <!-- FluxoTrabalho.Estado == 7 -->
-        <iron-ajax url="/ProcedimentosCcps/GetChecklistAberturaOuAutorizacao"
-                   last-response="{{CLAbertura}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_checklist_estado8ou17"
-                   on-response="_checklistResponseEstado8ou17"
-                   content-type="application/json">
-        </iron-ajax> <!-- FluxoTrabalho.Estado == 8 || 17 -->
-        <iron-ajax url="/ProcedimentosCcps/GetChecklistAdjudicacao"
-                   last-response="{{CLAdjudicacao}}"
-                   method="post"
-                   handle-as="json"
-                   id="ajax_checklist_estado15ou16"
-                   on-response="_checklistResponseEstado15ou16"
-                   content-type="application/json">
-        </iron-ajax> <!-- FluxoTrabalho.Estado == 15 || 16 -->
-        <!-- Data from Fluxo Trabalho.e -->
+
 
         <iron-ajax url="/ProcedimentosCcps/DeleteProcedimento"
                    last-response="{{deletedData}}"
@@ -537,6 +456,15 @@
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
+                                        <div class="col-sm-6">
+                                            <paper-tooltip for="valorPrecoBase" position="top" offset="-1" animation-delay="1">
+                                                Segundo este preceito, o preço base do procedimento é o valor máximo que o SUCH está disposto a pagar. É um limite ao valor das propostas que, se o ultrapassarem, terão que ser excluídas. Se Sim, a area deve indicar o valor do preço base (1).
+                                            </paper-tooltip>
+                                            <vaadin-text-field type="text" value="{{data.valorPrecoBase}}" id="valorPrecoBase" name="valorPrecoBase" label="Valor Preço Base"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+
                                         <div class="col-sm-3">
                                             <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.negociacao}}" id="negociacao" label="Negociação?">
                                                 <template>
@@ -675,21 +603,21 @@
                                     <!--Elementos Checklist - Estado 0 - .b -->
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <such-textarea rows="5" value="{{CLArea.checklistArea.comentarioArea}}" id="comentarioAreaApresentar" name="comentarioAreaApresentar" label="Comentário"> </such-textarea>
+                                            <such-textarea rows="5" value="{{ data.comentarioArea }}" id="comentarioAreaApresentar" name="comentarioAreaApresentar" label="Comentário"> </such-textarea>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <vaadin-text-field type="text" value="{{CLArea.checklistArea.responsavelArea}}" id="responsavelAreaApresentar" name="responsavelAreaApresentar" label="O Responsável da Área pela apresentação da informação " disabled="true"> </vaadin-text-field>
+                                            <vaadin-text-field type="text" value="{{ data.responsavelArea }}" id="responsavelAreaApresentar" name="responsavelAreaApresentar" label="O Responsável da Área pela apresentação da informação " disabled="true"> </vaadin-text-field>
                                         </div>
                                         <br />
                                         <div class="col-sm-6">
-                                            <vaadin-text-field type="text" value="{{CLArea.checklistArea.nomeResponsavelArea}}" id="nomeResponsavelAreaApresentar" name="nomeResponsavelAreaApresentar" disabled="true"> </vaadin-text-field>
+                                            <vaadin-text-field type="text" value="{{ data.nomeResponsavelArea }}" id="nomeResponsavelAreaApresentar" name="nomeResponsavelAreaApresentar" disabled="true"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-3">
-                                            <vaadin-text-field type="text" value="{{CLArea.checklistArea.dataResponsavel}}" id="dataResponsavelApresentar" name="dataResponsavelApresentar" label="Data" disabled="true"> </vaadin-text-field>
+                                            <vaadin-text-field type="text" value="{{ data.dataResponsavel}}" id="dataResponsavelApresentar" name="dataResponsavelApresentar" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <!--Elementos Checklist - Estado 0 - .e -->
@@ -2152,6 +2080,12 @@
                         type: Boolean,
                         value: false
                     },
+
+                    __comentarioArea: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
                 },
 
                 _testFunction1: function () {
@@ -2162,9 +2096,11 @@
                 },
 
                 ready: function () {
-                    //debugger;;
+                    debugger;;
                     this.$.ajax_userpermissions.body = this.data;
-                    this.$.ajax_userpermissions.generateRequest();                               
+                    this.$.ajax_userpermissions.generateRequest();    
+                    debugger;;
+
                 },
 
                 _openToast: function (message) {
@@ -2230,25 +2166,22 @@
 
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetProcedimento") !== -1) {
-                            if (this.data.No == "") {
-                                this._isCreate = true;
+                            if (self.data.No == "") {
+                                self._isCreate = true;
                                 return;
                             }
 
-                            //debugger;;
-                            this._setFieldsEditability(this.data);
-
-                            this.$.ajax_checklist_estado0.body = this.data;
-                            this.$.ajax_checklist_estado0.generateRequest();
-
-                            
+                            debugger;;
+                            self._setFieldsEditability(self.data);
+                       
+                            debugger;;
                         } else if (data.detail.url.indexOf("Create") !== -1) {
-                            this._createResponseProcessor();
+                            self._createResponseProcessor();
                         } else if (data.detail.url.indexOf("Update") !== -1) {
-                            this._openToast("Procedimento atualizado com sucesso.")
+                            self._openToast("Procedimento atualizado com sucesso.")
                         }
                     } else {
-                        this._openToast("Ocorreu um erro ao criar o Procedimento.")
+                        self._openToast("Ocorreu um erro ao criar o Procedimento.")
                     }
                 },
 
@@ -2294,9 +2227,11 @@
                     }
  
                     if (this.userAllowed) {
+                        debugger;;
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
                         this.$.page_databound_ajax.generateRequest();
-
+                        
+                        debugger;;
                         // set user permissions
                         for (var i in this.UserAccesses) {
                             switch (this.UserAccesses[i]) {
@@ -2438,21 +2373,25 @@
 
                 // Checklist Fluxo Trabalho
                 _checklistResponseEstado0: function (e) {
-                    //debugger;;
+                    debugger;;
 
                     if (this.CLArea != null) {
+                        debugger;;
+
                         //this._openToast(this.ChecklistArea.comentarioAreaApresentar);
+                   
                     }
                 },
 
                 // Action of submitting Procedimento
                 _onSubmitValidateProcedimento: function () {
+                    debugger;;
                     if (this.data.informacaoTecnica == "" || this.data.informacaoTecnica == null) {
                         this._openToast("A Informação Técnica tem que estar preenchida!")
                         return false;
                     }
 
-                    if (this.data.fundamentoAquisicao == "" || this.data.fundamentoAquisicao == null) {
+                    if (this.data.fundamentacaoAquisicao == "" || this.data.fundamentacaoAquisicao == null) {
                         this._openToast("A Fundamentação da Aquisição tem que estar preenchida!")
                         return false;
                     }
@@ -2465,7 +2404,7 @@
                         return false;
                     }
 
-                    if (this.estimativaPreco == null || this.estimativaPreco == 0) {
+                    if (this.data.estimativaPreco == null || this.data.estimativaPreco == 0) {
                         this._openToast("Obrigatório definir uma Estimativa de Preço, mesmo que não seja definido Preço Base!");
                         return false;
                     }
@@ -2520,12 +2459,15 @@
                     return true;
                 },
                 _submitProcedimento: function () {
+                    debugger;;
                     if (this.data.estado != 0) {
                         this._openToast("Não permitido neste estado!");
                         return;
                     }
 
                     if (this._onSubmitValidateProcedimento()) {
+                      
+                        debugger;;
                         this.$.ajax_submitprocedimento.body = this.data;
                         this.$.ajax_submitprocedimento.generateRequest();
                     }

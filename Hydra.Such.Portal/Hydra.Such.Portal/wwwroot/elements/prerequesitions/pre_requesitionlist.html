@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
+
         <custom-style>
             <style is="custom-style">
                 input[readonly] {
@@ -38,6 +39,9 @@
             </style>
         </custom-style>
 
+        <iron-ajax url="/PopulateDropdowns/TipoRequisicoesLista" last-response="{{CBRequesitionType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
         <iron-ajax url="/PreRequisicoes/GetPreReqList"
                    last-response="{{result}}"
                    method="post"
@@ -52,6 +56,8 @@
                    id="ajax_delete_contract"
                    on-response="_responseDeleteProcessor"
                    content-type="application/json"></iron-ajax>
+
+
 
         <template is="dom-if" if="{{ _permissions.create }}">
             <template is="dom-if" if="{{ !_disabledCreate }}">
@@ -78,6 +84,7 @@
                 </template>
                 <template>
                     {{item.requesitionType}}
+                    
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px">
@@ -204,6 +211,17 @@
                             this._openToastError(this.deletedData.eMessage);
                         }
                     }
+                },
+
+                _clFormatReqType: function (param) {
+                    if (param != undefined) {
+                        debugger;
+                        var sel = this.CBRequesitionType.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
                 },
 
                 _openToast: function (message) {

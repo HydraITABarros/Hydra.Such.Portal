@@ -1960,8 +1960,8 @@ namespace Hydra.Such.Portal.Controllers
                 autorizacao.ValidadorRh1 = data.ValidadorRH1;
                 autorizacao.ValidadorRh2 = data.ValidadorRH2;
                 autorizacao.ValidadorRh3 = data.ValidadorRH3;
-                autorizacao.ValidadorRhKm1 = data.ValidadorRHKM1;
-                autorizacao.ValidadorRhKm2 = data.ValidadorRHKM2;
+                autorizacao.ValidadorRhkm1 = data.ValidadorRHKM1;
+                autorizacao.ValidadorRhkm2 = data.ValidadorRHKM2;
                 autorizacao.CriadoPor = User.Identity.Name;
                 autorizacao.DataHoraCriação = DateTime.Now;
 

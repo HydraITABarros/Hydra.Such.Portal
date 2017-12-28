@@ -72,6 +72,7 @@
     <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{AreasData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
     <iron-ajax url="/PopulateDropdowns/GetFeatures" last-response="{{FeaturesData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
     <iron-ajax url="/PopulateDropdowns/GetUserProfileModels" last-response="{{UserProfileModelsData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
     <iron-ajax url="/PopulateDropdowns/GetDimensions" last-response="{{DimensionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
     <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValue_ajax" last-response="{{DimensionValueData}}" auto method="post" params='{"dimensionId": ""}' handle-as="json" content-type="application/json"></iron-ajax>
     <iron-ajax url="/PopulateDropdowns/GetDimensionValuesFromLines" id="dimensionValueInGrid_ajax" last-response="{{DimensionValueGridData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
