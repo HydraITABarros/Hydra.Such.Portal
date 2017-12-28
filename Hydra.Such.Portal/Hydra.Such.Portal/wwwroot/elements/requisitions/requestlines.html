@@ -703,6 +703,18 @@
                                     </template>
                                 </vaadin-grid-column>
 
+                                <vaadin-grid-column width="130px" resizable>
+                                    <template class="header">
+                                        <p class="alignCenter">Mercado Local</p>
+                                        <vaadin-grid-filter path="localMarket">
+                                            <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                                        </vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        <vaadin-checkbox checked=" {{item.localMarket}}" disabled></vaadin-checkbox>
+                                    </template>
+                                </vaadin-grid-column>
+
                                 <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>

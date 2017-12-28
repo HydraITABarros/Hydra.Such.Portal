@@ -98,7 +98,7 @@
                         window.location.href = "/Contactos/Detalhes";
                     }
                 },
-                _validateUserImput() {
+                _validateUserInput() {
                     if (this.$.contactName.validate()) {
                         return true;
                     }
@@ -106,7 +106,7 @@
                     return false;
                 },
                 _createContact: function () {
-                    if (this._validateUserImput()) {
+                    if (this._validateUserInput()) {
                         this.$.numValidation_contact_request.body = JSON.stringify(this.contact);
                         this.$.numValidation_contact_request.generateRequest();
                     }
@@ -165,7 +165,7 @@
                     }
                 },
                 _updateContact: function () {
-                    if (this._validateUserImput()) {
+                    if (this._validateUserInput()) {
                         this.$.create_contact_request.url = "/Contactos/UpdateContact";
                         this.$.create_contact_request.body = JSON.stringify(this.contact);
                         this.$.create_contact_request.generateRequest();

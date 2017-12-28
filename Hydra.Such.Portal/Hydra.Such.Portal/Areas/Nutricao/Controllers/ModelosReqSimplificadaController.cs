@@ -185,6 +185,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         {
             if (item != null)
             {
+                item.CreateUser = User.Identity.Name;
                 var createdItem = DBSimplifiedReqTemplateLines.Create(item.ParseToDB());
                 if (createdItem != null)
                 {
@@ -194,14 +195,16 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 }
                 else
                 {
+                    item = new SimplifiedReqTemplateLinesViewModel();
                     item.eReasonCode = 2;
                     item.eMessage = "Ocorreu um erro ao criar o registo.";
                 }
             }
             else
             {
+                item = new SimplifiedReqTemplateLinesViewModel();
                 item.eReasonCode = 2;
-                item.eMessage = "A linha não pode ser nulo.";
+                item.eMessage = "A linha não pode ser nula.";
             }
             return Json(item);
         }
