@@ -554,7 +554,9 @@
                             </div>
                             <div class="row">
                                 <div class="marginSpace">
-                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_createRequisitionLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                    <template is="dom-if" if="{{ !isReadOnly() }}">
+                                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_createRequisitionLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                    </template>
                                 </div>
                             </div>
                             <br />
@@ -829,13 +831,15 @@
                                         </template>
                                     </vaadin-grid-column>
 
-                                    <vaadin-grid-column width="100px" resizable>
-                                        <template class="header">
-                                        </template>
-                                        <template>
-                                            <paper-button class="btnRemove" raised on-tap="_deleteRequisitionLine">Eliminar</paper-button>
-                                        </template>
-                                    </vaadin-grid-column>
+                                    <template is="dom-if" if="{{ !isReadOnly() }}">
+                                        <vaadin-grid-column width="100px" resizable>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <paper-button class="btnRemove" raised on-tap="_deleteRequisitionLine">Eliminar</paper-button>
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </template>
                                 </vaadin-grid>
                             </div>
                         </div>
@@ -843,22 +847,6 @@
                 </div>
             </div>
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -903,7 +891,7 @@
 
                 },
                 isReadOnly: function () {
-                    return this._requisitionstatus == this._requisitionstatesenum.Approved ? true : !this._permissions.update;
+                    return false;//this._requisitionstatus == this._requisitionstatesenum.Approved ? true : !this._permissions.update;
                 },
 
                 _onCacheLoaded: function (data, LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, locationsresult, CBProducts, unitofmeasureresult, cboSupplier, Requisition) {
