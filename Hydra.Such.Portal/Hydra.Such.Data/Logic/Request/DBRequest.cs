@@ -340,7 +340,7 @@ namespace Hydra.Such.Data.Logic.Request
                     // EstimatedValue = item.,
                     NºConsultaMercado = item.MarketInquiryNo,
                     NºEncomenda = item.OrderNo,
-                    DataRequisição = item.RequisitionDate != null ? DateTime.Parse(item.RequisitionDate) : (DateTime?)null,
+                    DataRequisição = item.RequisitionDate != null && item.RequisitionDate != "" ? DateTime.Parse(item.RequisitionDate) : (DateTime?)null,
                     //dimension = item.,
                     //Budget = item.,
                     LinhasRequisição = item.Lines.ParseToDB(),

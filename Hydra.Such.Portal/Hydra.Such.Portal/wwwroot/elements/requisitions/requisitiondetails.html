@@ -15,6 +15,7 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
 
 <dom-module id="x-requisitiondetails">
     <template>
@@ -180,7 +181,7 @@
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
-                <iron-form id="frmRequisitions">
+                <iron-form id="frmRequisition">
                     <div class="panel panel-default">
                         <div class="panel-heading">Cabeçalho</div>
                         <div class="panel-body">
@@ -195,11 +196,11 @@
                                 <!--Geral-->
                                 <div>
                                     <div class="row break_clear">
-                                        <div class="col-md-2 ">
+                                        <div class="col-md-3 ">
                                             <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{Requisition.requisitionNo}}" disabled></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="requesitionType" item-value-path="id" item-label-path="value" value="{{Requisition.localMarketRegion}}" label="Região Mercado Local" disabled="{{ isReadOnly() }}">
+                                            <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="requesitionType" item-value-path="id" item-label-path="value" value="{{Requisition.localMarketRegion}}" label="Região Mercado Local" disabled>
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -210,48 +211,24 @@
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
-                                        
-                                    </div>
-                                    <br />
-                                    <div class="row break_clear">
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.urgent}}" disabled="{{ isReadOnly() }}">Urgente</vaadin-checkbox>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{Requisition.requestReclaimNo}}" disabled></vaadin-text-field>
                                         </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.relatedSearches}}" disabled="{{ isReadOnly() }}">Orçamento</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.immobilized}}" disabled="{{ isReadOnly() }}">Imobilizado</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.exclusive}}" disabled="{{ isReadOnly() }}">Exclusivo</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.alreadyPerformed}}" disabled="{{ isReadOnly() }}">Já Executado</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.sample}}" disabled="{{ isReadOnly() }}">Amostra</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.equipment}}" disabled="{{ isReadOnly() }}">Equipamento</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.buyCash}}" disabled="{{ isReadOnly() }}">Compras a Dinheiro</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2 ">
-                                            <vaadin-checkbox checked="{{Requisition.stockReplacement}}" disabled="{{ isReadOnly() }}">Reposição de Stock</vaadin-checkbox>
-                                        </div>
-                                        <div class="col-lg-2">
-                                            <vaadin-checkbox checked="{{Requisition.reclamation}}" disabled="{{ isReadOnly() }}">Reclamação</vaadin-checkbox>
+                                        <div class="col-lg-3">
+                                            <vaadin-combo-box items="[[CBJobNo]]" id="CBJobNo" item-value-path="id" item-label-path="id" value="{{Requisition.projectNo}}" label="Nº Ordem/Projeto" disabled>
+                                                <template>
+                                                    <b>[[item.id]]</b>
+                                                </template>
+                                            </vaadin-combo-box>
                                         </div>
                                     </div>
                                     <br />
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{Requisition.requestReclaimNo}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                            <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled></vaadin-date-picker>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[LProjectRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{Requisition.regionCode}}" label="Cód. Região" disabled="{{ isReadOnly() }}" required error-message="Este campo é obrigatório">
+                                            <vaadin-combo-box items="[[LProjectRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{Requisition.regionCode}}" label="Cód. Região" disabled required error-message="Este campo é obrigatório">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -263,7 +240,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{Requisition.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ isReadOnly() }}" required error-message="Este campo é obrigatório">
+                                            <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{Requisition.functionalAreaCode}}" label="Cód. Área Funcional" disabled required error-message="Este campo é obrigatório">
                                                 <template>
                                                     <table width="200px">
                                                         <tr>
@@ -275,7 +252,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{Requisition.centerResponsibilityCode}}" label="Cód. Centro Responsabilidade" disabled="{{ isReadOnly() }}" required error-message="Este campo é obrigatório">
+                                            <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{Requisition.centerResponsibilityCode}}" label="Cód. Centro Responsabilidade" disabled required error-message="Este campo é obrigatório">
                                                 <template>
                                                     <table width="200px">
                                                         <tr>
@@ -287,51 +264,88 @@
                                             </vaadin-combo-box>
                                         </div>
                                     </div>
+                                    <br />
+                                    <div class="row break_clear">
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.urgent}}" disabled>Urgente</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.relatedSearches}}" disabled>Orçamento</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.immobilized}}" disabled>Imobilizado</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.exclusive}}" disabled>Exclusivo</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.alreadyPerformed}}" disabled>Já Executado</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.sample}}" disabled>Amostra</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.equipment}}" disabled>Equipamento</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.buyCash}}" disabled>Compras a Dinheiro</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2 ">
+                                            <vaadin-checkbox checked="{{Requisition.stockReplacement}}" disabled>Reposição de Stock</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <vaadin-checkbox checked="{{Requisition.reclamation}}" disabled>Reclamação</vaadin-checkbox>
+                                        </div>
+                                    </div>
+                                    <br />
                                     <div class="row break_clear">
                                         <div class="col-lg-3" id="VehicleDiv" hidden>
-                                            <vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{Requisition.vehicle}}" label="Viatura" disabled="{{ isReadOnly() }}">
+                                            <vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{Requisition.vehicle}}" label="Viatura" disabled>
                                                 <template>
                                                     <b>[[item.id]]</b>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBJobNo]]" id="CBJobNo" item-value-path="id" item-label-path="id" value="{{Requisition.projectNo}}" label="Nº Ordem/Projeto" disabled="{{ isReadOnly() }}">
+                                        <!--<div class="col-lg-3">
+                                            <vaadin-combo-box items="[[CBJobNo]]" id="CBJobNo" item-value-path="id" item-label-path="id" value="{{Requisition.projectNo}}" label="Nº Ordem/Projeto" disabled>
                                                 <template>
                                                     <b>[[item.id]]</b>
                                                 </template>
                                             </vaadin-combo-box>
-                                        </div>
+                                        </div>-->
+                                        
                                         <div class="col-md-3 ">
-                                            <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled="{{ isReadOnly() }}"></vaadin-date-picker>
+                                            <!--<vaadin-text-field id="Notes" name="Notes" label="Observações" value="{{Requisition.comments}}" disabled></vaadin-text-field>-->
+                                            <!--<such-textarea rows="5" value="{{Requisition.comments}}" id="Notes" name="Notes" label="Observações" disabled> </such-textarea>-->
                                         </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="Notes" name="Notes" label="Observações" value="{{Requisition.comments}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
-                                        </div>
+                                    </div>
+                                    <div class="col-md-6 ">
+                                        <!--<vaadin-text-field id="Notes" name="Notes" label="Observações" value="{{Requisition.comments}}" disabled></vaadin-text-field>-->
+                                        <such-textarea rows="5" value="{{Requisition.comments}}" id="Notes" name="Notes" label="Observações" disabled> </such-textarea>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{Requisition.employeeNo}}" hidden disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                            <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{Requisition.employeeNo}}" hidden disabled></vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
                                 <!--Reparação-->
                                 <div>
                                     <div class="col-lg-3 alignPoga">
-                                        <vaadin-checkbox checked="{{Requisition.repairWithWarranty}}" disabled="{{ isReadOnly() }}">Reparação com Garantia</vaadin-checkbox>
+                                        <vaadin-checkbox checked="{{Requisition.repairWithWarranty}}" disabled>Reparação com Garantia</vaadin-checkbox>
                                     </div>
                                     <div class="col-lg-3 alignPoga">
-                                        <vaadin-checkbox checked="{{Requisition.emm}}" disabled="{{ isReadOnly() }}">EMM</vaadin-checkbox>
+                                        <vaadin-checkbox checked="{{Requisition.emm}}" disabled>EMM</vaadin-checkbox>
                                     </div>
                                     <div class="col-md-3 ">
-                                        <vaadin-date-picker label="Data Entrega Armazém" id="DeliveryWarehouseDate" name="DeliveryWarehouseDate" value="{{Requisition.warehouseDeliveryDate}}" disabled="{{ isReadOnly() }}"></vaadin-date-picker>
+                                        <vaadin-date-picker label="Data Entrega Armazém" id="DeliveryWarehouseDate" name="DeliveryWarehouseDate" value="{{Requisition.warehouseDeliveryDate}}" disabled></vaadin-date-picker>
                                     </div>
                                 </div>
                                 <!--Recolha-->
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBLocal]]" on-change="_onSearchLocalDataCollection" id="CollectionLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localCollection}}" label="Local de Recolha" disabled="{{ isReadOnly() }}">
+                                            <vaadin-combo-box items="[[CBLocal]]" on-change="_onSearchLocalDataCollection" id="CollectionLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localCollection}}" label="Local de Recolha" disabled>
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -343,21 +357,21 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="CollectionAddress" name="CollectionAddress" label="Morada" value="{{Requisition.collectionAddress}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                            <vaadin-text-field id="CollectionAddress" name="CollectionAddress" label="Morada" value="{{Requisition.collectionAddress}}" disabled></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="CollectionPostalCode" name="CollectionPostalCode" label="Código-Postal" value="{{Requisition.collectionPostalCode}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                            <vaadin-text-field id="CollectionPostalCode" name="CollectionPostalCode" label="Código-Postal" value="{{Requisition.collectionPostalCode}}" disabled></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="CollectionLocality" name="CollectionLocality" label="Localidade" value="{{Requisition.collectionLocality}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                            <vaadin-text-field id="CollectionLocality" name="CollectionLocality" label="Localidade" value="{{Requisition.collectionLocality}}" disabled></vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="CollectionContact" name="CollectionContact" label="Contato" value="{{Requisition.collectionContact}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                            <vaadin-text-field id="CollectionContact" name="CollectionContact" label="Contato" value="{{Requisition.collectionContact}}" disabled></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="CollectionReceptionResponsible" name="CollectionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReception}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                            <vaadin-text-field id="CollectionReceptionResponsible" name="CollectionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReception}}" disabled></vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -365,7 +379,7 @@
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBLocal]]" on-change="_onSearchLocalDataDelivery" id="DeliveryLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localDelivery}}" label="Local de Entrega" disabled="{{ isReadOnly() }}">
+                                            <vaadin-combo-box items="[[CBLocal]]" on-change="_onSearchLocalDataDelivery" id="DeliveryLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localDelivery}}" label="Local de Entrega" disabled>
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -377,21 +391,21 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="DeliveryAddress" name="DeliveryAddress" label="Morada" value="{{Requisition.deliveryAddress}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                            <vaadin-text-field id="DeliveryAddress" name="DeliveryAddress" label="Morada" value="{{Requisition.deliveryAddress}}" disabled></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="DeliveryPostalCode" name="DeliveryPostalCode" label="Código-Postal" value="{{Requisition.deliveryPostalCode}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                            <vaadin-text-field id="DeliveryPostalCode" name="DeliveryPostalCode" label="Código-Postal" value="{{Requisition.deliveryPostalCode}}" disabled></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="DeliveryLocality" name="DeliveryLocality" label="Localidade" value="{{Requisition.localityDelivery}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                            <vaadin-text-field id="DeliveryLocality" name="DeliveryLocality" label="Localidade" value="{{Requisition.localityDelivery}}" disabled></vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ReceptionReceptionResponsible" name="ReceptionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReceptionReception}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                            <vaadin-text-field id="ReceptionReceptionResponsible" name="ReceptionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReceptionReception}}" disabled></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="InvoiceNo" name="InvoiceNo" label="Nº Fatura" value="{{Requisition.invoiceNo}}" disabled="{{ isReadOnly() }}"></vaadin-text-field>
+                                            <vaadin-text-field id="InvoiceNo" name="InvoiceNo" label="Nº Fatura" value="{{Requisition.invoiceNo}}" disabled></vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -706,8 +720,8 @@
                                     <vaadin-grid-column width="160px" resizable>
                                         <template class="header">
                                             <p class="alignCenter">Criar Consulta Mercado</p>
-                                            <vaadin-grid-filter path="createMarketSearch" value="[[_filterActive]]">
-                                                <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                                            <vaadin-grid-filter path="createMarketSearch" value="[[_createMarketSearchFilterActive]]">
+                                                <vaadin-checkbox checked="{{_createMarketSearchFilterActive}}"></vaadin-checkbox>
                                             </vaadin-grid-filter>
                                         </template>
                                         <template>
@@ -718,12 +732,12 @@
                                     <vaadin-grid-column width="130px" resizable>
                                         <template class="header">
                                             <p class="alignCenter">Mercado Local</p>
-                                            <vaadin-grid-filter path="localMarket">
-                                                <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                                            <vaadin-grid-filter path="localMarket" value="[[_localMarketFilterActive]]">
+                                                <vaadin-checkbox checked="{{_localMarketFilterActive}}"></vaadin-checkbox>
                                             </vaadin-grid-filter>
                                         </template>
                                         <template>
-                                            <vaadin-checkbox checked=" {{item.localMarket}}" disabled></vaadin-checkbox>
+                                            <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
                                         </template>
                                     </vaadin-grid-column>
 
@@ -750,8 +764,8 @@
                                     <vaadin-grid-column width="160px" resizable>
                                         <template class="header">
                                             <p class="alignCenter">Enviar Pré Compra</p>
-                                            <vaadin-grid-filter path="submitPrePurchase" value="[[_filterActive]]">
-                                                <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                                            <vaadin-grid-filter path="submitPrePurchase" value="[[_submitPrePurchaseFilterActive]]">
+                                                <vaadin-checkbox checked="{{_submitPrePurchaseFilterActive}}"></vaadin-checkbox>
                                             </vaadin-grid-filter>
                                         </template>
                                         <template>
@@ -763,8 +777,8 @@
                                     <vaadin-grid-column width="160px" resizable>
                                         <template class="header">
                                             <p class="alignCenter">Enviado Pré Compra</p>
-                                            <vaadin-grid-filter path="sendPrePurchase" value="[[_filterActive]]">
-                                                <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                                            <vaadin-grid-filter path="sendPrePurchase" value="[[_sendPrePurchaseFilterActive]]">
+                                                <vaadin-checkbox checked="{{_sendPrePurchaseFilterActive}}"></vaadin-checkbox>
                                             </vaadin-grid-filter>
                                         </template>
                                         <template>
@@ -890,10 +904,22 @@
                     _requisitionstatesenum: {
                         type: Array
                     },
-                    _filterActive: {
+                    _sendPrePurchaseFilterActive: {
                         type: Boolean,
                         value: true
-                    }
+                    },
+                    _submitPrePurchaseFilterActive: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _createMarketSearchFilterActive: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _localMarketFilterActive: {
+                        type: Boolean,
+                        value: true
+                    },
                 },
                 observers: [
                     '_onCacheLoaded(data,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,locationsresult,CBProducts,unitofmeasureresult,cboSupplier,Requisition)'

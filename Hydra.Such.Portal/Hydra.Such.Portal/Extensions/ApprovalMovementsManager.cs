@@ -118,6 +118,7 @@ namespace Hydra.Such.Portal.Extensions
 
         // 100 - Tarefa aprovada com sucesso
         // 101 - Erro desconhecido
+        // 103 - Aprovada pelo ultimo aprovador
         public static ErrorHandler ApproveMovement(int movementNo, string ApproveUser)
         {
             try
@@ -203,6 +204,11 @@ namespace Hydra.Such.Portal.Extensions
 
                         Email.SendEmail();
                     });
+                    return new ErrorHandler()
+                    {
+                        eReasonCode = 100,
+                        eMessage = "A tarefa foi aprovada com sucesso."
+                    };
                 }
                 else
                 {
@@ -232,12 +238,14 @@ namespace Hydra.Such.Portal.Extensions
                     Email.EmailApproval = EmailApproval;
 
                     Email.SendEmail();
+
+                    return new ErrorHandler()
+                    {
+                        eReasonCode = 103,
+                        eMessage = "A tarefa foi aprovada pelo ultimo nivel."
+                    };
                 }
-                return new ErrorHandler()
-                {
-                    eReasonCode = 100,
-                    eMessage = "A tarefa foi aprovada com sucesso."
-                };
+                
             }
             catch (Exception ex)
             {
