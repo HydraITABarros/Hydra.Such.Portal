@@ -169,7 +169,13 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        
+        <iron-ajax url="/Compras/GestaoRequisicoes/RegistByType"
+                   last-response="{{regist}}"
+                   id="regist_datasource"
+                   on-response="_registTypeResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
 
 
         <div class="row break_frm">
@@ -412,6 +418,11 @@
                 <div class="row break_clear marginSpace">
                     <paper-button raised id="btnLocalMarketValidation" style="width: 250px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>
                     <paper-button raised id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
+                    <paper-button raised id="btnRegistProvide" style="width: 150px !important;" on-tap="_RegistProvide"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Disponibilizar</paper-button>
+                    <paper-button raised id="btnRegistToReceive" on-tap="_RegistToReceive"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Receber</paper-button>
+                    <paper-button raised id="btnRegistOverrideValidation" on-tap="_RegistOverrideValidation"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anular Validação</paper-button>
+                    <paper-button raised id="btnRegistCancelApproval" on-tap="_RegistCancelApproval"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anular Aprovação</paper-button>
+                    <paper-button raised id="btnRegistCloseRequest" on-tap="_RegistCloseRequest"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Fechar Requisição</paper-button>
                 </div>   
             </div>
         </div>
@@ -1132,6 +1143,36 @@
                         this._openToastError(this.DelReqLineResponse.eMessage);
                     }
                 },
+                _RegistProvide: function () {
+                    debugger;
+                    this.$.regist_datasource.body = JSON.stringify(this.Requisition);
+                    this.$.regist_datasource.params = { "registType": "Disponibilizar" };
+                    this.$.regist_datasource.generateRequest();
+                },
+                _RegistToReceive: function () {
+                    debugger;
+                    this.$.regist_datasource.body = JSON.stringify(this.Requisition);
+                    this.$.regist_datasource.params = { "registType": "Receber" };
+                    this.$.regist_datasource.generateRequest();
+                },
+                _RegistOverrideValidation: function () {
+                    debugger;
+                    this.$.regist_datasource.body = JSON.stringify(this.Requisition);
+                    this.$.regist_datasource.params = { "registType": "Anular Validacao" };
+                    this.$.regist_datasource.generateRequest();
+                },
+                _RegistCancelApproval: function () {
+                    debugger;
+                    this.$.regist_datasource.body = JSON.stringify(this.Requisition);
+                    this.$.regist_datasource.params = { "registType": "Anular Aprovacao" };
+                    this.$.regist_datasource.generateRequest();
+                },
+                _RegistCloseRequest: function () {
+                    debugger;
+                    this.$.regist_datasource.body = JSON.stringify(this.Requisition);
+                    this.$.regist_datasource.params = { "registType": "Fechar Requisicao" };
+                    this.$.regist_datasource.generateRequest();
+                }
             });
         });
     </script>
