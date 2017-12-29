@@ -58,6 +58,9 @@ namespace Hydra.Such.Portal
             // ABARROS -> ADD NAV WS CONFIGURATIONS TO THE SERVICE
             var NAVWSConfigurations = Configuration.GetSection("NAVWSConfigurations");
             services.Configure<NAVWSConfigurations>(NAVWSConfigurations);
+
+            // ABARROS -> Activate Session Variables
+            services.AddSession(s => s.IdleTimeout = TimeSpan.FromMinutes(30));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,6 +76,7 @@ namespace Hydra.Such.Portal
                 app.UseExceptionHandler("/Error");
             }
 
+            app.UseSession();
             app.UseStaticFiles();
             
             app.UseAuthentication();

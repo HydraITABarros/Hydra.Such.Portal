@@ -7,6 +7,7 @@ namespace Hydra.Such.Data.Database
     {
         public Locais()
         {
+            Localizações = new HashSet<Localizações>();
             PréRequisiçãoCódigoLocalEntregaNavigation = new HashSet<PréRequisição>();
             PréRequisiçãoCódigoLocalRecolhaNavigation = new HashSet<PréRequisição>();
         }
@@ -23,6 +24,7 @@ namespace Hydra.Such.Data.Database
         public string ResponsávelReceção { get; set; }
         public string Contacto { get; set; }
 
+        public ICollection<Localizações> Localizações { get; set; }
         public ICollection<PréRequisição> PréRequisiçãoCódigoLocalEntregaNavigation { get; set; }
         public ICollection<PréRequisição> PréRequisiçãoCódigoLocalRecolhaNavigation { get; set; }
     }
