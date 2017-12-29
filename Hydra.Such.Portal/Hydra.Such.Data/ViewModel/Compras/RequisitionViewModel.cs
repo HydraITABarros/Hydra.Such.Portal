@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Compras
@@ -97,10 +98,6 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string PreRequisitionNo { get; set; }
         
         public List<RequisitionLineViewModel> Lines { get; set; }
-
-        private bool IsValidForLocalMarketForRequisition()
-        {
-            return false;
-        }
+        
     }
 }
