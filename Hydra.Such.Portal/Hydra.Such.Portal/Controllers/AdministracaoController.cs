@@ -2107,66 +2107,66 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        [HttpPost]
-        public JsonResult GetDistanciaFH()
-        {
-            List<DistanciaFHViewModel> result = DBDistanciaFh.ParseListToViewModel(DBDistanciaFh.GetAll());
-            return Json(result);
-        }
+        //[HttpPost]
+        //public JsonResult GetDistanciaFH()
+        //{
+        //    List<DistanciaFHViewModel> result = DBDistanciaFh.ParseListToViewModel(DBDistanciaFh.GetAll());
+        //    return Json(result);
+        //}
 
-        [HttpPost]
-        public JsonResult CreateDistanciaFH([FromBody] DistanciaFHViewModel data)
-        {
-            bool result = false;
-            try
-            {
-                DistanciaFh DistanciaFH = new DistanciaFh();
+        //[HttpPost]
+        //public JsonResult CreateDistanciaFH([FromBody] DistanciaFHViewModel data)
+        //{
+        //    bool result = false;
+        //    try
+        //    {
+        //        DistanciaFh DistanciaFH = new DistanciaFh();
 
-                DistanciaFH.CódigoOrigem = data.Origem;
-                DistanciaFH.CódigoDestino = data.Destino;
-                DistanciaFH.Distância = data.Distancia;
-                DistanciaFH.CriadoPor = User.Identity.Name;
-                DistanciaFH.DataHoraCriação = DateTime.Now;
+        //        DistanciaFH.CódigoOrigem = data.Origem;
+        //        DistanciaFH.CódigoDestino = data.Destino;
+        //        DistanciaFH.Distância = data.Distancia;
+        //        DistanciaFH.CriadoPor = User.Identity.Name;
+        //        DistanciaFH.DataHoraCriação = DateTime.Now;
 
-                var dbCreateResult = DBDistanciaFh.Create(DistanciaFH);
-                result = dbCreateResult != null ? true : false;
-            }
-            catch (Exception ex)
-            {
-                //log
-            }
-            return Json(result);
-        }
+        //        var dbCreateResult = DBDistanciaFh.Create(DistanciaFH);
+        //        result = dbCreateResult != null ? true : false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //log
+        //    }
+        //    return Json(result);
+        //}
 
-        [HttpPost]
-        public JsonResult DeleteDistanciaFH([FromBody] DistanciaFHViewModel data)
-        {
-            var result = DBDistanciaFh.Delete(DBDistanciaFh.ParseToDB(data));
-            return Json(result);
-        }
+        //[HttpPost]
+        //public JsonResult DeleteDistanciaFH([FromBody] DistanciaFHViewModel data)
+        //{
+        //    var result = DBDistanciaFh.Delete(DBDistanciaFh.ParseToDB(data));
+        //    return Json(result);
+        //}
 
-        [HttpPost]
-        public JsonResult UpdateDistanciaFH([FromBody] List<DistanciaFHViewModel> data)
-        {
-            List<DistanciaFh> results = DBDistanciaFh.GetAll();
+        //[HttpPost]
+        //public JsonResult UpdateDistanciaFH([FromBody] List<DistanciaFHViewModel> data)
+        //{
+        //    List<DistanciaFh> results = DBDistanciaFh.GetAll();
 
-            data.RemoveAll(x => DBDistanciaFh.ParseListToViewModel(results).Any(
-                u =>
-                    u.Origem == x.Origem &&
-                    u.Destino == x.Destino &&
-                    u.Distancia == x.Distancia &&
-                    u.CriadoPor == x.CriadoPor &&
-                    u.DataHoraCriacao == x.DataHoraCriacao
-            ));
+        //    data.RemoveAll(x => DBDistanciaFh.ParseListToViewModel(results).Any(
+        //        u =>
+        //            u.Origem == x.Origem &&
+        //            u.Destino == x.Destino &&
+        //            u.Distancia == x.Distancia &&
+        //            u.CriadoPor == x.CriadoPor &&
+        //            u.DataHoraCriacao == x.DataHoraCriacao
+        //    ));
 
-            data.ForEach(x =>
-            {
-                DistanciaFh toUpdate = DBDistanciaFh.ParseToDB(x);
-                toUpdate.AlteradoPor = User.Identity.Name;
-                DBDistanciaFh.Update(toUpdate);
-            });
-            return Json(data);
-        }
+        //    data.ForEach(x =>
+        //    {
+        //        DistanciaFh toUpdate = DBDistanciaFh.ParseToDB(x);
+        //        toUpdate.AlteradoPor = User.Identity.Name;
+        //        DBDistanciaFh.Update(toUpdate);
+        //    });
+        //    return Json(data);
+        //}
 
         #endregion
 
