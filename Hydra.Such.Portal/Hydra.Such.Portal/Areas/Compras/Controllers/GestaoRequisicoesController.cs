@@ -77,13 +77,15 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         [Area("Compras")]
         public IActionResult LinhasRequisicao(string id)
         {
-
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
+
 
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
                 ViewBag.RequisitionId = id;
+                ViewBag.ValidatedRequisitionEnumValue = (int)RequisitionStates.Validated;
+                ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
 
                 return View();
             }
@@ -289,7 +291,26 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
             return Json(result);
         }
-        
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult GetValidatedRequisitions()
+        {
+            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Validated).ParseToViewModel();
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
+            return Json(result);
+        }
+
         [HttpPost]
         [Area("Compras")]
         public JsonResult GetRequisition([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
@@ -341,51 +362,157 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 item = new RequisitionLineViewModel();
                 item.eReasonCode = 2;
-                item.eMessage = "A linha não pode ser nula.";
+                item.eMessage = "Ocorreu um erro: a linha não pode ser nula.";
             }
             return Json(item);
         }
 
         [HttpPost]
         [Area("Compras")]
-        public JsonResult DeleteReqTemplateLine([FromBody] RequisitionLineViewModel item)
+        public JsonResult DeleteRequisitionLine([FromBody] RequisitionLineViewModel item)
         {
-            ErrorHandler requestResponse = new ErrorHandler()
-            {
-                eReasonCode = 2,
-                eMessage = "Ocorreu um erro ao eliminar o registo.",
-            };
-
             if (item != null)
             {
                 if (DBRequestLine.Delete(item.ParseToDB()))
                 {
-                    requestResponse.eReasonCode = 1;
-                    requestResponse.eMessage = "Registo eliminado com sucesso.";
+                    item.eReasonCode = 1;
+                    item.eMessage = "Registo eliminado com sucesso.";
+                }
+                else
+                {
+                    item = new RequisitionLineViewModel();
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao eliminar o registo.";
                 }
             }
-            return Json(requestResponse);
+            else
+            {
+                item = new RequisitionLineViewModel();
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: a linha não pode ser nula.";
+            }
+            return Json(item);
         }
 
 
         [HttpPost]
         [Area("Compras")]
+        public JsonResult RegistByType([FromBody] RequisitionViewModel item, string registType)
+        {
+            if (item != null)
+            {
+               
+                switch (registType)
+                {
+                    case "Disponibilizar":
+                        if (item.State == RequisitionStates.Validated)
+                        {
+
+                        }
+                        else
+                        {
+                            item.eReasonCode = 3;
+                            item.eMessage = "Esta requisição não está validada.";
+                        }
+                        break;
+                    case "Receber":
+
+                    break;
+                    case "Anular Aprovacao":
+                        if (item.State == RequisitionStates.Approved)
+                        {
+                            item.State = RequisitionStates.Pending;
+                            item.ResponsibleApproval = "";
+                            item.ApprovalDate = null;
+                            RequisitionViewModel reqPend = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
+                            if (reqPend != null)
+                            {
+                                List<RequisitionLineViewModel> getrlines = DBRequestLine.GetAllByRequisiçãos(item.RequisitionNo).ParseToViewModel();
+                                foreach (RequisitionLineViewModel rlines in getrlines)
+                                {
+                                    rlines.QuantityRequired = null;
+                                    RequisitionLineViewModel rlinesValidation = DBRequestLine.Update(rlines.ParseToDB()).ParseToViewModel();
+                                    if (rlinesValidation == null)
+                                    {
+                                        item.eReasonCode = 5;
+                                        item.eMessage = "Ocorreu um erro ao alterar as linhas de requisição";
+                                    }
+                                }  
+                            }
+                            else
+                            {
+                                item.eReasonCode = 4;
+                                item.eMessage = "Ocorreu um erro ao anular a aprovação da requisição";
+                            }
+                        }
+                        else
+                        {
+                            item.eReasonCode = 2;
+                            item.eMessage = "Esta requisição não está aprovada";
+                        }
+                        break;
+                    case "Anular Validacao":
+                        if (item.State == RequisitionStates.Validated)
+                        {
+                            item.State = RequisitionStates.Approved;
+                            item.ResponsibleValidation = "";
+                            item.ValidationDate = null;
+                            RequisitionViewModel reqAprov = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
+                            if (reqAprov != null)
+                            {
+                                List<RequisitionLineViewModel> getrlines = DBRequestLine.GetAllByRequisiçãos(item.RequisitionNo).ParseToViewModel();
+                                foreach (RequisitionLineViewModel rlines in getrlines)
+                                {
+                                    rlines.QuantityAvailable = null;
+                                    RequisitionLineViewModel rlinesValidation = DBRequestLine.Update(rlines.ParseToDB()).ParseToViewModel();
+                                    if (rlinesValidation == null)
+                                    {
+                                        item.eReasonCode = 5;
+                                        item.eMessage = "Ocorreu um erro ao alterar as linhas de requisição";
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                item.eReasonCode = 4;
+                                item.eMessage = "Ocorreu um erro ao anular a aprovação da requisição";
+                            }
+                        }
+                        else
+                        {
+                            item.eReasonCode = 3;
+                            item.eMessage = "Esta requisição não está validada";
+                        }
+                        break;
+                    case "Fechar Requisicao":
+
+                    break;
+                    default:
+                        item.eReasonCode = 3;
+                        item.eMessage = "Ocorreu um erro: Existe algum problemas com esta requisição";
+                        break;
+                }
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
         public JsonResult ValidateLocalMarketForRequisition([FromBody] RequisitionViewModel item)
         {
-            //Validate
             if (item != null)
             {
                 //Ensure that the requisition has the expected status. Ex.: prevents from validating pending requisitions
-                if (item != null && item.State == RequisitionStates.Approved)
+                if (IsValidForLocalMarketValidation(item))
                 {
                     var status = CreatePurchaseItemsFor(item);
                     item.eReasonCode = status.eReasonCode;
-                    item.eMessage = status.eMessage;// "Não existem linhas que cumpram os requisitos de validação do mercado local.";
+                    item.eMessage = status.eMessage;
                 }
                 else
                 {
                     item.eReasonCode = 2;
-                    item.eMessage = "Não existem linhas que cumpram os requisitos de validação do mercado local.";
+                    item.eMessage = "O estado da requisição e/ou linhas não cumprem os requisitos para a validação do mercado local.";
                 }
             }
             else
@@ -431,7 +558,9 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                     ProjectNo = line.ProjectNo,
                                     QuantityRequired = line.QuantityRequired,
                                     UnitCost = line.UnitCost,
-                                    LocationCode = line.LocalCode
+                                    LocationCode = line.LocalCode,
+                                    OpenOrderNo = line.OpenOrderNo,
+                                    OpenOrderLineNo = line.OpenOrderLineNo
                                 })
                                 .ToList()
                             })
@@ -492,6 +621,22 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 }
             }
             return status;
+        }
+
+        private bool IsValidForLocalMarketValidation(RequisitionViewModel requisition)
+        {
+            try
+            {
+                //Ensure required fields aren't null or invalid
+                var linesToValidate = requisition.Lines
+                        .Where(x => x.LocalMarket.Value && !x.PurchaseValidated.Value && x.QuantityRequired.Value > 0);
+                //Ensure it's in approved state
+                return requisition.State == RequisitionStates.Approved;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         [HttpPost]

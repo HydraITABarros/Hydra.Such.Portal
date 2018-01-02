@@ -5,6 +5,6 @@
 }
 
 <link rel="import" href="~/elements/projects/invoice_autorization.html">
-
-<x-invoice-autorization _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-invoice-autorization>
+<h1 class="title">Autorização Faturação - Projeto: @ViewBag.ProjectNo</h1>
+<x-invoice-autorization _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _projectno="@ViewBag.ProjectNo" _areaid="3"></x-invoice-autorization>
 

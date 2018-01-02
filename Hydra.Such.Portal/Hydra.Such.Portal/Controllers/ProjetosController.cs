@@ -816,7 +816,7 @@ namespace Hydra.Such.Portal.Controllers
 
                             MovimentosDeProjeto ProjectMovement = new MovimentosDeProjeto()
                             {
-                                NºLinha = newdp.NºLinha,
+                                //NºLinha = newdp.NºLinha,
                                 NºProjeto = newdp.NºProjeto,
                                 Data = newdp.Data,
                                 TipoMovimento = newdp.TipoMovimento,
@@ -837,6 +837,7 @@ namespace Hydra.Such.Portal.Controllers
                                 PreçoTotal = newdp.PreçoTotal,
                                 Faturável = newdp.Faturável,
                                 Registado = true,
+                                Faturada = false,
                                 FaturaANºCliente = newdp.FaturaANºCliente,
                                 Moeda = newdp.Moeda,
                                 ValorUnitárioAFaturar = newdp.ValorUnitárioAFaturar,
@@ -1019,11 +1020,14 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAutorizacaoFaturacao([FromBody] int areaId)
+        public JsonResult GetAutorizacaoFaturacao([FromBody]  JObject requestParams)
         {
+            int areaId = int.Parse(requestParams["areaId"].ToString());
+            string projectNo = requestParams["projectNo"].ToString();
+
             try
             {
-                List<ProjectDiaryViewModel> result = DBProjectMovements.GetAllTableByArea(User.Identity.Name, areaId).Select(x => new ProjectDiaryViewModel()
+                List<ProjectDiaryViewModel> result = DBProjectMovements.GetAllTableByAreaProjectNo(User.Identity.Name, areaId, projectNo).Select(x => new ProjectDiaryViewModel()
                 {
                     LineNo = x.NºLinha,
                     ProjectNo = x.NºProjeto,
@@ -1224,6 +1228,14 @@ namespace Hydra.Such.Portal.Controllers
         {
             public bool Iserror { get; set; }
             public string ClientNo { get; set; }
+        }
+
+
+        [HttpPost]
+        public JsonResult InvoiceLinesAuthorize([FromBody] List<ProjectDiaryViewModel> data)
+        {
+
+            return null;
         }
         #endregion InvoiceAutorization
 

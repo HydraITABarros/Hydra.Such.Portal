@@ -146,6 +146,9 @@
             <div class="col-md-3 " hidden>
                 <vaadin-text-field id="documentNoId" name="DocumentNoName" label="Nº Documento" value="{{DocumentNo}}" disabled></vaadin-text-field>
             </div>
+            <div class="col-md-3 " hidden>
+                <vaadin-text-field id="OrderLineOpenNoId" name="OrderLineOpenNoName" label="Nº Linha Encomenda Aberto" value="" disabled></vaadin-text-field>
+            </div>
         </div>
         <div class="row"  hidden="{{ !_permissionsVal.create }}">
             <div class="col-lg-2 alignPoga">
@@ -633,12 +636,17 @@
                         }
                     },
             _openOrderLinesOnChange: function(e) {
-                        if (e.detail.value) {
+                if (e.detail.value) {
+                    debugger;
                             this.$.ajax_result.body = JSON.stringify(e.detail.value);
                             this.$.documentNoId.value = this.$.mOpenOrderLinesId.selectedItem.documentNO;
+                            var dateVPrice = this.$.dpVendedorPriceId.value;
+                            if (dateVPrice == "") {
+                                dateVPrice = "01-01-1753";
+                            }
                             this.$.ajax_result.params = {
                                 "documentNO": this.$.mOpenOrderLinesId.selectedItem.documentNO,
-                        "date": this.$.dpVendedorPriceId.value
+                                "date": dateVPrice
                             };
                             this.$.ajax_result.generateRequest();
                         }
@@ -667,7 +675,8 @@
                         }
                     },
             _resultResponse: function(result) {
-                        if (result != null) {
+                if (result != null) {
+                    debugger;
                             this.$.supplierNoId.value = this.result.buyFromVendorNo;
                             this.$.prodCodId.value = this.result.description;
                             this.$.qtyID.value = 0;
@@ -675,6 +684,7 @@
                             this.$.unitCostId.value = this.result.unitCost;
                             this.$.amountId.value = this.result.amount;
                             this.$.unitofMeasureCodeId.value = this.result.unitofMeasureCode;
+                            this.$.OrderLineOpenNoId.value = this.result.line_No;
                             if (this.result.locationCode != "") {
                                 this.$.codStockUnitId.value = this.result.locationCode;
                             }
@@ -708,22 +718,24 @@
                 {
                             this.data.unshift({
                                 productionUnitNo: this.$.prodUnitNoId.value,
-                        productUnitDescription: this.$.descriptionUnitId.value,
-                        expectedReceptionDate: this.$.dpExpectedReceiptId.value,
-                        dateByPriceSupplier: this.$.dpVendedorPriceId.value,
-                        localCode: this.$.codStockUnitId.value,
-                        productNo: this.$.mOpenOrderLinesId.value,
-                        supplierNo: this.$.supplierNoId.value,
-                        description: this.$.prodCodId.value,
-                        unitMeasureCode: this.$.unitofMeasureCodeId.value,
-                        quantity: this.$.qtyID.value,
-                        quantitybyUnitMeasure: this.$.QtyforMeasId.value,
-                        directUnitCost: this.$.unitCostId.value,
-                        totalValue: this.$.amountId.value,
-                        supplierProductCode: this.$.supplierProdCodeId.value,
-                        supplierProductDescription: this.$.supplierProdDescriptionId.value,
-                        supplierName: this.$.SupplierNameId.value,
-                        documentNo: this.$.documentNoId.value
+                                productUnitDescription: this.$.descriptionUnitId.value,
+                                expectedReceptionDate: this.$.dpExpectedReceiptId.value,
+                                dateByPriceSupplier: this.$.dpVendedorPriceId.value,
+                                localCode: this.$.codStockUnitId.value,
+                                productNo: this.$.mOpenOrderLinesId.value,
+                                supplierNo: this.$.supplierNoId.value,
+                                description: this.$.prodCodId.value,
+                                unitMeasureCode: this.$.unitofMeasureCodeId.value,
+                                quantity: this.$.qtyID.value,
+                                quantitybyUnitMeasure: this.$.QtyforMeasId.value,
+                                directUnitCost: this.$.unitCostId.value,
+                                totalValue: this.$.amountId.value,
+                                supplierProductCode: this.$.supplierProdCodeId.value,
+                                supplierProductDescription: this.$.supplierProdDescriptionId.value,
+                                supplierName: this.$.SupplierNameId.value,
+                                documentNo: this.$.documentNoId.value,
+                                openOrderNo: this.$.documentNoId.value,
+                                orderLineOpenNo :this.$.OrderLineOpenNoId.value
                             });
 
                             // Save to DB
@@ -736,30 +748,33 @@
                         }
                     },
             _add() {
+                debugger;
                         if (this.$.dpExpectedReceiptId.value != null &&
                             this.$.dpVendedorPriceId.value != null &&
                             this.$.dpExpectedReceiptId.value != "" &&
                             this.$.dpVendedorPriceId.value != "")
-                //Validações
-                {
+                            //Validações
+                            {
                             this.data.unshift({
                                 productionUnitNo: this.$.prodUnitNoId.value,
-                        productUnitDescription: this.$.descriptionUnitId.value,
-                        expectedReceptionDate: this.$.dpExpectedReceiptId.value,
-                        dateByPriceSupplier: this.$.dpVendedorPriceId.value,
-                        localCode: this.$.codStockUnitId.value,
-                        productNo: this.$.mOpenOrderLinesId.value,
-                        supplierNo: this.$.supplierNoId.value,
-                        description: this.$.prodCodId.value,
-                        unitMeasureCode: this.$.unitofMeasureCodeId.value,
-                        quantity: this.$.qtyID.value,
-                        quantitybyUnitMeasure: this.$.QtyforMeasId.value,
-                        directUnitCost: this.$.unitCostId.value,
-                        totalValue: this.$.amountId.value,
-                        supplierProductCode: this.$.supplierProdCodeId.value,
-                        supplierProductDescription: this.$.supplierProdDescriptionId.value,
-                        supplierName: this.$.SupplierNameId.value,
-                        documentNo: this.$.documentNoId.value
+                                productUnitDescription: this.$.descriptionUnitId.value,
+                                expectedReceptionDate: this.$.dpExpectedReceiptId.value,
+                                dateByPriceSupplier: this.$.dpVendedorPriceId.value,
+                                localCode: this.$.codStockUnitId.value,
+                                productNo: this.$.mOpenOrderLinesId.value,
+                                supplierNo: this.$.supplierNoId.value,
+                                description: this.$.prodCodId.value,
+                                unitMeasureCode: this.$.unitofMeasureCodeId.value,
+                                quantity: this.$.qtyID.value,
+                                quantitybyUnitMeasure: this.$.QtyforMeasId.value,
+                                directUnitCost: this.$.unitCostId.value,
+                                totalValue: this.$.amountId.value,
+                                supplierProductCode: this.$.supplierProdCodeId.value,
+                                supplierProductDescription: this.$.supplierProdDescriptionId.value,
+                                supplierName: this.$.SupplierNameId.value,
+                                documentNo: this.$.documentNoId.value,
+                                openOrderNo: this.$.documentNoId.value,
+                                orderLineOpenNo: this.$.OrderLineOpenNoId.value
                             });
 
 

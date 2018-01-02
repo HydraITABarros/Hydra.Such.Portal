@@ -1961,8 +1961,8 @@ namespace Hydra.Such.Portal.Controllers
                 autorizacao.ValidadorRh1 = data.ValidadorRH1;
                 autorizacao.ValidadorRh2 = data.ValidadorRH2;
                 autorizacao.ValidadorRh3 = data.ValidadorRH3;
-                autorizacao.ValidadorRhkm1 = data.ValidadorRHKM1;
-                autorizacao.ValidadorRhkm2 = data.ValidadorRHKM2;
+                //autorizacao.ValidadorRhkm1 = data.ValidadorRHKM1;
+                //autorizacao.ValidadorRhkm2 = data.ValidadorRHKM2;
                 autorizacao.CriadoPor = User.Identity.Name;
                 autorizacao.DataHoraCriação = DateTime.Now;
 
@@ -2116,29 +2116,29 @@ namespace Hydra.Such.Portal.Controllers
         //    return Json(result);
         //}
 
-        [HttpPost]
-        public JsonResult CreateDistanciaFH([FromBody] DistanciaFHViewModel data)
-        {
-            bool result = false;
-            try
-            {
-                DistanciaFh DistanciaFH = new DistanciaFh();
+        //[HttpPost]
+        //public JsonResult CreateDistanciaFH([FromBody] DistanciaFHViewModel data)
+        //{
+        //    bool result = false;
+        //    try
+        //    {
+        //        DistanciaFh DistanciaFH = new DistanciaFh();
 
-                DistanciaFH.CódigoOrigem = data.Origem;
-                DistanciaFH.CódigoDestino = data.Destino;
-                DistanciaFH.Distância = data.Distancia;
-                DistanciaFH.CriadoPor = User.Identity.Name;
-                DistanciaFH.DataHoraCriação = DateTime.Now;
+        //        DistanciaFH.CódigoOrigem = data.Origem;
+        //        DistanciaFH.CódigoDestino = data.Destino;
+        //        DistanciaFH.Distância = data.Distancia;
+        //        DistanciaFH.CriadoPor = User.Identity.Name;
+        //        DistanciaFH.DataHoraCriação = DateTime.Now;
 
-                //var dbCreateResult = DBDistanciaFh.Create(DistanciaFH);
-                //result = dbCreateResult != null ? true : false;
-            }
-            catch (Exception ex)
-            {
-                //log
-            }
-            return Json(result);
-        }
+        //        var dbCreateResult = DBDistanciaFh.Create(DistanciaFH);
+        //        result = dbCreateResult != null ? true : false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //log
+        //    }
+        //    return Json(result);
+        //}
 
         //[HttpPost]
         //public JsonResult DeleteDistanciaFH([FromBody] DistanciaFHViewModel data)

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -12,17 +14,17 @@
     <link rel="import" href="/lib/iron-ajax/iron-ajax.html" />
 
 
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/main.css" />
-        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/main.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" asp-append-version="true" />
 
 
 
     @*<environment exclude="Development">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-    </environment>*@
+            <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+                  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        </environment>*@
 
 </head>
 <body>
@@ -34,6 +36,9 @@
 
                 <div class="menu-list">
                     <ul id="menu-content" class="menu-content collapse out">
+                        <li data-toggle="Aprovações pendentes" class="active" id="approvalPendingShow">
+                            <center style="color:red;"><a href="/Approvals"  id="pendingApprovalsLink"> Aprovações Pendentes</a></center>
+                        </li>
                         <li data-toggle="collapse" data-target="#Engenharia" class="collapsed active">
                             <a href="#"> Engenharia <span class="arrow"></span></a>
                         </li>
@@ -228,7 +233,7 @@
                         </li>
                         <ul class="sub-menu collapse" id="Juridico">
                             @*<li>@Html.ActionLink("Processos Disciplinares", "ProcessosDisciplinares", "Juridico")</li>
-                                <li>@Html.ActionLink("Processos de Inquérito", "ProcessosInquerito", "Juridico")</li>*@
+            <li>@Html.ActionLink("Processos de Inquérito", "ProcessosInquerito", "Juridico")</li>*@
                             <li>@Html.ActionLink("Administração", "Administracao", "Juridico")</li>
                         </ul>
 
@@ -237,15 +242,15 @@
                         </li>
                         <ul class="sub-menu collapse" id="Compras">
                             @*<li>@Html.ActionLink("Receção de Mercadorias", "RececaoMercadorias", "Compras")</li>
-                                <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras")</li>
-                                <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Compras")</li>*@
+            <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras")</li>
+            <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Compras")</li>*@
                             @* zpgm.< Procedimentos CCP menu *@
                             <li data-toggle="collapse" data-target="#Compras" class="collapsed active">
                                 <a href="#"> Procedimentos CCP <span class="arrow"></span></a>
                                 <ul>
                                     <li>@Html.ActionLink("Pedido Aquisição", "PedidoAquisicao", "ProcedimentosCcps")</li>
                                     <li>@Html.ActionLink("Pedido Simplificado", "PedidoSimplificado", "ProcedimentosCcps")</li>
-                                    
+
                                 </ul>
                             </li>
                             @* zpgm.> *@
@@ -274,6 +279,7 @@
                             <li>@Html.ActionLink("Config. Aprovações", "ConfiguracaoAprovacoes", "Administracao", new { id = "Administracao" })</li>
                             <li>@Html.ActionLink("Grupo Aprovações", "GruposAprovacoes", "Administracao", new { id = "Administracao" })</li>
                         </ul>
+
                     </ul>
                 </div>
 
@@ -299,20 +305,28 @@
         <script src="/lib/sweetalert.min.js"></script>
         <script src="/lib/bootbox.min.js"></script>
 
-
-            <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                    asp-fallback-test="window.jQuery"
-                    crossorigin="anonymous"
-                    integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
-            </script>
-            <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                    crossorigin="anonymous"
-                    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-            </script>
-            <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <script>
+            var TotalPendingApprovals = '@HttpContextAccessor.HttpContext.Session.GetString("totalPendingApprovals")';
+            if (TotalPendingApprovals != "0") {
+                $('#pendingApprovalsLink').text('Aprovações Pendentes (' + TotalPendingApprovals + ')');
+            } else {
+                $('#approvalPendingShow').hide();
+            }
+            
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
 
 
 
