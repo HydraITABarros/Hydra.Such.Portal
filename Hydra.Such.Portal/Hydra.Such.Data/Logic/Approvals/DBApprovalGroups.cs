@@ -82,6 +82,25 @@ namespace Hydra.Such.Data.Logic.Approvals
                 return null;
             }
         }
+
+        public static bool Delete(GruposAprovação ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.GruposAprovação.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
         #endregion
 
 
