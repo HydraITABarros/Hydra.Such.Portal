@@ -417,27 +417,9 @@
             },
 
             _CreateLinesResponse: function (e) {
-                var message = this.lines.eReasonCode;
-                switch (message) {
-                         
-                    case 1: this.$.ToastMessageSuccess.text = 'Faturas criadas com sucesso';
-                        this.$.ToastMessageSuccess.open();
-                        break;
-                    case 2: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar Linhas de Fatura no NAV';
-                        this.$.ToastMessageError.open();
-                        break;
-                    case 3: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar o Cabeçalho das Faturas no NAV.';
-                        this.$.ToastMessageError.open();
-                        break;
-                    case 4: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar Pré Fatura';
-                        this.$.ToastMessageError.open();
-                }
-                     
                 this.$.page_databound_ajax.generateRequest();
-                this.$.ToastMessageSuccess.text = 'Faturas criadas com sucesso';
+                this.$.ToastMessageSuccess.text = 'Movimentos Autorizados criadas com sucesso';
                 this.$.ToastMessageSuccess.open();
-
-                //window.location.href = "/AutorizacaoFaturacao";
             }
         });
     });

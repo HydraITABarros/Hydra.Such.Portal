@@ -74,7 +74,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.MovimentosDeProjeto.Where(x => x.Faturada == false /*|| x.Faturada == null*/ && x.Faturável == true && x.Registado == true && x.Utilizador == user && x.NºProjetoNavigation.Área == areaId && x.NºProjeto == projectNo).ToList();
+                    return ctx.MovimentosDeProjeto.Where(x => x.Faturada == false && x.Faturável == true && x.Registado == true && x.Utilizador == user && x.NºProjetoNavigation.Área == areaId && x.NºProjeto == projectNo && x.FaturaçãoAutorizada == false).ToList();
                 }
             }
             catch (Exception ex)
