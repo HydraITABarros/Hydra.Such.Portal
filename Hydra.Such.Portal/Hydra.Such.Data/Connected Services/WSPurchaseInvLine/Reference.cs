@@ -110,7 +110,19 @@ namespace WSPurchaseInvLine
         
         private string unit_of_MeasureField;
         
-        private string location_CodeField;
+        private string regionCode20Field;
+        
+        private string functionAreaCode20Field;
+        
+        private string responsabilityCenterCode20Field;
+        
+        private string gLocationField;
+        
+        private string blanket_Order_NoField;
+        
+        private int blanket_Order_Line_NoField;
+        
+        private bool blanket_Order_Line_NoFieldSpecified;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
@@ -408,15 +420,99 @@ namespace WSPurchaseInvLine
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=15)]
-        public string Location_Code
+        public string RegionCode20
         {
             get
             {
-                return this.location_CodeField;
+                return this.regionCode20Field;
             }
             set
             {
-                this.location_CodeField = value;
+                this.regionCode20Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
+        public string FunctionAreaCode20
+        {
+            get
+            {
+                return this.functionAreaCode20Field;
+            }
+            set
+            {
+                this.functionAreaCode20Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
+        public string ResponsabilityCenterCode20
+        {
+            get
+            {
+                return this.responsabilityCenterCode20Field;
+            }
+            set
+            {
+                this.responsabilityCenterCode20Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
+        public string gLocation
+        {
+            get
+            {
+                return this.gLocationField;
+            }
+            set
+            {
+                this.gLocationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
+        public string Blanket_Order_No
+        {
+            get
+            {
+                return this.blanket_Order_NoField;
+            }
+            set
+            {
+                this.blanket_Order_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
+        public int Blanket_Order_Line_No
+        {
+            get
+            {
+                return this.blanket_Order_Line_NoField;
+            }
+            set
+            {
+                this.blanket_Order_Line_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Blanket_Order_Line_NoSpecified
+        {
+            get
+            {
+                return this.blanket_Order_Line_NoFieldSpecified;
+            }
+            set
+            {
+                this.blanket_Order_Line_NoFieldSpecified = value;
             }
         }
     }
@@ -557,7 +653,22 @@ namespace WSPurchaseInvLine
         Unit_of_Measure,
         
         /// <remarks/>
-        Location_Code,
+        RegionCode20,
+        
+        /// <remarks/>
+        FunctionAreaCode20,
+        
+        /// <remarks/>
+        ResponsabilityCenterCode20,
+        
+        /// <remarks/>
+        gLocation,
+        
+        /// <remarks/>
+        Blanket_Order_No,
+        
+        /// <remarks/>
+        Blanket_Order_Line_No,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]

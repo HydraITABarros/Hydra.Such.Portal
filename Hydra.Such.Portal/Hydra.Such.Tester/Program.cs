@@ -4,6 +4,7 @@ using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Projects;
+using Hydra.Such.Portal.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -20,7 +21,7 @@ namespace Hydra.Such.Tester
             //StoredProcedureTeste();
             try
             {
-                IsServerConnected();
+                ApprovalTest();
             }
             catch (Exception ex)
             {
@@ -115,5 +116,15 @@ namespace Hydra.Such.Tester
                 }
             }
         }
+
+        public static void ApprovalTest()
+        {
+            var x = ApprovalMovementsManager.StartApprovalMovement(1,1,1000, "REQ0037", "hydra06@such.pt");
+            //var x = ApprovalMovementsManager.ApproveMovement(6, "hydra06@such.pt");
+
+            //var x = ApprovalMovementsManager.RejectMovement(2, "hydra06@such.pt", "O Valor não faz sentido face á dificuldade do projeto");
+            Console.ReadLine();
+        }
+
     }
 }

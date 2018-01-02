@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Compras
 {
-    public class RequisitionLineViewModel
+    public class RequisitionLineViewModel : ErrorHandler
     {
         public string RequestNo { get; set; }
         public int? LineNo { get; set; }

@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel.Approvals;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,7 @@ namespace Hydra.Such.Data.Logic.Approvals
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToCreate.NºMovimento = new Int32();
                     ObjectToCreate.DataHoraCriação = DateTime.Now;
                     ctx.MovimentosDeAprovação.Add(ObjectToCreate);
                     ctx.SaveChanges();
@@ -81,5 +83,88 @@ namespace Hydra.Such.Data.Logic.Approvals
             }
         }
         #endregion
+
+        public static List<MovimentosDeAprovação> GetAllAssignedToUserFilteredByStatus(string userId, int status)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.UtilizadoresMovimentosDeAprovação.Where(x => x.Utilizador == userId).Select(x => x.NºMovimentoNavigation).Where(x => x.Estado == status).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        #region Parses
+
+        public static ApprovalMovementsViewModel ParseToViewModel(MovimentosDeAprovação x)
+        {
+            return new ApprovalMovementsViewModel()
+            {
+                MovementNo = x.NºMovimento,
+                Type = x.Tipo,
+                Area = x.Área,
+                Number = x.Número,
+                RequestUser = x.UtilizadorSolicitou,
+                Value = x.Valor,
+                DateTimeApprove = x.DataHoraAprovação,
+                DateTimeCreate = x.DataHoraCriação,
+                UserCreate = x.UtilizadorCriação,
+                UserUpdate = x.UtilizadorModificação,
+                DateTimeUpdate = x.DataHoraModificação,
+                Status = x.Estado,
+                ReproveReason = x.MotivoDeRecusa,
+                Level = x.Nivel
+            };
+        }
+
+        public static List<ApprovalMovementsViewModel> ParseToViewModel(this List<MovimentosDeAprovação> items)
+        {
+            List<ApprovalMovementsViewModel> places = new List<ApprovalMovementsViewModel>();
+            if (items != null)
+                items.ForEach(x =>
+                    places.Add(ParseToViewModel(x)));
+            return places;
+        }
+
+        public static MovimentosDeAprovação ParseToDatabase(ApprovalMovementsViewModel x)
+        {
+            return new MovimentosDeAprovação()
+            {
+                NºMovimento = x.MovementNo,
+                Tipo = x.Type,
+                Área = x.Area,
+                Número = x.Number,
+                UtilizadorSolicitou = x.RequestUser,
+                Valor = x.Value,
+                DataHoraAprovação = x.DateTimeApprove,
+                DataHoraCriação = x.DateTimeCreate,
+                UtilizadorCriação = x.UserCreate,
+                UtilizadorModificação = x.UserUpdate,
+                DataHoraModificação = x.DateTimeUpdate,
+                Estado = x.Status,
+                MotivoDeRecusa = x.ReproveReason,
+                Nivel = x.Level
+            };
+        }
+
+        public static List<MovimentosDeAprovação> ParseToDatabase(this List<ApprovalMovementsViewModel> items)
+        {
+            List<MovimentosDeAprovação> places = new List<MovimentosDeAprovação>();
+            if (items != null)
+                items.ForEach(x =>
+                    places.Add(ParseToDatabase(x)));
+            return places;
+        }
+
+        #endregion
+
+
+
     }
 }

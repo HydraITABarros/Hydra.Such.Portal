@@ -185,6 +185,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         {
             if (item != null)
             {
+                item.CreateUser = User.Identity.Name;
                 var createdItem = DBSimplifiedReqTemplateLines.Create(item.ParseToDB());
                 if (createdItem != null)
                 {
@@ -194,14 +195,16 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 }
                 else
                 {
+                    item = new SimplifiedReqTemplateLinesViewModel();
                     item.eReasonCode = 2;
                     item.eMessage = "Ocorreu um erro ao criar o registo.";
                 }
             }
             else
             {
+                item = new SimplifiedReqTemplateLinesViewModel();
                 item.eReasonCode = 2;
-                item.eMessage = "A linha não pode ser nulo.";
+                item.eMessage = "A linha não pode ser nula.";
             }
             return Json(item);
         }
@@ -210,21 +213,28 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [Area("Nutricao")]
         public JsonResult DeleteReqTemplateLine([FromBody] SimplifiedReqTemplateLinesViewModel item)
         {
-            ErrorHandler requestResponse = new ErrorHandler()
-            {
-                eReasonCode = 2,
-                eMessage = "Ocorreu um erro ao eliminar o registo.",
-            };
-
             if (item != null)
             {
                 if (DBSimplifiedReqTemplateLines.Delete(item.ParseToDB()))
                 {
-                    requestResponse.eReasonCode = 1;
-                    requestResponse.eMessage = "Registo eliminado com sucesso.";
+                    item.eReasonCode = 1;
+                    item.eMessage = "Registo eliminado com sucesso.";
+                }
+                else
+                {
+                    item = new SimplifiedReqTemplateLinesViewModel();
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao eliminar o registo.";
                 }
             }
-            return Json(requestResponse);
+            else
+            {
+                item = new SimplifiedReqTemplateLinesViewModel();
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: a linha não pode ser nula.";
+            }
+
+            return Json(item);
         }
 
         [HttpPost]

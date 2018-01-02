@@ -493,7 +493,7 @@ namespace Hydra.Such.Portal.Controllers
                     FH.Responsavel3No = Autorizacao.NoResponsavel3;
                     FH.Validadores = Autorizacao.NoResponsavel1 + " - " + Autorizacao.NoResponsavel2 + " - " + Autorizacao.NoResponsavel3;
                     FH.IntegradoresEmRH = Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3;
-                    FH.IntegradoresEmRHKM = Autorizacao.ValidadorRhKm1 + " - " + Autorizacao.ValidadorRhKm2;
+                    FH.IntegradoresEmRHKM = Autorizacao.ValidadorRhkm1 + " - " + Autorizacao.ValidadorRhkm2;
                 };
 
                 FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAVDatabaseName, _config.NAVCompanyName).SingleOrDefault().Name;
