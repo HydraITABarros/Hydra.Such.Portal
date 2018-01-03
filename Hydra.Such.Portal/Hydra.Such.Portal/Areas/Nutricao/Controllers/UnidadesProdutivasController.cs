@@ -100,6 +100,27 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 result.BillingProjects = new List<DBProjectBillingViewModel>();
                 result.CoffeeShops = new List<CoffeeShopViewModel>();
             }
+
+            //Get Project Movements Values
+
+            if (String.IsNullOrEmpty(result.ProjectKitchen))
+            {
+                List<MovimentosDeProjeto> KMovements = DBProjectMovements.GetByProjectNo(result.ProjectKitchen);
+                result.ProjectKitchenTotalMovs = KMovements.Where(x => x.PreçoTotal.HasValue).Sum(x => x.PreçoTotal.Value);
+            }
+
+            if (String.IsNullOrEmpty(result.ProjectSubsidiaries))
+            {
+                List<MovimentosDeProjeto> SMovements = DBProjectMovements.GetByProjectNo(result.ProjectSubsidiaries);
+                result.ProjectSubsidiariesTotalMovs = SMovements.Where(x => x.PreçoTotal.HasValue).Sum(x => x.PreçoTotal.Value);
+            }
+
+            if (String.IsNullOrEmpty(result.ProjectWasteFeedstock))
+            {
+                List<MovimentosDeProjeto> WMovements = DBProjectMovements.GetByProjectNo(result.ProjectWasteFeedstock);
+                result.ProjectWasteFeedstockTotalMovs = WMovements.Where(x => x.PreçoTotal.HasValue).Sum(x => x.PreçoTotal.Value);
+            }
+
             return Json(result);
         }
 
