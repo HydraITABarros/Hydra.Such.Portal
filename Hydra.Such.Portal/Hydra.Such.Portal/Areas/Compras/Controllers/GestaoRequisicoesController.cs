@@ -685,18 +685,10 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
-                //Ensure that the requisition has the expected status. Ex.: prevents from validating pending requisitions
-                if (IsValidForLocalMarketValidation(item))
-                {
-                    var status = CreatePurchaseItemsFor(item);
-                    item.eReasonCode = status.eReasonCode;
-                    item.eMessage = status.eMessage;
-                }
-                else
-                {
-                    item.eReasonCode = 2;
-                    item.eMessage = "O estado da requisição e/ou linhas não cumprem os requisitos para a validação do mercado local.";
-                }
+                RequisitionService srv = new RequisitionService(_configws);
+                var status = srv.CreatePrePurchaseOrderFor(item);
+                item.eReasonCode = status.eReasonCode;
+                item.eMessage = status.eMessage;
             }
             else
             {
@@ -721,21 +713,26 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 */
                 //use for database update later
                 var linesToValidate = requisition.Lines
-                    .Where(x => x.LocalMarket.Value 
-                        && !(x.PurchaseValidated.HasValue) ? x.PurchaseValidated.Value : true 
-                        && x.QuantityRequired.HasValue ? x.QuantityRequired.Value > 0 : false).ToList();
+                    .Where(x =>
+                            x.LocalMarket != null
+                            && x.PurchaseValidated != null
+                            && x.QuantityRequired != null
+                            && x.LocalMarket.Value
+                            && !x.PurchaseValidated.Value
+                            && x.QuantityRequired.Value > 0)
+                        .ToList();
 
                 var supplierProducts = linesToValidate.GroupBy(x => 
                             x.SupplierNo,
                             x => x,
-                            (key, items) => new PurchOrderToSupplierDTO
+                            (key, items) => new PurchOrderDTO
                             {
                                 SupplierId = key,
                                 RequisitionId = requisition.RequisitionNo,
                                 CenterResponsibilityCode = requisition.CenterResponsibilityCode,
                                 FunctionalAreaCode = requisition.FunctionalAreaCode,
                                 RegionCode = requisition.RegionCode,
-                                Lines = items.Select(line => new PurchToSupplierLineDTO()
+                                Lines = items.Select(line => new PurchOrderLineDTO()
                                 {
                                     LineId = line.LineNo.Value,
                                     Type = line.Type,
@@ -815,7 +812,15 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 //Ensure required fields aren't null or invalid
                 var linesToValidate = requisition.Lines
-                        .Where(x => x.LocalMarket.Value && !x.PurchaseValidated.Value && x.QuantityRequired.Value > 0);
+                        .Where(x =>
+                            x.LocalMarket != null
+                            && x.PurchaseValidated != null
+                            && x.QuantityRequired != null
+                            && x.LocalMarket.Value 
+                            && !x.PurchaseValidated.Value 
+                            && x.QuantityRequired.Value > 0)
+                        .ToList();
+
                 //Ensure it's in approved state
                 return requisition.State == RequisitionStates.Approved;
             }
@@ -900,8 +905,8 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_config, _configws);
-                    serv.CreateMarketConsultFrom(item);
+                    RequisitionService serv = new RequisitionService(_configws);
+                    serv.CreateMarketConsultFor(item);
                 }
                 catch (NotImplementedException ex)
                 {
@@ -928,8 +933,8 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_config, _configws);
-                    var stat = serv.CreatePurchaseOrderFrom(item);
+                    RequisitionService serv = new RequisitionService(_configws);
+                    var stat = serv.CreatePurchaseOrderFor(item);
                     item.eMessage = stat.eMessage;
                     item.eReasonCode = stat.eReasonCode;
                 }
@@ -958,8 +963,8 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_config, _configws);
-                    serv.CreateTransportationGuideFrom(item);
+                    RequisitionService serv = new RequisitionService(_configws);
+                    serv.CreateTransportationGuideFor(item);
                 }
                 catch (NotImplementedException ex)
                 {
@@ -972,7 +977,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 item = new RequisitionViewModel()
                 {
                     eReasonCode = 3,
-                    eMessage = "Não é possivel criar a guia de transporte.A requisição não pode ser nula."
+                    eMessage = "Não é possivel criar a guia de transporte. A requisição não pode ser nula."
                 };
             }
             return Json(item);
@@ -986,7 +991,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_config, _configws);
+                    RequisitionService serv = new RequisitionService(_configws);
                     serv.SendPrePurchaseFor(item);
                 }
                 catch (NotImplementedException ex)
