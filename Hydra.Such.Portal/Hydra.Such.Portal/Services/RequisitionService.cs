@@ -12,20 +12,18 @@ namespace Hydra.Such.Portal.Services
 {
     public class RequisitionService
     {
-        private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
 
-        public RequisitionService(NAVConfigurations appSettings, NAVWSConfigurations NAVWSConfigs)
+        public RequisitionService(NAVWSConfigurations NAVWSConfigs)
         {
-            _config = appSettings;
             _configws = NAVWSConfigs;
         }
 
-        public ErrorHandler CreatePurchaseItemsFor(RequisitionViewModel requisition)
+        public ErrorHandler CreatePrePurchaseOrderFor(RequisitionViewModel requisition)
         {
             ErrorHandler status = new ErrorHandler();
 
-            if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0)
+            if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0 && requisition.State == RequisitionStates.Approved)
             {
                 /*
                     Filtrar as linhas da requisição cujos campos ‘Mercado Local’ seja = true, ‘Validado Compras’=false e ‘Quandidade Requerida’ > 0;
@@ -33,7 +31,14 @@ namespace Hydra.Such.Portal.Services
                 */
                 //use for database update later
                 var linesToValidate = requisition.Lines
-                    .Where(x => x.LocalMarket.Value && !x.PurchaseValidated.Value && x.QuantityRequired.Value > 0);
+                    .Where(x =>
+                        x.LocalMarket != null
+                        && x.PurchaseValidated != null
+                        && x.QuantityRequired != null
+                        && x.LocalMarket.Value
+                        && !x.PurchaseValidated.Value
+                        && x.QuantityRequired.Value > 0)
+                    .ToList();
 
                 var supplierProducts = linesToValidate.GroupBy(x =>
                             x.SupplierNo,
@@ -98,7 +103,7 @@ namespace Hydra.Such.Portal.Services
                             }
                             else
                             {
-                                executionReport += string.Format("Ocorreu um erro ao criar a pré-compra para o fornecedor com o ID:{0}.", purchFromSupplier.SupplierId);
+                                executionReport += string.Format(" Ocorreu um erro ao criar a pré-compra para o fornecedor com o ID:{0}.", purchFromSupplier.SupplierId);
                             }
                         }
                         catch (Exception ex)
@@ -113,34 +118,23 @@ namespace Hydra.Such.Portal.Services
                 else
                 {
                     status.eReasonCode = 3;
-                    status.eMessage = "Não existem linhas que cumpram os requisitos de validação do mercado local.";
+                    status.eMessage = " Não existem linhas que cumpram os requisitos de validação.";
                 }
+            }
+            else
+            {
+                status.eReasonCode = 3;
+                status.eMessage = " O estado da requisição e / ou linhas não cumprem os requisitos de validação.";
             }
             return status;
         }
-
-        private bool IsValidForLocalMarketValidation(RequisitionViewModel requisition)
-        {
-            try
-            {
-                //Ensure required fields aren't null or invalid
-                var linesToValidate = requisition.Lines
-                        .Where(x => x.LocalMarket.Value && !x.PurchaseValidated.Value && x.QuantityRequired.Value > 0);
-                //Ensure it's in approved state
-                return requisition.State == RequisitionStates.Approved;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public ErrorHandler CreateMarketConsultFrom(RequisitionViewModel requisition)
+        
+        public ErrorHandler CreateMarketConsultFor(RequisitionViewModel requisition)
         {
             throw new NotImplementedException("CreateMarketConsultFor");
         }
 
-        public ErrorHandler CreatePurchaseOrderFrom(RequisitionViewModel requisition)
+        public ErrorHandler CreatePurchaseOrderFor(RequisitionViewModel requisition)
         {
             ErrorHandler status = new ErrorHandler();
 
@@ -264,7 +258,7 @@ namespace Hydra.Such.Portal.Services
             return status;
         }
 
-        public ErrorHandler CreateTransportationGuideFrom(RequisitionViewModel requisition)
+        public ErrorHandler CreateTransportationGuideFor(RequisitionViewModel requisition)
         {
             throw new NotImplementedException("CreatePurchaseOrderCommitmentFrom");
         }
