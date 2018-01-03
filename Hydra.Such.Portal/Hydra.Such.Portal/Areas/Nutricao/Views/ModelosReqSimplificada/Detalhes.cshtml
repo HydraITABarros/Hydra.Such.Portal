@@ -698,7 +698,8 @@
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetReqTemplate") !== -1) {
 
-                        } else if (data.detail.url.indexOf("CreateReqTemplate") !== -1) {
+                        }
+                        else if (data.detail.url.indexOf("CreateReqTemplate") !== -1) {
                             debugger;;
                             if (this.data.eReasonCode == "1"){
                                 this._isCreate = false;
@@ -709,9 +710,15 @@
                                 this._isCreate = true;
                                 this._openToastError(this.data.eMessage);
                             }
-                        } else if (data.detail.url.indexOf("Update") !== -1) {
-                            this._openToast(this.data.eMessage);
-                            this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/GetReqTemplate";
+                        }
+                        else if (data.detail.url.indexOf("Update") !== -1) {
+                            if (this.data.eReasonCode == "1") {
+                                this._openToast(this.data.eMessage);
+                                this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/GetReqTemplate";
+                            }
+                            else {
+                                this._openToastError(this.data.eMessage);
+                            }
                         }
                         else if (data.detail.url.indexOf("Delete") !== -1) {
                             if (this.data.eReasonCode == "1") {
