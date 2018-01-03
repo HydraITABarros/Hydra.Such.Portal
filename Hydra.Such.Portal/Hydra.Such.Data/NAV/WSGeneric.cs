@@ -40,6 +40,24 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
+        public static async Task<WSGenericCodeUnit.FxCabimento_Result> CreatePurchaseOrderFitting(String prePurchHeaderNo, NAVWSConfigurations WSConfigurations)
+        {
+            throw new NotImplementedException("CreatePurchaseOrderFitting");
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_Generic_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSGenericCodeUnit.WsGeneric_PortClient ws_Client = new WSGenericCodeUnit.WsGeneric_PortClient(navWSBinding, WS_URL);
+            ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
+            try
+            {
+                WSGenericCodeUnit.FxCabimento_Result result = await ws_Client.FxCabimentoAsync(prePurchHeaderNo);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

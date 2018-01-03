@@ -180,6 +180,36 @@
                    content-type="application/json"></iron-ajax>
 
 
+        <iron-ajax url="/Compras/GestaoRequisicoes/CreateMarketConsult"
+                   last-response="{{Requisition}}"
+                   id="createMarketConsult_ajax"
+                   on-response="_createMarketConsultResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/CreatePurchaseOrder"
+                   last-response="{{Requisition}}"
+                   id="createPurchOrder_ajax"
+                   on-response="_createPurchaseOrderResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/CreateTransportationGuide"
+                   last-response="{{Requisition}}"
+                   id="createTranspGuide_ajax"
+                   on-response="_createTransportationGuideResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/SendPrePurchase"
+                   last-response="{{Requisition}}"
+                   id="sendPrePurchase_ajax"
+                   on-response="_sendPrePurchaseResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
                 <iron-form id="frmRequisition">
@@ -438,7 +468,11 @@
                     <paper-button raised id="btnRegistOverrideValidation" on-tap="_RegistOverrideValidation"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anular Validação</paper-button>
                     <paper-button raised id="btnRegistCancelApproval" on-tap="_RegistCancelApproval"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Anular Aprovação</paper-button>
                     <paper-button raised id="btnRegistCloseRequest" on-tap="_RegistCloseRequest"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Fechar Requisição</paper-button>
-                </div>   
+                    <paper-button raised id="btnCreateMarketConsult" on-tap="_createMarketConsult"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Consulta Mercado</paper-button>
+                    <paper-button raised id="btnCreateMarketConsult" on-tap="_createPurchaseOrder"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Encomenda de Compra</paper-button>
+                    <paper-button raised id="btnCreateMarketConsult" on-tap="_createTransportationGuide"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Guia de Transporte</paper-button>
+                    <paper-button raised id="btnCreateMarketConsult" on-tap="_sendPrePurchase"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Enviar Pré- Encomenda</paper-button>
+                </div>  
             </div>
         </div>
 
@@ -1253,7 +1287,67 @@
                     this.$.regist_datasource.body = JSON.stringify(this.Requisition);
                     this.$.regist_datasource.params = { "registType": "Fechar Requisicao" };
                     this.$.regist_datasource.generateRequest();
-                }
+                },
+
+                _notImplemented() {
+                    alert("Funcionalidade não especificada e/ou a aguardar esclarecimentos.");
+                },
+                _createMarketConsult: function () {
+                    this._notImplemented();
+                    return;
+                    this.$.createMarketConsult_ajax.body = JSON.stringify(this.Requisition);
+                    this.$.createMarketConsult_ajax.generateRequest();
+                },
+                _createMarketConsultResponse: function (e) {
+                    if (this.Requisition.eReasonCode == "1") {
+                        this._openToast(this.Requisition.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.Requisition.eMessage);
+                    }
+                },
+                _createPurchaseOrder: function () {
+                    this._notImplemented();
+                    return;
+                    this.$.createPurchOrder_ajax.body = JSON.stringify(this.Requisition);
+                    this.$.createPurchOrder_ajax.generateRequest();
+                },
+                _createPurchaseOrderResponse: function (e) {
+                    if (this.Requisition.eReasonCode == "1") {
+                        this._openToast(this.Requisition.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.Requisition.eMessage);
+                    }
+                },
+                _createTransportationGuide: function () {
+                    this._notImplemented();
+                    return;
+                    this.$.createTranspGuide_ajax.body = JSON.stringify(this.Requisition);
+                    this.$.createTranspGuide_ajax.generateRequest();
+                },
+                _createTransportationGuideResponse: function (e) {
+                    if (this.Requisition.eReasonCode == "1") {
+                        this._openToast(this.Requisition.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.Requisition.eMessage);
+                    }
+                },
+                _sendPrePurchase: function () {
+                    this._notImplemented();
+                    return;
+                    this.$.sendPrePurchase_ajax.body = JSON.stringify(this.Requisition);
+                    this.$.sendPrePurchase_ajax.generateRequest();
+                },
+                _sendPrePurchaseResponse: function (e) {
+                    if (this.Requisition.eReasonCode == "1") {
+                        this._openToast(this.Requisition.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.Requisition.eMessage);
+                    }
+                },
             });
         });
     </script>
