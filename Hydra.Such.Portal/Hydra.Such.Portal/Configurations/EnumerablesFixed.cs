@@ -301,6 +301,22 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 38,
                 Value = "Modelos Requisições Simplificadas"
             },
+
+              new EnumData()
+            {
+                Id = 39,
+                Value = "Localizações"
+            },
+              new EnumData()
+            {
+                Id = 40,
+                Value = "Requisições Simplificadas"
+            },
+            new EnumData()
+            {
+                Id = 39,
+                Value = "Necessidade de Compras"
+            },
         };
 
         public static readonly List<EnumData> ProposalStatus = new List<EnumData>(){

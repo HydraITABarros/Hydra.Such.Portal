@@ -68,13 +68,13 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static List<MovimentosDeProjeto> GetAllTableByArea(string user, int areaId)
+        public static List<MovimentosDeProjeto> GetAllTableByAreaProjectNo(string user, int areaId, string projectNo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.MovimentosDeProjeto.Where(x => x.Faturada == false /*|| x.Faturada == null*/ && x.Faturável == true && x.Registado == true && x.Utilizador == user && x.NºProjetoNavigation.Área == areaId).ToList();
+                    return ctx.MovimentosDeProjeto.Where(x => x.Faturada == false && x.Faturável == true && x.Registado == true && x.Utilizador == user && x.NºProjetoNavigation.Área == areaId && x.NºProjeto == projectNo && x.FaturaçãoAutorizada == false).ToList();
                 }
             }
             catch (Exception ex)

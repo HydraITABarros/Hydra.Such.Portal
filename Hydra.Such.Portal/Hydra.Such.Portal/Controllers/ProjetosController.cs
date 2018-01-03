@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Hydra.Such.Data.ViewModel.Projects;
@@ -13,7 +12,6 @@ using Microsoft.Extensions.Options;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.NAV;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json.Linq;
 
 namespace Hydra.Such.Portal.Controllers
@@ -458,20 +456,6 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         #region DiárioDeProjetos
         public IActionResult DiarioProjeto(String id)
         {
@@ -816,7 +800,7 @@ namespace Hydra.Such.Portal.Controllers
 
                             MovimentosDeProjeto ProjectMovement = new MovimentosDeProjeto()
                             {
-                                NºLinha = newdp.NºLinha,
+                                //NºLinha = newdp.NºLinha,
                                 NºProjeto = newdp.NºProjeto,
                                 Data = newdp.Data,
                                 TipoMovimento = newdp.TipoMovimento,
@@ -837,6 +821,7 @@ namespace Hydra.Such.Portal.Controllers
                                 PreçoTotal = newdp.PreçoTotal,
                                 Faturável = newdp.Faturável,
                                 Registado = true,
+                                Faturada = false,
                                 FaturaANºCliente = newdp.FaturaANºCliente,
                                 Moeda = newdp.Moeda,
                                 ValorUnitárioAFaturar = newdp.ValorUnitárioAFaturar,
@@ -847,7 +832,8 @@ namespace Hydra.Such.Portal.Controllers
                                 DataConsumo = newdp.DataConsumo,
                                 CódServiçoCliente = newdp.CódServiçoCliente,
                                 UtilizadorCriação = User.Identity.Name,
-                                DataHoraCriação = DateTime.Now
+                                DataHoraCriação = DateTime.Now,
+                                FaturaçãoAutorizada = false
                             };
 
                             DBProjectMovements.Create(ProjectMovement);
@@ -889,6 +875,7 @@ namespace Hydra.Such.Portal.Controllers
                     CustoTotal = x.CustoTotal,
                     PreçoUnitário = x.PreçoUnitário,
                     PreçoTotal = x.PreçoTotal,
+                    FaturaANºCliente = x.FaturaANºCliente,
                     Faturável = x.Faturável,
                     Registado = false,
                     DataConsumo = x.DataConsumo.ToString() == "" || x.DataConsumo.ToString() == String.Empty ? (DateTime?)null : DateTime.Parse(x.DataConsumo.ToString()),
@@ -1019,11 +1006,14 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAutorizacaoFaturacao([FromBody] int areaId)
+        public JsonResult GetAutorizacaoFaturacao([FromBody]  JObject requestParams)
         {
+            int areaId = int.Parse(requestParams["areaId"].ToString());
+            string projectNo = requestParams["projectNo"].ToString();
+
             try
             {
-                List<ProjectDiaryViewModel> result = DBProjectMovements.GetAllTableByArea(User.Identity.Name, areaId).Select(x => new ProjectDiaryViewModel()
+                List<ProjectDiaryViewModel> result = DBProjectMovements.GetAllTableByAreaProjectNo(User.Identity.Name, areaId, projectNo).Select(x => new ProjectDiaryViewModel()
                 {
                     LineNo = x.NºLinha,
                     ProjectNo = x.NºProjeto,
@@ -1225,7 +1215,40 @@ namespace Hydra.Such.Portal.Controllers
             public bool Iserror { get; set; }
             public string ClientNo { get; set; }
         }
+
+
+        [HttpPost]
+        public JsonResult InvoiceLinesAuthorize([FromBody] List<ProjectDiaryViewModel> data)
+        {
+            try
+            {
+                if(data != null)
+                {
+                    foreach(var updatedata in data)
+                    {
+                        MovimentosDeProjeto lines = DBProjectMovements.GetByLineNo(updatedata.LineNo).FirstOrDefault();
+                        lines.FaturaçãoAutorizada = true;
+                        lines.DataAutorizaçãoFaturação = DateTime.Now;
+                        DBProjectMovements.Update(lines);
+                    }
+                    
+                    return Json(data);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return null;
+        }
         #endregion InvoiceAutorization
 
+        #region Invoice
+    
+        public IActionResult Faturacao()
+        {
+            return View();
+        }
+        #endregion
     }
 }

@@ -18,6 +18,8 @@ using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Data.Logic.Viatura;
 using Hydra.Such.Data.Logic.Nutrition;
 using Hydra.Such.Data.Logic.Compras;
+using Hydra.Such.Data.Logic.Approvals;
+using Hydra.Such.Data.ViewModel.Nutrition;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -186,6 +188,16 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetGroupApproval()
+        {
+            List<DDMessage> result = DBApprovalGroups.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
         [HttpPost]
         public JsonResult GetFolhaDeHoraPercursoOrigemDestino()
         {
@@ -576,6 +588,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetLocationsPortal()
+        {
+            List<DDMessageString> result = DBLocations.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.Código,
+                value = x.Nome
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetContabGroup()
         {
             List<DDMessageString> result = DBNAV2017ProjectContabGroup.GetAllProjectContabGroup(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
@@ -754,7 +777,16 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
-
+        [HttpPost]
+        public JsonResult GetProdUnits()
+        {
+            List<DDMessageString> result = DBProductivityUnits.ParseListToViewModel(DBProductivityUnits.GetAll()).Select(x => new DDMessageString()
+            {
+                id = Convert.ToString(x.ProductivityUnitNo),
+                value = x.Description
+            }).ToList(); 
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult GetProjectNavList()
@@ -1283,6 +1315,14 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
 
             return Json(products);
+        }
+
+        [HttpPost]
+        public JsonResult GetStockkeepingUnit( string product)
+        {
+            List<NAVStockKeepingUnitViewModel> StockkeepingUnit = DBNAV2017StockKeepingUnit.GetByProductsNo(_config.NAVDatabaseName, _config.NAVCompanyName, product).ToList();
+
+            return Json(StockkeepingUnit);
         }
 
         [HttpPost]
