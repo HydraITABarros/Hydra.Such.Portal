@@ -9,7 +9,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
 {
     public static class DBProductMovement
     {
-        #region CRUD
+        //#region CRUD
         //public static MovimentoDeProdutos GetById(int NºMovimentoProduto)
         //{
         //    try
