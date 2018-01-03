@@ -104,6 +104,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
+        // Unable to generate entity type for table 'dbo.Movimento de Produtos'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.Distancia_FH'. Please see the warning messages.
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

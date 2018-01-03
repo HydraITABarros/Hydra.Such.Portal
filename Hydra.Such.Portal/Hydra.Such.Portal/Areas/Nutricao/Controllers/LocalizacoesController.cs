@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Nutrition;
+using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Nutrition;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +13,13 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 {
     public class LocalizacoesController : Controller
     {
+        [Area("Nutricao")]
         public IActionResult Index()
         {
             return View();
         }
 
+        [Area("Nutricao")]
         [HttpPost]
         public JsonResult GetLocations()
         {
@@ -23,11 +27,25 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             return Json(result);
         }
 
-        public IActionResult Details()
+
+        [Area("Nutricao")]
+        public IActionResult Detalhes(string id)
         {
-            return View();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 39);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.LocationCode = id;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
         }
 
+        [Area("Nutricao")]
         [HttpPost]
         public JsonResult GetLocationData([FromBody] LocationViewModel item)
         {
@@ -40,6 +58,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         // 100 - Sucesso
         // 101 - Campo Código é obrigatório
         // 102 - Ocorreu um erro desconhecido
+        [Area("Nutricao")]
         [HttpPost]
         public JsonResult CreateLocation([FromBody] LocationViewModel item)
         {
@@ -73,6 +92,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
         // 100 - Sucesso
         // 101 - Ocorreu um erro desconhecido
+        [Area("Nutricao")]
         [HttpPost]
         public JsonResult UpdateLocation([FromBody] LocationViewModel item)
         {
@@ -115,6 +135,29 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             return Json(result);
         }
 
+        // 100 - Sucesso
+        // 101 - Ocorreu um erro desconhecido
+        [Area("Nutricao")]
+        [HttpPost]
+        public JsonResult DeleteLocation([FromBody] LocationViewModel item)
+        {
+            LocationViewModel result = new LocationViewModel();
+            if (item != null)
+            {
+                Localizações CLocation = DBLocations.GetById(item.Code);
 
+                if (DBLocations.Delete(CLocation))
+                {
+                    result.eReasonCode = 100;
+                    result.eMessage = "Localização removida com sucesso.";
+                }
+                else
+                {
+                    result.eReasonCode = 101;
+                    result.eMessage = "Ocorreu um erro ao remover a localização.";
+                }
+            }
+            return Json(result);
+        }
     }
 }

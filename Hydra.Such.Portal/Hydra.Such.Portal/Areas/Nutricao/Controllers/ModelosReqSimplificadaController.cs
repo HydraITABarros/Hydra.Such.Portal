@@ -29,7 +29,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [Area("Nutricao")]
         public JsonResult GetAllReqTemplates()
         {
-            var items = DBSimplifiedReqTemplates.GetAll().ParseToViewModel();
+            var items = DBSimplifiedReqTemplates.ParseToViewModel(DBSimplifiedReqTemplates.GetAll());
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
