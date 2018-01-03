@@ -138,10 +138,10 @@
                 </vaadin-combo-box>
             </div>
             <div class="col-lg-2">
-                <vaadin-text-field id="ddLevelApproval" label="Nivel Aprovação" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                <vaadin-text-field id="ddLevelApproval" type="number" label="Nivel Aprovação" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
             </div>
             <div class="col-lg-2">
-                <vaadin-text-field id="ddValueApproval" label="Valor Aprovação" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                <vaadin-text-field id="ddValueApproval" type="number" label="Valor Aprovação" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
             </div>
             <div class="col-lg-2">
                 <vaadin-combo-box items="[[UserApprovalList]]" id="ddUserApproval" on-change="_onChangeUser" item-value-path="id" item-label-path="value" value="{{item.approvalUser}}" label="Utilizador Aprovação" disabled="{{ _permissionsCreate }}">
@@ -271,7 +271,7 @@
                     <vaadin-grid-filter path="approvalGroup" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[GroupApprovalList]]" item-value-path="id" item-label-path="value" on-change="_onChangeGroup"  value="{{item.approvalGroup}}" disabled="{{ _permissionsCreate }}">
+                    <vaadin-combo-box items="[[GroupApprovalList]]" item-value-path="id" item-label-path="value" on-change="_onChangeGroup" value="{{item.approvalGroup}}" disabled="{{ _permissionsCreate }}">
                         <template>
                             <table width="200px">
                                 <tr>
@@ -290,7 +290,7 @@
                     <vaadin-grid-filter path="startDate" />
                 </template>
                 <template>
-                    <input type="date"  id="_StartDate" name="_StartDate" value="{{item.startDate}}" disabled="{{  _permissionsUpdate  }}">
+                    <input type="date" id="_StartDate" name="_StartDate" value="{{item.startDate}}" disabled="{{  _permissionsUpdate  }}">
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="115px">
@@ -299,7 +299,7 @@
                     <vaadin-grid-filter path="endDate" />
                 </template>
                 <template>
-                    <input type="date"  id="_EndDate" name="_EndDate" value="{{item.endDate}}" disabled="{{  _permissionsUpdate  }}">
+                    <input type="date" id="_EndDate" name="_EndDate" value="{{item.endDate}}" disabled="{{  _permissionsUpdate  }}">
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="10%" resizable>
@@ -402,10 +402,10 @@
                         this.$.gridApprovals.clearCache();
                     }
 
-                    
+
                 },
                 _onChangeGroup: function (data) {
-  
+
                     this.$.ddUserApproval.value = "";
                     if (data.model != null) {
                         data.model.item.approvalUser = "";
@@ -439,7 +439,7 @@
                     this.$.gridApprovals.clearCache();
                 },
 
-               
+
 
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);

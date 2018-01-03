@@ -223,7 +223,7 @@
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
-                    this.$.ajax_update.url = "/Administracao/UpdateDetailsApprovalGroup";
+                    this.$.ajax_update.url = "/Administracao/DeteleDetailsApprovalGroup";
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
                 }
