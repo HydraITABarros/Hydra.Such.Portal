@@ -22,7 +22,7 @@ namespace Hydra.Such.Portal.Services
         public ErrorHandler CreatePrePurchaseOrderFor(RequisitionViewModel requisition)
         {
             ErrorHandler status = new ErrorHandler();
-
+            
             if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0 && requisition.State == RequisitionStates.Approved)
             {
                 /*
@@ -43,14 +43,14 @@ namespace Hydra.Such.Portal.Services
                 var supplierProducts = linesToValidate.GroupBy(x =>
                             x.SupplierNo,
                             x => x,
-                            (key, items) => new PurchOrderToSupplierDTO
+                            (key, items) => new PurchOrderDTO
                             {
                                 SupplierId = key,
                                 RequisitionId = requisition.RequisitionNo,
                                 CenterResponsibilityCode = requisition.CenterResponsibilityCode,
                                 FunctionalAreaCode = requisition.FunctionalAreaCode,
                                 RegionCode = requisition.RegionCode,
-                                Lines = items.Select(line => new PurchToSupplierLineDTO()
+                                Lines = items.Select(line => new PurchOrderLineDTO()
                                 {
                                     LineId = line.LineNo.Value,
                                     Type = line.Type,
@@ -146,14 +146,14 @@ namespace Hydra.Such.Portal.Services
                 var supplierProducts = linesToCreateFrom.GroupBy(x =>
                             x.SupplierNo,
                             x => x,
-                            (key, items) => new PurchOrderToSupplierDTO
+                            (key, items) => new PurchOrderDTO
                             {
                                 SupplierId = key,
                                 RequisitionId = requisition.RequisitionNo,
                                 CenterResponsibilityCode = requisition.CenterResponsibilityCode,
                                 FunctionalAreaCode = requisition.FunctionalAreaCode,
                                 RegionCode = requisition.RegionCode,
-                                Lines = items.Select(line => new PurchToSupplierLineDTO()
+                                Lines = items.Select(line => new PurchOrderLineDTO()
                                 {
                                     LineId = line.LineNo.Value,
                                     Type = line.Type,
@@ -286,7 +286,7 @@ namespace Hydra.Such.Portal.Services
             }
         }
 
-        private CreatePrePurchOrderResult CreatePrePurchaseOrderFrom(PurchOrderToSupplierDTO purchOrderToSupplier)
+        private CreatePrePurchOrderResult CreatePrePurchaseOrderFrom(PurchOrderDTO purchOrderToSupplier)
         {
             CreatePrePurchOrderResult result = new CreatePrePurchOrderResult();
             Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderService.CreateAsync(purchOrderToSupplier, _configws);

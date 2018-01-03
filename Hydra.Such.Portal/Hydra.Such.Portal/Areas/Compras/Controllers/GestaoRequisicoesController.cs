@@ -685,20 +685,10 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
-                //RequisitionService srv = new RequisitionService(_configws);
-                //srv.
-                //Ensure that the requisition has the expected status. Ex.: prevents from validating pending requisitions
-                if (IsValidForLocalMarketValidation(item))
-                {
-                    var status = CreatePurchaseItemsFor(item);
-                    item.eReasonCode = status.eReasonCode;
-                    item.eMessage = status.eMessage;
-                }
-                else
-                {
-                    item.eReasonCode = 2;
-                    item.eMessage = "O estado da requisição e/ou linhas não cumprem os requisitos para a validação do mercado local.";
-                }
+                RequisitionService srv = new RequisitionService(_configws);
+                var status = srv.CreatePrePurchaseOrderFor(item);
+                item.eReasonCode = status.eReasonCode;
+                item.eMessage = status.eMessage;
             }
             else
             {
@@ -735,14 +725,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 var supplierProducts = linesToValidate.GroupBy(x => 
                             x.SupplierNo,
                             x => x,
-                            (key, items) => new PurchOrderToSupplierDTO
+                            (key, items) => new PurchOrderDTO
                             {
                                 SupplierId = key,
                                 RequisitionId = requisition.RequisitionNo,
                                 CenterResponsibilityCode = requisition.CenterResponsibilityCode,
                                 FunctionalAreaCode = requisition.FunctionalAreaCode,
                                 RegionCode = requisition.RegionCode,
-                                Lines = items.Select(line => new PurchToSupplierLineDTO()
+                                Lines = items.Select(line => new PurchOrderLineDTO()
                                 {
                                     LineId = line.LineNo.Value,
                                     Type = line.Type,
@@ -987,7 +977,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 item = new RequisitionViewModel()
                 {
                     eReasonCode = 3,
-                    eMessage = "Não é possivel criar a guia de transporte.A requisição não pode ser nula."
+                    eMessage = "Não é possivel criar a guia de transporte. A requisição não pode ser nula."
                 };
             }
             return Json(item);
