@@ -11,6 +11,7 @@ using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
+using Hydra.Such.Portal.Services;
 
 namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
@@ -720,20 +721,23 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 */
                 //use for database update later
                 var linesToValidate = requisition.Lines
-                    .Where(x => x.LocalMarket.Value && !x.PurchaseValidated.Value && x.QuantityRequired.Value > 0);
+                    .Where(x => x.LocalMarket.Value 
+                        && !(x.PurchaseValidated.HasValue) ? x.PurchaseValidated.Value : true 
+                        && x.QuantityRequired.HasValue ? x.QuantityRequired.Value > 0 : false).ToList();
 
                 var supplierProducts = linesToValidate.GroupBy(x => 
                             x.SupplierNo,
                             x => x,
-                            (key, items) => new PurchFromSupplierDTO
+                            (key, items) => new PurchOrderToSupplierDTO
                             {
                                 SupplierId = key,
                                 RequisitionId = requisition.RequisitionNo,
                                 CenterResponsibilityCode = requisition.CenterResponsibilityCode,
                                 FunctionalAreaCode = requisition.FunctionalAreaCode,
                                 RegionCode = requisition.RegionCode,
-                                Lines = items.Select(line => new PurchFromSupplierLinesDTO()
+                                Lines = items.Select(line => new PurchToSupplierLineDTO()
                                 {
+                                    LineId = line.LineNo.Value,
                                     Type = line.Type,
                                     Code = line.Code,
                                     Description = line.Description,
@@ -760,9 +764,9 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                 createPurchaseHeaderTask.Wait();
                                 if (createPurchaseHeaderTask.IsCompletedSuccessfully)
                                 {
-                                    purchFromSupplier.NAVPurchaseId = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
+                                    purchFromSupplier.NAVPrePurchOrderId = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
 
-                                    executionReport += string.Format("Criada a pré-compra {0}.", purchFromSupplier.NAVPurchaseId);
+                                    executionReport += string.Format("Criada a pré-compra {0}.", purchFromSupplier.NAVPrePurchOrderId);
                                     Task<WSPurchaseInvLine.CreateMultiple_Result> createPurchaseLinesTask = NAVPurchaseLineService.CreateMultipleAsync(purchFromSupplier, _configws);
                                     try
                                     {
@@ -773,7 +777,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                         }
                                         else
                                         {
-                                            executionReport += string.Format(" Não foi possivel criar as linhas de pré-compra com sucesso.");
+                                            executionReport += string.Format(" Não foi possivel criar as linhas de pré-compra.");
                                         }
                                     }
                                     catch (Exception ex)
@@ -883,6 +887,120 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 {
                     eReasonCode = 3,
                     eMessage = "Não é possivel validar. A requisição não pode ser nula."
+                };
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult CreateMarketConsult([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                try
+                {
+                    RequisitionService serv = new RequisitionService(_config, _configws);
+                    serv.CreateMarketConsultFrom(item);
+                }
+                catch (NotImplementedException ex)
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Funcionalidade não implementada";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel criar consulta de mercado. A requisição não pode ser nula."
+                };
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult CreatePurchaseOrder([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                try
+                {
+                    RequisitionService serv = new RequisitionService(_config, _configws);
+                    var stat = serv.CreatePurchaseOrderFrom(item);
+                    item.eMessage = stat.eMessage;
+                    item.eReasonCode = stat.eReasonCode;
+                }
+                catch (NotImplementedException ex)
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Funcionalidade não implementada";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel criar encomenda de compra. A requisição não pode ser nula."
+                };
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult CreateTransportationGuide([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                try
+                {
+                    RequisitionService serv = new RequisitionService(_config, _configws);
+                    serv.CreateTransportationGuideFrom(item);
+                }
+                catch (NotImplementedException ex)
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Funcionalidade não implementada";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel criar a guia de transporte.A requisição não pode ser nula."
+                };
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult SendPrePurchase([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                try
+                {
+                    RequisitionService serv = new RequisitionService(_config, _configws);
+                    serv.SendPrePurchaseFor(item);
+                }
+                catch (NotImplementedException ex)
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Funcionalidade não implementada";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel enviar a pré-compra. A requisição não pode ser nula."
                 };
             }
             return Json(item);
