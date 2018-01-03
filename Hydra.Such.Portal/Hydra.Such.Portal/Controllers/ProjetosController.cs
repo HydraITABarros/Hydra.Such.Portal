@@ -1119,7 +1119,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                List<ProjectDiaryViewModel> result = DBProjectMovements.GetAllAutorized(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
+                List<ProjectDiaryViewModel> result = DBProjectMovements.GetAllAutorized().Select(x => new ProjectDiaryViewModel()
                 {
                     LineNo = x.NºLinha,
                     ProjectNo = x.NºProjeto,

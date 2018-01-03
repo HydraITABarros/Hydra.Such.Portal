@@ -3465,9 +3465,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.ToTable("Movimento de Produtos");
 
-                entity.Property(e => e.NºMovimentos)
-                    .HasColumnName("Nº Movimentos")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.NºMovimentos).HasColumnName("Nº Movimentos");
 
                 entity.Property(e => e.CustoUnitário)
                     .HasColumnName("Custo Unitário")
