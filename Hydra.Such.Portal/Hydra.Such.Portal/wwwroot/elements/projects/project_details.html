@@ -108,6 +108,9 @@
                     <template is="dom-if" if="{{ !_projectClosed }}">
                         <paper-button raised id="btnProjectDiary" class="" on-tap="_OpenProjectDiary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
                     </template>
+                    <template is="dom-if" if="{{ _permissions.create }}">
+                        <paper-button raised id="btnInvoiceAut" class="" on-tap="_OpenInvoice"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Autorização Faturação</paper-button>
+                    </template>
                 </div>
             </div>
         </template>
@@ -611,6 +614,11 @@
                             }
                         }
                     },
+
+                    _OpenInvoice: function (data) {
+                        window.location.href = "../AutorizacaoFaturacao/" + this.data.projectNo;
+                    },
+
                     //Address Functions
                     _getAddressByCode: function (e) {
                         this.$.address_ajax.body = JSON.stringify(e.detail.value);

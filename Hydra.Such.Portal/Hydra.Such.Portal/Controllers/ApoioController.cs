@@ -211,6 +211,7 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 5, 22);
             if (UPerm != null && UPerm.Read.Value)
             {
+                ViewBag.ProjectNo = id ?? "";
                 ViewBag.UPermissions = UPerm;
                 return View();
             }
