@@ -21,6 +21,7 @@ using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.Logic.Compras;
 using Hydra.Such.Data.Logic.Approvals;
+using Hydra.Such.Data.ViewModel.Approvals;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -2115,29 +2116,29 @@ namespace Hydra.Such.Portal.Controllers
         //    return Json(result);
         //}
 
-        [HttpPost]
-        public JsonResult CreateDistanciaFH([FromBody] DistanciaFHViewModel data)
-        {
-            bool result = false;
-            try
-            {
-                DistanciaFh DistanciaFH = new DistanciaFh();
+        //[HttpPost]
+        //public JsonResult CreateDistanciaFH([FromBody] DistanciaFHViewModel data)
+        //{
+        //    bool result = false;
+        //    try
+        //    {
+        //        DistanciaFh DistanciaFH = new DistanciaFh();
 
-                DistanciaFH.CódigoOrigem = data.Origem;
-                DistanciaFH.CódigoDestino = data.Destino;
-                DistanciaFH.Distância = data.Distancia;
-                DistanciaFH.CriadoPor = User.Identity.Name;
-                DistanciaFH.DataHoraCriação = DateTime.Now;
+        //        DistanciaFH.CódigoOrigem = data.Origem;
+        //        DistanciaFH.CódigoDestino = data.Destino;
+        //        DistanciaFH.Distância = data.Distancia;
+        //        DistanciaFH.CriadoPor = User.Identity.Name;
+        //        DistanciaFH.DataHoraCriação = DateTime.Now;
 
-                //var dbCreateResult = DBDistanciaFh.Create(DistanciaFH);
-                //result = dbCreateResult != null ? true : false;
-            }
-            catch (Exception ex)
-            {
-                //log
-            }
-            return Json(result);
-        }
+        //        var dbCreateResult = DBDistanciaFh.Create(DistanciaFH);
+        //        result = dbCreateResult != null ? true : false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //log
+        //    }
+        //    return Json(result);
+        //}
 
         //[HttpPost]
         //public JsonResult DeleteDistanciaFH([FromBody] DistanciaFHViewModel data)
@@ -2301,6 +2302,7 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Configurações Aprovações
+
         public IActionResult ConfiguracaoAprovacoes(string id)
         {
             UserAccessesViewModel UPerm = GetPermissions(id);
@@ -2316,25 +2318,31 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+
         [HttpPost]
-        public JsonResult GetApproval()
+        public JsonResult GetApprovalConfig()
         {
-            List<ApprovalViewModel> result = DBApprovalConfigurations.GetAll().Select(x => new ApprovalViewModel()
+            List<ApprovalConfigurationsViewModel> result = DBApprovalConfigurations.GetAll().Select(x => new ApprovalConfigurationsViewModel()
             {
                 Id = x.Id,
                 Type = x.Tipo,
                 Area = x.Área,
-                ValueApproval = x.ValorAprovação,
-                GroupApproval = x.GrupoAprovação,
-                LevelApproval = x.NívelAprovação,
-                UserApproval = x.UtilizadorAprovação,
-                CreateDate = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
+                ApprovalValue = x.ValorAprovação,
+                ApprovalGroup = x.GrupoAprovação,
+                Level = x.NívelAprovação,
+                StartDate = x.DataInicial.ToString("yyyy-MM-dd"),
+                EndDate = x.DataFinal.ToString("yyyy-MM-dd"),
+                ApprovalUser = x.UtilizadorAprovação,
+                CreateDate = x.DataHoraCriação,
                 CreateUser = x.UtilizadorCriação,
             }).ToList();
             return Json(result);
         }
+
+       
+
         [HttpPost]
-        public JsonResult UpdateApproval([FromBody] List<ApprovalViewModel> data)
+        public JsonResult UpdateApprovalConfig([FromBody] List<ApprovalConfigurationsViewModel> data)
         {
             List<ConfiguraçãoAprovações> results = DBApprovalConfigurations.GetAll();
             results.RemoveAll(x => data.Any(u => u.Id == x.Id));
@@ -2344,17 +2352,19 @@ namespace Hydra.Such.Portal.Controllers
                 ConfiguraçãoAprovações aprovConfig = new ConfiguraçãoAprovações()
                 {
                     Tipo = x.Type,
-                    NívelAprovação = x.LevelApproval,
-                    ValorAprovação = x.ValueApproval,
-                    GrupoAprovação = x.GroupApproval,
-                    UtilizadorAprovação = x.UserApproval,
-                    Área = x.Area
+                    NívelAprovação = x.Level,
+                    ValorAprovação = x.ApprovalValue,
+                    GrupoAprovação = x.ApprovalGroup,
+                    UtilizadorAprovação = x.ApprovalUser,
+                    Área = x.Area,
+                    DataInicial = DateTime.Parse(x.StartDate),
+                    DataFinal = DateTime.Parse(x.EndDate),
                 };
                 if (x.Id > 0)
                 {
                     aprovConfig.Id = x.Id;
                     aprovConfig.UtilizadorCriação = x.CreateUser;
-                    aprovConfig.DataHoraCriação = string.IsNullOrEmpty(x.CreateDate) ? (DateTime?)null : DateTime.Parse(x.CreateDate);
+                    aprovConfig.DataHoraCriação = x.CreateDate;
                     aprovConfig.DataHoraModificação = DateTime.Now;
                     aprovConfig.UtilizadorModificação = User.Identity.Name;
                     DBApprovalConfigurations.Update(aprovConfig);
@@ -2366,6 +2376,144 @@ namespace Hydra.Such.Portal.Controllers
                     DBApprovalConfigurations.Create(aprovConfig);
                 }
             });
+            return Json(data);
+        }
+        #endregion
+
+        #region Grupo Aprovações
+        public IActionResult GruposAprovacoes(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions(id);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        [HttpPost]
+        public JsonResult GetApprovalGroup()
+        {
+            List<ApprovalGroupViewModel> result = DBApprovalGroups.GetAll().Select(x => new ApprovalGroupViewModel()
+            {
+                Code=x.Código,
+                Description=x.Descrição,
+                CreateDate = x.DataHoraCriação,
+                CreateUser = x.UtilizadorCriação,
+            }).ToList();
+            return Json(result);
+        }
+
+       
+        [HttpPost]
+
+        public JsonResult UpdateApprovalGroup([FromBody] List<ApprovalGroupViewModel> data)
+        {
+            //List<UtilizadoresGruposAprovação> results2 = DBApprovalUserGroup.GetAll();
+            //results2.RemoveAll(x => data.Any(u => u.Code == x.GrupoAprovação));
+            //results2.ForEach(x => DBApprovalUserGroup.Delete(x));
+
+            List<GruposAprovação> results = DBApprovalGroups.GetAll();
+            results.RemoveAll(x => data.Any(u => u.Code == x.Código));
+            results.ForEach(x => DBApprovalGroups.Delete(x));
+            data.ForEach(x =>
+            {
+                GruposAprovação aprovConfig = new GruposAprovação()
+                {
+                    Descrição = x.Description,
+                   
+                };
+                if (x.Code > 0)
+                {
+                    aprovConfig.Código = x.Code;
+                    aprovConfig.UtilizadorCriação = x.CreateUser;
+                    aprovConfig.DataHoraCriação = x.CreateDate;
+                    aprovConfig.DataHoraModificação = DateTime.Now;
+                    aprovConfig.UtilizadorModificação = User.Identity.Name;
+                    DBApprovalGroups.Update(aprovConfig);
+                }
+                else
+                {
+                    aprovConfig.DataHoraCriação = DateTime.Now;
+                    aprovConfig.UtilizadorCriação = User.Identity.Name;
+                    DBApprovalGroups.Create(aprovConfig);
+                }
+            });
+            return Json(data);
+        }
+        #endregion
+
+        #region Detalhes Grupos Aprovacoes
+
+        public IActionResult DetalhesGruposAprovacoes(string id)
+        {
+            UserAccessesViewModel UPerm = GetPermissions("Administracao");
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                int IDGroup= Int32.Parse(id);
+                GruposAprovação group= DBApprovalGroups.GetById(IDGroup);
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                ViewBag.GroupApproval = group.Descrição;
+                ViewBag.IDGroupApproval = group.Código;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        
+        public JsonResult GetDetailsApprovalGroup([FromBody] int id)
+        {
+            List<ApprovalUserGroupViewModel> result = DBApprovalUserGroup.GetByGroup(id).Select(x => new ApprovalUserGroupViewModel()
+            {
+                ApprovalGroup = x.GrupoAprovação,
+                ApprovalUser = x.UtilizadorAprovação,
+                CreateDate = x.DataHoraCriação,
+                CreateUser = x.UtilizadorCriação,
+            }).ToList();
+            return Json(result);
+        }
+
+        public JsonResult CreateDetailsApprovalGroup([FromBody] List<ApprovalUserGroupViewModel> data)
+        {
+           
+            data.ForEach(x =>
+            {
+                UtilizadoresGruposAprovação aprovConfig = new UtilizadoresGruposAprovação()
+                {
+                    GrupoAprovação = x.ApprovalGroup,
+                    UtilizadorAprovação=x.ApprovalUser,
+                    DataHoraCriação = DateTime.Now,
+                    UtilizadorCriação = User.Identity.Name
+                };
+                UtilizadoresGruposAprovação existUserGroup = DBApprovalUserGroup.GetById(aprovConfig.GrupoAprovação, aprovConfig.UtilizadorAprovação);
+                if (existUserGroup ==null)
+                {
+                    DBApprovalUserGroup.Create(aprovConfig);
+                }
+                
+            });
+            List<UtilizadoresGruposAprovação> results = DBApprovalUserGroup.GetAll();
+
+            return Json(results);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateDetailsApprovalGroup([FromBody] List<ApprovalUserGroupViewModel> data)
+        {
+            List<UtilizadoresGruposAprovação> results = DBApprovalUserGroup.GetAll();
+            results.RemoveAll(x => data.Any(u => u.ApprovalUser == x.UtilizadorAprovação && u.ApprovalGroup==x.GrupoAprovação));
+            results.ForEach(x => DBApprovalUserGroup.Delete(x));
+          
             return Json(data);
         }
         #endregion

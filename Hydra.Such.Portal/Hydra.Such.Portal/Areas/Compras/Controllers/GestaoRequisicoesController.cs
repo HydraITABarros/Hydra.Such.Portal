@@ -682,20 +682,19 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         [Area("Compras")]
         public JsonResult ValidateLocalMarketForRequisition([FromBody] RequisitionViewModel item)
         {
-            //Validate
             if (item != null)
             {
                 //Ensure that the requisition has the expected status. Ex.: prevents from validating pending requisitions
-                if (item != null && item.State == RequisitionStates.Approved)
+                if (IsValidForLocalMarketValidation(item))
                 {
                     var status = CreatePurchaseItemsFor(item);
                     item.eReasonCode = status.eReasonCode;
-                    item.eMessage = status.eMessage;// "Não existem linhas que cumpram os requisitos de validação do mercado local.";
+                    item.eMessage = status.eMessage;
                 }
                 else
                 {
                     item.eReasonCode = 2;
-                    item.eMessage = "Não existem linhas que cumpram os requisitos de validação do mercado local.";
+                    item.eMessage = "O estado da requisição e/ou linhas não cumprem os requisitos para a validação do mercado local.";
                 }
             }
             else
@@ -741,7 +740,9 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                     ProjectNo = line.ProjectNo,
                                     QuantityRequired = line.QuantityRequired,
                                     UnitCost = line.UnitCost,
-                                    LocationCode = line.LocalCode
+                                    LocationCode = line.LocalCode,
+                                    OpenOrderNo = line.OpenOrderNo,
+                                    OpenOrderLineNo = line.OpenOrderLineNo
                                 })
                                 .ToList()
                             })
@@ -802,6 +803,22 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 }
             }
             return status;
+        }
+
+        private bool IsValidForLocalMarketValidation(RequisitionViewModel requisition)
+        {
+            try
+            {
+                //Ensure required fields aren't null or invalid
+                var linesToValidate = requisition.Lines
+                        .Where(x => x.LocalMarket.Value && !x.PurchaseValidated.Value && x.QuantityRequired.Value > 0);
+                //Ensure it's in approved state
+                return requisition.State == RequisitionStates.Approved;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         [HttpPost]

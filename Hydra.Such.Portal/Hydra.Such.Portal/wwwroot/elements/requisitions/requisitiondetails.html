@@ -140,7 +140,8 @@
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
+        <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{OpenOrderHeaderIds}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{OpenOrderLines}}" id="openOrderLines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
         <iron-ajax url="/Compras/GestaoRequisicoes/GetRequisition"
@@ -523,9 +524,7 @@
                                 <div class="col-lg-3 alignPoga">
                                     <vaadin-checkbox id="createMarketSearchId">Criar Consulta Mercado</vaadin-checkbox>
                                 </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field id="openOrderLineNoId" name="openOrderLineNoName" label="Nº Linha Encomenda Aberto" value=""></vaadin-text-field>
-                                </div>
+                                
                                 <div class="col-lg-3">
                                     <vaadin-text-field id="queryCreatedMarketNoId" name="queryCreatedMarketNoName" label="Nº de Consulta Mercado Criada" value=""></vaadin-text-field>
                                 </div>
@@ -577,6 +576,33 @@
                                     <vaadin-checkbox id="chkLocalMarket">Mercado Local</vaadin-checkbox>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <vaadin-combo-box items="[[OpenOrderHeaderIds]]" id="openOrderHeaderId" item-value-path="id" item-label-path="id" label="Nº Encomenda Aberto" on-change="_populateOpenOrderLines" disabled="{{ !_permissions.update }}">
+                                        <template>
+                                            <table width="200px">
+                                                <tr>
+                                                    <td width="60%"><b>[[item.id]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-lg-3">
+                                    <!--<vaadin-text-field id="openOrderLineNoId" name="openOrderLineNoName" label="Nº Linha Encomenda Aberto" value=""></vaadin-text-field>-->
+                                    <vaadin-combo-box items="[[OpenOrderLines]]" id="openOrderLineId" item-value-path="id" item-label-path="value" label="Nº Linha Encomenda Aberto" disabled="{{ !_permissions.update }}">
+                                        <template>
+                                            <table width="200px">
+                                                <tr>
+                                                    <td width="40%">[[item.id]]</td>
+                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                            </div>
+
                             <div class="row">
                                 <div class="marginSpace">
                                     <template is="dom-if" if="{{ !isReadOnly() }}">
@@ -855,6 +881,27 @@
                                             [[ _getResponsCenterDescription(item.centerResponsibilityCode)]]
                                         </template>
                                     </vaadin-grid-column>
+                                    
+                                    <vaadin-grid-column width="160px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="openOrderNo"></vaadin-grid-filter>
+                                        </template>
+                                        <template>
+                                            {{item.openOrderNo}}
+                                        </template>
+                                    </vaadin-grid-column>
+                                    
+                                    <vaadin-grid-column width="160px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="openOrderLineNo"></vaadin-grid-filter>
+                                        </template>
+                                        <template>
+                                            {{item.openOrderLineNo}}
+                                        </template>
+                                    </vaadin-grid-column>
+
 
                                     <template is="dom-if" if="{{ !isReadOnly() }}">
                                         <vaadin-grid-column width="100px" resizable>
@@ -971,6 +1018,12 @@
                     }
                 },
 
+                _populateOpenOrderLines: function (data) {
+                    var headerId = this.$.openOrderHeaderId.value;
+                    this.$.openOrderLines_ajax.body = JSON.stringify(headerId);
+                    this.$.openOrderLines_ajax.generateRequest();
+                },
+
                 _getSupplierDescription: function (param) {
                     if (param != undefined && this.cboSupplier != undefined) {
                         var sel = this.cboSupplier.find(x => x.id == param);
@@ -1072,7 +1125,8 @@
                     this.$.submitPrePurchaseId.checked = false;
                     this.$.sendPrePurchaseId.checked = false;
                     this.$.supplierNoId.value = "";
-                    this.$.openOrderLineNoId.value = "";
+                    this.$.openOrderHeaderId.value = "";
+                    this.$.openOrderLineId.value = "";
                     this.$.queryCreatedMarketNoId.value = "";
                     this.$.projectId.value = "";
                     this.$.chkLocalMarket.checked = false;
@@ -1104,7 +1158,8 @@
                             submitPrePurchase: this.$.submitPrePurchaseId.checked,
                             sendPrePurchase: this.$.sendPrePurchaseId.checked,
                             supplierNo: this.$.supplierNoId.value,
-                            openOrderLineNo: this.$.openOrderLineNoId.value,
+                            openOrderNo: this.$.openOrderHeaderId.value,
+                            openOrderLineNo: this.$.openOrderLineId.value,
                             queryCreatedMarketNo: this.$.queryCreatedMarketNoId.value,
                             projectNo: this.$.projectId.value,
                             localMarket: this.$.chkLocalMarket.checked,

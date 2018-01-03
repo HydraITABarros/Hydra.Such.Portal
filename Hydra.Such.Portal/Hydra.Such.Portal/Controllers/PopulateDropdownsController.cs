@@ -18,6 +18,7 @@ using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Data.Logic.Viatura;
 using Hydra.Such.Data.Logic.Nutrition;
 using Hydra.Such.Data.Logic.Compras;
+using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.Nutrition;
 
 namespace Hydra.Such.Portal.Controllers
@@ -187,6 +188,16 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetGroupApproval()
+        {
+            List<DDMessage> result = DBApprovalGroups.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
         [HttpPost]
         public JsonResult GetFolhaDeHoraPercursoOrigemDestino()
         {

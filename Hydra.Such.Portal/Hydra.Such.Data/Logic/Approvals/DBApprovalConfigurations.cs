@@ -142,8 +142,8 @@ namespace Hydra.Such.Data.Logic.Approvals
                 CreateUser = x.UtilizadorCriação,
                 UpdateDate = x.DataHoraModificação,
                 UpdateUser = x.UtilizadorModificação,
-                StartDate = x.DataInicial,
-                EndDate = x.DataFinal
+                StartDate = x.DataInicial.ToString("yyyy-MM-dd"),
+                EndDate = x.DataFinal.ToString("yyyy-MM-dd")
             };
         }
         public static ConfiguraçãoAprovações ParseToDatabase(ApprovalConfigurationsViewModel x)
@@ -161,8 +161,8 @@ namespace Hydra.Such.Data.Logic.Approvals
                 UtilizadorCriação = x.CreateUser,
                 DataHoraModificação = x.UpdateDate,
                 UtilizadorModificação = x.UpdateUser,
-                DataInicial = x.StartDate,
-                DataFinal = x.EndDate
+                DataInicial = DateTime.Parse(x.StartDate),
+                DataFinal = DateTime.Parse(x.EndDate)
             };
         }
         #endregion

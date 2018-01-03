@@ -32,5 +32,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? UnitCost { get; set; }
         public string ProjectNo { get; set; }
         public string LocationCode { get; set; }
+        public string OpenOrderNo { get; set; }
+        public int? OpenOrderLineNo { get; set; }
     }
 }

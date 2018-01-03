@@ -26,6 +26,22 @@ namespace Hydra.Such.Data.Logic.Approvals
             }
         }
 
+        public static List<UtilizadoresGruposAprovação> GetByGroup(int group)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.UtilizadoresGruposAprovação.Where(x => x.GrupoAprovação == group).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<UtilizadoresGruposAprovação> GetAll()
         {
             try
@@ -81,6 +97,24 @@ namespace Hydra.Such.Data.Logic.Approvals
                 return null;
             }
         }
+        public static bool Delete(UtilizadoresGruposAprovação ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.UtilizadoresGruposAprovação.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
         #endregion
 
         public static List<string> GetAllFromGroup(int groupId)
@@ -98,6 +132,7 @@ namespace Hydra.Such.Data.Logic.Approvals
                 return null;
             }
         }
+       
 
         #region Parses
         public static ApprovalUserGroupViewModel ParseToViewModel(UtilizadoresGruposAprovação x)
