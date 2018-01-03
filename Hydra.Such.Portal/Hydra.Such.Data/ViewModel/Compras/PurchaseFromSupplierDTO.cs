@@ -5,9 +5,9 @@ using System.Text;
 namespace Hydra.Such.Data.ViewModel.Compras
 {
     /// <summary>
-    /// Purchase From Supplier Header DTO
+    /// Purchase Order Header DTO
     /// </summary>
-    public class PurchOrderToSupplierDTO
+    public class PurchOrderDTO
     {
         public string RequisitionId { get; set; }
         public string NAVPrePurchOrderId { get; set; }
@@ -21,12 +21,12 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string OpenOrderNo { get; set; }
         public int? OpenOrderLineNo { get; set; }
 
-        public List<PurchToSupplierLineDTO> Lines { get; set; }
+        public List<PurchOrderLineDTO> Lines { get; set; }
     }
     /// <summary>
-    /// Purchase From Supplier Lines DTO
+    /// Purchase Order Line DTO
     /// </summary>
-    public class PurchToSupplierLineDTO
+    public class PurchOrderLineDTO
     {
         public int? LineId { get; set; }
         //public int? NAVLineId { get; set; }

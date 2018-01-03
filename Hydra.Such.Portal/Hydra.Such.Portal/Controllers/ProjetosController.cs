@@ -27,8 +27,7 @@ namespace Hydra.Such.Portal.Controllers
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
         }
-
-
+        
         #region Home
         [HttpPost]
         public JsonResult GetListProjectsByArea([FromBody] JObject requestParams)
@@ -1076,146 +1075,12 @@ namespace Hydra.Such.Portal.Controllers
             }
 
         }
-
-        [HttpPost]
-        public JsonResult CreateInvoiceLines([FromBody] List<ProjectDiaryViewModel> data)
-        {
-            string num_cliente = "";
-            string PKey = "";
-            int lineNo = 1;
-            List<InvoiceMessages> ClientsError = new List<InvoiceMessages>();
-            try
-            {
-                if (data != null)
-                {
-                    List<ProjectDiaryViewModel> NewList = new List<ProjectDiaryViewModel>();
-
-                    foreach (var lines in data)
-                    {
-                        if (num_cliente != lines.InvoiceToClientNo)
-                        {
-                            if (NewList.Count() > 0)
-                            {
-                                //update to Invoiced = true
-                                foreach (var lst in NewList)
-                                {
-                                    MovimentosDeProjeto upDate = DBProjectMovements.GetByLineNo(lst.LineNo, User.Identity.Name).FirstOrDefault();
-                                    upDate.Faturada = true;
-                                    DBProjectMovements.Update(upDate);
-                                }
-                                InvoiceMessages Messages = new InvoiceMessages();
-                                Messages.ClientNo = lines.InvoiceToClientNo;
-                                Messages.Iserror = false;
-
-                                ClientsError.Add(Messages);
-                                NewList.Clear();
-                            }
-
-                            try
-                            {
-                                PKey = "";
-                                Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(lines, _configws);
-                                TCreatePreInvoice.Wait();
-                                if (TCreatePreInvoice.IsCompletedSuccessfully)
-                                {
-                                    num_cliente = lines.InvoiceToClientNo;
-                                    PKey = TCreatePreInvoice.Result.WSPreInvoice.No;
-                                }
-                                else
-                                {
-                                    num_cliente = lines.InvoiceToClientNo;
-                                    PKey = "";
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                PKey = "";
-                                num_cliente = lines.InvoiceToClientNo;
-                                throw;
-                            }
-                        }
-
-                        if (!String.IsNullOrEmpty(PKey) && PKey != "error")
-                        {
-                            try
-                            {
-                                Task<WSCreatePreInvoiceLine.Create_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLine(lines, _configws, PKey);
-                                TCreatePreInvoiceLine.Wait();
-
-                                if (TCreatePreInvoiceLine.IsCompletedSuccessfully && !String.IsNullOrEmpty(TCreatePreInvoiceLine.Result.WsPreInvoiceLine.Key))
-                                {
-                                    num_cliente = lines.InvoiceToClientNo;
-                                    NewList.Add(lines);
-                                    if (data.Count() == lineNo)
-                                    {
-                                        //update to Invoiced = true
-                                        foreach (var lst in NewList)
-                                        {
-                                            MovimentosDeProjeto upDate = DBProjectMovements.GetByLineNo(lst.LineNo, User.Identity.Name).FirstOrDefault();
-                                            upDate.Faturada = true;
-                                            DBProjectMovements.Update(upDate);
-
-                                            InvoiceMessages Messages = new InvoiceMessages();
-                                            Messages.ClientNo = num_cliente;
-                                            Messages.Iserror = false;
-
-                                            ClientsError.Add(Messages);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    Task<WSCreatePreInvoice.Delete_Result> DeleteHeader = WSPreInvoice.DeletePreInvoiceLineList(PKey, _configws);
-                                    num_cliente = lines.InvoiceToClientNo;
-                                    PKey = "error";
-
-                                    InvoiceMessages Messages = new InvoiceMessages();
-                                    Messages.ClientNo = lines.InvoiceToClientNo;
-                                    Messages.Iserror = true;
-
-                                    ClientsError.Add(Messages);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Task<WSCreatePreInvoice.Delete_Result> DeleteHeader = WSPreInvoice.DeletePreInvoiceLineList(PKey, _configws);
-                                PKey = "error";
-
-                                InvoiceMessages Messages = new InvoiceMessages();
-                                Messages.ClientNo = lines.InvoiceToClientNo;
-                                Messages.Iserror = true;
-
-                                ClientsError.Add(Messages);
-                            }
-                        }
-                        else
-                        {
-                            num_cliente = lines.InvoiceToClientNo;
-                        }
-                        lineNo += 1;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ProjectDiaryViewModel dataerror = new ProjectDiaryViewModel();
-                dataerror.eReasonCode = 4;
-                dataerror.eMessage = "Ocorreu um erro ao criar Pré Fatura";
-                return Json(dataerror);
-            }
-            //ProjectDiaryViewModel message = new ProjectDiaryViewModel();
-            //message.eReasonCode = 1;
-            //message.eMessage = "Linhas de Fatura criadas com sucesso";
-            data.Clear();
-            return Json(ClientsError);
-        }
-
+        
         private class InvoiceMessages
         {
             public bool Iserror { get; set; }
             public string ClientNo { get; set; }
         }
-
 
         [HttpPost]
         public JsonResult InvoiceLinesAuthorize([FromBody] List<ProjectDiaryViewModel> data)
@@ -1244,11 +1109,85 @@ namespace Hydra.Such.Portal.Controllers
         #endregion InvoiceAutorization
 
         #region Invoice
-    
         public IActionResult Faturacao()
         {
             return View();
         }
+
+        [HttpPost]
+        public JsonResult GetMovimentosFaturacao()
+        {
+            try
+            {
+                List<ProjectDiaryViewModel> result = DBProjectMovements.GetAllAutorized(User.Identity.Name).Select(x => new ProjectDiaryViewModel()
+                {
+                    LineNo = x.NºLinha,
+                    ProjectNo = x.NºProjeto,
+                    Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                    MovementType = x.TipoMovimento,
+                    Type = x.Tipo,
+                    Code = x.Código,
+                    Description = x.Descrição,
+                    Quantity = x.Quantidade,
+                    MeasurementUnitCode = x.CódUnidadeMedida,
+                    LocationCode = x.CódLocalização,
+                    ProjectContabGroup = x.GrupoContabProjeto,
+                    RegionCode = x.CódigoRegião,
+                    FunctionalAreaCode = x.CódigoÁreaFuncional,
+                    ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
+                    User = x.Utilizador,
+                    UnitCost = x.CustoUnitário,
+                    TotalCost = x.CustoTotal,
+                    UnitPrice = x.PreçoUnitário,
+                    TotalPrice = x.PreçoTotal,
+                    UnitValueToInvoice = x.ValorUnitárioAFaturar,
+                    Currency = x.Moeda,
+                    Billable = x.Faturável,
+                    Billed = (bool)x.Faturada,
+                    Registered = x.Registado,
+                    InvoiceToClientNo = x.FaturaANºCliente,
+                    CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
+                    ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
+                    ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
+                }).OrderBy(x => x.ClientName).ToList();
+
+                if (result.Count > 0)
+                {
+                    var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                    foreach (var lst in result)
+                    {
+                        if (lst.MovementType == 3)
+                        {
+                            lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
+                        }
+
+                        if (!String.IsNullOrEmpty(lst.Currency))
+                        {
+                            lst.UnitPrice = lst.UnitValueToInvoice;
+                        }
+                    }
+                }
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+
+        //[HttpPost]
+        //public JsonResult CreateInvoiceLines([FromBody] List<ProjectDiaryViewModel> data)
+        //{
+        //    List<ProjectDiaryViewModel> groupedbyclient = data.GroupBy(x => new
+        //    {
+        //        x.ClientName,
+        //        x.Date,
+        //        x.CommitmentNumber,
+        //        x.cli
+        //    });
+        //}
         #endregion
     }
 }
