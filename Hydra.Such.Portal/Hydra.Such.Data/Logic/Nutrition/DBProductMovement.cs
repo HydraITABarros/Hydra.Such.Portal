@@ -53,7 +53,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return new ProductMovementViewModel()
                 {
                     MovementNo = item.NºMovimentos,
-                    DateRegister = item.DataRegisto,
+                    DateRegister = item.DataRegisto.HasValue ? item.DataRegisto.Value.ToString("yyyy-MM-dd") : "",
                     MovementType = item.TipoMovimento,
                     DocumentNo = item.NºDocumento,
                     ProductNo = item.NºProduto,
@@ -72,9 +72,9 @@ namespace Hydra.Such.Data.Logic.Nutrition
             return null;
         }
 
-        public static List<ProductivityUnitViewModel> ParseToViewModel(this List<UnidadesProdutivas> items)
+        public static List<ProductMovementViewModel> ParseToViewModel(this List<MovimentoDeProdutos> items)
         {
-            List<ProductivityUnitViewModel> parsedItems = new List<ProductivityUnitViewModel>();
+            List<ProductMovementViewModel> parsedItems = new List<ProductMovementViewModel>();
             if (items != null)
                 items.ForEach(x =>
                     parsedItems.Add(x.ParseToViewModel()));
