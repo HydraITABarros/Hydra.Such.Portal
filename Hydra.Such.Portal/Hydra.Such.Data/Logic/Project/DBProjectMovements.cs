@@ -264,5 +264,21 @@ namespace Hydra.Such.Data.Logic.Project
             }
             return totalConsumption.HasValue ? totalConsumption.Value : 0;
         }
+
+
+        public static List<MovimentosDeProjeto> GetAllAutorized(string user)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.MovimentosDeProjeto.Where(x => x.Utilizador == user && x.FaturaçãoAutorizada == true).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }
