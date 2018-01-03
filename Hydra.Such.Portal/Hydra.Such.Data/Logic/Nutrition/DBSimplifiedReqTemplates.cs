@@ -127,7 +127,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     UpdateDate = item.DataHoraModificação.HasValue ? item.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
                     CreateUser = item.UtilizadorCriação,
                     UpdateUser = item.UtilizadorModificação,
-                    Lines = item.LinhasRequisiçõesSimplificadas.ToList().ParseToViewModel(),
+                    Lines = DBSimplifiedReqTemplateLines.ParseToViewModel(item.LinhasRequisiçõesSimplificadas.ToList()),
                 };
             }
             return null;

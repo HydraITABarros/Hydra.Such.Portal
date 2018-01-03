@@ -28,18 +28,23 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         }
 
         [Area("Nutricao")]
-        public IActionResult Detalhes(int id)
+        public IActionResult Detalhes(int? id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 2, 2);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 39);
             if (UPerm != null && UPerm.Read.Value)
             {  
                 ViewBag.UPermissions = UPerm;
                 if (id != null && id > 0)
                 {
                     ViewBag.ProductivityUnityNo = id;
-                    UnidadesProdutivas ProductivityUnitDB = DBProductivityUnits.GetById(id);
+                    UnidadesProdutivas ProductivityUnitDB = DBProductivityUnits.GetById((int) id);
                     ViewBag.ProductivityUnitId = ProductivityUnitDB.NºUnidadeProdutiva;
                     ViewBag.ProductivityUnitDesc = ProductivityUnitDB.Descrição;
+                }
+                else
+                {
+                    ViewBag.ProductivityUnitId =0;
+                    ViewBag.ProductivityUnitDesc = "";
                 }
                 return View();
             }
@@ -218,7 +223,138 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             return Json(result);
         }
-         [HttpPost]
+
+        [HttpPost]
+        [Area("Nutricao")]
+        public JsonResult CreateShoppingNecessity([FromBody] List<DailyRequisitionProductiveUnitViewModel> dp)
+        {
+            ErrorHandler result = new ErrorHandler();
+            string notupdate = "";
+            if (dp != null)
+            {
+                //Update or Create
+                try
+                {
+                    dp.ForEach(x =>
+                    {
+                        List<DiárioRequisiçãoUnidProdutiva> dpObject = DBShoppingNecessity.GetByLineNo(x.LineNo);
+
+                        if (dpObject.Count > 0)
+                        {
+                            DiárioRequisiçãoUnidProdutiva newdp = dpObject.FirstOrDefault();
+
+                            newdp.NºLinha = x.LineNo;
+                            newdp.NºUnidadeProdutiva = x.ProductionUnitNo;
+                            newdp.NºProduto = x.ProductNo;
+                            newdp.Descrição = x.Description;
+                            newdp.CódUnidadeMedida = x.UnitMeasureCode;
+                            newdp.Quantidade = x.Quantity;
+                            newdp.CustoUnitárioDireto = x.DirectUnitCost;
+                            newdp.Valor = x.TotalValue;
+                            newdp.NºProjeto = x.ProjectNo;
+                            newdp.NºFornecedor = x.SupplierNo;
+                            newdp.TipoRefeição = x.MealType;
+                            newdp.TabelaPreçosFornecedor = x.TableSupplierPrice;
+                            newdp.DataHoraCriação = x.CreateDateTime;
+                            newdp.DataHoraModificação = DateTime.Now;
+                            newdp.UtilizadorCriação = x.CreateUser;
+                            newdp.UtilizadorModificação = User.Identity.Name;
+                            newdp.DataReceçãoEsperada = string.IsNullOrEmpty(x.ExpectedReceptionDate)
+                                ? (DateTime?)null
+                                : DateTime.Parse(x.ExpectedReceptionDate);
+                            newdp.DataPPreçoFornecedor = string.IsNullOrEmpty(x.DateByPriceSupplier)
+                                ? (DateTime?)null
+                                : DateTime.Parse(x.DateByPriceSupplier);
+                            newdp.CodigoLocalização = x.LocalCode;
+                            newdp.QuantidadePorUnidMedida = x.QuantitybyUnitMeasure;
+                            newdp.CodigoProdutoFornecedor = x.SupplierProductCode;
+                            newdp.DescriçãoProdutoFornecedor = x.SupplierProductDescription;
+                            newdp.NomeFornecedor = x.SupplierName;
+                            newdp.NºEncomendaAberto = x.OpenOrderNo;
+                            newdp.NºLinhaEncomendaAberto = x.OrderLineOpenNo;
+                            newdp.DescriçãoUnidadeProduto = x.ProductUnitDescription;
+                            newdp.NºDocumento = x.DocumentNo;
+                            newdp = DBShoppingNecessity.Update(newdp);
+                            if (newdp == null)
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage =
+                                    "Ocorreu um erro ao Atualizar a Diário Requisição Unid. Produtiva";
+                            }
+                            else
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "Diário requisição Unid. Produtiva foi atualizado";
+                            }
+                        }
+                        else
+                        {
+                            DiárioRequisiçãoUnidProdutiva newdp = new DiárioRequisiçãoUnidProdutiva()
+                            {
+                                NºLinha = x.LineNo,
+                                NºUnidadeProdutiva = x.ProductionUnitNo,
+                                NºProduto = x.ProductNo,
+                                Descrição = x.Description,
+                                CódUnidadeMedida = x.UnitMeasureCode,
+                                Quantidade = x.Quantity,
+                                CustoUnitárioDireto = x.DirectUnitCost,
+                                Valor = x.TotalValue,
+                                NºProjeto = x.ProjectNo,
+                                NºFornecedor = x.SupplierNo,
+                                TipoRefeição = x.MealType,
+                                TabelaPreçosFornecedor = x.TableSupplierPrice,
+                                DataHoraModificação = x.UpdateDateTime,
+                                UtilizadorModificação = User.Identity.Name,
+                                DataReceçãoEsperada = string.IsNullOrEmpty(x.ExpectedReceptionDate)
+                                    ? (DateTime?)null
+                                    : DateTime.Parse(x.ExpectedReceptionDate),
+                                DataPPreçoFornecedor = string.IsNullOrEmpty(x.DateByPriceSupplier)
+                                    ? (DateTime?)null
+                                    : DateTime.Parse(x.DateByPriceSupplier),
+                                CodigoLocalização = x.LocalCode,
+                                QuantidadePorUnidMedida = x.QuantitybyUnitMeasure,
+                                CodigoProdutoFornecedor = x.SupplierProductCode,
+                                DescriçãoProdutoFornecedor = x.SupplierProductDescription,
+                                NomeFornecedor = x.SupplierName,
+                                NºEncomendaAberto = x.OpenOrderNo,
+                                NºLinhaEncomendaAberto = x.OrderLineOpenNo,
+                                DescriçãoUnidadeProduto = x.ProductUnitDescription,
+                                NºDocumento = x.DocumentNo
+                            };
+                            newdp.UtilizadorCriação = User.Identity.Name;
+
+                            newdp.DataHoraCriação = DateTime.Now;
+                            newdp = DBShoppingNecessity.Create(newdp);
+                            if (newdp == null)
+                            {
+                                result.eReasonCode = 4;
+                                result.eMessage =
+                                    "Ocorreu um erro ao criar a Diário Requisição Unid. Produtiva";
+                            }
+                            else
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "O registo Diário requisição Unid. Produtiva foi criado";
+                            }
+                        }
+
+                    });
+                }
+                catch (Exception e)
+                {
+                    result.eReasonCode = 5;
+                    result.eMessage =
+                        "Ocorreu um erro não com Diário Requisição Unid. Produtiva";
+                }
+            }
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Occorreu um erro ao atualizar o Diário de requisição Unid. Produtiva.";
+            }
+            return Json(result);
+        }
+        [HttpPost]
         [Area("Nutricao")]
         public JsonResult GetProductivityUnits()
         {

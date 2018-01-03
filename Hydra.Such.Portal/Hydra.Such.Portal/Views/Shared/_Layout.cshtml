@@ -48,20 +48,20 @@
                             <li>@Html.ActionLink("Contratos", "Contratos", "Engenharia")</li>
                             <li>@Html.ActionLink("Projetos", "Projetos", "Engenharia")</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Engenharia")</li>
-                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos")</li>
+                            <li>@Html.ActionLink("Autorização Faturação", "AutorizacaoFaturacao", "Engenharia")</li>
                             <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos")</li>
                             <li data-toggle="collapse" data-target="#FolhasDeHorasEngenharia" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
                                 <ul class="sub-menu collapse" id="FolhasDeHorasEngenharia">
-                                    <li>@Html.ActionLink("Folhas de Horas", "FolhaDeHoras", "Engenharia")</li>
-                                    <li>@Html.ActionLink("Validação", "FolhaDeHoras_Validacao", "Engenharia")</li>
-                                    <li>@Html.ActionLink("Integração Aj Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "Engenharia")</li>
-                                    <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "Engenharia")</li>
-                                    <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Engenharia")</li>
+                                    <li>@Html.ActionLink("Folhas de Horas", "FolhaDeHoras", "Engenharia", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Validação", "FolhaDeHoras_Validacao", "Engenharia", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Integração Aj Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "Engenharia", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "Engenharia", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Engenharia", new { area = "" }, null)</li>
                                 </ul>
                             </li>
-                            <li>@Html.ActionLink("Contactos", "Index", "Contactos")</li>
-                            <li>@Html.ActionLink("Administração", "Administracao", "Engenharia")</li>
+                            <li>@Html.ActionLink("Contactos", "Index", "Contactos", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Administração", "Administracao", "Engenharia", new { area = "" }, null)</li>
                         </ul>
 
 
@@ -79,15 +79,15 @@
                             <li data-toggle="collapse" data-target="#FolhasDeHorasAmbiente" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
                                 <ul class="sub-menu collapse" id="FolhasDeHorasAmbiente">
-                                    <li>@Html.ActionLink("Folhas de Horas", "FolhaDeHoras", "Ambiente")</li>
-                                    <li>@Html.ActionLink("Validação", "FolhaDeHoras_Validacao", "Ambiente")</li>
-                                    <li>@Html.ActionLink("Integração Aj Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "Ambiente")</li>
-                                    <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "Ambiente")</li>
-                                    <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Ambiente")</li>
+                                    <li>@Html.ActionLink("Folhas de Horas", "FolhaDeHoras", "Ambiente", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Validação", "FolhaDeHoras_Validacao", "Ambiente", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Integração Aj Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "Ambiente", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "Ambiente", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Ambiente", new { area = "" }, null)</li>
                                 </ul>
                             </li>
-                            <li>@Html.ActionLink("Contactos", "Index", "Contactos")</li>
-                            <li>@Html.ActionLink("Administração", "Administracao", "Ambiente")</li>
+                            <li>@Html.ActionLink("Contactos", "Index", "Contactos", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Administração", "Administracao", "Ambiente", new { area = "" }, null)</li>
                         </ul>
 
 
@@ -104,16 +104,18 @@
                             <li data-toggle="collapse" data-target="#FolhasDeHorasNutricao" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
                                 <ul class="sub-menu collapse" id="FolhasDeHorasNutricao">
-                                    <li>@Html.ActionLink("Folhas de Horas", "FolhaDeHoras", "Nutricao")</li>
-                                    <li>@Html.ActionLink("Validação", "FolhaDeHoras_Validacao", "Nutricao")</li>
-                                    <li>@Html.ActionLink("Integração Aj Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "Nutricao")</li>
-                                    <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "Nutricao")</li>
-                                    <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Nutricao")</li>
+                                    <li>@Html.ActionLink("Folhas de Horas", "FolhaDeHoras", "Nutricao", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Validação", "FolhaDeHoras_Validacao", "Nutricao", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Integração Aj Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "Nutricao", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "Nutricao", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Nutricao", new { area = "" }, null)</li>
                                 </ul>
                             </li>
-                            <li>@Html.ActionLink("Administração", "Administracao", "Nutricao")</li>
-                            <li>@Html.ActionLink("Cafetarias / Refeitórios", "CafetariasRefeitorios", "Nutricao")</li>
-                            <li>@Html.ActionLink("Modelos Req. Simplificadas", "ModelosReqSimplificada", "Nutricao")</li>
+                            <li>@Html.ActionLink("Administração", "Administracao", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Cafetarias / Refeitórios", "CafetariasRefeitorios", "Nutricao", new { area = "Nutricao" }, null)</li>
+                            <li>@Html.ActionLink("Localizações", "Localizacoes", "Nutricao", new { area = "Nutricao" }, null)</li>
+                            <li>@Html.ActionLink("Modelos Req. Simplificadas", "ModelosReqSimplificada", "Nutricao", new { area = "Nutricao" }, null)</li>
+                            <li>@Html.ActionLink("Requisições Simplificadas", "RequisicoesSimplificadas", "Nutricao", new { area = "Nutricao" }, null)</li>
                         </ul>
 
 
@@ -146,15 +148,15 @@
                             <li data-toggle="collapse" data-target="#FolhasDeHorasApoio" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
                                 <ul class="sub-menu collapse" id="FolhasDeHorasApoio">
-                                    <li>@Html.ActionLink("Folhas de Horas", "FolhaDeHoras", "Apoio")</li>
-                                    <li>@Html.ActionLink("Validação", "FolhaDeHoras_Validacao", "Apoio")</li>
-                                    <li>@Html.ActionLink("Integração Aj Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "Apoio")</li>
-                                    <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "Apoio")</li>
-                                    <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Apoio")</li>
+                                    <li>@Html.ActionLink("Folhas de Horas", "FolhaDeHoras", "Apoio", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Validação", "FolhaDeHoras_Validacao", "Apoio", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Integração Aj Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "Apoio", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "Apoio", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Apoio", new { area = "" }, null)</li>
                                 </ul>
                             </li>
-                            <li>@Html.ActionLink("Viaturas", "Viaturas", "Apoio")</li>
-                            <li>@Html.ActionLink("Administração", "Administracao", "Apoio")</li>
+                            <li>@Html.ActionLink("Viaturas", "Viaturas", "Apoio", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Administração", "Administracao", "Apoio", new { area = "" }, null)</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#PO" class="collapsed active">
@@ -170,14 +172,14 @@
                             <li data-toggle="collapse" data-target="#FolhasDeHorasPO" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
                                 <ul class="sub-menu collapse" id="FolhasDeHorasPO">
-                                    <li>@Html.ActionLink("Folhas de Horas", "FolhaDeHoras", "PO")</li>
-                                    <li>@Html.ActionLink("Validação", "FolhaDeHoras_Validacao", "PO")</li>
-                                    <li>@Html.ActionLink("Integração Aj Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "PO")</li>
-                                    <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "PO")</li>
-                                    <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "PO")</li>
+                                    <li>@Html.ActionLink("Folhas de Horas", "FolhaDeHoras", "PO", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Validação", "FolhaDeHoras_Validacao", "PO", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Integração Aj Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "PO", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "PO", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "PO", new { area = "" }, null)</li>
                                 </ul>
                             </li>
-                            <li>@Html.ActionLink("Administração", "Administracao", "PO")</li>
+                            <li>@Html.ActionLink("Administração", "Administracao", "PO", new { area = "" }, null)</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#NovasAreas" class="collapsed active">
@@ -193,14 +195,14 @@
                             <li data-toggle="collapse" data-target="#FolhasDeHorasNovasAreas" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
                                 <ul class="sub-menu collapse" id="FolhasDeHorasNovasAreas">
-                                    <li>@Html.ActionLink("Folhas de Horas", "FolhaDeHoras", "NovasAreas")</li>
-                                    <li>@Html.ActionLink("Validação", "FolhaDeHoras_Validacao", "NovasAreas")</li>
-                                    <li>@Html.ActionLink("Integração Aj Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "NovasAreas")</li>
-                                    <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "NovasAreas")</li>
-                                    <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "NovasAreas")</li>
+                                    <li>@Html.ActionLink("Folhas de Horas", "FolhaDeHoras", "NovasAreas", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Validação", "FolhaDeHoras_Validacao", "NovasAreas", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Integração Aj Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "NovasAreas", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "NovasAreas", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "NovasAreas", new { area = "" }, null)</li>
                                 </ul>
                             </li>
-                            <li>@Html.ActionLink("Administração", "Administracao", "NovasAreas")</li>
+                            <li>@Html.ActionLink("Administração", "Administracao", "NovasAreas", new { area = "" }, null)</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#Internacionalizacoes" class="collapsed active">
@@ -217,15 +219,15 @@
                             <li data-toggle="collapse" data-target="#FolhasDeHorasInternacionalizacoes" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
                                 <ul class="sub-menu collapse" id="FolhasDeHorasInternacionalizacoes">
-                                    <li>@Html.ActionLink("Folhas de Horas", "FolhaDeHoras", "Internacionalizacoes")</li>
-                                    <li>@Html.ActionLink("Validação", "FolhaDeHoras_Validacao", "Internacionalizacoes")</li>
-                                    <li>@Html.ActionLink("Integração Aj Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "Internacionalizacoes")</li>
-                                    <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "Internacionalizacoes")</li>
-                                    <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Internacionalizacoes")</li>
+                                    <li>@Html.ActionLink("Folhas de Horas", "FolhaDeHoras", "Internacionalizacoes", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Validação", "FolhaDeHoras_Validacao", "Internacionalizacoes", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Integração Aj Custo RH", "FolhaDeHoras_IntegracaoAjudaCusto", "Internacionalizacoes", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Integração KMs RH", "FolhaDeHoras_IntegracaoKMS", "Internacionalizacoes", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Internacionalizacoes", new { area = "" }, null)</li>
                                 </ul>
                             </li>
-                            <li>@Html.ActionLink("Contactos", "Index", "Contactos")</li>
-                            <li>@Html.ActionLink("Administração", "Administracao", "Internacionalizacoes")</li>
+                            <li>@Html.ActionLink("Contactos", "Index", "Contactos", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Administração", "Administracao", "Internacionalizacoes", new { area = "" }, null)</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#Juridico" class="collapsed active">
@@ -234,7 +236,7 @@
                         <ul class="sub-menu collapse" id="Juridico">
                             @*<li>@Html.ActionLink("Processos Disciplinares", "ProcessosDisciplinares", "Juridico")</li>
             <li>@Html.ActionLink("Processos de Inquérito", "ProcessosInquerito", "Juridico")</li>*@
-                            <li>@Html.ActionLink("Administração", "Administracao", "Juridico")</li>
+                            <li>@Html.ActionLink("Administração", "Administracao", "Juridico", new { area = "" }, null)</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#Compras" class="collapsed active">
@@ -242,20 +244,21 @@
                         </li>
                         <ul class="sub-menu collapse" id="Compras">
                             @*<li>@Html.ActionLink("Receção de Mercadorias", "RececaoMercadorias", "Compras")</li>
-            <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras")</li>
-            <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Compras")</li>*@
+        <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras")</li>
+        <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Compras")</li>*@
                             @* zpgm.< Procedimentos CCP menu *@
                             <li data-toggle="collapse" data-target="#Compras" class="collapsed active">
                                 <a href="#"> Procedimentos CCP <span class="arrow"></span></a>
                                 <ul>
-                                    <li>@Html.ActionLink("Pedido Aquisição", "PedidoAquisicao", "ProcedimentosCcps")</li>
-                                    <li>@Html.ActionLink("Pedido Simplificado", "PedidoSimplificado", "ProcedimentosCcps")</li>
+                                    <li>@Html.ActionLink("Pedido Aquisição", "PedidoAquisicao", "ProcedimentosCcps", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Pedido Simplificado", "PedidoSimplificado", "ProcedimentosCcps", new { area = "" }, null)</li>
 
                                 </ul>
                             </li>
                             @* zpgm.> *@
                             <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "Compras")</li>
                             <li>@Html.ActionLink("Requisições Aprovadas", "GestaoRequisicoes/RequisicoesAprovadas", "Compras")</li>
+                            <li>@Html.ActionLink("Gestão de Requisições", "GestaoRequisicoes/Detalhes", "Compras")</li>
                             <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras")</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "Compras")</li>
                         </ul>
@@ -264,10 +267,10 @@
                             <a href="#"> Administração <span class="arrow"></span></a>
                         </li>
                         <ul class="sub-menu collapse" id="Administracao">
-                            <li>@Html.ActionLink("Configurações", "Configuracoes", "Administracao")</li>
-                            <li>@Html.ActionLink("Config. Numerações", "ConfiguracaoNumeracoes", "Administracao")</li>
-                            <li>@Html.ActionLink("Perfis Modelo", "PerfisModelo", "Administracao")</li>
-                            <li>@Html.ActionLink("Config. Utilizadores", "ConfiguracaoUtilizadores", "Administracao")</li>
+                            <li>@Html.ActionLink("Configurações", "Configuracoes", "Administracao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Config. Numerações", "ConfiguracaoNumeracoes", "Administracao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Perfis Modelo", "PerfisModelo", "Administracao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Config. Utilizadores", "ConfiguracaoUtilizadores", "Administracao", new { area = "" }, null)</li>
 
                             <li>@Html.ActionLink("Config. Recursos FH", "ConfiguracaoRecursosFolhaHoras", "Administracao", new { id = "Administracao" })</li>
                             <li>@Html.ActionLink("Config. Tipo Trabalho FH", "ConfiguracaoTipoTrabalhoFH", "Administracao", new { id = "Administracao" })</li>

@@ -23,7 +23,7 @@ namespace Hydra.Such.Data.NAV
             navWSBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows; 
         }
 
-        public static async Task<WSPurchaseInvHeader.Create_Result> CreateAsync(PurchFromSupplierDTO purchFromSupplier, NAVWSConfigurations WSConfigurations)
+        public static async Task<WSPurchaseInvHeader.Create_Result> CreateAsync(PurchOrderToSupplierDTO purchFromSupplier, NAVWSConfigurations WSConfigurations)
         {
             if (purchFromSupplier == null)
                 throw new ArgumentNullException("purchFromSupplier");
