@@ -8,7 +8,7 @@ namespace Hydra.Such.Data.Database
         public int NºMovimentos { get; set; }
         public DateTime? DataRegisto { get; set; }
         public int? TipoMovimento { get; set; }
-        public byte[] NºDocumento { get; set; }
+        public int? NºDocumento { get; set; }
         public string NºProduto { get; set; }
         public string Descrição { get; set; }
         public string CódLocalização { get; set; }

@@ -3495,9 +3495,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descrição).HasColumnType("nchar(50)");
 
-                entity.Property(e => e.NºDocumento)
-                    .HasColumnName("Nº Documento")
-                    .HasColumnType("image");
+                entity.Property(e => e.NºDocumento).HasColumnName("Nº Documento");
 
                 entity.Property(e => e.NºProduto)
                     .HasColumnName("Nº Produto")
