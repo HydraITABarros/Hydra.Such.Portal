@@ -2322,24 +2322,11 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetApprovalConfig()
         {
-            List<ApprovalConfigurationsViewModel> result = DBApprovalConfigurations.GetAll().Select(x => new ApprovalConfigurationsViewModel()
-            {
-                Id = x.Id,
-                Type = x.Tipo,
-                Area = x.Área,
-                ApprovalValue = x.ValorAprovação,
-                ApprovalGroup = x.GrupoAprovação,
-                Level = x.NívelAprovação,
-                StartDate = x.DataInicial.ToString("yyyy-MM-dd"),
-                EndDate = x.DataFinal.ToString("yyyy-MM-dd"),
-                ApprovalUser = x.UtilizadorAprovação,
-                CreateDate = x.DataHoraCriação,
-                CreateUser = x.UtilizadorCriação,
-            }).ToList();
+            List<ApprovalConfigurationsViewModel> result = DBApprovalConfigurations.ParseToViewModel(DBApprovalConfigurations.GetAll());
             return Json(result);
         }
 
-       
+     
 
         [HttpPost]
         public JsonResult UpdateApprovalConfig([FromBody] List<ApprovalConfigurationsViewModel> data)
@@ -2357,8 +2344,8 @@ namespace Hydra.Such.Portal.Controllers
                     GrupoAprovação = x.ApprovalGroup,
                     UtilizadorAprovação = x.ApprovalUser,
                     Área = x.Area,
-                    DataInicial = DateTime.Parse(x.StartDate),
-                    DataFinal = DateTime.Parse(x.EndDate),
+                    DataInicial = string.IsNullOrEmpty(x.StartDate) ? (DateTime?)null : DateTime.Parse(x.StartDate),
+                    DataFinal = string.IsNullOrEmpty(x.EndDate) ? (DateTime?)null : DateTime.Parse(x.EndDate)
                 };
                 if (x.Id > 0)
                 {
@@ -2399,53 +2386,44 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetApprovalGroup()
         {
-            List<ApprovalGroupViewModel> result = DBApprovalGroups.GetAll().Select(x => new ApprovalGroupViewModel()
-            {
-                Code=x.Código,
-                Description=x.Descrição,
-                CreateDate = x.DataHoraCriação,
-                CreateUser = x.UtilizadorCriação,
-            }).ToList();
+            List<ApprovalGroupViewModel> result = DBApprovalGroups.ParseToViewModel(DBApprovalGroups.GetAll());    
             return Json(result);
         }
 
-       
-        [HttpPost]
+        public JsonResult CreateApprovalGroup([FromBody] ApprovalGroupViewModel data)
+        {
+            string eReasonCode = "";
+            //Create new 
+            eReasonCode = DBApprovalGroups.Create(DBApprovalGroups.ParseToDatabase(data)) == null ? "101" : "";
 
+            if (String.IsNullOrEmpty(eReasonCode))
+            {
+                return Json(data);
+            }
+            else
+            {
+                return Json(eReasonCode);
+            }
+
+        }
+
+        [HttpPost]
         public JsonResult UpdateApprovalGroup([FromBody] List<ApprovalGroupViewModel> data)
         {
-            //List<UtilizadoresGruposAprovação> results2 = DBApprovalUserGroup.GetAll();
-            //results2.RemoveAll(x => data.Any(u => u.Code == x.GrupoAprovação));
-            //results2.ForEach(x => DBApprovalUserGroup.Delete(x));
+            List<UtilizadoresGruposAprovação> results2 = DBApprovalUserGroup.GetAll();
+            results2.RemoveAll(x => data.Any(u => u.Code == x.GrupoAprovação));
+            results2.ForEach(x => DBApprovalUserGroup.Delete(x));
 
             List<GruposAprovação> results = DBApprovalGroups.GetAll();
             results.RemoveAll(x => data.Any(u => u.Code == x.Código));
             results.ForEach(x => DBApprovalGroups.Delete(x));
             data.ForEach(x =>
             {
-                GruposAprovação aprovConfig = new GruposAprovação()
-                {
-                    Descrição = x.Description,
-                   
-                };
-                if (x.Code > 0)
-                {
-                    aprovConfig.Código = x.Code;
-                    aprovConfig.UtilizadorCriação = x.CreateUser;
-                    aprovConfig.DataHoraCriação = x.CreateDate;
-                    aprovConfig.DataHoraModificação = DateTime.Now;
-                    aprovConfig.UtilizadorModificação = User.Identity.Name;
-                    DBApprovalGroups.Update(aprovConfig);
-                }
-                else
-                {
-                    aprovConfig.DataHoraCriação = DateTime.Now;
-                    aprovConfig.UtilizadorCriação = User.Identity.Name;
-                    DBApprovalGroups.Create(aprovConfig);
-                }
+                DBApprovalGroups.Update(DBApprovalGroups.ParseToDatabase(x));
             });
             return Json(data);
         }
+      
         #endregion
 
         #region Detalhes Grupos Aprovacoes
@@ -2473,38 +2451,27 @@ namespace Hydra.Such.Portal.Controllers
         
         public JsonResult GetDetailsApprovalGroup([FromBody] int id)
         {
-            List<ApprovalUserGroupViewModel> result = DBApprovalUserGroup.GetByGroup(id).Select(x => new ApprovalUserGroupViewModel()
-            {
-                ApprovalGroup = x.GrupoAprovação,
-                ApprovalUser = x.UtilizadorAprovação,
-                CreateDate = x.DataHoraCriação,
-                CreateUser = x.UtilizadorCriação,
-            }).ToList();
+
+            List<ApprovalUserGroupViewModel> result = DBApprovalUserGroup.ParseToViewModel(DBApprovalUserGroup.GetByGroup(id));
             return Json(result);
+          
         }
 
-        public JsonResult CreateDetailsApprovalGroup([FromBody] List<ApprovalUserGroupViewModel> data)
+        public JsonResult CreateDetailsApprovalGroup([FromBody] ApprovalUserGroupViewModel data)
         {
-           
-            data.ForEach(x =>
-            {
-                UtilizadoresGruposAprovação aprovConfig = new UtilizadoresGruposAprovação()
-                {
-                    GrupoAprovação = x.ApprovalGroup,
-                    UtilizadorAprovação=x.ApprovalUser,
-                    DataHoraCriação = DateTime.Now,
-                    UtilizadorCriação = User.Identity.Name
-                };
-                UtilizadoresGruposAprovação existUserGroup = DBApprovalUserGroup.GetById(aprovConfig.GrupoAprovação, aprovConfig.UtilizadorAprovação);
-                if (existUserGroup ==null)
-                {
-                    DBApprovalUserGroup.Create(aprovConfig);
-                }
-                
-            });
-            List<UtilizadoresGruposAprovação> results = DBApprovalUserGroup.GetAll();
+            string eReasonCode = "";
+            //Create new 
+            eReasonCode = DBApprovalUserGroup.Create(DBApprovalUserGroup.ParseToDb(data)) == null ? "101" : "";
 
-            return Json(data);
+            if (String.IsNullOrEmpty(eReasonCode))
+            {
+                return Json(data);
+            }
+            else
+            {
+                return Json(eReasonCode);
+            }
+               
         }
 
         [HttpPost]

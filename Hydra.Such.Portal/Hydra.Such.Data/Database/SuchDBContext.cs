@@ -99,6 +99,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<TiposRequisições> TiposRequisições { get; set; }
         public virtual DbSet<TiposViatura> TiposViatura { get; set; }
         public virtual DbSet<TipoTrabalhoFh> TipoTrabalhoFh { get; set; }
+        public virtual DbSet<UnidadeMedidaProduto> UnidadeMedidaProduto { get; set; }
         public virtual DbSet<UnidadesProdutivas> UnidadesProdutivas { get; set; }
         public virtual DbSet<UtilizadoresGruposAprovação> UtilizadoresGruposAprovação { get; set; }
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
@@ -6376,6 +6377,33 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DataHoraUltimaAlteracao).HasColumnType("datetime");
 
                 entity.Property(e => e.Descricao).HasMaxLength(30);
+            });
+
+            modelBuilder.Entity<UnidadeMedidaProduto>(entity =>
+            {
+                entity.HasKey(e => new { e.NºProduto, e.Código });
+
+                entity.ToTable("Unidade Medida Produto");
+
+                entity.Property(e => e.NºProduto)
+                    .HasColumnName("Nº Produto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Código).HasMaxLength(10);
+
+                entity.Property(e => e.Altura).HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.Comprimento).HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.Cubagem).HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.Largura).HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.Peso).HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.QtdPorUnidadeMedida)
+                    .HasColumnName("Qtd por Unidade Medida")
+                    .HasColumnType("decimal(, 2)");
             });
 
             modelBuilder.Entity<UnidadesProdutivas>(entity =>

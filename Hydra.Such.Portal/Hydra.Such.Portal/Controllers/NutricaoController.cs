@@ -574,7 +574,60 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        
+
+        #endregion
+
+        #region Unidade Medida Produto
+
+        public IActionResult UnidadeMedidaProduto(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 19);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetUnitOfMeasure()
+        {
+            List<UnitMeasureProductViewModel> result = DBUnitMeasureProduct.ParseToViewModel(DBUnitMeasureProduct.GetAll());
+            return Json(result);
+        }
+
+        public JsonResult CreateUnitOfMeasure([FromBody] UnitMeasureProductViewModel data)
+        {
+            string eReasonCode = "";
+            //Create new 
+            eReasonCode = DBUnitMeasureProduct.Create(DBUnitMeasureProduct.ParseToDb(data)) == null ? "101" : "";
+              
+            if (String.IsNullOrEmpty(eReasonCode))
+            {
+                return Json(data);
+            }
+            else
+            {
+                return Json(eReasonCode);
+            }
+        }
+
+        public JsonResult UpdateUnitOfMeasure([FromBody] List<UnitMeasureProductViewModel> data)
+        {
+            List<UnidadeMedidaProduto> results = DBUnitMeasureProduct.GetAll();
+            results.RemoveAll(x => data.Any(u => u.Code == x.Código && u.ProductNo == x.NºProduto));
+            results.ForEach(x => DBUnitMeasureProduct.Delete(x));
+            data.ForEach(x =>
+            {              
+               DBUnitMeasureProduct.Update(DBUnitMeasureProduct.ParseToDb(x));
+            });
+            return Json(data);
+        }
+
         #endregion
     }
 }
