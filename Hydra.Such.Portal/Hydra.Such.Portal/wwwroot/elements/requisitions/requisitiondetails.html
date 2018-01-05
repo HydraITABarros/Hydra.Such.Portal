@@ -189,10 +189,10 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/CreateTransportationGuide"
+        <iron-ajax url="/Compras/GestaoRequisicoes/CreateTransferShipment"
                    last-response="{{Requisition}}"
-                   id="createTranspGuide_ajax"
-                   on-response="_createTransportationGuideResponse"
+                   id="createTransferShip_ajax"
+                   on-response="_createTransferShipmentResponse"
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
@@ -465,7 +465,7 @@
                     <paper-button raised id="btnRegistCloseRequest" on-tap="_RegistCloseRequest"><i class="fa fa-times-circle-o" aria-hidden="true"></i>&nbsp; Fechar Requisição</paper-button>
                     <paper-button raised id="btnCreateMarketConsult" on-tap="_createMarketConsult"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Consulta Mercado</paper-button>
                     <paper-button raised id="btnCreateMarketConsult" on-tap="_createPurchaseOrder"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Encomenda de Compra</paper-button>
-                    <paper-button raised id="btnCreateMarketConsult" on-tap="_createTransportationGuide"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Guia de Transporte</paper-button>
+                    <paper-button raised id="btnCreateMarketConsult" on-tap="_createTransferShipment"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Guia de Transporte</paper-button>
                     <paper-button raised id="btnCreateMarketConsult" on-tap="_sendPrePurchase"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Enviar Pré- Encomenda</paper-button>
                 </div>  
             </div>
@@ -478,7 +478,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-3">
-                                    <vaadin-combo-box items="[[locationsresult]]" id="localCodeId" on-value-changed="_localCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Localização">
+                                    <vaadin-combo-box items="[[locationsresult]]" id="localCodeId" item-value-path="id" item-label-path="value" value="" label="Código Localização">
                                         <template>
                                             <table width="350px">
                                                 <tr>
@@ -505,7 +505,7 @@
                                     <vaadin-text-field id="descriptionId" name="DescriptionName" label="Descrição" value=""></vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-combo-box items="[[unitofmeasureresult]]" id="unitMeasureCodeId" on-value-changed="_unitMeasureCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Unidade Medida">
+                                    <vaadin-combo-box items="[[unitofmeasureresult]]" id="unitMeasureCodeId" item-value-path="id" item-label-path="value" value="" label="Código Unidade Medida">
                                         <template>
                                             <table width="250px">
                                                 <tr>
@@ -565,7 +565,7 @@
                                     <vaadin-checkbox id="submitPrePurchaseId">Enviado Pré Compra</vaadin-checkbox>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-combo-box items="[[projectresult]]" id="projectId" on-value-changed="_projectNoOnChange" item-value-path="id" item-label-path="value" value="" label="Nº Projeto">
+                                    <vaadin-combo-box items="[[projectresult]]" id="projectId" item-value-path="id" item-label-path="value" value="" label="Nº Projeto">
                                         <template>
                                             <table width="250px">
                                                 <tr>
@@ -589,7 +589,7 @@
                                     </vaadin-combo-box>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-combo-box items="[[cboSupplier]]" id="supplierNoId" on-value-changed="_supplierNoOnChange" item-value-path="id" item-label-path="value" value="" label="Nº Fornecedor">
+                                    <vaadin-combo-box items="[[cboSupplier]]" id="supplierNoId" item-value-path="id" item-label-path="value" value="" label="Nº Fornecedor">
                                         <template>
                                             <table width="350px">
                                                 <tr>
@@ -1339,8 +1339,6 @@
                     }
                 },
                 _createPurchaseOrder: function () {
-                    //this._notImplemented();
-                    //return;
                     this.$.createPurchOrder_ajax.body = JSON.stringify(this.Requisition);
                     this.$.createPurchOrder_ajax.generateRequest();
                 },
@@ -1355,13 +1353,13 @@
                             this._openToastError(this.Requisition.eMessage);
                     }
                 },
-                _createTransportationGuide: function () {
+                _createTransferShipment: function () {
                     this._notImplemented();
                     return;
-                    this.$.createTranspGuide_ajax.body = JSON.stringify(this.Requisition);
-                    this.$.createTranspGuide_ajax.generateRequest();
+                    this.$.createTransferShip_ajax.body = JSON.stringify(this.Requisition);
+                    this.$.createTransferShip_ajax.generateRequest();
                 },
-                _createTransportationGuideResponse: function (e) {
+                _createTransferShipmentResponse: function (e) {
                     if (this.Requisition.eReasonCode == "1") {
                         this._openToast(this.Requisition.eMessage);
                     }
@@ -1370,8 +1368,6 @@
                     }
                 },
                 _sendPrePurchase: function () {
-                    this._notImplemented();
-                    return;
                     this.$.sendPrePurchase_ajax.body = JSON.stringify(this.Requisition);
                     this.$.sendPrePurchase_ajax.generateRequest();
                 },
@@ -1380,7 +1376,10 @@
                         this._openToast(this.Requisition.eMessage);
                     }
                     else {
-                        this._openToastError(this.Requisition.eMessage);
+                        if (this.Requisition.eMessages.length > 0)
+                            this._toggleToastMultiple();
+                        else
+                            this._openToastError(this.Requisition.eMessage);
                     }
                 },
                 _codeIdOnChange: function (e) {

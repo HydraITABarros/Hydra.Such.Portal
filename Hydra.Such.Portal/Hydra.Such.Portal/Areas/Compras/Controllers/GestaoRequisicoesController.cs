@@ -814,7 +814,6 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                     status.eReasonCode = 2;
                     status.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + ex.Message + ")";
                 }
-
                 item.eReasonCode = status.eReasonCode;
                 item.eMessage = status.eMessage;
                 item.eMessages = status.eMessages;
@@ -832,14 +831,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
 
         [HttpPost]
         [Area("Compras")]
-        public JsonResult CreateTransportationGuide([FromBody] RequisitionViewModel item)
+        public JsonResult CreateTransferShipment([FromBody] RequisitionViewModel item)
         {
             if (item != null)
             {
                 try
                 {
                     RequisitionService serv = new RequisitionService(_configws);
-                    serv.CreateTransportationGuideFor(item);
+                    serv.CreateTransferShipmentFor(item);
                 }
                 catch (NotImplementedException ex)
                 {
@@ -864,22 +863,26 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
+                ErrorHandler status = new ErrorHandler();
                 try
                 {
                     RequisitionService serv = new RequisitionService(_configws);
-                    serv.SendPrePurchaseFor(item);
+                    status = serv.SendPrePurchaseFor(item, HttpContext.User.Identity.Name);
                 }
-                catch (NotImplementedException ex)
+                catch (Exception ex)
                 {
-                    item.eReasonCode = 2;
-                    item.eMessage = "Funcionalidade não implementada";
+                    status.eReasonCode = 2;
+                    status.eMessage = "Ocorreu um erro ao enviar pré-encomenda (" + ex.Message + ")";
                 }
+                item.eReasonCode = status.eReasonCode;
+                item.eMessage = status.eMessage;
+                item.eMessages = status.eMessages;
             }
             else
             {
                 item = new RequisitionViewModel()
                 {
-                    eReasonCode = 3,
+                    eReasonCode = 2,
                     eMessage = "Não é possivel enviar a pré-compra. A requisição não pode ser nula."
                 };
             }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.Logic.Request;
+using Hydra.Such.Data.Logic.Compras;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Compras;
@@ -340,14 +341,81 @@ namespace Hydra.Such.Portal.Services
             return status;
         }
 
-        public ErrorHandler CreateTransportationGuideFor(RequisitionViewModel requisition)
+        public ErrorHandler CreateTransferShipmentFor(RequisitionViewModel requisition)
         {
             throw new NotImplementedException("CreatePurchaseOrderCommitmentFrom");
         }
 
-        public ErrorHandler SendPrePurchaseFor(RequisitionViewModel requisition)
+        public ErrorHandler SendPrePurchaseFor(RequisitionViewModel requisition, string createdByUserName)
         {
-            throw new NotImplementedException("CreatePurchaseOrderCommitmentFrom");
+            ErrorHandler status = new ErrorHandler();
+
+            if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0 && requisition.State == RequisitionStates.Validated)
+            {
+                //use for later database update
+                var requisitionLines = requisition.Lines
+                    .Where(x =>
+                        x.SubmitPrePurchase != null
+                        && x.SubmitPrePurchase.Value)
+                    .ToList();
+
+                var prePurchOrderLines = requisitionLines
+                    .Select(line => new PrePurchOrderLineViewModel()
+                    {
+                        RequisitionNo = line.RequestNo,
+                        RequisitionLineNo = line.LineNo,
+                        ProductCode = line.Code,
+                        ProductDescription = line.Description,
+                        UnitOfMeasureCode = line.UnitMeasureCode,
+                        LocationCode = line.LocalCode,
+                        QuantityAvailable = line.QuantityAvailable,
+                        UnitCost = line.UnitCost,
+                        ProjectNo = line.ProjectNo,
+                        RegionCode = line.RegionCode,
+                        FunctionalAreaCode = line.FunctionalAreaCode,
+                        CenterResponsibilityCode = line.CenterResponsibilityCode,
+                        CreateUser = createdByUserName,
+                        SupplierNo = line.SupplierNo,
+                    })
+                    .ToList();
+
+                if (prePurchOrderLines.Count() > 0)
+                {    
+                    try
+                    {
+                        var createdLines = DBPrePurchOrderLines.Create(prePurchOrderLines.ParseToDB());
+                        if (createdLines != null)
+                        {
+                            //Update Requisition Lines
+                            requisitionLines.ForEach(line =>
+                               line.SubmitPrePurchase = true);
+
+                            bool linesUpdated = UpdateRequisitionLines(requisitionLines);
+                            if (linesUpdated)
+                            {
+                                status.eReasonCode = 1;
+                                status.eMessage = "Pré-Encomenda enviada com sucesso";
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        status.eReasonCode = 2;
+                        status.eMessage = "Ocorreu um erro ao enviar a pré-encomenda.";
+                    }
+                }
+                else
+                {
+                    status.eReasonCode = 2;
+                    status.eMessage = " Não existem linhas para enviar.";
+                }
+            }
+            else
+            {
+                status.eReasonCode = 2;
+                status.eMessage = " O estado da requisição e / ou linhas não cumprem os requisitos.";
+            }
+            return status;
         }
 
         private bool UpdateRequisitionLines(List<RequisitionLineViewModel> linesToUpdate)
