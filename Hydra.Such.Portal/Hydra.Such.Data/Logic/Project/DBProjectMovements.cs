@@ -266,13 +266,13 @@ namespace Hydra.Such.Data.Logic.Project
         }
 
 
-        public static List<MovimentosDeProjeto> GetAllAutorized(string user)
+        public static List<MovimentosDeProjeto> GetAllAutorized()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.MovimentosDeProjeto.Where(x => x.Utilizador == user && x.FaturaçãoAutorizada == true).ToList();
+                    return ctx.MovimentosDeProjeto.Where(x => x.FaturaçãoAutorizada == true).ToList();
                 }
             }
             catch (Exception ex)

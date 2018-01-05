@@ -1,29 +1,32 @@
-﻿<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
-<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+﻿<link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
-<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
 
-<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
-<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
 
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
-<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-context-menu/vaadin-context-menu.html" />
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-item/vaadin-item.html" />
+<link rel="import" href="/lib/vaadin-list-box/vaadin-list-box.html" />
 <link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button.html">
 <link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button-group.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 
 <link rel="import" href="/lib/neon-animation/web-animations.html">
 
@@ -72,6 +75,17 @@
                 background: #71BCC1;
                 color: white;
                 margin-top: 7px;
+            }
+
+            vaadin-grid.disabled:after {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+                cursor: not-allowed;
             }
 
             paper-button.disabled {
@@ -361,7 +375,8 @@
                 <paper-button class="tablinks" on-tap="_integrarEmRHKM"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
 
                 <!--TESTE-->
-                <paper-button id="botaotesteid" class="btnSave" on-tap="_teste"> TESTE</paper-button>
+                <!--<paper-button id="botaotesteid" class="btnSave" on-tap="_teste"> TESTE</paper-button>-->
+                <paper-button raised id="botaotesteid" class="btn--confirm" on-tap="_teste"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; TESTE</paper-button>
                 <!--FIM TESTE-->
             </template>
         </div>
@@ -391,7 +406,26 @@
                                             value-path="no"
                                             fields='[{"field":"no", "name":"Nº Projecto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
                                             disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                ob
                             </such-selectbox>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                             <!--campo de teste só para mostrar o valor carregado-->
                             <!--<vaadin-text-field type="text" value="{{data.projetoNo}}" id="projetoNo2" name="projetoNo2" label="TESTE" disabled="{{ !_permissions.update }}"></vaadin-text-field>-->
@@ -476,7 +510,7 @@
 
                     <template is="dom-if" if="{{ _permissions.update }}">
                         <div class="col-sm-1 alignPoga">
-                            <paper-button class="btnSave" raised on-tap="_updateFH">Gravar</paper-button>
+                            <paper-button id="btnSaveFH" class="btnSave" raised on-tap="_updateFH">Gravar</paper-button>
                         </div>
                     </template>
                 </div>
@@ -1250,11 +1284,16 @@
                                 <template class="header">
                                 </template>
                                 <template>
+                                    er
+                                    pe
                                     <paper-button class="btnRemove" raised on-tap="_deletePresenca">Eliminar</paper-button>
+                                    /t
                                 </template>
+                                ri
                             </vaadin-grid-column>
                         </template>
 
+                        em
                         <!--<template is="dom-if" if="{{ _permissions.update }}">
                             <div class="col-sm-1 alignPoga">
                                 <paper-button class="btnSave" raised on-tap="_updatePresenca">Guardar</paper-button>
@@ -1282,6 +1321,7 @@
                             </vaadin-combo-box>
                         </div>
                         <div class="col-sm-3">
+                            ="
                             <vaadin-text-field type="text" value="{{data.criadoPor}}" id="criadoPor" name="criadoPor" disabled="true" label="Criado por"></vaadin-text-field>
                         </div>
                         <div class="col-sm-3">
@@ -1490,18 +1530,6 @@
                 },
 
                 ready: function () {
-                    //TESTE
-                    debugger;
-                    this._permissions.create = false;
-
-
-                    var _self = this;
-                    $(_self.$.botaotesteid).addClass('disabled');
-
-                    //$(_self.$.botaotesteid).classList.add("disabled");
-                    //this.$.botaotesteid.classList.add("disabled");
-                    //FIM DO TESTE
-
                     //GET FOLHADEHORA DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "folhaDeHorasNo": this._folhadehoraid });
                     this.$.page_databound_ajax.generateRequest();
@@ -2200,6 +2228,11 @@
                             if (this.data.FolhaDeHorasNo == "") {
                                 this._isCreate = true;
                             }
+
+                            //debugger;
+                            self._setFieldsEditability(self.data);
+                            //debugger;
+
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             this._createResponseProcessor();
                         } else if (data.detail.url.indexOf("Update") !== -1) {
@@ -2208,23 +2241,6 @@
                     } else {
                         this._showErrorMessage('Ocorreu um erro ao criar a Folha de Hora.')
                     }
-
-                    //TESTE
-                    //var _self = this;
-
-                    //var _self = this;
-                    //$(_self.$.botaotesteid).addClass('disabled');
-
-
-                    //this.$.botaotesteid.toggleAttribute('disabled') = true;
-
-
-                    //$(_self.$.botaotesteid).addClass(' desativado');
-                    //this.$.page_databound_ajax.generateRequest();
-                    //this.$.botaotesteid.disabled = true;
-                    //this.$.page_databound_ajax.generateRequest();
-                    //this.$.empregadoNo.disabled = true;
-                    //this.$.page_databound_ajax.generateRequest();
                 },
 
                 _createResponseProcessor: function () {
@@ -2740,6 +2756,30 @@
                     window.location = "../";
                 },
 
+
+                _setFieldsEditability(data) {
+                    debugger;;
+                    var _self = this;
+
+                    //DESATIVAR BOTÕES NÃO FUNCIONA
+                    $(_self.$.botaotesteid).addClass('disabled');
+
+
+                    //DESATIVAR CAMPOS ESTÁ A FUNCIONAR
+                    //EXCEPTO OS CAMPOS do TIPO such- selectbox
+
+                    //_self.$.projetoNo.disabled = (data.estado == 0);
+                    //_self.$.empregadoNo.disabled = (data.estado == 0);
+                    //_self.$.dataPartidaTexto.disabled = (data.estado == 0);
+                    //_self.$.horaPartidaTexto.disabled = (data.estado == 0);
+                    //_self.$.dataChegadaTexto.disabled = (data.estado == 0);
+                    //_self.$.horaChegadaTexto.disabled = (data.estado == 0);
+                    //_self.$.tipoDeslocacao.disabled = (data.estado == 0);
+                    //_self.$.codigoTipoKms.disabled = (data.estado == 0);
+                    //_self.$.matricula.disabled = (data.estado == 0);
+                    //_self.$.deslocacaoForaConcelho.disabled = (data.estado == 0);
+                    //_self.$.terminada.disabled = (data.estado == 0);
+                },
 
                 //Helpers
                 _executeRequest: function (url, data) {

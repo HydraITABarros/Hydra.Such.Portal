@@ -132,32 +132,47 @@ namespace Hydra.Such.Data.Logic.Approvals
                 return null;
             }
         }
-       
+
 
         #region Parses
-        public static ApprovalUserGroupViewModel ParseToViewModel(UtilizadoresGruposAprovação x)
-        {
-            return new ApprovalUserGroupViewModel()
-            {
-                ApprovalGroup = x.GrupoAprovação,
-                ApprovalUser = x.UtilizadorAprovação,
-                CreateDate = x.DataHoraCriação,
-                CreateUser = x.UtilizadorCriação,
-                UpdateDate = x.DataHoraModificação,
-                UpdateUser = x.UtilizadorModificação
-            };
-        }
-        public static UtilizadoresGruposAprovação ParseToDatabase(ApprovalUserGroupViewModel x)
+        public static UtilizadoresGruposAprovação ParseToDb(ApprovalUserGroupViewModel x)
         {
             return new UtilizadoresGruposAprovação()
             {
-                GrupoAprovação = x.ApprovalGroup,
-                UtilizadorAprovação = x.ApprovalUser,
-                DataHoraCriação = x.CreateDate,
-                UtilizadorCriação = x.CreateUser,
-                DataHoraModificação = x.UpdateDate,
-                UtilizadorModificação = x.UpdateUser
+                UtilizadorAprovação=x.ApprovalUser,
+                GrupoAprovação=x.ApprovalGroup,
+                DataHoraCriação=x.CreateDate,
+                DataHoraModificação=x.UpdateDate,
+                UtilizadorCriação=x.CreateUser,
+                UtilizadorModificação=x.UpdateUser
             };
+        }
+
+        public static ApprovalUserGroupViewModel ParseToViewModel(this UtilizadoresGruposAprovação x)
+        {
+            if (x != null)
+            {
+                return new ApprovalUserGroupViewModel()
+                {
+                    ApprovalGroup = x.GrupoAprovação,
+                    ApprovalUser = x.UtilizadorAprovação,
+                    CreateDate = x.DataHoraCriação,
+                    CreateUser = x.UtilizadorCriação,
+                    UpdateDate = x.DataHoraModificação,
+                    UpdateUser = x.UtilizadorModificação
+                };
+            }
+            return null;
+        }
+
+       
+        public static List<ApprovalUserGroupViewModel> ParseToViewModel(this List<UtilizadoresGruposAprovação> items)
+        {
+            List<ApprovalUserGroupViewModel> parsedItems = new List<ApprovalUserGroupViewModel>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseToViewModel()));
+            return parsedItems;
         }
         #endregion
     }

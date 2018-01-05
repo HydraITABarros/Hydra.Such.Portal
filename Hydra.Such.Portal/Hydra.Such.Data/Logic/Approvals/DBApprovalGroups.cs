@@ -105,18 +105,33 @@ namespace Hydra.Such.Data.Logic.Approvals
 
 
         #region Parses
-        public static ApprovalGroupViewModel ParseToViewModel(GruposAprovação x)
+        public static ApprovalGroupViewModel ParseToViewModel(this GruposAprovação x)
         {
-            return new ApprovalGroupViewModel()
+
+            if (x != null)
             {
-                Code = x.Código,
-                Description = x.Descrição,
-                CreateDate = x.DataHoraCriação,
-                CreateUser = x.UtilizadorCriação,
-                UpdateDate = x.DataHoraModificação,
-                UpdateUser = x.UtilizadorModificação
-            };
+                return new ApprovalGroupViewModel()
+                {
+                    Code = x.Código,
+                    Description = x.Descrição,
+                    CreateDate = x.DataHoraCriação,
+                    CreateUser = x.UtilizadorCriação,
+                    UpdateDate = x.DataHoraModificação,
+                    UpdateUser = x.UtilizadorModificação
+                };
+            }
+            return null;
         }
+
+        public static List<ApprovalGroupViewModel> ParseToViewModel(this List<GruposAprovação> items)
+        {
+            List<ApprovalGroupViewModel> parsedItems = new List<ApprovalGroupViewModel>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseToViewModel()));
+            return parsedItems;
+        }
+
         public static GruposAprovação ParseToDatabase(ApprovalGroupViewModel x)
         {
             return new GruposAprovação()
@@ -129,6 +144,8 @@ namespace Hydra.Such.Data.Logic.Approvals
                 UtilizadorModificação = x.UpdateUser
             };
         }
+
+       
         #endregion
     }
 }

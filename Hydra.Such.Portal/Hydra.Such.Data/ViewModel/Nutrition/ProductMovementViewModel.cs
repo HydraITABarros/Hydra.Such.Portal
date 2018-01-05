@@ -8,7 +8,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
     public class ProductMovementViewModel : ErrorHandler
     {
         public int MovementNo { get; set; }
-        public DateTime? DateRegister { get; set; }
+        public string DateRegister { get; set; }
         public int? MovementType { get; set; }
         public int? DocumentNo { get; set; }
         public string ProductNo { get; set; }
