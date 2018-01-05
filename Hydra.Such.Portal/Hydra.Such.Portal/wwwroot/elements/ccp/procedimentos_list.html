@@ -46,9 +46,21 @@
         </custom-style>
 
         <!-- Dropdowns populate-->
-        <iron-ajax url="/PopulateDropdowns/GetPocedimentosCcpProcedimentoType" last-response="{{LProcedimentoType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpType" last-response="{{LType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpStates" last-response="{{LProcedimentoState}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPocedimentosCcpProcedimentoType" 
+                   last-response="{{LProcedimentoType}}" 
+                   auto method="post" 
+                   handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpType" 
+                   last-response="{{LType}}" 
+                   auto method="post" 
+                   handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProcedimentosCcpStates"
+                   last-response="{{LProcedimentoState}}"
+                   auto method="post" handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
 
         <iron-ajax url="/ProcedimentosCcps/GetProcedimentosByProcedimentoType"
                    last-response="{{result}}"
@@ -86,7 +98,8 @@
                     <vaadin-grid-filter path="estado" />
                 </template>
                 <template>
-                    {{item.estado}}
+                    <!--{{item.estado}}-->
+                    [[_displayState(item.estado)]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column>
@@ -118,8 +131,6 @@
                     }
                 },
                 ready: function () {
-                    
-
                     this.$.grid_databound_ajax.body = JSON.stringify(this._procedimentotypeid);
                     this.$.grid_databound_ajax.generateRequest();
                 },
@@ -170,6 +181,13 @@
                         else
                             window.location.href = "/ProcedimentosCcps/DetalhePedidoSimplificado/" + this.NewProcedimento;
                     };
+                },
+                _displayState: function (param) {
+                    if (param != undefined) {
+                        var sel = this.LProcedimentoState.find(x => x.id == param);
+                        if (sel != undefined)
+                            return sel.value;
+                    }
                 }
             });
         });
