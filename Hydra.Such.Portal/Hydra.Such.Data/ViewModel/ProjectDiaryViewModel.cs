@@ -62,6 +62,8 @@ namespace Hydra.Such.Data.ViewModel
         //public Requisição NºRequisiçãoNavigation { get; set; }
         //public TiposRefeição TipoRefeiçãoNavigation { get; set; }
         public bool Selected { get; set; }
+        public string ServiceData { get; set; }
+        public string ClientRequest { get; set; }
 
         public int? ServiceClientCode { get; set; }
 

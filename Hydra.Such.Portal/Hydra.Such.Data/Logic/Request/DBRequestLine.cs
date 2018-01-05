@@ -80,6 +80,28 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
+        public static bool Update(List<LinhasRequisição> items)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    if (items != null)
+                    {
+                        items.ForEach(item => item.DataHoraModificação = DateTime.Now);
+                    }
+                    ctx.LinhasRequisição.UpdateRange(items);
+                    ctx.SaveChanges();
+                    return true;
+                }
+            }
+            catch
+            {
+
+            }
+            return false;
+        }
+
         public static void Update(List<LinhasRequisição> items, SuchDBContext ctx)
         {
             if (items != null)

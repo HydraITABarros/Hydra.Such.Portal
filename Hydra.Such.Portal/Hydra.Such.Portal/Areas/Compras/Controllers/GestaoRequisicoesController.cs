@@ -11,6 +11,7 @@ using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
+using Hydra.Such.Portal.Services;
 
 namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
@@ -401,13 +402,91 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
-               
+                string quantityInvalid = "";
+                string prodNotStockkeepUnit = "";
+                string prodQuantityOverStock = "";
                 switch (registType)
                 {
                     case "Disponibilizar":
                         if (item.State == RequisitionStates.Validated)
                         {
-
+                            List<RequisitionLineViewModel> getrlines = DBRequestLine.GetAllByRequisiçãos(item.RequisitionNo).ParseToViewModel();
+                            List<NAVStockKeepingUnitViewModel> StockkeepingUnit = new List<NAVStockKeepingUnitViewModel>();
+                            foreach (RequisitionLineViewModel rlines in getrlines)
+                            {
+                                StockkeepingUnit = DBNAV2017StockKeepingUnit.GetByProductsNo(_config.NAVDatabaseName, _config.NAVCompanyName, rlines.Code).ToList();
+                                if (StockkeepingUnit.Count == 0)
+                                {
+                                    if (prodNotStockkeepUnit == "")
+                                    {
+                                        prodNotStockkeepUnit = rlines.Description;
+                                    }
+                                    else
+                                    {
+                                        prodNotStockkeepUnit = prodNotStockkeepUnit + " , " + rlines.Description;
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (NAVStockKeepingUnitViewModel VAR in StockkeepingUnit)
+                                    {
+                                        if (VAR.SafetyStockQuantity < rlines.QuantityToProvide)
+                                        {
+                                            if (prodQuantityOverStock == "")
+                                            {
+                                                prodQuantityOverStock = rlines.Description;
+                                            }
+                                            else
+                                            {
+                                                prodQuantityOverStock =
+                                                    prodQuantityOverStock + " , " + rlines.Description;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            rlines.QuantityAvailable = rlines.QuantityAvailable + rlines.QuantityToProvide;
+                                            rlines.QuantityReceivable = rlines.QuantityToProvide;
+                                            rlines.UpdateUser = User.Identity.Name;
+                                            rlines.UpdateDateTime = DateTime.Now;
+                                            RequisitionLineViewModel rlinesValidation = DBRequestLine.Update(rlines.ParseToDB()).ParseToViewModel();
+                                            if (rlinesValidation == null)
+                                            {
+                                                item.eReasonCode = 5;
+                                                item.eMessage = "Ocorreu um erro ao alterar as linhas de requisição";
+                                            }
+                                            else
+                                            {
+                                                item.State = RequisitionStates.Available;
+                                                item.UpdateUser = User.Identity.Name;
+                                                item.UpdateDate = DateTime.Now;
+                                                RequisitionViewModel rValidation = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
+                                                if (rValidation == null)
+                                                {
+                                                    item.eReasonCode = 9;
+                                                    item.eMessage = "Ocorreu um erro ao alterar a requisição";
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
+                                }
+                            }
+                            if (prodNotStockkeepUnit != "" && prodQuantityOverStock != "")
+                            {
+                                item.eReasonCode = 6;
+                                item.eMessage = " O(s) Produto(s) " + prodNotStockkeepUnit + " não existe ou existem no Stockkeeping Unit do Nav"+
+                                " e o(s) Produto(s) "+ prodQuantityOverStock + " tem ou têm Quantidade(s) a Disponibilizar superiore(s) ao Stock";
+                            }
+                            else if (prodNotStockkeepUnit != "" && prodQuantityOverStock == "")
+                            {
+                                item.eReasonCode = 7;
+                                item.eMessage = " O(s) Produto(s) " + prodNotStockkeepUnit + " não existe ou existem no Stockkeeping Unit do Nav";
+                            }
+                            else if (prodNotStockkeepUnit == "" && prodQuantityOverStock != "")
+                            {
+                                item.eReasonCode = 8;
+                                item.eMessage = "O(s) Produto(s) " + prodQuantityOverStock + " tem ou têm Quantidade(s) a Disponibilizar superiore(s) ao Stock"; 
+                            }
                         }
                         else
                         {
@@ -416,7 +495,102 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         }
                         break;
                     case "Receber":
-
+                        if (item.State == RequisitionStates.Available)
+                        {
+                            List<RequisitionLineViewModel> getrlines = DBRequestLine.GetAllByRequisiçãos(item.RequisitionNo).ParseToViewModel();
+                            List<NAVStockKeepingUnitViewModel> StockkeepingUnit = new List<NAVStockKeepingUnitViewModel>();
+                            foreach (RequisitionLineViewModel rlines in getrlines)
+                            {
+                                if (rlines.QuantityReceivable > 0)
+                                {
+                                    StockkeepingUnit = DBNAV2017StockKeepingUnit.GetByProductsNo(_config.NAVDatabaseName, _config.NAVCompanyName, rlines.Code).ToList();
+                                    if (StockkeepingUnit.Count == 0)
+                                    {
+                                        if (prodNotStockkeepUnit == "")
+                                        {
+                                            prodNotStockkeepUnit = rlines.Description;
+                                        }
+                                        else
+                                        {
+                                            prodNotStockkeepUnit = prodNotStockkeepUnit + " , " + rlines.Description;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (NAVStockKeepingUnitViewModel VAR in StockkeepingUnit)
+                                        {
+                                            if (VAR.SafetyStockQuantity < rlines.QuantityReceivable)
+                                            {
+                                                if (prodQuantityOverStock == "")
+                                                {
+                                                    prodQuantityOverStock = rlines.Description;
+                                                }
+                                                else
+                                                {
+                                                    prodQuantityOverStock =
+                                                        prodQuantityOverStock + " , " + rlines.Description;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                rlines.QuantityReceived = rlines.QuantityReceived + rlines.QuantityReceivable;
+                                                rlines.QuantityPending = rlines.QuantityReceivable;
+                                                rlines.UpdateUser = User.Identity.Name;
+                                                rlines.UpdateDateTime = DateTime.Now;
+                                                RequisitionLineViewModel rlinesValidation = DBRequestLine.Update(rlines.ParseToDB()).ParseToViewModel();
+                                                if (rlinesValidation == null)
+                                                {
+                                                    item.eReasonCode = 5;
+                                                    item.eMessage = "Ocorreu um erro ao alterar as linhas de requisição";
+                                                }
+                                                else
+                                                {
+                                                    item.State = RequisitionStates.Received;
+                                                    item.UpdateUser = User.Identity.Name;
+                                                    item.UpdateDate = DateTime.Now;
+                                                    RequisitionViewModel rValidation = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
+                                                    if (rValidation == null)
+                                                    {
+                                                        item.eReasonCode = 9;
+                                                        item.eMessage = "Ocorreu um erro ao alterar a requisição";
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (quantityInvalid == "")
+                                    {
+                                        quantityInvalid = rlines.Description;
+                                    }
+                                    else
+                                    {
+                                        quantityInvalid = quantityInvalid + " , " + rlines.Description;
+                                    }
+                                }
+                            }
+                            if (quantityInvalid != "")
+                            {
+                                item.eReasonCode = 12;
+                                item.eMessage = "O(s) produto(s)" + quantityInvalid +
+                                                "tem ou têm Quantidade a Receber a 0";
+                            }
+                            else
+                            {
+                                if (prodNotStockkeepUnit != "")
+                                {
+                                    item.eReasonCode = 7;
+                                    item.eMessage = " O(s) Produto(s) " + prodNotStockkeepUnit + " não existe ou existem no Stockkeeping Unit do Nav";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            item.eReasonCode = 11;
+                            item.eMessage = "Esta requisição não está Disponível.";
+                        }
                     break;
                     case "Anular Aprovacao":
                         if (item.State == RequisitionStates.Approved)
@@ -424,6 +598,8 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             item.State = RequisitionStates.Pending;
                             item.ResponsibleApproval = "";
                             item.ApprovalDate = null;
+                            item.UpdateUser = User.Identity.Name;
+                            item.UpdateDate = DateTime.Now;
                             RequisitionViewModel reqPend = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
                             if (reqPend != null)
                             {
@@ -431,6 +607,8 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                 foreach (RequisitionLineViewModel rlines in getrlines)
                                 {
                                     rlines.QuantityRequired = null;
+                                    rlines.UpdateUser = User.Identity.Name;
+                                    rlines.UpdateDateTime = DateTime.Now;
                                     RequisitionLineViewModel rlinesValidation = DBRequestLine.Update(rlines.ParseToDB()).ParseToViewModel();
                                     if (rlinesValidation == null)
                                     {
@@ -457,6 +635,8 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             item.State = RequisitionStates.Approved;
                             item.ResponsibleValidation = "";
                             item.ValidationDate = null;
+                            item.UpdateUser = User.Identity.Name;
+                            item.UpdateDate = DateTime.Now;
                             RequisitionViewModel reqAprov = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
                             if (reqAprov != null)
                             {
@@ -464,6 +644,8 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                 foreach (RequisitionLineViewModel rlines in getrlines)
                                 {
                                     rlines.QuantityAvailable = null;
+                                    rlines.UpdateUser = User.Identity.Name;
+                                    rlines.UpdateDateTime = DateTime.Now;
                                     RequisitionLineViewModel rlinesValidation = DBRequestLine.Update(rlines.ParseToDB()).ParseToViewModel();
                                     if (rlinesValidation == null)
                                     {
@@ -485,10 +667,11 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         }
                         break;
                     case "Fechar Requisicao":
-
-                    break;
+                        item.eReasonCode = 14;
+                        item.eMessage = "Falta especificações ";
+                        break;
                     default:
-                        item.eReasonCode = 3;
+                        item.eReasonCode = 10;
                         item.eMessage = "Ocorreu um erro: Existe algum problemas com esta requisição";
                         break;
                 }
@@ -502,18 +685,10 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
-                //Ensure that the requisition has the expected status. Ex.: prevents from validating pending requisitions
-                if (IsValidForLocalMarketValidation(item))
-                {
-                    var status = CreatePurchaseItemsFor(item);
-                    item.eReasonCode = status.eReasonCode;
-                    item.eMessage = status.eMessage;
-                }
-                else
-                {
-                    item.eReasonCode = 2;
-                    item.eMessage = "O estado da requisição e/ou linhas não cumprem os requisitos para a validação do mercado local.";
-                }
+                RequisitionService srv = new RequisitionService(_configws);
+                var status = srv.CreatePrePurchaseOrderFor(item);
+                item.eReasonCode = status.eReasonCode;
+                item.eMessage = status.eMessage;
             }
             else
             {
@@ -538,20 +713,28 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 */
                 //use for database update later
                 var linesToValidate = requisition.Lines
-                    .Where(x => x.LocalMarket.Value && !x.PurchaseValidated.Value && x.QuantityRequired.Value > 0);
+                    .Where(x =>
+                            x.LocalMarket != null
+                            && x.PurchaseValidated != null
+                            && x.QuantityRequired != null
+                            && x.LocalMarket.Value
+                            && !x.PurchaseValidated.Value
+                            && x.QuantityRequired.Value > 0)
+                        .ToList();
 
                 var supplierProducts = linesToValidate.GroupBy(x => 
                             x.SupplierNo,
                             x => x,
-                            (key, items) => new PurchFromSupplierDTO
+                            (key, items) => new PurchOrderDTO
                             {
                                 SupplierId = key,
                                 RequisitionId = requisition.RequisitionNo,
                                 CenterResponsibilityCode = requisition.CenterResponsibilityCode,
                                 FunctionalAreaCode = requisition.FunctionalAreaCode,
                                 RegionCode = requisition.RegionCode,
-                                Lines = items.Select(line => new PurchFromSupplierLinesDTO()
+                                Lines = items.Select(line => new PurchOrderLineDTO()
                                 {
+                                    LineId = line.LineNo.Value,
                                     Type = line.Type,
                                     Code = line.Code,
                                     Description = line.Description,
@@ -578,9 +761,9 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                 createPurchaseHeaderTask.Wait();
                                 if (createPurchaseHeaderTask.IsCompletedSuccessfully)
                                 {
-                                    purchFromSupplier.NAVPurchaseId = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
+                                    purchFromSupplier.NAVPrePurchOrderId = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
 
-                                    executionReport += string.Format("Criada a pré-compra {0}.", purchFromSupplier.NAVPurchaseId);
+                                    executionReport += string.Format("Criada a pré-compra {0}.", purchFromSupplier.NAVPrePurchOrderId);
                                     Task<WSPurchaseInvLine.CreateMultiple_Result> createPurchaseLinesTask = NAVPurchaseLineService.CreateMultipleAsync(purchFromSupplier, _configws);
                                     try
                                     {
@@ -591,7 +774,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                         }
                                         else
                                         {
-                                            executionReport += string.Format(" Não foi possivel criar as linhas de pré-compra com sucesso.");
+                                            executionReport += string.Format(" Não foi possivel criar as linhas de pré-compra.");
                                         }
                                     }
                                     catch (Exception ex)
@@ -629,7 +812,15 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 //Ensure required fields aren't null or invalid
                 var linesToValidate = requisition.Lines
-                        .Where(x => x.LocalMarket.Value && !x.PurchaseValidated.Value && x.QuantityRequired.Value > 0);
+                        .Where(x =>
+                            x.LocalMarket != null
+                            && x.PurchaseValidated != null
+                            && x.QuantityRequired != null
+                            && x.LocalMarket.Value 
+                            && !x.PurchaseValidated.Value 
+                            && x.QuantityRequired.Value > 0)
+                        .ToList();
+
                 //Ensure it's in approved state
                 return requisition.State == RequisitionStates.Approved;
             }
@@ -701,6 +892,120 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 {
                     eReasonCode = 3,
                     eMessage = "Não é possivel validar. A requisição não pode ser nula."
+                };
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult CreateMarketConsult([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                try
+                {
+                    RequisitionService serv = new RequisitionService(_configws);
+                    serv.CreateMarketConsultFor(item);
+                }
+                catch (NotImplementedException ex)
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Funcionalidade não implementada";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel criar consulta de mercado. A requisição não pode ser nula."
+                };
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult CreatePurchaseOrder([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                try
+                {
+                    RequisitionService serv = new RequisitionService(_configws);
+                    var stat = serv.CreatePurchaseOrderFor(item);
+                    item.eMessage = stat.eMessage;
+                    item.eReasonCode = stat.eReasonCode;
+                }
+                catch (NotImplementedException ex)
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Funcionalidade não implementada";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel criar encomenda de compra. A requisição não pode ser nula."
+                };
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult CreateTransportationGuide([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                try
+                {
+                    RequisitionService serv = new RequisitionService(_configws);
+                    serv.CreateTransportationGuideFor(item);
+                }
+                catch (NotImplementedException ex)
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Funcionalidade não implementada";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel criar a guia de transporte. A requisição não pode ser nula."
+                };
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult SendPrePurchase([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                try
+                {
+                    RequisitionService serv = new RequisitionService(_configws);
+                    serv.SendPrePurchaseFor(item);
+                }
+                catch (NotImplementedException ex)
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Funcionalidade não implementada";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel enviar a pré-compra. A requisição não pode ser nula."
                 };
             }
             return Json(item);

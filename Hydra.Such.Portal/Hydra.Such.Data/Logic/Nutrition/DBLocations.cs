@@ -64,6 +64,25 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
+        public static bool Delete(Localizações ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.Localizações.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
         public static Localizações GetById(string Code)
         {
             try

@@ -93,9 +93,10 @@
         <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PWInfo}}" id="projectWasteData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PSInfo}}" id="projectWasteData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-    <div class="subMenu">
-        <paper-button class="tablinks" on-tap="_PurchaseNeeds"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Diário requisição Unid. Produtiva</paper-button>
-    </div><!--on-response="_gridListResponse"-->
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_PurchaseNeeds"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Diário requisição Unid. Produtiva</paper-button>
+
+        </div><!--on-response="_gridListResponse"-->
         
         <div class="marginSpace">
             <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
@@ -564,7 +565,6 @@
                     }
                 },
                 _PurchaseNeeds: function () {
-                    debugger;
                     if (this.$.productivityUnitNo.value != undefined && this.$.productivityUnitNo.value != "") {
                         window.location.href = "/Nutricao/NecessidadeCompras/Detalhes/" +
                             this.$.productivityUnitNo.value;

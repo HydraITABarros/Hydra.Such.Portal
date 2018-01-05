@@ -415,7 +415,7 @@
                         if (data.detail.url.indexOf("Get") !== -1) {
 
                         } else if (data.detail.url.indexOf("Create") !== -1) {
-                            debugger;;
+                            //debugger;;
                             if (this.data.eReasonCode == "1"){
                                 this._isCreate = false;
                                 this._openToast(this.data.eMessage);
@@ -426,8 +426,12 @@
                                 this._openToastError(this.data.eMessage);
                             }
                         } else if (data.detail.url.indexOf("Update") !== -1) {
-                            this._openToast(this.data.eMessage);
-                            this.$.item_databound.url = "/Nutricao/CafetariasRefeitorios/GetCoffeeShop";
+                            if (this.data.eReasonCode == "1") {
+                                this._openToast(this.data.eMessage);
+                                this.$.item_databound.url = "/Nutricao/CafetariasRefeitorios/GetCoffeeShop";
+                            } else { 
+                                this._openToastError(this.data.eMessage);
+                            }
                         }
                         else if (data.detail.url.indexOf("Delete") !== -1) {
                             if (this.data.eReasonCode == "1") {
@@ -444,7 +448,7 @@
                             }
                         }
                     } else {
-                        debugger;;
+                        //debugger;;
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
                 },
