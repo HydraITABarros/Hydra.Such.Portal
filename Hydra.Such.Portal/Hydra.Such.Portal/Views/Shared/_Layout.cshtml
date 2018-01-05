@@ -101,6 +101,8 @@
                             <li>@Html.ActionLink("Projetos", "Projetos", "Nutricao")</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Nutricao")</li>
                             <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos")</li>
+                            <li>@Html.ActionLink("Movimento de Produtos", "MovimentoProdutos", "Nutricao")</li>
+                            <li>@Html.ActionLink("Unidade de Medida de Produto", "UnidadeMedidaProduto", "Nutricao")</li>
                             <li data-toggle="collapse" data-target="#FolhasDeHorasNutricao" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
                                 <ul class="sub-menu collapse" id="FolhasDeHorasNutricao">
@@ -112,10 +114,11 @@
                                 </ul>
                             </li>
                             <li>@Html.ActionLink("Administração", "Administracao", "Nutricao", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Cafetarias / Refeitórios", "CafetariasRefeitorios", "Nutricao", new { area = "Nutricao" }, null)</li>
+                            <li>@Html.ActionLink("Unidades Produtivas", "UnidadesProdutivas", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Cafetarias / Refeitórios", "CafetariasRefeitorios", "Nutricao", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Localizações", "Localizacoes", "Nutricao", new { area = "Nutricao" }, null)</li>
-                            <li>@Html.ActionLink("Modelos Req. Simplificadas", "ModelosReqSimplificada", "Nutricao", new { area = "Nutricao" }, null)</li>
-                            <li>@Html.ActionLink("Requisições Simplificadas", "RequisicoesSimplificadas", "Nutricao", new { area = "Nutricao" }, null)</li>
+                            <li>@Html.ActionLink("Modelos Req. Simplificadas", "ModelosReqSimplificada", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Requisições Simplificadas", "RequisicoesSimplificadas", "Nutricao", new { area = "" }, null)</li>
                         </ul>
 
 
