@@ -76,9 +76,10 @@ namespace Hydra.Such.Portal
                 app.UseExceptionHandler("/Error");
             }
 
-            app.UseSession();
             app.UseStaticFiles();
-            
+
+            app.UseSession();
+
             app.UseAuthentication();
 
             app.UseMvc(routes =>
