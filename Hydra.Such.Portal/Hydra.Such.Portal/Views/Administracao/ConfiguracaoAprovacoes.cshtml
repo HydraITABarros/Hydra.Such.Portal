@@ -68,7 +68,7 @@
         </iron-ajax>
 
         @*POPULATE Update*@
-        <iron-ajax url="/Administracao/CreateApprovalConfig"
+        <iron-ajax url="/Administracao/UpdateApprovalConfig"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -366,7 +366,6 @@
                     this.$.ajax_update.url = "/Administracao/UpdateApprovalConfig";
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
-                    this.$.gridApprovals.clearCache();
                 },
                 _createApproval: function () {
                     if (this.$.ddLevelApproval.value != null && this.$.ddLevelApproval.value != "") {
@@ -389,7 +388,6 @@
                         this.$.ajax_update.body = JSON.stringify(this.result);
                         this.$.ajax_update.url = "/Administracao/UpdateApprovalConfig";
                         this.$.ajax_update.generateRequest();
-                        this.$.gridApprovals.clearCache();
                     }
                     else {
                         this.openToastError("O nivel de avaliação não pode ser Zero");

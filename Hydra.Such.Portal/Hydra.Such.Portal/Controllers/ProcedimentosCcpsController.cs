@@ -748,7 +748,8 @@ namespace Hydra.Such.Portal.Controllers
                             return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
                         }
 
-                        data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+                        //data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+                        data.EmailsProcedimentosCcp = DBProcedimentosCCP.GetAllEmailsView(data.No);
 
                         SendEmailsProcedimentos Email = new SendEmailsProcedimentos
                         {
@@ -805,7 +806,8 @@ namespace Hydra.Such.Portal.Controllers
                             return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
                         }
 
-                        data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+                        //data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+                        data.EmailsProcedimentosCcp = DBProcedimentosCCP.GetAllEmailsView(data.No);
 
                         SendEmailsProcedimentos Email = new SendEmailsProcedimentos
                         {
@@ -862,7 +864,8 @@ namespace Hydra.Such.Portal.Controllers
                         return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
                     }
 
-                    data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+                    //data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+                    data.EmailsProcedimentosCcp = DBProcedimentosCCP.GetAllEmailsView(data.No);
 
                     SendEmailsProcedimentos Email = new SendEmailsProcedimentos
                     {

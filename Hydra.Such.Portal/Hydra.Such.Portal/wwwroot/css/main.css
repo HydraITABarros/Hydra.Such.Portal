@@ -177,6 +177,11 @@ ul.nav li:hover {
     background-color: #FA1114;
     color: black;
 }
+.toastMultiple {
+    border-radius: 8px;
+    background-color: #cecece;
+    color: black;
+}
 /* Custom General Classes */
 /* Main Menu */
 .item {

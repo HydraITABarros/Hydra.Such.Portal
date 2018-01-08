@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /Hydra.Such.Portal/Hydra.Such.Portal/NumerationService.cs
+/Hydra.Such.Portal/Hydra.Such.Portal/Services/PrePurchOrderService.cs

@@ -2032,6 +2032,10 @@
                         notify: true,
                         value: false
                     },
+                    isJuriElementAction: {
+                        type: Boolean,
+                        value: false
+                    },
                     userAllowed: {
                         type: Boolean,
                         value: true
@@ -2129,14 +2133,14 @@
                 },
 
                 _update: function () {
-                    ////debugger;;
+                    debugger;;
                     if (this._onUpdateValidateElementoJuri()) {
                         this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data)
                     }
                 },
 
                 _delete: function () {
-                    ////debugger;;
+                    debugger;;
                     var Procedimento = this.data;
                     var ajax_request = this.$.ajax_delete_procedimento;
                     bootbox.confirm({
@@ -2178,7 +2182,9 @@
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             self._createResponseProcessor();
                         } else if (data.detail.url.indexOf("Update") !== -1) {
-                            self._openToast("Procedimento atualizado com sucesso.")
+                            debugger;;
+                            if(!this.isJuriElementAction)
+                                self._openToast("Procedimento atualizado com sucesso.")
                         }
                     } else {
                         self._openToast("Ocorreu um erro ao criar o Procedimento.")
@@ -2263,7 +2269,8 @@
                         if (this._procedimentoid == "") {
                             this._isCreate = true;
                         }
-                    } else {
+                    }
+                    else {
                         if (this._procedimentotypeid == 1)
                             window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
                         else
@@ -2297,6 +2304,7 @@
                             }
                         }
                     }
+                    
                     return true;
                 },
                 _validateElementoJuriData: function () {
@@ -2318,7 +2326,10 @@
                 },
                 _createElementoJuri: function () {
                     ////debugger;;
+                    this.isJuriElementAction = true;
                     if (this._validateElementoJuriData()) {
+                        this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data);
+
                         this.$.ajax_createelementojuri.body = JSON.stringify({
                             noProcedimento: this.data.no,
                             utilizador: this._userName,
@@ -2329,7 +2340,7 @@
                         });
 
                         this.$.ajax_createelementojuri.generateRequest();
-                        //this.gridElementosJuri.clearCache();
+                        //this.$.gridElementosJuri.clearCache();
                     }
                 },
                 _createElementoJuriResponse: function (e) {
@@ -2343,14 +2354,17 @@
                         this.chkSuplente = false;
                         this.chkSendMail = false;
                     } else {
-                        if (this.ElementoCreated.eReasonCode == 3 || this.ElementoCreated.eReasonCode == 4)
+                        if (this.ElementoCreated.eReasonCode == 3 || this.ElementoCreated.eReasonCode == 4) {
                             this._openToast(this.ElementoCreated.eMessage);
-                        else
+                        }
+                        else {
                             this._openToast('Não foi possível criar o Elemento do Juri');
+                        }    
                     }
                 },
                 _deleteElementoJuri: function (e) {
                     ////debugger;;
+                    this.isJuriElementAction = true;
                     var index = this.data.elementosJuri.indexOf(e.model.item);
                     this.data.elementosJuri.splice(index, 1);
                     this.$.ajax_deleteelementojuri.body = JSON.stringify({
@@ -2368,18 +2382,6 @@
 
                     } else {
                         this._openToast('Não foi possível eliminar o Elemento do Juri!')
-                    }
-                },
-
-                // Checklist Fluxo Trabalho
-                _checklistResponseEstado0: function (e) {
-                    debugger;;
-
-                    if (this.CLArea != null) {
-                        debugger;;
-
-                        //this._openToast(this.ChecklistArea.comentarioAreaApresentar);
-                   
                     }
                 },
 
@@ -2475,6 +2477,15 @@
                 _submitProcedimentoResponse: function (e) {
                     if (this.ProcedimentoSubmitted.eReasonCode == 0) {
                         this._openToast("Procedimento " + this.data.no + " submetido com sucesso!");
+                        setTimeout(
+                            function () {
+                                // 
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
                     } else {
                         this._openToast(ProcedimentoSubmitted.eMessage);
                     }
@@ -2505,6 +2516,7 @@
                     _self.$.informacaoTecnica.disabled = (data.estado != 0);
                     _self.$.fundamentacaoAquisicao.disabled = (data.estado != 0);
                     _self.$.precoBase.disabled = (data.estado != 0);
+                    _self.$.valorPrecoBase.disabled = (data.estado != 0);
                     _self.$.negociacao.disabled = (data.estado != 0);
                     _self.$.prazo.disabled = (data.estado != 0);
                     _self.$.users.disabled = (data.estado != 0);
