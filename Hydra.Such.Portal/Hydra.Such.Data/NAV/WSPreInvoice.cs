@@ -1,6 +1,7 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Contracts;
+using Hydra.Such.Data.ViewModel.Projects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,14 +23,14 @@ namespace Hydra.Such.Data.NAV
             navWSBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows;
         }
 
-        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(ProjectDiaryViewModel PreInvoiceToCreate, NAVWSConfigurations WSConfigurations)
+        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(SPInvoiceListViewModel PreInvoiceToCreate, NAVWSConfigurations WSConfigurations)
         {
             WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
                 {
-                    Sell_to_Customer_No = "10000",//PreInvoiceToCreate.InvoiceToClientNo,
-                    VAT_Registration_No = "789456278"
+                    Sell_to_Customer_No = PreInvoiceToCreate.InvoiceToClientNo,
+                    VAT_Registration_No = PreInvoiceToCreate.ClientVATReg
                 }
             };
 
