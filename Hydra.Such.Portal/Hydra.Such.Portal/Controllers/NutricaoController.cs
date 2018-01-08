@@ -11,12 +11,20 @@ using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.Nutrition;
 using Hydra.Such.Data.ViewModel.Nutrition;
 using Hydra.Such.Data.Logic.Contracts;
+using Hydra.Such.Portal.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Hydra.Such.Portal.Controllers
 {
     [Authorize]
     public class NutricaoController : Controller
     {
+        private readonly NAVConfigurations _config;
+        public NutricaoController(IOptions<NAVConfigurations> appSettings)
+        {
+            _config = appSettings.Value;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -624,6 +632,86 @@ namespace Hydra.Such.Portal.Controllers
             data.ForEach(x =>
             {              
                DBUnitMeasureProduct.Update(DBUnitMeasureProduct.ParseToDb(x));
+            });
+            return Json(data);
+        }
+
+        #endregion
+
+        #region Unidade de Armazenamento
+
+        public IActionResult UnidadeArmazenamento()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 19);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult UnidadeArmazenamentoDetalhes(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 19);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProductNo = id ?? "";
+                if (ViewBag.ProductNo != "")
+                    ViewBag.NoProductDisable = true;
+                else
+                    ViewBag.NoProductDisable = false;
+
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetUnitStockeeping()
+        {
+            List<UnitMeasureProductViewModel> result = DBUnitMeasureProduct.ParseToViewModel(DBUnitMeasureProduct.GetAll());
+            return Json(result);
+        }
+        [HttpPost]
+
+        public JsonResult GetProductId([FromBody]string idProduct)
+        {
+            List<NAVProductsViewModel> product = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, idProduct);
+            return Json(product);
+        }
+
+
+        public JsonResult CreateUnitStockeeping([FromBody] UnitMeasureProductViewModel data)
+        {
+            string eReasonCode = "";
+            //Create new 
+            eReasonCode = DBUnitMeasureProduct.Create(DBUnitMeasureProduct.ParseToDb(data)) == null ? "101" : "";
+
+            if (String.IsNullOrEmpty(eReasonCode))
+            {
+                return Json(data);
+            }
+            else
+            {
+                return Json(eReasonCode);
+            }
+        }
+
+        public JsonResult UpdateUnitStockeeping([FromBody] List<UnitMeasureProductViewModel> data)
+        {
+            List<UnidadeMedidaProduto> results = DBUnitMeasureProduct.GetAll();
+            results.RemoveAll(x => data.Any(u => u.Code == x.Código && u.ProductNo == x.NºProduto));
+            results.ForEach(x => DBUnitMeasureProduct.Delete(x));
+            data.ForEach(x =>
+            {
+                DBUnitMeasureProduct.Update(DBUnitMeasureProduct.ParseToDb(x));
             });
             return Json(data);
         }

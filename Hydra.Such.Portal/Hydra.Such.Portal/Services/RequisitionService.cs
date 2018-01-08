@@ -11,6 +11,18 @@ using Hydra.Such.Data.ViewModel.Compras;
 
 namespace Hydra.Such.Portal.Services
 {
+    public class CreatePrePurchOrderResult
+    {
+        public bool CompletedSuccessfully { get; set; }
+        public string NAVPrePurchOrderId { get; set; }
+        public string ErrorMessage { get; set; }
+
+        public CreatePrePurchOrderResult()
+        {
+            this.CompletedSuccessfully = false;
+        }
+    }
+
     public class RequisitionService
     {
         private readonly NAVWSConfigurations _configws;
@@ -18,6 +30,54 @@ namespace Hydra.Such.Portal.Services
         public RequisitionService(NAVWSConfigurations NAVWSConfigs)
         {
             _configws = NAVWSConfigs;
+        }
+
+        public RequisitionViewModel ValidateRequisition(RequisitionViewModel requisition, string validatedByUserName)
+        {
+            if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0 && requisition.State == RequisitionStates.Approved)
+            {
+                var linesToValidate = requisition.Lines
+                    .Where(x => x.QuantityRequired != null && x.QuantityRequired.Value > 0)
+                    .ToList();
+
+                if (linesToValidate.Count() > 0)
+                {
+                    requisition.State = RequisitionStates.Validated;
+                    requisition.ResponsibleValidation = validatedByUserName;
+                    requisition.ValidationDate = DateTime.Now;
+
+                    linesToValidate.ForEach(item =>
+                        item.QuantityToProvide = item.QuantityRequired
+                    );
+
+                    var updatedReq = DBRequest.UpdateHeaderAndLines(requisition.ParseToDB());
+                    if (updatedReq != null)
+                    {
+                        requisition = updatedReq.ParseToViewModel();
+                        requisition.eReasonCode = 1;
+                        requisition.eMessage = "Requisição validada com sucesso.";
+                    }
+                    else
+                    {
+                        requisition.eReasonCode = 3;
+                        requisition.eMessage = "Ocorreu um erro ao validar a requisição.";
+                    }
+                }
+                else
+                {
+                    requisition.eReasonCode = 3;
+                    requisition.eMessage = "Não existem linhas que cumpram os requisitos de validação.";
+                }
+            }
+            else
+            {
+                requisition = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = " O estado da requisição e / ou linhas não cumprem os requisitos de validação.",
+                };
+            }
+            return requisition;
         }
 
         public ErrorHandler CreatePrePurchaseOrderFor(RequisitionViewModel requisition)
@@ -310,14 +370,14 @@ namespace Hydra.Such.Portal.Services
                     {
                         try
                         {
-                            var result = CreatePrePurchaseOrderFrom(purchOrder);
+                            var result = CreateNAVPrePurchaseOrderFor(purchOrder);
                             if (result.CompletedSuccessfully)
                             {
                                 //Update Requisition Lines
                                 requisition.Lines.ForEach(line =>
                                    line.CreatedOrderNo = result.NAVPrePurchOrderId);
 
-                                bool linesUpdated = UpdateRequisitionLines(requisition.Lines);
+                                bool linesUpdated = DBRequestLine.Update(requisition.Lines.ParseToDB());
                                 if (linesUpdated)
                                 {
                                     status.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
@@ -390,7 +450,7 @@ namespace Hydra.Such.Portal.Services
                             requisitionLines.ForEach(line =>
                                line.SubmitPrePurchase = true);
 
-                            bool linesUpdated = UpdateRequisitionLines(requisitionLines);
+                            bool linesUpdated = DBRequestLine.Update(requisitionLines.ParseToDB());
                             if (linesUpdated)
                             {
                                 status.eReasonCode = 1;
@@ -418,25 +478,7 @@ namespace Hydra.Such.Portal.Services
             return status;
         }
 
-        private bool UpdateRequisitionLines(List<RequisitionLineViewModel> linesToUpdate)
-        {
-            return DBRequestLine.Update(linesToUpdate.ParseToDB());
-
-        }
-
-        public class CreatePrePurchOrderResult
-        {
-            public bool CompletedSuccessfully { get; set; }
-            public string NAVPrePurchOrderId { get; set; }
-            public string ErrorMessage { get; set; }
-
-            public CreatePrePurchOrderResult()
-            {
-                this.CompletedSuccessfully = false;
-            }
-        }
-
-        private CreatePrePurchOrderResult CreatePrePurchaseOrderFrom(PurchOrderDTO purchOrder)
+        private CreatePrePurchOrderResult CreateNAVPrePurchaseOrderFor(PurchOrderDTO purchOrder)
         {
             CreatePrePurchOrderResult result = new CreatePrePurchOrderResult();
 
