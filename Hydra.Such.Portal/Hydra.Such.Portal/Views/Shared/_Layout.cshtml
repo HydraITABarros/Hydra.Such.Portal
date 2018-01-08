@@ -37,7 +37,7 @@
                 <div class="menu-list">
                     <ul id="menu-content" class="menu-content collapse out">
                         <li data-toggle="Aprovações pendentes" class="active" id="approvalPendingShow">
-                            <center style="color:red;"><a href="/Approvals"  id="pendingApprovalsLink"> Aprovações Pendentes</a></center>
+                            <center style="color:red;"><a href="/Approvals" id="pendingApprovalsLink"> Aprovações Pendentes</a></center>
                         </li>
                         <li data-toggle="collapse" data-target="#Engenharia" class="collapsed active">
                             <a href="#"> Engenharia <span class="arrow"></span></a>
@@ -103,6 +103,8 @@
                             <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos")</li>
                             <li>@Html.ActionLink("Movimento de Produtos", "MovimentoProdutos", "Nutricao")</li>
                             <li>@Html.ActionLink("Unidade de Medida de Produto", "UnidadeMedidaProduto", "Nutricao")</li>
+                            <li>@Html.ActionLink("Unidade de Armazem", "UnidadeArmazenamento", "Nutricao")</li>
+
                             <li data-toggle="collapse" data-target="#FolhasDeHorasNutricao" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
                                 <ul class="sub-menu collapse" id="FolhasDeHorasNutricao">
@@ -237,8 +239,9 @@
                             <a href="#"> Jurídico <span class="arrow"></span></a>
                         </li>
                         <ul class="sub-menu collapse" id="Juridico">
-                            @*<li>@Html.ActionLink("Processos Disciplinares", "ProcessosDisciplinares", "Juridico")</li>
-            <li>@Html.ActionLink("Processos de Inquérito", "ProcessosInquerito", "Juridico")</li>*@
+                            @*
+                            <li>@Html.ActionLink("Processos Disciplinares", "ProcessosDisciplinares", "Juridico")</li>
+                            <li>@Html.ActionLink("Processos de Inquérito", "ProcessosInquerito", "Juridico")</li>*@
                             <li>@Html.ActionLink("Administração", "Administracao", "Juridico", new { area = "" }, null)</li>
                         </ul>
 
@@ -246,9 +249,10 @@
                             <a href="#"> Compras <span class="arrow"></span></a>
                         </li>
                         <ul class="sub-menu collapse" id="Compras">
-                            @*<li>@Html.ActionLink("Receção de Mercadorias", "RececaoMercadorias", "Compras")</li>
-        <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras")</li>
-        <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Compras")</li>*@
+                            @*
+                            <li>@Html.ActionLink("Receção de Mercadorias", "RececaoMercadorias", "Compras")</li>
+                            <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras")</li>
+                            <li>@Html.ActionLink("Tabelas Auxiliares", "TabelasAuxiliares", "Compras")</li>*@
                             @* zpgm.< Procedimentos CCP menu *@
                             <li data-toggle="collapse" data-target="#Compras" class="collapsed active">
                                 <a href="#"> Procedimentos CCP <span class="arrow"></span></a>

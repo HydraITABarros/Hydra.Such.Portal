@@ -1,0 +1,219 @@
+﻿
+@{
+    ViewData["Title"] = "Unidade de Armazenamento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+@*grid*@
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
+@*mixin*@
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+@*ironform*@
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+@*paperinput*@
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
+@*button*@
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+@*toast*@
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+@*textfield*@
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+
+
+<h1 class="title">@ViewData["Title"]</h1>
+
+<x-unitstokkeeping></x-unitstokkeeping>
+
+<dom-module id="x-unitstokkeeping">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                paper-input {
+                    max-width: 450px !important;
+                }
+            </style>
+        </custom-style>
+
+        @*POPULATE GRID*@
+        <iron-ajax url="/Nutricao/GetUnitStockeeping"
+                   last-response="{{result}}"
+                   method="post"
+                   auto
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        @*POPULATE Update*@
+        <iron-ajax last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_update"
+                   on-response="_updateResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="row">
+            <div class="col-lg-2">
+                <h2 class="separator">Registos</h2>
+            </div>
+        </div>
+
+        <div class="marginSpace">
+            <paper-button class="btnSave" raised on-tap="_redirectToNewUnitForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+        </div>
+
+        <vaadin-grid id="gridUnitStockeeping" aria-label="gridUnitStockeeping" items="[[result]]" class="grid" multi-sort="true">
+            <vaadin-grid-column resizable width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="productNo">Nº de Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="productNo" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.productNo}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="code">Cód. Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="code" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.code}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.description}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="inventory">Inventário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="inventory" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.inventory}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="blocked">Bloqueado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="blocked" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.blocked}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeUnitMeasure">Cód. Unidade Medida Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeUnitMeasure" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.codeUnitMeasure}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitCost" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.unitCost}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="stockValue">Valor em Armazem</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="stockValue" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.stockValue}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="shelfNo">Nº Prateleiras</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="shelfNo" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.shelfNo}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="vendorNo">Nº Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="vendorNo" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.vendorNo}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="vendorItemNo">Cód. Produto Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="vendorItemNo" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.vendorItemNo}}" disabled></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="10%" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnEdit" raised on-tap="_detailsAcess">Ficha</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
+        </vaadin-grid>
+    </template>
+
+    <script>
+      
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-unitstokkeeping',
+               
+  
+                _redirectToNewUnitForm: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Nutricao/UnidadeArmazenamentoDetalhes";
+                    }
+                },
+                _detailsAcess: function (e) {
+                    window.location.href = "/Nutricao/UnidadeArmazenamentoDetalhes/" + e.model.item.productNo;
+                }
+
+            });
+        });
+    </script>
+</dom-module>
+
