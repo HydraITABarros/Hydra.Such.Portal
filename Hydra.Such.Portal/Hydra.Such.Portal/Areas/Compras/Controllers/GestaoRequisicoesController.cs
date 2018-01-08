@@ -706,57 +706,11 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         [Area("Compras")]
         public JsonResult ValidateRequisition([FromBody] RequisitionViewModel item)
         {
-            /*
-                Header	estado
-                Lines	onde ‘Quantidade Requerida’ seja > 0;
-	                ‘Quantidade a Disponibilizar’ = Quantidade Requerida’
-	                Responsável Validação = utilizador atual
-	                Data Validação = now
-
-                	Criar na tabela de workflow de registo de validação e respetiva submissão
-             */
             if (item != null)
             {
-                //Ensure that the requisition has the expected status. Ex.: prevents from validating pending requisitions
-                if (item == null || item.State != RequisitionStates.Approved)
-                {
-                    item = new RequisitionViewModel();
-                    item.eReasonCode = 3;
-                    item.eMessage = "O estado da requisição não permite a validação.";
-                }
-                else
-                {
-                    var linesToValidate = item.Lines
-                            .Where(x => x.QuantityRequired.Value > 0).ToList();
-
-                    if (linesToValidate.Count() > 0)
-                    {
-                        item.State = RequisitionStates.Validated;
-                        item.ResponsibleValidation = User.Identity.Name;
-                        item.ValidationDate = DateTime.Now;
-                        
-                        linesToValidate.ForEach(x =>
-                                x.QuantityToProvide = x.QuantityRequired
-                            );
-                        var updatedReq = DBRequest.UpdateHeaderAndLines(item.ParseToDB());
-                        if (updatedReq != null)
-                        {
-                            item = updatedReq.ParseToViewModel();
-                            item.eReasonCode = 1;
-                            item.eMessage = "Requisição validada com sucesso.";
-                        }
-                        else
-                        {
-                            item.eReasonCode = 3;
-                            item.eMessage = "Ocorreu um erro ao validar a requisição.";
-                        }
-                    }
-                    else
-                    {
-                        item.eReasonCode = 3;
-                        item.eMessage = "Não existem linhas que cumpram os requisitos de validação.";
-                    }
-                }
+                RequisitionService serv = new RequisitionService(_configws);
+                RequisitionViewModel validatedReq = serv.ValidateRequisition(item, User.Identity.Name);
+                item = validatedReq;
             }
             else
             {
@@ -835,16 +789,20 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
+                ErrorHandler status = new ErrorHandler();
                 try
                 {
                     RequisitionService serv = new RequisitionService(_configws);
-                    serv.CreateTransferShipmentFor(item);
+                    status = serv.CreateTransferShipmentFor(item);
                 }
-                catch (NotImplementedException ex)
+                catch (Exception ex)
                 {
-                    item.eReasonCode = 2;
-                    item.eMessage = "Funcionalidade não implementada";
+                    status.eReasonCode = 2;
+                    status.eMessage = "Ocorreu um erro ao criar guia de transporte (" + ex.Message + ")";
                 }
+                item.eReasonCode = status.eReasonCode;
+                item.eMessage = status.eMessage;
+                item.eMessages = status.eMessages;
             }
             else
             {
