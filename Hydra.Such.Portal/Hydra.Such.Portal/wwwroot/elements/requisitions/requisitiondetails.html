@@ -22,7 +22,7 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
-
+        
         <style>
             vaadin-combo-box {
                 margin-top: 0px !important;
@@ -120,9 +120,6 @@
             }
         </style>
         
-        
-
-
         <iron-ajax url="/Viaturas/GetList" id="grid_databound_ajax" last-response="{{vehicleresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectListDiary" id="grid_GetAllProject_ajax" last-response="{{projectresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" id="grid_Locations_ajax" last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -142,7 +139,6 @@
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{OpenOrderHeaderIds}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{OpenOrderLines}}" id="openOrderLines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
 
         <iron-ajax url="/Compras/GestaoRequisicoes/GetRequisition"
                    id="requisition_datasource"
@@ -179,7 +175,6 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-
         <iron-ajax url="/Compras/GestaoRequisicoes/CreateMarketConsult"
                    last-response="{{Requisition}}"
                    id="createMarketConsult_ajax"
@@ -194,10 +189,10 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/CreateTransportationGuide"
+        <iron-ajax url="/Compras/GestaoRequisicoes/CreateTransferShipment"
                    last-response="{{Requisition}}"
-                   id="createTranspGuide_ajax"
-                   on-response="_createTransportationGuideResponse"
+                   id="createTransferShip_ajax"
+                   on-response="_createTransferShipmentResponse"
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
@@ -222,7 +217,7 @@
                                 <paper-tab>Recolha</paper-tab>
                                 <paper-tab>Entrega (Fornecedor)</paper-tab>
                             </paper-tabs>
-
+                            
                             <iron-pages selected="{{selected}}">
                                 <!--Geral-->
                                 <div>
@@ -470,12 +465,11 @@
                     <paper-button raised id="btnRegistCloseRequest" on-tap="_RegistCloseRequest"><i class="fa fa-times-circle-o" aria-hidden="true"></i>&nbsp; Fechar Requisição</paper-button>
                     <paper-button raised id="btnCreateMarketConsult" on-tap="_createMarketConsult"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Consulta Mercado</paper-button>
                     <paper-button raised id="btnCreateMarketConsult" on-tap="_createPurchaseOrder"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Encomenda de Compra</paper-button>
-                    <paper-button raised id="btnCreateMarketConsult" on-tap="_createTransportationGuide"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Guia de Transporte</paper-button>
+                    <paper-button raised id="btnCreateMarketConsult" on-tap="_createTransferShipment"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Guia de Transporte</paper-button>
                     <paper-button raised id="btnCreateMarketConsult" on-tap="_sendPrePurchase"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Enviar Pré- Encomenda</paper-button>
                 </div>  
             </div>
         </div>
-
         <div id="PreRequiLinesPanel" class="panel panel-default">
             <div class="row">
                 <div class="col-md-12 col-lg-12">
@@ -484,7 +478,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-lg-3">
-                                    <vaadin-combo-box items="[[locationsresult]]" id="localCodeId" on-value-changed="_localCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Localização">
+                                    <vaadin-combo-box items="[[locationsresult]]" id="localCodeId" item-value-path="id" item-label-path="value" value="" label="Código Localização">
                                         <template>
                                             <table width="350px">
                                                 <tr>
@@ -511,7 +505,7 @@
                                     <vaadin-text-field id="descriptionId" name="DescriptionName" label="Descrição" value=""></vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-combo-box items="[[unitofmeasureresult]]" id="unitMeasureCodeId" on-value-changed="_unitMeasureCodeOnChange" item-value-path="id" item-label-path="value" value="" label="Código Unidade Medida">
+                                    <vaadin-combo-box items="[[unitofmeasureresult]]" id="unitMeasureCodeId" item-value-path="id" item-label-path="value" value="" label="Código Unidade Medida">
                                         <template>
                                             <table width="250px">
                                                 <tr>
@@ -571,7 +565,7 @@
                                     <vaadin-checkbox id="submitPrePurchaseId">Enviado Pré Compra</vaadin-checkbox>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-combo-box items="[[projectresult]]" id="projectId" on-value-changed="_projectNoOnChange" item-value-path="id" item-label-path="value" value="" label="Nº Projeto">
+                                    <vaadin-combo-box items="[[projectresult]]" id="projectId" item-value-path="id" item-label-path="value" value="" label="Nº Projeto">
                                         <template>
                                             <table width="250px">
                                                 <tr>
@@ -595,7 +589,7 @@
                                     </vaadin-combo-box>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-combo-box items="[[cboSupplier]]" id="supplierNoId" on-value-changed="_supplierNoOnChange" item-value-path="id" item-label-path="value" value="" label="Nº Fornecedor">
+                                    <vaadin-combo-box items="[[cboSupplier]]" id="supplierNoId" item-value-path="id" item-label-path="value" value="" label="Nº Fornecedor">
                                         <template>
                                             <table width="350px">
                                                 <tr>
@@ -955,6 +949,21 @@
         </div>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageMultiple" duration="8000" horizontalAlign="right" class="toastMultiple">
+            <template is="dom-repeat" items="{{ Requisition.eMessages }}">
+                <template is="dom-if" if="{{ _isError(item.type) }}">
+                    <div>&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true">{{ item.message }}</i></div>
+                </template>
+                <template is="dom-if" if="{{ !_isError(item.type) }}">
+                    <div>&nbsp;<i class="fa fa-check" aria-hidden="true">{{ item.message }}</i></div>
+                </template>
+            </template>
+            <template is="dom-if" if="{{ _hasErrors }}">
+                <div style="text-align: right;">
+                    <paper-button horizontalAlign="right" on-tap="_toggleToastMultiple">Fechar</paper-button>
+                </div>
+            </template>
+        </paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -1001,6 +1010,10 @@
                         type: Boolean,
                         value: true
                     },
+                    _hasErrors: {
+                        type: Boolean,
+                        value: false
+                    },
                 },
                 observers: [
                     '_onCacheLoaded(data,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,locationsresult,CBProducts,unitofmeasureresult,cboSupplier,Requisition)'
@@ -1009,9 +1022,18 @@
 
                 },
                 isReadOnly: function () {
-                    return false;//this._requisitionstatus == this._requisitionstatesenum.Approved ? true : !this._permissions.update;
+                    return false;//this._requisitionstatus == this._requisitionstatesenum.Approved ? true : !this._permissions.update; 
                 },
-
+                _isError: function (type) {
+                    //Used to show or hide close button
+                    if (!this._hasErrors)
+                        this._hasErrors = type == 0;
+                    return type == 0;
+                },
+                _checkForErrors: function () {
+                    var errors = this.Requisition.eMessages.find(x => x.type == 0);
+                    this._hasErrors = !(errors == undefined);
+                },
                 _onCacheLoaded: function (data, LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, locationsresult, CBProducts, unitofmeasureresult, cboSupplier, Requisition) {
                     if (!this.Flag) {
                         this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
@@ -1027,6 +1049,16 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
+                _toggleToastMultiple: function () {
+                    this._checkForErrors();
+                    if (this._hasErrors)
+                        this.$.ToastMessageMultiple.duration = 0;
+                    else
+                        this.$.ToastMessageMultiple.duration = 8000;
+                    this.$.ToastMessageMultiple.toggle();
+                    this.Requisition.eMessages = [];
+                },
+
                 _validateLocalMarket: function () {
                     this.$.validateLocalMarket_datasource.body = JSON.stringify(this.Requisition);
                     this.$.validateLocalMarket_datasource.generateRequest();
@@ -1043,6 +1075,7 @@
                         this._openToastError(this.Requisition.eMessage);
                     }
                 },
+                
                 _validateRequisitionResponse: function (e) {
                     if (this.Requisition.eReasonCode == "1") {
                         this._openToast(this.Requisition.eMessage);
@@ -1238,7 +1271,6 @@
                         }
                     });
                 },
-
                 _deleteReqLineResponse: function (e) {
                     if (this.DelReqLineResponse.eReasonCode == "1") {
                         this._openToast(this.DelReqLineResponse.eMessage);
@@ -1307,8 +1339,6 @@
                     }
                 },
                 _createPurchaseOrder: function () {
-                    this._notImplemented();
-                    return;
                     this.$.createPurchOrder_ajax.body = JSON.stringify(this.Requisition);
                     this.$.createPurchOrder_ajax.generateRequest();
                 },
@@ -1317,16 +1347,19 @@
                         this._openToast(this.Requisition.eMessage);
                     }
                     else {
-                        this._openToastError(this.Requisition.eMessage);
+                        if (this.Requisition.eMessages.length > 0)
+                            this._toggleToastMultiple();
+                        else
+                            this._openToastError(this.Requisition.eMessage);
                     }
                 },
-                _createTransportationGuide: function () {
+                _createTransferShipment: function () {
                     this._notImplemented();
                     return;
-                    this.$.createTranspGuide_ajax.body = JSON.stringify(this.Requisition);
-                    this.$.createTranspGuide_ajax.generateRequest();
+                    this.$.createTransferShip_ajax.body = JSON.stringify(this.Requisition);
+                    this.$.createTransferShip_ajax.generateRequest();
                 },
-                _createTransportationGuideResponse: function (e) {
+                _createTransferShipmentResponse: function (e) {
                     if (this.Requisition.eReasonCode == "1") {
                         this._openToast(this.Requisition.eMessage);
                     }
@@ -1335,8 +1368,6 @@
                     }
                 },
                 _sendPrePurchase: function () {
-                    this._notImplemented();
-                    return;
                     this.$.sendPrePurchase_ajax.body = JSON.stringify(this.Requisition);
                     this.$.sendPrePurchase_ajax.generateRequest();
                 },
@@ -1345,7 +1376,10 @@
                         this._openToast(this.Requisition.eMessage);
                     }
                     else {
-                        this._openToastError(this.Requisition.eMessage);
+                        if (this.Requisition.eMessages.length > 0)
+                            this._toggleToastMultiple();
+                        else
+                            this._openToastError(this.Requisition.eMessage);
                     }
                 },
                 _codeIdOnChange: function (e) {

@@ -62,14 +62,35 @@ namespace Hydra.Such.Data.ViewModel
         //public Requisição NºRequisiçãoNavigation { get; set; }
         //public TiposRefeição TipoRefeiçãoNavigation { get; set; }
         public bool Selected { get; set; }
-        public string ServiceData { get; set; }
-        public string ClientRequest { get; set; }
-
-        public int? ServiceClientCode { get; set; }
-
         public string CreateUser { get; set; }
         public DateTime? CreateDate { get; set; }
         public string UpdateUser { get; set; }
         public DateTime? UpdateDate { get; set; }
+
+
+
+        public string ServiceData { get; set; }
+        public string ClientRequest { get; set; }
+        public int? ServiceClientCode { get; set; }
+        public string RequestNo { get; set; }
+        public int? RequestLineNo { get; set; }
+        public string Driver { get; set; }
+        public int? ResidueFinalDestinyCode { get; set; }
+        public string OriginalDocument { get; set; }
+        public string AdjustedDocument { get; set; }
+        public bool? AdjustedPrice { get; set; }
+        public string AdjustedDocumentData { get; set; }
+        public bool? AutorizatedInvoice { get; set; }
+        public string AutorizatedInvoiceData { get; set; }
+        public int? ResourceType { get; set; }
+        public string TimesheetNo { get; set; }
+        public string InternalRequest { get; set; }
+        public string EmployeeNo { get; set; }
+        public decimal QuantityReturned { get; set; }
+        public string Coin { get; set; }
+        
+
+
+
     }
 }

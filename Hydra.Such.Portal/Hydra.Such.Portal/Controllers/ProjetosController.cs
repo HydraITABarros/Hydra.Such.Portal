@@ -1119,37 +1119,8 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                List<ProjectDiaryViewModel> result = DBProjectMovements.GetAllAutorized().Select(x => new ProjectDiaryViewModel()
-                {
-                    LineNo = x.NºLinha,
-                    ProjectNo = x.NºProjeto,
-                    Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
-                    MovementType = x.TipoMovimento,
-                    Type = x.Tipo,
-                    Code = x.Código,
-                    Description = x.Descrição,
-                    Quantity = x.Quantidade,
-                    MeasurementUnitCode = x.CódUnidadeMedida,
-                    LocationCode = x.CódLocalização,
-                    ProjectContabGroup = x.GrupoContabProjeto,
-                    RegionCode = x.CódigoRegião,
-                    FunctionalAreaCode = x.CódigoÁreaFuncional,
-                    ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
-                    User = x.Utilizador,
-                    UnitCost = x.CustoUnitário,
-                    TotalCost = x.CustoTotal,
-                    UnitPrice = x.PreçoUnitário,
-                    TotalPrice = x.PreçoTotal,
-                    UnitValueToInvoice = x.ValorUnitárioAFaturar,
-                    Currency = x.Moeda,
-                    Billable = x.Faturável,
-                    Billed = (bool)x.Faturada,
-                    Registered = x.Registado,
-                    InvoiceToClientNo = x.FaturaANºCliente,
-                    CommitmentNumber = DBProjects.GetAllByProjectNumber(x.NºProjeto).NºCompromisso,
-                    ClientName = DBNAV2017Clients.GetClientNameByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName),
-                    ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.FaturaANºCliente, _config.NAVDatabaseName, _config.NAVCompanyName)
-                }).OrderBy(x => x.ClientName).ToList();
+                List<SPInvoiceListViewModel> result = DBProjectMovements.GetAllAutorized().OrderBy(x => x.ClientName).ToList();
+                List<NAVClientsViewModel> ClientList = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, null);
 
                 if (result.Count > 0)
                 {
@@ -1165,6 +1136,9 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             lst.UnitPrice = lst.UnitValueToInvoice;
                         }
+
+                        lst.ClientName = ClientList.Where(x => x.No_ == lst.InvoiceToClientNo).FirstOrDefault().Name;
+                        lst.ClientVATReg = ClientList.Where(x => x.No_ == lst.InvoiceToClientNo).FirstOrDefault().VATRegistrationNo_;
                     }
                 }
                 return Json(result);
@@ -1177,17 +1151,69 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
-        //[HttpPost]
-        //public JsonResult CreateInvoiceLines([FromBody] List<ProjectDiaryViewModel> data)
-        //{
-        //    List<ProjectDiaryViewModel> groupedbyclient = data.GroupBy(x => new
-        //    {
-        //        x.ClientName,
-        //        x.Date,
-        //        x.CommitmentNumber,
-        //        x.cli
-        //    });
-        //}
+        [HttpPost]
+        public JsonResult CreateInvoiceLines([FromBody] List<SPInvoiceListViewModel> data)
+        {
+            if(data != null)
+            {
+                List<SPInvoiceListViewModel> groupedbyclient = data.GroupBy(x => new
+                {
+                    x.InvoiceToClientNo,
+                    x.Date,
+                    x.CommitmentNumber,
+                    x.ClientRequest,
+
+                }).Select(x => new SPInvoiceListViewModel
+                {
+                    InvoiceToClientNo = x.Key.InvoiceToClientNo,
+                    Date = x.Key.Date,
+                    CommitmentNumber = x.Key.CommitmentNumber,
+                    ClientRequest = x.Key.ClientRequest,
+                    ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.Key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName)
+                    
+                }).ToList();
+
+
+                if(groupedbyclient != null)
+                {
+                    foreach (var header in groupedbyclient)
+                    {
+                        Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws);
+                        TCreatePreInvoice.Wait();
+
+                        if (TCreatePreInvoice.IsCompletedSuccessfully)
+                        {
+                            string HeaderNo = TCreatePreInvoice.Result.WSPreInvoice.No;
+
+                            List<SPInvoiceListViewModel> linesList = new List<SPInvoiceListViewModel>();
+
+                            foreach (var lines in data)
+                            {
+                                if(lines.InvoiceToClientNo == header.InvoiceToClientNo && lines.Date == header.Date && lines.CommitmentNumber == header.CommitmentNumber && lines.ClientRequest == header.ClientRequest)
+                                {
+                                    linesList.Add(lines);
+                                }
+                            }
+
+                            Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(linesList, HeaderNo, _configws);
+                            TCreatePreInvoiceLine.Wait();
+
+                            if (TCreatePreInvoiceLine.IsCompletedSuccessfully)
+                            {
+                                //update to Invoiced = true
+                                foreach (var updatelist in linesList)
+                                {
+                                    MovimentosDeProjeto mov = DBProjectMovements.GetByLineNo(updatelist.LineNo).FirstOrDefault();
+                                    mov.Faturada = true;
+                                    DBProjectMovements.Update(mov);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return Json(data);
+        }
         #endregion
     }
 }
