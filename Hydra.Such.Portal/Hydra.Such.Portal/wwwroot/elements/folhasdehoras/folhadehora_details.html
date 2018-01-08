@@ -369,10 +369,10 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <!--<template is="dom-if" if="{{ _permissions.create }}">-->
-            <paper-button id="btn_calcularAjudasCusto" class="tablinks" on-tap="_calcularAjudasCusto"><i class="fa fa-check-square" aria-hidden="true"></i> Calcular Aj Custo</paper-button>
-            <paper-button id="btn_validarFolhaDeHoras" class="tablinks" on-tap="_validarFolhaDeHoras" disable="!_permissions.fH_Validar"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
-            <paper-button id="btn_integrarEmRH" class="tablinks" on-tap="_integrarEmRH"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
-            <paper-button id="btn_integrarEmRHKM" class="tablinks" on-tap="_integrarEmRHKM"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
+            <paper-button id="btn_calcularAjudasCusto" class="tablinks" on-tap="_calcularAjudasCusto" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square" aria-hidden="true"></i> Calcular Aj Custo</paper-button>
+            <paper-button id="btn_validarFolhaDeHoras" class="tablinks" on-tap="_validarFolhaDeHoras" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
+            <paper-button id="btn_integrarEmRH" class="tablinks" on-tap="_integrarEmRH" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
+            <paper-button id="btn_integrarEmRHKM" class="tablinks" on-tap="_integrarEmRHKM" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
             <!--</template>-->
         </div>
 
@@ -472,7 +472,7 @@
 
                     <template is="dom-if" if="{{ _permissions.update }}">
                         <div class="col-sm-1 alignPoga">
-                            <paper-button id="btn_updateFH1" class="btnSave" raised on-tap="_updateFH">Gravar</paper-button>
+                            <paper-button id="btn_updateFH1" class="btnSave" raised on-tap="_updateFH" disabled="{{ !_permissions.update }}">Gravar</paper-button>
                         </div>
                     </template>
                 </div>
@@ -512,7 +512,7 @@
                                 </div>
                                 <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                                 <div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso">Criar</paper-button>
+                                    <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" disabled="{{ !_permissions.update }}">Criar</paper-button>
                                 </div>
                                 <!--</template>-->
                             </div>
@@ -662,7 +662,7 @@
                                 <template class="header">
                                 </template>
                                 <template>
-                                    <paper-button id="btn_deletePercurso" class="btnRemove" raised on-tap="_deletePercurso">Eliminar</paper-button>
+                                    <paper-button id="btn_deletePercurso" class="btnRemove" raised on-tap="_deletePercurso" disabled="{{ !_permissions.update }}">Eliminar</paper-button>
                                 </template>
                             </vaadin-grid-column>
                         <!--</template>-->
@@ -720,7 +720,7 @@
                                 </div>
                                 <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                                 <div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createAjuda" class="btnSave" raised on-tap="_createAjuda">Criar</paper-button>
+                                    <paper-button id="btn_createAjuda" class="btnSave" raised on-tap="_createAjuda" disabled="{{ !_permissions.update }}">Criar</paper-button>
                                 </div>
                                 <!--</template>-->
                             </div>
@@ -930,7 +930,7 @@
                                 </div>
                                 <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                                 <div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra">Criar</paper-button>
+                                    <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.update }}">Criar</paper-button>
                                 </div>
                                 <!--</template>-->
                             </div>
@@ -1161,7 +1161,7 @@
                                 </div>
                                 <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                                 <div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca">Criar</paper-button>
+                                    <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.update }}">Criar</paper-button>
                                 </div>
                                 <!--</template>-->
                             </div>
@@ -1405,7 +1405,7 @@
 
                     <!--<template is="dom-if" if="{{ _permissions.update }}">-->
                     <div class="col-sm-1 alignPoga">
-                        <paper-button id="btn_updateFH2" class="btnSave" raised on-tap="_updateFH">Gravar</paper-button>
+                        <paper-button id="btn_updateFH2" class="btnSave" raised on-tap="_updateFH" disabled="{{ !_permissions.update }}">Gravar</paper-button>
                     </div>
                     <!--</template>-->
                 </div>
@@ -1497,10 +1497,6 @@
                 _showErrorMessage: function (message) {
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
-                },
-
-                _teste: function () {
-                    this._showMessage('TESTEEEEEEE!!!!!!!!!!!.');
                 },
 
                 //FOLHA DE HORAS
