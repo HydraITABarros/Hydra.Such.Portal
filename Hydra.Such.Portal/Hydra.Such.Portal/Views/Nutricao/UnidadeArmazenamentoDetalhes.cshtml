@@ -1,0 +1,338 @@
+﻿
+@{
+    ViewData["Title"] = "Unidade de Armazenamento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<h1 class="title">@ViewData["Title"]</h1>
+
+<x-unitstokkeeping></x-unitstokkeeping>
+
+<dom-module id="x-unitstokkeeping">
+    <template>
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            paper-collapse-item {
+                --paper-item: { padding: 0 0;};
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: #333;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+
+                    } --paper-collapse-toogle-icon: {
+                    //display: none;
+                    } --paper-collapse-item-content {
+
+                    }
+            }
+        </style>
+
+        @*POPULATE GRID*@
+        <iron-ajax url="/Nutricao/GetUnitStockeeping"
+                   last-response="{{result}}"
+                   method="post"
+                   auto
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+
+        @*POPULATE Update*@
+        <iron-ajax last-response="{{valueResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_get"
+                   on-response="_updateResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        @*CRUD NEW PROFILEMODEL*@
+        <iron-ajax url="/PopulateDropdowns/GetProducts"
+                   last-response="{{ProductNoList}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations"
+                   last-response="{{LocalizacaoList}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVVendor"
+                   last-response="{{VendorList}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations"
+                   last-response="{{descricao}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode"
+                   last-response="{{UnitsProductList}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <div class="row break_frm">
+            <div class="col-md-12 col-md-12 col-lg-12">
+                <iron-form id="formContract">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Novo</div>
+                        <div class="panel-body">
+                            <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                                <paper-tab>Geral</paper-tab>
+                                <paper-tab>Armazém</paper-tab>
+
+                            </paper-tabs>
+
+                            <iron-pages selected="{{selected}}">
+                                <!--Geral-->
+                                <div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-combo-box items="[[ProductNoList]]" id="ddProductNo" name="ddProductNo" label="Nº de Produto" item-value-path="id" item-label-path="value" value="{{result.productNo}}" disabled="@ViewBag.NoProductDisable">
+                                                <template>
+                                                    <table width="250px">
+                                                        <tr>
+                                                            <td width="30%">[[item.id]]</td>
+                                                            <td width="70%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="dddescription" name="dddescription" label="Descrição" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-combo-box items="[[LocalizacaoList]]" id="ddCodLocalitation" name="ddCodLocalitation" label="Cód. Localização" item-value-path="id" item-label-path="value" value="{{result.code}}" on-change="_getDescriptionGroup">
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.value]]</div>
+                                                            <div>[[item.id]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddblocked" name="ddblocked" label="Bloqueado" value="{{result.blocked}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddinventory" name="ddinventory" label="Inventário" value="{{result.inventory}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddshelfNo" name="ddshelfNo" label="Nº Prateleiras" value="{{result.shelfNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Armazem-->
+                                <div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddunitCost" name="ddunitCost" label="Custo Unitário" value="{{result.unitCost}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddvalueWareHouse" name="ddvalueWareHouse" label="Valor Armazém" value="{{result.wareHouse}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-combo-box items="[[UnitsProductList]]" id="ddcodeUnitMeasure" name="ddcodeUnitMeasure" label="Cód. Unidade Media Produto" item-value-path="id" item-label-path="value" value="{{result.codeUnitMeasure}}">
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.id]]</div>
+                                                            <div>[[item.value]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddlastCost" name="ddlastCost" label="Último Custo Directo" value="{{result.lastCostDirect}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddwareHouseCode" name="ddwareHouseCode" label="Armazém Principal" value="{{result.codeWareHouse}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-combo-box items="[[VendorList]]" id="ddvendorNo" name="ddvendorNo" label="Nº Vendedor" item-value-path="id" item-label-path="value" value="{{result.vendorNo}}">
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.value]]</div>
+                                                            <div>[[item.id]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddvendorProductNo" name="ddvendorProductNo" label="Cód. Produto Fornecedor" value="{{result.vendorItemNo}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="dditemCategoryCode" name="dditemCategoryCode" label="Cód. Categoria Produto" value="{{result.codeProcuctCategory}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddproductGroupCode" name="ddproductGroupCode" label="Cód. Grupo Produto" value="{{result.codeProcuctGroup}}" disabled></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </iron-pages>
+
+
+                        </div>
+                    </div>
+                </iron-form>
+                <div class="marginSpace">
+                    <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                </div>
+            </div>
+        </div>
+
+    </template>
+
+    <script>
+
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-unitstokkeeping',
+                properties: {
+                    _showUpdateButtons: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _lockFields: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _contractno: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _versionno: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                },
+
+                _redirectToNewUnitForm: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Nutricao/UnidadeArmazenamentoDetalhes";
+                    }
+                },
+                _getDescriptionGroup: function (e) {
+                    debugger;
+                    if (this.$.ddProductNo.value != null) {
+                        this.$.ajax_get.url = "/Nutricao/GetProductId";
+                        this.$.ajax_get.body = JSON.stringify(this.$.ddProductNo.value);
+                        this.$.ajax_get.generateRequest();
+                    }                    
+                },
+
+                _updateResponse: function (e) {
+                    if (this.valueResult[0] != null) {
+                        this.$.dddescription.value = this.valueResult[0].measureUnit;
+                        this.$.dditemCategoryCode.value = this.valueResult[0].itemCategoryCode;
+                        this.$.ddproductGroupCode.value = this.valueResult[0].productGroupCode;
+                        this.$.ddvendorProductNo.value = this.valueResult[0].venderProductNo;
+                        this.$.ddlastCost.value = this.valueResult[0].lastCostDirect;
+                    }
+
+                },
+
+
+            });
+        });
+    </script>
+</dom-module>
+
