@@ -100,6 +100,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<TiposRequisições> TiposRequisições { get; set; }
         public virtual DbSet<TiposViatura> TiposViatura { get; set; }
         public virtual DbSet<TipoTrabalhoFh> TipoTrabalhoFh { get; set; }
+        public virtual DbSet<UnidadeDeArmazenamento> UnidadeDeArmazenamento { get; set; }
         public virtual DbSet<UnidadeMedidaProduto> UnidadeMedidaProduto { get; set; }
         public virtual DbSet<UnidadesProdutivas> UnidadesProdutivas { get; set; }
         public virtual DbSet<UtilizadoresGruposAprovação> UtilizadoresGruposAprovação { get; set; }
@@ -107,7 +108,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-        // Unable to generate entity type for table 'dbo.Unidade de Armazenamento'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.Distancia_FH'. Please see the warning messages.
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -729,6 +729,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumeraçãoContactos).HasColumnName("Numeração Contactos");
 
                 entity.Property(e => e.NumeraçãoContratos).HasColumnName("Numeração Contratos");
+
+                entity.Property(e => e.NumeraçãoFichasTécnicasDePratos).HasColumnName("Numeração Fichas Técnicas de Pratos");
 
                 entity.Property(e => e.NumeraçãoFolhasDeHoras).HasColumnName("Numeração Folhas de Horas");
 
@@ -6454,6 +6456,68 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DataHoraUltimaAlteracao).HasColumnType("datetime");
 
                 entity.Property(e => e.Descricao).HasMaxLength(30);
+            });
+
+            modelBuilder.Entity<UnidadeDeArmazenamento>(entity =>
+            {
+                entity.HasKey(e => e.NºProduto);
+
+                entity.ToTable("Unidade de Armazenamento");
+
+                entity.Property(e => e.NºProduto)
+                    .HasColumnName("Nº Produto")
+                    .HasMaxLength(20)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.ArmazémPrincipal).HasColumnName("Armazém Principal");
+
+                entity.Property(e => e.CustoUnitário)
+                    .HasColumnName("Custo Unitário")
+                    .HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.CódCategoriaProduto)
+                    .HasColumnName("Cód. Categoria Produto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódGrupoProduto)
+                    .HasColumnName("Cód. Grupo Produto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódLocalização)
+                    .HasColumnName("Cód. Localização")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.CódProdForn)
+                    .HasColumnName("Cód. Prod. Forn")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódUnidadeMedidaProduto)
+                    .HasColumnName("Cód. Unidade Medida Produto")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.Descrição).HasMaxLength(100);
+
+                entity.Property(e => e.Inventário).HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.NºFornecedor)
+                    .HasColumnName("Nº Fornecedor")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NºPrateleira)
+                    .HasColumnName("Nº Prateleira")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.PreçoDeVenda)
+                    .HasColumnName("Preço de Venda")
+                    .HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.UltimoCustoDirecto)
+                    .HasColumnName("Ultimo Custo Directo")
+                    .HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.ValorEmArmazem)
+                    .HasColumnName("Valor em Armazem")
+                    .HasColumnType("decimal(, 2)");
             });
 
             modelBuilder.Entity<UnidadeMedidaProduto>(entity =>
