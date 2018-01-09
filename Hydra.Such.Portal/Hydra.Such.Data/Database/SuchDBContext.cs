@@ -48,6 +48,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<LinhasFichasTécnicasPratos> LinhasFichasTécnicasPratos { get; set; }
         public virtual DbSet<LinhasFolhaHoras> LinhasFolhaHoras { get; set; }
         public virtual DbSet<LinhasPEncomendaProcedimentosCcp> LinhasPEncomendaProcedimentosCcp { get; set; }
+        public virtual DbSet<LinhasPreEncomenda> LinhasPreEncomenda { get; set; }
         public virtual DbSet<LinhasPréRequisição> LinhasPréRequisição { get; set; }
         public virtual DbSet<LinhasRequisição> LinhasRequisição { get; set; }
         public virtual DbSet<LinhasRequisiçõesSimplificadas> LinhasRequisiçõesSimplificadas { get; set; }
@@ -56,6 +57,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<MãoDeObraFolhaDeHoras> MãoDeObraFolhaDeHoras { get; set; }
         public virtual DbSet<Marcas> Marcas { get; set; }
         public virtual DbSet<Modelos> Modelos { get; set; }
+        public virtual DbSet<MovimentoDeProdutos> MovimentoDeProdutos { get; set; }
         public virtual DbSet<MovimentosCafetariaRefeitório> MovimentosCafetariaRefeitório { get; set; }
         public virtual DbSet<MovimentosDeAprovação> MovimentosDeAprovação { get; set; }
         public virtual DbSet<MovimentosDeProjeto> MovimentosDeProjeto { get; set; }
@@ -98,12 +100,14 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<TiposRequisições> TiposRequisições { get; set; }
         public virtual DbSet<TiposViatura> TiposViatura { get; set; }
         public virtual DbSet<TipoTrabalhoFh> TipoTrabalhoFh { get; set; }
+        public virtual DbSet<UnidadeMedidaProduto> UnidadeMedidaProduto { get; set; }
         public virtual DbSet<UnidadesProdutivas> UnidadesProdutivas { get; set; }
         public virtual DbSet<UtilizadoresGruposAprovação> UtilizadoresGruposAprovação { get; set; }
         public virtual DbSet<UtilizadoresMovimentosDeAprovação> UtilizadoresMovimentosDeAprovação { get; set; }
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
+        // Unable to generate entity type for table 'dbo.Unidade de Armazenamento'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.Distancia_FH'. Please see the warning messages.
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -2801,6 +2805,81 @@ namespace Hydra.Such.Data.Database
                     .HasConstraintName("FK_Linhas p/ Encomenda Procedimentos CCP_Linhas Requisição");
             });
 
+            modelBuilder.Entity<LinhasPreEncomenda>(entity =>
+            {
+                entity.HasKey(e => e.NºLinhaPreEncomenda);
+
+                entity.ToTable("Linhas Pre-Encomenda");
+
+                entity.Property(e => e.NºLinhaPreEncomenda).HasColumnName("Nº Linha Pre-Encomenda");
+
+                entity.Property(e => e.CustoUnitário).HasColumnName("Custo Unitário");
+
+                entity.Property(e => e.CódigoCentroResponsabilidade)
+                    .HasColumnName("Código Centro Responsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódigoLocalização)
+                    .HasColumnName("Código Localização")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.CódigoProduto)
+                    .HasColumnName("Código Produto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódigoRegião)
+                    .HasColumnName("Código Região")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódigoUnidadeMedida)
+                    .HasColumnName("Código Unidade Medida")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.CódigoÁreaFuncional)
+                    .HasColumnName("Código Área Funcional")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraModificação)
+                    .HasColumnName("Data/Hora Modificação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DescriçãoProduto)
+                    .HasColumnName("Descrição Produto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.NºFornecedor)
+                    .HasColumnName("Nº Fornecedor")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NºLinhaRequisição).HasColumnName("Nº Linha Requisição");
+
+                entity.Property(e => e.NºPreEncomenda)
+                    .HasColumnName("Nº Pre-Encomenda")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NºProjeto)
+                    .HasColumnName("Nº Projeto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NºRequisição)
+                    .HasColumnName("Nº Requisição")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.QuantidadeDisponibilizada).HasColumnName("Quantidade Disponibilizada");
+
+                entity.Property(e => e.UtilizadorCriação)
+                    .HasColumnName("Utilizador Criação")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorModificação)
+                    .HasColumnName("Utilizador Modificação")
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<LinhasPréRequisição>(entity =>
             {
                 entity.HasKey(e => new { e.NºPréRequisição, e.NºLinha });
@@ -3456,6 +3535,55 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<MovimentoDeProdutos>(entity =>
+            {
+                entity.HasKey(e => e.NºMovimentos);
+
+                entity.ToTable("Movimento de Produtos");
+
+                entity.Property(e => e.NºMovimentos).HasColumnName("Nº Movimentos");
+
+                entity.Property(e => e.CustoUnitário)
+                    .HasColumnName("Custo Unitário")
+                    .HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.CódLocalização)
+                    .HasColumnName("Cód. Localização")
+                    .HasColumnType("nchar(10)");
+
+                entity.Property(e => e.CódigoCentroResponsabilidade)
+                    .HasColumnName("Código Centro Responsabilidade")
+                    .HasColumnType("nchar(10)");
+
+                entity.Property(e => e.CódigoRegião)
+                    .HasColumnName("Código Região")
+                    .HasColumnType("nchar(10)");
+
+                entity.Property(e => e.CódigoÁrea)
+                    .HasColumnName("Código Área")
+                    .HasColumnType("nchar(10)");
+
+                entity.Property(e => e.DataRegisto)
+                    .HasColumnName("Data Registo")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Descrição).HasColumnType("nchar(50)");
+
+                entity.Property(e => e.NºDocumento).HasColumnName("Nº Documento");
+
+                entity.Property(e => e.NºProduto)
+                    .HasColumnName("Nº Produto")
+                    .HasColumnType("nchar(10)");
+
+                entity.Property(e => e.NºProjecto).HasColumnName("Nº Projecto");
+
+                entity.Property(e => e.Quantidade).HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.TipoMovimento).HasColumnName("Tipo Movimento");
+
+                entity.Property(e => e.Valor).HasColumnType("decimal(, 2)");
             });
 
             modelBuilder.Entity<MovimentosCafetariaRefeitório>(entity =>
@@ -6326,6 +6454,33 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DataHoraUltimaAlteracao).HasColumnType("datetime");
 
                 entity.Property(e => e.Descricao).HasMaxLength(30);
+            });
+
+            modelBuilder.Entity<UnidadeMedidaProduto>(entity =>
+            {
+                entity.HasKey(e => new { e.NºProduto, e.Código });
+
+                entity.ToTable("Unidade Medida Produto");
+
+                entity.Property(e => e.NºProduto)
+                    .HasColumnName("Nº Produto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Código).HasMaxLength(10);
+
+                entity.Property(e => e.Altura).HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.Comprimento).HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.Cubagem).HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.Largura).HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.Peso).HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.QtdPorUnidadeMedida)
+                    .HasColumnName("Qtd por Unidade Medida")
+                    .HasColumnType("decimal(, 2)");
             });
 
             modelBuilder.Entity<UnidadesProdutivas>(entity =>

@@ -69,7 +69,7 @@
         </iron-ajax>
 
         @*POPULATE Update*@
-        <iron-ajax last-response="{{result}}"
+        <iron-ajax last-response="{{createResult}}"
                    method="post"
                    handle-as="json"
                    id="ajax_update"
@@ -191,10 +191,9 @@
                         else {
                             this.result.push(line);
                         }
-                        this.$.ajax_update.body = JSON.stringify(this.result);
-                        this.$.ajax_update.url = "/Administracao/UpdateApprovalGroup";
+                        this.$.ajax_update.body = JSON.stringify(line);
+                        this.$.ajax_update.url = "/Administracao/CreateApprovalGroup";
                         this.$.ajax_update.generateRequest();
-                        this.$.gridDescriptionApprovals.clearCache();
                     }
                     else {
                         this.openToastError("A descrição não pode ser vazia");
@@ -206,9 +205,15 @@
                 _updateResponse: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
-                        this.openToast('Atualizado com sucesso!');
-                        this.$.page_databound_ajax.generateRequest();
-                        this.$.ddDescription.value = "";                      
+                        if (this.createResult == "101") {
+                            this.openToastError('Registo duplicado!');
+                            this.$.page_databound_ajax.generateRequest();
+
+                        } else {
+                            this.openToast('Atualizado com sucesso!');
+                            this.$.page_databound_ajax.generateRequest();
+                            this.$.ddDescription.value = "";
+                        }
                     }
                     else {
                         this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');

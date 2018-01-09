@@ -96,7 +96,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? Budget { get; set; }
 
         public string PreRequisitionNo { get; set; }
-        
+
         public List<RequisitionLineViewModel> Lines { get; set; }
         
     }

@@ -16,6 +16,9 @@ namespace WSGenericCodeUnit
     public interface WsGeneric_Port
     {
         
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WsGeneric:FxGetStock_ItemLocation", ReplyAction="*")]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> FxGetStock_ItemLocationAsync(WSGenericCodeUnit.FxGetStock_ItemLocation request);
+        
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WsGeneric:FxPostJobJrnlLines", ReplyAction="*")]
         System.Threading.Tasks.Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> FxPostJobJrnlLinesAsync(WSGenericCodeUnit.FxPostJobJrnlLines request);
         
@@ -24,6 +27,56 @@ namespace WSGenericCodeUnit
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WsGeneric:FxPostPurchOrderReceiptLines", ReplyAction="*")]
         System.Threading.Tasks.Task<WSGenericCodeUnit.FxPostPurchOrderReceiptLines_Result> FxPostPurchOrderReceiptLinesAsync(WSGenericCodeUnit.FxPostPurchOrderReceiptLines request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WsGeneric:FxContact2Customer", ReplyAction="*")]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxContact2Customer_Result> FxContact2CustomerAsync(WSGenericCodeUnit.FxContact2Customer request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WsGeneric:FxCabimento", ReplyAction="*")]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxCabimento_Result> FxCabimentoAsync(WSGenericCodeUnit.FxCabimento request);
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxGetStock_ItemLocation", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxGetStock_ItemLocation
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public string pItemNo;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=1)]
+        public string pLocationCode;
+        
+        public FxGetStock_ItemLocation()
+        {
+        }
+        
+        public FxGetStock_ItemLocation(string pItemNo, string pLocationCode)
+        {
+            this.pItemNo = pItemNo;
+            this.pLocationCode = pLocationCode;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxGetStock_ItemLocation_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxGetStock_ItemLocation_Result
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public decimal return_value;
+        
+        public FxGetStock_ItemLocation_Result()
+        {
+        }
+        
+        public FxGetStock_ItemLocation_Result(decimal return_value)
+        {
+            this.return_value = return_value;
+        }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -122,6 +175,78 @@ namespace WSGenericCodeUnit
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxContact2Customer", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxContact2Customer
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public string pContactNo;
+        
+        public FxContact2Customer()
+        {
+        }
+        
+        public FxContact2Customer(string pContactNo)
+        {
+            this.pContactNo = pContactNo;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxContact2Customer_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxContact2Customer_Result
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public string return_value;
+        
+        public FxContact2Customer_Result()
+        {
+        }
+        
+        public FxContact2Customer_Result(string return_value)
+        {
+            this.return_value = return_value;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxCabimento", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxCabimento
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public string pPurchHeaderNo;
+        
+        public FxCabimento()
+        {
+        }
+        
+        public FxCabimento(string pPurchHeaderNo)
+        {
+            this.pPurchHeaderNo = pPurchHeaderNo;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxCabimento_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxCabimento_Result
+    {
+        
+        public FxCabimento_Result()
+        {
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     public interface WsGeneric_PortChannel : WSGenericCodeUnit.WsGeneric_Port, System.ServiceModel.IClientChannel
     {
@@ -173,6 +298,20 @@ namespace WSGenericCodeUnit
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> WSGenericCodeUnit.WsGeneric_Port.FxGetStock_ItemLocationAsync(WSGenericCodeUnit.FxGetStock_ItemLocation request)
+        {
+            return base.Channel.FxGetStock_ItemLocationAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> FxGetStock_ItemLocationAsync(string pItemNo, string pLocationCode)
+        {
+            WSGenericCodeUnit.FxGetStock_ItemLocation inValue = new WSGenericCodeUnit.FxGetStock_ItemLocation();
+            inValue.pItemNo = pItemNo;
+            inValue.pLocationCode = pLocationCode;
+            return ((WSGenericCodeUnit.WsGeneric_Port)(this)).FxGetStock_ItemLocationAsync(inValue);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> WSGenericCodeUnit.WsGeneric_Port.FxPostJobJrnlLinesAsync(WSGenericCodeUnit.FxPostJobJrnlLines request)
         {
             return base.Channel.FxPostJobJrnlLinesAsync(request);
@@ -211,6 +350,32 @@ namespace WSGenericCodeUnit
             return ((WSGenericCodeUnit.WsGeneric_Port)(this)).FxPostPurchOrderReceiptLinesAsync(inValue);
         }
         
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxContact2Customer_Result> WSGenericCodeUnit.WsGeneric_Port.FxContact2CustomerAsync(WSGenericCodeUnit.FxContact2Customer request)
+        {
+            return base.Channel.FxContact2CustomerAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<WSGenericCodeUnit.FxContact2Customer_Result> FxContact2CustomerAsync(string pContactNo)
+        {
+            WSGenericCodeUnit.FxContact2Customer inValue = new WSGenericCodeUnit.FxContact2Customer();
+            inValue.pContactNo = pContactNo;
+            return ((WSGenericCodeUnit.WsGeneric_Port)(this)).FxContact2CustomerAsync(inValue);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxCabimento_Result> WSGenericCodeUnit.WsGeneric_Port.FxCabimentoAsync(WSGenericCodeUnit.FxCabimento request)
+        {
+            return base.Channel.FxCabimentoAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<WSGenericCodeUnit.FxCabimento_Result> FxCabimentoAsync(string pPurchHeaderNo)
+        {
+            WSGenericCodeUnit.FxCabimento inValue = new WSGenericCodeUnit.FxCabimento();
+            inValue.pPurchHeaderNo = pPurchHeaderNo;
+            return ((WSGenericCodeUnit.WsGeneric_Port)(this)).FxCabimentoAsync(inValue);
+        }
+        
         public virtual System.Threading.Tasks.Task OpenAsync()
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
@@ -239,8 +404,8 @@ namespace WSGenericCodeUnit
         {
             if ((endpointConfiguration == EndpointConfiguration.WsGeneric_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:7047/DynamicsNAV100/WS/CRONUS Portugal Ltd./Codeunit/WsGeneric" +
-                        "");
+                return new System.ServiceModel.EndpointAddress("http://such-navsql.such.local:8047/DynamicsNAV100_DEV/WS/CRONUS Portugal Ltd./Cod" +
+                        "eunit/WsGeneric?wsdl");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

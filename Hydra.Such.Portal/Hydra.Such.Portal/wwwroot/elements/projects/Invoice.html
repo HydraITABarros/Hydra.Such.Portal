@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="/css/main.css" />
 
         <div class="subMenu">
-            <paper-button class="tablinks" id="btnConfirm" on-tap="_confirm"><i class="fa fa-check-square" aria-hidden="true"></i> Autorizar</paper-button>
+            <paper-button class="tablinks" id="btnConfirm" on-tap="_confirm"><i class="fa fa-check-square" aria-hidden="true"></i> Faturar</paper-button>
         </div>
         <br />
         <style>
@@ -129,14 +129,14 @@
 
 
 
-        <iron-ajax url="/Projetos/GetAutorizacaoFaturacao"
+        <iron-ajax url="/Projetos/GetMovimentosFaturacao"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
                    id="page_databound_ajax"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/Projetos/InvoiceLinesAuthorize"
+        <iron-ajax url="/Projetos/CreateInvoiceLines"
                    last-response="{{lines}}"
                    method="post"
                    handle-as="json"
@@ -162,7 +162,7 @@
 
 
         <vaadin-grid id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result]]" class="editGrid">
-            <vaadin-grid-selection-column auto-select>
+            <vaadin-grid-selection-column id="selectColumn" auto-select>
             </vaadin-grid-selection-column>
 
             <vaadin-grid-column width="15%">
@@ -398,7 +398,6 @@
                 }
             },
             ready: function () {
-                this.$.page_databound_ajax.body = JSON.stringify({ "areaId": this._areaid, "projectNo": this._projectno });
                 this.$.page_databound_ajax.generateRequest();
             },
             openToast: function (message) {
@@ -432,8 +431,9 @@
                     case 4: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar Pré Fatura';
                         this.$.ToastMessageError.open();
                 }
-
+                
                 this.$.page_databound_ajax.generateRequest();
+                this.$.projectInvoiceAutorization.clearCache();
                 this.$.ToastMessageSuccess.text = 'Faturas criadas com sucesso';
                 this.$.ToastMessageSuccess.open();
 

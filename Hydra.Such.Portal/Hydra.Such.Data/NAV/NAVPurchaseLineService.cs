@@ -24,7 +24,7 @@ namespace Hydra.Such.Data.NAV
             navWSBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows; 
         }
 
-        public static async Task<WSPurchaseInvLine.CreateMultiple_Result> CreateMultipleAsync(PurchFromSupplierDTO purchFromSupplier, NAVWSConfigurations WSConfigurations)
+        public static async Task<WSPurchaseInvLine.CreateMultiple_Result> CreateMultipleAsync(PurchOrderDTO purchFromSupplier, NAVWSConfigurations WSConfigurations)
         {
             if (purchFromSupplier == null)
                 throw new ArgumentNullException("purchFromSupplier");
@@ -33,7 +33,7 @@ namespace Hydra.Such.Data.NAV
             navCreate.WSPurchInvLineInterm_List = purchFromSupplier.Lines.Select(purchLine =>
                 new WSPurchaseInvLine.WSPurchInvLineInterm()
                 {
-                    Document_No = purchFromSupplier.NAVPurchaseId,
+                    Document_No = purchFromSupplier.NAVPrePurchOrderId,
                     Document_Type = WSPurchaseInvLine.Document_Type.Order,
                     Document_TypeSpecified = true,
                     Type = WSPurchaseInvLine.Type.Item,
@@ -59,15 +59,14 @@ namespace Hydra.Such.Data.NAV
             ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
-            try
-            {
-                WSPurchaseInvLine.CreateMultiple_Result result = await ws_Client.CreateMultipleAsync(navCreate);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            //try
+            //{
+            return await ws_Client.CreateMultipleAsync(navCreate);
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw;
+            //}
 
         }
     }

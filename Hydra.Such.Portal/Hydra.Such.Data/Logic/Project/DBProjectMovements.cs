@@ -1,6 +1,9 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel;
+using Hydra.Such.Data.ViewModel.Projects;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 
@@ -156,7 +159,7 @@ namespace Hydra.Such.Data.Logic.Project
                 return false;
             }
         }
-        
+
         public static List<MovimentosDeProjeto> GetByProjectNo(string ProjectNo)
         {
             try
@@ -264,5 +267,92 @@ namespace Hydra.Such.Data.Logic.Project
             }
             return totalConsumption.HasValue ? totalConsumption.Value : 0;
         }
+
+
+        public static List<SPInvoiceListViewModel> GetAllAutorized()
+        {
+            try
+            {
+                List<SPInvoiceListViewModel> result = new List<SPInvoiceListViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+
+                    var parameters = new[]{
+                       new SqlParameter("@Autorization", 1),
+                       new SqlParameter("@Invoiced", 0)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ProjectMovemmentsInvoiceGrid @Autorization, @Invoiced", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new SPInvoiceListViewModel()
+                        {
+                            ClientRequest = (string)temp.PedidodoCliente,
+                            InvoiceToClientNo = (string)temp.FaturaNoCliente,
+                            CommitmentNumber = (string)temp.NoCompromisso,
+                            ProjectNo = (string)temp.NoProjeto,
+                            Date = (string)temp.Data.ToString("yyyy-MM-dd"),
+                            LineNo = (int)temp.NoLinha,
+                            MovementType = (int?)temp.TipoMovimento,
+                            //DocumentNo =  temp.NoDocumento.Equals(DBNull.Value) ? "" : (string)temp.NoDocumento,
+                            Type = (int?)temp.Tipo,
+                            Code = temp.Código.Equals(DBNull.Value) ? "" : (string)temp.Código,
+                            Description = temp.Descrição.Equals(DBNull.Value) ? "" : (string)temp.Descrição,
+                            MeasurementUnitCode = temp.CodUnidadeMedida.Equals(DBNull.Value) ? "" : (string)temp.CodUnidadeMedida,
+                            Quantity = (decimal?)temp.Quantidade,
+                            LocationCode = temp.CodLocalizacao.Equals(DBNull.Value) ? "" : (string)temp.CodLocalizacao,
+                            ProjectContabGroup = temp.GrupoContabProjeto.Equals(DBNull.Value) ? "" : (string)temp.GrupoContabProjeto,
+                            RegionCode = temp.CodigoRegiao.Equals(DBNull.Value) ? "" : (string)temp.CodigoRegiao,
+                            FunctionalAreaCode = temp.CodAreaFuncional.Equals(DBNull.Value) ? "" : (string)temp.CodAreaFuncional,
+                            ResponsabilityCenterCode = temp.CodCentroResponsabilidade.Equals(DBNull.Value) ? "" : (string)temp.CodCentroResponsabilidade,
+                            User = temp.Utilizador.Equals(DBNull.Value) ? "" : (string)temp.Utilizador,
+                            UnitCost = (decimal?)temp.CustoUnitario,
+                            TotalCost = (decimal?)temp.CustoTotal,
+                            UnitPrice = (decimal?)temp.PrecoUnitario,
+                            TotalPrice = (decimal?)temp.PrecoTotal,
+                            Billable = (bool?)temp.Faturável,
+                            //ResidueGuideNo = temp.NoGuiaResiduos.Equals(DBNull.Value) ? "" : (string)temp.NoGuiaResiduos,
+                            //ExternalGuideNo = temp.NoGuiaExterna.Equals(DBNull.Value) ? "" : (string)temp.NoGuiaExterna,
+                            //RequestNo = temp.NoRequisicao.Equals(DBNull.Value) ? "" : (string)temp.NoRequisicao,
+                            //RequestLineNo = temp.NoLinhaRequisicao == DBNull.Value ?? (int?)temp.NoLinhaRequisicao,
+                            //Driver = temp.Motorista.Equals(DBNull.Value) ? "" : (string)temp.Motorista,
+                            //MealType = temp.TipoRefeicao == DBNull.Value ?? (int?)temp.TipoRefeicao,
+                            //ResidueFinalDestinyCode = temp.CodDestinoFinalResiduos == DBNull.Value ?? (int?)temp.CodDestinoFinalResiduos,
+                            //OriginalDocument = temp.DocumentoOriginal.Equals(DBNull.Value) ? "" : (string)temp.DocumentoOriginal,
+                            //AdjustedDocument = temp.DocumentoCorrigido.Equals(DBNull.Value) ? "" : (string)temp.DocumentoCorrigido,
+                            //AdjustedPrice = temp.AcertoPrecos == DBNull.Value ?? (bool?)temp.AcertoPrecos,
+                            //AdjustedDocumentData = temp.DataDocumentoCorrigido.Equals(DBNull.Value) ? "" : (string)temp.DataDocumentoCorrigido.ToString("yyyy-MM-dd"),
+                            AutorizatedInvoice = (bool?)temp.FaturacaoAutorizada,
+                            AutorizatedInvoiceData = temp.DataAutorizacaoFaturacao.Equals(DBNull.Value) ? "" : (string)temp.DataAutorizacaoFaturacao.ToString("yyyy-MM-dd"),
+                            //ServiceGroupCode = temp.CodGrupoServico == DBNull.Value ?? (int?)temp.CodGrupoServico,
+                            //ResourceType = temp.TipoRecurso == DBNull.Value ?? (int?)temp.TipoRecurso,
+                            //TimesheetNo = temp.NoFolhaHoras.Equals(DBNull.Value) ? "" : (string)temp.NoFolhaHoras,
+                            //InternalRequest = temp.RequisicaoInterna.Equals(DBNull.Value) ? "" : (string)temp.RequisicaoInterna,
+                            //EmployeeNo = temp.NoFuncionario.Equals(DBNull.Value) ? "" : (string)temp.NoFuncionario,
+                            //QuantityReturned = temp.QuantidadeDevolvida == DBNull.Value ?? (decimal?)temp.QuantidadeDevolvida,
+                            ConsumptionDate = temp.DataConsumo.Equals(DBNull.Value) ? "" : (string)temp.DataConsumo.ToString("yyyy-MM-dd"),
+                            CreateDate = (DateTime)temp.DataHoraCriacao,
+                            //UpdateDate = temp.DataHoraModificacao == DBNull.Value ?? (DateTime)temp.DataHoraModificacao,
+                            CreateUser = temp.UtilizadorCriacao.Equals(DBNull.Value) ? "" : (string)temp.UtilizadorCriacao,
+                            //UpdateUser = temp.UtilizadorModificacao.Equals(DBNull.Value) ? "" : (string)temp.UtilizadorModificacao,
+                            Registered = (bool?)temp.Registado,
+                            Billed = (bool?)temp.Faturada,
+                            //Currency = temp.Moeda.Equals(DBNull.Value) ? "" : (string)temp.Moeda,
+                            //UnitValueToInvoice = temp.ValorUnitarioaFaturar == DBNull.Value ?? (decimal?)temp.ValorUnitarioaFaturar,
+                            //ServiceClientCode = temp.CodServicoCliente == DBNull.Value ?? (int?)temp.CodServicoCliente,
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
     }
 }

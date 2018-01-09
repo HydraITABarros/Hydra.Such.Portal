@@ -588,6 +588,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetLocationsPortal()
+        {
+            List<DDMessageString> result = DBLocations.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.Código,
+                value = x.Nome
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetContabGroup()
         {
             List<DDMessageString> result = DBNAV2017ProjectContabGroup.GetAllProjectContabGroup(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()

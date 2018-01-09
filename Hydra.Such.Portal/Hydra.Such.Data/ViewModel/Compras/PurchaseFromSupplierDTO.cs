@@ -5,25 +5,30 @@ using System.Text;
 namespace Hydra.Such.Data.ViewModel.Compras
 {
     /// <summary>
-    /// Purchase From Supplier Header DTO
+    /// Purchase Order Header DTO
     /// </summary>
-    public class PurchFromSupplierDTO
+    public class PurchOrderDTO
     {
         public string RequisitionId { get; set; }
-        public string NAVPurchaseId { get; set; }
+        public string NAVPrePurchOrderId { get; set; }
+        public string NAVPurchOrderFittingId { get; set; }
+        public string NAVPurchOrderCommitmentId { get; set; }
         public string SupplierId { get; set; }
         public string RegionCode { get; set; }
         public string FunctionalAreaCode { get; set; }
         public string CenterResponsibilityCode { get; set; }
 
-        public List<PurchFromSupplierLinesDTO> Lines { get; set; }
+        public string OpenOrderNo { get; set; }
+        public int? OpenOrderLineNo { get; set; }
+
+        public List<PurchOrderLineDTO> Lines { get; set; }
     }
     /// <summary>
-    /// Purchase From Supplier Lines DTO
+    /// Purchase Order Line DTO
     /// </summary>
-    public class PurchFromSupplierLinesDTO
+    public class PurchOrderLineDTO
     {
-        //public int? LineId { get; set; }
+        public int? LineId { get; set; }
         //public int? NAVLineId { get; set; }
         public int? Type { get; set; }
         public string Code { get; set; }
@@ -34,5 +39,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string LocationCode { get; set; }
         public string OpenOrderNo { get; set; }
         public int? OpenOrderLineNo { get; set; }
+        public string PurchOrderFitId { get; set; }
+        public string PurchOrderCommitmentId { get; set; }
     }
 }

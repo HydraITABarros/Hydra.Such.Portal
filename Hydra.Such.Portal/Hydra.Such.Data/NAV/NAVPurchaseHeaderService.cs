@@ -23,7 +23,7 @@ namespace Hydra.Such.Data.NAV
             navWSBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows; 
         }
 
-        public static async Task<WSPurchaseInvHeader.Create_Result> CreateAsync(PurchFromSupplierDTO purchFromSupplier, NAVWSConfigurations WSConfigurations)
+        public static async Task<WSPurchaseInvHeader.Create_Result> CreateAsync(PurchOrderDTO purchFromSupplier, NAVWSConfigurations WSConfigurations)
         {
             if (purchFromSupplier == null)
                 throw new ArgumentNullException("purchFromSupplier");
@@ -45,15 +45,14 @@ namespace Hydra.Such.Data.NAV
             ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
-            try
-            {
-                WSPurchaseInvHeader.Create_Result result = await ws_Client.CreateAsync(navCreate);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            //try
+            //{
+                return await ws_Client.CreateAsync(navCreate);
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw;
+            //}
         }
     }
 }

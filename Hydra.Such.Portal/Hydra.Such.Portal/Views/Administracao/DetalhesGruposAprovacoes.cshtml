@@ -71,7 +71,7 @@
 
 
         @*POPULATE Update*@
-        <iron-ajax last-response="{{result}}"
+        <iron-ajax last-response="{{createResult}}"
                    method="post"
                    handle-as="json"
                    id="ajax_update"
@@ -192,10 +192,10 @@
                         else {
                             this.result.push(line);
                         }
-                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        
+                        this.$.ajax_update.body = JSON.stringify(line);
                         this.$.ajax_update.url = "/Administracao/CreateDetailsApprovalGroup";
                         this.$.ajax_update.generateRequest();
-                        this.$.gridDetailsGroupApprovals.clearCache();
                     }
                     else {
                         this.openToastError("A descrição não pode ser vazia");
@@ -204,10 +204,16 @@
                 _updateResponse: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
-                        this.openToast('Atualizado com sucesso!');
-                        this.$.page_databound_ajax.body = JSON.stringify(@ViewBag.IDGroupApproval);                        
-                        this.$.page_databound_ajax.generateRequest();
-                        this.$.ddUser.value = "";
+                        if (this.createResult == "101") {
+                            this.openToastError('Registo duplicado!');
+                            this.$.page_databound_ajax.generateRequest();
+
+                        } else {
+                            this.$.ddUser.value = "";
+                            this.openToast('Atualizado com sucesso!');
+                            this.$.page_databound_ajax.body = JSON.stringify(@ViewBag.IDGroupApproval);
+                            this.$.page_databound_ajax.generateRequest();
+                        }
                     }
                     else {
                         this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
@@ -223,7 +229,7 @@
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
-                    this.$.ajax_update.url = "/Administracao/UpdateDetailsApprovalGroup";
+                    this.$.ajax_update.url = "/Administracao/DeteleDetailsApprovalGroup";
                     this.$.ajax_update.body = JSON.stringify(this.result);
                     this.$.ajax_update.generateRequest();
                 }

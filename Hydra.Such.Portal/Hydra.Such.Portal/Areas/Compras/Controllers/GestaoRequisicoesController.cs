@@ -11,6 +11,7 @@ using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
+using Hydra.Such.Portal.Services;
 
 namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
@@ -684,17 +685,15 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
-                //Ensure that the requisition has the expected status. Ex.: prevents from validating pending requisitions
-                if (IsValidForLocalMarketValidation(item))
+                try
                 {
-                    var status = CreatePurchaseItemsFor(item);
-                    item.eReasonCode = status.eReasonCode;
-                    item.eMessage = status.eMessage;
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    item = serv.ValidateLocalMarketFor(item);
                 }
-                else
+                catch (Exception ex)
                 {
                     item.eReasonCode = 2;
-                    item.eMessage = "O estado da requisição e/ou linhas não cumprem os requisitos para a validação do mercado local.";
+                    item.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + ex.Message + ")";
                 }
             }
             else
@@ -707,174 +706,22 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             return Json(item);
         }
-
-        private ErrorHandler CreatePurchaseItemsFor(RequisitionViewModel requisition)
-        {
-            ErrorHandler status = new ErrorHandler();
-
-            if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0)
-            {
-                /*
-                    Filtrar as linhas da requisição cujos campos ‘Mercado Local’ seja = true, ‘Validado Compras’=false e ‘Quandidade Requerida’ > 0;
-                    18-12-2017: Indicação para agrupar por fornecedor para criação de cabeçalhos e linhas na tab. Compras do NAV.
-                */
-                //use for database update later
-                var linesToValidate = requisition.Lines
-                    .Where(x => x.LocalMarket.Value && !x.PurchaseValidated.Value && x.QuantityRequired.Value > 0);
-
-                var supplierProducts = linesToValidate.GroupBy(x => 
-                            x.SupplierNo,
-                            x => x,
-                            (key, items) => new PurchFromSupplierDTO
-                            {
-                                SupplierId = key,
-                                RequisitionId = requisition.RequisitionNo,
-                                CenterResponsibilityCode = requisition.CenterResponsibilityCode,
-                                FunctionalAreaCode = requisition.FunctionalAreaCode,
-                                RegionCode = requisition.RegionCode,
-                                Lines = items.Select(line => new PurchFromSupplierLinesDTO()
-                                {
-                                    Type = line.Type,
-                                    Code = line.Code,
-                                    Description = line.Description,
-                                    ProjectNo = line.ProjectNo,
-                                    QuantityRequired = line.QuantityRequired,
-                                    UnitCost = line.UnitCost,
-                                    LocationCode = line.LocalCode,
-                                    OpenOrderNo = line.OpenOrderNo,
-                                    OpenOrderLineNo = line.OpenOrderLineNo
-                                })
-                                .ToList()
-                            })
-                    .ToList();
-
-                if (supplierProducts.Count() > 0)
-                {
-                    string executionReport = "Relatório de validação de mercado local: ";
-                    bool hasErros = false;
-                    supplierProducts.ForEach(purchFromSupplier =>
-                        {
-                            Task <WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderService.CreateAsync(purchFromSupplier, _configws);
-                            try
-                            {
-                                createPurchaseHeaderTask.Wait();
-                                if (createPurchaseHeaderTask.IsCompletedSuccessfully)
-                                {
-                                    purchFromSupplier.NAVPurchaseId = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
-
-                                    executionReport += string.Format("Criada a pré-compra {0}.", purchFromSupplier.NAVPurchaseId);
-                                    Task<WSPurchaseInvLine.CreateMultiple_Result> createPurchaseLinesTask = NAVPurchaseLineService.CreateMultipleAsync(purchFromSupplier, _configws);
-                                    try
-                                    {
-                                        createPurchaseLinesTask.Wait();
-                                        if (createPurchaseLinesTask.IsCompletedSuccessfully)
-                                        {
-                                            executionReport += string.Format(" Criadas linhas de pré-compra com sucesso.");
-                                        }
-                                        else
-                                        {
-                                            executionReport += string.Format(" Não foi possivel criar as linhas de pré-compra com sucesso.");
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        hasErros = true;
-                                        executionReport += string.Format(" Ocorreu um erro ao criar as linhas de pré-compra no NAV.");
-                                    }
-                                }
-                                else
-                                {
-                                    executionReport += string.Format("Ocorreu um erro ao criar a pré-compra para o fornecedor com o ID:{0}.", purchFromSupplier.SupplierId);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                hasErros = true;
-                                executionReport += string.Format(" Ocorreu um erro ao criar a pré-compra no NAV.");
-                            }
-                        });
-                    status.eReasonCode = hasErros ? 2 : 1;
-                    status.eMessage = executionReport;
-                }
-                else
-                {
-                    status.eReasonCode = 3;
-                    status.eMessage = "Não existem linhas que cumpram os requisitos de validação do mercado local.";
-                }
-            }
-            return status;
-        }
-
-        private bool IsValidForLocalMarketValidation(RequisitionViewModel requisition)
-        {
-            try
-            {
-                //Ensure required fields aren't null or invalid
-                var linesToValidate = requisition.Lines
-                        .Where(x => x.LocalMarket.Value && !x.PurchaseValidated.Value && x.QuantityRequired.Value > 0);
-                //Ensure it's in approved state
-                return requisition.State == RequisitionStates.Approved;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
+        
         [HttpPost]
         [Area("Compras")]
         public JsonResult ValidateRequisition([FromBody] RequisitionViewModel item)
         {
-            /*
-                Header	estado
-                Lines	onde ‘Quantidade Requerida’ seja > 0;
-	                ‘Quantidade a Disponibilizar’ = Quantidade Requerida’
-	                Responsável Validação = utilizador atual
-	                Data Validação = now
-
-                	Criar na tabela de workflow de registo de validação e respetiva submissão
-             */
             if (item != null)
             {
-                //Ensure that the requisition has the expected status. Ex.: prevents from validating pending requisitions
-                if (item == null || item.State != RequisitionStates.Approved)
+                try
                 {
-                    item = new RequisitionViewModel();
-                    item.eReasonCode = 3;
-                    item.eMessage = "O estado da requisição não permite a validação.";
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    item = serv.ValidateRequisition(item);
                 }
-                else
+                catch(Exception ex)
                 {
-                    var linesToValidate = item.Lines
-                            .Where(x => x.QuantityRequired.Value > 0).ToList();
-
-                    if (linesToValidate.Count() > 0)
-                    {
-                        item.State = RequisitionStates.Validated;
-                        item.ResponsibleValidation = User.Identity.Name;
-                        item.ValidationDate = DateTime.Now;
-                        
-                        linesToValidate.ForEach(x =>
-                                x.QuantityToProvide = x.QuantityRequired
-                            );
-                        var updatedReq = DBRequest.UpdateHeaderAndLines(item.ParseToDB());
-                        if (updatedReq != null)
-                        {
-                            item = updatedReq.ParseToViewModel();
-                            item.eReasonCode = 1;
-                            item.eMessage = "Requisição validada com sucesso.";
-                        }
-                        else
-                        {
-                            item.eReasonCode = 3;
-                            item.eMessage = "Ocorreu um erro ao validar a requisição.";
-                        }
-                    }
-                    else
-                    {
-                        item.eReasonCode = 3;
-                        item.eMessage = "Não existem linhas que cumpram os requisitos de validação.";
-                    }
+                    item.eReasonCode = 3;
+                    item.eMessage = "Ocorreu um erro ao validar a requisição (" + ex.Message + ")";
                 }
             }
             else
@@ -883,6 +730,122 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 {
                     eReasonCode = 3,
                     eMessage = "Não é possivel validar. A requisição não pode ser nula."
+                };
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult CreateMarketConsult([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                try
+                {
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    serv.CreateMarketConsultFor(item);
+                }
+                catch (NotImplementedException ex)
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Funcionalidade não implementada";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel criar consulta de mercado. A requisição não pode ser nula."
+                };
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult CreatePurchaseOrder([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                try
+                {
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    item = serv.CreatePurchaseOrderFor(item);
+                }
+                catch(Exception ex)
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + ex.Message + ")";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel criar encomenda de compra. A requisição não pode ser nula."
+                };
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult CreateTransferShipment([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                ErrorHandler status = new ErrorHandler();
+                try
+                {
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    status = serv.CreateTransferShipmentFor(item);
+                }
+                catch (Exception ex)
+                {
+                    status.eReasonCode = 2;
+                    status.eMessage = "Ocorreu um erro ao criar guia de transporte (" + ex.Message + ")";
+                }
+                item.eReasonCode = status.eReasonCode;
+                item.eMessage = status.eMessage;
+                item.eMessages = status.eMessages;
+            }
+            else
+            {
+                item = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = "Não é possivel criar a guia de transporte. A requisição não pode ser nula."
+                };
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult SendPrePurchase([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                try
+                {
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    item = serv.SendPrePurchaseFor(item);
+                }
+                catch (Exception ex)
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao enviar pré-encomenda (" + ex.Message + ")";
+                }
+            }
+            else
+            {
+                item = new RequisitionViewModel()
+                {
+                    eReasonCode = 2,
+                    eMessage = "Não é possivel enviar a pré-compra. A requisição não pode ser nula."
                 };
             }
             return Json(item);

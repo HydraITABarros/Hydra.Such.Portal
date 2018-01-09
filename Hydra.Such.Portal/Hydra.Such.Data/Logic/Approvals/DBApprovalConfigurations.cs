@@ -127,24 +127,38 @@ namespace Hydra.Such.Data.Logic.Approvals
 
 
         #region Parses
-        public static ApprovalConfigurationsViewModel ParseToViewModel(ConfiguraçãoAprovações x)
+        public static ApprovalConfigurationsViewModel ParseToViewModel(this ConfiguraçãoAprovações x)
         {
-            return new ApprovalConfigurationsViewModel()
+            if (x != null)
             {
-                Id = x.Id,
-                Type = x.Tipo,
-                Area = x.Área,
-                Level = x.NívelAprovação,
-                ApprovalValue = x.ValorAprovação,
-                ApprovalUser = x.UtilizadorAprovação,
-                ApprovalGroup = x.GrupoAprovação,
-                CreateDate = x.DataHoraCriação,
-                CreateUser = x.UtilizadorCriação,
-                UpdateDate = x.DataHoraModificação,
-                UpdateUser = x.UtilizadorModificação,
-                StartDate = x.DataInicial.ToString("yyyy-MM-dd"),
-                EndDate = x.DataFinal.ToString("yyyy-MM-dd")
-            };
+
+                return new ApprovalConfigurationsViewModel()
+                {
+                    Id = x.Id,
+                    Type = x.Tipo,
+                    Area = x.Área,
+                    Level = x.NívelAprovação,
+                    ApprovalValue = x.ValorAprovação,
+                    ApprovalUser = x.UtilizadorAprovação,
+                    ApprovalGroup = x.GrupoAprovação,
+                    CreateDate = x.DataHoraCriação,
+                    CreateUser = x.UtilizadorCriação,
+                    UpdateDate = x.DataHoraModificação,
+                    UpdateUser = x.UtilizadorModificação,
+                    StartDate = x.DataInicial.HasValue ? x.DataInicial.Value.ToString("yyyy-MM-dd hh:mm:ss.ff") : "",
+                    EndDate = x.DataFinal.HasValue ? x.DataFinal.Value.ToString("yyyy-MM-dd hh:mm:ss.ff") : ""
+
+                };
+            }
+            return null;
+        }
+        public static List<ApprovalConfigurationsViewModel> ParseToViewModel(this List<ConfiguraçãoAprovações> items)
+        {
+            List<ApprovalConfigurationsViewModel> parsedItems = new List<ApprovalConfigurationsViewModel>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseToViewModel()));
+            return parsedItems;
         }
         public static ConfiguraçãoAprovações ParseToDatabase(ApprovalConfigurationsViewModel x)
         {
@@ -161,8 +175,9 @@ namespace Hydra.Such.Data.Logic.Approvals
                 UtilizadorCriação = x.CreateUser,
                 DataHoraModificação = x.UpdateDate,
                 UtilizadorModificação = x.UpdateUser,
-                DataInicial = DateTime.Parse(x.StartDate),
-                DataFinal = DateTime.Parse(x.EndDate)
+                DataInicial = string.IsNullOrEmpty(x.StartDate) ? (DateTime?)null : DateTime.Parse(x.StartDate),
+                DataFinal = string.IsNullOrEmpty(x.EndDate) ? (DateTime?)null : DateTime.Parse(x.EndDate)
+
             };
         }
         #endregion
