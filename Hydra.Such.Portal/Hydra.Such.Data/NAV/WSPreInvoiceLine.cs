@@ -134,8 +134,7 @@ namespace Hydra.Such.Data.NAV
                 return null;
             }
         }
-
-
+        
         public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineListProject(List<SPInvoiceListViewModel> LinesList, String HeaderNo, NAVWSConfigurations WSConfigurations)
         {
             WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
@@ -158,7 +157,7 @@ namespace Hydra.Such.Data.NAV
                    Unit_Cost_LCY = (decimal)x.UnitCost,
                    Job_Journal_Line_No_Portal = x.LineNo,
                    Job_Journal_Line_No_PortalSpecified = true,
-                   
+
                }).ToArray();
 
             WSCreatePreInvoiceLine.CreateMultiple NAVCreate = new WSCreatePreInvoiceLine.CreateMultiple(parsedList);
@@ -179,9 +178,7 @@ namespace Hydra.Such.Data.NAV
                 return null;
             }
         }
-
-
-
+        
         private static WSCreatePreInvoiceLine.Type ConvertType (string type)
         {
             switch (type)

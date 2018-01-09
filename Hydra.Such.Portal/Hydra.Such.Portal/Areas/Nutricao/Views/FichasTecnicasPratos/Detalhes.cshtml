@@ -1,0 +1,147 @@
+﻿
+@{
+    ViewData["Title"] = "Detalhes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
+<link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
+<link rel="import" href="~/elements/comboboxs/ProjectList.html" />
+<h1 class="title">Fichas Técnicas de Pratos</h1>
+<x-rectecplates></x-rectecplates>
+<dom-module id="x-rectecplates">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <div class="subMenu"  hidden="{{ _permissionssubMenu }}">
+            <paper-button class="tablinks" on-tap="_openCreate" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;  Criar Nova</paper-button>
+        </div><!--on-response="_gridListResponse"-->
+        <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetAllRecTecPlates" id="ajax_getgrid" auto last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <vaadin-grid id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="plateNo">Nº</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="plateNo" />
+                </template>
+                <template>
+                    {{item.plateNo}}
+                </template>
+
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="recordTechnicalName">Nome Ficha Técnica</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="recordTechnicalName" />
+                </template>
+                <template>
+                    {{item.recordTechnicalName}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="classFt1">Class.FT.1</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="classFt1" />
+                </template>
+                <template>
+                    {{item.classFt1}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="classFt2">Class.FT.2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="classFt2" />
+                </template>
+                <template>
+                    {{item.classFt2}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="classFt3">Class.FT.3</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="classFt3" />
+                </template>
+                <template>
+                    {{item.classFt3}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="classFt4">Class.FT.4</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="classFt4" />
+                </template>
+                <template>
+                    {{item.classFt4}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="classFt5">Class.FT.5</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="classFt5" />
+                </template>
+                <template>
+                    {{item.classFt5}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="classFt6">Class.FT.6</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="classFt6" />
+                </template>
+                <template>
+                    {{item.classFt6}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="classFt7">Class.FT.7</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="classFt7" />
+                </template>
+                <template>
+                    {{item.classFt7}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="unitMeasureCode">Cód. Unidade Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitMeasureCode" />
+                </template>
+                <template>
+                    {{item.unitMeasureCode}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function() {
+                Polymer({
+                    is: 'x-rectecplates',
+                    _openCreate: function (item) {
+                        if (item != null) {
+                            window.location.href = "/Nutricao/FichasTecnicasPratos/FichaTecnica";
+                        }
+                    }
+                });
+            });
+    </script>
+</dom-module>

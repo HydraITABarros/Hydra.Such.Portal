@@ -1318,6 +1318,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetClassificationFilesTechniques()
+        {
+            List<DDMessageString> products = DBClassificationFilesTechniques.GetAllFiles().Select(x => new DDMessageString()
+            {
+                id = Convert.ToString(x.Código),
+                value = x.Descrição
+            }).ToList();
+
+            return Json(products);
+        }
+
+        [HttpPost]
         public JsonResult GetStockkeepingUnit( string product)
         {
             List<NAVStockKeepingUnitViewModel> StockkeepingUnit = DBNAV2017StockKeepingUnit.GetByProductsNo(_config.NAVDatabaseName, _config.NAVCompanyName, product).ToList();
@@ -1340,6 +1352,35 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetLocalMarketRegions()
         {
             List<EnumDataString> result = EnumerablesFixed.LocalMarketRegions;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetCookingTechnique()
+        {
+            List<EnumData> result = EnumerablesFixed.CookingTechniqueTypes;
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult GetLinesRecTechnicPlatesType()
+        {
+            List<EnumData> result = EnumerablesFixed.LinesRecTechnicPlastesType;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult GetLinesRecordTechnicalOfPlatesCode([FromBody] string type)
+        {
+            List<DDMessageRelated> result = new List<DDMessageRelated>();
+            switch (type)
+            {
+                case "1":
+                    result = DBRecordTechnicalOfPlates.GetAll().Select(x => new DDMessageRelated() { id= x.NºPrato, value = x.Descrição}).ToList();
+                    break;
+                case "2":
+                    result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name }).ToList();
+                    break;
+            }
             return Json(result);
         }
     }

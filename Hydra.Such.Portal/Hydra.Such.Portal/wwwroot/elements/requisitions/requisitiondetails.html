@@ -1072,8 +1072,12 @@
                         this._openToast(this.Requisition.eMessage);
                     }
                     else {
-                        this._openToastError(this.Requisition.eMessage);
+                        if (this.Requisition.eMessages.length > 0)
+                            this._toggleToastMultiple();
+                        else
+                            this._openToastError(this.Requisition.eMessage);
                     }
+
                 },
                 
                 _validateRequisitionResponse: function (e) {
