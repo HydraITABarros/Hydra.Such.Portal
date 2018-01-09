@@ -685,11 +685,16 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
-                RequisitionService srv = new RequisitionService(_configws);
-                var status = srv.CreatePrePurchaseOrderFor(item);
-
-                item.eReasonCode = status.eReasonCode;
-                item.eMessage = status.eMessage;
+                try
+                {
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    item = serv.ValidateLocalMarketFor(item);
+                }
+                catch (Exception ex)
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + ex.Message + ")";
+                }
             }
             else
             {
@@ -708,9 +713,16 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
-                RequisitionService serv = new RequisitionService(_configws);
-                RequisitionViewModel validatedReq = serv.ValidateRequisition(item, User.Identity.Name);
-                item = validatedReq;
+                try
+                {
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    item = serv.ValidateRequisition(item);
+                }
+                catch(Exception ex)
+                {
+                    item.eReasonCode = 3;
+                    item.eMessage = "Ocorreu um erro ao validar a requisição (" + ex.Message + ")";
+                }
             }
             else
             {
@@ -731,7 +743,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_configws);
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
                     serv.CreateMarketConsultFor(item);
                 }
                 catch (NotImplementedException ex)
@@ -757,20 +769,16 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
-                ErrorHandler status = new ErrorHandler();
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_configws);
-                    status = serv.CreatePurchaseOrderFor(item);
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    item = serv.CreatePurchaseOrderFor(item);
                 }
                 catch(Exception ex)
                 {
-                    status.eReasonCode = 2;
-                    status.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + ex.Message + ")";
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + ex.Message + ")";
                 }
-                item.eReasonCode = status.eReasonCode;
-                item.eMessage = status.eMessage;
-                item.eMessages = status.eMessages;
             }
             else
             {
@@ -792,7 +800,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 ErrorHandler status = new ErrorHandler();
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_configws);
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
                     status = serv.CreateTransferShipmentFor(item);
                 }
                 catch (Exception ex)
@@ -821,20 +829,16 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
-                ErrorHandler status = new ErrorHandler();
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_configws);
-                    status = serv.SendPrePurchaseFor(item, HttpContext.User.Identity.Name);
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    item = serv.SendPrePurchaseFor(item);
                 }
                 catch (Exception ex)
                 {
-                    status.eReasonCode = 2;
-                    status.eMessage = "Ocorreu um erro ao enviar pré-encomenda (" + ex.Message + ")";
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao enviar pré-encomenda (" + ex.Message + ")";
                 }
-                item.eReasonCode = status.eReasonCode;
-                item.eMessage = status.eMessage;
-                item.eMessages = status.eMessages;
             }
             else
             {

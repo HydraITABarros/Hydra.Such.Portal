@@ -77,6 +77,31 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
+        public static List<LinhasPreEncomenda> CreateAndUpdateReqLines(List<LinhasPreEncomenda> prePurchOrderLines, List<LinhasRequisição> requisitionLines)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    prePurchOrderLines.ForEach(item => item.DataHoraCriação = DateTime.Now);
+
+                    ctx.LinhasPreEncomenda.AddRange(prePurchOrderLines);
+
+                    if (requisitionLines != null)
+                    {
+                        requisitionLines.ForEach(item => item.DataHoraModificação = DateTime.Now);
+                    }
+                    ctx.LinhasRequisição.UpdateRange(requisitionLines);
+                    ctx.SaveChanges();
+                }
+                return prePurchOrderLines;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public static LinhasPreEncomenda Update(LinhasPreEncomenda item)
         {
             try
@@ -182,23 +207,23 @@ namespace Hydra.Such.Data.Logic.Compras
                 {
                     NºPreEncomenda = item.PrePurchOrderNo,
                     NºLinhaPreEncomenda = item.PrePurchOrderLineNo,
-                    NºRequisição = item.RequisitionNo ,
-                    NºLinhaRequisição = item.RequisitionLineNo ,
-                    CódigoProduto = item.ProductCode ,
-                    DescriçãoProduto = item.ProductDescription ,
-                    CódigoUnidadeMedida = item.UnitOfMeasureCode ,
-                    CódigoLocalização = item.LocationCode ,
-                    QuantidadeDisponibilizada = item.QuantityAvailable ,
-                    CustoUnitário = item.UnitCost ,
-                    NºProjeto = item.ProjectNo ,
-                    CódigoRegião = item.RegionCode ,
-                    CódigoÁreaFuncional = item.FunctionalAreaCode ,
-                    CódigoCentroResponsabilidade = item.CenterResponsibilityCode ,
-                    DataHoraCriação = item.CreateDateTime ,
-                    UtilizadorCriação = item.CreateUser ,
-                    DataHoraModificação = item.UpdateDateTime ,
-                    UtilizadorModificação = item.UpdateUser ,
-                    NºFornecedor = item.SupplierNo ,
+                    NºRequisição = item.RequisitionNo,
+                    NºLinhaRequisição = item.RequisitionLineNo,
+                    CódigoProduto = item.ProductCode,
+                    DescriçãoProduto = item.ProductDescription,
+                    CódigoUnidadeMedida = item.UnitOfMeasureCode,
+                    CódigoLocalização = item.LocationCode,
+                    QuantidadeDisponibilizada = item.QuantityAvailable,
+                    CustoUnitário = item.UnitCost,
+                    NºProjeto = item.ProjectNo,
+                    CódigoRegião = item.RegionCode,
+                    CódigoÁreaFuncional = item.FunctionalAreaCode,
+                    CódigoCentroResponsabilidade = item.CenterResponsibilityCode,
+                    DataHoraCriação = item.CreateDateTime,
+                    UtilizadorCriação = item.CreateUser,
+                    DataHoraModificação = item.UpdateDateTime,
+                    UtilizadorModificação = item.UpdateUser,
+                    NºFornecedor = item.SupplierNo,
                 };
             }
             return null;
