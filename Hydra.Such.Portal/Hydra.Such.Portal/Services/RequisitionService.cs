@@ -383,10 +383,49 @@ namespace Hydra.Such.Portal.Services
         {
             throw new NotImplementedException("CreateMarketConsultFor");
         }
-        
+
         public ErrorHandler CreateTransferShipmentFor(RequisitionViewModel requisition)
         {
-            throw new NotImplementedException("CreatePurchaseOrderCommitmentFrom");
+            if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0)
+            {
+                TransferShipment transferShipment = new TransferShipment();
+                transferShipment.ProjectNo = requisition.ProjectNo;
+                transferShipment.Comments = requisition.Comments;
+                transferShipment.FunctionalAreaNo = requisition.FunctionalAreaCode;
+                transferShipment.RequisitionNo = requisition.RequisitionNo;
+                transferShipment.Lines = requisition.Lines.Select(line => new TransferShipmentLine()
+                {
+                    ProductNo = line.Code,
+                    ProductDescription = line.Description,
+                    Quantity = line.QuantityToProvide,
+                    UnitOfMeasureNo = line.UnitMeasureCode,
+                    UnitCost = line.UnitCost,
+                    RegionNo = line.RegionCode,
+                    FunctionalAreaNo = line.FunctionalAreaCode,
+                    CenterResponsibilityNo = line.CenterResponsibilityCode
+                }).ToList();
+
+                Task<WSTransferShipmentHeader.Create_Result> createTransferShipHeaderTask = NAVTransferShipmentService.CreateHeaderAsync(transferShipment, configws);
+                createTransferShipHeaderTask.Wait();
+                if (createTransferShipHeaderTask.IsCompletedSuccessfully)
+                {
+                    transferShipment.TransferShipmentNo = createTransferShipHeaderTask.Result.WSCabGuiaTransporte.Nº_Guia_Transporte;
+
+                    Task<WSTransferShipmentLine.CreateMultiple_Result> createTransferShipLinesTask = NAVTransferShipmentService.CreateLinesAsync(transferShipment, configws);
+                    createTransferShipLinesTask.Wait();
+                    if (createTransferShipLinesTask.IsCompletedSuccessfully)
+                    {
+                        Task<WSGenericCodeUnit.FxPostShipmentDoc_Result> createTransferShipDocTask = WSGeneric.CreateTransferShipment(transferShipment.TransferShipmentNo, configws);
+                        createTransferShipDocTask.Wait();
+                        if (createTransferShipDocTask.IsCompletedSuccessfully)
+                        {
+
+                        }
+                    }
+                }
+
+            }
+            return requisition;
         }
         
         private CreatePrePurchOrderResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder)
@@ -408,7 +447,7 @@ namespace Hydra.Such.Portal.Services
                         /*
                          *  Swallow errors at this stage as they will be managed in NAV
                          */
-                        Task<WSGenericCodeUnit.FxCabimento_Result> createPurchOrderTask = WSGeneric.CreatePurchaseOrderFitting(purchOrder.NAVPrePurchOrderId, configws);
+                        Task<WSGenericCodeUnit.FxCabimento_Result> createPurchOrderTask = WSGeneric.CreatePurchaseOrder(purchOrder.NAVPrePurchOrderId, configws);
                         createPurchOrderTask.Wait();
                         if (createPurchOrderTask.IsCompletedSuccessfully)
                         {
