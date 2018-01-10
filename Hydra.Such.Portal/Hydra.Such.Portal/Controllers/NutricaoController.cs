@@ -661,9 +661,15 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.ProductNo = id ?? "";
                 if (ViewBag.ProductNo != "")
+                {
                     ViewBag.NoProductDisable = true;
+                    ViewBag.ButtonHide = 0;
+                }
                 else
+                {
                     ViewBag.NoProductDisable = false;
+                    ViewBag.ButtonHide = 1;
+                }
 
                 ViewBag.UPermissions = UPerm;
                 return View();
@@ -676,9 +682,16 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetUnitStockeeping()
         {
-            List<UnitMeasureProductViewModel> result = DBUnitMeasureProduct.ParseToViewModel(DBUnitMeasureProduct.GetAll());
+            List<StockkeepingUnitViewModel> result = DBStockkeepingUnit.ParseToViewModel(DBStockkeepingUnit.GetAll());
             return Json(result);
         }
+
+        public JsonResult GetUnitStockeepingId([FromBody]string id)
+        {
+            StockkeepingUnitViewModel result = DBStockkeepingUnit.ParseToViewModel(DBStockkeepingUnit.GetById(id));
+            return Json(result);
+        }
+
         [HttpPost]
 
         public JsonResult GetProductId([FromBody]string idProduct)
@@ -688,11 +701,11 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
-        public JsonResult CreateUnitStockeeping([FromBody] UnitMeasureProductViewModel data)
+        public JsonResult CreateUnitStockeeping([FromBody] StockkeepingUnitViewModel data)
         {
             string eReasonCode = "";
-            //Create new 
-            eReasonCode = DBUnitMeasureProduct.Create(DBUnitMeasureProduct.ParseToDb(data)) == null ? "101" : "";
+            //Update 
+            eReasonCode = DBStockkeepingUnit.Create(DBStockkeepingUnit.ParseToDb(data)) == null ? "101" : "";
 
             if (String.IsNullOrEmpty(eReasonCode))
             {
@@ -704,18 +717,41 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public JsonResult UpdateUnitStockeeping([FromBody] List<UnitMeasureProductViewModel> data)
+        public JsonResult DeleteUnitStockeeping([FromBody] StockkeepingUnitViewModel data)
         {
-            List<UnidadeMedidaProduto> results = DBUnitMeasureProduct.GetAll();
-            results.RemoveAll(x => data.Any(u => u.Code == x.Código && u.ProductNo == x.NºProduto));
-            results.ForEach(x => DBUnitMeasureProduct.Delete(x));
-            data.ForEach(x =>
+           
+            string eReasonCode = "";
+            //Create new 
+            eReasonCode = DBStockkeepingUnit.Delete(DBStockkeepingUnit.ParseToDb(data)) == true ? "103" : "";
+            
+            if (String.IsNullOrEmpty(eReasonCode))
             {
-                DBUnitMeasureProduct.Update(DBUnitMeasureProduct.ParseToDb(x));
-            });
-            return Json(data);
+                return Json(null);
+            }
+            else
+            {
+                return Json(eReasonCode);
+            }
         }
 
+        public JsonResult  UpdateUnitStockeeping([FromBody] StockkeepingUnitViewModel data)
+        {
+            string eReasonCode = "";
+            //Create new 
+            eReasonCode = DBStockkeepingUnit.Update(DBStockkeepingUnit.ParseToDb(data)) == null ? "102" : "";
+
+            if (String.IsNullOrEmpty(eReasonCode))
+            {
+                return Json(data);
+            }
+            else
+            {
+                return Json(eReasonCode);
+            }
+    
+
+         
+        }
         #endregion
     }
 }
