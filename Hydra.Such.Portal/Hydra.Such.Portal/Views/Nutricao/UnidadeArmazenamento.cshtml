@@ -122,13 +122,15 @@
                     <vaadin-text-field value="{{item.inventory}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable width="160px">
+            <vaadin-grid-column resizable width="160px" >
                 <template class="header">
                     <vaadin-grid-sorter path="blocked">Bloqueado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="blocked" />
                 </template>
                 <template>            
-                    <vaadin-checkbox class="alignCenter" id="ddblocked" name="ddblocked" checked="{{item.blocked}}" disabled></vaadin-checkbox>    
+                    <div class="alignCenter">
+                       <vaadin-checkbox  id="ddblocked" name="ddblocked" checked="{{item.blocked}}" disabled></vaadin-checkbox>    
+                    </div>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="160px">

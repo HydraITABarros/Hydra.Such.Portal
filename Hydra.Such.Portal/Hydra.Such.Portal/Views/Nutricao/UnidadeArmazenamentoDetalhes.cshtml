@@ -270,11 +270,12 @@
                     </div>
                 </iron-form>
                 <div class="marginSpace" id="ddmarginSpace">
-                    <paper-button raised id="btnSaveLine" class="btnSave" value="createBtt" on-tap="_createNewStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
+                    <paper-button raised id="btnSaveLine" class="btnEdit" value="createBtt" on-tap="_createNewStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                 </div>
                 <div class="marginSpace2" id="ddmarginSpace2">
-                    <paper-button raised id="btnSaveLine" class="btnSave" value="updateBtt" on-tap="_updateStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                    <paper-button raised id="btnSaveLine" class="btnSave" value="deleteBtt" on-tap="_deleteStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                    <paper-button raised id="btnSaveLine" class="btnEdit" value="updateBtt" on-tap="_updateStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    <paper-button raised id="btnSaveLine" class="btnRemove" value="deleteBtt" on-tap="_deleteStockeepingUnit"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                    <paper-button raised id="btnSaveLine" class="btnSave" value="deleteBtt" on-tap="_goProductMovement">&nbsp; Movimento</paper-button>
                 </div>
             </div>
         </div>
@@ -406,11 +407,11 @@
                 },
                 _updateResponse: function (e) {
                
-                    if (this.getProductresult == "101") {
+                    if (this.result == "101") {
                         this.openToastError('Registo duplicado!');
-                    } else if (this.getProductresult == "102") {
+                    } else if (this.result == "102") {
                         this.openToastError('Registo não atualização');
-                    } else if (this.getProductresult == "103") {
+                    } else if (this.result == "103") {
                         this.openToast('Registo eliminado');
                         this.result = null;
                         this.$.ddproductNo.disabled = false;
@@ -422,10 +423,10 @@
                         this.$.ddcodLocalitation.value = "",
                         this.$.dddescription.value = "",
                         this.$.ddinventory.value = "",
-                        this.$.ddblocked.value = "",
+                        this.$.ddblocked.checked = false,
                         this.$.ddunitCost.value = "",
                         this.$.ddvalueWareHouse.value = "",
-                        this.$.ddcodeWareHouse.value = "",
+                        this.$.ddcodeWareHouse.checked = false,
                         this.$.ddshelfNo.value = "",
                         this.$.ddvendorNo.value = "",
                         this.$.ddvendorItemNo.value = "",
@@ -444,6 +445,12 @@
                         this.$.ddlastCostDirect.value = this.getProductresult[0].lastCostDirect;
                     }
 
+                },
+                _goProductMovement: function (e) {
+                    window.location.href = "/Nutricao/MovimentoProdutos";
+                    this.$.ajax_update.url = "/Nutricao/GetMovementProductID";
+                    this.$.ajax_update.body = JSON.stringify(objectNew);
+                    this.$.ajax_update.generateRequest();
                 },
                 _redirectToList: function (e) {
                     window.location.href = "/Nutricao/UnidadeArmazenamento";                    
