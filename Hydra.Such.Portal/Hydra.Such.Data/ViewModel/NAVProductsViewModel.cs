@@ -11,7 +11,8 @@ namespace Hydra.Such.Data.ViewModel
         public string MeasureUnit { get; set; }
         public string ProductGroupCode { get; set; }
         public string ItemCategoryCode { get; set; }
-        public string VenderProductNo { get; set; }
+        public string VendorProductNo { get; set; }
+        public string VendorNo { get; set; }
         public decimal LastCostDirect { get; set; }
 
     }

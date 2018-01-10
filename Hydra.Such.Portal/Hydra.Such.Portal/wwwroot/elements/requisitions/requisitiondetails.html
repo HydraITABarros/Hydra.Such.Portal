@@ -139,6 +139,7 @@
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{OpenOrderHeaderIds}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{OpenOrderLines}}" id="openOrderLines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/GetPDF" last-response="{{pdfRes}}" id="getpdf_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Compras/GestaoRequisicoes/GetRequisition"
                    id="requisition_datasource"
@@ -1058,7 +1059,11 @@
                     this.$.ToastMessageMultiple.toggle();
                     this.Requisition.eMessages = [];
                 },
-
+                
+                _getPDF: function() {
+                    //this.$.getpdf_ajax.body = JSON.stringify();
+                    this.$.getpdf_ajax.generateRequest();
+                },
                 _validateLocalMarket: function () {
                     this.$.validateLocalMarket_datasource.body = JSON.stringify(this.Requisition);
                     this.$.validateLocalMarket_datasource.generateRequest();
@@ -1072,8 +1077,12 @@
                         this._openToast(this.Requisition.eMessage);
                     }
                     else {
-                        this._openToastError(this.Requisition.eMessage);
+                        if (this.Requisition.eMessages.length > 0)
+                            this._toggleToastMultiple();
+                        else
+                            this._openToastError(this.Requisition.eMessage);
                     }
+
                 },
                 
                 _validateRequisitionResponse: function (e) {
@@ -1354,8 +1363,6 @@
                     }
                 },
                 _createTransferShipment: function () {
-                    this._notImplemented();
-                    return;
                     this.$.createTransferShip_ajax.body = JSON.stringify(this.Requisition);
                     this.$.createTransferShip_ajax.generateRequest();
                 },

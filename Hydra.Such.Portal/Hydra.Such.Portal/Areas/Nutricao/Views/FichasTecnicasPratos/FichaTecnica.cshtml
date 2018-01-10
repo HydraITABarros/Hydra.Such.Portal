@@ -1,0 +1,758 @@
+﻿
+@{
+    ViewData["Title"] = "FichaTecnica";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
+<link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
+<link rel="import" href="~/elements/comboboxs/ProjectList.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+
+<h1 class="title">Cabeçalho Ficha Técnica</h1>
+<x-recordtechnical></x-recordtechnical>
+<dom-module id="x-recordtechnical">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{CBOMeasureUnit}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetCookingTechnique" last-response="{{CBOCookingTechnique}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetClassificationFilesTechniques" last-response="{{CboClassificationFilesTechniques}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLinesRecTechnicPlatesType" last-response="{{CbotLinesRecTecPlatesType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLinesRecordTechnicalOfPlatesCode" id="ajax_CboCode" last-response="{{CboCode}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetAllProceduresConfection" id="ajax_GridProcedConfec" last-response="{{GridProceduresConfection}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetAllRecTecPlates" id="ajax_GetAllRecTecPlat" last-response="{{GetAllRecTecPlatResult}}"  on-response="_GetRecTecPlatResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        
+
+        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+            <paper-tab>Geral</paper-tab>
+            <paper-tab>Classificação</paper-tab>
+            <paper-tab>Observações</paper-tab>
+            <paper-tab>Confeção</paper-tab>
+            <paper-tab>Alergénios</paper-tab>
+            <paper-tab>Imagem</paper-tab>
+        </paper-tabs>
+        <iron-pages selected="{{selected}}">
+            <!--Geral-->
+            <div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{RecTecPlatValue}}" maxlength="20" id="plateNoid" name="plateNoName" label="Nº" disabled> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{recTecNameValue}}" maxlength="20" id="recordTechnicalNameid" name="recTecName" label="Nome Ficha Técnica"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box value="{{CodMeasureUnitValue}}" id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[CBOMeasureUnit]]" item-value-path="id"  item-label-path="value" label="Cód. Unidade Medida">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box value="{{LocalizationsValue}}" items="[[CBLocations]]" id="_CBLocalizations" item-value-path="id" item-label-path="value"  label="Cod. Localização">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{TPreparationValue}}" maxlength="20" id="TimePreparationid" name="TimePreparationName" label="Tempo Preparação">  <div slot="suffix">min.</div></vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box value="{{CookingTechniqueValue}}" items="[[CBOCookingTechnique]]" id="_CookingTechnique" item-value-path="id" item-label-path="value" label="Técnica Culinária">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{GroupValue}}" maxlength="20" id="Groupid" name="GroupName" label="Grupo"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{EpochValue}}" maxlength="20" id="Epochid" name="EpochName" label="Época"> </vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{DosesNoValue}}" maxlength="20" id="DosesNoId" name="DosesNoName" label="Número de doses"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{PreparTempValue}}" maxlength="20" id="PreparationTemperatureId" name="PreparationTemperatureName" label="Temperatura Preparação"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{FinalTempConfectValue}}" maxlength="20" id="FinalTemperatureConfectionId" name="FinalTemperatureConfectionName" label="Temperatura final Confeção"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{ServeTempValue}}" maxlength="20" id="ServeTemperatureId" name="ServeTemperatureName" label="Temperatura a Servir"> </vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear" hidden>
+                    <div class="col-lg-3">
+                        [Vitamina A]
+                    </div>
+                    <div class="col-lg-3">
+                        [Vitamina D]
+                    </div>
+                    <div class="col-lg-3">
+                        [Colesterol]
+                    </div>
+                    <div class="col-lg-3">
+                        [Sódio (Na)]
+                    </div>
+                </div>
+                <div class="row break_clear" hidden>
+                    <div class="col-lg-3">
+                        [Potássio (K)]
+                    </div>
+                    <div class="col-lg-3">
+                        [Cálcio (Ca)]
+                    </div>
+                    <div class="col-lg-3">
+                        [Ferro (Fe)]
+                    </div>
+                    <div class="col-lg-3">
+                        [Proteínas]
+                    </div>
+                </div>
+                <div class="row break_clear" hidden>
+                    <div class="col-lg-3">
+                        [Hidratos de Carbono]
+                    </div>
+                    <div class="col-lg-3">
+                        [Lípidos]
+                    </div>
+                    <div class="col-lg-3">
+                        [Fibra Alimentar]
+                    </div>
+                    <div class="col-lg-3">
+                        [Preco Custo Esperado]
+                    </div>
+                </div>
+                <div class="row break_clear" hidden>
+                    <div class="col-lg-3">
+                        [Preço Custo Actual]
+                    </div>
+                    <div class="col-lg-3">
+                        [Valor Energético (Kcal)]
+                    </div>
+                    <div class="col-lg-3">
+                        [Valor Energético (Kj)]
+                    </div>
+                </div>
+            </div>
+            <!--Classificação-->
+            <div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <vaadin-combo-box value="{{ClassFt1Value}}" items="[[CboClassificationFilesTechniques]]" id="_ClassFilesTec1" item-value-path="id" item-label-path="value" label="Class.FT.1">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-combo-box value="{{ClassFt2Value}}" items="[[CboClassificationFilesTechniques]]" id="_ClassFilesTec2" item-value-path="id" item-label-path="value" label="Class.FT.2">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{ClassFt3Value}}" maxlength="20" id="ClassFt3id" name="ClassFt3Name" label="Class.FT.3"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{ClassFt4Value}}" maxlength="20" id="ClassFt4id" name="ClassFt4Name" label="Class.FT.4"> </vaadin-text-field>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{ClassFt5Value}}" maxlength="20" id="ClassFt5id" name="ClassFt5Name" label="Class.FT.5"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{ClassFt6Value}}" maxlength="20" id="ClassFt6id" name="ClassFt6Name" label="Class.FT.6"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{ClassFt7Value}}" maxlength="20" id="ClassFt7id" name="ClassFt7Name" label="Class.FT.7"> </vaadin-text-field>
+                    </div>
+                </div>
+            </div>
+            <!--Observações-->
+            <div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <such-textarea value="{{NotesValue}}" rows="5" id="Notes" name="Notes" label="Observações"> </such-textarea>
+                    </div>
+                </div>
+            </div>
+            <!--Confeção-->
+            <div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <vaadin-grid id="gridConfection_request" aria-label="ProfileModelsTabel" items="[[GridProceduresConfection]]" class="grid" active-item="{{_SelectedLine}}">
+                            <vaadin-grid-column width="160px" resizable hidden>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="TechnicalSheetNo">No. Ficha Técnica </vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="TechnicalSheetNo" />
+                                </template>
+                                <template>
+                                    {{item.TechnicalSheetNo}}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="160px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="actionNo">Ação</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="actionNo" />
+                                </template>
+                                <template>
+                                    {{item.actionNo}}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="160px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="description" />
+                                </template>
+                                <template>
+                                    {{item.description}}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="160px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="orderNo">No. Ordem</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="orderNo" />
+                                </template>
+                                <template>
+                                    {{item.orderNo}}
+                                </template>
+                            </vaadin-grid-column>
+                        </vaadin-grid>
+                    </div>
+                </div>
+            </div>
+            <!--Alergénios-->
+            <div>
+                <div>
+                    <div class="row">
+                        <div class="col-lg-3">
+                            [Cereais que contêm glúten ]
+                        </div>
+                        <div class="col-lg-3">
+                            [Crustáceos e produtos à base de crustáceos]
+                        </div>
+                        <div class="col-lg-3">
+                            [Ovos e produtos à base de ovos]
+                        </div>
+                        <div class="col-lg-3">
+                            [Peixes e produtos à base de peixes]
+                        </div>
+                    </div>
+                    <div class="row break_clear">
+                        <div class="col-lg-3">
+                            [Amendoins e produtos à base de amendoins]
+                        </div>
+                        <div class="col-lg-3">
+                            [Soja e produtos à base de soja]
+                        </div>
+                        <div class="col-lg-3">
+                            [Leite e produtos à base de leite]
+                        </div>
+                        <div class="col-lg-3">
+                            [Frutas de casca rija e produtos à base de frutos de casca rija]
+                        </div>
+                    </div>
+                    <div class="row break_clear">
+                        <div class="col-lg-3">
+                            [Aipo e produtos à base de aipo]
+                        </div>
+                        <div class="col-lg-3">
+                            [Mostarda e produtos à base de mostarda]
+                        </div>
+                        <div class="col-lg-3">
+                            [Sementes de sésamo e produtos à base de sementes de sésamo]
+                        </div>
+                        <div class="col-lg-3">
+                            [Dióxido de enxofre e sulfitos em concentração superior a 10 mg/kg ou 10 mg/l]
+                        </div>
+                    </div>
+                    <div class="row break_clear">
+                        <div class="col-lg-3">
+                            [Tremoço e produtos à base de tremoço]
+                        </div>
+                        <div class="col-lg-3">
+                            [Moluscos e produtos à base de moluscos]
+                        </div>
+                        <div class="col-lg-3">
+                            [Sementes de sésamo e produtos à base de sementes de sésamo]
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Imagem-->
+            <div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        [Campo com a imagem do prato]
+                    </div>
+                </div>
+            </div>
+        </iron-pages>
+        <div class="row" hidden="{{ !_CreateOnly }}">
+            <div class="col-lg-2 alignPoga">
+                <paper-button class="btnSave" on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </div>
+        </div>
+        <div id="PreRequiLinesPanel" class="panel panel-default" hidden="{{ _CreateOnly }}">
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Linhas Fichas Técnicas</div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <vaadin-combo-box items="[[CbotLinesRecTecPlatesType]]" id="LineTypeid" on-value-changed="_LineTypeChange" item-value-path="id" item-label-path="value" value="" label="Tipo">
+                                        <template>
+                                            <table width="200px">
+                                                <tr>
+                                                    <td width="40%">[[item.id]]</td>
+                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-combo-box items="[[CboCode]]" id="Codeid" on-value-changed="_CodeChange" item-value-path="id" item-label-path="id" value="" label="Código">
+                                        <template>
+                                            <table width="200px">
+                                                <tr>
+                                                    <td width="40%">[[item.id]]</td>
+                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" id="Descriptionid" name="DescriptionName" label="Descrição"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Quantityid" name="QuantityName" label="Quantidade"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <vaadin-combo-box id="UnitMeasureCodeid" name="UnitMeasureCodeid" items="[[CBOMeasureUnit]]" item-value-path="id" value="" item-label-path="value" label="Cód. Unidade Medida">
+                                        <template>
+                                            <table width="200px">
+                                                <tr>
+                                                    <td width="40%">[[item.id]]</td>
+                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="QuantityOfProductionid" name="QuantityOfProductionName" label="Quantidade de Produto"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="EnergeticValueid" name="EnergeticValueName" label="Valor Energético"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Proteinsid" name="ProteinsName" label="Proteínas"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="HydratesOfCarbontid" name="HydratesOfCarbontName" label="Hidratos de Carbono"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Lipidsid" name="LipidsName" label="Lípidos"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Fibersid" name="FibersName" label="Fibras"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="ExpectedCostPriceid" name="ExpectedCostPriceName" label="Preço Custo Esperado"> <div slot="suffix">€</div></vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="CurrentCostPriceid" name="CurrentCostPriceName" label="Preço Custo Atual"> <div slot="suffix">€</div></vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="TimeExpectedCostPriceid" name="TimeExpectedCostPriceName" label="TPreço Custo Esperado"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="TimeCurrentCostPriceid" name="TimeCurrentCostPriceName" label="TPreço Custo Atual"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-combo-box items="[[CBLocations]]" id="LocalizationCodeid" item-value-path="id" item-label-path="value" value="" label="Cod. Localização">
+                                        <template>
+                                            <table width="200px">
+                                                <tr>
+                                                    <td width="40%">[[item.id]]</td>
+                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="ProteinsByQuantityid" name="ProteinsByQuantityName" label="Proteínas por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="GlicansByQuantityid" name="GlicansByQuantityName" label="Glícidos por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="LipidsByQuantityid" name="LipidsByQuantityName" label="Lípidos por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="FibersByQuantityid" name="FibersByQuantityName" label="Fibras por Quantidade"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="EnergeticValue2id" name="EnergeticValue2Name" label="Valor Energético 2"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="VitaminAid" name="VitaminAName" label="Vitamina A"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="VitaminDid" name="VitaminDName" label="Vitamina D"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Cholesterolid" name="CholesterolName" label="Colesterol"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Sodiumid" name="SodiumName" label="Sódio"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Potassiumid" name="PotassiumName" label="Potássio"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Calciumid" name="CalciumName" label="Cálcio"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Ironid" name="IronName" label="Ferro"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Edivelid" name="EdivelName" label="Edivel"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="VitaminAByQuantityid" name="VitaminAByQuantityName" label="Vitamina A por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="VitaminDByQuantityid" name="VitaminDByQuantityName" label="Vitamina D por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="CholesterolByQuantityid" name="CholesterolByQuantityName" label="Colesterol por Quantidade"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="SodiumByQuantityid" name="SodiumByQuantityName" label="Sódio por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="PotassiumByQuantityid" name="PotassiumByQuantityName" label="Potásio por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="IronByQuantityid" name="IronByQuantityName" label="Ferro por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="CalciumByQuantityid" name="CalciumByQuantityName" label="Cálcio por Quantidade"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="SaturatedFattyAcidsid" name="SaturatedFattyAcidsName" label="Ácidos Gordos Saturados"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Sugarcaneid" name="TSugarcaneName" label="Açucares"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="saltid" name="saltName" label="Sal"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="QuantityPlatesid" name="QuantityPlatesName" label="Quantidade Prato"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <such-textarea rows="5" value="" id="Preparationid" name="PreparationName" label="Preparação"> </such-textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-recordtechnical',
+                properties: {
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    _CreateOnly: {
+                        type: Boolean,
+                        value: false
+                    },
+                    RecTecPlatValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    recTecNameValue: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                    },
+                    CodMeasureUnitValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    LocalizationsValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    TPreparationValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    CookingTechniqueValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    GroupValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    EpochValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    DosesNoValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    PreparTempValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    FinalTempConfectValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ServeTempValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ClassFt1Value: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ClassFt2Value: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ClassFt3Value: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ClassFt4Value: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ClassFt5Value: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ClassFt6Value: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    ClassFt7Value: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    NotesValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    }
+                },
+                ready: function () {
+                    var RecTecPlatId = @Html.Raw(Json.Serialize(ViewBag.RecTecPlatesId));
+                    if (RecTecPlatId != "" && RecTecPlatId != null) {
+                        this.RecTecPlatValue = RecTecPlatId;
+                        this.$.ajax_GridProcedConfec.body = JSON.stringify(RecTecPlatId);
+                        this.$.ajax_GridProcedConfec.generateRequest();
+                        this.$.ajax_GetAllRecTecPlat.body = JSON.stringify(RecTecPlatId);
+                        this.$.ajax_GetAllRecTecPlat.generateRequest();
+                    } else {
+                        this._CreateOnly = true;
+                    }
+                },
+                _LineTypeChange: function (e) {
+                    if (e.detail.value != null && e.detail.value != "") {
+                        this.$.ajax_CboCode.body = JSON.stringify(e.detail.value);
+                        this.$.ajax_CboCode.generateRequest();
+                    }
+                },
+                _CodeChange: function (e) {
+                    if (e.detail.value != null && e.detail.value != "") {
+                        var sel = this.CboCode.find(x => x.id == e.detail.value).value;
+                        if (sel != "") {
+                            this.$.Descriptionid.value = sel;
+                        }
+                    }
+                },
+                _add() {
+                    debugger;
+                    var newRecTec = {
+                        plateNo: this.RecTecPlatValue,
+                        description: this.recTecNameValue,
+                        unitMeasureCode: this.CodMeasureUnitValue,
+                        //state: this.recTecNameValue,
+                        recordTechnicalName: this.recTecNameValue,
+                        localizationCode: this.LocalizationsValue,
+                        preparationTime: this.TPreparationValue,
+                        technicalCooking: this.CookingTechniqueValue,
+                        group: this.GroupValue,
+                        epoch: this.EpochValue,
+                        dosesNo: this.DosesNoValue,
+                        preparationTemperature: this.PreparTempValue,
+                        finalTemperatureConfection: this.FinalTempConfectValue,
+                        serveTemperature: this.ServeTempValue,
+                        //image: this.recTecNameValue,
+                        variationPriceCost: this.recTecNameValue,
+                        classFt1: this.ClassFt1Value,
+                        classFt2: this.ClassFt2Value,
+                        classFt3: this.ClassFt3Value,
+                        classFt4: this.ClassFt4Value,
+                        classFt5: this.ClassFt5Value,
+                        classFt6: this.ClassFt6Value,
+                        classFt7: this.ClassFt7Value,
+                        //classFt8: this.recTecNameValue,
+                        //centerResponsibilityCode: this.recTecNameValue,
+                        observations: this.NotesValue
+                    };
+                    var test = newRecTec;
+                },
+                _GetRecTecPlatResponse: function (GetAllRecTecPlatResult) {
+                    debugger;
+                    if (GetAllRecTecPlatResult != null) {
+                        if (this.GetAllRecTecPlatResult.length > 0) {
+                            
+                            //this.recTecNameValue =
+                            //this.CodMeasureUnitValue =
+                            //this.LocalizationsValue =
+                            //this.TPreparationValue =
+                            //this.CookingTechniqueValue =
+                            //this.GroupValue =
+                            //this.EpochValue =
+                            //this.DosesNoValue =
+                            //this.PreparTempValue =
+                            //this.FinalTempConfectValue =
+                            //this.ServeTempValue =
+                            //this.ClassFt1Value =
+                            //this.ClassFt2Value =
+                            //this.ClassFt3Value =
+                            //this.ClassFt4Value =
+                            //this.ClassFt5Value =
+                            //this.ClassFt6Value =
+                            //this.ClassFt7Value =
+                            //this.NotesValue =
+                        } else {
+                            this._openToastError("Occorreu um erro ao atualizar o Diário de requisição Unid. Produtiva.");
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</dom-module>

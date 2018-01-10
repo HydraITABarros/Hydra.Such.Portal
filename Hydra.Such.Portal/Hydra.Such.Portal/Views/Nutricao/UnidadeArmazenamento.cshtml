@@ -13,6 +13,8 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 @*mixin*@
 <link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 @*ironform*@
@@ -80,7 +82,7 @@
         </div>
 
         <div class="marginSpace">
-            <paper-button class="btnSave" raised on-tap="_redirectToNewUnitForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            <paper-button class="btnSave" raised on-tap="_redirectToNewUnitForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
         </div>
 
         <vaadin-grid id="gridUnitStockeeping" aria-label="gridUnitStockeeping" items="[[result]]" class="grid" multi-sort="true">
@@ -125,8 +127,8 @@
                     <vaadin-grid-sorter path="blocked">Bloqueado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="blocked" />
                 </template>
-                <template>
-                    <vaadin-text-field value="{{item.blocked}}" disabled></vaadin-text-field>
+                <template>            
+                    <vaadin-checkbox class="alignCenter" id="ddblocked" name="ddblocked" checked="{{item.blocked}}" disabled></vaadin-checkbox>    
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="160px">
@@ -149,11 +151,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="160px">
                 <template class="header">
-                    <vaadin-grid-sorter path="stockValue">Valor em Armazem</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="stockValue" />
+                    <vaadin-grid-sorter path="wareHouse">Valor em Armazem</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="wareHouse" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.stockValue}}" disabled></vaadin-text-field>
+                    <vaadin-text-field value="{{item.wareHouseValue}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column resizable width="160px">

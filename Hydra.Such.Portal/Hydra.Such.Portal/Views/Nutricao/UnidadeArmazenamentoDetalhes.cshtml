@@ -93,10 +93,9 @@
         </style>
 
         @*POPULATE GRID*@
-        <iron-ajax url="/Nutricao/GetUnitStockeeping"
+        <iron-ajax url="/Nutricao/GetUnitStockeepingId"
                    last-response="{{result}}"
                    method="post"
-                   auto
                    handle-as="json"
                    id="page_databound_ajax"
                    content-type="application/json">
@@ -104,15 +103,26 @@
 
 
         @*POPULATE Update*@
-        <iron-ajax last-response="{{valueResult}}"
+
+
+        <iron-ajax last-response="{{result}}"
                    method="post"
                    handle-as="json"
-                   id="ajax_get"
+                   id="ajax_update"
                    on-response="_updateResponse"
                    content-type="application/json">
         </iron-ajax>
 
         @*CRUD NEW PROFILEMODEL*@
+
+        <iron-ajax last-response="{{getProductresult}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_get"
+                   on-response="_comboProductNoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetProducts"
                    last-response="{{ProductNoList}}"
                    auto
@@ -135,7 +145,7 @@
                    content-type="application/json">
         </iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations"
-                   last-response="{{descricao}}"
+                   last-response="{{WareHouseList}}"
                    auto
                    method="post"
                    handle-as="json"
@@ -148,12 +158,19 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+
+        <div class="marginSpace">
+            <paper-button class="btnSave" raised on-tap="_redirectToNewUnitForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Novo</paper-button>
+            <paper-button class="btnCreate" raised on-tap="_redirectToList">Exibir Lista</paper-button>
+
+        </div>
+
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
                 <iron-form id="formContract">
 
                     <div class="panel panel-default">
-                        <div class="panel-heading">Novo</div>
+                        <div class="panel-heading">Cabeçalho</div>
                         <div class="panel-body">
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                                 <paper-tab>Geral</paper-tab>
@@ -166,7 +183,7 @@
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[ProductNoList]]" id="ddProductNo" name="ddProductNo" label="Nº de Produto" item-value-path="id" item-label-path="value" value="{{result.productNo}}" disabled="@ViewBag.NoProductDisable">
+                                            <vaadin-combo-box items="[[ProductNoList]]" id="ddproductNo" name="ddproductNo" label="Nº de Produto" item-value-path="id" item-label-path="id" value="{{result.productNo}}" disabled="@ViewBag.NoProductDisable" on-change="_getDescriptionGroup">
                                                 <template>
                                                     <table width="250px">
                                                         <tr>
@@ -178,10 +195,10 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="dddescription" name="dddescription" label="Descrição" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="dddescription" name="dddescription" label="Descrição" value="{{result.description}}" disabled></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[LocalizacaoList]]" id="ddCodLocalitation" name="ddCodLocalitation" label="Cód. Localização" item-value-path="id" item-label-path="value" value="{{result.code}}" on-change="_getDescriptionGroup">
+                                            <vaadin-combo-box items="[[LocalizacaoList]]" id="ddcodLocalitation" name="ddcodLocalitation" label="Cód. Localização" item-value-path="id" item-label-path="id" value="{{result.code}}">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -192,46 +209,30 @@
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddblocked" name="ddblocked" label="Bloqueado" value="{{result.blocked}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
-                                        </div>
+
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="ddinventory" name="ddinventory" label="Inventário" value="{{result.inventory}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="ddshelfNo" name="ddshelfNo" label="Nº Prateleiras" value="{{result.shelfNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
                                         </div>
+                                        <div class="col-lg-2 alignPoga">
+                                            <vaadin-checkbox id="ddblocked" name="ddblocked" checked="{{result.blocked}}" disabled="{{ !_isCreate}}">Bloqueado</vaadin-checkbox>
+                                        </div>
                                     </div>
                                 </div>
                                 <!--Armazem-->
                                 <div>
                                     <div class="row break_clear">
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddunitCost" name="ddunitCost" label="Custo Unitário" value="{{result.unitCost}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                        <div class="col-md-3 verticalCenter">
+                                            <vaadin-checkbox id="ddcodeWareHouse" name="ddcodeWareHouse" checked="{{result.codeWareHouse}}">Armazém Principal</vaadin-checkbox>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddvalueWareHouse" name="ddvalueWareHouse" label="Valor Armazém" value="{{result.wareHouse}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                            <vaadin-text-field id="ddvalueWareHouse" type="number" name="ddvalueWareHouse" label="Valor Armazém" value="{{result.wareHouseValue}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
                                         </div>
+
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[UnitsProductList]]" id="ddcodeUnitMeasure" name="ddcodeUnitMeasure" label="Cód. Unidade Media Produto" item-value-path="id" item-label-path="value" value="{{result.codeUnitMeasure}}">
-                                                <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.id]]</div>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddlastCost" name="ddlastCost" label="Último Custo Directo" value="{{result.lastCostDirect}}" disabled></vaadin-text-field>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddwareHouseCode" name="ddwareHouseCode" label="Armazém Principal" value="{{result.codeWareHouse}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[VendorList]]" id="ddvendorNo" name="ddvendorNo" label="Nº Vendedor" item-value-path="id" item-label-path="value" value="{{result.vendorNo}}">
+                                            <vaadin-combo-box items="[[VendorList]]" id="ddvendorNo" name="ddvendorNo" label="Nº Fornecedor" item-value-path="id" item-label-path="value" value="{{result.vendorNo}}">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -243,13 +244,22 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="ddvendorProductNo" name="ddvendorProductNo" label="Cód. Produto Fornecedor" value="{{result.vendorItemNo}}" disabled></vaadin-text-field>
-                                        </div>
+                                            <vaadin-text-field id="ddvendorItemNo" name="ddvendorItemNo" label="Cód. Produto Fornecedor" value="{{result.vendorItemNo}}"></vaadin-text-field>
+                                        </div>                           
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="dditemCategoryCode" name="dditemCategoryCode" label="Cód. Categoria Produto" value="{{result.codeProcuctCategory}}" disabled></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="ddproductGroupCode" name="ddproductGroupCode" label="Cód. Grupo Produto" value="{{result.codeProcuctGroup}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddunitCost" type="number" name="ddunitCost" label="Custo Unitário" value="{{result.unitCost}}"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddlastCostDirect" name="ddlastCostDirect" label="Último Custo Directo" value="{{result.lastCostDirect}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="ddpriceSales" type="number" name="ddpriceSales" label="Preço de Venda" value="{{result.priceSale}}"></vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -259,11 +269,17 @@
                         </div>
                     </div>
                 </iron-form>
-                <div class="marginSpace">
-                    <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <div class="marginSpace" id="ddmarginSpace">
+                    <paper-button raised id="btnSaveLine" class="btnSave" value="createBtt" on-tap="_createNewStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
+                </div>
+                <div class="marginSpace2" id="ddmarginSpace2">
+                    <paper-button raised id="btnSaveLine" class="btnSave" value="updateBtt" on-tap="_updateStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    <paper-button raised id="btnSaveLine" class="btnSave" value="deleteBtt" on-tap="_deleteStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                 </div>
             </div>
         </div>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
     </template>
 
@@ -273,63 +289,165 @@
             Polymer({
                 is: 'x-unitstokkeeping',
                 properties: {
-                    _showUpdateButtons: {
-                        type: Boolean,
-                        value: true
-                    },
-                    _lockFields: {
-                        type: Boolean,
-                        value: false
-                    },
-                    _permissions: {
-                        type: Array
-                    },
-                    _areaid: {
-                        type: Number,
-                        notify: true,
-                        value: 0
-                    },
-                    _contractno: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    _versionno: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
+    
                     selected: {
                         type: Number,
                         value: 0
                     },
                 },
+                ready: function () {
+                    this.$.page_databound_ajax.body = JSON.stringify(@ViewBag.ProductNo);
+                    this.$.page_databound_ajax.generateRequest();
+                    //Inserir
+                    if (@ViewBag.ButtonHide==1)
+                        this.$.ddmarginSpace2.style.display = 'none'; 
+                    //Actualizar
+                    else
+                      this.$.ddmarginSpace.style.display = 'none'; 
 
+                },
+                openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
                 _redirectToNewUnitForm: function (item) {
-                    if (item != null) {
-                        window.location.href = "/Nutricao/UnidadeArmazenamentoDetalhes";
-                    }
+                    this.result = null;
+                    this.$.ddproductNo.disabled = false;
+                    this.$.ddmarginSpace2.style.display = 'none';
+                    this.$.ddmarginSpace.style.display = 'inline'; 
                 },
                 _getDescriptionGroup: function (e) {
-                    debugger;
-                    if (this.$.ddProductNo.value != null) {
+                    if (this.$.ddproductNo.value != null) {
                         this.$.ajax_get.url = "/Nutricao/GetProductId";
-                        this.$.ajax_get.body = JSON.stringify(this.$.ddProductNo.value);
+                        this.$.ajax_get.body = JSON.stringify(this.$.ddproductNo.value);
                         this.$.ajax_get.generateRequest();
-                    }                    
+                    }
                 },
+                _createNewStockeepingUnit: function (e) {
 
+                    if (this.$.ddproductNo.value != null && this.$.ddproductNo.value !="") {
+                        var objectNew = {
+                            ProductNo : this.$.ddproductNo.value,
+                            Code: this.$.ddcodLocalitation.value,
+                            Description: this.$.dddescription.value,
+                            Inventory: this.$.ddinventory.value,
+                            Blocked : this.$.ddblocked.checked,
+                            UnitCost : this.$.ddunitCost.value,
+                            WareHouseValue: this.$.ddvalueWareHouse.value,
+                            CodeWareHouse: this.$.ddcodeWareHouse.checked,
+                            ShelfNo : this.$.ddshelfNo.value,
+                            VendorNo : this.$.ddvendorNo.value,
+                            VendorItemNo : this.$.ddvendorItemNo.value,
+                            LastCostDirect: this.$.ddlastCostDirect.value,
+                            CodeProcuctCategory: this.$.dditemCategoryCode.value,
+                            CodeProcuctGroup: this.$.ddproductGroupCode.value,
+                            PriceSale: this.$.ddpriceSales.value                           
+                        }
+                     
+                            this.$.ajax_update.url = "/Nutricao/CreateUnitStockeeping";
+                            this.$.ajax_update.body = JSON.stringify(objectNew);
+                            this.$.ajax_update.generateRequest();
+                   
+                    }
+                },
+                _updateStockeepingUnit: function (e) {
+                    if (this.$.ddproductNo.value != null && this.$.ddproductNo.value != "") {
+                        var objectNew = {
+                            ProductNo: this.$.ddproductNo.value,
+                            Code: this.$.ddcodLocalitation.value,
+                            Description: this.$.dddescription.value,
+                            Inventory: this.$.ddinventory.value,
+                            Blocked: this.$.ddblocked.checked,
+                            UnitCost: this.$.ddunitCost.value,
+                            WareHouseValue: this.$.ddvalueWareHouse.value,
+                            CodeWareHouse: this.$.ddcodeWareHouse.checked,
+                            ShelfNo: this.$.ddshelfNo.value,
+                            VendorNo: this.$.ddvendorNo.value,
+                            VendorItemNo: this.$.ddvendorItemNo.value,
+                            LastCostDirect: this.$.ddlastCostDirect.value,
+                            CodeProcuctCategory: this.$.dditemCategoryCode.value,
+                            CodeProcuctGroup: this.$.ddproductGroupCode.value,
+                            PriceSale: this.$.ddpriceSales.value
+                        }
+                        this.$.ajax_update.url = "/Nutricao/UpdateUnitStockeeping";
+                        this.$.ajax_update.body = JSON.stringify(objectNew);
+                        this.$.ajax_update.generateRequest();
+                    }
+                },
+                _deleteStockeepingUnit: function (e) {
+
+                    if (this.$.ddproductNo.value != null && this.$.ddproductNo.value != "") {
+                        var objectNew = {
+                            ProductNo: this.$.ddproductNo.value,
+                            Code: this.$.ddcodLocalitation.value,
+                            Description: this.$.dddescription.value,
+                            Inventory: this.$.ddinventory.value,
+                            Blocked: this.$.ddblocked.checked,
+                            UnitCost: this.$.ddunitCost.value,
+                            WareHouseValue: this.$.ddvalueWareHouse.value,
+                            CodeWareHouse: this.$.ddcodeWareHouse.checked,
+                            ShelfNo: this.$.ddshelfNo.value,
+                            VendorNo: this.$.ddvendorNo.value,
+                            VendorItemNo: this.$.ddvendorItemNo.value,
+                            LastCostDirect: this.$.ddlastCostDirect.value,
+                            CodeProcuctCategory: this.$.dditemCategoryCode.value,
+                            CodeProcuctGroup: this.$.ddproductGroupCode.value,
+                            PriceSale: this.$.ddpriceSales.value
+                        }
+
+                        this.$.ajax_update.url = "/Nutricao/DeleteUnitStockeeping";
+                        this.$.ajax_update.body = JSON.stringify(objectNew);
+                        this.$.ajax_update.generateRequest();
+                    }
+                },
                 _updateResponse: function (e) {
-                    if (this.valueResult[0] != null) {
-                        this.$.dddescription.value = this.valueResult[0].measureUnit;
-                        this.$.dditemCategoryCode.value = this.valueResult[0].itemCategoryCode;
-                        this.$.ddproductGroupCode.value = this.valueResult[0].productGroupCode;
-                        this.$.ddvendorProductNo.value = this.valueResult[0].venderProductNo;
-                        this.$.ddlastCost.value = this.valueResult[0].lastCostDirect;
+               
+                    if (this.getProductresult == "101") {
+                        this.openToastError('Registo duplicado!');
+                    } else if (this.getProductresult == "102") {
+                        this.openToastError('Registo não atualização');
+                    } else if (this.getProductresult == "103") {
+                        this.openToast('Registo eliminado');
+                        this.result = null;
+                        this.$.ddproductNo.disabled = false;
+                        this.$.ddmarginSpace2.style.display = 'none'; 
+                        this.$.ddmarginSpace.style.display = 'inline'; 
+                    } else {
+                        this.openToast("Actualizado com Sucesso!");
+                        this.$.ddproductNo.value = "",
+                        this.$.ddcodLocalitation.value = "",
+                        this.$.dddescription.value = "",
+                        this.$.ddinventory.value = "",
+                        this.$.ddblocked.value = "",
+                        this.$.ddunitCost.value = "",
+                        this.$.ddvalueWareHouse.value = "",
+                        this.$.ddcodeWareHouse.value = "",
+                        this.$.ddshelfNo.value = "",
+                        this.$.ddvendorNo.value = "",
+                        this.$.ddvendorItemNo.value = "",
+                        this.$.ddlastCostDirect.value = "",
+                        this.$.dditemCategoryCode.value = "",
+                        this.$.ddproductGroupCode.value = "",
+                        this.$.ddpriceSales.value = "",
+                        this.$.ddproductNo.disabled = false;
+                    }
+                },
+                _comboProductNoResponse: function (e) {
+                    if (this.getProductresult[0] != null) {
+                        this.$.dddescription.value = this.getProductresult[0].name;
+                        this.$.dditemCategoryCode.value = this.getProductresult[0].itemCategoryCode;
+                        this.$.ddproductGroupCode.value = this.getProductresult[0].productGroupCode;
+                        this.$.ddlastCostDirect.value = this.getProductresult[0].lastCostDirect;
                     }
 
                 },
-
+                _redirectToList: function (e) {
+                    window.location.href = "/Nutricao/UnidadeArmazenamento";                    
+                }
 
             });
         });
