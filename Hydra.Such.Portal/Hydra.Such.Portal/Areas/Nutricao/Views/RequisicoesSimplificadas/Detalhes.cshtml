@@ -145,7 +145,7 @@ else
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-text-field value="{{data.observations}}" maxlength="50" id="LObservations" name="LObservations" label="Observações" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.observations}}" maxlength="50" id="LObservations" name="LObservations" label="Observações" disabled="{{ @ViewBag.PermissionUpdate }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-lg-3">
                                             <vaadin-text-field value="{{data.totalCost}}" maxlength="20" id="LTotalCost" name="LTotalCost" label="Custo Total" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
@@ -153,7 +153,7 @@ else
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{data.region}}" label="Cód. Região" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[CBRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{data.region}}" label="Cód. Região" disabled="{{ @ViewBag.PermissionUpdate }}">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -165,7 +165,7 @@ else
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{data.area}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{data.area}}" label="Cód. Área Funcional" disabled="{{ @ViewBag.PermissionUpdate }}">
                                                 <template>
                                                     <table width="200px">
                                                         <tr>
@@ -177,7 +177,7 @@ else
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ @ViewBag.PermissionUpdate }}">
                                                 <template>
                                                     <table width="200px">
                                                         <tr>
@@ -189,13 +189,13 @@ else
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-lg-3 ">
-                                            <vaadin-date-picker label="Data Receção" id="LReceiptPreviewDate" name="LReceiptPreviewDate" value="{{data.receiptPreviewDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                            <vaadin-date-picker label="Data Receção" id="LReceiptPreviewDate" name="LReceiptPreviewDate" value="{{data.receiptPreviewDate}}" disabled="{{ @ViewBag.PermissionUpdate }}"></vaadin-date-picker>
                                         </div>
 
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-lg-3 ">
-                                            <vaadin-combo-box items="[[CBMealType]]" id="LMealType" item-value-path="id" item-label-path="value" value="{{data.mealType}}" label="Tipo Refeição" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[CBMealType]]" id="LMealType" item-value-path="id" item-label-path="value" value="{{data.mealType}}" label="Tipo Refeição" disabled="{{ @ViewBag.PermissionUpdate }}">
                                                 <template>
                                                     <b>[[item.value]]</b>
                                                 </template>
@@ -229,7 +229,7 @@ else
                                 </div>
                             </iron-pages>
 
-                            <div class="marginSpace">
+                            <div class="marginSpace" id="ddmarginSpace">
                                 <template is="dom-if" if="{{ _isCreate }}">
                                     <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </template>
@@ -244,6 +244,20 @@ else
                                 </template>
                             </div>
 
+                            <div class="marginSpace2" id="ddmarginSpace2">
+                                <template is="dom-if" if="{{ _isCreate }}">
+                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Registar Requisições</paper-button>
+                                </template>
+                                <template is="dom-if" if="{{ !_isCreate }}">
+                                    <template is="dom-if" if="{{ _permissions.update }}">
+                                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                    </template>
+                                    <template is="dom-if" if="{{ _permissions.delete }}">
+                                        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+
+                                    </template>
+                                </template>
+                            </div>
                         </div>
                     </div>
                 </iron-form>
@@ -444,7 +458,7 @@ else
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.quantityToRequire}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled="{{ _lockFields }}"  pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.quantityToRequire}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.quantityToRequire}}
@@ -576,7 +590,7 @@ else
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                
+
                                 <vaadin-grid-column>
                                     <template class="header">
                                     </template>
@@ -591,9 +605,14 @@ else
                             </vaadin-grid>
                         </div>
 
-                        <div class="marginSpace">
+                        <div class="marginSpace" id="ddmarginSpace">
                             <template is="dom-if" if="{{ _lockFields }}">
                                 <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            </template>
+                        </div>
+                        <div class="marginSpace2" id="ddmarginSpace2">
+                            <template is="dom-if" if="{{ _lockFields }}">
+                                <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; ver</paper-button>
                             </template>
                         </div>
                     </div>
@@ -629,6 +648,12 @@ else
                     },
                 },
                 ready: function () {
+                    if ("@ViewBag.Approval"=="aprovado") {
+                        this.$.ddmarginSpace.style.display = 'none'; 
+                    }
+                    else {
+                        this.$.ddmarginSpace2.style.display = 'none'; 
+                    }
                     //GET PROJECT DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "requestNo": this._requestno });
                     this.$.page_databound_ajax.generateRequest();

@@ -13,6 +13,7 @@ using Hydra.Such.Data.ViewModel.Nutrition;
 using Hydra.Such.Data.Logic.Contracts;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Http;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -578,11 +579,34 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetMovementProduct()
         {
-            List<ProductMovementViewModel> result = DBProductMovement.ParseToViewModel( DBProductMovement.GetAll());
+            List<ProductMovementViewModel> result;
+            if (HttpContext.Session.GetString("productNo") == null)
+            {
+                result = DBProductMovement.ParseToViewModel(DBProductMovement.GetAll());
+            }
+            else
+            {
+                string nProduct = HttpContext.Session.GetString("productNo");
+                string codeLocation = HttpContext.Session.GetString("codLocation");
+                result = DBProductMovement.ParseToViewModel(DBProductMovement.GetByNoprodLocation(nProduct, codeLocation));
+                HttpContext.Session.Remove("productNo");
+                HttpContext.Session.Remove("codLocation");
+            }
+
             return Json(result);
         }
 
 
+       public bool SetSessionMovimentoProduto([FromBody] StockkeepingUnitViewModel data)
+       {
+            if (data.ProductNo != null)
+            {
+                HttpContext.Session.SetString("productNo", data.ProductNo);
+                HttpContext.Session.SetString("codLocation", data.Code);
+                return true;
+            }
+            return false;
+        }
         #endregion
 
         #region Unidade Medida Produto

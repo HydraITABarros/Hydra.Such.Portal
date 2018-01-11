@@ -1192,14 +1192,6 @@ namespace Hydra.Such.Portal.Controllers
                                 if (lines.InvoiceToClientNo == header.InvoiceToClientNo && lines.Date == header.Date && lines.CommitmentNumber == header.CommitmentNumber && lines.ClientRequest == header.ClientRequest)
                                 {
                                     linesList.Add(lines);
-                                    //Task<WSCreatePreInvoiceLine.Create_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLine(lines, _configws, HeaderNo);
-                                    //TCreatePreInvoiceLine.Wait();
-                                    //if (TCreatePreInvoiceLine.IsCompletedSuccessfully)
-                                    //{
-                                    //    MovimentosDeProjeto mov = DBProjectMovements.GetByLineNo(lines.LineNo).FirstOrDefault();
-                                    //    mov.Faturada = true;
-                                    //    DBProjectMovements.Update(mov);
-                                    //}
                                 }
                             }
 
