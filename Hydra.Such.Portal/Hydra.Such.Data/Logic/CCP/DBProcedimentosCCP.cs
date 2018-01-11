@@ -224,17 +224,26 @@ namespace Hydra.Such.Data.Logic.CCP
 
             try
             {
+                _context.ElementosJuri.RemoveRange(_context.ElementosJuri.Where(ej => ej.NºProcedimento == ProcedimentoID));
+                _context.NotasProcedimentosCcp.RemoveRange(_context.NotasProcedimentosCcp.Where(n => n.NºProcedimento == ProcedimentoID));
+                _context.RegistoDeAtas.RemoveRange(_context.RegistoDeAtas.Where(a => a.NºProcedimento == ProcedimentoID));
+                _context.WorkflowProcedimentosCcp.RemoveRange(_context.WorkflowProcedimentosCcp.Where(w => w.NºProcedimento == ProcedimentoID));
+                _context.EmailsProcedimentosCcp.RemoveRange(_context.EmailsProcedimentosCcp.Where(ep => ep.NºProcedimento == ProcedimentoID));
+                _context.LinhasPEncomendaProcedimentosCcp.RemoveRange(_context.LinhasPEncomendaProcedimentosCcp.Where(le => le.NºProcedimento == ProcedimentoID));
+                _context.FluxoTrabalhoListaControlo.RemoveRange(_context.FluxoTrabalhoListaControlo.Where(f => f.No == ProcedimentoID));
+                _context.TemposPaCcp.RemoveRange(_context.TemposPaCcp.Where(t => t.NºProcedimento == ProcedimentoID));
+
                 _context.ProcedimentosCcp.RemoveRange(_context.ProcedimentosCcp.Where(p => p.Nº == ProcedimentoID));
                 _context.SaveChanges();
 
-                __DeleteAllElementosJuriRelatedToProcedimento(ProcedimentoID);
-                __DeleteAllNotasProcedimentoRelatedToProcedimento(ProcedimentoID);
-                __DeleteAllRegistoDeAtasRelatedToProcedimento(ProcedimentoID);
-                __DeleteAllWorkflowsRelatedToProcedimento(ProcedimentoID);
-                __DeleteAllEmailsRelatedToProcedimento(ProcedimentoID);
-                __DeleteAllLinhasParaEncomendaRelatedToProcedimento(ProcedimentoID);
-                __DeleteAllCheklistControloRelatedToProcedimento(ProcedimentoID);
-                __DeleteTemposPaCcp(ProcedimentoID);
+                //__DeleteAllElementosJuriRelatedToProcedimento(ProcedimentoID);
+                //__DeleteAllNotasProcedimentoRelatedToProcedimento(ProcedimentoID);
+                //__DeleteAllRegistoDeAtasRelatedToProcedimento(ProcedimentoID);
+                //__DeleteAllWorkflowsRelatedToProcedimento(ProcedimentoID);
+                //__DeleteAllEmailsRelatedToProcedimento(ProcedimentoID);
+                //__DeleteAllLinhasParaEncomendaRelatedToProcedimento(ProcedimentoID);
+                //__DeleteAllCheklistControloRelatedToProcedimento(ProcedimentoID);
+                //__DeleteTemposPaCcp(ProcedimentoID);
                 
                 return true;
             }
@@ -593,6 +602,21 @@ namespace Hydra.Such.Data.Logic.CCP
             }
 
             return EmailsView;
+        }
+        public static List<EmailsProcedimentoCCPView> GetAllEmailsView(string ProcedimentoID)
+        {
+            List<EmailsProcedimentosCcp> ProcedimentoEmails = GetAllEmailsProcedimento(ProcedimentoID);
+            if(ProcedimentoEmails != null)
+            {
+                List<EmailsProcedimentoCCPView> EmailsViewList = new List<EmailsProcedimentoCCPView>();
+                foreach(var ep in ProcedimentoEmails)
+                {
+                    EmailsViewList.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ep));
+                }
+
+                return EmailsViewList;
+            }
+            return null;
         }
 
         public static bool __CreateEmailProcedimento(EmailsProcedimentosCcp Email)

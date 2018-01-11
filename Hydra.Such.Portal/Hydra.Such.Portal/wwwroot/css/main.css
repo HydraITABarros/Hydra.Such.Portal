@@ -57,8 +57,11 @@ ul.nav li:hover {
     padding: 0;
 }
 /* Custom General Tags */
-
-
+.imgcenter {
+    margin: auto;
+    width: 60%;
+    padding: 10px;
+}
 /* Custom General Classes */
 .title {
     text-align: center;
@@ -175,6 +178,11 @@ ul.nav li:hover {
 .toastError {
     border-radius: 8px;
     background-color: #FA1114;
+    color: black;
+}
+.toastMultiple {
+    border-radius: 8px;
+    background-color: #cecece;
     color: black;
 }
 /* Custom General Classes */

@@ -8,5 +8,26 @@ namespace Hydra.Such.Data.ViewModel
     {
         public int eReasonCode { get; set; }
         public string eMessage { get; set; }
+
+        public List<TraceInformation> eMessages { get; set; }
+
+        public ErrorHandler()
+        {
+            eMessages = new List<TraceInformation>();
+        }
     }
+    public struct TraceInformation
+    {
+        public TraceInformation(TraceType type, string message)
+        {
+            Type = type;
+            Message = message;
+        }
+
+        public TraceType Type { get; private set; }
+        public string Message { get; private set; }
+    }
+
+    public enum TraceType
+    { Error, Success /*, Warning, Information*/}
 }

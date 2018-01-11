@@ -4,33 +4,92 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.Logic.Request;
+using Hydra.Such.Data.Logic.Compras;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Compras;
 
 namespace Hydra.Such.Portal.Services
 {
+    public class CreatePrePurchOrderResult
+    {
+        public bool CompletedSuccessfully { get; set; }
+        public string NAVPrePurchOrderId { get; set; }
+        public string ErrorMessage { get; set; }
+
+        public CreatePrePurchOrderResult()
+        {
+            this.CompletedSuccessfully = false;
+        }
+    }
+
     public class RequisitionService
     {
-        private readonly NAVWSConfigurations _configws;
+        private readonly NAVWSConfigurations configws;
+        private readonly string changedByUserName;
 
-        public RequisitionService(NAVWSConfigurations NAVWSConfigs)
+        public RequisitionService(NAVWSConfigurations NAVWSConfigs, string logChangesAsUserName)
         {
-            _configws = NAVWSConfigs;
+            this.configws = NAVWSConfigs;
+            this.changedByUserName = logChangesAsUserName;
         }
 
-        public ErrorHandler CreatePrePurchaseOrderFor(RequisitionViewModel requisition)
+        public RequisitionViewModel ValidateRequisition(RequisitionViewModel requisition)
         {
-            ErrorHandler status = new ErrorHandler();
-            
             if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0 && requisition.State == RequisitionStates.Approved)
             {
-                /*
-                    Filtrar as linhas da requisição cujos campos ‘Mercado Local’ seja = true, ‘Validado Compras’=false e ‘Quandidade Requerida’ > 0;
-                    18-12-2017: Indicação para agrupar por fornecedor para criação de cabeçalhos e linhas na tab. Compras do NAV.
-                */
-                //use for database update later
                 var linesToValidate = requisition.Lines
+                    .Where(x => x.QuantityRequired != null && x.QuantityRequired.Value > 0)
+                    .ToList();
+
+                if (linesToValidate.Count() > 0)
+                {
+                    requisition.State = RequisitionStates.Validated;
+                    requisition.ResponsibleValidation = this.changedByUserName;
+                    requisition.ValidationDate = DateTime.Now;
+
+                    linesToValidate.ForEach(item =>
+                    {
+                        item.QuantityToProvide = item.QuantityRequired;
+                        item.UpdateUser = this.changedByUserName;
+                    });
+
+                    var updatedReq = DBRequest.UpdateHeaderAndLines(requisition.ParseToDB());
+                    if (updatedReq != null)
+                    {
+                        requisition = updatedReq.ParseToViewModel();
+                        requisition.eReasonCode = 1;
+                        requisition.eMessage = "Requisição validada com sucesso.";
+                    }
+                    else
+                    {
+                        requisition.eReasonCode = 3;
+                        requisition.eMessage = "Ocorreu um erro ao validar a requisição.";
+                    }
+                }
+                else
+                {
+                    requisition.eReasonCode = 3;
+                    requisition.eMessage = "Não existem linhas que cumpram os requisitos de validação.";
+                }
+            }
+            else
+            {
+                requisition = new RequisitionViewModel()
+                {
+                    eReasonCode = 3,
+                    eMessage = " O estado da requisição e / ou linhas não cumprem os requisitos de validação.",
+                };
+            }
+            return requisition;
+        }
+
+        public RequisitionViewModel ValidateLocalMarketFor(RequisitionViewModel requisition)
+        {            
+            if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0 && requisition.State == RequisitionStates.Approved)
+            {
+                //use for database update later
+                var requisitionLines = requisition.Lines
                     .Where(x =>
                         x.LocalMarket != null
                         && x.PurchaseValidated != null
@@ -40,7 +99,11 @@ namespace Hydra.Such.Portal.Services
                         && x.QuantityRequired.Value > 0)
                     .ToList();
 
-                var supplierProducts = linesToValidate.GroupBy(x =>
+                List<PurchOrderDTO> purchOrders = new List<PurchOrderDTO>();
+
+                try
+                {
+                    purchOrders = requisitionLines.GroupBy(x =>
                             x.SupplierNo,
                             x => x,
                             (key, items) => new PurchOrderDTO
@@ -66,250 +129,335 @@ namespace Hydra.Such.Portal.Services
                                 .ToList()
                             })
                     .ToList();
-
-                if (supplierProducts.Count() > 0)
+                }
+                catch
                 {
-                    string executionReport = "Relatório de validação de mercado local: ";
-                    bool hasErros = false;
-                    supplierProducts.ForEach(purchFromSupplier =>
+                    throw new Exception("Ocorreu um erro ao agrupar as linhas.");
+                }
+
+                if (purchOrders.Count() > 0)
+                {
+                    purchOrders.ForEach(purchOrder =>
                     {
-                        Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderService.CreateAsync(purchFromSupplier, _configws);
                         try
                         {
-                            createPurchaseHeaderTask.Wait();
-                            if (createPurchaseHeaderTask.IsCompletedSuccessfully)
+                            var result = CreateNAVPurchaseOrderFor(purchOrder);
+                            if (result.CompletedSuccessfully)
                             {
-                                purchFromSupplier.NAVPrePurchOrderId = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
+                                //Update Requisition Lines
+                                requisitionLines.ForEach(line =>
+                                   line.CreatedOrderNo = result.NAVPrePurchOrderId);
 
-                                executionReport += string.Format("Criada a pré-compra {0}.", purchFromSupplier.NAVPrePurchOrderId);
-                                Task<WSPurchaseInvLine.CreateMultiple_Result> createPurchaseLinesTask = NAVPurchaseLineService.CreateMultipleAsync(purchFromSupplier, _configws);
-                                try
+                                bool linesUpdated = DBRequestLine.Update(requisitionLines.ParseToDB());
+                                if (linesUpdated)
                                 {
-                                    createPurchaseLinesTask.Wait();
-                                    if (createPurchaseLinesTask.IsCompletedSuccessfully)
-                                    {
-                                        executionReport += string.Format(" Criadas linhas de pré-compra com sucesso.");
-                                    }
-                                    else
-                                    {
-                                        executionReport += string.Format(" Não foi possivel criar as linhas de pré-compra.");
-                                    }
+                                    requisition.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
                                 }
-                                catch (Exception ex)
-                                {
-                                    hasErros = true;
-                                    executionReport += string.Format(" Ocorreu um erro ao criar as linhas de pré-compra no NAV.");
-                                }
-                            }
-                            else
-                            {
-                                executionReport += string.Format(" Ocorreu um erro ao criar a pré-compra para o fornecedor com o ID:{0}.", purchFromSupplier.SupplierId);
                             }
                         }
-                        catch (Exception ex)
+                        catch
                         {
-                            hasErros = true;
-                            executionReport += string.Format(" Ocorreu um erro ao criar a pré-compra no NAV.");
+                            requisition.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao criar encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
                         }
                     });
-                    status.eReasonCode = hasErros ? 2 : 1;
-                    status.eMessage = executionReport;
+
+                    if (requisition.eMessages.Any(x => x.Type == TraceType.Success))
+                    {
+                        //Refresh lines - Get from db
+                        var updatedLines = DBRequestLine.GetAllByRequisiçãos(requisition.RequisitionNo);
+                        if (updatedLines != null)
+                        {
+                            requisition.Lines = updatedLines.ParseToViewModel();
+                        }
+                    }
+
+                    if (requisition.eMessages.Any(x => x.Type == TraceType.Error))
+                    {
+                        requisition.eReasonCode = 2;
+                        requisition.eMessage = "Ocorram erros ao validar o mercado local.";
+                    }
+                    else
+                    {
+                        requisition.eReasonCode = 1;
+                        requisition.eMessage = "Mercado local validado com sucesso.";
+                    }
                 }
                 else
                 {
-                    status.eReasonCode = 3;
-                    status.eMessage = " Não existem linhas que cumpram os requisitos de validação.";
+                    requisition.eReasonCode = 3;
+                    requisition.eMessage = "Não existem linhas que cumpram os requisitos de validação.";
                 }
             }
             else
             {
-                status.eReasonCode = 3;
-                status.eMessage = " O estado da requisição e / ou linhas não cumprem os requisitos de validação.";
+                requisition.eReasonCode = 3;
+                requisition.eMessage = "O estado da requisição e / ou linhas não cumprem os requisitos de validação.";
             }
-            return status;
+            return requisition;
         }
-        
+
+        public RequisitionViewModel CreatePurchaseOrderFor(RequisitionViewModel requisition)
+        {
+            if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0)
+            {
+                //use for database update later
+                var requisitionLines = requisition.Lines;
+
+                List<PurchOrderDTO> purchOrders = new List<PurchOrderDTO>();
+
+                try
+                {
+                    purchOrders = requisitionLines.GroupBy(x =>
+                                x.SupplierNo,
+                                x => x,
+                                (key, items) => new PurchOrderDTO
+                                {
+                                    SupplierId = key,
+                                    RequisitionId = requisition.RequisitionNo,
+                                    CenterResponsibilityCode = requisition.CenterResponsibilityCode,
+                                    FunctionalAreaCode = requisition.FunctionalAreaCode,
+                                    RegionCode = requisition.RegionCode,
+                                    Lines = items.Select(line => new PurchOrderLineDTO()
+                                    {
+                                        LineId = line.LineNo,
+                                        Type = line.Type,
+                                        Code = line.Code,
+                                        Description = line.Description,
+                                        ProjectNo = line.ProjectNo,
+                                        QuantityRequired = line.QuantityRequired,
+                                        UnitCost = line.UnitCost,
+                                        LocationCode = line.LocalCode,
+                                        OpenOrderNo = line.OpenOrderNo,
+                                        OpenOrderLineNo = line.OpenOrderLineNo
+                                    })
+                                    .ToList()
+                                })
+                        .ToList();
+                }
+                catch
+                {
+                    throw new Exception("Ocorreu um erro ao agrupar as linhas.");
+                }
+
+                if (purchOrders.Count() > 0)
+                {
+                    purchOrders.ForEach(purchOrder =>
+                    {
+                        try
+                        {
+                            var result = CreateNAVPurchaseOrderFor(purchOrder);
+                            if (result.CompletedSuccessfully)
+                            {
+                                //Update Requisition Lines
+                                requisition.Lines.ForEach(line =>
+                                {
+                                    line.CreatedOrderNo = result.NAVPrePurchOrderId;
+                                    line.UpdateUser = this.changedByUserName;
+                                });
+
+                                bool linesUpdated = DBRequestLine.Update(requisition.Lines.ParseToDB());
+                                if (linesUpdated)
+                                {
+                                    requisition.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            requisition.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao criar encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
+                        }
+                    });
+
+                    if (requisition.eMessages.Any(x => x.Type == TraceType.Success))
+                    {
+                        //Refresh lines - Get from db
+                        var updatedLines = DBRequestLine.GetAllByRequisiçãos(requisition.RequisitionNo);
+                        if (updatedLines != null)
+                        {
+                            requisition.Lines = updatedLines.ParseToViewModel();
+                        }
+                    }
+
+                    if (requisition.eMessages.Any(x => x.Type == TraceType.Error))
+                    {
+                        requisition.eReasonCode = 2;
+                        requisition.eMessage = "Ocorram erros ao criar encomenda de compra.";
+                    }
+                    else
+                    {
+                        requisition.eReasonCode = 1;
+                        requisition.eMessage = "Encomenda de compra criada com sucesso.";
+                    }
+                }
+                else
+                {
+                    requisition.eReasonCode = 3;
+                    requisition.eMessage = "Não existem linhas que cumpram os requisitos de validação do mercado local.";
+                }
+            }
+            return requisition;
+        }
+
+        public RequisitionViewModel SendPrePurchaseFor(RequisitionViewModel requisition)
+        {
+            if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0 && requisition.State == RequisitionStates.Validated)
+            {
+                //use for later database update
+                var requisitionLines = requisition.Lines
+                    .Where(x =>
+                        x.SubmitPrePurchase != null
+                        && x.SubmitPrePurchase.Value)
+                    .ToList();
+
+                var prePurchOrderLines = requisitionLines
+                    .Select(line => new PrePurchOrderLineViewModel()
+                    {
+                        RequisitionNo = line.RequestNo,
+                        RequisitionLineNo = line.LineNo,
+                        ProductCode = line.Code,
+                        ProductDescription = line.Description,
+                        UnitOfMeasureCode = line.UnitMeasureCode,
+                        LocationCode = line.LocalCode,
+                        QuantityAvailable = line.QuantityAvailable,
+                        UnitCost = line.UnitCost,
+                        ProjectNo = line.ProjectNo,
+                        RegionCode = line.RegionCode,
+                        FunctionalAreaCode = line.FunctionalAreaCode,
+                        CenterResponsibilityCode = line.CenterResponsibilityCode,
+                        CreateUser = this.changedByUserName,
+                        SupplierNo = line.SupplierNo,
+                    })
+                    .ToList();
+
+                if (prePurchOrderLines.Count() > 0)
+                {
+                    bool success = false;
+                    try
+                    {
+                        //Update Requisition Lines
+                        requisitionLines.ForEach(line =>
+                        {
+                            line.SendPrePurchase = true;
+                            line.UpdateUser = this.changedByUserName;
+                        });
+
+                        var createdLines = DBPrePurchOrderLines.CreateAndUpdateReqLines(prePurchOrderLines.ParseToDB(), requisitionLines.ParseToDB());
+                        if (createdLines != null)
+                        {
+                            var updatedLines = DBRequestLine.GetAllByRequisiçãos(requisition.RequisitionNo);
+                            if (updatedLines != null)
+                            {
+                                requisition.Lines = updatedLines.ParseToViewModel();
+                            }
+                            success = true;
+                        }
+                    }
+                    catch { }
+
+                    if (success)
+                    {
+                        requisition.eReasonCode = 1;
+                        requisition.eMessage = "Pré-Encomenda enviada com sucesso";
+                    }
+                    else
+                    {
+                        requisition.eReasonCode = 2;
+                        requisition.eMessage = "Ocorreu um erro ao enviar a pré-encomenda.";
+                    }
+                }
+                else
+                {
+                    requisition.eReasonCode = 2;
+                    requisition.eMessage = " Não existem linhas para enviar.";
+                }
+            }
+            else
+            {
+                requisition.eReasonCode = 2;
+                requisition.eMessage = " O estado da requisição e / ou linhas não cumprem os requisitos.";
+            }
+            return requisition;
+        }
+
         public ErrorHandler CreateMarketConsultFor(RequisitionViewModel requisition)
         {
             throw new NotImplementedException("CreateMarketConsultFor");
         }
 
-        public ErrorHandler CreatePurchaseOrderFor(RequisitionViewModel requisition)
+        public ErrorHandler CreateTransferShipmentFor(RequisitionViewModel requisition)
         {
-            ErrorHandler status = new ErrorHandler();
-
             if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0)
             {
-                //use for database update later
-                var linesToCreateFrom = requisition.Lines;
-
-                var supplierProducts = linesToCreateFrom.GroupBy(x =>
-                            x.SupplierNo,
-                            x => x,
-                            (key, items) => new PurchOrderDTO
-                            {
-                                SupplierId = key,
-                                RequisitionId = requisition.RequisitionNo,
-                                CenterResponsibilityCode = requisition.CenterResponsibilityCode,
-                                FunctionalAreaCode = requisition.FunctionalAreaCode,
-                                RegionCode = requisition.RegionCode,
-                                Lines = items.Select(line => new PurchOrderLineDTO()
-                                {
-                                    LineId = line.LineNo.Value,
-                                    Type = line.Type,
-                                    Code = line.Code,
-                                    Description = line.Description,
-                                    ProjectNo = line.ProjectNo,
-                                    QuantityRequired = line.QuantityRequired,
-                                    UnitCost = line.UnitCost,
-                                    LocationCode = line.LocalCode,
-                                    OpenOrderNo = line.OpenOrderNo,
-                                    OpenOrderLineNo = line.OpenOrderLineNo
-                                })
-                                .ToList()
-                            })
-                    .ToList();
-
-                if (supplierProducts.Count() > 0)
+                TransferShipment transferShipment = new TransferShipment();
+                transferShipment.ProjectNo = requisition.ProjectNo;
+                transferShipment.Comments = requisition.Comments;
+                transferShipment.FunctionalAreaNo = requisition.FunctionalAreaCode;
+                transferShipment.RequisitionNo = requisition.RequisitionNo;
+                transferShipment.Lines = requisition.Lines.Select(line => new TransferShipmentLine()
                 {
-                    string executionReport = "Relatório: ";
-                    bool hasErros = false;
-                    supplierProducts.ForEach(purchFromSupplier =>
+                    ProductNo = line.Code,
+                    ProductDescription = line.Description,
+                    Quantity = line.QuantityToProvide,
+                    UnitOfMeasureNo = line.UnitMeasureCode,
+                    UnitCost = line.UnitCost,
+                    RegionNo = line.RegionCode,
+                    FunctionalAreaNo = line.FunctionalAreaCode,
+                    CenterResponsibilityNo = line.CenterResponsibilityCode
+                }).ToList();
+
+                Task<WSTransferShipmentHeader.Create_Result> createTransferShipHeaderTask = NAVTransferShipmentService.CreateHeaderAsync(transferShipment, configws);
+                createTransferShipHeaderTask.Wait();
+                if (createTransferShipHeaderTask.IsCompletedSuccessfully)
+                {
+                    transferShipment.TransferShipmentNo = createTransferShipHeaderTask.Result.WSCabGuiaTransporte.Nº_Guia_Transporte;
+
+                    Task<WSTransferShipmentLine.CreateMultiple_Result> createTransferShipLinesTask = NAVTransferShipmentService.CreateLinesAsync(transferShipment, configws);
+                    createTransferShipLinesTask.Wait();
+                    if (createTransferShipLinesTask.IsCompletedSuccessfully)
                     {
-                        try
+                        Task<WSGenericCodeUnit.FxPostShipmentDoc_Result> createTransferShipDocTask = WSGeneric.CreateTransferShipment(transferShipment.TransferShipmentNo, configws);
+                        createTransferShipDocTask.Wait();
+                        if (createTransferShipDocTask.IsCompletedSuccessfully)
                         {
-                            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderService.CreateAsync(purchFromSupplier, _configws);
-                            createPurchaseHeaderTask.Wait();
-                            if (createPurchaseHeaderTask.IsCompletedSuccessfully)
-                            {
-                                purchFromSupplier.NAVPrePurchOrderId = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
 
-                                try
-                                {
-                                    Task<WSPurchaseInvLine.CreateMultiple_Result> createPurchaseLinesTask = NAVPurchaseLineService.CreateMultipleAsync(purchFromSupplier, _configws);
-                                    createPurchaseLinesTask.Wait();
-                                    if (createPurchaseLinesTask.IsCompletedSuccessfully)
-                                    {
-                                        try
-                                        {
-                                            Task<WSGenericCodeUnit.FxCabimento_Result> createPurchOrderTask = WSGeneric.CreatePurchaseOrderFitting(purchFromSupplier.NAVPrePurchOrderId, _configws);
-                                            createPurchOrderTask.Wait();
-                                            if (createPurchOrderTask.IsCompletedSuccessfully)
-                                            {
-                                                
-                                                //TODO: As linhas da requisição devem ficar com a informação do nº da encomeda compromisso e nº encomenda cabimento; O Nº da requisição e linha deverão passar para a linha da encomenda compromisso
-                                                //Get id's from NAV. createPurchOrderTask.Result...
-                                                string tempPurchOrderFitId = "";
-                                                //string tempPurchOrderCommitmentId = "";
-                                                //var linesToUpdate = linesToCreateFrom.Where(x => purchFromSupplier.Lines.Select(y => y.LineId).ToArray().Contains(x.LineNo.Value)).ToList();
-
-                                                //purchFromSupplier.Lines.ForEach(line =>
-                                                //{
-                                                //    var lineToUpdate = linesToUpdate.FirstOrDefault(x => x.LineNo == line.LineId);
-                                                //    if (lineToUpdate != null)
-                                                //    {
-                                                //        lineToUpdate.PurchOrderFitId = tempPurchOrderFitId;
-                                                //        lineToUpdate.PurchOrderCommitmentId = tempPurchOrderCommitmentId;
-                                                //    }
-                                                //});
-                                                //UpdateLines(linesToUpdate);
-                                            }
-                                            else
-                                            {
-
-                                            }
-                                        }
-                                        catch
-                                        {
-
-                                        }
-                                    }
-                                    else
-                                    {
-                                        executionReport += string.Format(" Não foi possivel criar as linhas de pré-compra.");
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    hasErros = true;
-                                    executionReport += string.Format(" Ocorreu um erro ao criar as linhas de pré-compra no NAV.");
-                                }
-                            }
-                            else
-                            {
-                                executionReport += string.Format("Ocorreu um erro ao criar a pré-compra para o fornecedor com o ID:{0}.", purchFromSupplier.SupplierId);
-                            }
                         }
-                        catch (Exception ex)
-                        {
-                            hasErros = true;
-                            executionReport += string.Format(" Ocorreu um erro ao criar a pré-compra no NAV.");
-                        }
-                    });
-                    status.eReasonCode = hasErros ? 2 : 1;
-                    status.eMessage = executionReport;
+                    }
                 }
-                else
-                {
-                    status.eReasonCode = 3;
-                    status.eMessage = "Não existem linhas que cumpram os requisitos de validação do mercado local.";
-                }
+
             }
-            return status;
+            return requisition;
         }
-
-        public ErrorHandler CreateTransportationGuideFor(RequisitionViewModel requisition)
-        {
-            throw new NotImplementedException("CreatePurchaseOrderCommitmentFrom");
-        }
-
-        public ErrorHandler SendPrePurchaseFor(RequisitionViewModel requisition)
-        {
-            throw new NotImplementedException("CreatePurchaseOrderCommitmentFrom");
-        }
-
-        private bool UpdateLines(List<RequisitionLineViewModel> linesToUpdate)
-        {
-            return DBRequestLine.Update(linesToUpdate.ParseToDB());
-
-        }
-
-        public class CreatePrePurchOrderResult
-        {
-            public bool IsCompletedSuccessfully { get; set; }
-            public string NAVPrePurchOrderId { get; set; }
-            public string ErrorMessage { get; set; }
-
-            public CreatePrePurchOrderResult()
-            {
-                this.IsCompletedSuccessfully = false;
-            }
-        }
-
-        private CreatePrePurchOrderResult CreatePrePurchaseOrderFrom(PurchOrderDTO purchOrderToSupplier)
+        
+        private CreatePrePurchOrderResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder)
         {
             CreatePrePurchOrderResult result = new CreatePrePurchOrderResult();
-            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderService.CreateAsync(purchOrderToSupplier, _configws);
-            try
+
+            Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderService.CreateAsync(purchOrder, configws);
+            createPurchaseHeaderTask.Wait();
+            if (createPurchaseHeaderTask.IsCompletedSuccessfully)
             {
-                createPurchaseHeaderTask.Wait();
-                if (createPurchaseHeaderTask.IsCompletedSuccessfully)
+                result.NAVPrePurchOrderId = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
+
+                Task<WSPurchaseInvLine.CreateMultiple_Result> createPurchaseLinesTask = NAVPurchaseLineService.CreateMultipleAsync(purchOrder, configws);
+                createPurchaseLinesTask.Wait();
+                if (createPurchaseLinesTask.IsCompletedSuccessfully)
                 {
-                    result.NAVPrePurchOrderId = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
-                    
-                    //TODO: Create lines
-
-
-
-                    result.IsCompletedSuccessfully = true;
+                    try
+                    {
+                        /*
+                         *  Swallow errors at this stage as they will be managed in NAV
+                         */
+                        Task<WSGenericCodeUnit.FxCabimento_Result> createPurchOrderTask = WSGeneric.CreatePurchaseOrder(purchOrder.NAVPrePurchOrderId, configws);
+                        createPurchOrderTask.Wait();
+                        if (createPurchOrderTask.IsCompletedSuccessfully)
+                        {
+                            result.CompletedSuccessfully = true;
+                        }
+                    }
+                    catch { }
                 }
-            }
-            catch (Exception ex)
-            {
-                result.ErrorMessage = ex.Message;
             }
             return result;
         }
-        
     }
 }

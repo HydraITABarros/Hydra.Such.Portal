@@ -317,6 +317,11 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 39,
                 Value = "Necessidade de Compras"
             },
+            new EnumData()
+            {
+                Id = 40,
+                Value = "Fichas Tecnicas de Pratos"
+            },
         };
 
         public static readonly List<EnumData> ProposalStatus = new List<EnumData>(){
@@ -1711,6 +1716,74 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 2,
                 Value = "Requisições Simplificadas"
+            }
+        };
+
+        public static readonly List<EnumData> CookingTechniqueTypes = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Assado"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Cozido"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Estufado"
+            },
+            new EnumData
+            {
+                Id = 4,
+                Value = "Frito"
+            },
+            new EnumData
+            {
+                Id = 5,
+                Value = "Grelhado"
+            },
+            new EnumData
+            {
+                Id = 6,
+                Value = "Guisado"
+            },
+            new EnumData
+            {
+                Id = 7,
+                Value = "Gratinado"
+            },
+            new EnumData
+            {
+                Id = 8,
+                Value = "Salteado"
+            },
+            new EnumData
+            {
+                Id = 9,
+                Value = "Misto"
+            },
+            new EnumData
+            {
+                Id = 10,
+                Value = "Ao natural"
+            }
+        };
+
+        public static readonly List<EnumData> LinesRecTechnicPlastesType = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Prato"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Produto"
             }
         };
 

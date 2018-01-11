@@ -31,7 +31,13 @@ namespace Hydra.Such.Data.Logic
                         {
                             Code = (string)temp.No_,
                             Name = (string)temp.Description,
-                            MeasureUnit = (string)temp.Base_Unit_of_Measure
+                            MeasureUnit = (string)temp.Base_Unit_of_Measure,
+                            ItemCategoryCode = (string)temp.Item_Category_Code,
+                            ProductGroupCode = (string)temp.Product_Group_Code,
+                            VendorProductNo = (string)temp.Vendor_Item_No_,
+                            LastCostDirect = (decimal)temp.Last_Direct_Cost,
+                            VendorNo = (string)temp.Vendor_No_
+
                         });
                     }
                 }
