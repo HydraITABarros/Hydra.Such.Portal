@@ -118,6 +118,21 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
+        public static List<RequisiçõesSimplificadas> GetByApprovals(int approvalTrue)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.RequisiçõesSimplificadas.Where(x => x.Estado == approvalTrue).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         #region Parses
         public static SimplifiedRequisitionViewModel ParseToViewModel(RequisiçõesSimplificadas x)
         {
