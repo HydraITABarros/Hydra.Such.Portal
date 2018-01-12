@@ -140,9 +140,11 @@ namespace Hydra.Such.Data.NAV
         
         public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineListProject(List<SPInvoiceListViewModel> LinesList, String HeaderNo, NAVWSConfigurations WSConfigurations)
         {
+            int counter = 0;
             WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
                x => new WSCreatePreInvoiceLine.WsPreInvoiceLine
                { 
+                   
                    Unit_PriceSpecified = true,
                    Unit_Cost_LCYSpecified = true,
                    Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
@@ -158,7 +160,8 @@ namespace Hydra.Such.Data.NAV
                    Location_Code = x.LocationCode,
                    Unit_Price = (decimal)x.UnitPrice,
                    Unit_Cost_LCY = (decimal)x.UnitCost,
-                   Line_No = x.LineNo
+                   Line_No = counter += 10000,
+                   Line_NoSpecified = true
                    //Job_Journal_Line_No_Portal = x.LineNo,
                    //Job_Journal_Line_No_PortalSpecified = true,
 
