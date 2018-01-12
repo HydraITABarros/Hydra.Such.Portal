@@ -104,6 +104,13 @@
 
         @*POPULATE Update*@
 
+        <iron-ajax last-response="{{checkSession}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_check"
+                   on-response="_sessionResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <iron-ajax last-response="{{result}}"
                    method="post"
@@ -245,12 +252,25 @@
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="ddvendorItemNo" name="ddvendorItemNo" label="Cód. Produto Fornecedor" value="{{result.vendorItemNo}}"></vaadin-text-field>
-                                        </div>                           
+                                        </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="dditemCategoryCode" name="dditemCategoryCode" label="Cód. Categoria Produto" value="{{result.codeProcuctCategory}}" disabled></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="ddproductGroupCode" name="ddproductGroupCode" label="Cód. Grupo Produto" value="{{result.codeProcuctGroup}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-combo-box items="[[UnitsProductList]]" id="ddunitsProductCod" name="ddunitsProductCod" label="Cód Unidade Medida Produto" item-value-path="id" item-label-path="id" value="{{result.codeUnitMeasure}}">
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.value]]</div>
+                                                            <div>[[item.id]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="ddunitCost" type="number" name="ddunitCost" label="Custo Unitário" value="{{result.unitCost}}"></vaadin-text-field>
@@ -346,7 +366,8 @@
                             LastCostDirect: this.$.ddlastCostDirect.value,
                             CodeProcuctCategory: this.$.dditemCategoryCode.value,
                             CodeProcuctGroup: this.$.ddproductGroupCode.value,
-                            PriceSale: this.$.ddpriceSales.value                           
+                            PriceSale: this.$.ddpriceSales.value,
+                            CodeUnitMeasure: this.$.ddunitsProductCod.value
                         }
                      
                             this.$.ajax_update.url = "/Nutricao/CreateUnitStockeeping";
@@ -372,7 +393,8 @@
                             LastCostDirect: this.$.ddlastCostDirect.value,
                             CodeProcuctCategory: this.$.dditemCategoryCode.value,
                             CodeProcuctGroup: this.$.ddproductGroupCode.value,
-                            PriceSale: this.$.ddpriceSales.value
+                            PriceSale: this.$.ddpriceSales.value,
+                            CodeUnitMeasure: this.$.ddunitsProductCod.value
                         }
                         this.$.ajax_update.url = "/Nutricao/UpdateUnitStockeeping";
                         this.$.ajax_update.body = JSON.stringify(objectNew);
@@ -397,7 +419,8 @@
                             LastCostDirect: this.$.ddlastCostDirect.value,
                             CodeProcuctCategory: this.$.dditemCategoryCode.value,
                             CodeProcuctGroup: this.$.ddproductGroupCode.value,
-                            PriceSale: this.$.ddpriceSales.value
+                            PriceSale: this.$.ddpriceSales.value,
+                            CodeUnitMeasure: this.$.ddunitsProductCod.value
                         }
 
                         this.$.ajax_update.url = "/Nutricao/DeleteUnitStockeeping";
@@ -434,6 +457,7 @@
                         this.$.dditemCategoryCode.value = "",
                         this.$.ddproductGroupCode.value = "",
                         this.$.ddpriceSales.value = "",
+                        this.$.ddunitsProductCod.value="",
                         this.$.ddproductNo.disabled = false;
                     }
                 },
@@ -447,10 +471,16 @@
 
                 },
                 _goProductMovement: function (e) {
-                    window.location.href = "/Nutricao/MovimentoProdutos";
-                    this.$.ajax_update.url = "/Nutricao/GetMovementProductID";
-                    this.$.ajax_update.body = JSON.stringify(objectNew);
-                    this.$.ajax_update.generateRequest();
+                    this.$.ajax_check.url = "/Nutricao/SetSessionMovimentoProduto";
+                    this.$.ajax_check.body = JSON.stringify(this.result);
+                    this.$.ajax_check.generateRequest();                  
+                },
+                _sessionResponse: function (e) {
+                   
+                    if (this.checkSession == true)
+                        window.location.href = "/Nutricao/MovimentoProdutos";
+                    else
+                        this.openToastError('Necessita de Nº Produto');
                 },
                 _redirectToList: function (e) {
                     window.location.href = "/Nutricao/UnidadeArmazenamento";                    

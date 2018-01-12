@@ -12,51 +12,51 @@ namespace WSTransferShipmentLine
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", ConfigurationName="WSTransferShipmentLine.WSLinGuiaTransporte_Port")]
-    public interface WSLinGuiaTransporte_Port
+    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", ConfigurationName="WSTransferShipmentLine.WSShipmentDocLine_Port")]
+    public interface WSShipmentDocLine_Port
     {
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wslinguiatransporte:Read", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocline:Read", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentLine.Read_Result> ReadAsync(WSTransferShipmentLine.Read request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wslinguiatransporte:ReadByRecId", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocline:ReadByRecId", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentLine.ReadByRecId_Result> ReadByRecIdAsync(WSTransferShipmentLine.ReadByRecId request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wslinguiatransporte:ReadMultiple", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocline:ReadMultiple", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentLine.ReadMultiple_Result> ReadMultipleAsync(WSTransferShipmentLine.ReadMultiple request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wslinguiatransporte:IsUpdated", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocline:IsUpdated", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentLine.IsUpdated_Result> IsUpdatedAsync(WSTransferShipmentLine.IsUpdated request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wslinguiatransporte:GetRecIdFromKey", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocline:GetRecIdFromKey", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentLine.GetRecIdFromKey_Result> GetRecIdFromKeyAsync(WSTransferShipmentLine.GetRecIdFromKey request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wslinguiatransporte:Create", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocline:Create", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentLine.Create_Result> CreateAsync(WSTransferShipmentLine.Create request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wslinguiatransporte:CreateMultiple", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocline:CreateMultiple", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentLine.CreateMultiple_Result> CreateMultipleAsync(WSTransferShipmentLine.CreateMultiple request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wslinguiatransporte:Update", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocline:Update", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentLine.Update_Result> UpdateAsync(WSTransferShipmentLine.Update request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wslinguiatransporte:UpdateMultiple", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocline:UpdateMultiple", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentLine.UpdateMultiple_Result> UpdateMultipleAsync(WSTransferShipmentLine.UpdateMultiple request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wslinguiatransporte:Delete", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocline:Delete", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentLine.Delete_Result> DeleteAsync(WSTransferShipmentLine.Delete request);
     }
@@ -64,8 +64,8 @@ namespace WSTransferShipmentLine
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte")]
-    public partial class WSLinGuiaTransporte
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline")]
+    public partial class WSShipmentDocLine
     {
         
         private string keyField;
@@ -157,6 +157,12 @@ namespace WSTransferShipmentLine
         private bool tipo_TerceiroFieldSpecified;
         
         private string nº_ClienteField;
+        
+        private string regionCode20Field;
+        
+        private string functionAreaCode20Field;
+        
+        private string responsabilityCenterCode20Field;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
@@ -787,11 +793,53 @@ namespace WSTransferShipmentLine
                 this.nº_ClienteField = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
+        public string RegionCode20
+        {
+            get
+            {
+                return this.regionCode20Field;
+            }
+            set
+            {
+                this.regionCode20Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=31)]
+        public string FunctionAreaCode20
+        {
+            get
+            {
+                return this.functionAreaCode20Field;
+            }
+            set
+            {
+                this.functionAreaCode20Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=32)]
+        public string ResponsabilityCenterCode20
+        {
+            get
+            {
+                return this.responsabilityCenterCode20Field;
+            }
+            set
+            {
+                this.responsabilityCenterCode20Field = value;
+            }
+        }
     }
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline")]
     public enum Tipo
     {
         
@@ -810,7 +858,7 @@ namespace WSTransferShipmentLine
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline")]
     public enum Estado_Equipamento
     {
         
@@ -826,7 +874,7 @@ namespace WSTransferShipmentLine
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline")]
     public enum Tipo_Terceiro
     {
         
@@ -843,17 +891,17 @@ namespace WSTransferShipmentLine
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte")]
-    public partial class WSLinGuiaTransporte_Filter
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline")]
+    public partial class WSShipmentDocLine_Filter
     {
         
-        private WSLinGuiaTransporte_Fields fieldField;
+        private WSShipmentDocLine_Fields fieldField;
         
         private string criteriaField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public WSLinGuiaTransporte_Fields Field
+        public WSShipmentDocLine_Fields Field
         {
             get
             {
@@ -882,8 +930,8 @@ namespace WSTransferShipmentLine
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte")]
-    public enum WSLinGuiaTransporte_Fields
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline")]
+    public enum WSShipmentDocLine_Fields
     {
         
         /// <remarks/>
@@ -972,19 +1020,28 @@ namespace WSTransferShipmentLine
         
         /// <remarks/>
         N_x00BA__Cliente,
+        
+        /// <remarks/>
+        RegionCode20,
+        
+        /// <remarks/>
+        FunctionAreaCode20,
+        
+        /// <remarks/>
+        ResponsabilityCenterCode20,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Read", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Read", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class Read
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
         public string Nº_Documento;
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=1)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=1)]
         public int Nº_Linha;
         
         public Read()
@@ -1001,31 +1058,31 @@ namespace WSTransferShipmentLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Read_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Read_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class Read_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
-        public WSTransferShipmentLine.WSLinGuiaTransporte WSLinGuiaTransporte;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
+        public WSTransferShipmentLine.WSShipmentDocLine WSShipmentDocLine;
         
         public Read_Result()
         {
         }
         
-        public Read_Result(WSTransferShipmentLine.WSLinGuiaTransporte WSLinGuiaTransporte)
+        public Read_Result(WSTransferShipmentLine.WSShipmentDocLine WSShipmentDocLine)
         {
-            this.WSLinGuiaTransporte = WSLinGuiaTransporte;
+            this.WSShipmentDocLine = WSShipmentDocLine;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class ReadByRecId
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
         public string recId;
         
         public ReadByRecId()
@@ -1041,45 +1098,45 @@ namespace WSTransferShipmentLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class ReadByRecId_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
-        public WSTransferShipmentLine.WSLinGuiaTransporte WSLinGuiaTransporte;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
+        public WSTransferShipmentLine.WSShipmentDocLine WSShipmentDocLine;
         
         public ReadByRecId_Result()
         {
         }
         
-        public ReadByRecId_Result(WSTransferShipmentLine.WSLinGuiaTransporte WSLinGuiaTransporte)
+        public ReadByRecId_Result(WSTransferShipmentLine.WSShipmentDocLine WSShipmentDocLine)
         {
-            this.WSLinGuiaTransporte = WSLinGuiaTransporte;
+            this.WSShipmentDocLine = WSShipmentDocLine;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class ReadMultiple
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute("filter")]
-        public WSTransferShipmentLine.WSLinGuiaTransporte_Filter[] filter;
+        public WSTransferShipmentLine.WSShipmentDocLine_Filter[] filter;
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=1)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=1)]
         public string bookmarkKey;
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=2)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=2)]
         public int setSize;
         
         public ReadMultiple()
         {
         }
         
-        public ReadMultiple(WSTransferShipmentLine.WSLinGuiaTransporte_Filter[] filter, string bookmarkKey, int setSize)
+        public ReadMultiple(WSTransferShipmentLine.WSShipmentDocLine_Filter[] filter, string bookmarkKey, int setSize)
         {
             this.filter = filter;
             this.bookmarkKey = bookmarkKey;
@@ -1090,19 +1147,19 @@ namespace WSTransferShipmentLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class ReadMultiple_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="ReadMultiple_Result", Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="ReadMultiple_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSTransferShipmentLine.WSLinGuiaTransporte[] ReadMultiple_Result1;
+        public WSTransferShipmentLine.WSShipmentDocLine[] ReadMultiple_Result1;
         
         public ReadMultiple_Result()
         {
         }
         
-        public ReadMultiple_Result(WSTransferShipmentLine.WSLinGuiaTransporte[] ReadMultiple_Result1)
+        public ReadMultiple_Result(WSTransferShipmentLine.WSShipmentDocLine[] ReadMultiple_Result1)
         {
             this.ReadMultiple_Result1 = ReadMultiple_Result1;
         }
@@ -1111,11 +1168,11 @@ namespace WSTransferShipmentLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class IsUpdated
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
         public string Key;
         
         public IsUpdated()
@@ -1131,11 +1188,11 @@ namespace WSTransferShipmentLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class IsUpdated_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="IsUpdated_Result", Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="IsUpdated_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
         public bool IsUpdated_Result1;
         
         public IsUpdated_Result()
@@ -1151,11 +1208,11 @@ namespace WSTransferShipmentLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class GetRecIdFromKey
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
         public string Key;
         
         public GetRecIdFromKey()
@@ -1171,11 +1228,11 @@ namespace WSTransferShipmentLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class GetRecIdFromKey_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetRecIdFromKey_Result", Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetRecIdFromKey_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
         public string GetRecIdFromKey_Result1;
         
         public GetRecIdFromKey_Result()
@@ -1190,168 +1247,168 @@ namespace WSTransferShipmentLine
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class Create
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
-        public WSTransferShipmentLine.WSLinGuiaTransporte WSLinGuiaTransporte;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
+        public WSTransferShipmentLine.WSShipmentDocLine WSShipmentDocLine;
         
         public Create()
         {
         }
         
-        public Create(WSTransferShipmentLine.WSLinGuiaTransporte WSLinGuiaTransporte)
+        public Create(WSTransferShipmentLine.WSShipmentDocLine WSShipmentDocLine)
         {
-            this.WSLinGuiaTransporte = WSLinGuiaTransporte;
+            this.WSShipmentDocLine = WSShipmentDocLine;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Create_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Create_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class Create_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
-        public WSTransferShipmentLine.WSLinGuiaTransporte WSLinGuiaTransporte;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
+        public WSTransferShipmentLine.WSShipmentDocLine WSShipmentDocLine;
         
         public Create_Result()
         {
         }
         
-        public Create_Result(WSTransferShipmentLine.WSLinGuiaTransporte WSLinGuiaTransporte)
+        public Create_Result(WSTransferShipmentLine.WSShipmentDocLine WSShipmentDocLine)
         {
-            this.WSLinGuiaTransporte = WSLinGuiaTransporte;
+            this.WSShipmentDocLine = WSShipmentDocLine;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class CreateMultiple
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSTransferShipmentLine.WSLinGuiaTransporte[] WSLinGuiaTransporte_List;
+        public WSTransferShipmentLine.WSShipmentDocLine[] WSShipmentDocLine_List;
         
         public CreateMultiple()
         {
         }
         
-        public CreateMultiple(WSTransferShipmentLine.WSLinGuiaTransporte[] WSLinGuiaTransporte_List)
+        public CreateMultiple(WSTransferShipmentLine.WSShipmentDocLine[] WSShipmentDocLine_List)
         {
-            this.WSLinGuiaTransporte_List = WSLinGuiaTransporte_List;
+            this.WSShipmentDocLine_List = WSShipmentDocLine_List;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class CreateMultiple_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSTransferShipmentLine.WSLinGuiaTransporte[] WSLinGuiaTransporte_List;
+        public WSTransferShipmentLine.WSShipmentDocLine[] WSShipmentDocLine_List;
         
         public CreateMultiple_Result()
         {
         }
         
-        public CreateMultiple_Result(WSTransferShipmentLine.WSLinGuiaTransporte[] WSLinGuiaTransporte_List)
+        public CreateMultiple_Result(WSTransferShipmentLine.WSShipmentDocLine[] WSShipmentDocLine_List)
         {
-            this.WSLinGuiaTransporte_List = WSLinGuiaTransporte_List;
+            this.WSShipmentDocLine_List = WSShipmentDocLine_List;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Update", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Update", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class Update
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
-        public WSTransferShipmentLine.WSLinGuiaTransporte WSLinGuiaTransporte;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
+        public WSTransferShipmentLine.WSShipmentDocLine WSShipmentDocLine;
         
         public Update()
         {
         }
         
-        public Update(WSTransferShipmentLine.WSLinGuiaTransporte WSLinGuiaTransporte)
+        public Update(WSTransferShipmentLine.WSShipmentDocLine WSShipmentDocLine)
         {
-            this.WSLinGuiaTransporte = WSLinGuiaTransporte;
+            this.WSShipmentDocLine = WSShipmentDocLine;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Update_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Update_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class Update_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
-        public WSTransferShipmentLine.WSLinGuiaTransporte WSLinGuiaTransporte;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
+        public WSTransferShipmentLine.WSShipmentDocLine WSShipmentDocLine;
         
         public Update_Result()
         {
         }
         
-        public Update_Result(WSTransferShipmentLine.WSLinGuiaTransporte WSLinGuiaTransporte)
+        public Update_Result(WSTransferShipmentLine.WSShipmentDocLine WSShipmentDocLine)
         {
-            this.WSLinGuiaTransporte = WSLinGuiaTransporte;
+            this.WSShipmentDocLine = WSShipmentDocLine;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class UpdateMultiple
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSTransferShipmentLine.WSLinGuiaTransporte[] WSLinGuiaTransporte_List;
+        public WSTransferShipmentLine.WSShipmentDocLine[] WSShipmentDocLine_List;
         
         public UpdateMultiple()
         {
         }
         
-        public UpdateMultiple(WSTransferShipmentLine.WSLinGuiaTransporte[] WSLinGuiaTransporte_List)
+        public UpdateMultiple(WSTransferShipmentLine.WSShipmentDocLine[] WSShipmentDocLine_List)
         {
-            this.WSLinGuiaTransporte_List = WSLinGuiaTransporte_List;
+            this.WSShipmentDocLine_List = WSShipmentDocLine_List;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class UpdateMultiple_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSTransferShipmentLine.WSLinGuiaTransporte[] WSLinGuiaTransporte_List;
+        public WSTransferShipmentLine.WSShipmentDocLine[] WSShipmentDocLine_List;
         
         public UpdateMultiple_Result()
         {
         }
         
-        public UpdateMultiple_Result(WSTransferShipmentLine.WSLinGuiaTransporte[] WSLinGuiaTransporte_List)
+        public UpdateMultiple_Result(WSTransferShipmentLine.WSShipmentDocLine[] WSShipmentDocLine_List)
         {
-            this.WSLinGuiaTransporte_List = WSLinGuiaTransporte_List;
+            this.WSShipmentDocLine_List = WSShipmentDocLine_List;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class Delete
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
         public string Key;
         
         public Delete()
@@ -1367,11 +1424,11 @@ namespace WSTransferShipmentLine
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", IsWrapped=true)]
     public partial class Delete_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="Delete_Result", Namespace="urn:microsoft-dynamics-schemas/page/wslinguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="Delete_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocline", Order=0)]
         public bool Delete_Result1;
         
         public Delete_Result()
@@ -1385,13 +1442,13 @@ namespace WSTransferShipmentLine
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    public interface WSLinGuiaTransporte_PortChannel : WSTransferShipmentLine.WSLinGuiaTransporte_Port, System.ServiceModel.IClientChannel
+    public interface WSShipmentDocLine_PortChannel : WSTransferShipmentLine.WSShipmentDocLine_Port, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    public partial class WSLinGuiaTransporte_PortClient : System.ServiceModel.ClientBase<WSTransferShipmentLine.WSLinGuiaTransporte_Port>, WSTransferShipmentLine.WSLinGuiaTransporte_Port
+    public partial class WSShipmentDocLine_PortClient : System.ServiceModel.ClientBase<WSTransferShipmentLine.WSShipmentDocLine_Port>, WSTransferShipmentLine.WSShipmentDocLine_Port
     {
         
     /// <summary>
@@ -1401,41 +1458,41 @@ namespace WSTransferShipmentLine
     /// <param name="clientCredentials">The client credentials</param>
     static partial void ConfigureEndpoint(System.ServiceModel.Description.ServiceEndpoint serviceEndpoint, System.ServiceModel.Description.ClientCredentials clientCredentials);
         
-        public WSLinGuiaTransporte_PortClient() : 
-                base(WSLinGuiaTransporte_PortClient.GetDefaultBinding(), WSLinGuiaTransporte_PortClient.GetDefaultEndpointAddress())
+        public WSShipmentDocLine_PortClient() : 
+                base(WSShipmentDocLine_PortClient.GetDefaultBinding(), WSShipmentDocLine_PortClient.GetDefaultEndpointAddress())
         {
-            this.Endpoint.Name = EndpointConfiguration.WSLinGuiaTransporte_Port.ToString();
+            this.Endpoint.Name = EndpointConfiguration.WSShipmentDocLine_Port.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
-        public WSLinGuiaTransporte_PortClient(EndpointConfiguration endpointConfiguration) : 
-                base(WSLinGuiaTransporte_PortClient.GetBindingForEndpoint(endpointConfiguration), WSLinGuiaTransporte_PortClient.GetEndpointAddress(endpointConfiguration))
-        {
-            this.Endpoint.Name = endpointConfiguration.ToString();
-            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
-        }
-        
-        public WSLinGuiaTransporte_PortClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
-                base(WSLinGuiaTransporte_PortClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
+        public WSShipmentDocLine_PortClient(EndpointConfiguration endpointConfiguration) : 
+                base(WSShipmentDocLine_PortClient.GetBindingForEndpoint(endpointConfiguration), WSShipmentDocLine_PortClient.GetEndpointAddress(endpointConfiguration))
         {
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
-        public WSLinGuiaTransporte_PortClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(WSLinGuiaTransporte_PortClient.GetBindingForEndpoint(endpointConfiguration), remoteAddress)
+        public WSShipmentDocLine_PortClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
+                base(WSShipmentDocLine_PortClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
         {
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
-        public WSLinGuiaTransporte_PortClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public WSShipmentDocLine_PortClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(WSShipmentDocLine_PortClient.GetBindingForEndpoint(endpointConfiguration), remoteAddress)
+        {
+            this.Endpoint.Name = endpointConfiguration.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public WSShipmentDocLine_PortClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(binding, remoteAddress)
         {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSTransferShipmentLine.Read_Result> WSTransferShipmentLine.WSLinGuiaTransporte_Port.ReadAsync(WSTransferShipmentLine.Read request)
+        System.Threading.Tasks.Task<WSTransferShipmentLine.Read_Result> WSTransferShipmentLine.WSShipmentDocLine_Port.ReadAsync(WSTransferShipmentLine.Read request)
         {
             return base.Channel.ReadAsync(request);
         }
@@ -1445,11 +1502,11 @@ namespace WSTransferShipmentLine
             WSTransferShipmentLine.Read inValue = new WSTransferShipmentLine.Read();
             inValue.Nº_Documento = Nº_Documento;
             inValue.Nº_Linha = Nº_Linha;
-            return ((WSTransferShipmentLine.WSLinGuiaTransporte_Port)(this)).ReadAsync(inValue);
+            return ((WSTransferShipmentLine.WSShipmentDocLine_Port)(this)).ReadAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSTransferShipmentLine.ReadByRecId_Result> WSTransferShipmentLine.WSLinGuiaTransporte_Port.ReadByRecIdAsync(WSTransferShipmentLine.ReadByRecId request)
+        System.Threading.Tasks.Task<WSTransferShipmentLine.ReadByRecId_Result> WSTransferShipmentLine.WSShipmentDocLine_Port.ReadByRecIdAsync(WSTransferShipmentLine.ReadByRecId request)
         {
             return base.Channel.ReadByRecIdAsync(request);
         }
@@ -1458,26 +1515,26 @@ namespace WSTransferShipmentLine
         {
             WSTransferShipmentLine.ReadByRecId inValue = new WSTransferShipmentLine.ReadByRecId();
             inValue.recId = recId;
-            return ((WSTransferShipmentLine.WSLinGuiaTransporte_Port)(this)).ReadByRecIdAsync(inValue);
+            return ((WSTransferShipmentLine.WSShipmentDocLine_Port)(this)).ReadByRecIdAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSTransferShipmentLine.ReadMultiple_Result> WSTransferShipmentLine.WSLinGuiaTransporte_Port.ReadMultipleAsync(WSTransferShipmentLine.ReadMultiple request)
+        System.Threading.Tasks.Task<WSTransferShipmentLine.ReadMultiple_Result> WSTransferShipmentLine.WSShipmentDocLine_Port.ReadMultipleAsync(WSTransferShipmentLine.ReadMultiple request)
         {
             return base.Channel.ReadMultipleAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSTransferShipmentLine.ReadMultiple_Result> ReadMultipleAsync(WSTransferShipmentLine.WSLinGuiaTransporte_Filter[] filter, string bookmarkKey, int setSize)
+        public System.Threading.Tasks.Task<WSTransferShipmentLine.ReadMultiple_Result> ReadMultipleAsync(WSTransferShipmentLine.WSShipmentDocLine_Filter[] filter, string bookmarkKey, int setSize)
         {
             WSTransferShipmentLine.ReadMultiple inValue = new WSTransferShipmentLine.ReadMultiple();
             inValue.filter = filter;
             inValue.bookmarkKey = bookmarkKey;
             inValue.setSize = setSize;
-            return ((WSTransferShipmentLine.WSLinGuiaTransporte_Port)(this)).ReadMultipleAsync(inValue);
+            return ((WSTransferShipmentLine.WSShipmentDocLine_Port)(this)).ReadMultipleAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSTransferShipmentLine.IsUpdated_Result> WSTransferShipmentLine.WSLinGuiaTransporte_Port.IsUpdatedAsync(WSTransferShipmentLine.IsUpdated request)
+        System.Threading.Tasks.Task<WSTransferShipmentLine.IsUpdated_Result> WSTransferShipmentLine.WSShipmentDocLine_Port.IsUpdatedAsync(WSTransferShipmentLine.IsUpdated request)
         {
             return base.Channel.IsUpdatedAsync(request);
         }
@@ -1486,11 +1543,11 @@ namespace WSTransferShipmentLine
         {
             WSTransferShipmentLine.IsUpdated inValue = new WSTransferShipmentLine.IsUpdated();
             inValue.Key = Key;
-            return ((WSTransferShipmentLine.WSLinGuiaTransporte_Port)(this)).IsUpdatedAsync(inValue);
+            return ((WSTransferShipmentLine.WSShipmentDocLine_Port)(this)).IsUpdatedAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSTransferShipmentLine.GetRecIdFromKey_Result> WSTransferShipmentLine.WSLinGuiaTransporte_Port.GetRecIdFromKeyAsync(WSTransferShipmentLine.GetRecIdFromKey request)
+        System.Threading.Tasks.Task<WSTransferShipmentLine.GetRecIdFromKey_Result> WSTransferShipmentLine.WSShipmentDocLine_Port.GetRecIdFromKeyAsync(WSTransferShipmentLine.GetRecIdFromKey request)
         {
             return base.Channel.GetRecIdFromKeyAsync(request);
         }
@@ -1499,7 +1556,7 @@ namespace WSTransferShipmentLine
         {
             WSTransferShipmentLine.GetRecIdFromKey inValue = new WSTransferShipmentLine.GetRecIdFromKey();
             inValue.Key = Key;
-            return ((WSTransferShipmentLine.WSLinGuiaTransporte_Port)(this)).GetRecIdFromKeyAsync(inValue);
+            return ((WSTransferShipmentLine.WSShipmentDocLine_Port)(this)).GetRecIdFromKeyAsync(inValue);
         }
         
         public System.Threading.Tasks.Task<WSTransferShipmentLine.Create_Result> CreateAsync(WSTransferShipmentLine.Create request)
@@ -1523,7 +1580,7 @@ namespace WSTransferShipmentLine
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSTransferShipmentLine.Delete_Result> WSTransferShipmentLine.WSLinGuiaTransporte_Port.DeleteAsync(WSTransferShipmentLine.Delete request)
+        System.Threading.Tasks.Task<WSTransferShipmentLine.Delete_Result> WSTransferShipmentLine.WSShipmentDocLine_Port.DeleteAsync(WSTransferShipmentLine.Delete request)
         {
             return base.Channel.DeleteAsync(request);
         }
@@ -1532,7 +1589,7 @@ namespace WSTransferShipmentLine
         {
             WSTransferShipmentLine.Delete inValue = new WSTransferShipmentLine.Delete();
             inValue.Key = Key;
-            return ((WSTransferShipmentLine.WSLinGuiaTransporte_Port)(this)).DeleteAsync(inValue);
+            return ((WSTransferShipmentLine.WSShipmentDocLine_Port)(this)).DeleteAsync(inValue);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()
@@ -1547,7 +1604,7 @@ namespace WSTransferShipmentLine
         
         private static System.ServiceModel.Channels.Binding GetBindingForEndpoint(EndpointConfiguration endpointConfiguration)
         {
-            if ((endpointConfiguration == EndpointConfiguration.WSLinGuiaTransporte_Port))
+            if ((endpointConfiguration == EndpointConfiguration.WSShipmentDocLine_Port))
             {
                 System.ServiceModel.BasicHttpBinding result = new System.ServiceModel.BasicHttpBinding();
                 result.MaxBufferSize = int.MaxValue;
@@ -1561,28 +1618,28 @@ namespace WSTransferShipmentLine
         
         private static System.ServiceModel.EndpointAddress GetEndpointAddress(EndpointConfiguration endpointConfiguration)
         {
-            if ((endpointConfiguration == EndpointConfiguration.WSLinGuiaTransporte_Port))
+            if ((endpointConfiguration == EndpointConfiguration.WSShipmentDocLine_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://such-navsql.such.local:8047/DynamicsNAV100_DEV/WS/ReplaceWithAPercentEncod" +
-                        "edCompanyName/Page/WSLinGuiaTransporte");
+                return new System.ServiceModel.EndpointAddress("http://such-navdev.such.local:7057/DynamicsNAV100_QUAL/WS/SUCH - Qualidade/Page/W" +
+                        "SShipmentDocLine");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }
         
         private static System.ServiceModel.Channels.Binding GetDefaultBinding()
         {
-            return WSLinGuiaTransporte_PortClient.GetBindingForEndpoint(EndpointConfiguration.WSLinGuiaTransporte_Port);
+            return WSShipmentDocLine_PortClient.GetBindingForEndpoint(EndpointConfiguration.WSShipmentDocLine_Port);
         }
         
         private static System.ServiceModel.EndpointAddress GetDefaultEndpointAddress()
         {
-            return WSLinGuiaTransporte_PortClient.GetEndpointAddress(EndpointConfiguration.WSLinGuiaTransporte_Port);
+            return WSShipmentDocLine_PortClient.GetEndpointAddress(EndpointConfiguration.WSShipmentDocLine_Port);
         }
         
         public enum EndpointConfiguration
         {
             
-            WSLinGuiaTransporte_Port,
+            WSShipmentDocLine_Port,
         }
     }
 }

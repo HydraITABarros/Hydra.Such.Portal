@@ -1186,7 +1186,7 @@ namespace Hydra.Such.Portal.Controllers
                             string HeaderNo = TCreatePreInvoice.Result.WSPreInvoice.No;
 
                             List<SPInvoiceListViewModel> linesList = new List<SPInvoiceListViewModel>();
-
+                            
                             foreach (var lines in data)
                             {
                                 if (lines.InvoiceToClientNo == header.InvoiceToClientNo && lines.Date == header.Date && lines.CommitmentNumber == header.CommitmentNumber && lines.ClientRequest == header.ClientRequest)

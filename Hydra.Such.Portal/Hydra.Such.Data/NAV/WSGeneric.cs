@@ -19,6 +19,7 @@ namespace Hydra.Such.Data.NAV
             navWSBinding = new BasicHttpBinding();
             navWSBinding.Security.Mode = BasicHttpSecurityMode.TransportCredentialOnly;
             navWSBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows;
+            navWSBinding.MaxReceivedMessageSize = int.MaxValue;
         }
 
         public static async Task<WSGenericCodeUnit.FxPostInvoice_Result> CreatePreInvoiceLineList(String HeaderNo, NAVWSConfigurations WSConfigurations)
@@ -47,7 +48,7 @@ namespace Hydra.Such.Data.NAV
             WSGenericCodeUnit.WsGeneric_PortClient ws_Client = new WSGenericCodeUnit.WsGeneric_PortClient(navWSBinding, WS_URL);
             ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
-
+            
             //try
             //{
             return await ws_Client.FxCabimentoAsync(prePurchHeaderNo);

@@ -42,6 +42,20 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorCriação { get; set; }
         public string UtilizadorModificação { get; set; }
+        public bool? ContêmGlúten { get; set; }
+        public bool? ÁBaseCrustáceos { get; set; }
+        public bool? ÁBaseOvos { get; set; }
+        public bool? ÁBasePeixes { get; set; }
+        public bool? ÁBaseAmendoins { get; set; }
+        public bool? ÁBaseSoja { get; set; }
+        public bool? ÁBaseLeite { get; set; }
+        public bool? ÁBaseFrutosCascaRija { get; set; }
+        public bool? ÁBaseAipo { get; set; }
+        public bool? ÁBaseMostarda { get; set; }
+        public bool? ÁBaseSementesDeSésamo { get; set; }
+        public bool? ÁBaseEnxofreESulfitos { get; set; }
+        public bool? ÁBaseTremoço { get; set; }
+        public bool? ÁBaseMoluscos { get; set; }
 
         public ClassificaçãoFichasTécnicas ClassFt1Navigation { get; set; }
         public ClassificaçãoFichasTécnicas ClassFt2Navigation { get; set; }

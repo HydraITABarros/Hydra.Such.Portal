@@ -29,20 +29,27 @@ namespace Hydra.Such.Data.NAV
 
             WSTransferShipmentHeader.Create navCreate = new WSTransferShipmentHeader.Create()
             {
-                WSCabGuiaTransporte = new WSTransferShipmentHeader.WSCabGuiaTransporte()
+                WSShipmentDocHeader = new WSTransferShipmentHeader.WSShipmentDocHeader()
                 {
                     Nº_Projecto = transferShipment.ProjectNo,
-                    Global_Dimension_1_Code = transferShipment.RegionNo,
-                    Global_Dimension_2_Code = transferShipment.FunctionalAreaNo,
-                    Global_Dimension_3_Code = transferShipment.ResponsibilityCenterNo,
+                   
+                    FunctionAreaCode20 = transferShipment.FunctionalAreaNo,
+                    RegionCode20 = transferShipment.RegionNo,
+                    ResponsabilityCenterCode20 = transferShipment.ResponsibilityCenterNo,
                     Nº_Requisição = transferShipment.RequisitionNo,
                     Observações = transferShipment.Comments,
+                    Cod_Postal_Descarga = "4700-301",
+                    Post_Code = "4700-301",
+                    Local_Descarga1 = "Local_Descarga1",
+                    Morada_Cliente = "Morada_Cliente",
+                    Data_Descarga = DateTime.Now,
+                    Data_DescargaSpecified = true
                 }
             };
 
             //Configure NAV Client
             EndpointAddress ws_URL = new EndpointAddress(WSConfigurations.WS_TransferShipmentHeader_URL.Replace("Company", WSConfigurations.WS_User_Company));
-            WSTransferShipmentHeader.WSCabGuiaTransporte_PortClient ws_Client = new WSTransferShipmentHeader.WSCabGuiaTransporte_PortClient(navWSBinding, ws_URL);
+            WSTransferShipmentHeader.WSShipmentDocHeader_PortClient ws_Client = new WSTransferShipmentHeader.WSShipmentDocHeader_PortClient(navWSBinding, ws_URL);
             ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
@@ -60,11 +67,15 @@ namespace Hydra.Such.Data.NAV
         {
             if (transferShipment == null)
                 throw new ArgumentNullException("transferShipment");
-
+            int counter = 0;
             WSTransferShipmentLine.CreateMultiple navCreate = new WSTransferShipmentLine.CreateMultiple();
-            navCreate.WSLinGuiaTransporte_List = transferShipment.Lines.Select(line =>
-                new WSTransferShipmentLine.WSLinGuiaTransporte()
+            navCreate.WSShipmentDocLine_List = transferShipment.Lines.Select(line =>
+                new WSTransferShipmentLine.WSShipmentDocLine()
                 {
+                    Nº_Linha = (counter+=10000),
+                    Nº_LinhaSpecified = true,
+                    Tipo = WSTransferShipmentLine.Tipo.Produto,
+                    TipoSpecified = true,
                     No_projecto = transferShipment.ProjectNo,
                     No = line.ProductNo,
                     Descricao = line.ProductDescription,
@@ -78,7 +89,7 @@ namespace Hydra.Such.Data.NAV
 
             //Configure NAV Client
             EndpointAddress ws_URL = new EndpointAddress(WSConfigurations.WS_TransferShipmentLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
-            WSTransferShipmentLine.WSLinGuiaTransporte_PortClient ws_Client = new WSTransferShipmentLine.WSLinGuiaTransporte_PortClient(navWSBinding, ws_URL);
+            WSTransferShipmentLine.WSShipmentDocLine_PortClient ws_Client = new WSTransferShipmentLine.WSShipmentDocLine_PortClient(navWSBinding, ws_URL);
             ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
