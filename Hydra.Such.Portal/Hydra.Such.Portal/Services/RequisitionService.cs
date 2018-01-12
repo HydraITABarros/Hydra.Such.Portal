@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Hydra.Such.Portal.Configurations;
+﻿using Hydra.Such.Data.Logic.Compras;
 using Hydra.Such.Data.Logic.Request;
-using Hydra.Such.Data.Logic.Compras;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Compras;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Hydra.Such.Portal.Services
 {
-    public class CreatePrePurchOrderResult
+    public class GenericResult
     {
         public bool CompletedSuccessfully { get; set; }
-        public string NAVPrePurchOrderId { get; set; }
+        public string ResultValue { get; set; }
         public string ErrorMessage { get; set; }
 
-        public CreatePrePurchOrderResult()
+        public GenericResult()
         {
             this.CompletedSuccessfully = false;
         }
@@ -146,7 +145,7 @@ namespace Hydra.Such.Portal.Services
                             {
                                 //Update Requisition Lines
                                 requisitionLines.ForEach(line =>
-                                   line.CreatedOrderNo = result.NAVPrePurchOrderId);
+                                   line.CreatedOrderNo = result.ResultValue);
 
                                 bool linesUpdated = DBRequestLine.Update(requisitionLines.ParseToDB());
                                 if (linesUpdated)
@@ -251,7 +250,7 @@ namespace Hydra.Such.Portal.Services
                                 //Update Requisition Lines
                                 requisition.Lines.ForEach(line =>
                                 {
-                                    line.CreatedOrderNo = result.NAVPrePurchOrderId;
+                                    line.CreatedOrderNo = result.ResultValue;
                                     line.UpdateUser = this.changedByUserName;
                                 });
 
@@ -384,59 +383,86 @@ namespace Hydra.Such.Portal.Services
             throw new NotImplementedException("CreateMarketConsultFor");
         }
 
-        public ErrorHandler CreateTransferShipmentFor(RequisitionViewModel requisition)
+        public GenericResult CreateTransferShipmentFor(string requisitionId)
         {
+            GenericResult response = new GenericResult();
+            RequisitionViewModel requisition = null;
+
+            if (!string.IsNullOrEmpty(requisitionId))
+            {
+                var tempReq = DBRequest.GetById(requisitionId);
+                if (tempReq != null)
+                    requisition = tempReq.ParseToViewModel();
+            }
+            return CreateTransferShipmentFor(requisition);
+        }
+
+        public GenericResult CreateTransferShipmentFor(RequisitionViewModel requisition)
+        {
+            GenericResult response = new GenericResult();
+
             if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0)
             {
-                TransferShipment transferShipment = new TransferShipment();
-                transferShipment.ProjectNo = requisition.ProjectNo;
-                transferShipment.Comments = requisition.Comments;
-                transferShipment.FunctionalAreaNo = requisition.FunctionalAreaCode;
-                transferShipment.RequisitionNo = requisition.RequisitionNo;
-                transferShipment.Lines = requisition.Lines.Select(line => new TransferShipmentLine()
+                try
                 {
-                    ProductNo = line.Code,
-                    ProductDescription = line.Description,
-                    Quantity = line.QuantityToProvide,
-                    UnitOfMeasureNo = line.UnitMeasureCode,
-                    UnitCost = line.UnitCost,
-                    RegionNo = line.RegionCode,
-                    FunctionalAreaNo = line.FunctionalAreaCode,
-                    CenterResponsibilityNo = line.CenterResponsibilityCode
-                }).ToList();
-
-                Task<WSTransferShipmentHeader.Create_Result> createTransferShipHeaderTask = NAVTransferShipmentService.CreateHeaderAsync(transferShipment, configws);
-                createTransferShipHeaderTask.Wait();
-                if (createTransferShipHeaderTask.IsCompletedSuccessfully)
-                {
-                    transferShipment.TransferShipmentNo = createTransferShipHeaderTask.Result.WSCabGuiaTransporte.Nº_Guia_Transporte;
-
-                    Task<WSTransferShipmentLine.CreateMultiple_Result> createTransferShipLinesTask = NAVTransferShipmentService.CreateLinesAsync(transferShipment, configws);
-                    createTransferShipLinesTask.Wait();
-                    if (createTransferShipLinesTask.IsCompletedSuccessfully)
+                    TransferShipment transferShipment = new TransferShipment();
+                    transferShipment.ProjectNo = requisition.ProjectNo;
+                    transferShipment.Comments = requisition.Comments;
+                    transferShipment.FunctionalAreaNo = requisition.FunctionalAreaCode;
+                    transferShipment.RequisitionNo = requisition.RequisitionNo;
+                    transferShipment.Lines = requisition.Lines.Select(line => new TransferShipmentLine()
                     {
-                        Task<WSGenericCodeUnit.FxPostShipmentDoc_Result> createTransferShipDocTask = WSGeneric.CreateTransferShipment(transferShipment.TransferShipmentNo, configws);
-                        createTransferShipDocTask.Wait();
-                        if (createTransferShipDocTask.IsCompletedSuccessfully)
-                        {
+                        ProductNo = line.Code,
+                        ProductDescription = line.Description,
+                        Quantity = line.QuantityToProvide,
+                        UnitOfMeasureNo = line.UnitMeasureCode,
+                        UnitCost = line.UnitCost,
+                        RegionNo = line.RegionCode,
+                        FunctionalAreaNo = line.FunctionalAreaCode,
+                        CenterResponsibilityNo = line.CenterResponsibilityCode
+                    }).ToList();
 
+                    Task<WSTransferShipmentHeader.Create_Result> createTransferShipHeaderTask = NAVTransferShipmentService.CreateHeaderAsync(transferShipment, configws);
+                    createTransferShipHeaderTask.Wait();
+                    if (createTransferShipHeaderTask.IsCompletedSuccessfully)
+                    {
+                        transferShipment.TransferShipmentNo = createTransferShipHeaderTask.Result.WSShipmentDocHeader.Nº_Guia_Transporte;
+
+                        Task<WSTransferShipmentLine.CreateMultiple_Result> createTransferShipLinesTask = NAVTransferShipmentService.CreateLinesAsync(transferShipment, configws);
+                        createTransferShipLinesTask.Wait();
+                        if (createTransferShipLinesTask.IsCompletedSuccessfully)
+                        {
+                            Task<WSGenericCodeUnit.FxPostShipmentDoc_Result> createTransferShipDocTask = WSGeneric.CreateTransferShipment(transferShipment.TransferShipmentNo, configws);
+                            createTransferShipDocTask.Wait();
+                            if (createTransferShipDocTask.IsCompletedSuccessfully)
+                            {
+                                response.CompletedSuccessfully = true;
+                                response.ResultValue = createTransferShipDocTask.Result.return_value;
+                            }
                         }
                     }
                 }
-
+                catch(Exception ex)
+                {
+                    response.ErrorMessage = ex.Message;
+                }
             }
-            return requisition;
+            else
+            {
+                response.ErrorMessage = "A requisição é nula ou não tem linhas.";
+            }
+            return response;
         }
-        
-        private CreatePrePurchOrderResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder)
+
+        private GenericResult CreateNAVPurchaseOrderFor(PurchOrderDTO purchOrder)
         {
-            CreatePrePurchOrderResult result = new CreatePrePurchOrderResult();
+            GenericResult createPrePurchOrderResult = new GenericResult();
 
             Task<WSPurchaseInvHeader.Create_Result> createPurchaseHeaderTask = NAVPurchaseHeaderService.CreateAsync(purchOrder, configws);
             createPurchaseHeaderTask.Wait();
             if (createPurchaseHeaderTask.IsCompletedSuccessfully)
             {
-                result.NAVPrePurchOrderId = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
+                createPrePurchOrderResult.ResultValue = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
 
                 Task<WSPurchaseInvLine.CreateMultiple_Result> createPurchaseLinesTask = NAVPurchaseLineService.CreateMultipleAsync(purchOrder, configws);
                 createPurchaseLinesTask.Wait();
@@ -451,13 +477,13 @@ namespace Hydra.Such.Portal.Services
                         createPurchOrderTask.Wait();
                         if (createPurchOrderTask.IsCompletedSuccessfully)
                         {
-                            result.CompletedSuccessfully = true;
+                            createPrePurchOrderResult.CompletedSuccessfully = true;
                         }
                     }
                     catch { }
                 }
             }
-            return result;
+            return createPrePurchOrderResult;
         }
     }
 }
