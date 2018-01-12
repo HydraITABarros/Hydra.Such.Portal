@@ -36,5 +36,19 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public DateTime? UpdateDateTime { get; set; }
         public string CreateUser { get; set; }
         public string UpdateUser { get; set; }
+        public bool? WithGluten { get; set; }
+        public bool? BasedCrustaceans { get; set; }
+        public bool? BasedEggs { get; set; }
+        public bool? BasedFish { get; set; }
+        public bool? BasedPeanuts { get; set; }
+        public bool? BasedSoy { get; set; }
+        public bool? BasedMilk { get; set; }
+        public bool? BasedFruitShardShell { get; set; }
+        public bool? BasedCelery { get; set; }
+        public bool? BasedMustard { get; set; }
+        public bool? BasedSesameSeeds { get; set; }
+        public bool? BasedLupine { get; set; }
+        public bool? BasedMolluscs { get; set; }
+        public bool? BasedSulfurDioxeAndSulphites { get; set; }
     }
 }

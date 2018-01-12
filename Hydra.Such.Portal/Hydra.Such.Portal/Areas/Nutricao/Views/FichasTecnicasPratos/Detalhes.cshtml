@@ -136,9 +136,19 @@
         document.addEventListener('WebComponentsReady', function() {
                 Polymer({
                     is: 'x-rectecplates',
+                    properties: {
+                        _SelectedLine: {
+                            observer: '_rowSelected'
+                        }
+                    },
                     _openCreate: function (item) {
                         if (item != null) {
                             window.location.href = "/Nutricao/FichasTecnicasPratos/FichaTecnica";
+                        }
+                    },
+                    _rowSelected: function (item) {
+                        if (item != null) {
+                            window.location.href = "/Nutricao/FichasTecnicasPratos/FichaTecnica/" + item.plateNo;
                         }
                     }
                 });

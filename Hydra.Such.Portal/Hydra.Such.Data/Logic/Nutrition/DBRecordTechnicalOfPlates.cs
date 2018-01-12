@@ -146,5 +146,52 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     parsedItems.Add(x.ParseToViewModel()));
             return parsedItems;
         }
+        public static FichasTécnicasPratos ParseToDB(this RecordTechnicalOfPlatesModelView item)
+        {
+            if (item != null)
+            {
+                return new FichasTécnicasPratos()
+                {
+                    NºPrato = item.PlateNo,
+                    Descrição = item.Description,
+                    CódUnidadeMedida = item.UnitMeasureCode,
+                    Estado = item.State,
+                    NomeFichaTécnica = item.RecordTechnicalName,
+                    CódLocalização = item.LocalizationCode,
+                    TempoPreparação = item.PreparationTime,
+                    TécnicaCulinária = item.TechnicalCooking,
+                    Grupo = item.Group,
+                    Época = item.Epoch,
+                    NºDeDoses = item.DosesNo,
+                    TemperaturaPreparação = item.PreparationTemperature,
+                    TemperaturaFinalConfeção = item.FinalTemperatureConfection,
+                    TemperaturaAServir = item.ServeTemperature,
+                    Image = item.Image,
+                    VariaçãoPreçoCusto = item.VariationPriceCost,
+                    ClassFt1 = item.ClassFt1,
+                    ClassFt2 = item.ClassFt2,
+                    ClassFt3 = item.ClassFt3,
+                    ClassFt4 = item.ClassFt4,
+                    ClassFt5 = item.ClassFt5,
+                    ClassFt6 = item.ClassFt6,
+                    ClassFt7 = item.ClassFt7,
+                    ClassFt8 = item.ClassFt8,
+                    CódigoCentroResponsabilidade = item.CenterResponsibilityCode,
+                    Observações = item.Observations,
+                    DataHoraModificação = item.UpdateDateTime,
+                    UtilizadorModificação = item.UpdateUser,
+                };
+            }
+            return null;
+        }
+
+        public static List<FichasTécnicasPratos> ParseToDB(this List<RecordTechnicalOfPlatesModelView> items)
+        {
+            List<FichasTécnicasPratos> parsedItems = new List<FichasTécnicasPratos>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseToDB()));
+            return parsedItems;
+        }
     }
 }

@@ -7,6 +7,7 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Nutrition;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Nutrition;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
@@ -14,16 +15,34 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
     public class RequisicoesSimplificadasController : Controller
     {
         [Area("Nutricao")]
-        public IActionResult Index()
+        public IActionResult Index(int option)
         {
+            ViewBag.RequisitionsApprovals = "false";
+            //‘Requisições para Registar’ com estado aprovado
+            if (option == 1)
+            {
+                ViewBag.RequisitionsApprovals = "aprovado";
+            }
             return View();
         }
 
         [Area("Nutricao")]
         [HttpPost]
-        public JsonResult GetSimplifiedRequisitions()
+        public JsonResult GetSimplifiedRequisitions([FromBody] string option)
         {
-            List<SimplifiedRequisitionViewModel> result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetByCreateResponsible(User.Identity.Name));
+            List<SimplifiedRequisitionViewModel> result;
+
+            //‘Requisições para Registar’ com estado aprovado
+            if (option == "aprovado")
+            {
+                result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetByApprovals(1));
+                HttpContext.Session.SetString("aprovadoSession", option);
+            }
+            //‘Requisições simplificadas’ com utilizador
+            else
+            {
+                result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetByCreateResponsible(User.Identity.Name));
+            }
             return Json(result);
         }
 
@@ -34,6 +53,19 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
             if (UPerm != null && UPerm.Read.Value)
             {
+              
+                ViewBag.Approval = HttpContext.Session.GetString("aprovadoSession") ?? "";
+                if (ViewBag.Approval != "" && UPerm.Update == true)
+                {
+                    UPerm.Update = false;
+                    @ViewBag.PermissionUpdate = true;
+                }
+                else
+                {
+                    @ViewBag.PermissionUpdate = UPerm.Update;
+                }
+                HttpContext.Session.Remove("aprovadoSession");
+
                 ViewBag.RequestNo = id;
                 ViewBag.UPermissions = UPerm;
                 return View();

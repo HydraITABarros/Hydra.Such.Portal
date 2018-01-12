@@ -2055,6 +2055,8 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Class.FT.8")
                     .HasMaxLength(30);
 
+                entity.Property(e => e.ContêmGlúten).HasColumnName("Contêm Glúten");
+
                 entity.Property(e => e.CódLocalização)
                     .HasColumnName("Cód. Localização")
                     .HasMaxLength(10);
@@ -2108,6 +2110,32 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50);
 
                 entity.Property(e => e.VariaçãoPreçoCusto).HasColumnName("Variação Preço Custo");
+
+                entity.Property(e => e.ÁBaseAipo).HasColumnName("Á Base Aipo");
+
+                entity.Property(e => e.ÁBaseAmendoins).HasColumnName("Á Base Amendoins");
+
+                entity.Property(e => e.ÁBaseCrustáceos).HasColumnName("Á Base Crustáceos");
+
+                entity.Property(e => e.ÁBaseEnxofreESulfitos).HasColumnName("Á Base Enxofre e Sulfitos");
+
+                entity.Property(e => e.ÁBaseFrutosCascaRija).HasColumnName("Á Base Frutos Casca Rija");
+
+                entity.Property(e => e.ÁBaseLeite).HasColumnName("Á Base Leite");
+
+                entity.Property(e => e.ÁBaseMoluscos).HasColumnName("Á Base Moluscos");
+
+                entity.Property(e => e.ÁBaseMostarda).HasColumnName("Á Base Mostarda");
+
+                entity.Property(e => e.ÁBaseOvos).HasColumnName("Á Base Ovos");
+
+                entity.Property(e => e.ÁBasePeixes).HasColumnName("Á Base Peixes");
+
+                entity.Property(e => e.ÁBaseSementesDeSésamo).HasColumnName("Á Base Sementes de Sésamo");
+
+                entity.Property(e => e.ÁBaseSoja).HasColumnName("Á Base Soja");
+
+                entity.Property(e => e.ÁBaseTremoço).HasColumnName("Á Base Tremoço");
 
                 entity.Property(e => e.Época).HasMaxLength(20);
 
@@ -3553,31 +3581,31 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.CódLocalização)
                     .HasColumnName("Cód. Localização")
-                    .HasColumnType("nchar(10)");
+                    .HasMaxLength(10);
 
                 entity.Property(e => e.CódigoCentroResponsabilidade)
                     .HasColumnName("Código Centro Responsabilidade")
-                    .HasColumnType("nchar(10)");
+                    .HasMaxLength(10);
 
                 entity.Property(e => e.CódigoRegião)
                     .HasColumnName("Código Região")
-                    .HasColumnType("nchar(10)");
+                    .HasMaxLength(10);
 
                 entity.Property(e => e.CódigoÁrea)
                     .HasColumnName("Código Área")
-                    .HasColumnType("nchar(10)");
+                    .HasMaxLength(10);
 
                 entity.Property(e => e.DataRegisto)
                     .HasColumnName("Data Registo")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.Descrição).HasColumnType("nchar(50)");
+                entity.Property(e => e.Descrição).HasMaxLength(30);
 
                 entity.Property(e => e.NºDocumento).HasColumnName("Nº Documento");
 
                 entity.Property(e => e.NºProduto)
                     .HasColumnName("Nº Produto")
-                    .HasColumnType("nchar(10)");
+                    .HasMaxLength(10);
 
                 entity.Property(e => e.NºProjecto).HasColumnName("Nº Projecto");
 
