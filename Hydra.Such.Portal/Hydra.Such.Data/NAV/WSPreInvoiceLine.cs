@@ -139,7 +139,7 @@ namespace Hydra.Such.Data.NAV
         {
             WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
                x => new WSCreatePreInvoiceLine.WsPreInvoiceLine
-               {
+               { 
                    Unit_PriceSpecified = true,
                    Unit_Cost_LCYSpecified = true,
                    Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
@@ -155,8 +155,9 @@ namespace Hydra.Such.Data.NAV
                    Location_Code = x.LocationCode,
                    Unit_Price = (decimal)x.UnitPrice,
                    Unit_Cost_LCY = (decimal)x.UnitCost,
-                   Job_Journal_Line_No_Portal = x.LineNo,
-                   Job_Journal_Line_No_PortalSpecified = true,
+                   Line_No = x.LineNo
+                   //Job_Journal_Line_No_Portal = x.LineNo,
+                   //Job_Journal_Line_No_PortalSpecified = true,
 
                }).ToArray();
 
