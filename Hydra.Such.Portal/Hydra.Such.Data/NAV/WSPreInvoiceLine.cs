@@ -92,10 +92,13 @@ namespace Hydra.Such.Data.NAV
 
         public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineList(List<LinhasFaturaçãoContrato> LinesList, String HeaderNo, NAVWSConfigurations WSConfigurations)
         {
+            int counter = 0;
             WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
                x => new WSCreatePreInvoiceLine.WsPreInvoiceLine
                {
                    Document_No = HeaderNo,
+                   Line_No = counter+=10000,
+                   Line_NoSpecified = true,
                    Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
                    Document_TypeSpecified = true,
                    No = x.Código,
