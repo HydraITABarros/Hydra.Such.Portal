@@ -202,6 +202,7 @@
                 width: 100%;
                 cursor: not-allowed;
             }
+
             paper-button.disabled {
                 cursor: not-allowed;
                 pointer-events: none;
@@ -260,7 +261,6 @@
                    content-type="application/json">
         </iron-ajax>
         <!-- Dropdowns populate.e -->
-
         <!-- Controller actions.b -->
         <iron-ajax url="/ProcedimentosCcps/GetUserFeatures"
                    last-response="{{UserAccesses}}"
@@ -278,8 +278,6 @@
                    on-response="_responseProcessor"
                    content-type="application/json">
         </iron-ajax>
-
-
         <iron-ajax url="/ProcedimentosCcps/DeleteProcedimento"
                    last-response="{{deletedData}}"
                    method="post"
@@ -303,7 +301,7 @@
                    id="ajax_deleteelementojuri"
                    on-response="_deleteElementoJuriResponse"
                    content-type="application/json">
-        </iron-ajax>        
+        </iron-ajax>
         <iron-ajax url="/ProcedimentosCcps/SubmitProcedimento"
                    last-response="{{ProcedimentoSubmitted}}"
                    method="post"
@@ -330,7 +328,9 @@
                                     <table width="250px">
                                         <tr>
                                             <td width="20%">[[item.id]]</td>
-                                            <td width="80%"> <b>[[item.value]]</b></td>
+                                            <td width="80%">
+                                                <b>[[item.value]]</b>
+                                            </td>
                                         </tr>
                                     </table>
                                 </template>
@@ -342,7 +342,9 @@
                                     <table width="250px">
                                         <tr>
                                             <td width="30%">[[item.id]]</td>
-                                            <td width="70%"> <b>[[item.value]]</b></td>
+                                            <td width="70%">
+                                                <b>[[item.value]]</b>
+                                            </td>
                                         </tr>
                                     </table>
                                 </template>
@@ -354,7 +356,9 @@
                                     <table width="180px">
                                         <tr>
                                             <td width="40%">[[item.id]]</td>
-                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                            <td width="60%">
+                                                <b>[[item.value]]</b>
+                                            </td>
                                         </tr>
                                     </table>
                                 </template>
@@ -443,7 +447,7 @@
                                             <such-textarea rows="3" value="{{data.fundamentacaoAquisicao}}" id="fundamentacaoAquisicao" name="fundamentacaoAquisicao" label="Fundamentação Aquisição"> </such-textarea>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="row break_clear">
                                         <div class="col-sm-3">
                                             <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.precoBase}}" id="precoBase" label="Preço Base?">
@@ -592,7 +596,7 @@
                                                 <!--</center>-->
                                             </template>
                                         </vaadin-grid-column>
-                                    </vaadin-grid>      
+                                    </vaadin-grid>
                                     <h2 class="separator" style="border-bottom:1px dotted; padding:0;"></h2>
                                     <!-- Elementos Juri section.e -->
                                     <div class="row break_clear">
@@ -625,7 +629,7 @@
                                         <br />
                                         <paper-button raised id="submitProcedimento" class="btn--confirm pull-left" on-tap="_submitProcedimento"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Submeter</paper-button>
                                     </div>
-                                    
+
                                     <div class="clearfix"></div>
                                 </div>
                             </paper-collapse-item>
@@ -916,24 +920,26 @@
                                     <div class="panel-heading">Contabilidade</div>
                                     <div class="panel-body">
                                         <div class="col-sm-6">
-                                            <such-textarea rows="5" value="{{CLImobContab.checklistImobilizadoContabilidade.comentarioImobContabilidade}}" id="contabilidadeComentario" name="contabilidadeComentario" label="Comentário"> </such-textarea>
+                                            <such-textarea rows="5" value="{{data.comentarioImobContabilidade}}" id="comentarioImobContabilidade" name="comentarioImobContabilidade" label="Comentário"> </such-textarea>
 
                                             <div class="row break_clear">
-                                                <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">O responsável dos serviços de contabilidade</label></div>
-                                                <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{CLImobContab.checklistImobilizadoContabilidade.responsavelImobContabilidade}}" id="responsavelServicosContabilidade" name="responsavelServicosContabilidade" label=""></vaadin-text-field>
+                                                <div class="col-xs-12">
+                                                    <label part="label" class="grey" id="vaadin-text-field-label-30">O responsável dos serviços de contabilidade</label>
                                                 </div>
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{CLImobContab.checklistImobilizadoContabilidade.nomeResponsavelImobContabilidade}}" id="responsavelServicosContabilidade2" name="responsavelServicosContabilidade2" label=""> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.responsavelImobContabilidade}}" id="responsavelImobContabilidade" name="responsavelImobContabilidade" label=""></vaadin-text-field>
+                                                </div>
+                                                <div class="col-xs-6">
+                                                    <vaadin-text-field value="{{data.nomeResponsavelImobContabilidade}}" id="nomeResponsavelImobContabilidade" name="nomeResponsavelImobContabilidade" label=""> </vaadin-text-field>
                                                 </div>
                                             </div>
 
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
-                                                    <vaadin-date-picker value="{{CLImobContab.checklistImobilizadoContabilidade.dataImobContabilidade}}" id="responsavelServicosContabilidade" name="responsavelServicosContabilidade" label="Data"> </vaadin-date-picker>
+                                                    <vaadin-date-picker value="{{data.dataImobContabilidade}}" id="dataImobContabilidade" name="dataImobContabilidade" label="Data"> </vaadin-date-picker>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <vaadin-combo-box value="{{CLImobContab.checklistImobilizadoContabilidade.imobilizadoSimNao}}" id="cabimentoOrcamental" label="Cabimento Orçamental?" items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue">
+                                                    <vaadin-combo-box value="{{data.imobilizadoSimNao}}" id="cabimentoOrcamental" label="Cabimento Orçamental?" items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue">
                                                         <template>
                                                             <paper-icon-item>
                                                                 <paper-item-body two-line>
@@ -954,6 +960,7 @@
                                         </div>-->
                                         <div class="clearfix"></div>
                                         <div class="col-lg-6">
+                                            <!--Context menu-->
                                             <br />
                                             <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
                                                 <template>
@@ -997,7 +1004,9 @@
                                             <such-textarea rows="5" value="{{data.areaComentario}}" id="areaComentario" name="areaComentario" label="Comentário"> </such-textarea>
 
                                             <div class="row break_clear">
-                                                <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">O responsável da área pela adjudicação</label></div>
+                                                <div class="col-xs-12">
+                                                    <label part="label" class="grey" id="vaadin-text-field-label-30">O responsável da área pela adjudicação</label>
+                                                </div>
                                                 <div class="col-xs-6">
                                                     <vaadin-text-field value="{{data.responsavelArea}}" id="responsavelArea" name="responsavelArea" label=""> </vaadin-text-field>
                                                 </div>
@@ -1188,7 +1197,9 @@
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <div class="row">
-                                                <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável pelo envio para área</label></div>
+                                                <div class="col-xs-12">
+                                                    <label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável pelo envio para área</label>
+                                                </div>
                                                 <div class="col-sm-4">
                                                     <vaadin-text-field value="{{data.responsavelEnvioArea}}" id="responsavelEnvioArea" name="responsavelEnvioArea"></vaadin-text-field>
                                                 </div>
@@ -1220,7 +1231,9 @@
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <div class="row">
-                                                <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável pela área</label></div>
+                                                <div class="col-xs-12">
+                                                    <label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável pela área</label>
+                                                </div>
                                                 <div class="col-sm-4">
                                                     <vaadin-text-field value="{{data.responsavelPelaArea}}" id="responsavelPelaArea" name="responsavelPelaArea"></vaadin-text-field>
                                                 </div>
@@ -1249,7 +1262,9 @@
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <div class="row">
-                                                <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável dos serviços financeiros</label></div>
+                                                <div class="col-xs-12">
+                                                    <label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável dos serviços financeiros</label>
+                                                </div>
                                                 <div class="col-sm-4">
                                                     <vaadin-text-field value="{{data.responsavelServicosFinanceiros}}" id="responsavelServicosFinanceiros" name="responsavelServicosFinanceiros"></vaadin-text-field>
                                                 </div>
@@ -1426,7 +1441,8 @@
                             </div>
                             <div class="col-sm-6">
                                 <br />
-                                &nbsp;<paper-button raised id="btnSendToEvaluate" class="btn--sendtoevaluate" on-tap="_sendToEvaluate"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp; Envio para avaliação (Juri)</paper-button>
+                                &nbsp;
+                                <paper-button raised id="btnSendToEvaluate" class="btn--sendtoevaluate" on-tap="_sendToEvaluate"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp; Envio para avaliação (Juri)</paper-button>
                             </div>
 
                         </div>
@@ -1449,7 +1465,9 @@
                                         <div class="break_clear">
                                             <div class="col-sm-6">
                                                 <div class="row">
-                                                    <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">Pelo Gabinete Jurídico</label></div>
+                                                    <div class="col-xs-12">
+                                                        <label part="label" class="grey" id="vaadin-text-field-label-30">Pelo Gabinete Jurídico</label>
+                                                    </div>
                                                     <div class="col-sm-4">
                                                         <vaadin-text-field value="{{data.avaliacaoPecasGabineteJuridico}}" id="avaliacaoPecasGabineteJuridico" name="avaliacaoPecasGabineteJuridico"></vaadin-text-field>
                                                     </div>
@@ -1483,7 +1501,9 @@
                                         <div class="break_clear">
                                             <div class="col-sm-6">
                                                 <div class="row">
-                                                    <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">Pelo Gabinete Jurídico</label></div>
+                                                    <div class="col-xs-12">
+                                                        <label part="label" class="grey" id="vaadin-text-field-label-30">Pelo Gabinete Jurídico</label>
+                                                    </div>
                                                     <div class="col-sm-4">
                                                         <vaadin-text-field value="{{data.minutaGabineteJuridico}}" id="minutaGabineteJuridico" name="minutaGabineteJuridico"></vaadin-text-field>
                                                     </div>
@@ -1553,7 +1573,9 @@
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
                                                     <div class="row">
-                                                        <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável pela área</label></div>
+                                                        <div class="col-xs-12">
+                                                            <label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável pela área</label>
+                                                        </div>
                                                         <div class="col-sm-4">
                                                             <vaadin-text-field value="{{data.responsavelEnvioParaArea}}" id="responsavelEnvioParaArea" name="responsavelEnvioParaArea"></vaadin-text-field>
                                                         </div>
@@ -1605,7 +1627,9 @@
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <div class="row">
-                                                <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável pela área pelo envio para CA</label></div>
+                                                <div class="col-xs-12">
+                                                    <label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável pela área pelo envio para CA</label>
+                                                </div>
                                                 <div class="col-sm-4">
                                                     <vaadin-text-field value="{{data.responsavelEnvioParaCA}}" id="responsavelEnvioParaCA" name="responsavelEnvioParaCA"></vaadin-text-field>
                                                 </div>
@@ -1644,7 +1668,9 @@
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <div class="row">
-                                                <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">Pelo CA</label></div>
+                                                <div class="col-xs-12">
+                                                    <label part="label" class="grey" id="vaadin-text-field-label-30">Pelo CA</label>
+                                                </div>
                                                 <div class="col-sm-4">
                                                     <vaadin-text-field value="{{data.autorizarImobilizadoCA}}" id="autorizarImobilizadoCA" name="autorizarImobilizadoCA"></vaadin-text-field>
                                                 </div>
@@ -1682,7 +1708,9 @@
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <div class="row">
-                                                <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">Pelo CA</label></div>
+                                                <div class="col-xs-12">
+                                                    <label part="label" class="grey" id="vaadin-text-field-label-30">Pelo CA</label>
+                                                </div>
                                                 <div class="col-sm-4">
                                                     <vaadin-text-field value="{{data.aberturaProcedimentoCA}}" id="aberturaProcedimentoCA" name="aberturaProcedimentoCA"></vaadin-text-field>
                                                 </div>
@@ -1742,7 +1770,9 @@
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <div class="row">
-                                                <div class="col-xs-12"><label part="label" class="grey" id="vaadin-text-field-label-30">Pelo CA</label></div>
+                                                <div class="col-xs-12">
+                                                    <label part="label" class="grey" id="vaadin-text-field-label-30">Pelo CA</label>
+                                                </div>
                                                 <div class="col-sm-4">
                                                     <vaadin-text-field value="{{data.autorizacaoAdjudicacaoCA}}" id="autorizacaoAdjudicacaoCA" name="autorizacaoAdjudicacaoCA"></vaadin-text-field>
                                                 </div>
@@ -2102,7 +2132,7 @@
                 ready: function () {
                     debugger;;
                     this.$.ajax_userpermissions.body = this.data;
-                    this.$.ajax_userpermissions.generateRequest();    
+                    this.$.ajax_userpermissions.generateRequest();
                     debugger;;
 
                 },
@@ -2141,6 +2171,16 @@
 
                 _delete: function () {
                     debugger;;
+                    if (this.data.estado != 0) {
+                        this._openToast("Não pode eliminar o procedimento: Estado <> 0");
+
+                        setTimeout(
+                            function () {
+                                //
+                            }, 3000);
+
+                        return;
+                    }
                     var Procedimento = this.data;
                     var ajax_request = this.$.ajax_delete_procedimento;
                     bootbox.confirm({
@@ -2177,13 +2217,13 @@
 
                             debugger;;
                             self._setFieldsEditability(self.data);
-                       
+
                             debugger;;
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             self._createResponseProcessor();
                         } else if (data.detail.url.indexOf("Update") !== -1) {
                             debugger;;
-                            if(!this.isJuriElementAction)
+                            if (!this.isJuriElementAction)
                                 self._openToast("Procedimento atualizado com sucesso.")
                         }
                     } else {
@@ -2228,15 +2268,15 @@
 
                         setTimeout(
                             function () {
-                               // window.location.replace("/");
+                                // window.location.replace("/");
                             }, 3000);
                     }
- 
+
                     if (this.userAllowed) {
                         debugger;;
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
                         this.$.page_databound_ajax.generateRequest();
-                        
+
                         debugger;;
                         // set user permissions
                         for (var i in this.UserAccesses) {
@@ -2275,7 +2315,7 @@
                             window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
                         else
                             window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
-                    }  
+                    }
                 },
 
                 // Create Elemento Juri
@@ -2304,7 +2344,7 @@
                             }
                         }
                     }
-                    
+
                     return true;
                 },
                 _validateElementoJuriData: function () {
@@ -2359,7 +2399,7 @@
                         }
                         else {
                             this._openToast('Não foi possível criar o Elemento do Juri');
-                        }    
+                        }
                     }
                 },
                 _deleteElementoJuri: function (e) {
@@ -2468,8 +2508,6 @@
                     }
 
                     if (this._onSubmitValidateProcedimento()) {
-                      
-                        debugger;;
                         this.$.ajax_submitprocedimento.body = this.data;
                         this.$.ajax_submitprocedimento.generateRequest();
                     }
@@ -2479,7 +2517,7 @@
                         this._openToast("Procedimento " + this.data.no + " submetido com sucesso!");
                         setTimeout(
                             function () {
-                                // 
+                                //
                             }, 3000);
 
                         if (this._procedimentotypeid == 1)
@@ -2491,6 +2529,11 @@
                     }
                 },
 
+                // Contabilidade Confirm action
+                _confirmImobilizadoContab: function () {
+
+                },
+
                 _setFieldsEditability(data) {
                     //debugger;;
 
@@ -2499,7 +2542,7 @@
                     //if (data.estado == 0) {
                     //    $(_self.$.actionButton1).addClass('disabled');
                     //}
-                    // Disable controls 
+                    // Disable controls
                     // 1. Procedimento status != 0.b
                     if (data.estado != 0) {
                         $(_self.$.gridElementosJuri1).addClass('disabled');
@@ -2508,6 +2551,7 @@
                         $(_self.$.gridElementosJuri2).addClass('disabled');
                         $(_self.$.buttonCriarElementoJuri2).addClass('disabled');
                     }
+
 
                     _self.$.responsavelAreaApresentar.hidden = (data.estado == 0);
                     _self.$.nomeResponsavelAreaApresentar.hidden = (data.estado == 0);
@@ -2525,7 +2569,7 @@
                     _self.$._chkSuplente.disabled = (data.estado != 0);
                     _self.$._chkSendMail.disabled = (data.estado != 0);
                     _self.$.comentarioAreaApresentar.disabled = (data.estado != 0);
-                    _self.$.precoMaisBaixo.disabled = (data.estado != 0); 
+                    _self.$.precoMaisBaixo.disabled = (data.estado != 0);
                     _self.$.descPrecoMaisBaixo.disabled = (data.estado != 0);
                     _self.$.propostaEconMaisVantajosa.disabled = (data.estado != 0);
                     _self.$.descPropostaEconMaisVantajosa.disabled = (data.estado != 0);
@@ -2542,17 +2586,17 @@
                     _self.$.descFornecedorExclusivo.disabled = (data.estado != 0);
                     _self.$.interlocutor.disabled = (data.estado != 0);
                     // 1. Procedimento status != 0.e
-                    
+
                     // 2. Procedimento status != 1.b
                     _self.$.contabilidadeComentario.disabled = (data.estado != 1 || !_self.__isElementContabilidade);
                     // 1. Procedimento status != 1.e
 
-                        //esconder um campo
-                        //_self.$.codigoRegiao.hidden = true;
+                    //esconder um campo
+                    //_self.$.codigoRegiao.hidden = true;
 
-                        //esconder uma seccao (adicionar id ao container da seccao)
-                        //_self.$.seccaoTeste.hidden = true;
-                   
+                    //esconder uma seccao (adicionar id ao container da seccao)
+                    //_self.$.seccaoTeste.hidden = true;
+
                 },
                 //Helpers
                 _executeRequest: function (url, data) {

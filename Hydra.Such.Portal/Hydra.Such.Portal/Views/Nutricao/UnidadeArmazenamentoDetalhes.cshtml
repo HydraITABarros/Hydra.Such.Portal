@@ -104,6 +104,13 @@
 
         @*POPULATE Update*@
 
+        <iron-ajax last-response="{{checkSession}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_check"
+                   on-response="_sessionResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <iron-ajax last-response="{{result}}"
                    method="post"
@@ -245,12 +252,25 @@
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="ddvendorItemNo" name="ddvendorItemNo" label="Cód. Produto Fornecedor" value="{{result.vendorItemNo}}"></vaadin-text-field>
-                                        </div>                           
+                                        </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="dditemCategoryCode" name="dditemCategoryCode" label="Cód. Categoria Produto" value="{{result.codeProcuctCategory}}" disabled></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="ddproductGroupCode" name="ddproductGroupCode" label="Cód. Grupo Produto" value="{{result.codeProcuctGroup}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-combo-box items="[[UnitsProductList]]" id="ddunitsProductCod" name="ddunitsProductCod" label="Cód Unidade Medida Produto" item-value-path="id" item-label-path="id" value="{{result.codeUnitMeasure}}">
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.value]]</div>
+                                                            <div>[[item.id]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field id="ddunitCost" type="number" name="ddunitCost" label="Custo Unitário" value="{{result.unitCost}}"></vaadin-text-field>
@@ -270,11 +290,12 @@
                     </div>
                 </iron-form>
                 <div class="marginSpace" id="ddmarginSpace">
-                    <paper-button raised id="btnSaveLine" class="btnSave" value="createBtt" on-tap="_createNewStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
+                    <paper-button raised id="btnSaveLine" class="btnEdit" value="createBtt" on-tap="_createNewStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                 </div>
                 <div class="marginSpace2" id="ddmarginSpace2">
-                    <paper-button raised id="btnSaveLine" class="btnSave" value="updateBtt" on-tap="_updateStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                    <paper-button raised id="btnSaveLine" class="btnSave" value="deleteBtt" on-tap="_deleteStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                    <paper-button raised id="btnSaveLine" class="btnEdit" value="updateBtt" on-tap="_updateStockeepingUnit"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    <paper-button raised id="btnSaveLine" class="btnRemove" value="deleteBtt" on-tap="_deleteStockeepingUnit"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                    <paper-button raised id="btnSaveLine" class="btnSave" value="deleteBtt" on-tap="_goProductMovement">&nbsp; Movimento</paper-button>
                 </div>
             </div>
         </div>
@@ -345,7 +366,8 @@
                             LastCostDirect: this.$.ddlastCostDirect.value,
                             CodeProcuctCategory: this.$.dditemCategoryCode.value,
                             CodeProcuctGroup: this.$.ddproductGroupCode.value,
-                            PriceSale: this.$.ddpriceSales.value                           
+                            PriceSale: this.$.ddpriceSales.value,
+                            CodeUnitMeasure: this.$.ddunitsProductCod.value
                         }
                      
                             this.$.ajax_update.url = "/Nutricao/CreateUnitStockeeping";
@@ -371,7 +393,8 @@
                             LastCostDirect: this.$.ddlastCostDirect.value,
                             CodeProcuctCategory: this.$.dditemCategoryCode.value,
                             CodeProcuctGroup: this.$.ddproductGroupCode.value,
-                            PriceSale: this.$.ddpriceSales.value
+                            PriceSale: this.$.ddpriceSales.value,
+                            CodeUnitMeasure: this.$.ddunitsProductCod.value
                         }
                         this.$.ajax_update.url = "/Nutricao/UpdateUnitStockeeping";
                         this.$.ajax_update.body = JSON.stringify(objectNew);
@@ -396,7 +419,8 @@
                             LastCostDirect: this.$.ddlastCostDirect.value,
                             CodeProcuctCategory: this.$.dditemCategoryCode.value,
                             CodeProcuctGroup: this.$.ddproductGroupCode.value,
-                            PriceSale: this.$.ddpriceSales.value
+                            PriceSale: this.$.ddpriceSales.value,
+                            CodeUnitMeasure: this.$.ddunitsProductCod.value
                         }
 
                         this.$.ajax_update.url = "/Nutricao/DeleteUnitStockeeping";
@@ -406,11 +430,11 @@
                 },
                 _updateResponse: function (e) {
                
-                    if (this.getProductresult == "101") {
+                    if (this.result == "101") {
                         this.openToastError('Registo duplicado!');
-                    } else if (this.getProductresult == "102") {
+                    } else if (this.result == "102") {
                         this.openToastError('Registo não atualização');
-                    } else if (this.getProductresult == "103") {
+                    } else if (this.result == "103") {
                         this.openToast('Registo eliminado');
                         this.result = null;
                         this.$.ddproductNo.disabled = false;
@@ -422,10 +446,10 @@
                         this.$.ddcodLocalitation.value = "",
                         this.$.dddescription.value = "",
                         this.$.ddinventory.value = "",
-                        this.$.ddblocked.value = "",
+                        this.$.ddblocked.checked = false,
                         this.$.ddunitCost.value = "",
                         this.$.ddvalueWareHouse.value = "",
-                        this.$.ddcodeWareHouse.value = "",
+                        this.$.ddcodeWareHouse.checked = false,
                         this.$.ddshelfNo.value = "",
                         this.$.ddvendorNo.value = "",
                         this.$.ddvendorItemNo.value = "",
@@ -433,6 +457,7 @@
                         this.$.dditemCategoryCode.value = "",
                         this.$.ddproductGroupCode.value = "",
                         this.$.ddpriceSales.value = "",
+                        this.$.ddunitsProductCod.value="",
                         this.$.ddproductNo.disabled = false;
                     }
                 },
@@ -444,6 +469,18 @@
                         this.$.ddlastCostDirect.value = this.getProductresult[0].lastCostDirect;
                     }
 
+                },
+                _goProductMovement: function (e) {
+                    this.$.ajax_check.url = "/Nutricao/SetSessionMovimentoProduto";
+                    this.$.ajax_check.body = JSON.stringify(this.result);
+                    this.$.ajax_check.generateRequest();                  
+                },
+                _sessionResponse: function (e) {
+                   
+                    if (this.checkSession == true)
+                        window.location.href = "/Nutricao/MovimentoProdutos";
+                    else
+                        this.openToastError('Necessita de Nº Produto');
                 },
                 _redirectToList: function (e) {
                     window.location.href = "/Nutricao/UnidadeArmazenamento";                    

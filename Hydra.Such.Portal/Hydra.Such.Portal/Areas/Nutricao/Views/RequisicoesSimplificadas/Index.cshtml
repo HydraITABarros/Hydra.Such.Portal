@@ -21,9 +21,9 @@
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <iron-ajax auto method="post" handle-as="json" content-type="application/json" last-response="{{SimplifiedRequisitions}}" id="grid_datasource" url="/Nutricao/RequisicoesSimplificadas/GetSimplifiedRequisitions"></iron-ajax>
+        <iron-ajax  method="post" handle-as="json" content-type="application/json"  last-response="{{SimplifiedRequisitions}}" id="grid_datasource" url="/Nutricao/RequisicoesSimplificadas/GetSimplifiedRequisitions"></iron-ajax>
 
-        <div class="marginSpace">
+        <div class="marginSpace" id="ddmarginSpace">
             <paper-button class="btnSave" raised on-tap="_redirectToNewForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
         </div>
 
@@ -134,6 +134,16 @@
                         value: true
                     }
                 },
+                ready: function () {
+                    var option="@ViewBag.RequisitionsApprovals";
+                    if (option=="aprovado") {
+                        this.$.ddmarginSpace.style.display = 'none';
+                        this.$.grid_datasource.body = JSON.stringify(option);
+                    }
+                    this.$.grid_datasource.generateRequest();
+
+
+                },
                 _onRowSelected: function (item) {
                     if (item != null) {
                         window.location.href = "/Nutricao/RequisicoesSimplificadas/Detalhes/" + item.requisitionNo;
@@ -141,7 +151,7 @@
                 },
                 _redirectToNewForm: function (item) {
                     if (item != null) {
-                        window.location.href = "/Nutricao/RequisicoesSimplificadas/Detalhes/0";
+                        window.location.href = "/Nutricao/RequisicoesSimplificadas/Detalhes";
                     }
                 }
             });

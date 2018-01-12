@@ -1186,20 +1186,14 @@ namespace Hydra.Such.Portal.Controllers
                             string HeaderNo = TCreatePreInvoice.Result.WSPreInvoice.No;
 
                             List<SPInvoiceListViewModel> linesList = new List<SPInvoiceListViewModel>();
-
+                            int LineNo = 10000;
                             foreach (var lines in data)
                             {
                                 if (lines.InvoiceToClientNo == header.InvoiceToClientNo && lines.Date == header.Date && lines.CommitmentNumber == header.CommitmentNumber && lines.ClientRequest == header.ClientRequest)
                                 {
+                                    lines.LineNo = LineNo;
                                     linesList.Add(lines);
-                                    //Task<WSCreatePreInvoiceLine.Create_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLine(lines, _configws, HeaderNo);
-                                    //TCreatePreInvoiceLine.Wait();
-                                    //if (TCreatePreInvoiceLine.IsCompletedSuccessfully)
-                                    //{
-                                    //    MovimentosDeProjeto mov = DBProjectMovements.GetByLineNo(lines.LineNo).FirstOrDefault();
-                                    //    mov.Faturada = true;
-                                    //    DBProjectMovements.Update(mov);
-                                    //}
+                                    LineNo = LineNo + 10000;
                                 }
                             }
 
