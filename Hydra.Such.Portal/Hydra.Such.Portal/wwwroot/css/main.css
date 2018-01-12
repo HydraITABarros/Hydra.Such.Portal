@@ -57,8 +57,11 @@ ul.nav li:hover {
     padding: 0;
 }
 /* Custom General Tags */
-
-
+.imgcenter {
+    margin: auto;
+    width: 60%;
+    padding: 10px;
+}
 /* Custom General Classes */
 .title {
     text-align: center;

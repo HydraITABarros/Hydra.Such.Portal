@@ -33,6 +33,9 @@ namespace WSGenericCodeUnit
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WsGeneric:FxCabimento", ReplyAction="*")]
         System.Threading.Tasks.Task<WSGenericCodeUnit.FxCabimento_Result> FxCabimentoAsync(WSGenericCodeUnit.FxCabimento request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WsGeneric:FxPostShipmentDoc", ReplyAction="*")]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxPostShipmentDoc_Result> FxPostShipmentDocAsync(WSGenericCodeUnit.FxPostShipmentDoc request);
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -247,6 +250,46 @@ namespace WSGenericCodeUnit
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxPostShipmentDoc", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxPostShipmentDoc
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public string pShipmentDocNo;
+        
+        public FxPostShipmentDoc()
+        {
+        }
+        
+        public FxPostShipmentDoc(string pShipmentDocNo)
+        {
+            this.pShipmentDocNo = pShipmentDocNo;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="FxPostShipmentDoc_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", IsWrapped=true)]
+    public partial class FxPostShipmentDoc_Result
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WsGeneric", Order=0)]
+        public string return_value;
+        
+        public FxPostShipmentDoc_Result()
+        {
+        }
+        
+        public FxPostShipmentDoc_Result(string return_value)
+        {
+            this.return_value = return_value;
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     public interface WsGeneric_PortChannel : WSGenericCodeUnit.WsGeneric_Port, System.ServiceModel.IClientChannel
     {
@@ -376,6 +419,19 @@ namespace WSGenericCodeUnit
             return ((WSGenericCodeUnit.WsGeneric_Port)(this)).FxCabimentoAsync(inValue);
         }
         
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<WSGenericCodeUnit.FxPostShipmentDoc_Result> WSGenericCodeUnit.WsGeneric_Port.FxPostShipmentDocAsync(WSGenericCodeUnit.FxPostShipmentDoc request)
+        {
+            return base.Channel.FxPostShipmentDocAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<WSGenericCodeUnit.FxPostShipmentDoc_Result> FxPostShipmentDocAsync(string pShipmentDocNo)
+        {
+            WSGenericCodeUnit.FxPostShipmentDoc inValue = new WSGenericCodeUnit.FxPostShipmentDoc();
+            inValue.pShipmentDocNo = pShipmentDocNo;
+            return ((WSGenericCodeUnit.WsGeneric_Port)(this)).FxPostShipmentDocAsync(inValue);
+        }
+        
         public virtual System.Threading.Tasks.Task OpenAsync()
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
@@ -404,8 +460,8 @@ namespace WSGenericCodeUnit
         {
             if ((endpointConfiguration == EndpointConfiguration.WsGeneric_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://such-navsql.such.local:8047/DynamicsNAV100_DEV/WS/CRONUS Portugal Ltd./Cod" +
-                        "eunit/WsGeneric?wsdl");
+                return new System.ServiceModel.EndpointAddress("http://such-navsql.such.local:8047/DynamicsNAV100_DEV/WS/ReplaceWithAPercentEncod" +
+                        "edCompanyName/Codeunit/WsGeneric");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

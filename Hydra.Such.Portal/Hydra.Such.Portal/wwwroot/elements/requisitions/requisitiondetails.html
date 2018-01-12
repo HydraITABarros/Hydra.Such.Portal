@@ -16,6 +16,8 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
 <dom-module id="x-requisitiondetails">
     <template>
@@ -186,13 +188,6 @@
                    last-response="{{Requisition}}"
                    id="createPurchOrder_ajax"
                    on-response="_createPurchaseOrderResponse"
-                   method="post"
-                   handle-as="json"
-                   content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/CreateTransferShipment"
-                   last-response="{{Requisition}}"
-                   id="createTransferShip_ajax"
-                   on-response="_createTransferShipmentResponse"
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
@@ -966,450 +961,445 @@
         </paper-toast>
     </template>
     <script>
-        document.addEventListener('WebComponentsReady', function () {
-            Polymer({
-                is: 'x-requisitiondetails',
-                properties: {
-                    selected: {
-                        type: Number,
-                        value: 0
-                    },
-                    _permissions: {
-                        type: Array
-                    },
-                    _requisitionid: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    _requisitionstatus: {
-                        type: Number,
-                        notify: true,
-                        value: 0
-                    },
-                    _isCreate: {
-                        type: Boolean,
-                        value: true
-                    },
-                    _requisitionstatesenum: {
-                        type: Array
-                    },
-                    _sendPrePurchaseFilterActive: {
-                        type: Boolean,
-                        value: true
-                    },
-                    _submitPrePurchaseFilterActive: {
-                        type: Boolean,
-                        value: true
-                    },
-                    _createMarketSearchFilterActive: {
-                        type: Boolean,
-                        value: true
-                    },
-                    _localMarketFilterActive: {
-                        type: Boolean,
-                        value: true
-                    },
-                    _hasErrors: {
-                        type: Boolean,
-                        value: false
-                    },
-                },
-                observers: [
-                    '_onCacheLoaded(data,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,locationsresult,CBProducts,unitofmeasureresult,cboSupplier,Requisition)'
-                ],
-                ready: function () {
-
-                },
-                isReadOnly: function () {
-                    return false;//this._requisitionstatus == this._requisitionstatesenum.Approved ? true : !this._permissions.update; 
-                },
-                _isError: function (type) {
-                    //Used to show or hide close button
-                    if (!this._hasErrors)
-                        this._hasErrors = type == 0;
-                    return type == 0;
-                },
-                _checkForErrors: function () {
-                    var errors = this.Requisition.eMessages.find(x => x.type == 0);
-                    this._hasErrors = !(errors == undefined);
-                },
-                _onCacheLoaded: function (data, LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, locationsresult, CBProducts, unitofmeasureresult, cboSupplier, Requisition) {
-                    if (!this.Flag) {
-                        this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
-                        this.$.requisition_datasource.generateRequest();
-                    }
-                    this.Flag = true;
-                },
-                _openToast: function (message) {
-                    this.$.ToastMessageSuccess.text = message;
-                    this.$.ToastMessageSuccess.open();
-                },
-                _openToastError: function (message) {
-                    this.$.ToastMessageError.text = message;
-                    this.$.ToastMessageError.open();
-                },
-                _toggleToastMultiple: function () {
-                    this._checkForErrors();
-                    if (this._hasErrors)
-                        this.$.ToastMessageMultiple.duration = 0;
-                    else
-                        this.$.ToastMessageMultiple.duration = 8000;
-                    this.$.ToastMessageMultiple.toggle();
-                    this.Requisition.eMessages = [];
-                },
-
-                _validateLocalMarket: function () {
-                    this.$.validateLocalMarket_datasource.body = JSON.stringify(this.Requisition);
-                    this.$.validateLocalMarket_datasource.generateRequest();
-                },
-                _validateRequisition: function () {
-                    this.$.validaterequisition_datasource.body = JSON.stringify(this.Requisition);
-                    this.$.validaterequisition_datasource.generateRequest();
-                },
-                _validateLocalMarketResponse: function (e) {
-                    if (this.Requisition.eReasonCode == "1") {
-                        this._openToast(this.Requisition.eMessage);
-                    }
-                    else {
-                        this._openToastError(this.Requisition.eMessage);
-                    }
-                },
-                
-                _validateRequisitionResponse: function (e) {
-                    if (this.Requisition.eReasonCode == "1") {
-                        this._openToast(this.Requisition.eMessage);
-                    }
-                    else {
-                        this._openToastError(this.Requisition.eMessage);
-                    }
-                },
-
-                _populateOpenOrderLines: function (data) {
-                    var headerId = this.$.openOrderHeaderId.value;
-                    this.$.openOrderLines_ajax.body = JSON.stringify(headerId);
-                    this.$.openOrderLines_ajax.generateRequest();
-                },
-
-                _getSupplierDescription: function (param) {
-                    if (param != undefined && this.cboSupplier != undefined) {
-                        var sel = this.cboSupplier.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _getUnitOfMeasureDescription: function (param) {
-                    if (param != undefined && this.unitofmeasureresult != undefined) {
-                        var sel = this.unitofmeasureresult.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _getProductDescription: function (param) {
-                    if (param != undefined && this.CBProducts != undefined) {
-                        var sel = this.CBProducts.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _getResponsCenterDescription: function (param) {
-                    if (param != undefined && this.LProjectResponsabilityCenterCodes != undefined) {
-                        var sel = this.LProjectResponsabilityCenterCodes.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _getRegionDescription: function (param) {
-                    if (param != undefined && this.LProjectRegionCodes != undefined) {
-                        var sel = this.LProjectRegionCodes.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-
-                },
-                _getAreaDescription: function (param) {
-                    if (param != undefined && this.LProjectFunctionalAreaCodes != undefined) {
-                        var sel = this.LProjectFunctionalAreaCodes.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-
-                },
-                _getLocalCodeDescription: function (param) {
-                    if (param != undefined && this.locationsresult != undefined) {
-                        var sel = this.locationsresult.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-
-                _validateUserInputForLine() {
-                    //Ex.:
-                    /*
-                    if (this.$.lineQuantity.validate()) {
-                        return true;
-                    }
-                    this._openToastError("Verifique os dados inseridos.");
-                    return false;
-                    */
-                    return true;
-                },
-                _resetUserInputForLine() {
-                    this.$.requisitionNo.value = "";
-                    this.$.codeId.value = "";
-                    this.$.descriptionId.value = "";
-                    this.$.unitMeasureCodeId.value = "";
-                    this.$.localCodeId.value = "";
-                    this.$.quantityToRequireId.value = "";
-                    this.$.quantityRequiredId.value = "";
-                    this.$.quantityToProvideId.value = "";
-                    this.$.quantityAvailableId.value = "";
-                    this.$.quantityReceivableId.value = "";
-                    this.$.quantityReceivedId.value = "";
-                    this.$.unitCostId.value = "";
-                    this.$.RegionCode.value = "";
-                    this.$.FunctionalAreaCode.value = "";
-                    this.$.ResponsabilityCenterCode.value = "";
-                    this.$.vehicleId.value = "";
-                    this.$.unitCostsouldId.value = "";
-                    this.$.budgetValueId.value = "";
-                    this.$.maintenanceOrderLineNoId.value = "";
-                    this.$.createMarketSearchId.checked = false;
-                    this.$.submitPrePurchaseId.checked = false;
-                    this.$.sendPrePurchaseId.checked = false;
-                    this.$.supplierNoId.value = "";
-                    this.$.openOrderHeaderId.value = "";
-                    this.$.openOrderLineId.value = "";
-                    this.$.queryCreatedMarketNoId.value = "";
-                    this.$.projectId.value = "";
-                    this.$.chkLocalMarket.checked = false;
-                },
-
-                _createRequisitionLine: function () {
-                    if (this._validateUserInputForLine()) {
-                        var newReqLine = {
-                            requestNo: this.$.requisitionNo.value,
-                            code: this.$.codeId.value,
-                            description: this.$.descriptionId.value,
-                            unitMeasureCode: this.$.unitMeasureCodeId.value,
-                            localCode: this.$.localCodeId.value,
-                            quantityToRequire: this.$.quantityToRequireId.value,
-                            quantityRequired: this.$.quantityRequiredId.value,
-                            quantityToProvide: this.$.quantityToProvideId.value,
-                            quantityAvailable: this.$.quantityAvailableId.value,
-                            quantityReceivable: this.$.quantityReceivableId.value,
-                            quantityReceived: this.$.quantityReceivedId.value,
-                            unitCost: this.$.unitCostId.value,
-                            regionCode: this.$.RegionCode.value,
-                            functionalAreaCode: this.$.FunctionalAreaCode.value,
-                            centerResponsibilityCode: this.$.ResponsabilityCenterCode.value,
-                            vehicle: this.$.vehicleId.value,
-                            unitCostSould: this.$.unitCostsouldId.value,
-                            budgetValue: this.$.budgetValueId.value,
-                            maintenanceOrderLineNo: this.$.maintenanceOrderLineNoId.value,
-                            createMarketSearch: this.$.createMarketSearchId.checked,
-                            submitPrePurchase: this.$.submitPrePurchaseId.checked,
-                            sendPrePurchase: this.$.sendPrePurchaseId.checked,
-                            supplierNo: this.$.supplierNoId.value,
-                            openOrderNo: this.$.openOrderHeaderId.value,
-                            openOrderLineNo: this.$.openOrderLineId.value,
-                            queryCreatedMarketNo: this.$.queryCreatedMarketNoId.value,
-                            projectNo: this.$.projectId.value,
-                            localMarket: this.$.chkLocalMarket.checked,
-                        };
-                        this.$.createReqLine_ajax.body = JSON.stringify(newReqLine);
-                        this.$.createReqLine_ajax.generateRequest();
-                    }
-                },
-                _createReqLineResponse: function (e) {
-                    if (this.AddReqLineResponse.eReasonCode == "1") {
-                        this._openToast(this.AddReqLineResponse.eMessage);
-                        this.Requisition.lines.push(this.AddReqLineResponse);
-                        this.$.grdRequisitionLines.clearCache();
-                        //Clear input data
-                        this._resetUserInputForLine();
-                    }
-                    else {
-                        this._openToastError(this.AddReqLineResponse.eMessage);
-                    }
-                },
-
-                _deleteRequisitionLine: function (e) {
-                    var ajax_request = this.$.deleteReqLine_ajax;
-
-                    bootbox.confirm({
-                        message: "Tem a certeza que pretende remover o registo?",
-                        buttons: {
-                            confirm: {
-                                label: 'Sim',
-                                className: 'btn-success'
-                            },
-                            cancel: {
-                                label: 'Não',
-                                className: 'btn-danger'
-                            }
+            document.addEventListener('WebComponentsReady', function () {
+                Polymer({
+                    is: 'x-requisitiondetails',
+                    properties: {
+                        selected: {
+                            type: Number,
+                            value: 0
                         },
-                        callback: function (result) {
-                            if (result) {
-                                ajax_request.body = JSON.stringify(e.model.item);
-                                ajax_request.generateRequest();
+                        _permissions: {
+                            type: Array
+                        },
+                        _requisitionid: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _requisitionstatus: {
+                            type: Number,
+                            notify: true,
+                            value: 0
+                        },
+                        _isCreate: {
+                            type: Boolean,
+                            value: true
+                        },
+                        _requisitionstatesenum: {
+                            type: Array
+                        },
+                        _sendPrePurchaseFilterActive: {
+                            type: Boolean,
+                            value: true
+                        },
+                        _submitPrePurchaseFilterActive: {
+                            type: Boolean,
+                            value: true
+                        },
+                        _createMarketSearchFilterActive: {
+                            type: Boolean,
+                            value: true
+                        },
+                        _localMarketFilterActive: {
+                            type: Boolean,
+                            value: true
+                        },
+                        _hasErrors: {
+                            type: Boolean,
+                            value: false
+                        },
+                    },
+                    observers: [
+                        '_onCacheLoaded(data,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,locationsresult,CBProducts,unitofmeasureresult,cboSupplier,Requisition)'
+                    ],
+                    ready: function () {
+                        
+                    },
+                    isReadOnly: function () {
+                        return false;//this._requisitionstatus == this._requisitionstatesenum.Approved ? true : !this._permissions.update;
+                    },
+                    _isError: function (type) {
+                        //Used to show or hide close button
+                        if (!this._hasErrors)
+                            this._hasErrors = type == 0;
+                        return type == 0;
+                    },
+                    _checkForErrors: function () {
+                        var errors = this.Requisition.eMessages.find(x => x.type == 0);
+                        this._hasErrors = !(errors == undefined);
+                    },
+                    _onCacheLoaded: function (data, LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, locationsresult, CBProducts, unitofmeasureresult, cboSupplier, Requisition) {
+                        if (!this.Flag) {
+                            this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                            this.$.requisition_datasource.generateRequest();
+                        }
+                        this.Flag = true;
+                    },
+                    _openToast: function (message) {
+                        this.$.ToastMessageSuccess.text = message;
+                        this.$.ToastMessageSuccess.open();
+                    },
+                    _openToastError: function (message) {
+                        this.$.ToastMessageError.text = message;
+                        this.$.ToastMessageError.open();
+                    },
+                    _toggleToastMultiple: function () {
+                        this._checkForErrors();
+                        if (this._hasErrors)
+                            this.$.ToastMessageMultiple.duration = 0;
+                        else
+                            this.$.ToastMessageMultiple.duration = 8000;
+                        this.$.ToastMessageMultiple.toggle();
+                        this.Requisition.eMessages = [];
+                    },
+
+                    
+                    _validateLocalMarket: function () {
+                        this.$.validateLocalMarket_datasource.body = JSON.stringify(this.Requisition);
+                        this.$.validateLocalMarket_datasource.generateRequest();
+                    },
+                    _validateRequisition: function () {
+                        this.$.validaterequisition_datasource.body = JSON.stringify(this.Requisition);
+                        this.$.validaterequisition_datasource.generateRequest();
+                    },
+                    _validateLocalMarketResponse: function (e) {
+                        if (this.Requisition.eReasonCode == "1") {
+                            this._openToast(this.Requisition.eMessage);
+                        }
+                        else {
+                            if (this.Requisition.eMessages.length > 0)
+                                this._toggleToastMultiple();
+                            else
+                                this._openToastError(this.Requisition.eMessage);
+                        }
+
+                    },
+
+                    _validateRequisitionResponse: function (e) {
+                        if (this.Requisition.eReasonCode == "1") {
+                            this._openToast(this.Requisition.eMessage);
+                        }
+                        else {
+                            this._openToastError(this.Requisition.eMessage);
+                        }
+                    },
+
+                    _populateOpenOrderLines: function (data) {
+                        var headerId = this.$.openOrderHeaderId.value;
+                        this.$.openOrderLines_ajax.body = JSON.stringify(headerId);
+                        this.$.openOrderLines_ajax.generateRequest();
+                    },
+
+                    _getSupplierDescription: function (param) {
+                        if (param != undefined && this.cboSupplier != undefined) {
+                            var sel = this.cboSupplier.find(x => x.id == param);
+                            if (sel != undefined) {
+                                return sel.value;
                             }
                         }
-                    });
-                },
-                _deleteReqLineResponse: function (e) {
-                    if (this.DelReqLineResponse.eReasonCode == "1") {
-                        this._openToast(this.DelReqLineResponse.eMessage);
-
-                        try {
-                            var reqLines = this.Requisition.lines;
-                            var index = reqLines.indexOf(this.DelReqLineResponse);
-                            reqLines.splice(index, 1);
-
-                            this.$.grdRequisitionLines.clearCache();
-                        }
-                        catch (err) {
-                            //refresh page or inform user;
-                        }
-                    }
-                    else {
-                        this._openToastError(this.DelReqLineResponse.eMessage);
-                    }
-                },
-                _RegistProvide: function () {
-                    debugger;
-                    this.$.regist_datasource.body = JSON.stringify(this.Requisition);
-                    this.$.regist_datasource.params = { "registType": "Disponibilizar" };
-                    this.$.regist_datasource.generateRequest();
-                },
-                _RegistToReceive: function () {
-                    debugger;
-                    this.$.regist_datasource.body = JSON.stringify(this.Requisition);
-                    this.$.regist_datasource.params = { "registType": "Receber" };
-                    this.$.regist_datasource.generateRequest();
-                },
-                _RegistOverrideValidation: function () {
-                    debugger;
-                    this.$.regist_datasource.body = JSON.stringify(this.Requisition);
-                    this.$.regist_datasource.params = { "registType": "Anular Validacao" };
-                    this.$.regist_datasource.generateRequest();
-                },
-                _RegistCancelApproval: function () {
-                    debugger;
-                    this.$.regist_datasource.body = JSON.stringify(this.Requisition);
-                    this.$.regist_datasource.params = { "registType": "Anular Aprovacao" };
-                    this.$.regist_datasource.generateRequest();
-                },
-                _RegistCloseRequest: function () {
-                    debugger;
-                    this.$.regist_datasource.body = JSON.stringify(this.Requisition);
-                    this.$.regist_datasource.params = { "registType": "Fechar Requisicao" };
-                    this.$.regist_datasource.generateRequest();
-                },
-
-                _notImplemented() {
-                    alert("Funcionalidade não especificada e/ou a aguardar esclarecimentos.");
-                },
-                _createMarketConsult: function () {
-                    this._notImplemented();
-                    return;
-                    this.$.createMarketConsult_ajax.body = JSON.stringify(this.Requisition);
-                    this.$.createMarketConsult_ajax.generateRequest();
-                },
-                _createMarketConsultResponse: function (e) {
-                    if (this.Requisition.eReasonCode == "1") {
-                        this._openToast(this.Requisition.eMessage);
-                    }
-                    else {
-                        this._openToastError(this.Requisition.eMessage);
-                    }
-                },
-                _createPurchaseOrder: function () {
-                    this.$.createPurchOrder_ajax.body = JSON.stringify(this.Requisition);
-                    this.$.createPurchOrder_ajax.generateRequest();
-                },
-                _createPurchaseOrderResponse: function (e) {
-                    if (this.Requisition.eReasonCode == "1") {
-                        this._openToast(this.Requisition.eMessage);
-                    }
-                    else {
-                        if (this.Requisition.eMessages.length > 0)
-                            this._toggleToastMultiple();
-                        else
-                            this._openToastError(this.Requisition.eMessage);
-                    }
-                },
-                _createTransferShipment: function () {
-                    this._notImplemented();
-                    return;
-                    this.$.createTransferShip_ajax.body = JSON.stringify(this.Requisition);
-                    this.$.createTransferShip_ajax.generateRequest();
-                },
-                _createTransferShipmentResponse: function (e) {
-                    if (this.Requisition.eReasonCode == "1") {
-                        this._openToast(this.Requisition.eMessage);
-                    }
-                    else {
-                        this._openToastError(this.Requisition.eMessage);
-                    }
-                },
-                _sendPrePurchase: function () {
-                    this.$.sendPrePurchase_ajax.body = JSON.stringify(this.Requisition);
-                    this.$.sendPrePurchase_ajax.generateRequest();
-                },
-                _sendPrePurchaseResponse: function (e) {
-                    if (this.Requisition.eReasonCode == "1") {
-                        this._openToast(this.Requisition.eMessage);
-                    }
-                    else {
-                        if (this.Requisition.eMessages.length > 0)
-                            this._toggleToastMultiple();
-                        else
-                            this._openToastError(this.Requisition.eMessage);
-                    }
-                },
-                _codeIdOnChange: function (e) {
-                    var prodval = "";
-                    if (e.detail.value != null && this.CBProducts != null) {
-                        for (var i = 0; i < this.CBProducts.length; i++) {
-                            if (e.detail.value == this.CBProducts[i].id) {
-                                prodval = this.CBProducts[i].value;
+                        return "";
+                    },
+                    _getUnitOfMeasureDescription: function (param) {
+                        if (param != undefined && this.unitofmeasureresult != undefined) {
+                            var sel = this.unitofmeasureresult.find(x => x.id == param);
+                            if (sel != undefined) {
+                                return sel.value;
                             }
                         }
-                        if (prodval != "") {
-                            this.$.descriptionId.value = prodval;
+                        return "";
+                    },
+                    _getProductDescription: function (param) {
+                        if (param != undefined && this.CBProducts != undefined) {
+                            var sel = this.CBProducts.find(x => x.id == param);
+                            if (sel != undefined) {
+                                return sel.value;
+                            }
                         }
-                    }
-                },
-                _registTypeResponse: function (e) {
-                    if (this.regist.eReasonCode == "1") {
-                        this._openToast(this.regist.eMessage);
+                        return "";
+                    },
+                    _getResponsCenterDescription: function (param) {
+                        if (param != undefined && this.LProjectResponsabilityCenterCodes != undefined) {
+                            var sel = this.LProjectResponsabilityCenterCodes.find(x => x.id == param);
+                            if (sel != undefined) {
+                                return sel.value;
+                            }
+                        }
+                        return "";
+                    },
+                    _getRegionDescription: function (param) {
+                        if (param != undefined && this.LProjectRegionCodes != undefined) {
+                            var sel = this.LProjectRegionCodes.find(x => x.id == param);
+                            if (sel != undefined) {
+                                return sel.value;
+                            }
+                        }
+                        return "";
 
-                        try {
+                    },
+                    _getAreaDescription: function (param) {
+                        if (param != undefined && this.LProjectFunctionalAreaCodes != undefined) {
+                            var sel = this.LProjectFunctionalAreaCodes.find(x => x.id == param);
+                            if (sel != undefined) {
+                                return sel.value;
+                            }
+                        }
+                        return "";
+
+                    },
+                    _getLocalCodeDescription: function (param) {
+                        if (param != undefined && this.locationsresult != undefined) {
+                            var sel = this.locationsresult.find(x => x.id == param);
+                            if (sel != undefined) {
+                                return sel.value;
+                            }
+                        }
+                        return "";
+                    },
+
+                    _validateUserInputForLine() {
+                        //Ex.:
+                        /*
+                        if (this.$.lineQuantity.validate()) {
+                            return true;
+                        }
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                        */
+                        return true;
+                    },
+                    _resetUserInputForLine() {
+                        this.$.requisitionNo.value = "";
+                        this.$.codeId.value = "";
+                        this.$.descriptionId.value = "";
+                        this.$.unitMeasureCodeId.value = "";
+                        this.$.localCodeId.value = "";
+                        this.$.quantityToRequireId.value = "";
+                        this.$.quantityRequiredId.value = "";
+                        this.$.quantityToProvideId.value = "";
+                        this.$.quantityAvailableId.value = "";
+                        this.$.quantityReceivableId.value = "";
+                        this.$.quantityReceivedId.value = "";
+                        this.$.unitCostId.value = "";
+                        this.$.RegionCode.value = "";
+                        this.$.FunctionalAreaCode.value = "";
+                        this.$.ResponsabilityCenterCode.value = "";
+                        this.$.vehicleId.value = "";
+                        this.$.unitCostsouldId.value = "";
+                        this.$.budgetValueId.value = "";
+                        this.$.maintenanceOrderLineNoId.value = "";
+                        this.$.createMarketSearchId.checked = false;
+                        this.$.submitPrePurchaseId.checked = false;
+                        this.$.sendPrePurchaseId.checked = false;
+                        this.$.supplierNoId.value = "";
+                        this.$.openOrderHeaderId.value = "";
+                        this.$.openOrderLineId.value = "";
+                        this.$.queryCreatedMarketNoId.value = "";
+                        this.$.projectId.value = "";
+                        this.$.chkLocalMarket.checked = false;
+                    },
+
+                    _createRequisitionLine: function () {
+                        if (this._validateUserInputForLine()) {
+                            var newReqLine = {
+                                requestNo: this.$.requisitionNo.value,
+                                code: this.$.codeId.value,
+                                description: this.$.descriptionId.value,
+                                unitMeasureCode: this.$.unitMeasureCodeId.value,
+                                localCode: this.$.localCodeId.value,
+                                quantityToRequire: this.$.quantityToRequireId.value,
+                                quantityRequired: this.$.quantityRequiredId.value,
+                                quantityToProvide: this.$.quantityToProvideId.value,
+                                quantityAvailable: this.$.quantityAvailableId.value,
+                                quantityReceivable: this.$.quantityReceivableId.value,
+                                quantityReceived: this.$.quantityReceivedId.value,
+                                unitCost: this.$.unitCostId.value,
+                                regionCode: this.$.RegionCode.value,
+                                functionalAreaCode: this.$.FunctionalAreaCode.value,
+                                centerResponsibilityCode: this.$.ResponsabilityCenterCode.value,
+                                vehicle: this.$.vehicleId.value,
+                                unitCostSould: this.$.unitCostsouldId.value,
+                                budgetValue: this.$.budgetValueId.value,
+                                maintenanceOrderLineNo: this.$.maintenanceOrderLineNoId.value,
+                                createMarketSearch: this.$.createMarketSearchId.checked,
+                                submitPrePurchase: this.$.submitPrePurchaseId.checked,
+                                sendPrePurchase: this.$.sendPrePurchaseId.checked,
+                                supplierNo: this.$.supplierNoId.value,
+                                openOrderNo: this.$.openOrderHeaderId.value,
+                                openOrderLineNo: this.$.openOrderLineId.value,
+                                queryCreatedMarketNo: this.$.queryCreatedMarketNoId.value,
+                                projectNo: this.$.projectId.value,
+                                localMarket: this.$.chkLocalMarket.checked,
+                            };
+                            this.$.createReqLine_ajax.body = JSON.stringify(newReqLine);
+                            this.$.createReqLine_ajax.generateRequest();
+                        }
+                    },
+                    _createReqLineResponse: function (e) {
+                        if (this.AddReqLineResponse.eReasonCode == "1") {
+                            this._openToast(this.AddReqLineResponse.eMessage);
+                            this.Requisition.lines.push(this.AddReqLineResponse);
                             this.$.grdRequisitionLines.clearCache();
+                            //Clear input data
+                            this._resetUserInputForLine();
                         }
-                        catch (err) {
-                            //refresh page or inform user;
+                        else {
+                            this._openToastError(this.AddReqLineResponse.eMessage);
                         }
-                    }
-                    else {
-                        this._openToastError(this.regist.eMessage);
-                    }
-                },
+                    },
+
+                    _deleteRequisitionLine: function (e) {
+                        var ajax_request = this.$.deleteReqLine_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover o registo?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.body = JSON.stringify(e.model.item);
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+                    },
+                    _deleteReqLineResponse: function (e) {
+                        if (this.DelReqLineResponse.eReasonCode == "1") {
+                            this._openToast(this.DelReqLineResponse.eMessage);
+
+                            try {
+                                var reqLines = this.Requisition.lines;
+                                var index = reqLines.indexOf(this.DelReqLineResponse);
+                                reqLines.splice(index, 1);
+
+                                this.$.grdRequisitionLines.clearCache();
+                            }
+                            catch (err) {
+                                //refresh page or inform user;
+                            }
+                        }
+                        else {
+                            this._openToastError(this.DelReqLineResponse.eMessage);
+                        }
+                    },
+                    _RegistProvide: function () {
+                        debugger;
+                        this.$.regist_datasource.body = JSON.stringify(this.Requisition);
+                        this.$.regist_datasource.params = { "registType": "Disponibilizar" };
+                        this.$.regist_datasource.generateRequest();
+                    },
+                    _RegistToReceive: function () {
+                        debugger;
+                        this.$.regist_datasource.body = JSON.stringify(this.Requisition);
+                        this.$.regist_datasource.params = { "registType": "Receber" };
+                        this.$.regist_datasource.generateRequest();
+                    },
+                    _RegistOverrideValidation: function () {
+                        debugger;
+                        this.$.regist_datasource.body = JSON.stringify(this.Requisition);
+                        this.$.regist_datasource.params = { "registType": "Anular Validacao" };
+                        this.$.regist_datasource.generateRequest();
+                    },
+                    _RegistCancelApproval: function () {
+                        debugger;
+                        this.$.regist_datasource.body = JSON.stringify(this.Requisition);
+                        this.$.regist_datasource.params = { "registType": "Anular Aprovacao" };
+                        this.$.regist_datasource.generateRequest();
+                    },
+                    _RegistCloseRequest: function () {
+                        debugger;
+                        this.$.regist_datasource.body = JSON.stringify(this.Requisition);
+                        this.$.regist_datasource.params = { "registType": "Fechar Requisicao" };
+                        this.$.regist_datasource.generateRequest();
+                    },
+
+                    _notImplemented() {
+                        alert("Funcionalidade não especificada e/ou a aguardar esclarecimentos.");
+                    },
+                    _createMarketConsult: function () {
+                        this._notImplemented();
+                        return;
+                        this.$.createMarketConsult_ajax.body = JSON.stringify(this.Requisition);
+                        this.$.createMarketConsult_ajax.generateRequest();
+                    },
+                    _createMarketConsultResponse: function (e) {
+                        if (this.Requisition.eReasonCode == "1") {
+                            this._openToast(this.Requisition.eMessage);
+                        }
+                        else {
+                            this._openToastError(this.Requisition.eMessage);
+                        }
+                    },
+                    _createPurchaseOrder: function () {
+                        this.$.createPurchOrder_ajax.body = JSON.stringify(this.Requisition);
+                        this.$.createPurchOrder_ajax.generateRequest();
+                    },
+                    _createPurchaseOrderResponse: function (e) {
+                        if (this.Requisition.eReasonCode == "1") {
+                            this._openToast(this.Requisition.eMessage);
+                        }
+                        else {
+                            if (this.Requisition.eMessages.length > 0)
+                                this._toggleToastMultiple();
+                            else
+                                this._openToastError(this.Requisition.eMessage);
+                        }
+                    },
+                    _createTransferShipment: function () {
+                        //window.location.href = "/Compras/GestaoRequisicoes/CreateTransferShipment/" + this.Requisition.requisitionNo;
+                        window.open("/Compras/GestaoRequisicoes/CreateTransferShipment/" + this.Requisition.requisitionNo, "_blank");
+                    },
+                    _sendPrePurchase: function () {
+                        this.$.sendPrePurchase_ajax.body = JSON.stringify(this.Requisition);
+                        this.$.sendPrePurchase_ajax.generateRequest();
+                    },
+                    _sendPrePurchaseResponse: function (e) {
+                        if (this.Requisition.eReasonCode == "1") {
+                            this._openToast(this.Requisition.eMessage);
+                        }
+                        else {
+                            if (this.Requisition.eMessages.length > 0)
+                                this._toggleToastMultiple();
+                            else
+                                this._openToastError(this.Requisition.eMessage);
+                        }
+                    },
+                    _codeIdOnChange: function (e) {
+                        var prodval = "";
+                        if (e.detail.value != null && this.CBProducts != null) {
+                            for (var i = 0; i < this.CBProducts.length; i++) {
+                                if (e.detail.value == this.CBProducts[i].id) {
+                                    prodval = this.CBProducts[i].value;
+                                }
+                            }
+                            if (prodval != "") {
+                                this.$.descriptionId.value = prodval;
+                            }
+                        }
+                    },
+                    _registTypeResponse: function (e) {
+                        if (this.regist.eReasonCode == "1") {
+                            this._openToast(this.regist.eMessage);
+
+                            try {
+                                this.$.grdRequisitionLines.clearCache();
+                            }
+                            catch (err) {
+                                //refresh page or inform user;
+                            }
+                        }
+                        else {
+                            this._openToastError(this.regist.eMessage);
+                        }
+                    },
             });
         });
     </script>

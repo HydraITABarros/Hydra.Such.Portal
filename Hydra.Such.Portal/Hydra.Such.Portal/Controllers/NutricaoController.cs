@@ -11,12 +11,21 @@ using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.Nutrition;
 using Hydra.Such.Data.ViewModel.Nutrition;
 using Hydra.Such.Data.Logic.Contracts;
+using Hydra.Such.Portal.Configurations;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Http;
 
 namespace Hydra.Such.Portal.Controllers
 {
     [Authorize]
     public class NutricaoController : Controller
     {
+        private readonly NAVConfigurations _config;
+        public NutricaoController(IOptions<NAVConfigurations> appSettings)
+        {
+            _config = appSettings.Value;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -570,11 +579,34 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetMovementProduct()
         {
-            List<ProductMovementViewModel> result = DBProductMovement.ParseToViewModel( DBProductMovement.GetAll());
+            List<ProductMovementViewModel> result;
+            if (HttpContext.Session.GetString("productNo") == null)
+            {
+                result = DBProductMovement.ParseToViewModel(DBProductMovement.GetAll());
+            }
+            else
+            {
+                string nProduct = HttpContext.Session.GetString("productNo");
+                string codeLocation = HttpContext.Session.GetString("codLocation");
+                result = DBProductMovement.ParseToViewModel(DBProductMovement.GetByNoprodLocation(nProduct, codeLocation));
+                HttpContext.Session.Remove("productNo");
+                HttpContext.Session.Remove("codLocation");
+            }
+
             return Json(result);
         }
 
 
+       public bool SetSessionMovimentoProduto([FromBody] StockkeepingUnitViewModel data)
+       {
+            if (data.ProductNo != null)
+            {
+                HttpContext.Session.SetString("productNo", data.ProductNo);
+                HttpContext.Session.SetString("codLocation", data.Code);
+                return true;
+            }
+            return false;
+        }
         #endregion
 
         #region Unidade Medida Produto
@@ -628,6 +660,122 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
+        #endregion
+
+        #region Unidade de Armazenamento
+
+        public IActionResult UnidadeArmazenamento()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 19);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult UnidadeArmazenamentoDetalhes(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 19);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProductNo = id ?? "";
+                if (ViewBag.ProductNo != "")
+                {
+                    ViewBag.NoProductDisable = true;
+                    ViewBag.ButtonHide = 0;
+                }
+                else
+                {
+                    ViewBag.NoProductDisable = false;
+                    ViewBag.ButtonHide = 1;
+                }
+
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetUnitStockeeping()
+        {
+            List<StockkeepingUnitViewModel> result = DBStockkeepingUnit.ParseToViewModel(DBStockkeepingUnit.GetAll());
+            return Json(result);
+        }
+
+        public JsonResult GetUnitStockeepingId([FromBody]string id)
+        {
+            StockkeepingUnitViewModel result = DBStockkeepingUnit.ParseToViewModel(DBStockkeepingUnit.GetById(id));
+            return Json(result);
+        }
+
+        [HttpPost]
+
+        public JsonResult GetProductId([FromBody]string idProduct)
+        {
+            List<NAVProductsViewModel> product = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, idProduct);
+            return Json(product);
+        }
+
+
+        public JsonResult CreateUnitStockeeping([FromBody] StockkeepingUnitViewModel data)
+        {
+            string eReasonCode = "";
+            //Update 
+            eReasonCode = DBStockkeepingUnit.Create(DBStockkeepingUnit.ParseToDb(data)) == null ? "101" : "";
+
+            if (String.IsNullOrEmpty(eReasonCode))
+            {
+                return Json(data);
+            }
+            else
+            {
+                return Json(eReasonCode);
+            }
+        }
+
+        public JsonResult DeleteUnitStockeeping([FromBody] StockkeepingUnitViewModel data)
+        {
+           
+            string eReasonCode = "";
+            //Create new 
+            eReasonCode = DBStockkeepingUnit.Delete(DBStockkeepingUnit.ParseToDb(data)) == true ? "103" : "";
+            
+            if (String.IsNullOrEmpty(eReasonCode))
+            {
+                return Json(null);
+            }
+            else
+            {
+                return Json(eReasonCode);
+            }
+        }
+
+        public JsonResult  UpdateUnitStockeeping([FromBody] StockkeepingUnitViewModel data)
+        {
+            string eReasonCode = "";
+            //Create new 
+            eReasonCode = DBStockkeepingUnit.Update(DBStockkeepingUnit.ParseToDb(data)) == null ? "102" : "";
+
+            if (String.IsNullOrEmpty(eReasonCode))
+            {
+                return Json(data);
+            }
+            else
+            {
+                return Json(eReasonCode);
+            }
+    
+
+         
+        }
         #endregion
     }
 }

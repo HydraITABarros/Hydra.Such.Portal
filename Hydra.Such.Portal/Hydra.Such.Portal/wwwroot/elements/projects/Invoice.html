@@ -162,7 +162,7 @@
 
 
         <vaadin-grid id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result]]" class="editGrid">
-            <vaadin-grid-selection-column auto-select>
+            <vaadin-grid-selection-column id="selectColumn" auto-select>
             </vaadin-grid-selection-column>
 
             <vaadin-grid-column width="15%">
@@ -431,8 +431,9 @@
                     case 4: this.$.ToastMessageError.text = 'Ocorreu um erro ao criar Pré Fatura';
                         this.$.ToastMessageError.open();
                 }
-
+                
                 this.$.page_databound_ajax.generateRequest();
+                this.$.projectInvoiceAutorization.clearCache();
                 this.$.ToastMessageSuccess.text = 'Faturas criadas com sucesso';
                 this.$.ToastMessageSuccess.open();
 

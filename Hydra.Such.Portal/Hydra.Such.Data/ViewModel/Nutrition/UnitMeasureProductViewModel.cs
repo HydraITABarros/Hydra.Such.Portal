@@ -7,6 +7,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
 {
     public class UnitMeasureProductViewModel : ErrorHandler
     {
+
         public string ProductNo { get; set; }
         public string Code { get; set; }
         public decimal? QtdUnitMeasure { get; set; }
@@ -14,6 +15,8 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public decimal? Width { get; set; }
         public decimal? Heigth { get; set; }
         public decimal? Cubage { get; set; }
-        public decimal? Weight { get; set; }             
+        public decimal? Weight { get; set; }
+
+
     }
 }

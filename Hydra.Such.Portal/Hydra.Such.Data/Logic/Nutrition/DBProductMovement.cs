@@ -26,6 +26,21 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
+        public static List<MovimentoDeProdutos> GetByNoprodLocation(string NºProduto, string CodeLocal)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.MovimentoDeProdutos.Where(x => x.NºProduto == NºProduto && x.CódLocalização== CodeLocal).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
 
         public static List<MovimentoDeProdutos> GetAll()
         {

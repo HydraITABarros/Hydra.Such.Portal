@@ -12,6 +12,8 @@ using Hydra.Such.Data.NAV;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Portal.Services;
+////tmp
+//using Microsoft.AspNetCore.Http;
 
 namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
@@ -58,8 +60,8 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         public IActionResult DetalhesReqAprovada(string id)
         {
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
-            
-            
+
+
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
@@ -278,7 +280,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         public JsonResult GetApprovedRequisitions()
         {
             List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Approved).ParseToViewModel();
-            
+
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
@@ -318,7 +320,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             string requisitionId = string.Empty;
             int status = -1;
-            
+
             if (requestParams != null)
             {
                 requisitionId = requestParams["requisitionId"].ToString();
@@ -468,14 +470,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                             }
                                         }
                                     }
-                                    
+
                                 }
                             }
                             if (prodNotStockkeepUnit != "" && prodQuantityOverStock != "")
                             {
                                 item.eReasonCode = 6;
-                                item.eMessage = " O(s) Produto(s) " + prodNotStockkeepUnit + " não existe ou existem no Stockkeeping Unit do Nav"+
-                                " e o(s) Produto(s) "+ prodQuantityOverStock + " tem ou têm Quantidade(s) a Disponibilizar superiore(s) ao Stock";
+                                item.eMessage = " O(s) Produto(s) " + prodNotStockkeepUnit + " não existe ou existem no Stockkeeping Unit do Nav" +
+                                " e o(s) Produto(s) " + prodQuantityOverStock + " tem ou têm Quantidade(s) a Disponibilizar superiore(s) ao Stock";
                             }
                             else if (prodNotStockkeepUnit != "" && prodQuantityOverStock == "")
                             {
@@ -485,7 +487,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             else if (prodNotStockkeepUnit == "" && prodQuantityOverStock != "")
                             {
                                 item.eReasonCode = 8;
-                                item.eMessage = "O(s) Produto(s) " + prodQuantityOverStock + " tem ou têm Quantidade(s) a Disponibilizar superiore(s) ao Stock"; 
+                                item.eMessage = "O(s) Produto(s) " + prodQuantityOverStock + " tem ou têm Quantidade(s) a Disponibilizar superiore(s) ao Stock";
                             }
                         }
                         else
@@ -591,7 +593,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             item.eReasonCode = 11;
                             item.eMessage = "Esta requisição não está Disponível.";
                         }
-                    break;
+                        break;
                     case "Anular Aprovacao":
                         if (item.State == RequisitionStates.Approved)
                         {
@@ -615,7 +617,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                         item.eReasonCode = 5;
                                         item.eMessage = "Ocorreu um erro ao alterar as linhas de requisição";
                                     }
-                                }  
+                                }
                             }
                             else
                             {
@@ -685,11 +687,16 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
-                RequisitionService srv = new RequisitionService(_configws);
-                var status = srv.CreatePrePurchaseOrderFor(item);
-
-                item.eReasonCode = status.eReasonCode;
-                item.eMessage = status.eMessage;
+                try
+                {
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    item = serv.ValidateLocalMarketFor(item);
+                }
+                catch (Exception ex)
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + ex.Message + ")";
+                }
             }
             else
             {
@@ -701,61 +708,22 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             return Json(item);
         }
-        
+
         [HttpPost]
         [Area("Compras")]
         public JsonResult ValidateRequisition([FromBody] RequisitionViewModel item)
         {
-            /*
-                Header	estado
-                Lines	onde ‘Quantidade Requerida’ seja > 0;
-	                ‘Quantidade a Disponibilizar’ = Quantidade Requerida’
-	                Responsável Validação = utilizador atual
-	                Data Validação = now
-
-                	Criar na tabela de workflow de registo de validação e respetiva submissão
-             */
             if (item != null)
             {
-                //Ensure that the requisition has the expected status. Ex.: prevents from validating pending requisitions
-                if (item == null || item.State != RequisitionStates.Approved)
+                try
                 {
-                    item = new RequisitionViewModel();
-                    item.eReasonCode = 3;
-                    item.eMessage = "O estado da requisição não permite a validação.";
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    item = serv.ValidateRequisition(item);
                 }
-                else
+                catch (Exception ex)
                 {
-                    var linesToValidate = item.Lines
-                            .Where(x => x.QuantityRequired.Value > 0).ToList();
-
-                    if (linesToValidate.Count() > 0)
-                    {
-                        item.State = RequisitionStates.Validated;
-                        item.ResponsibleValidation = User.Identity.Name;
-                        item.ValidationDate = DateTime.Now;
-                        
-                        linesToValidate.ForEach(x =>
-                                x.QuantityToProvide = x.QuantityRequired
-                            );
-                        var updatedReq = DBRequest.UpdateHeaderAndLines(item.ParseToDB());
-                        if (updatedReq != null)
-                        {
-                            item = updatedReq.ParseToViewModel();
-                            item.eReasonCode = 1;
-                            item.eMessage = "Requisição validada com sucesso.";
-                        }
-                        else
-                        {
-                            item.eReasonCode = 3;
-                            item.eMessage = "Ocorreu um erro ao validar a requisição.";
-                        }
-                    }
-                    else
-                    {
-                        item.eReasonCode = 3;
-                        item.eMessage = "Não existem linhas que cumpram os requisitos de validação.";
-                    }
+                    item.eReasonCode = 3;
+                    item.eMessage = "Ocorreu um erro ao validar a requisição (" + ex.Message + ")";
                 }
             }
             else
@@ -777,7 +745,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_configws);
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
                     serv.CreateMarketConsultFor(item);
                 }
                 catch (NotImplementedException ex)
@@ -803,20 +771,16 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
-                ErrorHandler status = new ErrorHandler();
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_configws);
-                    status = serv.CreatePurchaseOrderFor(item);
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    item = serv.CreatePurchaseOrderFor(item);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    status.eReasonCode = 2;
-                    status.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + ex.Message + ")";
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + ex.Message + ")";
                 }
-                item.eReasonCode = status.eReasonCode;
-                item.eMessage = status.eMessage;
-                item.eMessages = status.eMessages;
             }
             else
             {
@@ -829,32 +793,25 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             return Json(item);
         }
 
-        [HttpPost]
         [Area("Compras")]
-        public JsonResult CreateTransferShipment([FromBody] RequisitionViewModel item)
+        public IActionResult CreateTransferShipment(string id)
         {
-            if (item != null)
+            try
             {
-                try
+                if (!string.IsNullOrEmpty(id))
                 {
-                    RequisitionService serv = new RequisitionService(_configws);
-                    serv.CreateTransferShipmentFor(item);
-                }
-                catch (NotImplementedException ex)
-                {
-                    item.eReasonCode = 2;
-                    item.eMessage = "Funcionalidade não implementada";
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    GenericResult result = serv.CreateTransferShipmentFor(id);
+                    if (result.CompletedSuccessfully)
+                    {
+                        byte[] fileContents = Convert.FromBase64String(result.ResultValue);
+                        Request.HttpContext.Response.Headers.Add("content-disposition", "filename=GuiaTransporte.pdf");
+                        return File(fileContents, "application/pdf");
+                    }
                 }
             }
-            else
-            {
-                item = new RequisitionViewModel()
-                {
-                    eReasonCode = 3,
-                    eMessage = "Não é possivel criar a guia de transporte. A requisição não pode ser nula."
-                };
-            }
-            return Json(item);
+            catch { }
+            return RedirectToAction("AccessDenied", "Error", new { area = "" });
         }
 
         [HttpPost]
@@ -863,20 +820,16 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
-                ErrorHandler status = new ErrorHandler();
                 try
                 {
-                    RequisitionService serv = new RequisitionService(_configws);
-                    status = serv.SendPrePurchaseFor(item, HttpContext.User.Identity.Name);
+                    RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+                    item = serv.SendPrePurchaseFor(item);
                 }
                 catch (Exception ex)
                 {
-                    status.eReasonCode = 2;
-                    status.eMessage = "Ocorreu um erro ao enviar pré-encomenda (" + ex.Message + ")";
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro ao enviar pré-encomenda (" + ex.Message + ")";
                 }
-                item.eReasonCode = status.eReasonCode;
-                item.eMessage = status.eMessage;
-                item.eMessages = status.eMessages;
             }
             else
             {
@@ -888,5 +841,31 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             return Json(item);
         }
+        
+        [Area("Compras")]
+        public IActionResult CreatePDF()
+        {
+            
+            byte[] fileContents = Convert.FromBase64String("");//pdf
+
+            //if (fileContents != null)
+            //{
+            //Response.Clear();
+            //Request.HttpContext.Response.Headers.Add("content-disposition", "filename=GuiaTransporte.pdf");
+            //Response.ContentType = "application/pdf";
+            ////Response.BinaryWrite(fileContents);
+            //Response.Body.WriteAsync(fileContents, 0, fileContents.Length);
+            //}
+
+            //HttpContext.Response.ContentType = "application/pdf";
+
+            //HttpContext.Response.Headers.Add("x-filename", "report.pdf");
+            //HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "x-filename");
+            //HttpContext.Response.Body.Write(result, 0, result.Length);
+            //return new ContentResult();
+            Request.HttpContext.Response.Headers.Add("content-disposition", "filename=GuiaTransporte.pdf");
+            return File(fileContents, "application/pdf");
+        }
+        
     }
 }
