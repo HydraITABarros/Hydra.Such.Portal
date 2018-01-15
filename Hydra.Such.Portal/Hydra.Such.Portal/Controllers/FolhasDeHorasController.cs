@@ -496,7 +496,7 @@ namespace Hydra.Such.Portal.Controllers
                     FH.IntegradoresEmRHKM = Autorizacao.ValidadorRhkm1 + " - " + Autorizacao.ValidadorRhkm2;
                 };
 
-                FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAVDatabaseName, _config.NAVCompanyName).SingleOrDefault().Name;
+                FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault().Name;
             }
             return Json(FH);
         }
@@ -635,7 +635,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (data.EmpregadoNo != "")
                 {
-                    NAVEmployeeViewModel employee = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAVDatabaseName, _config.NAVCompanyName).SingleOrDefault();
+                    NAVEmployeeViewModel employee = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault();
                     EmpregadoNome = employee.Name;
                 }
 
