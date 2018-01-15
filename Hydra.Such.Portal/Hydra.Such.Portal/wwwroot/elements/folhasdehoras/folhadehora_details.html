@@ -369,10 +369,10 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <!--<template is="dom-if" if="{{ _permissions.create }}">-->
-            <paper-button id="btn_calcularAjudasCusto" class="tablinks" on-tap="_calcularAjudasCusto" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square" aria-hidden="true"></i> Calcular Aj Custo</paper-button>
-            <paper-button id="btn_validarFolhaDeHoras" class="tablinks" on-tap="_validarFolhaDeHoras" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
-            <paper-button id="btn_integrarEmRH" class="tablinks" on-tap="_integrarEmRH" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
-            <paper-button id="btn_integrarEmRHKM" class="tablinks" on-tap="_integrarEmRHKM" disabled="{{ !_permissions.update }}"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
+            <paper-button id="btn_calcularAjudasCusto" class="tablinks" on-tap="_calcularAjudasCusto" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Calcular Aj Custo</paper-button>
+            <paper-button id="btn_validarFolhaDeHoras" class="tablinks" on-tap="_validarFolhaDeHoras" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
+            <paper-button id="btn_integrarEmRH" class="tablinks" on-tap="_integrarEmRH" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
+            <paper-button id="btn_integrarEmRHKM" class="tablinks" on-tap="_integrarEmRHKM" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
             <!--</template>-->
         </div>
 
@@ -470,15 +470,17 @@
                         </div>
                     </div>
 
-                    <template is="dom-if" if="{{ _permissions.update }}">
-                        <div class="col-sm-1 alignPoga">
-                            <paper-button id="btn_updateFH1" class="btnSave" raised on-tap="_updateFH" disabled="{{ !_permissions.update }}">Gravar</paper-button>
-                        </div>
-                    </template>
+                    <!--<template is="dom-if" if="{{ _permissions.update }}">-->
+                    <div class="col-sm-1 alignPoga">
+                        <paper-button id="btn_updateFH1" class="btnSave" raised on-tap="_updateFH" disabled="{{ !_permissions.update }}">Gravar</paper-button>
+                    </div>
+                    <!--</template>-->
                 </div>
 
 
+
                 <!------------ PERCURSOS ------------>
+
 
 
                 <paper-collapse-group>
@@ -512,7 +514,7 @@
                                 </div>
                                 <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                                 <div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" disabled="{{ !_permissions.update }}">Criar</paper-button>
+                                    <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" disabled="{{ !_permissions.create }}">Criar</paper-button>
                                 </div>
                                 <!--</template>-->
                             </div>
@@ -658,19 +660,21 @@
                         </vaadin-grid-column>
 
                         <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
-                            <vaadin-grid-column width="100px">
-                                <template class="header">
-                                </template>
-                                <template>
-                                    <paper-button id="btn_deletePercurso" class="btnRemove" raised on-tap="_deletePercurso" disabled="{{ !_permissions.update }}">Eliminar</paper-button>
-                                </template>
-                            </vaadin-grid-column>
+                        <vaadin-grid-column width="100px">
+                            <template class="header">
+                            </template>
+                            <template>
+                                <paper-button id="btn_deletePercurso" class="btnRemove" raised on-tap="_deletePercurso" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                            </template>
+                        </vaadin-grid-column>
                         <!--</template>-->
                     </vaadin-grid>
                 </div>
 
 
+
                 <!------------ AJUDAS DE CUSTO / DESPESAS ------------>
+
 
 
                 <paper-collapse-group>
@@ -720,7 +724,7 @@
                                 </div>
                                 <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                                 <div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createAjuda" class="btnSave" raised on-tap="_createAjuda" disabled="{{ !_permissions.update }}">Criar</paper-button>
+                                    <paper-button id="btn_createAjuda" class="btnSave" raised on-tap="_createAjuda" disabled="{{ !_permissions.create }}">Criar</paper-button>
                                 </div>
                                 <!--</template>-->
                             </div>
@@ -854,20 +858,23 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <template is="dom-if" if="{{ _permissions.delete }}">
-                            <vaadin-grid-column width="100px">
-                                <template class="header">
-                                </template>
-                                <template>
-                                    <paper-button class="btnRemove" raised on-tap="_deleteAjuda">Eliminar</paper-button>
-                                </template>
-                            </vaadin-grid-column>
-                        </template>
+                        <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
+                        <vaadin-grid-column width="100px">
+                            <template class="header">
+                            </template>
+                            <template>
+                                <paper-button class="btnRemove" raised on-tap="_deleteAjuda" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                            </template>
+                        </vaadin-grid-column>
+                        <!--</template>-->
                 </div>
             </div>
 
 
+
             <!------------ MÃO DE OBRA ------------>
+
+
 
             <div class="panel panel-default">
                 <div class="panel-heading">Cabeçalho</div>
@@ -930,7 +937,7 @@
                                 </div>
                                 <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                                 <div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.update }}">Criar</paper-button>
+                                    <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}">Criar</paper-button>
                                 </div>
                                 <!--</template>-->
                             </div>
@@ -1106,21 +1113,25 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <template is="dom-if" if="{{ _permissions.delete }}">
-                            <vaadin-grid-column width="100px">
-                                <template class="header">
-                                </template>
-                                <template>
-                                    <paper-button class="btnRemove" raised on-tap="_deleteMaoDeObra">Eliminar</paper-button>
-                                </template>
-                            </vaadin-grid-column>
-                        </template>
+                        
+
+                          <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
+                        <vaadin-grid-column width="100px">
+                            <template class="header">
+                            </template>
+                            <template>
+                                <paper-button class="btnRemove" raised on-tap="_deleteMaoDeObra" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                            </template>
+                        </vaadin-grid-column>
+                        <!--</template>-->
                     </vaadin-grid>
                 </div>
             </div>
 
 
+
             <!------------ PRESENÇAS ------------>
+
 
 
             <div class="panel panel-default">
@@ -1159,9 +1170,10 @@
                                 <div class="col-sm-5" style="text-align:right;">
                                     <vaadin-text-field id="presencaObservacoes" label="Observações" maxlength="200" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" style="text-align:left;"></vaadin-text-field>
                                 </div>
+
                                 <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                                 <div class="col-sm-1 alignPoga">
-                                    <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.update }}">Criar</paper-button>
+                                    <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}">Criar</paper-button>
                                 </div>
                                 <!--</template>-->
                             </div>
@@ -1241,15 +1253,20 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <template is="dom-if" if="{{ _permissions.delete }}">
-                            <vaadin-grid-column width="100px">
-                                <template class="header">
-                                </template>
-                                <template>
-                                    <paper-button class="btnRemove" raised on-tap="_deletePresenca">Eliminar</paper-button>
-                                </template>
-                            </vaadin-grid-column>
-                        </template>
+
+
+                        <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
+                        <vaadin-grid-column width="100px">
+                            <template class="header">
+                            </template>
+                            <template>
+                                <paper-button class="btnRemove" raised on-tap="_deletePresenca" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                            </template>
+                        </vaadin-grid-column>
+
+
+
+                        <!--</template>-->
                         <!--<template is="dom-if" if="{{ _permissions.update }}">
                             <div class="col-sm-1 alignPoga">
                                 <paper-button class="btnSave" raised on-tap="_updatePresenca">Guardar</paper-button>
@@ -1259,13 +1276,16 @@
             </div>
 
 
+
             <!--DETALHE-->
+
 
 
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-3">
+                            as
                             <vaadin-combo-box items="[[LFolhaDeHoraStatus]]" id="folhaDeHoraStatus" item-value-path="id" item-label-path="value" disabled="true" value="{{data.estado}}" label="Estado">
                                 <template>
                                     <paper-icon-item>
@@ -1402,6 +1422,8 @@
                             <vaadin-text-field type="text" value="{{data.observacoes}}" id="observacoes" name="observacoes" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Observações"></vaadin-text-field>
                         </div>
                     </div>
+
+
 
                     <!--<template is="dom-if" if="{{ _permissions.update }}">-->
                     <div class="col-sm-1 alignPoga">
@@ -2787,7 +2809,6 @@
                     };
 
                     //TABELAS
-                    $(_self.$.tabPercurso_deletePercurso).addClass('disabled');
                     if (data.estado == 1) { //VALIDADO
                         $(_self.$.tabPercurso).addClass('disabled');
                         $(_self.$.tabAjuda).addClass('disabled');
