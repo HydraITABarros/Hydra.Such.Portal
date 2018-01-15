@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Portal.Extensions;
+using System.Reflection;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Hydra.Such.Portal
 {
@@ -33,6 +36,7 @@ namespace Hydra.Such.Portal
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddAuthentication(sharedOptions =>
             {
@@ -50,6 +54,7 @@ namespace Hydra.Such.Portal
                 };
             })
             .AddCookie();
+
 
             // ABARROS -> ADD NAV CONFIGURATIONS TO THE SERVICE
             var NAVConfigurations = Configuration.GetSection("NAVConfigurations");
@@ -76,19 +81,17 @@ namespace Hydra.Such.Portal
                 app.UseExceptionHandler("/Error");
             }
 
-            app.UseStaticFiles();
-
             app.UseSession();
 
-            app.UseAuthentication();
+            app.UseStaticFiles();
 
+            app.UseAuthentication();
+            app.UseDeveloperExceptionPage();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                  name: "areaRoute",
-                  template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-                );
-
+                    name: "area",
+                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
