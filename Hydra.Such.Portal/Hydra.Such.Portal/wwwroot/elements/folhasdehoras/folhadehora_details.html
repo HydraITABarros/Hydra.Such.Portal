@@ -392,7 +392,7 @@
                             <vaadin-text-field type="text" value="{{data.folhaDeHorasNo}}" id="folhaDeHorasNo" name="folhaDeHorasNo" label="Nº Folha Horas" disabled="true"></vaadin-text-field>
                         </div>
                         <div class="col-sm-3">
-                            <such-selectbox id="projetoNo" value="{{ data.projetoNo }}" label="Nº Ordem/Projecto"
+                            <such-selectbox id="projetoNo" value="{{data.projetoNo}}" label="Nº Ordem/Projecto"
                                             items="[[LFolhaDeHoraNavProjectNo]]"
                                             text-path="no"
                                             value-path="no"
@@ -904,13 +904,13 @@
                                     <vaadin-date-picker id="maoDeObraDate" name="maoDeObraDate" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" on-blur="_MaoDeObraData" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-2">
-                                    <such-selectbox id="maoDeObraProjetoNo" label="Nº Obra"
+                                    <!--<such-selectbox id="maoDeObraProjetoNo" label="Nº Obra"
                                                     items="[[LFolhaDeHoraNavProjectNo]]"
                                                     text-path="no"
                                                     value-path="no"
                                                     fields='[{"field":"no","name":"Nº"},{"field":"description","name":"Descrição"},{"field":"customerNo","name":"Nº Cliente"},{"field":"globalDimension1","name":"Dimensão Global 1"},{"field":"globalDimension2","name":"Dimensão Global 2"}]'
                                                     on-change="_MaoDeObraProjecto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                    </such-selectbox>
+                                    </such-selectbox>-->
                                 </div>
                                 <div class="col-sm-3">
                                     <vaadin-combo-box items="[[LFolhaDeHoraTipoTrabalhoNo]]" id="maoDeObraCodigoTipoTrabalho" item-value-path="id" item-label-path="value" label="Tipo Trabalho" on-change="_MaoDeObraTipoTrabalho" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
@@ -1503,7 +1503,7 @@
                 },
 
                 ready: function () {
-                    debugger;
+                    //debugger;
                     //GET FOLHADEHORA DATA
                     this.$.page_databound_ajax.body = JSON.stringify({ "folhaDeHorasNo": this._folhadehoraid });
                     this.$.page_databound_ajax.generateRequest();

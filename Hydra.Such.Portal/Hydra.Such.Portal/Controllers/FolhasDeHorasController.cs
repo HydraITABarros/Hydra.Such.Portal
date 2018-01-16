@@ -249,7 +249,7 @@ namespace Hydra.Such.Portal.Controllers
                             FolhaDeHorasNo = FH.NºFolhaDeHoras,
                             Area = FH.Área,
                             AreaTexto = FH.Área == null ? "" : FH.Área.ToString(),
-                            ProjetoNo = FH.NºProjeto,
+                            ProjetoNo = FH.NºProjeto == null ? "" : FH.NºProjeto.ToString(),
                             ProjetoDescricao = FH.ProjetoDescricao,
                             EmpregadoNo = FH.NºEmpregado,
                             EmpregadoNome = FH.NomeEmpregado,
