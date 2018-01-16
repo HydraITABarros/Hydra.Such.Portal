@@ -1568,7 +1568,7 @@ namespace Hydra.Such.Portal.Configurations
             },
              new EnumData
             {
-                Id = 2,
+                Id = 3,
                 Value = "Depósito"
             }
         };
