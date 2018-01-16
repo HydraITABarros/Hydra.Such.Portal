@@ -497,6 +497,7 @@ namespace Hydra.Such.Portal.Controllers
                 };
 
                 FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault().Name;
+                    //DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault().Name;
             }
             return Json(FH);
         }
