@@ -25,7 +25,9 @@ namespace Hydra.Such.Data.Logic.CCP
         public const int _ElementoArea = 37;
         #endregion
 
-        
+        // email address to use as sender
+        public const string _EmailSender = "CCP_NAV@such.pt";
+
 
         #region CRUD Procedimentos
         public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoTypeToList(int type)
@@ -1325,8 +1327,10 @@ namespace Hydra.Such.Data.Logic.CCP
 
             if (StateToCheck == 1)
             {
-                
-                if (Procedimento.ImobilizadoSimNao)
+                Procedimento.ImobilizadoSimNao = Procedimento.ImobilizadoSimNao.HasValue ? Procedimento.ImobilizadoSimNao : false;
+
+
+                if (Procedimento.ImobilizadoSimNao.Value)
                     NewFluxo1.EstadoSeguinte = 4;
                 else
                     NewFluxo1.EstadoSeguinte = 2;
@@ -1347,8 +1351,8 @@ namespace Hydra.Such.Data.Logic.CCP
             {
                 if (StateToCheck == 1)
                 {
-                    
-                    if (Procedimento.ImobilizadoSimNao)
+                    Procedimento.ImobilizadoSimNao = Procedimento.ImobilizadoSimNao.HasValue ? Procedimento.ImobilizadoSimNao : false;
+                    if (Procedimento.ImobilizadoSimNao.Value)
                         Procedimento.Estado = 4;
                     else
                         Procedimento.Estado = 1;

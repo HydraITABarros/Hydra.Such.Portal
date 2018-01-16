@@ -92,10 +92,14 @@ namespace Hydra.Such.Data.NAV
 
         public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineList(List<LinhasFaturaçãoContrato> LinesList, String HeaderNo, NAVWSConfigurations WSConfigurations)
         {
+            
+            int counter = 0;
             WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
                x => new WSCreatePreInvoiceLine.WsPreInvoiceLine
                {
                    Document_No = HeaderNo,
+                   Line_No = counter+=10000,
+                   Line_NoSpecified = true,
                    Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
                    Document_TypeSpecified = true,
                    No = x.Código,
@@ -103,10 +107,10 @@ namespace Hydra.Such.Data.NAV
                    Type = ConvertType((x.Tipo.Replace(" ", String.Empty))),
                    Description = x.Descrição,
                    //Quantity = x.Quantidade.Value,
-                   Quantity = 4,
+                   Quantity = x.Quantidade.HasValue ? x.Quantidade.Value : 0,
                    QuantitySpecified = true,
                    Unit_of_Measure = x.CódUnidadeMedida,
-                   Unit_Price = new decimal(12.25),
+                   Unit_Price = x.PreçoUnitário.HasValue ? x.PreçoUnitário.Value : 0,
                    //Unit_Price = x.PreçoUnitário.Value,
                    Unit_PriceSpecified = true,
                    //Amount = x.ValorVenda.Value,
@@ -151,12 +155,12 @@ namespace Hydra.Such.Data.NAV
                    No = x.Code,
                    Description = x.Description,
                    QuantitySpecified = true,
-                   Quantity = (int)x.Quantity,
+                   Quantity = x.Quantity.HasValue ? x.Quantity.Value : 0,
                    TypeSpecified = true,
                    Unit_of_Measure = x.MeasurementUnitCode,
                    Location_Code = x.LocationCode,
-                   Unit_Price = (decimal)x.UnitPrice,
-                   Unit_Cost_LCY = (decimal)x.UnitCost,
+                   Unit_Price = x.UnitPrice.HasValue ? x.UnitPrice.Value : 0,
+                   Unit_Cost_LCY = x.UnitCost.HasValue ? x.UnitCost.Value : 0,
                    Line_No = counter += 10000,
                    Line_NoSpecified = true
                    //Job_Journal_Line_No_Portal = x.LineNo,

@@ -199,6 +199,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
     {
         /*
          * Return Handlers categories:
+         * -9 - Generic/Unkmown failure
          * -1 - Object is empty or null
          * 0 - Success
          * 1xx - Create errors
@@ -210,6 +211,12 @@ namespace Hydra.Such.Data.ViewModel.CCP
          * 7xx - Unknown data
          * 
          */
+
+        public static ErrorHandler Error = new ErrorHandler
+        {
+            eReasonCode = -9,
+            eMessage = "Erro"
+        };
         public static ErrorHandler NoData = new ErrorHandler
         {
             eReasonCode = -1,

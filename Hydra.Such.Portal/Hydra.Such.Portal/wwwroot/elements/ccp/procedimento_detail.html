@@ -286,6 +286,14 @@
                    on-response="_responseDeleteProcessor"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/UpdateProcedimento"
+                   last-response="{{ProcedimentoUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_update_procedimento"
+                   on-response="_updateProcedimentoResponse"
+                   content-type="application/json">
+        </iron-ajax>
         <iron-ajax url="/ProcedimentosCcps/CreateElementoJuri"
                    last-response="{{ElementoCreated}}"
                    method="post"
@@ -294,6 +302,7 @@
                    on-response="_createElementoJuriResponse"
                    content-type="application/json">
         </iron-ajax>
+
         <iron-ajax url="/ProcedimentosCcps/DeleteElementoJuri"
                    last-response="{{ElementoDeleted}}"
                    method="post"
@@ -308,6 +317,22 @@
                    handle-as="json"
                    id="ajax_submitprocedimento"
                    on-response="_submitProcedimentoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/ConfirmProcedimento"
+                   last-response="{{ ProcedimentoConfirmed }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_confirmImobContabilidade"
+                   on-response="_confirmImobilizadoContabResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/ReturnToArea"
+                   last-response="{{ ProcedimentoReturnedToArea }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_imobReturnToArea"
+                   on-response="_imobReturnToAreaResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -511,10 +536,10 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <br />
-                                            <paper-button class="btnSave" id="buttonCriarElementoJuri1" raised on-tap="_createElementoJuri"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                            <paper-button class="btnSave" id="buttonCriarElementoJuri" raised on-tap="_createElementoJuri"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                         </div>
                                     </div>
-                                    <vaadin-grid id="gridElementosJuri1" aria-label="gridElementosJuri1" items="{{data.elementosJuri}}" class="grid" style="height:170px;">
+                                    <vaadin-grid id="gridElementosJuri" aria-label="gridElementosJuri" items="{{data.elementosJuri}}" class="grid" style="height:170px;">
                                         <vaadin-grid-column width="20%">
                                             <template class="header">
                                                 Utilizador
@@ -953,11 +978,6 @@
                                             <div class="row break_clear"></div>
                                         </div>
                                         <div class="clearfix"></div>
-                                        <!--<div class="col-lg-6">
-                                            <br />
-                                            <paper-button raised id="confirmImobilizadoContab" class="btn--confirm pull-left" on-tap="_confirmImobilizadoContab"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Confirmar</paper-button>
-                                            <paper-button raised id="returnToArea" class="btn--return pull-left" on-tap="_returnToArea"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;Devolver Área</paper-button>
-                                        </div>-->
                                         <div class="clearfix"></div>
                                         <div class="col-lg-6">
                                             <!--Context menu-->
@@ -983,7 +1003,7 @@
                                                     </style>
                                                     <vaadin-list-box>
                                                         <vaadin-item class="my-menu-item" on-tap="_confirmImobilizadoContab">Confirmar</vaadin-item>
-                                                        <vaadin-item class="my-menu-item" on-tap="_returnToArea">Devolver à Área</vaadin-item>
+                                                        <vaadin-item class="my-menu-item" on-tap="_imobReturnToArea">Devolver à Área</vaadin-item>
                                                     </vaadin-list-box>
                                                 </template>
 
@@ -991,6 +1011,7 @@
                                                 <!--<button>Show Context Menu</button>-->
                                             </vaadin-context-menu>
                                         </div>
+
                                     </div>
 
                                 </div>
@@ -1068,7 +1089,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-xs-12">
-                                            <vaadin-grid id="gridElementosJuri2" aria-label="gridElementosJuri2" items="{{data.elementosJuri}}" class="grid" style="height:170px;">
+                                            <vaadin-grid id="gridElementosJuri" aria-label="gridElementosJuri" items="{{data.elementosJuri}}" class="grid" style="height:170px;">
                                                 <vaadin-grid-column width="20%">
                                                     <template class="header">
                                                         Utilizador
@@ -2122,12 +2143,10 @@
                     },
                 },
 
-                _testFunction1: function () {
-                    this._openToast("Success: Confirmar");
+                _testFunction: function () {
+
                 },
-                _testFunction2: function () {
-                    this._openToast("Success: Devolver à àrea");
-                },
+
 
                 ready: function () {
                     debugger;;
@@ -2142,6 +2161,32 @@
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
+
+                _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
+                    debugger;;
+
+                    bootbox.confirm({
+                        message: _message,
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            debugger;;
+                            if (result) {
+                                //_ajaxRequest.body = JSON.stringify(_Procedimento);
+                                _ajaxRequest.generateRequest();
+                            }
+                        }
+                    });
+                },
+
 
                 _validateData: function () {
                     ////debugger;;
@@ -2165,43 +2210,54 @@
                 _update: function () {
                     debugger;;
                     if (this._onUpdateValidateElementoJuri()) {
-                        this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data)
+                        //this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data)
+                        this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
+                        this.$.ajax_update_procedimento.generateRequest();
                     }
                 },
 
                 _delete: function () {
                     debugger;;
-                    if (this.data.estado != 0) {
-                        this._openToast("Não pode eliminar o procedimento: Estado <> 0");
-
-                        setTimeout(
-                            function () {
-                                //
-                            }, 3000);
-
-                        return;
-                    }
-                    var Procedimento = this.data;
                     var ajax_request = this.$.ajax_delete_procedimento;
-                    bootbox.confirm({
-                        message: "Tem a certeza que pretende remover o Procedimento " + this.data.no + "?",
-                        buttons: {
-                            confirm: {
-                                label: 'Sim',
-                                className: 'btn-success'
-                            },
-                            cancel: {
-                                label: 'Não',
-                                className: 'btn-danger'
-                            }
-                        },
-                        callback: function (result) {
-                            if (result) {
-                                ajax_request.body = JSON.stringify(Procedimento);
-                                ajax_request.generateRequest();
-                            }
-                        }
-                    });
+                    ajax_request.body = JSON.stringify({"No": this.data.no});
+                    
+                    this._confirmAndExecuteActionToast(
+                        "Tem a certeza que pretende remover o Procedimento " + this.data.no + "?",
+                        ajax_request
+                    );
+                    //var Procedimento = this.data;
+                    //var ajax_request = this.$.ajax_delete_procedimento;
+                    //bootbox.confirm({
+                    //    message: "Tem a certeza que pretende remover o Procedimento " + this.data.no + "?",
+                    //    buttons: {
+                    //        confirm: {
+                    //            label: 'Sim',
+                    //            className: 'btn-success'
+                    //        },
+                    //        cancel: {
+                    //            label: 'Não',
+                    //            className: 'btn-danger'
+                    //        }
+                    //    },
+                    //    callback: function (result) {
+                    //        if (result) {
+                    //            ajax_request.body = JSON.stringify({
+                    //                "No": Procedimento.no
+                    //            });
+                    //            ajax_request.generateRequest();
+                    //        }
+                    //    }
+                    //});
+                },
+
+                _updateProcedimentoResponse: function (e) {
+                    debugger;;
+                    if (this.ProcedimentoUpdated.eReasonCode != 0) {
+                        this._openToast(this.ProcedimentoUpdated.eMessage);
+                    } else {
+                        this._openToast("Procedimento actualizado com sucesso.")
+                    }
+
                 },
 
                 //Responses Processors
@@ -2246,12 +2302,13 @@
                 },
 
                 _responseDeleteProcessor: function (data) {
-                    ////debugger;;
+                    debugger;;
                     var self = this;
                     if (data.detail.status === 200) {
-                        if (this.deletedData.eReasonCode == 4) {
+                        if (this.deletedData.eReasonCode != 0) {
                             this._openToast("Não é possivel eliminar o Procedimento.");
                         } else {
+                            debugger;;
                             this._openToast(this.deletedData.eMessage);
                             setTimeout(
                                 function () {
@@ -2365,7 +2422,7 @@
                         return true;
                 },
                 _createElementoJuri: function () {
-                    ////debugger;;
+                    debugger;;
                     this.isJuriElementAction = true;
                     if (this._validateElementoJuriData()) {
                         this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data);
@@ -2384,7 +2441,7 @@
                     }
                 },
                 _createElementoJuriResponse: function (e) {
-                    ////debugger;;
+                    debugger;;
                     if (this.ElementoCreated.eReasonCode == 0) {
                         this._openToast('Elemento Júri adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
@@ -2403,7 +2460,7 @@
                     }
                 },
                 _deleteElementoJuri: function (e) {
-                    ////debugger;;
+                    debugger;;
                     this.isJuriElementAction = true;
                     var index = this.data.elementosJuri.indexOf(e.model.item);
                     this.data.elementosJuri.splice(index, 1);
@@ -2412,11 +2469,11 @@
                         noLinha: e.model.item.noLinha
                     });
                     this.$.ajax_deleteelementojuri.generateRequest();
-                    this.$.gridElementosJuri.clearCache();
+                    //this.$.gridElementosJuri.clearCache();
 
                 },
                 _deleteElementoJuriResponse: function (e) {
-                    ////debugger;;
+                    debugger;;
                     if (this.ElementoDeleted) {
                         this._openToast('Elemento Juri eliminado com sucesso');
 
@@ -2508,8 +2565,15 @@
                     }
 
                     if (this._onSubmitValidateProcedimento()) {
-                        this.$.ajax_submitprocedimento.body = this.data;
-                        this.$.ajax_submitprocedimento.generateRequest();
+                        var ajax_request = this.$.ajax_submitprocedimento;
+                        ajax_request.body = this.data;
+
+                        this._confirmAndExecuteActionToast(
+                            "Confirma a sumissão do Procedimento " + this.data.no,
+                            ajax_request
+                        );
+                        //this.$.ajax_submitprocedimento.body = this.data;
+                        //this.$.ajax_submitprocedimento.generateRequest();
                     }
                 },
                 _submitProcedimentoResponse: function (e) {
@@ -2531,7 +2595,37 @@
 
                 // Contabilidade Confirm action
                 _confirmImobilizadoContab: function () {
+                    if (this.estado != 1) {
+                        this._openToast('Neste estado não pode submeter o workflow!');
+                        return;
+                    }
 
+                    this.$.ajax_confirmImobContabilidade.body = this.data;
+                    this.$.ajax_confirmImobContabilidade.generateRequest();
+                },
+                _confirmImobilizadoContabResponse: function (e) {
+                    if (this.ProcedimentoConfirmed.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " confirmado!");
+                        setTimeout(
+                            function () {
+                                //
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(ProcedimentoConfirmed.eMessage);
+                    }
+                },
+
+                // Imobilizado return to area
+                _imobReturnToArea: function () {
+
+                },
+
+                _imobReturnToAreaResponse: function (e) {
                 },
 
                 _setFieldsEditability(data) {
@@ -2545,11 +2639,11 @@
                     // Disable controls
                     // 1. Procedimento status != 0.b
                     if (data.estado != 0) {
-                        $(_self.$.gridElementosJuri1).addClass('disabled');
-                        $(_self.$.buttonCriarElementoJuri1).addClass('disabled');
+                        $(_self.$.gridElementosJuri).addClass('disabled');
+                        $(_self.$.buttonCriarElementoJuri).addClass('disabled');
                         $(_self.$.submitProcedimento).addClass('disabled');
-                        $(_self.$.gridElementosJuri2).addClass('disabled');
-                        $(_self.$.buttonCriarElementoJuri2).addClass('disabled');
+                        //$(_self.$.gridElementosJuri).addClass('disabled');
+                        //$(_self.$.buttonCriarElementoJuri).addClass('disabled');
                     }
 
 
@@ -2588,7 +2682,7 @@
                     // 1. Procedimento status != 0.e
 
                     // 2. Procedimento status != 1.b
-                    _self.$.contabilidadeComentario.disabled = (data.estado != 1 || !_self.__isElementContabilidade);
+                    //_self.$.contabilidadeComentario.disabled = (data.estado != 1 || !_self.__isElementContabilidade);
                     // 1. Procedimento status != 1.e
 
                     //esconder um campo
