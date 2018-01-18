@@ -68,7 +68,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         public JsonResult GetSimplifiedRequisitionLines([FromBody] SimplifiedRequisitionLineViewModel item)
         {
             List<SimplifiedRequisitionLineViewModel> result = DBSimplifiedRequisitionLines.ParseToViewModel(DBSimplifiedRequisitionLines.GetById(item.RequisitionNo));
-            if (result != null)
+            if (result.Count() != 0)
             {
                 TiposRefeição typeMeal = DBMealTypes.GetById(result[0].MealType??0);
                 result.ForEach(x =>
@@ -263,7 +263,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                     TGetNavLocationProduct.Wait();
                     if (TGetNavLocationProduct.IsCompletedSuccessfully)
                     {
-                        if (/*TGetNavLocationProduct.Result.return_value >0 && TGetNavLocationProduct.Result.return_value*/ 22 >= item.QuantityApproved)
+                        if (TGetNavLocationProduct.Result.return_value >0 && TGetNavLocationProduct.Result.return_value >= item.QuantityApproved)
                         {
                             //Update Simplified Requisition lines
                             item.QuantityReceipt = item.QuantityApproved;
@@ -328,7 +328,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             if (historyRequisition == true)
             {
                 //Register lines of diary project
-                ListDp = null;
+                ListDp.Clear();
                 items.ForEach(x => 
                 {
                     x.Status = 3;

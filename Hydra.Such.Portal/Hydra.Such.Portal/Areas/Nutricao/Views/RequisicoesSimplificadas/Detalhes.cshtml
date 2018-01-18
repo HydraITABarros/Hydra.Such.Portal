@@ -81,12 +81,14 @@ else
                    on-response="_responseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax last-response="{{data}}"
+        <iron-ajax last-response="{{requisitions}}"
                    method="post"
                    handle-as="json"
                    id="register_requisitions_ajax"
                    on-response="_responseProcessorRegister"
                    content-type="application/json"></iron-ajax>
+
+       
 
         <iron-ajax last-response="{{updateLines}}"
                    method="post"
@@ -950,6 +952,7 @@ else
                                 this._openToast(this.data.eMessage);
                             } else {
                                 this._openToastError(this.data.eMessage);
+                                this.ready();
                             }
                         }
                     } else {
@@ -973,11 +976,11 @@ else
                 },
                 _responseProcessorRegister: function (data) {
                     if (data.detail.status === 200) {
-                            if (this.data.eReasonCode == 100) {
-                                this._openToast(this.data.eMessage);
+                        if (this.requisitions.eReasonCode == 100) {
+                                this._openToast(this.requisitions.eMessage);
                                 window.location.href = "/Nutricao/RequisicoesSimplificadas/Index/?option=" + 1;
                             } else {
-                                this._openToastError(this.data.eMessage);
+                                this._openToastError(this.requisitions.eMessage);
                             }
                    
                     } else {
