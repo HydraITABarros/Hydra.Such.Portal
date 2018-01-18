@@ -710,9 +710,9 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        public JsonResult GetUnitStockeepingId([FromBody]string id)
+        public JsonResult GetUnitStockeepingId([FromBody]string idStock)
         {
-            StockkeepingUnitViewModel result = DBStockkeepingUnit.ParseToViewModel(DBStockkeepingUnit.GetById(id));
+            StockkeepingUnitViewModel result = DBStockkeepingUnit.ParseToViewModel(DBStockkeepingUnit.GetById(idStock));
             return Json(result);
         }
 
@@ -776,6 +776,58 @@ namespace Hydra.Such.Portal.Controllers
 
          
         }
+        #endregion
+
+        #region Pré-Requisições
+
+        public IActionResult PreRequisicoesLista()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 3);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 3;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult PreRequisicoesDetalhes(string PreRequesitionNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 3);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 3;
+                ViewBag.PreRequesitionNo = PreRequesitionNo ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        #endregion
+
+        #region Pending Requesitions
+        public IActionResult RequisicoesPendentes()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 0);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 3;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         #endregion
     }
 }

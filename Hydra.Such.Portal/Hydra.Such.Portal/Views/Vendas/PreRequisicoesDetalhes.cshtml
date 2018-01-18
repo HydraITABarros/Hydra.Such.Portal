@@ -1,0 +1,9 @@
+﻿
+@{
+    ViewData["Title"] = "PreRequisicoesDetalhes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/elements/prerequesitions/pre_requesitiondetails.html">
+<h1 class="title">Pré-Requisição</h1>
+
+<x-prerequisitions _areaid="4" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))' _prerequesitionno="@ViewBag.PreRequesitionNo"></x-prerequisitions>

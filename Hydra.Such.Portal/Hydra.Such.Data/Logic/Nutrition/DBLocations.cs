@@ -104,30 +104,34 @@ namespace Hydra.Such.Data.Logic.Nutrition
 
         public static LocationViewModel ParseToViewModel(Localizações x)
         {
-            return new LocationViewModel()
+            if (x != null)
             {
-                Code = x.Código,
-                Name = x.Nome,
-                Address = x.Endereço,
-                City = x.Cidade,
-                MobilePhone = x.Telefone,
-                Fax = x.NºFax,
-                Contact = x.Contato,
-                ZipCode = x.CódPostal,
-                Email = x.Email,
-                Locked = x.Bloqueado,
-                Region = x.Região,
-                Area = x.Área,
-                ResponsabilityCenter = x.CentroResponsabilidade,
-                SupplierLocation = x.LocalFornecedor,
-                ShipLocationCode = x.CódigoLocalEntrega,
-                WarehouseManager = x.ResponsávelArmazém,
-                WarehouseEnvironment = x.ArmazémAmbiente,
-                CreateDate = x.DataHoraCriação,
-                CreateUser = x.UtilizadorCriação,
-                UpdateDate = x.DataHoraModificação,
-                UpdateUser = x.UtilizadorCriação
-            };
+                return new LocationViewModel()
+                {
+                    Code = x.Código,
+                    Name = x.Nome,
+                    Address = x.Endereço,
+                    City = x.Cidade,
+                    MobilePhone = x.Telefone,
+                    Fax = x.NºFax,
+                    Contact = x.Contato,
+                    ZipCode = x.CódPostal,
+                    Email = x.Email,
+                    Locked = x.Bloqueado,
+                    Region = x.Região,
+                    Area = x.Área,
+                    ResponsabilityCenter = x.CentroResponsabilidade,
+                    SupplierLocation = x.LocalFornecedor,
+                    ShipLocationCode = x.CódigoLocalEntrega,
+                    WarehouseManager = x.ResponsávelArmazém,
+                    WarehouseEnvironment = x.ArmazémAmbiente,
+                    CreateDate = x.DataHoraCriação,
+                    CreateUser = x.UtilizadorCriação,
+                    UpdateDate = x.DataHoraModificação,
+                    UpdateUser = x.UtilizadorCriação
+                };
+            }
+            return null;
         }
 
         public static List<LocationViewModel> ParseToViewModel(this List<Localizações> items)

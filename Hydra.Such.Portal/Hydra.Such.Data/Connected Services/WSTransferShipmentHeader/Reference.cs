@@ -12,51 +12,51 @@ namespace WSTransferShipmentHeader
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", ConfigurationName="WSTransferShipmentHeader.WSCabGuiaTransporte_Port")]
-    public interface WSCabGuiaTransporte_Port
+    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", ConfigurationName="WSTransferShipmentHeader.WSShipmentDocHeader_Port")]
+    public interface WSShipmentDocHeader_Port
     {
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wscabguiatransporte:Read", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader:Read", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentHeader.Read_Result> ReadAsync(WSTransferShipmentHeader.Read request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wscabguiatransporte:ReadByRecId", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader:ReadByRecId", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentHeader.ReadByRecId_Result> ReadByRecIdAsync(WSTransferShipmentHeader.ReadByRecId request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wscabguiatransporte:ReadMultiple", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader:ReadMultiple", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentHeader.ReadMultiple_Result> ReadMultipleAsync(WSTransferShipmentHeader.ReadMultiple request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wscabguiatransporte:IsUpdated", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader:IsUpdated", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentHeader.IsUpdated_Result> IsUpdatedAsync(WSTransferShipmentHeader.IsUpdated request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wscabguiatransporte:GetRecIdFromKey", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader:GetRecIdFromKey", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentHeader.GetRecIdFromKey_Result> GetRecIdFromKeyAsync(WSTransferShipmentHeader.GetRecIdFromKey request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wscabguiatransporte:Create", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader:Create", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentHeader.Create_Result> CreateAsync(WSTransferShipmentHeader.Create request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wscabguiatransporte:CreateMultiple", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader:CreateMultiple", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentHeader.CreateMultiple_Result> CreateMultipleAsync(WSTransferShipmentHeader.CreateMultiple request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wscabguiatransporte:Update", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader:Update", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentHeader.Update_Result> UpdateAsync(WSTransferShipmentHeader.Update request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wscabguiatransporte:UpdateMultiple", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader:UpdateMultiple", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentHeader.UpdateMultiple_Result> UpdateMultipleAsync(WSTransferShipmentHeader.UpdateMultiple request);
         
-        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wscabguiatransporte:Delete", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader:Delete", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         System.Threading.Tasks.Task<WSTransferShipmentHeader.Delete_Result> DeleteAsync(WSTransferShipmentHeader.Delete request);
     }
@@ -64,8 +64,8 @@ namespace WSTransferShipmentHeader
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte")]
-    public partial class WSCabGuiaTransporte
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader")]
+    public partial class WSShipmentDocHeader
     {
         
         private string keyField;
@@ -174,12 +174,6 @@ namespace WSTransferShipmentHeader
         
         private string nº_RequisiçãoField;
         
-        private string global_Dimension_1_CodeField;
-        
-        private string global_Dimension_2_CodeField;
-        
-        private string global_Dimension_3_CodeField;
-        
         private string responsibility_CenterField;
         
         private string observaçõesField;
@@ -205,6 +199,12 @@ namespace WSTransferShipmentHeader
         private string vAT_Registration_NoField;
         
         private string souce_CodeField;
+        
+        private string regionCode20Field;
+        
+        private string functionAreaCode20Field;
+        
+        private string responsabilityCenterCode20Field;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
@@ -950,48 +950,6 @@ namespace WSTransferShipmentHeader
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=42)]
-        public string Global_Dimension_1_Code
-        {
-            get
-            {
-                return this.global_Dimension_1_CodeField;
-            }
-            set
-            {
-                this.global_Dimension_1_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=43)]
-        public string Global_Dimension_2_Code
-        {
-            get
-            {
-                return this.global_Dimension_2_CodeField;
-            }
-            set
-            {
-                this.global_Dimension_2_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=44)]
-        public string Global_Dimension_3_Code
-        {
-            get
-            {
-                return this.global_Dimension_3_CodeField;
-            }
-            set
-            {
-                this.global_Dimension_3_CodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=45)]
         public string Responsibility_Center
         {
             get
@@ -1005,7 +963,7 @@ namespace WSTransferShipmentHeader
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=46)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=43)]
         public string Observações
         {
             get
@@ -1019,7 +977,7 @@ namespace WSTransferShipmentHeader
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=47)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=44)]
         public string Origem
         {
             get
@@ -1033,7 +991,7 @@ namespace WSTransferShipmentHeader
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=48)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=45)]
         public string Posting_No_Series
         {
             get
@@ -1047,7 +1005,7 @@ namespace WSTransferShipmentHeader
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=49)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=46)]
         public bool Guia_Transporte_Interface
         {
             get
@@ -1075,7 +1033,7 @@ namespace WSTransferShipmentHeader
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=50)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=47)]
         public string Nº_Guia_Original_Interface
         {
             get
@@ -1089,7 +1047,7 @@ namespace WSTransferShipmentHeader
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="time", Order=51)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time", Order=48)]
         public System.DateTime Shipment_Start_Time
         {
             get
@@ -1117,7 +1075,7 @@ namespace WSTransferShipmentHeader
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=52)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=49)]
         public System.DateTime Shipment_Start_Date
         {
             get
@@ -1145,7 +1103,7 @@ namespace WSTransferShipmentHeader
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=53)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=50)]
         public string VAT_Registration_No
         {
             get
@@ -1159,7 +1117,7 @@ namespace WSTransferShipmentHeader
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=54)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=51)]
         public string Souce_Code
         {
             get
@@ -1171,11 +1129,53 @@ namespace WSTransferShipmentHeader
                 this.souce_CodeField = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=52)]
+        public string RegionCode20
+        {
+            get
+            {
+                return this.regionCode20Field;
+            }
+            set
+            {
+                this.regionCode20Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=53)]
+        public string FunctionAreaCode20
+        {
+            get
+            {
+                return this.functionAreaCode20Field;
+            }
+            set
+            {
+                this.functionAreaCode20Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=54)]
+        public string ResponsabilityCenterCode20
+        {
+            get
+            {
+                return this.responsabilityCenterCode20Field;
+            }
+            set
+            {
+                this.responsabilityCenterCode20Field = value;
+            }
+        }
     }
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader")]
     public enum Tipo
     {
         
@@ -1195,17 +1195,17 @@ namespace WSTransferShipmentHeader
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte")]
-    public partial class WSCabGuiaTransporte_Filter
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader")]
+    public partial class WSShipmentDocHeader_Filter
     {
         
-        private WSCabGuiaTransporte_Fields fieldField;
+        private WSShipmentDocHeader_Fields fieldField;
         
         private string criteriaField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
-        public WSCabGuiaTransporte_Fields Field
+        public WSShipmentDocHeader_Fields Field
         {
             get
             {
@@ -1234,8 +1234,8 @@ namespace WSTransferShipmentHeader
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte")]
-    public enum WSCabGuiaTransporte_Fields
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader")]
+    public enum WSShipmentDocHeader_Fields
     {
         
         /// <remarks/>
@@ -1362,15 +1362,6 @@ namespace WSTransferShipmentHeader
         N_x00BA__Requisição,
         
         /// <remarks/>
-        Global_Dimension_1_Code,
-        
-        /// <remarks/>
-        Global_Dimension_2_Code,
-        
-        /// <remarks/>
-        Global_Dimension_3_Code,
-        
-        /// <remarks/>
         Responsibility_Center,
         
         /// <remarks/>
@@ -1399,16 +1390,25 @@ namespace WSTransferShipmentHeader
         
         /// <remarks/>
         Souce_Code,
+        
+        /// <remarks/>
+        RegionCode20,
+        
+        /// <remarks/>
+        FunctionAreaCode20,
+        
+        /// <remarks/>
+        ResponsabilityCenterCode20,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Read", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Read", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class Read
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
         public string Nº_Guia_Transporte;
         
         public Read()
@@ -1424,31 +1424,31 @@ namespace WSTransferShipmentHeader
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Read_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Read_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class Read_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
-        public WSTransferShipmentHeader.WSCabGuiaTransporte WSCabGuiaTransporte;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
+        public WSTransferShipmentHeader.WSShipmentDocHeader WSShipmentDocHeader;
         
         public Read_Result()
         {
         }
         
-        public Read_Result(WSTransferShipmentHeader.WSCabGuiaTransporte WSCabGuiaTransporte)
+        public Read_Result(WSTransferShipmentHeader.WSShipmentDocHeader WSShipmentDocHeader)
         {
-            this.WSCabGuiaTransporte = WSCabGuiaTransporte;
+            this.WSShipmentDocHeader = WSShipmentDocHeader;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class ReadByRecId
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
         public string recId;
         
         public ReadByRecId()
@@ -1464,45 +1464,45 @@ namespace WSTransferShipmentHeader
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class ReadByRecId_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
-        public WSTransferShipmentHeader.WSCabGuiaTransporte WSCabGuiaTransporte;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
+        public WSTransferShipmentHeader.WSShipmentDocHeader WSShipmentDocHeader;
         
         public ReadByRecId_Result()
         {
         }
         
-        public ReadByRecId_Result(WSTransferShipmentHeader.WSCabGuiaTransporte WSCabGuiaTransporte)
+        public ReadByRecId_Result(WSTransferShipmentHeader.WSShipmentDocHeader WSShipmentDocHeader)
         {
-            this.WSCabGuiaTransporte = WSCabGuiaTransporte;
+            this.WSShipmentDocHeader = WSShipmentDocHeader;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class ReadMultiple
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute("filter")]
-        public WSTransferShipmentHeader.WSCabGuiaTransporte_Filter[] filter;
+        public WSTransferShipmentHeader.WSShipmentDocHeader_Filter[] filter;
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=1)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=1)]
         public string bookmarkKey;
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=2)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=2)]
         public int setSize;
         
         public ReadMultiple()
         {
         }
         
-        public ReadMultiple(WSTransferShipmentHeader.WSCabGuiaTransporte_Filter[] filter, string bookmarkKey, int setSize)
+        public ReadMultiple(WSTransferShipmentHeader.WSShipmentDocHeader_Filter[] filter, string bookmarkKey, int setSize)
         {
             this.filter = filter;
             this.bookmarkKey = bookmarkKey;
@@ -1513,19 +1513,19 @@ namespace WSTransferShipmentHeader
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class ReadMultiple_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="ReadMultiple_Result", Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="ReadMultiple_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSTransferShipmentHeader.WSCabGuiaTransporte[] ReadMultiple_Result1;
+        public WSTransferShipmentHeader.WSShipmentDocHeader[] ReadMultiple_Result1;
         
         public ReadMultiple_Result()
         {
         }
         
-        public ReadMultiple_Result(WSTransferShipmentHeader.WSCabGuiaTransporte[] ReadMultiple_Result1)
+        public ReadMultiple_Result(WSTransferShipmentHeader.WSShipmentDocHeader[] ReadMultiple_Result1)
         {
             this.ReadMultiple_Result1 = ReadMultiple_Result1;
         }
@@ -1534,11 +1534,11 @@ namespace WSTransferShipmentHeader
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class IsUpdated
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
         public string Key;
         
         public IsUpdated()
@@ -1554,11 +1554,11 @@ namespace WSTransferShipmentHeader
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class IsUpdated_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="IsUpdated_Result", Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="IsUpdated_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
         public bool IsUpdated_Result1;
         
         public IsUpdated_Result()
@@ -1574,11 +1574,11 @@ namespace WSTransferShipmentHeader
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class GetRecIdFromKey
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
         public string Key;
         
         public GetRecIdFromKey()
@@ -1594,11 +1594,11 @@ namespace WSTransferShipmentHeader
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class GetRecIdFromKey_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetRecIdFromKey_Result", Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetRecIdFromKey_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
         public string GetRecIdFromKey_Result1;
         
         public GetRecIdFromKey_Result()
@@ -1613,168 +1613,168 @@ namespace WSTransferShipmentHeader
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class Create
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
-        public WSTransferShipmentHeader.WSCabGuiaTransporte WSCabGuiaTransporte;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
+        public WSTransferShipmentHeader.WSShipmentDocHeader WSShipmentDocHeader;
         
         public Create()
         {
         }
         
-        public Create(WSTransferShipmentHeader.WSCabGuiaTransporte WSCabGuiaTransporte)
+        public Create(WSTransferShipmentHeader.WSShipmentDocHeader WSShipmentDocHeader)
         {
-            this.WSCabGuiaTransporte = WSCabGuiaTransporte;
+            this.WSShipmentDocHeader = WSShipmentDocHeader;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Create_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Create_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class Create_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
-        public WSTransferShipmentHeader.WSCabGuiaTransporte WSCabGuiaTransporte;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
+        public WSTransferShipmentHeader.WSShipmentDocHeader WSShipmentDocHeader;
         
         public Create_Result()
         {
         }
         
-        public Create_Result(WSTransferShipmentHeader.WSCabGuiaTransporte WSCabGuiaTransporte)
+        public Create_Result(WSTransferShipmentHeader.WSShipmentDocHeader WSShipmentDocHeader)
         {
-            this.WSCabGuiaTransporte = WSCabGuiaTransporte;
+            this.WSShipmentDocHeader = WSShipmentDocHeader;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class CreateMultiple
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSTransferShipmentHeader.WSCabGuiaTransporte[] WSCabGuiaTransporte_List;
+        public WSTransferShipmentHeader.WSShipmentDocHeader[] WSShipmentDocHeader_List;
         
         public CreateMultiple()
         {
         }
         
-        public CreateMultiple(WSTransferShipmentHeader.WSCabGuiaTransporte[] WSCabGuiaTransporte_List)
+        public CreateMultiple(WSTransferShipmentHeader.WSShipmentDocHeader[] WSShipmentDocHeader_List)
         {
-            this.WSCabGuiaTransporte_List = WSCabGuiaTransporte_List;
+            this.WSShipmentDocHeader_List = WSShipmentDocHeader_List;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class CreateMultiple_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSTransferShipmentHeader.WSCabGuiaTransporte[] WSCabGuiaTransporte_List;
+        public WSTransferShipmentHeader.WSShipmentDocHeader[] WSShipmentDocHeader_List;
         
         public CreateMultiple_Result()
         {
         }
         
-        public CreateMultiple_Result(WSTransferShipmentHeader.WSCabGuiaTransporte[] WSCabGuiaTransporte_List)
+        public CreateMultiple_Result(WSTransferShipmentHeader.WSShipmentDocHeader[] WSShipmentDocHeader_List)
         {
-            this.WSCabGuiaTransporte_List = WSCabGuiaTransporte_List;
+            this.WSShipmentDocHeader_List = WSShipmentDocHeader_List;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Update", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Update", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class Update
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
-        public WSTransferShipmentHeader.WSCabGuiaTransporte WSCabGuiaTransporte;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
+        public WSTransferShipmentHeader.WSShipmentDocHeader WSShipmentDocHeader;
         
         public Update()
         {
         }
         
-        public Update(WSTransferShipmentHeader.WSCabGuiaTransporte WSCabGuiaTransporte)
+        public Update(WSTransferShipmentHeader.WSShipmentDocHeader WSShipmentDocHeader)
         {
-            this.WSCabGuiaTransporte = WSCabGuiaTransporte;
+            this.WSShipmentDocHeader = WSShipmentDocHeader;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Update_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Update_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class Update_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
-        public WSTransferShipmentHeader.WSCabGuiaTransporte WSCabGuiaTransporte;
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
+        public WSTransferShipmentHeader.WSShipmentDocHeader WSShipmentDocHeader;
         
         public Update_Result()
         {
         }
         
-        public Update_Result(WSTransferShipmentHeader.WSCabGuiaTransporte WSCabGuiaTransporte)
+        public Update_Result(WSTransferShipmentHeader.WSShipmentDocHeader WSShipmentDocHeader)
         {
-            this.WSCabGuiaTransporte = WSCabGuiaTransporte;
+            this.WSShipmentDocHeader = WSShipmentDocHeader;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class UpdateMultiple
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSTransferShipmentHeader.WSCabGuiaTransporte[] WSCabGuiaTransporte_List;
+        public WSTransferShipmentHeader.WSShipmentDocHeader[] WSShipmentDocHeader_List;
         
         public UpdateMultiple()
         {
         }
         
-        public UpdateMultiple(WSTransferShipmentHeader.WSCabGuiaTransporte[] WSCabGuiaTransporte_List)
+        public UpdateMultiple(WSTransferShipmentHeader.WSShipmentDocHeader[] WSShipmentDocHeader_List)
         {
-            this.WSCabGuiaTransporte_List = WSCabGuiaTransporte_List;
+            this.WSShipmentDocHeader_List = WSShipmentDocHeader_List;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class UpdateMultiple_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSTransferShipmentHeader.WSCabGuiaTransporte[] WSCabGuiaTransporte_List;
+        public WSTransferShipmentHeader.WSShipmentDocHeader[] WSShipmentDocHeader_List;
         
         public UpdateMultiple_Result()
         {
         }
         
-        public UpdateMultiple_Result(WSTransferShipmentHeader.WSCabGuiaTransporte[] WSCabGuiaTransporte_List)
+        public UpdateMultiple_Result(WSTransferShipmentHeader.WSShipmentDocHeader[] WSShipmentDocHeader_List)
         {
-            this.WSCabGuiaTransporte_List = WSCabGuiaTransporte_List;
+            this.WSShipmentDocHeader_List = WSShipmentDocHeader_List;
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class Delete
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
         public string Key;
         
         public Delete()
@@ -1790,11 +1790,11 @@ namespace WSTransferShipmentHeader
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", IsWrapped=true)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", IsWrapped=true)]
     public partial class Delete_Result
     {
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="Delete_Result", Namespace="urn:microsoft-dynamics-schemas/page/wscabguiatransporte", Order=0)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="Delete_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsshipmentdocheader", Order=0)]
         public bool Delete_Result1;
         
         public Delete_Result()
@@ -1808,13 +1808,13 @@ namespace WSTransferShipmentHeader
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    public interface WSCabGuiaTransporte_PortChannel : WSTransferShipmentHeader.WSCabGuiaTransporte_Port, System.ServiceModel.IClientChannel
+    public interface WSShipmentDocHeader_PortChannel : WSTransferShipmentHeader.WSShipmentDocHeader_Port, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    public partial class WSCabGuiaTransporte_PortClient : System.ServiceModel.ClientBase<WSTransferShipmentHeader.WSCabGuiaTransporte_Port>, WSTransferShipmentHeader.WSCabGuiaTransporte_Port
+    public partial class WSShipmentDocHeader_PortClient : System.ServiceModel.ClientBase<WSTransferShipmentHeader.WSShipmentDocHeader_Port>, WSTransferShipmentHeader.WSShipmentDocHeader_Port
     {
         
     /// <summary>
@@ -1824,41 +1824,41 @@ namespace WSTransferShipmentHeader
     /// <param name="clientCredentials">The client credentials</param>
     static partial void ConfigureEndpoint(System.ServiceModel.Description.ServiceEndpoint serviceEndpoint, System.ServiceModel.Description.ClientCredentials clientCredentials);
         
-        public WSCabGuiaTransporte_PortClient() : 
-                base(WSCabGuiaTransporte_PortClient.GetDefaultBinding(), WSCabGuiaTransporte_PortClient.GetDefaultEndpointAddress())
+        public WSShipmentDocHeader_PortClient() : 
+                base(WSShipmentDocHeader_PortClient.GetDefaultBinding(), WSShipmentDocHeader_PortClient.GetDefaultEndpointAddress())
         {
-            this.Endpoint.Name = EndpointConfiguration.WSCabGuiaTransporte_Port.ToString();
+            this.Endpoint.Name = EndpointConfiguration.WSShipmentDocHeader_Port.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
-        public WSCabGuiaTransporte_PortClient(EndpointConfiguration endpointConfiguration) : 
-                base(WSCabGuiaTransporte_PortClient.GetBindingForEndpoint(endpointConfiguration), WSCabGuiaTransporte_PortClient.GetEndpointAddress(endpointConfiguration))
-        {
-            this.Endpoint.Name = endpointConfiguration.ToString();
-            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
-        }
-        
-        public WSCabGuiaTransporte_PortClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
-                base(WSCabGuiaTransporte_PortClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
+        public WSShipmentDocHeader_PortClient(EndpointConfiguration endpointConfiguration) : 
+                base(WSShipmentDocHeader_PortClient.GetBindingForEndpoint(endpointConfiguration), WSShipmentDocHeader_PortClient.GetEndpointAddress(endpointConfiguration))
         {
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
-        public WSCabGuiaTransporte_PortClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(WSCabGuiaTransporte_PortClient.GetBindingForEndpoint(endpointConfiguration), remoteAddress)
+        public WSShipmentDocHeader_PortClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
+                base(WSShipmentDocHeader_PortClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
         {
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
-        public WSCabGuiaTransporte_PortClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+        public WSShipmentDocHeader_PortClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(WSShipmentDocHeader_PortClient.GetBindingForEndpoint(endpointConfiguration), remoteAddress)
+        {
+            this.Endpoint.Name = endpointConfiguration.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public WSShipmentDocHeader_PortClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(binding, remoteAddress)
         {
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSTransferShipmentHeader.Read_Result> WSTransferShipmentHeader.WSCabGuiaTransporte_Port.ReadAsync(WSTransferShipmentHeader.Read request)
+        System.Threading.Tasks.Task<WSTransferShipmentHeader.Read_Result> WSTransferShipmentHeader.WSShipmentDocHeader_Port.ReadAsync(WSTransferShipmentHeader.Read request)
         {
             return base.Channel.ReadAsync(request);
         }
@@ -1867,11 +1867,11 @@ namespace WSTransferShipmentHeader
         {
             WSTransferShipmentHeader.Read inValue = new WSTransferShipmentHeader.Read();
             inValue.Nº_Guia_Transporte = Nº_Guia_Transporte;
-            return ((WSTransferShipmentHeader.WSCabGuiaTransporte_Port)(this)).ReadAsync(inValue);
+            return ((WSTransferShipmentHeader.WSShipmentDocHeader_Port)(this)).ReadAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSTransferShipmentHeader.ReadByRecId_Result> WSTransferShipmentHeader.WSCabGuiaTransporte_Port.ReadByRecIdAsync(WSTransferShipmentHeader.ReadByRecId request)
+        System.Threading.Tasks.Task<WSTransferShipmentHeader.ReadByRecId_Result> WSTransferShipmentHeader.WSShipmentDocHeader_Port.ReadByRecIdAsync(WSTransferShipmentHeader.ReadByRecId request)
         {
             return base.Channel.ReadByRecIdAsync(request);
         }
@@ -1880,26 +1880,26 @@ namespace WSTransferShipmentHeader
         {
             WSTransferShipmentHeader.ReadByRecId inValue = new WSTransferShipmentHeader.ReadByRecId();
             inValue.recId = recId;
-            return ((WSTransferShipmentHeader.WSCabGuiaTransporte_Port)(this)).ReadByRecIdAsync(inValue);
+            return ((WSTransferShipmentHeader.WSShipmentDocHeader_Port)(this)).ReadByRecIdAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSTransferShipmentHeader.ReadMultiple_Result> WSTransferShipmentHeader.WSCabGuiaTransporte_Port.ReadMultipleAsync(WSTransferShipmentHeader.ReadMultiple request)
+        System.Threading.Tasks.Task<WSTransferShipmentHeader.ReadMultiple_Result> WSTransferShipmentHeader.WSShipmentDocHeader_Port.ReadMultipleAsync(WSTransferShipmentHeader.ReadMultiple request)
         {
             return base.Channel.ReadMultipleAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSTransferShipmentHeader.ReadMultiple_Result> ReadMultipleAsync(WSTransferShipmentHeader.WSCabGuiaTransporte_Filter[] filter, string bookmarkKey, int setSize)
+        public System.Threading.Tasks.Task<WSTransferShipmentHeader.ReadMultiple_Result> ReadMultipleAsync(WSTransferShipmentHeader.WSShipmentDocHeader_Filter[] filter, string bookmarkKey, int setSize)
         {
             WSTransferShipmentHeader.ReadMultiple inValue = new WSTransferShipmentHeader.ReadMultiple();
             inValue.filter = filter;
             inValue.bookmarkKey = bookmarkKey;
             inValue.setSize = setSize;
-            return ((WSTransferShipmentHeader.WSCabGuiaTransporte_Port)(this)).ReadMultipleAsync(inValue);
+            return ((WSTransferShipmentHeader.WSShipmentDocHeader_Port)(this)).ReadMultipleAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSTransferShipmentHeader.IsUpdated_Result> WSTransferShipmentHeader.WSCabGuiaTransporte_Port.IsUpdatedAsync(WSTransferShipmentHeader.IsUpdated request)
+        System.Threading.Tasks.Task<WSTransferShipmentHeader.IsUpdated_Result> WSTransferShipmentHeader.WSShipmentDocHeader_Port.IsUpdatedAsync(WSTransferShipmentHeader.IsUpdated request)
         {
             return base.Channel.IsUpdatedAsync(request);
         }
@@ -1908,11 +1908,11 @@ namespace WSTransferShipmentHeader
         {
             WSTransferShipmentHeader.IsUpdated inValue = new WSTransferShipmentHeader.IsUpdated();
             inValue.Key = Key;
-            return ((WSTransferShipmentHeader.WSCabGuiaTransporte_Port)(this)).IsUpdatedAsync(inValue);
+            return ((WSTransferShipmentHeader.WSShipmentDocHeader_Port)(this)).IsUpdatedAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSTransferShipmentHeader.GetRecIdFromKey_Result> WSTransferShipmentHeader.WSCabGuiaTransporte_Port.GetRecIdFromKeyAsync(WSTransferShipmentHeader.GetRecIdFromKey request)
+        System.Threading.Tasks.Task<WSTransferShipmentHeader.GetRecIdFromKey_Result> WSTransferShipmentHeader.WSShipmentDocHeader_Port.GetRecIdFromKeyAsync(WSTransferShipmentHeader.GetRecIdFromKey request)
         {
             return base.Channel.GetRecIdFromKeyAsync(request);
         }
@@ -1921,7 +1921,7 @@ namespace WSTransferShipmentHeader
         {
             WSTransferShipmentHeader.GetRecIdFromKey inValue = new WSTransferShipmentHeader.GetRecIdFromKey();
             inValue.Key = Key;
-            return ((WSTransferShipmentHeader.WSCabGuiaTransporte_Port)(this)).GetRecIdFromKeyAsync(inValue);
+            return ((WSTransferShipmentHeader.WSShipmentDocHeader_Port)(this)).GetRecIdFromKeyAsync(inValue);
         }
         
         public System.Threading.Tasks.Task<WSTransferShipmentHeader.Create_Result> CreateAsync(WSTransferShipmentHeader.Create request)
@@ -1945,7 +1945,7 @@ namespace WSTransferShipmentHeader
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSTransferShipmentHeader.Delete_Result> WSTransferShipmentHeader.WSCabGuiaTransporte_Port.DeleteAsync(WSTransferShipmentHeader.Delete request)
+        System.Threading.Tasks.Task<WSTransferShipmentHeader.Delete_Result> WSTransferShipmentHeader.WSShipmentDocHeader_Port.DeleteAsync(WSTransferShipmentHeader.Delete request)
         {
             return base.Channel.DeleteAsync(request);
         }
@@ -1954,7 +1954,7 @@ namespace WSTransferShipmentHeader
         {
             WSTransferShipmentHeader.Delete inValue = new WSTransferShipmentHeader.Delete();
             inValue.Key = Key;
-            return ((WSTransferShipmentHeader.WSCabGuiaTransporte_Port)(this)).DeleteAsync(inValue);
+            return ((WSTransferShipmentHeader.WSShipmentDocHeader_Port)(this)).DeleteAsync(inValue);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()
@@ -1969,7 +1969,7 @@ namespace WSTransferShipmentHeader
         
         private static System.ServiceModel.Channels.Binding GetBindingForEndpoint(EndpointConfiguration endpointConfiguration)
         {
-            if ((endpointConfiguration == EndpointConfiguration.WSCabGuiaTransporte_Port))
+            if ((endpointConfiguration == EndpointConfiguration.WSShipmentDocHeader_Port))
             {
                 System.ServiceModel.BasicHttpBinding result = new System.ServiceModel.BasicHttpBinding();
                 result.MaxBufferSize = int.MaxValue;
@@ -1983,28 +1983,28 @@ namespace WSTransferShipmentHeader
         
         private static System.ServiceModel.EndpointAddress GetEndpointAddress(EndpointConfiguration endpointConfiguration)
         {
-            if ((endpointConfiguration == EndpointConfiguration.WSCabGuiaTransporte_Port))
+            if ((endpointConfiguration == EndpointConfiguration.WSShipmentDocHeader_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://such-navsql.such.local:8047/DynamicsNAV100_DEV/WS/ReplaceWithAPercentEncod" +
-                        "edCompanyName/Page/WSCabGuiaTransporte");
+                return new System.ServiceModel.EndpointAddress("http://such-navdev.such.local:7057/DynamicsNAV100_QUAL/WS/SUCH - Qualidade/Page/W" +
+                        "SShipmentDocHeader");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }
         
         private static System.ServiceModel.Channels.Binding GetDefaultBinding()
         {
-            return WSCabGuiaTransporte_PortClient.GetBindingForEndpoint(EndpointConfiguration.WSCabGuiaTransporte_Port);
+            return WSShipmentDocHeader_PortClient.GetBindingForEndpoint(EndpointConfiguration.WSShipmentDocHeader_Port);
         }
         
         private static System.ServiceModel.EndpointAddress GetDefaultEndpointAddress()
         {
-            return WSCabGuiaTransporte_PortClient.GetEndpointAddress(EndpointConfiguration.WSCabGuiaTransporte_Port);
+            return WSShipmentDocHeader_PortClient.GetEndpointAddress(EndpointConfiguration.WSShipmentDocHeader_Port);
         }
         
         public enum EndpointConfiguration
         {
             
-            WSCabGuiaTransporte_Port,
+            WSShipmentDocHeader_Port,
         }
     }
 }

@@ -359,5 +359,58 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
         #endregion
+
+        
+        #region Pré-Requisições
+
+        public IActionResult PreRequisicoesLista()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 3);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 1;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult PreRequisicoesDetalhes(string PreRequesitionNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 3);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 1;
+                ViewBag.PreRequesitionNo = PreRequesitionNo ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        #endregion
+
+        #region Pending Requesitions
+        public IActionResult RequisicoesPendentes()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 0);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 1;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        #endregion
     }
 }
