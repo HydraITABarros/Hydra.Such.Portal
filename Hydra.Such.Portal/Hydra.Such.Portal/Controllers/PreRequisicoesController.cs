@@ -625,22 +625,10 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             req.RequisitionNo = RequisitionNo;
                             Requisição createReq = DBRequest.ParseToDB(req);
+
                             DBRequest.Create(createReq);
                             if(createReq.NºRequisição != null)
                             {
-                                try
-                                {
-                                    req.Lines.ForEach(x => x.RequestNo = RequisitionNo);
-                                    req.Lines.ForEach(x => DBRequestLine.Create(DBRequestLine.ParseToDB(x)));
-                                }
-                                catch (Exception ex)
-                                {
-                                    DBRequest.Delete(createReq);
-                                    throw;
-                                }
-                                
-                                
-
                                 //Update Last Numeration Used
                                 ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
                                 ConfigNumerations.ÚltimoNºUsado = RequisitionNo;
@@ -649,9 +637,11 @@ namespace Hydra.Such.Portal.Controllers
 
                                 data.eReasonCode = 1;
                                 data.eMessage = "Requisições criadas com sucesso";
+                                
                             }
                             else
                             {
+                                DBRequest.Delete(createReq);
                                 data.eReasonCode = 0;
                                 data.eMessage = "Ocorreu um erro ao criar o requisição.";
                             }
