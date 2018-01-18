@@ -7,16 +7,16 @@ using Hydra.Such.Data.ViewModel.Nutrition;
 
 namespace Hydra.Such.Data.Logic.Nutrition
 {
-    public static class DBClassificationFilesTechniques
+    public static class DBActionsConfection
     {
         #region CRUD
-        public static List<ClassificaçãoFichasTécnicas> GetAll()
+        public static List<AçõesDeConfeção> GetAll()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.ClassificaçãoFichasTécnicas.ToList();
+                    return ctx.AçõesDeConfeção.ToList();
                 }
             }
             catch (Exception ex)
@@ -25,14 +25,14 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
-        public static ClassificaçãoFichasTécnicas Create(ClassificaçãoFichasTécnicas ObjectToCreate)
+        public static AçõesDeConfeção Create(AçõesDeConfeção ObjectToCreate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToCreate.DataHoraCriação = DateTime.Now;
-                    ctx.ClassificaçãoFichasTécnicas.Add(ObjectToCreate);
+                    ctx.AçõesDeConfeção.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
@@ -45,14 +45,14 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
-        public static ClassificaçãoFichasTécnicas Update(ClassificaçãoFichasTécnicas ObjectToUpdate)
+        public static AçõesDeConfeção Update(AçõesDeConfeção ObjectToUpdate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToUpdate.DataHoraModificação = DateTime.Now;
-                    ctx.ClassificaçãoFichasTécnicas.Update(ObjectToUpdate);
+                    ctx.AçõesDeConfeção.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
 
@@ -64,13 +64,13 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
-        public static bool Delete(ClassificaçãoFichasTécnicas ObjectToDelete)
+        public static bool Delete(AçõesDeConfeção ObjectToDelete)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.ClassificaçãoFichasTécnicas.Remove(ObjectToDelete);
+                    ctx.AçõesDeConfeção.Remove(ObjectToDelete);
                     ctx.SaveChanges();
                 }
 
@@ -84,16 +84,16 @@ namespace Hydra.Such.Data.Logic.Nutrition
         }
 
 
-       
+
         #endregion
 
-        public static List<ClassificaçãoFichasTécnicas> GetAllFiles()
+        public static List<AçõesDeConfeção> GetAllFiles()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.ClassificaçãoFichasTécnicas.Where(x => x.Tipo == 1).ToList();
+                    return ctx.AçõesDeConfeção.ToList();
                 }
             }
             catch (Exception ex)
@@ -102,16 +102,14 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
-        public static ClassificaçãoFichasTécnicas ParseToDatabase(this ClassificationFilesTechniquesViewModel x)
+        public static AçõesDeConfeção ParseToDb(this ActionsConfectionViewModel x)
         {
             if (x != null)
             {
-                return new ClassificaçãoFichasTécnicas()
+                return new AçõesDeConfeção()
                 {
-                    Código = x.Code,
-                    Tipo = x.Type,
+                    Código = x.Code,                
                     Descrição = x.Description,
-                    Grupo = x.Group,
                     DataHoraCriação = x.CreateDate,
                     DataHoraModificação = x.UpdateDate,
                     UtilizadorCriação = x.UpdateUser,
@@ -120,43 +118,43 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
             return null;
         }
-        public static List<ClassificaçãoFichasTécnicas> ParseToDatabase(this List<ClassificationFilesTechniquesViewModel> items)
+        public static List<AçõesDeConfeção> ParseToDatabase(this List<ActionsConfectionViewModel> items)
         {
-            List<ClassificaçãoFichasTécnicas> itemsParse = new List<ClassificaçãoFichasTécnicas>();
+            List<AçõesDeConfeção> itemsParse = new List<AçõesDeConfeção>();
             if (items != null)
                 items.ForEach(x =>
-                    itemsParse.Add(ParseToDatabase(x)));
+                    itemsParse.Add(ParseToDb(x)));
             return itemsParse;
         }
 
-        public static ClassificationFilesTechniquesViewModel ParseToViewModel(this ClassificaçãoFichasTécnicas item)
+        public static ActionsConfectionViewModel ParseToViewModel(this AçõesDeConfeção item)
         {
             if (item != null)
             {
-                return new ClassificationFilesTechniquesViewModel()
+                return new ActionsConfectionViewModel()
                 {
-                
-                    Code = item.Código,
-                    Type = item.Tipo,
+
+                    Code = item.Código,                   
                     Description = item.Descrição,
-                    Group = item.Grupo,
                     CreateDate = item.DataHoraCriação,
                     UpdateDate = item.DataHoraModificação,
                     CreateUser = item.UtilizadorCriação,
-                    UpdateUser=item.UtilizadorModificação
+                    UpdateUser = item.UtilizadorModificação
 
                 };
             }
             return null;
         }
 
-        public static List<ClassificationFilesTechniquesViewModel> ParseToViewModel(this List<ClassificaçãoFichasTécnicas> items)
+        public static List<ActionsConfectionViewModel> ParseToViewModel(this List<AçõesDeConfeção> items)
         {
-            List<ClassificationFilesTechniquesViewModel> parsedItems = new List<ClassificationFilesTechniquesViewModel>();
+            List<ActionsConfectionViewModel> parsedItems = new List<ActionsConfectionViewModel>();
             if (items != null)
                 items.ForEach(x =>
                     parsedItems.Add(ParseToViewModel(x)));
             return parsedItems;
         }
+
+    
     }
 }

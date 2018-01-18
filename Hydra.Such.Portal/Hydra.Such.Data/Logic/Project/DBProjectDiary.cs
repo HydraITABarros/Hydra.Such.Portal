@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel;
 
 namespace Hydra.Such.Data.Logic.Project
 {
-    public class DBProjectDiary
+    public static class DBProjectDiary
     {
         #region CRUD
 
@@ -268,5 +269,102 @@ namespace Hydra.Such.Data.Logic.Project
             }
             return totalConsumption.HasValue ? totalConsumption.Value : 0;
         }
+
+        public static ProjectDiaryViewModel ParseToViewModel(DiárioDeProjeto x)
+        {
+            return new ProjectDiaryViewModel()
+            {
+                LineNo = x.NºLinha,
+                ProjectNo = x.NºProjeto,
+                Date = !x.Data.HasValue ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                MovementType = x.TipoMovimento,
+                Type = x.Tipo,
+                Code = x.Código,
+                Description = x.Descrição,
+                Quantity = x.Quantidade,
+                MeasurementUnitCode = x.CódUnidadeMedida,
+                LocationCode = x.CódLocalização,
+                ProjectContabGroup = x.GrupoContabProjeto,
+                RegionCode = x.CódigoRegião,
+                FunctionalAreaCode = x.CódigoÁreaFuncional,
+                ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
+                User = x.Utilizador,
+                UnitCost = x.CustoUnitário,
+                TotalCost = x.CustoTotal,
+                UnitPrice = x.PreçoUnitário,
+                TotalPrice = x.PreçoTotal,
+                Billable = x.Faturável,
+                Registered = x.Registado,
+                Billed = x.Faturada.HasValue ? x.Faturada.Value : false,
+                Currency = x.Moeda,
+                UnitValueToInvoice = x.ValorUnitárioAFaturar,
+                MealType = x.TipoRefeição,
+                ServiceGroupCode = x.CódGrupoServiço,
+                ResidueGuideNo = x.NºGuiaResíduos,
+                ExternalGuideNo = x.NºGuiaExterna,
+                ConsumptionDate = !x.DataConsumo.HasValue ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
+                InvoiceToClientNo = x.FaturaANºCliente,
+                ServiceClientCode = x.CódServiçoCliente
+            };
+        }
+
+        public static List<ProjectDiaryViewModel> ParseToViewModel(this List<DiárioDeProjeto> items)
+        {
+            List<ProjectDiaryViewModel> projectDiary = new List<ProjectDiaryViewModel>();
+            if (items != null)
+                items.ForEach(x =>
+                    projectDiary.Add(ParseToViewModel(x)));
+            return projectDiary;
+        }
+
+        public static DiárioDeProjeto ParseToDatabase(ProjectDiaryViewModel x)
+        {
+            return new DiárioDeProjeto()
+            {
+                NºLinha = x.LineNo,
+                NºProjeto = x.ProjectNo,
+                Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date),
+                TipoMovimento = x.MovementType,
+                Tipo = x.Type,
+                Código = x.Code,
+                Descrição = x.Description,
+                Quantidade = x.Quantity,
+                CódUnidadeMedida = x.MeasurementUnitCode,
+                CódLocalização = x.LocationCode,
+                GrupoContabProjeto = x.ProjectContabGroup,
+                CódigoRegião = x.RegionCode,
+                CódigoÁreaFuncional = x.FunctionalAreaCode,
+                CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
+                Utilizador = x.User,
+                CustoUnitário = x.UnitCost,
+                CustoTotal = x.TotalCost,
+                PreçoUnitário = x.UnitPrice,
+                PreçoTotal = x.TotalPrice,
+                Faturável = x.Billable,
+                Registado = x.Registered,
+                FaturaANºCliente = x.InvoiceToClientNo,
+                Moeda = x.Currency,
+                ValorUnitárioAFaturar = x.UnitValueToInvoice,
+                TipoRefeição = x.MealType,
+                CódGrupoServiço = x.ServiceGroupCode,
+                NºGuiaResíduos = x.ResidueGuideNo,
+                NºGuiaExterna = x.ExternalGuideNo,
+                DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
+                CódServiçoCliente = x.ServiceClientCode,
+                Faturada = x.Billed,
+                DataHoraModificação = x.UpdateDate,
+                UtilizadorModificação = x.UpdateUser,
+        };
+        }
+
+        public static List<DiárioDeProjeto> ParseToDatabase(this List<ProjectDiaryViewModel> items)
+        {
+            List<DiárioDeProjeto> projectDiary = new List<DiárioDeProjeto>();
+            if (items != null)
+                items.ForEach(x =>
+                    projectDiary.Add(ParseToDatabase(x)));
+            return projectDiary;
+        }
+
     }
 }

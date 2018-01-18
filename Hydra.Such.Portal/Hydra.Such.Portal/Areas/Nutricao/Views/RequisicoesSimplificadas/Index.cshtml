@@ -21,7 +21,8 @@
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <iron-ajax  method="post" handle-as="json" content-type="application/json"  last-response="{{SimplifiedRequisitions}}" id="grid_datasource" url="/Nutricao/RequisicoesSimplificadas/GetSimplifiedRequisitions"></iron-ajax>
+        <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{SimplifiedRequisitions}}" id="grid_datasource" url="/Nutricao/RequisicoesSimplificadas/GetSimplifiedRequisitions"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRequisitionsStatus" last-response="{{GetRequisitionsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <div class="marginSpace" id="ddmarginSpace">
             <paper-button class="btnSave" raised on-tap="_redirectToNewForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
@@ -43,7 +44,7 @@
                     <vaadin-grid-filter path="status" />
                 </template>
                 <template>
-                    {{item.status}}
+                    [[_parseStatus(item.status)]]
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="100px">
@@ -153,6 +154,16 @@
                     if (item != null) {
                         window.location.href = "/Nutricao/RequisicoesSimplificadas/Detalhes";
                     }
+                },
+                _parseStatus: function (param) {
+                    if (param != undefined) {
+
+                        var sel = this.GetRequisitionsStatus.find(x => x.id == param);
+                        if (sel != undefined) {
+                            return sel.value;
+                        }
+                    }
+                    return "";
                 }
             });
         });

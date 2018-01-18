@@ -2480,6 +2480,7 @@ namespace Hydra.Such.Portal.Controllers
             List<UtilizadoresGruposAprovação> results = DBApprovalUserGroup.GetByGroup(data[0].ApprovalGroup);
             results.RemoveAll(x => data.Any(u => u.ApprovalUser == x.UtilizadorAprovação && u.ApprovalGroup==x.GrupoAprovação));
             results.ForEach(x => DBApprovalUserGroup.Delete(x));
+
           
             return Json(data);
         }

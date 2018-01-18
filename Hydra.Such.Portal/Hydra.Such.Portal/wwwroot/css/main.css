@@ -111,6 +111,9 @@ ul.nav li:hover {
     color: white;
     cursor: pointer;
 }
+.roundrect {
+    border-radius: 15px;
+}
 
 .btnRemove {
     max-width: 125px !important;

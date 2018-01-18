@@ -159,7 +159,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             List<UnitMeasureProductViewModel> parsedItems = new List<UnitMeasureProductViewModel>();
             if (items != null)
                 items.ForEach(x =>
-                    parsedItems.Add(x.ParseToViewModel()));
+                    parsedItems.Add(ParseToViewModel(x)));
             return parsedItems;
         }
     }
