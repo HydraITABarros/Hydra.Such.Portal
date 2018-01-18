@@ -11,12 +11,59 @@ namespace Hydra.Such.Data.Logic.Nutrition
     {
         #region CRUD
         public static List<FichasTécnicasPratos> GetAll()
-        {
+        {    
             try
             {
+                List<FichasTécnicasPratos> result;
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.FichasTécnicasPratos.ToList();
+                    result = ctx.FichasTécnicasPratos.Select(x => new FichasTécnicasPratos()
+                    {
+                        NºPrato = x.NºPrato,
+                        Descrição = x.Descrição,
+                        CódUnidadeMedida = x.CódUnidadeMedida,
+                        Estado = x.Estado,
+                        NomeFichaTécnica = x.NomeFichaTécnica,
+                        CódLocalização = x.CódLocalização,
+                        TempoPreparação = x.TempoPreparação,
+                        TécnicaCulinária = x.TécnicaCulinária,
+                        Grupo = x.Grupo,
+                        Época = x.Época,
+                        NºDeDoses = x.NºDeDoses,
+                        TemperaturaPreparação = x.TemperaturaPreparação,
+                        TemperaturaFinalConfeção = x.TemperaturaFinalConfeção,
+                        TemperaturaAServir = x.TemperaturaAServir,
+                        VariaçãoPreçoCusto = x.VariaçãoPreçoCusto,
+                        ClassFt1 = x.ClassFt1,
+                        ClassFt2 = x.ClassFt2,
+                        ClassFt3 = x.ClassFt3,
+                        ClassFt4 = x.ClassFt4,
+                        ClassFt5 = x.ClassFt5,
+                        ClassFt6 = x.ClassFt6,
+                        ClassFt7 = x.ClassFt7,
+                        ClassFt8 = x.ClassFt8,
+                        CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
+                        Observações = x.Observações,
+                        DataHoraCriação = x.DataHoraCriação,
+                        DataHoraModificação = x.DataHoraModificação,
+                        UtilizadorCriação = x.UtilizadorCriação,
+                        UtilizadorModificação = x.UtilizadorModificação,
+                        ContêmGlúten = x.ContêmGlúten,
+                        ÁBaseCrustáceos = x.ÁBaseCrustáceos,
+                        ÁBaseOvos = x.ÁBaseOvos,
+                        ÁBasePeixes = x.ÁBasePeixes,
+                        ÁBaseAmendoins = x.ÁBaseAmendoins,
+                        ÁBaseSoja = x.ÁBaseSoja,
+                        ÁBaseLeite = x.ÁBaseLeite,
+                        ÁBaseFrutosCascaRija = x.ÁBaseFrutosCascaRija,
+                        ÁBaseAipo = x.ÁBaseAipo,
+                        ÁBaseMostarda = x.ÁBaseMostarda,
+                        ÁBaseSementesDeSésamo = x.ÁBaseSementesDeSésamo,
+                        ÁBaseEnxofreESulfitos = x.ÁBaseEnxofreESulfitos,
+                        ÁBaseTremoço = x.ÁBaseTremoço,
+                        ÁBaseMoluscos = x.ÁBaseMoluscos
+                    }).ToList();
+                    return result;
                 }
             }
             catch (Exception ex)
@@ -25,6 +72,87 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
         public static List<FichasTécnicasPratos> GetByPlateNo(string PlateNo)
+        {
+            try
+            {
+                List<FichasTécnicasPratos> result;
+                using (var ctx = new SuchDBContext())
+                {
+                    result = ctx.FichasTécnicasPratos.Where(x => x.NºPrato == PlateNo).Select(x => new FichasTécnicasPratos()
+                    {
+                        NºPrato = x.NºPrato,
+                        Descrição = x.Descrição,
+                        CódUnidadeMedida = x.CódUnidadeMedida,
+                        Estado = x.Estado,
+                        NomeFichaTécnica = x.NomeFichaTécnica,
+                        CódLocalização = x.CódLocalização,
+                        TempoPreparação = x.TempoPreparação,
+                        TécnicaCulinária = x.TécnicaCulinária,
+                        Grupo = x.Grupo,
+                        Época = x.Época,
+                        NºDeDoses = x.NºDeDoses,
+                        TemperaturaPreparação = x.TemperaturaPreparação,
+                        TemperaturaFinalConfeção = x.TemperaturaFinalConfeção,
+                        TemperaturaAServir = x.TemperaturaAServir,
+                        VariaçãoPreçoCusto = x.VariaçãoPreçoCusto,
+                        ClassFt1 = x.ClassFt1,
+                        ClassFt2 = x.ClassFt2,
+                        ClassFt3 = x.ClassFt3,
+                        ClassFt4 = x.ClassFt4,
+                        ClassFt5 = x.ClassFt5,
+                        ClassFt6 = x.ClassFt6,
+                        ClassFt7 = x.ClassFt7,
+                        ClassFt8 = x.ClassFt8,
+                        CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
+                        Observações = x.Observações,
+                        DataHoraCriação = x.DataHoraCriação,
+                        DataHoraModificação = x.DataHoraModificação,
+                        UtilizadorCriação = x.UtilizadorCriação,
+                        UtilizadorModificação = x.UtilizadorModificação,
+                        ContêmGlúten = x.ContêmGlúten,
+                        ÁBaseCrustáceos = x.ÁBaseCrustáceos,
+                        ÁBaseOvos = x.ÁBaseOvos,
+                        ÁBasePeixes = x.ÁBasePeixes,
+                        ÁBaseAmendoins = x.ÁBaseAmendoins,
+                        ÁBaseSoja = x.ÁBaseSoja,
+                        ÁBaseLeite = x.ÁBaseLeite,
+                        ÁBaseFrutosCascaRija = x.ÁBaseFrutosCascaRija,
+                        ÁBaseAipo = x.ÁBaseAipo,
+                        ÁBaseMostarda = x.ÁBaseMostarda,
+                        ÁBaseSementesDeSésamo = x.ÁBaseSementesDeSésamo,
+                        ÁBaseEnxofreESulfitos = x.ÁBaseEnxofreESulfitos,
+                        ÁBaseTremoço = x.ÁBaseTremoço,
+                        ÁBaseMoluscos = x.ÁBaseMoluscos
+                    }).ToList();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static RecordTechnicalOfPlatesModelView GetOnlyImageByPlateNo(string PlateNo)
+        {
+            try
+            {
+                RecordTechnicalOfPlatesModelView result;
+                using (var ctx = new SuchDBContext())
+                {
+                    result = ctx.FichasTécnicasPratos.Where(x => x.NºPrato == PlateNo).Select(x => new RecordTechnicalOfPlatesModelView()
+                    {
+                        Image = x.Image
+                    }).FirstOrDefault();
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public static List<FichasTécnicasPratos> GetWithImageByPlateNo(string PlateNo)
         {
             try
             {
@@ -38,7 +166,6 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
-
         public static FichasTécnicasPratos Create(FichasTécnicasPratos ObjectToCreate)
         {
             try
@@ -133,7 +260,21 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     CreateDateTime = item.DataHoraCriação,
                     UpdateDateTime = item.DataHoraModificação,
                     CreateUser = item.UtilizadorCriação,
-                    UpdateUser = item.UtilizadorModificação
+                    UpdateUser = item.UtilizadorModificação,
+                    WithGluten = item.ContêmGlúten,
+                    BasedCrustaceans = item.ÁBaseCrustáceos,
+                    BasedEggs = item.ÁBaseOvos,
+                    BasedFish = item.ÁBasePeixes,
+                    BasedPeanuts = item.ÁBaseAmendoins,
+                    BasedSoy = item.ÁBaseSoja,
+                    BasedMilk = item.ÁBaseLeite,
+                    BasedFruitShardShell = item.ÁBaseFrutosCascaRija,
+                    BasedCelery = item.ÁBaseAipo,
+                    BasedMustard = item.ÁBaseMostarda,
+                    BasedSesameSeeds = item.ÁBaseSementesDeSésamo,
+                    BasedSulfurDioxeAndSulphites = item.ÁBaseEnxofreESulfitos,
+                    BasedLupine = item.ÁBaseTremoço,
+                    BasedMolluscs = item.ÁBaseMoluscos
                 };
             }
             return null;
@@ -180,6 +321,20 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     Observações = item.Observations,
                     DataHoraModificação = item.UpdateDateTime,
                     UtilizadorModificação = item.UpdateUser,
+                    ContêmGlúten = item.WithGluten,
+                    ÁBaseCrustáceos = item.BasedCrustaceans,
+                    ÁBaseOvos = item.BasedEggs,
+                    ÁBasePeixes = item.BasedFish,
+                    ÁBaseAmendoins = item.BasedPeanuts,
+                    ÁBaseSoja = item.BasedSoy,
+                    ÁBaseLeite = item.BasedMilk,
+                    ÁBaseFrutosCascaRija = item.BasedFruitShardShell,
+                    ÁBaseAipo = item.BasedCelery,
+                    ÁBaseMostarda = item.BasedMustard,
+                    ÁBaseSementesDeSésamo = item.BasedSesameSeeds,
+                    ÁBaseEnxofreESulfitos = item.BasedSulfurDioxeAndSulphites,
+                    ÁBaseTremoço = item.BasedLupine,
+                    ÁBaseMoluscos = item.BasedMolluscs,
                 };
             }
             return null;

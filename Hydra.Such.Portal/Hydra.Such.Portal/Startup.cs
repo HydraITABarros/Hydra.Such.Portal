@@ -16,6 +16,7 @@ using Hydra.Such.Portal.Extensions;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace Hydra.Such.Portal
 {
@@ -36,6 +37,11 @@ namespace Hydra.Such.Portal
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.Configure<FormOptions>(x =>
+            {
+                x.ValueLengthLimit = int.MaxValue;
+                x.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
+            });
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddAuthentication(sharedOptions =>

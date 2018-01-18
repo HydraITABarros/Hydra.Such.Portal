@@ -45,8 +45,8 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public decimal? IronByQuantity { get; set; }
         public decimal? CalciumByQuantity { get; set; }
         public decimal? SaturatedFattyAcids { get; set; }
-        public decimal? Sugarcane { get; set; }
-        public decimal? salt { get; set; }
+        public decimal? SugarCane { get; set; }
+        public decimal? Salt { get; set; }
         public decimal? QuantityPlates { get; set; }
         public string Preparation { get; set; }
         public DateTime? CreateDateTime { get; set; }
