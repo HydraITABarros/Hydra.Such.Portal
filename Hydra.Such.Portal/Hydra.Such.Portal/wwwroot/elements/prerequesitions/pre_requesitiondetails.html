@@ -1308,12 +1308,15 @@
                         },
 
                         _clResponsePreReqModel: function (data) {
+                            debugger;
                             if (data.detail.status === 200) {
                                 if (data.detail.url.indexOf("CopyReqModelLines") !== -1) {
                                     this._openToast("Linhas Pré-Requisição criadas com sucesso")
                                     this.$.dialog.close();
                                     this.$.grid_prereqlines.clearCache();
-                                    
+                                    this.data.eMessage = "";
+
+                                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
                                     this.$.prereqLines_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
                                     this.$.prereqLines_databound_ajax.generateRequest();
                                 }
@@ -1323,7 +1326,7 @@
                            
                             if (this.data.eReasonCode == 1) {
                                 this._isCreate = false;
-                                this._openToast("Contrato criado com sucesso.");
+                                this._openToast("Pré-Requisição criada com sucesso.");
 
                                 var PreRequesitionNo = this.data.preRequesitionsNo;
                                 setTimeout(

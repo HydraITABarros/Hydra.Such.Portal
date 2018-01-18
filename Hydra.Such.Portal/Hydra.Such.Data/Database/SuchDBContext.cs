@@ -2081,8 +2081,6 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Grupo).HasMaxLength(20);
 
-                entity.Property(e => e.Image).HasColumnType("image");
-
                 entity.Property(e => e.NomeFichaTécnica)
                     .HasColumnName("Nome Ficha Técnica")
                     .HasMaxLength(60);
