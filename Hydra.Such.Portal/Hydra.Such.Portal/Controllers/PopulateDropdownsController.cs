@@ -95,7 +95,13 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.ProjectStatus;
             return Json(result);
         }
-
+        [HttpPost]
+        public JsonResult GetRequisitionsStatus()
+        {
+            List<EnumData> result = EnumerablesFixed.RequisitionsStatus;
+            return Json(result);
+        }
+        
         [HttpPost]
         public JsonResult GetProjectCategories()
         {
@@ -1304,6 +1310,16 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult GetUnitStockeeping()
+        {
+            List<DDMessageString> result = DBStockkeepingUnit.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.NºProduto,
+                value = x.Descrição
+            }).ToList();
+
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult GetProducts()

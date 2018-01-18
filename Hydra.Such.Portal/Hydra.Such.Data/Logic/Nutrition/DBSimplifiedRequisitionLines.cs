@@ -85,14 +85,13 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
-        public static LinhasRequisiçõesSimplificadas GetById(string Code)
+        public static List<LinhasRequisiçõesSimplificadas> GetById(string Code)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.LinhasRequisiçõesSimplificadas
-                        .FirstOrDefault(x => x.NºRequisição == Code);
+                    return ctx.LinhasRequisiçõesSimplificadas.Where(x => x.NºRequisição == Code).ToList();
                 }
             }
             catch (Exception ex)

@@ -58,6 +58,24 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
+        public static MovimentoDeProdutos Update(MovimentoDeProdutos ObjectToUpdate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.MovimentoDeProdutos.Update(ObjectToUpdate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToUpdate;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
 
         #endregion
 
@@ -94,6 +112,36 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 items.ForEach(x =>
                     parsedItems.Add(x.ParseToViewModel()));
             return parsedItems;
+        }
+
+        public static MovimentoDeProdutos ParseToDatabase(ProductMovementViewModel x)
+        {
+            return new MovimentoDeProdutos()
+            {
+                NºMovimentos=x.MovementNo,
+                DataRegisto= x.DateRegister != "" && x.DateRegister != null ? DateTime.Parse(x.DateRegister) : (DateTime?)null,
+                TipoMovimento =x.MovementType,
+                NºDocumento=x.DocumentNo,
+                NºProduto=x.ProductNo,
+                Descrição=x.Description,
+                CódLocalização=x.CodLocation,
+                Quantidade=x.Quantity,
+                CustoUnitário=x.UnitCost,
+                Valor=x.Val,
+                NºProjecto=x.ProjectNo,
+                CódigoRegião=x.CodeRegion,
+                CódigoÁrea=x.CodeFunctionalArea,
+                CódigoCentroResponsabilidade=x.CodeResponsabilityCenter
+            };
+        }
+
+        public static List<MovimentoDeProdutos> ParseToDatabase(this List<ProductMovementViewModel> items)
+        {
+            List<MovimentoDeProdutos> movements = new List<MovimentoDeProdutos>();
+            if (items != null)
+                items.ForEach(x =>
+                    movements.Add(ParseToDatabase(x)));
+            return movements;
         }
     }
 }

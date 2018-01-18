@@ -17,6 +17,8 @@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
@@ -63,11 +65,13 @@ else
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{CBEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetLocationsPortal" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        @*<iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{CBEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
+        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetMealTypes" last-response="{{CBMealType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
+        <iron-ajax url="/PopulateDropdowns/GetUnitStockeeping" last-response="{{CBProductos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{CBMeasureUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRequisitionsStatus" last-response="{{GetRequisitionsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!-- PROJECT CRUDS -->
         <iron-ajax url="/Nutricao/RequisicoesSimplificadas/GetSimplifiedRequisitionData"
                    last-response="{{data}}"
@@ -75,6 +79,20 @@ else
                    handle-as="json"
                    id="page_databound_ajax"
                    on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="register_requisitions_ajax"
+                   on-response="_responseProcessorRegister"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax last-response="{{updateLines}}"
+                   method="post"
+                   handle-as="json"
+                   on-response="_responseProcessorLines"
+                   id="update_lines_requisition_ajax"
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Nutricao/RequisicoesSimplificadas/DeleteSimplifiedRequisition"
@@ -85,6 +103,15 @@ else
                    on-response="_responseDeleteProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Nutricao/RequisicoesSimplificadas/DeleteSimplifiedRequisitionLines"
+                   last-response="{{deletedData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_lines_project"
+                   on-response="_responseDeleteLinesProcessor"
+                   content-type="application/json"></iron-ajax>
+
+
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="row">
                 <div class="col-lg-12">
@@ -94,6 +121,14 @@ else
                 </div>
             </div>
         </template>
+        &nbsp;
+        @* Botões de registar requisições aprovadas*@
+        <div class="subMenu" id="ddmarginSpace2">
+            <paper-button class="tablinks" on-tap="_registeRequisiApproval"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
+            <paper-button class="tablinks" on-tap="_desaprovarRequisiApproval"><i class="fa fa-check-square" aria-hidden="true"></i> Desaprovar Requisições</paper-button>
+            <paper-button class="tablinks" on-tap="_historyRequisiApproval"><i class="fa fa-check-square" aria-hidden="true"></i> Arquivar Requisições</paper-button>
+        </div>
+        &nbsp;
         <div class="row break_frm">
             <div class="col-md-12 col-lg-12">
                 <iron-form id="formContract">
@@ -109,10 +144,10 @@ else
                                 <div>
                                     <div class="row">
                                         <div class="col-lg-3">
-                                            <vaadin-text-field value="{{data.requestNo}}" maxlength="20" disabled="{{ !_isCreate }}" id="lRequestNo" name="lRequestNo" label="Nº"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.requisitionNo}}" maxlength="20" disabled="{{ !_isCreate }}" id="lRequestNo" name="lRequestNo" label="Nº"> </vaadin-text-field>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBRequisitionStatus]]" id="LStatus" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[GetRequisitionsStatus]]" id="LStatus" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled="{{ !_permissions.update }}">
                                                 <template>
                                                     <b>[[item.value]]</b>
                                                 </template>
@@ -122,7 +157,7 @@ else
                                             <vaadin-checkbox checked="{{data.finished}}" disabled="{{ !_permissions.update }}">Terminada</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBLocations]]" id="LLocationCode" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Cód. Localização" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[CBLocations]]" id="LocationCode" item-value-path="id" item-label-path="value" value="{{data.locationCode}}" label="Cód. Localização" disabled="{{ _permissions.update }}" on-value-changed="_locationCodeChanged">
                                                 <template>
                                                     <b>[[item.value]]</b>
                                                 </template>
@@ -131,19 +166,19 @@ else
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBProjects]]" id="LProjectNo" item-value-path="id" item-label-path="value" value="{{data.projectNo}}" label="Nº Projeto" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[CBProjects]]" id="ProjectNo" item-value-path="id" item-label-path="value" value="{{data.projectNo}}" label="Nº Projeto" disabled="{{ _permissions.update }}" on-value-changed="_projectoNoChanged">
                                                 <template>
                                                     <b>[[item.value]]</b>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBEmployees]]" id="LEmployeeNo" item-value-path="id" item-label-path="value" value="{{data.projectNo}}" label="Nº Funcionário" disabled="{{ !_permissions.update }}">
+                                        @*<div class="col-lg-3">
+                                            <vaadin-combo-box items="[[CBEmployees]]" id="LEmployeeNo" item-value-path="id" item-label-path="value" value="{{data.employeeNo}}" label="Nº Funcionário" disabled="{{ !_permissions.update }}">
                                                 <template>
                                                     <b>[[item.value]]</b>
                                                 </template>
                                             </vaadin-combo-box>
-                                        </div>
+                                        </div>*@
                                         <div class="col-lg-3">
                                             <vaadin-text-field value="{{data.observations}}" maxlength="50" id="LObservations" name="LObservations" label="Observações" disabled="{{ @ViewBag.PermissionUpdate }}"> </vaadin-text-field>
                                         </div>
@@ -153,7 +188,7 @@ else
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{data.region}}" label="Cód. Região" disabled="{{ @ViewBag.PermissionUpdate }}">
+                                            <vaadin-combo-box items="[[CBRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{data.regionCode}}" label="Cód. Região" disabled="{{ @ViewBag.PermissionUpdate }}" on-value-changed="_regionCodeChanged">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -165,7 +200,7 @@ else
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{data.area}}" label="Cód. Área Funcional" disabled="{{ @ViewBag.PermissionUpdate }}">
+                                            <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ @ViewBag.PermissionUpdate }}" on-value-changed="_areaCodeChanged">
                                                 <template>
                                                     <table width="200px">
                                                         <tr>
@@ -177,7 +212,7 @@ else
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ @ViewBag.PermissionUpdate }}">
+                                            <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ @ViewBag.PermissionUpdate }}" on-value-changed="_responsabilityCenterCodeChanged">
                                                 <template>
                                                     <table width="200px">
                                                         <tr>
@@ -195,8 +230,9 @@ else
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-lg-3 ">
-                                            <vaadin-combo-box items="[[CBMealType]]" id="LMealType" item-value-path="id" item-label-path="value" value="{{data.mealType}}" label="Tipo Refeição" disabled="{{ @ViewBag.PermissionUpdate }}">
+                                            <vaadin-combo-box items="[[CBMealType]]" id="LMealType" item-value-path="id" item-label-path="value" on-value-changed="_mealTypeChanged" label="Tipo Refeição" disabled="{{ @ViewBag.PermissionUpdate }}">
                                                 <template>
+                                                    <b>[[item.id]]</b>
                                                     <b>[[item.value]]</b>
                                                 </template>
                                             </vaadin-combo-box>
@@ -243,21 +279,12 @@ else
                                     </template>
                                 </template>
                             </div>
-
-                            <div class="marginSpace2" id="ddmarginSpace2">
+                            <div class="marginSpace" id="ddmarginSpace2">
                                 <template is="dom-if" if="{{ _isCreate }}">
-                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Registar Requisições</paper-button>
-                                </template>
-                                <template is="dom-if" if="{{ !_isCreate }}">
-                                    <template is="dom-if" if="{{ _permissions.update }}">
-                                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                    </template>
-                                    <template is="dom-if" if="{{ _permissions.delete }}">
-                                        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-
-                                    </template>
+                                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                 </template>
                             </div>
+
                         </div>
                     </div>
                 </iron-form>
@@ -275,126 +302,158 @@ else
                    method="post"
                    handle-as="json"
                    id="contractLines_databound_ajax"
-                   on-response="_clResponseProcessor"
                    content-type="application/json"></iron-ajax>
+
+
+
+        <iron-ajax last-response="{{unitStockeeping}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_get"
+                   on-response="_responseChangeProduct"
+                   content-type="application/json">
+        </iron-ajax>
 
         <div class="row break_frm" style="display: {{ _showLines }};">
             <div class="col-md-12 col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">Linhas</div>
                     <div class="panel-body">
-                        <div class="row" style="display: {{ _showLinesForm }};">
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBLocations]]" id="_LLLocation" name="_LLLocation" item-value-path="id" item-label-path="value" value="{{_LLLocation}}" label="Localização" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <b>[[item.value]]</b>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBProducts]]" id="_LLProduct" name="_LLProduct" item-value-path="id" item-label-path="value" value="{{_LLProduct}}" label="Nº Produto" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <b>[[item.value]]</b>
-                                    </template>
-                                </vaadin-combo-box>
+                        <div id="formLinesReq">
+                            <div class="row" style="display: {{ _showLinesForm }};">
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBLocations]]" id="_LLLocation" name="_LLLocation" item-value-path="id" item-label-path="value" value="{{_LLLocation}}" label="Localização" disabled="{{ !_permissions.update }}">
+                                        <template>
+                                            <b>[[item.value]]</b>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBProducts]]" id="_LLProduct" name="_LLProduct" item-value-path="id" item-label-path="value" value="{{_LLProduct}}" label="Nº Produto" disabled="{{ !_permissions.update }}">
+                                        <template>
+                                            <b>[[item.value]]</b>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <vaadin-text-field value="{{_LLDescription}}" id="_LLDescription" name="_LLDescription" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBMeasureUnits]]" id="_LLMeasureUnit" name="_LLMeasureUnit" item-value-path="id" item-label-path="value" value="{{_LLMeasureUnit}}" label="Cód. Unidade Medida" disabled="{{ !_permissions.update }}">
+                                        <template>
+                                            <b>[[item.value]]</b>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <vaadin-text-field value="{{_LLQuantityToRequire}}" id="_LLQuantityToRequire" name="_LLQuantityToRequire" label="Quantidade a requerer" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-2">
+                                    <vaadin-text-field value="{{_LLTotalCost}}" id="_LLTotalCost" name="_LLTotalCost" label="Custo Total" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                </div>
                             </div>
 
-                            <div class="col-lg-2">
-                                <vaadin-text-field value="{{_LLDescription}}" id="_LLDescription" name="_LLDescription" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                            </div>
+                            <div class="row" style="display: {{ _showLinesForm }};">
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBProjects]]" id="_LLProjectNo" item-value-path="id" item-label-path="value" value="{{_LLProjectNo}}" label="Nº Projeto" disabled="{{ !_permissions.update }}">
+                                        <template>
+                                            <b>[[item.value]]</b>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
 
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBMeasureUnits]]" id="_LLMeasureUnit" name="_LLMeasureUnit" item-value-path="id" item-label-path="value" value="{{_LLMeasureUnit}}" label="Cód. Unidade Medida" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <b>[[item.value]]</b>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBMealType]]" id="_LLMealType" item-value-path="id" item-label-path="value" value="{{_LLMealType}}" label="Tipo Refeição" disabled="{{ !_permissions.update }}">
+                                        <template>
+                                            <b>[[item.value]]</b>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
 
-                            <div class="col-lg-2">
-                                <vaadin-text-field value="{{_LLQuantityToRequire}}" id="_LLQuantityToRequire" name="_LLQuantityToRequire" label="Quantidade a requerer" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                            </div>
-                            <div class="col-lg-2">
-                                <vaadin-text-field value="{{_LLTotalCost}}" id="_LLTotalCost" name="_LLTotalCost" label="Custo Total" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+
+                                <div class="col-lg-2">
+                                    <vaadin-date-picker label="Data Registo" id="_LLRegistrationDate" name="_LLRegistrationDate" value="{{_LLRegistrationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBRegionCodes]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="{{_CLRegion}}" label="Cód. Região" disabled="{{ _lockFields }}">
+                                        <template>
+                                            <table width="180px">
+                                                <tr>
+                                                    <td width="20%">[[item.id]]</td>
+                                                    <td width="80%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="_CLFunctionalArea" name="_CLFunctionalArea" item-value-path="id" item-label-path="value" value="{{_CLFunctionalArea}}" label="Cód. Área Funcional" disabled="{{ _lockFields }}">
+                                        <template>
+                                            <table width="200px">
+                                                <tr>
+                                                    <td width="40%">[[item.id]]</td>
+                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLCenterCodeResponsability" item-value-path="id" item-label-path="value" value="{{_CLResponsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{_lockFields }}">
+                                        <template>
+                                            <table width="200px">
+                                                <tr>
+                                                    <td width="40%">[[item.id]]</td>
+                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+
+
+
+                                <div class="col-lg-2">
+                                    <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="row" style="display: {{ _showLinesForm }};">
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBProjects]]" id="_LLProjectNo" item-value-path="id" item-label-path="value" value="{{_LLProjectNo}}" label="Nº Projeto" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <b>[[item.value]]</b>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBMealType]]" id="_LLMealType" item-value-path="id" item-label-path="value" value="{{_LLMealType}}" label="Tipo Refeição" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <b>[[item.value]]</b>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-
-                            <div class="col-lg-2">
-                                <vaadin-date-picker label="Data Registo" id="_LLRegistrationDate" name="_LLRegistrationDate" value="{{_LLRegistrationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBRegionCodes]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="{{_CLRegion}}" label="Cód. Região" disabled="{{ _lockFields }}">
-                                    <template>
-                                        <table width="180px">
-                                            <tr>
-                                                <td width="20%">[[item.id]]</td>
-                                                <td width="80%"> <b>[[item.value]]</b></td>
-                                            </tr>
-                                        </table>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="_CLFunctionalArea" name="_CLFunctionalArea" item-value-path="id" item-label-path="value" value="{{_CLFunctionalArea}}" label="Cód. Área Funcional" disabled="{{ _lockFields }}">
-                                    <template>
-                                        <table width="200px">
-                                            <tr>
-                                                <td width="40%">[[item.id]]</td>
-                                                <td width="60%"> <b>[[item.value]]</b></td>
-                                            </tr>
-                                        </table>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-                            <div class="col-lg-2">
-                                <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLResponsabilityCenter" name="_CLResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{_CLResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ _lockFields }}">
-                                    <template>
-                                        <table width="200px">
-                                            <tr>
-                                                <td width="40%">[[item.id]]</td>
-                                                <td width="60%"> <b>[[item.value]]</b></td>
-                                            </tr>
-                                        </table>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-
-                            <div class="col-lg-2">
-                                <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                            </div>
-                        </div>
-
                         <div class="row">
-                            <vaadin-grid aria-label="RequisitionLines" id="grid_requisitionlines" name="grid_requisitionlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
-                                <vaadin-grid-column width="130px">
+                            <vaadin-grid aria-label="RequisitionLines" id="grid_requisitionlines" name="grid_requisitionlines" items="[[dataLines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
+                                <vaadin-grid-column width="100px">
                                     <template class="header">
-                                        <vaadin-grid-sorter path="lineNo">Nº</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="lineNo" />
+                                        <vaadin-grid-sorter path="requisitionNo">Nº</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="requisitionNo" />
                                     </template>
                                     <template>
-                                        item.lineNo
+                                        {{item.requisitionNo}}
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="125px">
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="code">Nº Produto</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="code" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-combo-box items="[[CBProductos]]" id="_LLGridProductNo" name="_LLGridProductNo" item-value-path="id" item-label-path="value" value="{{item.code}}" on-change="_onChangeProduct" disabled="{{@ViewBag.PermissionUpdate}}">
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.value]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.code}}
+                                        </template>
                                     </template>
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="200px">
@@ -404,9 +463,9 @@ else
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBLocations]]" id="_CLGridCode" name="_LLGridCode" item-value-path="id" item-label-path="id" value="{{item.locationCode}}" disabled="{{ _lockFields }}" on-value-changed="_clContractLineCodeGridChange">
+                                            <vaadin-combo-box items="[[CBLocations]]" id="_CLGridCode" name="_LLGridCode" item-value-path="id" item-label-path="value" value="{{item.locationCode}}" disabled>
                                                 <template>
-                                                    <b>[[item.id]]</b>
+                                                    <b>[[item.value]]</b>
                                                 </template>
                                             </vaadin-combo-box>
                                         </template>
@@ -422,7 +481,7 @@ else
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.description}}" id="_CLGridDescription" name="_LLGridDescription" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.description}}" id="_LLGridDescription" name="_LLGridDescription" disabled> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.description}}
@@ -431,12 +490,12 @@ else
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="170px">
                                     <template class="header">
-                                        <vaadin-grid-sorter path="codeMeasureUnit">Cód. Uni. Medida</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="codeMeasureUnit" />
+                                        <vaadin-grid-sorter path="measureUnitNo">Cód. Uni. Medida</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="measureUnitNo" />
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBMeasureUnits]]" id="_CLGridMeasureUnit" name="_CLGridMeasureUnit" item-value-path="id" item-label-path="value" value="{{item.codeMeasureUnit}}" disabled="{{ _lockFields }}">
+                                            <vaadin-combo-box items="[[CBMeasureUnits]]" id="_CLGridMeasureUnit" name="_CLGridMeasureUnit" item-value-path="id" item-label-path="id" value="{{item.measureUnitNo}}" disabled>
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -447,21 +506,77 @@ else
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[ _clFormatMeasureUnit(item.codeMeasureUnit) ]]
+                                            {{item.measureUnitNo}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="120px">
                                     <template class="header">
-                                        <vaadin-grid-sorter path="quantityToRequire">Quantidade a requerer</vaadin-grid-sorter>
+                                        <vaadin-grid-sorter path="quantityToRequire">Quantidade a Requerer</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="quantityToRequire" />
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.quantityToRequire}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.quantityToRequire}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.quantityToRequire}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="120px">
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="quantityToApprove">Quantidade a Aprovar</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantityToApprove" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.quantityToApprove}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.quantityToApprove}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="120px">
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="quantityApproved">Quantidade Aprovada</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantityApproved" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.quantityApproved}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.quantityApproved}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="120px">
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="quantityReceipt">Quantidade Registada</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantityReceipt" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.quantityReceipt}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.quantityReceipt}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="120px">
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="unitCost" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.unitCost}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled><div slot="suffix">€</div> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.unitCost}} €
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -472,10 +587,24 @@ else
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.totalCost}}" id="_LLGridUnitPrice" name="_LLGridUnitPrice" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$"> <div slot="suffix">€</div></vaadin-text-field>
+                                            <vaadin-text-field value="{{item.totalCost}}" id="_LLGridUnitPrice" name="_LLGridUnitPrice" disabled> <div slot="suffix">€</div></vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.totalCost}} €
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="150px">
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="requisitionDate">Data de Registo</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="requisitionDate" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.requisitionDate}}" id="_LLGridUnitPrice" name="_LLGridUnitPrice" disabled> <div slot="suffix">€</div></vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.requisitionDate}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -486,7 +615,7 @@ else
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBProjects]]" id="_LLGridProjectNo" name="_LLGridProjectNo" item-value-path="id" item-label-path="value" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
+                                            <vaadin-combo-box items="[[CBProjects]]" id="_LLGridProjectNo" name="_LLGridProjectNo" item-value-path="id" item-label-path="value" value="{{item.projectNo}}" disabled>
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -508,11 +637,11 @@ else
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBMealTypes]]" id="_LLMealType" name="_LLMealType" item-value-path="id" item-label-path="value" value="{{item.mealType}}" disabled="{{ _lockFields }}">
+                                            <vaadin-combo-box items="[[CBMealType]]" id="_LLMealType" name="_LLMealType" item-value-path="id" item-label-path="id" value="{{item.mealType}}" disabled>
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
+                                                            <div>[[item.id]]</div>
                                                         </paper-item-body>
                                                     </paper-icon-item>
                                                 </template>
@@ -520,6 +649,20 @@ else
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.mealType}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="120px">
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="mealType">Descrição Refeição</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="mealType" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="[[_descriptionMeal(item.mealType)]]" id="DescriptionMeal" name="_LLGridUnitPrice" disabled> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            [[_descriptionMeal(item.mealType)]]
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -542,7 +685,7 @@ else
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[ _clFormatRegion(item.codeRegion) ]]
+                                            {{item.codeRegion}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -553,7 +696,7 @@ else
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="_CLGridFunctionalArea" name="_CLGridFunctionalArea" item-value-path="id" item-label-path="value" value="{{item.codeFunctionalArea}}" disabled="{{ _lockFields }}">
+                                            <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="_CLGridFunctionalArea" name="_CLGridFunctionalArea" item-value-path="id" item-label-path="value" value="{{item.functionAreaCode}}" disabled="{{ _lockFields }}">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -564,7 +707,7 @@ else
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[ _clFormatFunctionalArea(item.codeFunctionalArea) ]]
+                                            {{item.functionAreaCode}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -575,7 +718,7 @@ else
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLGridResponsabilityCenter" name="_CLGridResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{item.codeResponsabilityCenter}}" disabled="{{ _lockFields }}">
+                                            <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLGridResponsabilityCenter" name="_CLGridResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}" disabled>
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -586,7 +729,7 @@ else
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[ _clFormatResponsabilityCenter(item.codeResponsabilityCenter) ]]
+                                            {{item.responsabilityCenterCode}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -596,8 +739,8 @@ else
                                     </template>
                                     <template>
                                         <center>
-                                            <template is="dom-if" if="{{ _lockFields }}">
-                                                <paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>
+                                            <template is="dom-if" if="{{ !_permissions.update}}">
+                                                <paper-button class="btnRemove" raised on-tap="_deleteRequisitionsLine">Eliminar</paper-button>
                                             </template>
                                         </center>
                                     </template>
@@ -605,19 +748,18 @@ else
                             </vaadin-grid>
                         </div>
 
-                        <div class="marginSpace" id="ddmarginSpace">
+
+                        <div class="marginSpace">
                             <template is="dom-if" if="{{ _lockFields }}">
-                                <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateResquesitionLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                             </template>
                         </div>
-                        <div class="marginSpace2" id="ddmarginSpace2">
-                            <template is="dom-if" if="{{ _lockFields }}">
-                                <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; ver</paper-button>
-                            </template>
-                        </div>
+
                     </div>
                 </div>
+
             </div>
+
         </div>
 
 
@@ -638,9 +780,17 @@ else
                     _permissions: {
                         type: Array
                     },
+                   
                     _isCreate: {
                         type: Boolean,
                         value: true
+                    },
+                    _lockFields: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _SelectedLine: {
+                        observer: '_lineSelected'
                     },
                     selected: {
                         type: Number,
@@ -648,15 +798,20 @@ else
                     },
                 },
                 ready: function () {
-                    if ("@ViewBag.Approval"=="aprovado") {
-                        this.$.ddmarginSpace.style.display = 'none'; 
+
+                    //GET PROJECT DATA
+                    this.$.page_databound_ajax.body = JSON.stringify({ "RequisitionNo":  @ViewBag.RequestNo });
+                    this.$.page_databound_ajax.generateRequest();
+                    if ("@ViewBag.Approval" == "aprovado") {
+                        this.$.formLinesReq.style.display = 'none';
+                        this.$.ddmarginSpace.style.display = 'none';
                     }
                     else {
-                        this.$.ddmarginSpace2.style.display = 'none'; 
+                        this.$.ddmarginSpace2.style.display = 'none';
                     }
-                    //GET PROJECT DATA
-                    this.$.page_databound_ajax.body = JSON.stringify({ "requestNo": this._requestno });
-                    this.$.page_databound_ajax.generateRequest();
+                    this.$.contractLines_databound_ajax.body = JSON.stringify({ "RequisitionNo":  @ViewBag.RequestNo });
+                    this.$.contractLines_databound_ajax.generateRequest();
+
                 },
                 _openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
@@ -686,15 +841,34 @@ else
                 },
 
                 //CRUDS
+              
                 _create: function () {
                     if (this._validateData()) {
                         this._executeRequest("/Nutricao/RequisicoesSimplificadas/CreateSimplifiedRequisition", this.data)
                     }
                 },
                 _update: function () {
-                    if (this._validateData()) {
-                        this._executeRequest("/Nutricao/RequisicoesSimplificadas/UpdateSimplifiedRequisition", this.data)
-                    }
+                    this._executeRequest("/Nutricao/RequisicoesSimplificadas/UpdateSimplifiedRequisition", this.data)
+                },
+                _desaprovarRequisiApproval: function () {
+                    this.$.register_requisitions_ajax.url = "/Nutricao/RequisicoesSimplificadas/DisapproveSimplifiedRequisition";
+                    this.$.register_requisitions_ajax.body = JSON.stringify(this.dataLines);
+                    this.$.register_requisitions_ajax.generateRequest();
+                },
+                _registeRequisiApproval: function () {
+                    this.$.register_requisitions_ajax.url = "/Nutricao/RequisicoesSimplificadas/RegisterRequisition";
+                    this.$.register_requisitions_ajax.body = JSON.stringify(this.dataLines);
+                    this.$.register_requisitions_ajax.generateRequest();
+                },
+                _updateResquesitionLines: function () {
+                    this.$.update_lines_requisition_ajax.url = "/Nutricao/RequisicoesSimplificadas/UpdateSimplifiedRequisitionLines";
+                    this.$.update_lines_requisition_ajax.body = JSON.stringify(this.dataLines);
+                    this.$.update_lines_requisition_ajax.generateRequest();
+                },
+                _historyRequisiApproval: function () {
+                    this.$.register_requisitions_ajax.url = "/Nutricao/RequisicoesSimplificadas/HistorySimplifiedRequisition";
+                    this.$.register_requisitions_ajax.body = JSON.stringify(this.dataLines);
+                    this.$.register_requisitions_ajax.generateRequest();
                 },
                 _delete: function () {
                     var data = this.data;
@@ -720,13 +894,56 @@ else
                     });
                 },
 
+                _deleteRequisitionsLine: function (data) {        
+                    var ajax_request = this.$.ajax_delete_lines_project;
+                    var dataline = data.model.item;
+                    var index = this.dataLines.indexOf(dataline);
+                    this.dataLines.splice(index, 1);
+                    
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover a  Linha Requisição Simplificada ?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                
+                                ajax_request.body = JSON.stringify(dataline);
+                                ajax_request.generateRequest();
+
+                            }
+                        }
+                    });
+
+                },
+                _onChangeProduct: function (data) {
+                    if (data.model != null) {
+                        this.$.ajax_get.url = "/Nutricao/GetUnitStockeepingId";
+                        this.$.ajax_get.body = JSON.stringify(data.model.item.code);
+                        this.$.ajax_get.generateRequest();
+
+                    }
+                },
+                _responseChangeProduct: function () {
+                    this.dataLines.find(x => x == this._SelectedLine).description = this.unitStockeeping.description;
+                    this.dataLines.find(x => x == this._SelectedLine).measureUnitNo = this.unitStockeeping.codeUnitMeasure;
+                    this.$.grid_requisitionlines.clearCache();
+
+                },
+
                 //Responses Processors
                 _responseProcessor: function (data) {
                     var self = this;
                     if (this.data.code != "" && this.data.code != null) {
                         this._isCreate = false
                     }
-
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("Update") !== -1 || data.detail.url.indexOf("Create") !== -1) {
                             if (this.data.eReasonCode == 100) {
@@ -735,6 +952,34 @@ else
                                 this._openToastError(this.data.eMessage);
                             }
                         }
+                    } else {
+                        this._openToastError("Ocorreu um erro.")
+                    }
+                },
+                _responseProcessorLines: function (dataUpdate) {
+                    if (dataUpdate.detail.status === 200) {
+                       
+                        if (this.updateLines.eReasonCode == 100) {
+                            this._openToast(this.updateLines.eMessage);
+                        
+                            } else {
+                            this._openToastError(this.updateLines.eMessage);
+                              
+                            }
+                     
+                    } else {
+                        this._openToastError("Ocorreu um erro.")
+                    }
+                },
+                _responseProcessorRegister: function (data) {
+                    if (data.detail.status === 200) {
+                            if (this.data.eReasonCode == 100) {
+                                this._openToast(this.data.eMessage);
+                                window.location.href = "/Nutricao/RequisicoesSimplificadas/Index/?option=" + 1;
+                            } else {
+                                this._openToastError(this.data.eMessage);
+                            }
+                   
                     } else {
                         this._openToastError("Ocorreu um erro.")
                     }
@@ -753,13 +998,134 @@ else
                         }
                     }
                 },
-
+                _responseDeleteLinesProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        this._openToast(this.deletedData.eMessage);
+                        if (this.deletedData.eReasonCode == 100) {
+                            this.$.grid_requisitionlines.clearCache();
+                            this._openToast(this.deletedData.eMessage);
+                        } else if (this.deletedData.eReasonCode == 101) {
+                            this._openToastError(this.deletedData.eMessage);
+                        }
+                    }
+                },
                 //Helpers
                 _executeRequest: function (url, data) {
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
+
                 },
+
+
+                _lineSelected: function (item) {
+                    if (item != null) {
+                        var oSel = this.dataLines.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
+
+                        var sel = this.dataLines.find(x => x == item);
+                        if (sel != undefined) {
+
+                            this.dataLines.find(x => x == item).selected = true;
+                            this.$.grid_requisitionlines.clearCache();
+                        }
+                    }
+                },
+               
+                _mealTypeChanged: function (e) {
+                    if (this.dataLines != null && e.detail.value != null && e.detail.value != "") {
+                        var count = this.dataLines.length;
+                        for (var i = 0; i < count; i++) {
+                            this.dataLines[i].mealType = e.detail.value;
+                            //description meal
+                            
+                            var meals = $.grep(this.CBMealType, function (x) { return x.id == e.detail.value; });
+                            if (meals != null && meals.length > 0) {
+                                var meal = meals[0];
+                                this.dataLines[i].descriptionMeal = meal.value;
+                            }
+                        }
+                        this.$.grid_requisitionlines.clearCache();
+
+                    }
+                },
+               
+                _regionCodeChanged: function () {
+                    if (this.dataLines != null) {
+                        var count = this.dataLines.length;
+                        for (var i = 0; i < count; i++) {
+                            this.dataLines[i].regionCode = this.$.RegionCode.value;
+                        }
+                        this.$.grid_requisitionlines.clearCache();
+
+                    }
+                },
+                _projectoNoChanged: function () {
+                    if (this.dataLines != null) {
+                        var count = this.dataLines.length;
+                        for (var i = 0; i < count; i++) {
+                            this.dataLines[i].projectNo = this.$.ProjectNo.value;
+                        }
+                        this.$.grid_requisitionlines.clearCache();
+
+                    }
+                },
+                _locationCodeChanged: function () {
+                    if (this.dataLines != null) {
+                        var count = this.dataLines.length;
+                        for (var i = 0; i < count; i++) {
+                            this.dataLines[i].locationCode = this.$.LocationCode.value;
+                        }
+                        this.$.grid_requisitionlines.clearCache();
+
+                    }
+                },
+                _areaCodeChanged: function () {
+                    if (this.dataLines != null) {
+                        var count = this.dataLines.length;
+                        for (var i = 0; i < count; i++) {
+                            this.dataLines[i].functionAreaCode = this.$.FunctionalAreaCode.value;
+
+                        }
+                        this.$.grid_requisitionlines.clearCache();
+
+                    }
+                },
+               _productNoChanged: function () {
+                    if (this.dataLines != null) {
+                        var count = this.dataLines.length;
+                        for (var i = 0; i < count; i++) {
+                            this.dataLines[i]._productNoChanged = this.$._productNoChanged.value;
+
+                        }
+                        this.$.grid_requisitionlines.clearCache();
+
+                    }
+                },
+
+               _responsabilityCenterCodeChanged: function () {
+                    if (this.dataLines != null) {
+                        var count = this.dataLines.length;
+                        for (var i = 0; i < count; i++) {
+                            this.dataLines[i].responsabilityCenterCode = this.$.ResponsabilityCenterCode.value;
+
+                        }
+                        this.$.grid_requisitionlines.clearCache();
+
+                    }
+               },
+               _descriptionMeal: function (param) {
+                   if (param != undefined) { 
+                       var sel = this.CBMealType.find(x => x.id == param);
+                       if (sel != undefined) {
+                           return sel.value;
+                       }
+                   }
+                   return "";
+               }
             });
         });
     </script>

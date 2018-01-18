@@ -1150,6 +1150,23 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> RequisitionsStatus = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Pendente"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Aprovado"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Registado"
+            }
+        };
         public static readonly List<EnumData> ProcedimentosCcpType = new List<EnumData>()
         {
             new EnumData()

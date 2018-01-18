@@ -710,9 +710,9 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        public JsonResult GetUnitStockeepingId([FromBody]string id)
+        public JsonResult GetUnitStockeepingId([FromBody]string idStock)
         {
-            StockkeepingUnitViewModel result = DBStockkeepingUnit.ParseToViewModel(DBStockkeepingUnit.GetById(id));
+            StockkeepingUnitViewModel result = DBStockkeepingUnit.ParseToViewModel(DBStockkeepingUnit.GetById(idStock));
             return Json(result);
         }
 
