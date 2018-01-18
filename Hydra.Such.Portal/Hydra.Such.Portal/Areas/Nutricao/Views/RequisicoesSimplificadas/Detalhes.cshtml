@@ -65,7 +65,7 @@ else
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        @*<iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{CBEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
+        <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{CBEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetMealTypes" last-response="{{CBMealType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -172,13 +172,13 @@ else
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
-                                        @*<div class="col-lg-3">
+                                        <div class="col-lg-3">
                                             <vaadin-combo-box items="[[CBEmployees]]" id="LEmployeeNo" item-value-path="id" item-label-path="value" value="{{data.employeeNo}}" label="Nº Funcionário" disabled="{{ !_permissions.update }}">
                                                 <template>
                                                     <b>[[item.value]]</b>
                                                 </template>
                                             </vaadin-combo-box>
-                                        </div>*@
+                                        </div>
                                         <div class="col-lg-3">
                                             <vaadin-text-field value="{{data.observations}}" maxlength="50" id="LObservations" name="LObservations" label="Observações" disabled="{{ @ViewBag.PermissionUpdate }}"> </vaadin-text-field>
                                         </div>
