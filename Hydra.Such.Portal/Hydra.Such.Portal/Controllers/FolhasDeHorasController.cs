@@ -249,7 +249,7 @@ namespace Hydra.Such.Portal.Controllers
                             FolhaDeHorasNo = FH.NºFolhaDeHoras,
                             Area = FH.Área,
                             AreaTexto = FH.Área == null ? "" : FH.Área.ToString(),
-                            ProjetoNo = FH.NºProjeto,
+                            ProjetoNo = FH.NºProjeto == null ? "" : FH.NºProjeto.ToString(),
                             ProjetoDescricao = FH.ProjetoDescricao,
                             EmpregadoNo = FH.NºEmpregado,
                             EmpregadoNome = FH.NomeEmpregado,
@@ -497,6 +497,7 @@ namespace Hydra.Such.Portal.Controllers
                 };
 
                 FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault().Name;
+                    //DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault().Name;
             }
             return Json(FH);
         }

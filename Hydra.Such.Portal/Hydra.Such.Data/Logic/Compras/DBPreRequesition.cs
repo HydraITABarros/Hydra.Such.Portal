@@ -36,7 +36,6 @@ namespace Hydra.Such.Data.Logic.Compras
             }
             catch (Exception ex)
             {
-
                 return null;
             }
         }
