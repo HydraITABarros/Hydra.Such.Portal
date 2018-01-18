@@ -617,11 +617,11 @@ else
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBProjects]]" id="_LLGridProjectNo" name="_LLGridProjectNo" item-value-path="id" item-label-path="value" value="{{item.projectNo}}" disabled>
+                                            <vaadin-combo-box items="[[CBProjects]]" id="_LLGridProjectNo" name="_LLGridProjectNo" item-value-path="id" item-label-path="id" value="{{item.projectNo}}" disabled>
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
+                                                            <div>[[item.id]]</div>
                                                         </paper-item-body>
                                                     </paper-icon-item>
                                                 </template>
@@ -676,11 +676,11 @@ else
                                     <template>
 
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBRegionCodes]]" id="_CLGridRegion" name="_CLGridRegion" item-value-path="id" item-label-path="value" value="{{item.codeRegion}}" disabled="{{ _lockFields }}">
+                                            <vaadin-combo-box items="[[CBRegionCodes]]" id="_CLGridRegion" name="_CLGridRegion" item-value-path="id" item-label-path="id" value="{{item.codeRegion}}" disabled="{{ _lockFields }}">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
+                                                            <div>[[item.id]]</div>
                                                         </paper-item-body>
                                                     </paper-icon-item>
                                                 </template>
@@ -698,11 +698,11 @@ else
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="_CLGridFunctionalArea" name="_CLGridFunctionalArea" item-value-path="id" item-label-path="value" value="{{item.functionAreaCode}}" disabled="{{ _lockFields }}">
+                                            <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="_CLGridFunctionalArea" name="_CLGridFunctionalArea" item-value-path="id" item-label-path="id" value="{{item.functionAreaCode}}" disabled="{{ _lockFields }}">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
+                                                            <div>[[item.id]]</div>
                                                         </paper-item-body>
                                                     </paper-icon-item>
                                                 </template>
@@ -720,11 +720,11 @@ else
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLGridResponsabilityCenter" name="_CLGridResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}" disabled>
+                                            <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLGridResponsabilityCenter" name="_CLGridResponsabilityCenter" item-value-path="id" item-label-path="id" value="{{item.responsabilityCenterCode}}" disabled>
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
+                                                            <div>[[item.id]]</div>
                                                         </paper-item-body>
                                                     </paper-icon-item>
                                                 </template>

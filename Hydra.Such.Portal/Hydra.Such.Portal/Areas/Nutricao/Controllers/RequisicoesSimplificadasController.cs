@@ -35,10 +35,15 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         {
             HttpContext.Session.Remove("aprovadoSession");
             ViewBag.RequisitionsApprovals = "false";
-            //‘Requisições para Registar’ com estado aprovado
+            //‘Requisições simplificadas para Registar’ com estado aprovado
             if (option == 1)
             {
-                ViewBag.RequisitionsApprovals = "aprovado";
+                ViewBag.RequisitionsApprovals = "resgitar";
+            }
+            //Histórico Requisições simplificadas
+            else if (option == 2)
+            {
+                ViewBag.RequisitionsApprovals = "historico";
             }
             return View();
         }
@@ -49,10 +54,16 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         {
             List<SimplifiedRequisitionViewModel> result;
 
-            //‘Requisições para Registar’ com estado aprovado
-            if (option == "aprovado")
+            //‘Requisições simplificadas para Registar’ com estado aprovado
+            if (option == "resgitar")
             {
                 result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetByApprovals(2));
+                HttpContext.Session.SetString("aprovadoSession", option);
+            }
+            //Histórico de Requisições simplificadas
+            else if (option == "historico")
+            {
+                result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetByApprovals(3));
                 HttpContext.Session.SetString("aprovadoSession", option);
             }
             //‘Requisições simplificadas’ com utilizador
@@ -88,13 +99,18 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             {
               
                 ViewBag.Approval = HttpContext.Session.GetString("aprovadoSession") ?? "";
+                
                 //Registar requisições aprovadas
-                if (ViewBag.Approval != "" && UPerm.Update == true)
+                if (ViewBag.Approval == "resgitar" && UPerm.Update == true)
+                {
+                    UPerm.Update = false;                   
+                    @ViewBag.PermissionUpdate = true;
+                }
+                //Histórico requisições aprovadas
+                else if (ViewBag.Approval == "historico" && UPerm.Update == true)
                 {
                     UPerm.Update = false;
-                    
                     @ViewBag.PermissionUpdate = true;
-
                 }
                 else
                 {
