@@ -9,6 +9,7 @@
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
 <link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/input-picker-pattern/input-picker-pattern.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
@@ -31,6 +32,7 @@
 <link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectList.html" />
+<link rel="import" href="~/lib/vaadin-upload/vaadin-upload.html" />
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
 
 <h1 class="title">Cabeçalho Ficha Técnica</h1>
@@ -42,6 +44,7 @@
         <link rel="stylesheet" href="/css/main.css" />
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{CBOMeasureUnit}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCookingTechnique" last-response="{{CBOCookingTechnique}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -49,9 +52,11 @@
         <iron-ajax url="/PopulateDropdowns/GetLinesRecTechnicPlatesType" last-response="{{CbotLinesRecTecPlatesType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLinesRecordTechnicalOfPlatesCode" id="ajax_CboCode" last-response="{{CboCode}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetAllProceduresConfection" id="ajax_GridProcedConfec" last-response="{{GridProceduresConfection}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetAllRecTecPlates" id="ajax_GetAllRecTecPlat" last-response="{{GetAllRecTecPlatResult}}"  on-response="_GetRecTecPlatResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetAllRecTecPlatesBYPlate" id="ajax_GetAllRecTecPlat" last-response="{{GetAllRecTecPlatResult}}" on-response="_GetRecTecPlatResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/FichasTecnicasPratos/CreateRecordTechnicalOfPlates" id="createRecTec_ajax" last-response="{{CreateResult}}" on-response="_CreateResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         
+
 
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
             <paper-tab>Geral</paper-tab>
@@ -72,7 +77,7 @@
                         <vaadin-text-field value="{{recTecNameValue}}" maxlength="20" id="recordTechnicalNameid" name="recTecName" label="Nome Ficha Técnica"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box value="{{CodMeasureUnitValue}}" id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[CBOMeasureUnit]]" item-value-path="id"  item-label-path="value" label="Cód. Unidade Medida">
+                        <vaadin-combo-box value="{{CodMeasureUnitValue}}" id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[CBOMeasureUnit]]" item-value-path="id" item-label-path="value" label="Cód. Unidade Medida">
                             <template>
                                 <table width="200px">
                                     <tr>
@@ -84,7 +89,7 @@
                         </vaadin-combo-box>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box value="{{LocalizationsValue}}" items="[[CBLocations]]" id="_CBLocalizations" item-value-path="id" item-label-path="value"  label="Cod. Localização">
+                        <vaadin-combo-box value="{{LocalizationsValue}}" items="[[CBLocations]]" id="_CBLocalizations" item-value-path="id" item-label-path="value" label="Cod. Localização">
                             <template>
                                 <table width="200px">
                                     <tr>
@@ -98,7 +103,7 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{TPreparationValue}}" maxlength="20" id="TimePreparationid" name="TimePreparationName" label="Tempo Preparação">  <div slot="suffix">min.</div></vaadin-text-field>
+                        <vaadin-text-field value="{{TPreparationValue}}" maxlength="20" id="TimePreparationid" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" name="TimePreparationName" label="Tempo Preparação">  <div slot="suffix">min.</div></vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
                         <vaadin-combo-box value="{{CookingTechniqueValue}}" items="[[CBOCookingTechnique]]" id="_CookingTechnique" item-value-path="id" item-label-path="value" label="Técnica Culinária">
@@ -121,69 +126,16 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{DosesNoValue}}" maxlength="20" id="DosesNoId" name="DosesNoName" label="Número de doses"> </vaadin-text-field>
+                        <vaadin-text-field value="{{DosesNoValue}}" maxlength="20" id="DosesNoId" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" name="DosesNoName" label="Número de doses"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{PreparTempValue}}" maxlength="20" id="PreparationTemperatureId" name="PreparationTemperatureName" label="Temperatura Preparação"> </vaadin-text-field>
+                        <vaadin-text-field value="{{PreparTempValue}}" maxlength="20" id="PreparationTemperatureId" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" name="PreparationTemperatureName" label="Temperatura Preparação"> <div slot="suffix">°C</div> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{FinalTempConfectValue}}" maxlength="20" id="FinalTemperatureConfectionId" name="FinalTemperatureConfectionName" label="Temperatura final Confeção"> </vaadin-text-field>
+                        <vaadin-text-field value="{{FinalTempConfectValue}}" maxlength="20" id="FinalTemperatureConfectionId" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" name="FinalTemperatureConfectionName" label="Temperatura final Confeção"><div slot="suffix">°C</div> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{ServeTempValue}}" maxlength="20" id="ServeTemperatureId" name="ServeTemperatureName" label="Temperatura a Servir"> </vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear" hidden>
-                    <div class="col-lg-3">
-                        [Vitamina A]
-                    </div>
-                    <div class="col-lg-3">
-                        [Vitamina D]
-                    </div>
-                    <div class="col-lg-3">
-                        [Colesterol]
-                    </div>
-                    <div class="col-lg-3">
-                        [Sódio (Na)]
-                    </div>
-                </div>
-                <div class="row break_clear" hidden>
-                    <div class="col-lg-3">
-                        [Potássio (K)]
-                    </div>
-                    <div class="col-lg-3">
-                        [Cálcio (Ca)]
-                    </div>
-                    <div class="col-lg-3">
-                        [Ferro (Fe)]
-                    </div>
-                    <div class="col-lg-3">
-                        [Proteínas]
-                    </div>
-                </div>
-                <div class="row break_clear" hidden>
-                    <div class="col-lg-3">
-                        [Hidratos de Carbono]
-                    </div>
-                    <div class="col-lg-3">
-                        [Lípidos]
-                    </div>
-                    <div class="col-lg-3">
-                        [Fibra Alimentar]
-                    </div>
-                    <div class="col-lg-3">
-                        [Preco Custo Esperado]
-                    </div>
-                </div>
-                <div class="row break_clear" hidden>
-                    <div class="col-lg-3">
-                        [Preço Custo Actual]
-                    </div>
-                    <div class="col-lg-3">
-                        [Valor Energético (Kcal)]
-                    </div>
-                    <div class="col-lg-3">
-                        [Valor Energético (Kj)]
+                        <vaadin-text-field value="{{ServeTempValue}}" maxlength="20" id="ServeTemperatureId" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" name="ServeTemperatureName" label="Temperatura a Servir"><div slot="suffix">°C</div> </vaadin-text-field>
                     </div>
                 </div>
             </div>
@@ -290,68 +242,72 @@
             <div>
                 <div>
                     <div class="row">
-                        <div class="col-lg-3">
-                            [Cereais que contêm glúten ]
+                        <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{WithGlutenChecked}}" id="WithGlutenId">Cereais que contêm glúten</vaadin-checkbox>
                         </div>
-                        <div class="col-lg-3">
-                            [Crustáceos e produtos à base de crustáceos]
+                        <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{BasedCrustaceansChecked}}" id="BasedCrustaceansId">Prod. à base de crustáceos</vaadin-checkbox>
                         </div>
-                        <div class="col-lg-3">
-                            [Ovos e produtos à base de ovos]
+                        <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{BasedEggsChecked}}" id="BasedEggsId">Prod. à base de ovos</vaadin-checkbox>
                         </div>
-                        <div class="col-lg-3">
-                            [Peixes e produtos à base de peixes]
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                        <div class="col-lg-3">
-                            [Amendoins e produtos à base de amendoins]
-                        </div>
-                        <div class="col-lg-3">
-                            [Soja e produtos à base de soja]
-                        </div>
-                        <div class="col-lg-3">
-                            [Leite e produtos à base de leite]
-                        </div>
-                        <div class="col-lg-3">
-                            [Frutas de casca rija e produtos à base de frutos de casca rija]
+                        <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{BasedFishChecked}}" id="BasedFishId">Prod. à base de peixes</vaadin-checkbox>
                         </div>
                     </div>
                     <div class="row break_clear">
-                        <div class="col-lg-3">
-                            [Aipo e produtos à base de aipo]
+                        <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{BasedPeanutsChecked}}" id="BasedPeanutsId">Prod. à base de amendoins</vaadin-checkbox>
                         </div>
-                        <div class="col-lg-3">
-                            [Mostarda e produtos à base de mostarda]
+                        <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{BasedSoyChecked}}" id="BasedSoyId">Prod. à base de soja</vaadin-checkbox>
                         </div>
-                        <div class="col-lg-3">
-                            [Sementes de sésamo e produtos à base de sementes de sésamo]
+                        <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{BasedMilkChecked}}" id="BasedMilkId">Prod. à base de leite</vaadin-checkbox>
                         </div>
-                        <div class="col-lg-3">
-                            [Dióxido de enxofre e sulfitos em concentração superior a 10 mg/kg ou 10 mg/l]
+                        <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{BasedFruitShardShellChecked}}" id="BasedFruitShardShellId">Prod. à base de frutos de casca rija</vaadin-checkbox>
                         </div>
                     </div>
                     <div class="row break_clear">
-                        <div class="col-lg-3">
-                            [Tremoço e produtos à base de tremoço]
+                        <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{BasedCeleryChecked}}" id="BasedCeleryId">Prod. à base de aipo</vaadin-checkbox>
                         </div>
-                        <div class="col-lg-3">
-                            [Moluscos e produtos à base de moluscos]
+                        <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{BasedMustardChecked}}" id="BasedMustardId">Prod. à base de mostarda</vaadin-checkbox>
                         </div>
-                        <div class="col-lg-3">
-                            [Sementes de sésamo e produtos à base de sementes de sésamo]
+                        <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{BasedSesameSeedsChecked}}" id="BasedSesameSeedsId">Prod. à base de sementes de sésamo</vaadin-checkbox>
+                        </div>
+                        <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{BasedLupineChecked}}" id="BasedLupineId">Prod. à base de tremoço</vaadin-checkbox>
+                           </div>
+                    </div>
+                    <div class="row break_clear">
+                        <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{BasedMolluscsChecked}}" id="BasedMolluscsId">Prod. à base de moluscos</vaadin-checkbox>
+                        </div>
+                        <div class="col-lg-3 alignPoga">
+                            <vaadin-checkbox checked="{{BasedSulfSulphChecked}}" id="BasedSulfurDioxideAndSulphitesId">Dióxido de enxofre e sulfitos em concentração superior a 10 mg/kg ou 10 mg/l</vaadin-checkbox>
                         </div>
                     </div>
                 </div>
             </div>
             <!--Imagem-->
-            <div>
-                <div class="row">
-                    <div class="col-lg-3">
-                        [Campo com a imagem do prato]
-                    </div>
+        <div>
+            <div class="imgcenter">
+                <div class="imgcenter">
+                    @*<input id="ifile" type="file">
+                    <cpol-image output-data='{{result}}'></cpol-image>
+                    <paper-button on-tap='_exe'>Process</paper-button>
+                    <img src$='[[_computeBlob(hasil)]]'>*@
+                    @*<img src="{{ LocalImage }}" alt="" width="310" height="310">*@
+                    <cpol-image output-data="{{LocalImage}}"></cpol-image>
+                    <input type="file" name="filename" id="myFile" on-change="_btnUpload">
                 </div>
             </div>
+           
+        </div>
         </iron-pages>
         <div class="row" hidden="{{ !_CreateOnly }}">
             <div class="col-lg-2 alignPoga">
@@ -551,208 +507,310 @@
             </div>
         </div>
     </template>
-    <script>
-        document.addEventListener('WebComponentsReady', function () {
-            Polymer({
-                is: 'x-recordtechnical',
-                properties: {
-                    selected: {
-                        type: Number,
-                        value: 0
-                    },
-                    _CreateOnly: {
-                        type: Boolean,
-                        value: false
-                    },
-                    RecTecPlatValue: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    recTecNameValue: {
-                            type: String,
-                            notify: true,
-                            value: ""
-                    },
-                    CodMeasureUnitValue: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    LocalizationsValue: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    TPreparationValue: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    CookingTechniqueValue: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    GroupValue: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    EpochValue: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    DosesNoValue: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    PreparTempValue: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    FinalTempConfectValue: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    ServeTempValue: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    ClassFt1Value: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    ClassFt2Value: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    ClassFt3Value: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    ClassFt4Value: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    ClassFt5Value: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    ClassFt6Value: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    ClassFt7Value: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    NotesValue: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    }
+<script>
+    document.addEventListener('WebComponentsReady', function () {
+        Polymer({
+            is: 'x-recordtechnical',
+            properties: {
+                selected: {
+                    type: Number,
+                    value: 0
                 },
-                ready: function () {
-                    var RecTecPlatId = @Html.Raw(Json.Serialize(ViewBag.RecTecPlatesId));
-                    if (RecTecPlatId != "" && RecTecPlatId != null) {
-                        this.RecTecPlatValue = RecTecPlatId;
-                        this.$.ajax_GridProcedConfec.body = JSON.stringify(RecTecPlatId);
-                        this.$.ajax_GridProcedConfec.generateRequest();
-                        this.$.ajax_GetAllRecTecPlat.body = JSON.stringify(RecTecPlatId);
-                        this.$.ajax_GetAllRecTecPlat.generateRequest();
-                    } else {
-                        this._CreateOnly = true;
-                    }
+                _CreateOnly: {
+                    type: Boolean,
+                    value: false
                 },
-                _LineTypeChange: function (e) {
-                    if (e.detail.value != null && e.detail.value != "") {
-                        this.$.ajax_CboCode.body = JSON.stringify(e.detail.value);
-                        this.$.ajax_CboCode.generateRequest();
-                    }
+                RecTecPlatValue: {
+                    type: String,
+                    notify: true,
+                    value: ""
                 },
-                _CodeChange: function (e) {
-                    if (e.detail.value != null && e.detail.value != "") {
-                        var sel = this.CboCode.find(x => x.id == e.detail.value).value;
-                        if (sel != "") {
-                            this.$.Descriptionid.value = sel;
-                        }
-                    }
+                recTecNameValue: {
+                    type: String,
+                    notify: true,
+                    value: ""
                 },
-                _add() {
-                    debugger;
-                    var newRecTec = {
-                        plateNo: this.RecTecPlatValue,
-                        description: this.recTecNameValue,
-                        unitMeasureCode: this.CodMeasureUnitValue,
-                        //state: this.recTecNameValue,
-                        recordTechnicalName: this.recTecNameValue,
-                        localizationCode: this.LocalizationsValue,
-                        preparationTime: this.TPreparationValue,
-                        technicalCooking: this.CookingTechniqueValue,
-                        group: this.GroupValue,
-                        epoch: this.EpochValue,
-                        dosesNo: this.DosesNoValue,
-                        preparationTemperature: this.PreparTempValue,
-                        finalTemperatureConfection: this.FinalTempConfectValue,
-                        serveTemperature: this.ServeTempValue,
-                        //image: this.recTecNameValue,
-                        variationPriceCost: this.recTecNameValue,
-                        classFt1: this.ClassFt1Value,
-                        classFt2: this.ClassFt2Value,
-                        classFt3: this.ClassFt3Value,
-                        classFt4: this.ClassFt4Value,
-                        classFt5: this.ClassFt5Value,
-                        classFt6: this.ClassFt6Value,
-                        classFt7: this.ClassFt7Value,
-                        //classFt8: this.recTecNameValue,
-                        //centerResponsibilityCode: this.recTecNameValue,
-                        observations: this.NotesValue
-                    };
-                    var test = newRecTec;
+                CodMeasureUnitValue: {
+                    type: String,
+                    notify: true,
+                    value: ""
                 },
-                _GetRecTecPlatResponse: function (GetAllRecTecPlatResult) {
-                    debugger;
-                    if (GetAllRecTecPlatResult != null) {
-                        if (this.GetAllRecTecPlatResult.length > 0) {
-                            
-                            //this.recTecNameValue =
-                            //this.CodMeasureUnitValue =
-                            //this.LocalizationsValue =
-                            //this.TPreparationValue =
-                            //this.CookingTechniqueValue =
-                            //this.GroupValue =
-                            //this.EpochValue =
-                            //this.DosesNoValue =
-                            //this.PreparTempValue =
-                            //this.FinalTempConfectValue =
-                            //this.ServeTempValue =
-                            //this.ClassFt1Value =
-                            //this.ClassFt2Value =
-                            //this.ClassFt3Value =
-                            //this.ClassFt4Value =
-                            //this.ClassFt5Value =
-                            //this.ClassFt6Value =
-                            //this.ClassFt7Value =
-                            //this.NotesValue =
-                        } else {
-                            this._openToastError("Occorreu um erro ao atualizar o Diário de requisição Unid. Produtiva.");
-                        }
+                LocalizationsValue: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                TPreparationValue: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                CookingTechniqueValue: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                GroupValue: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                EpochValue: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                DosesNoValue: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                PreparTempValue: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                FinalTempConfectValue: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                ServeTempValue: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                ClassFt1Value: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                ClassFt2Value: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                ClassFt3Value: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                ClassFt4Value: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                ClassFt5Value: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                ClassFt6Value: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                ClassFt7Value: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                NotesValue: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                LocalImage: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                WithGlutenChecked: {
+                type: Boolean,
+                value: false
+                },
+                BasedCrustaceansChecked: {
+                    type: Boolean,
+                    value: false
+                },
+                BasedEggsChecked: {
+                    type: Boolean,
+                    value: false
+                },
+                BasedFishChecked: {
+                    type: Boolean,
+                    value: false
+                },
+                BasedPeanutsChecked: {
+                    type: Boolean,
+                    value: false
+                },
+                BasedSoyChecked: {
+                    type: Boolean,
+                    value: false
+                },
+                BasedMilkChecked: {
+                    type: Boolean,
+                    value: false
+                },
+                BasedFruitShardShellChecked: {
+                    type: Boolean,
+                    value: false
+                },
+                BasedCeleryChecked: {
+                    type: Boolean,
+                    value: false
+                },
+                BasedMustardChecked: {
+                    type: Boolean,
+                    value: false
+                },
+                BasedSesameSeedsChecked: {
+                    type: Boolean,
+                    value: false
+                },
+                BasedLupineChecked: {
+                    type: Boolean,
+                    value: false
+                },
+                BasedMolluscsChecked: {
+                    type: Boolean,
+                    value: false
+                },
+                BasedSulfSulphChecked: {
+                    type: Boolean,
+                    value: false
+                }
+            },
+            _btnUpload: function (e) {
+                debugger;
+                var file = this.$.myFile.files[0].name;
+                //this.$.coba.processImageFile(file);
+                //var file = this.$.myFile.value.split("fakepath");
+                //file = "/images/" + file[1].substring(1);
+                this.LocalImage = file;
+
+            },
+            _openToast: function (message) {
+                this.$.ToastMessageSuccess.text = message;
+                this.$.ToastMessageSuccess.open();
+            },
+            _openToastError: function (message) {
+                this.$.ToastMessageError.text = message;
+                this.$.ToastMessageError.open();
+            },
+            ready: function () {
+                var RecTecPlatId = @Html.Raw(Json.Serialize(ViewBag.RecTecPlatesId));
+                if (RecTecPlatId != "" && RecTecPlatId != null) {
+                    this.RecTecPlatValue = RecTecPlatId;
+                    this.$.ajax_GridProcedConfec.body = JSON.stringify(RecTecPlatId);
+                    this.$.ajax_GridProcedConfec.generateRequest();
+                    this.$.ajax_GetAllRecTecPlat.body = JSON.stringify(RecTecPlatId);
+                    this.$.ajax_GetAllRecTecPlat.generateRequest();
+                } else {
+                    this._CreateOnly = true;
+                }
+            },
+            _LineTypeChange: function (e) {
+                if (e.detail.value != null && e.detail.value != "") {
+                    this.$.ajax_CboCode.body = JSON.stringify(e.detail.value);
+                    this.$.ajax_CboCode.generateRequest();
+                }
+            },
+            _CodeChange: function (e) {
+                if (e.detail.value != null && e.detail.value != "") {
+                    var sel = this.CboCode.find(x => x.id == e.detail.value).value;
+                    if (sel != "") {
+                        this.$.Descriptionid.value = sel;
                     }
                 }
-            });
+            },
+            _add() {
+                var newRecTec = {
+                    plateNo: this.RecTecPlatValue,
+                    unitMeasureCode: this.CodMeasureUnitValue,
+                    recordTechnicalName: this.recTecNameValue,
+                    localizationCode: this.LocalizationsValue,
+                    preparationTime: this.TPreparationValue,
+                    technicalCooking: this.CookingTechniqueValue,
+                    group: this.GroupValue,
+                    epoch: this.EpochValue,
+                    dosesNo: this.DosesNoValue,
+                    preparationTemperature: this.PreparTempValue,
+                    finalTemperatureConfection: this.FinalTempConfectValue,
+                    serveTemperature: this.ServeTempValue,
+                    classFt1: this.ClassFt1Value,
+                    classFt2: this.ClassFt2Value,
+                    classFt3: this.ClassFt3Value,
+                    classFt4: this.ClassFt4Value,
+                    classFt5: this.ClassFt5Value,
+                    classFt6: this.ClassFt6Value,
+                    classFt7: this.ClassFt7Value,
+                    observations: this.NotesValue,
+                    withGluten: this.WithGlutenChecked,
+                    basedCrustaceans: this.BasedCrustaceansChecked,
+                    basedEggs: this.BasedEggsChecked,
+                    basedFish: this.BasedFishChecked,
+                    basedPeanuts: this.BasedPeanutsChecked,
+                    basedSoy: this.BasedSoyChecked,
+                    basedMilk: this.BasedMilkChecked,
+                    basedFruitShardShell: this.BasedFruitShardShellChecked,
+                    basedCelery: this.BasedCeleryChecked,
+                    basedMustard: this.BasedMustardChecked,
+                    basedSesameSeeds: this.BasedSesameSeedsChecked,
+                    basedLupine: this.BasedLupineChecked,
+                    basedMolluscs: this.BasedMolluscsChecked,
+                    basedSulfurDioxeAndSulphites: this.BasedSulfSulphChecked
+                    //classFt8: this.recTecNameValue,
+                    //image: this.recTecNameValue,
+                    //variationPriceCost: this.recTecNameValue,
+                    //centerResponsibilityCode: this.recTecNameValue,
+                    //description: this.recTecNameValue,
+                    //state: this.recTecNameValue,
+                };
+                this.$.createRecTec_ajax.body = JSON.stringify(newRecTec);
+                this.$.createRecTec_ajax.generateRequest();
+            },
+            _GetRecTecPlatResponse: function (GetAllRecTecPlatResult) {
+                if (GetAllRecTecPlatResult != null) {
+                    if (this.GetAllRecTecPlatResult.length > 0) {
+                        this.recTecNameValue = this.GetAllRecTecPlatResult[0].recordTechnicalName;
+                        this.CodMeasureUnitValue = this.GetAllRecTecPlatResult[0].unitMeasureCode;
+                        this.LocalizationsValue = this.GetAllRecTecPlatResult[0].localizationCode;
+                        this.TPreparationValue = this.GetAllRecTecPlatResult[0].preparationTime;
+                        this.CookingTechniqueValue = this.GetAllRecTecPlatResult[0].technicalCooking;
+                        this.GroupValue = this.GetAllRecTecPlatResult[0].group;
+                        this.EpochValue = this.GetAllRecTecPlatResult[0].epoch;
+                        this.DosesNoValue = this.GetAllRecTecPlatResult[0].dosesNo;
+                        this.PreparTempValue = this.GetAllRecTecPlatResult[0].preparationTemperature;
+                        this.FinalTempConfectValue = this.GetAllRecTecPlatResult[0].finalTemperatureConfection;
+                        this.ServeTempValue = this.GetAllRecTecPlatResult[0].serveTemperature;
+                        this.ClassFt1Value = this.GetAllRecTecPlatResult[0].classFt1;
+                        this.ClassFt2Value = this.GetAllRecTecPlatResult[0].classFt2;
+                        this.ClassFt3Value = this.GetAllRecTecPlatResult[0].classFt3;
+                        this.ClassFt4Value = this.GetAllRecTecPlatResult[0].classFt4;
+                        this.ClassFt5Value = this.GetAllRecTecPlatResult[0].classFt5;
+                        this.ClassFt6Value = this.GetAllRecTecPlatResult[0].classFt6;
+                        this.ClassFt7Value = this.GetAllRecTecPlatResult[0].classFt7;
+                        this.NotesValue = this.GetAllRecTecPlatResult[0].observations;
+                        this.WithGlutenChecked = this.GetAllRecTecPlatResult[0].withGluten;
+                        this.BasedCrustaceansChecked = this.GetAllRecTecPlatResult[0].basedCrustaceans;
+                        this.BasedEggsChecked = this.GetAllRecTecPlatResult[0].basedEggs;
+                        this.BasedFishChecked = this.GetAllRecTecPlatResult[0].basedFish;
+                        this.BasedPeanutsChecked = this.GetAllRecTecPlatResult[0].basedPeanuts;
+                        this.BasedSoyChecked = this.GetAllRecTecPlatResult[0].basedSoy;
+                        this.BasedMilkChecked = this.GetAllRecTecPlatResult[0].basedMilk;
+                        this.BasedFruitShardShellChecked = this.GetAllRecTecPlatResult[0].basedFruitShardShell;
+                        this.BasedCeleryChecked = this.GetAllRecTecPlatResult[0].basedCelery;
+                        this.BasedMustardChecked = this.GetAllRecTecPlatResult[0].basedMustard;
+                        this.BasedSesameSeedsChecked = this.GetAllRecTecPlatResult[0].basedSesameSeeds;
+                        this.BasedLupineChecked = this.GetAllRecTecPlatResult[0].basedLupine;
+                        this.BasedMolluscsChecked = this.GetAllRecTecPlatResult[0].basedMolluscs;
+                        this.BasedSulfSulphChecked = this.GetAllRecTecPlatResult[0].basedSulfurDioxeAndSulphites;
+                    } 
+                }
+            }
         });
-    </script>
+    });
+</script>
 </dom-module>

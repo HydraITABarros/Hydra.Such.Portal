@@ -249,7 +249,7 @@ namespace Hydra.Such.Portal.Controllers
                             FolhaDeHorasNo = FH.NºFolhaDeHoras,
                             Area = FH.Área,
                             AreaTexto = FH.Área == null ? "" : FH.Área.ToString(),
-                            ProjetoNo = FH.NºProjeto,
+                            ProjetoNo = FH.NºProjeto == null ? "" : FH.NºProjeto.ToString(),
                             ProjetoDescricao = FH.ProjetoDescricao,
                             EmpregadoNo = FH.NºEmpregado,
                             EmpregadoNome = FH.NomeEmpregado,
@@ -496,7 +496,8 @@ namespace Hydra.Such.Portal.Controllers
                     FH.IntegradoresEmRHKM = Autorizacao.ValidadorRhkm1 + " - " + Autorizacao.ValidadorRhkm2;
                 };
 
-                FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAVDatabaseName, _config.NAVCompanyName).SingleOrDefault().Name;
+                FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault().Name;
+                    //DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault().Name;
             }
             return Json(FH);
         }
@@ -635,7 +636,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (data.EmpregadoNo != "")
                 {
-                    NAVEmployeeViewModel employee = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAVDatabaseName, _config.NAVCompanyName).SingleOrDefault();
+                    NAVEmployeeViewModel employee = DBNAV2009Employees.GetAll(data.EmpregadoNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault();
                     EmpregadoNome = employee.Name;
                 }
 
