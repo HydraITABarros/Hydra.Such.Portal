@@ -829,5 +829,80 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         #endregion
+
+        #region Procedimento Confeção
+
+        public IActionResult ProcedimentoConfecao(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 19);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetConfectionProcedure()
+        {
+            List<ProceduresConfectionViewModel> result = ProceduresConfection.ParseToViewModel(ProceduresConfection.GetAll());
+            return Json(result);
+        }
+
+        #endregion
+
+        #region Acções Confeção
+
+        public IActionResult AccoesConfecao(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 19);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetActionsConfection()
+        {
+            List<ActionsConfectionViewModel> result = DBActionsConfection.ParseToViewModel(DBActionsConfection.GetAll());
+            return Json(result);
+        }
+
+        #endregion
+
+        #region Classificação Fichas Técnicas
+
+        public IActionResult ClassificacaoFichasTecnicas(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 19);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetClassificationFilesTechniques()
+        {
+            List<ClassificationFilesTechniquesViewModel> result = DBClassificationFilesTechniques.ParseToViewModel(DBClassificationFilesTechniques.GetAll());
+            return Json(result);
+        }
+
+        #endregion
     }
 }
