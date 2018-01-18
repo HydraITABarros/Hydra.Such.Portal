@@ -301,14 +301,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
-            if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
-            //FunctionalAreas
-            if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
-            //ResponsabilityCenter
-            if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
+            //if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
+            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            ////FunctionalAreas
+            //if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
+            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            ////ResponsabilityCenter
+            //if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
+            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
             return Json(result);
         }
 

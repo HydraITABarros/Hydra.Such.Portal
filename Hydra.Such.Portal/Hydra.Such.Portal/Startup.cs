@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Portal.Extensions;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace Hydra.Such.Portal
 {
@@ -33,7 +34,11 @@ namespace Hydra.Such.Portal
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-
+            services.Configure<FormOptions>(x =>
+            {
+                x.ValueLengthLimit = int.MaxValue;
+                x.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
+            });
             services.AddAuthentication(sharedOptions =>
             {
                 sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
