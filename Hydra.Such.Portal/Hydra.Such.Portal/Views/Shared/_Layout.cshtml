@@ -107,8 +107,8 @@
                             <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "Nutricao", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Movimento de Produtos", "MovimentoProdutos", "Nutricao", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Unidade de Medida de Produto", "UnidadeMedidaProduto", "Nutricao", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Unidade de Armazem", "UnidadeArmazenamento", "Nutricao", new { area = "" }, null)</li>
+                            @*<li>@Html.ActionLink("Unidade Medida de Prod.", "UnidadeMedidaProduto", "Nutricao", new { area = "" }, null)</li>*@
+                            <li>@Html.ActionLink("Unidade Armazem", "UnidadeArmazenamento", "Nutricao", new { area = "" }, null)</li>
 
                             <li data-toggle="collapse" data-target="#FolhasDeHorasNutricao" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
@@ -120,14 +120,13 @@
                                     <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Nutricao", new { area = "" }, null)</li>
                                 </ul>
                             </li>
-                            <li>@Html.ActionLink("Administração", "Administracao", "Nutricao", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Unidades Produtivas", "UnidadesProdutivas", "Nutricao", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Cafetarias / Refeitórios", "CafetariasRefeitorios", "Nutricao", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Localizações", "Localizacoes", "Nutricao", new { area = "Nutricao" }, null)</li>
-                            <li>@Html.ActionLink("Modelos Req. Simplificadas", "ModelosReqSimplificada", "Nutricao", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Requisições Simplificadas", "RequisicoesSimplificadas", "Nutricao", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Requisições para Registar", "RequisicoesSimplificadas", "Nutricao", new { area = "", option = 1 }, null)</li>
-
+                            <li>@Html.ActionLink("Mod. Req. Simplificadas", "ModelosReqSimplificada", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Req. Simplificadas", "RequisicoesSimplificadas", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Req. para Registar", "RequisicoesSimplificadas", "Nutricao", new { area = "", option = 1 }, null)</li>
+                            <li>@Html.ActionLink("Administração", "Administracao", "Nutricao", new { area = "" }, null)</li>
                         </ul>
 
 
@@ -281,8 +280,8 @@
                             </li>
                             @* zpgm.> *@
                             <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "Compras", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Requisições Aprovadas", "GestaoRequisicoes/RequisicoesAprovadas", "Compras", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Gestão de Requisições", "GestaoRequisicoes/Detalhes", "Compras", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Req. Aprovadas", "GestaoRequisicoes/RequisicoesAprovadas", "Compras", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Gestão de Req.", "GestaoRequisicoes/Detalhes", "Compras", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "Compras", new { area = "" }, null)</li>
                         </ul>
