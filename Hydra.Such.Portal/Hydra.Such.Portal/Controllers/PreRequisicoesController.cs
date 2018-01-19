@@ -9,6 +9,7 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.Request;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -687,5 +688,32 @@ namespace Hydra.Such.Portal.Controllers
 
 
         #endregion
+
+
+        [HttpPost]
+        [Route("PreRequisicoes/FileUpload")]
+        [Route ("PreRequisicoes/FileUpload/{id}/{linha}")]
+        public JsonResult FileUpload(string id, string linha)
+        {
+            var files = Request.Form.Files;
+            foreach(var file in files)
+            {
+                string filename = Path.GetFileName(file.FileName);
+                var path = Path.Combine("wwwroot/Upload/", id + "_" + filename);
+                using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                {
+                    file.CopyTo(dd);
+                }
+            }
+            //var path = Path.Combine(Server.MapPath("~/wwwroot/Upload/"), filename);
+            //file.SaveAs(path);
+            // Add avatar reference to model and save
+            //model.AvatarUrl = string.Concat("Uploads/Photo/", filename);
+            //_db.EventModels.AddObject(model);
+            //_db.SaveChanges();
+
+            return Json("");
+
+        }
     }
 }

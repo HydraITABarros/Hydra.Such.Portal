@@ -334,6 +334,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                     {
                         using (var ms = new System.IO.MemoryStream())
                         {
+                            //System.IO.File.Create()
                             file.CopyTo(ms);
                             fileBytes = ms.ToArray();
                         }
