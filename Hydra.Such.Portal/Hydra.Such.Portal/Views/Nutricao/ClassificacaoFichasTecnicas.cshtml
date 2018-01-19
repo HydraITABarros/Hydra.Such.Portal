@@ -28,9 +28,9 @@
 
 <h1 class="title">@ViewData["Title"]</h1>
 
-<x-productmovement></x-productmovement>
+<x-classificationFilesTechniques></x-classificationFilesTechniques>
 
-<dom-module id="x-productmovement">
+<dom-module id="x-classificationFilesTechniques">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        <vaadin-grid id="gridMovement" aria-label="gridMovement" items="[[result]]" class="grid" multi-sort="true">
+        <vaadin-grid id="gridClassification" aria-label="gridClassification" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column resizable width="160px">
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
@@ -120,7 +120,7 @@
         }
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-productmovement',
+                is: 'x-classificationFilesTechniques',
                 properties: {
                     _permissionsUpdate: {
                         type: Boolean,
