@@ -76,7 +76,14 @@
                    on-response="_updateResponse"
                    content-type="application/json">
         </iron-ajax>
-
+        <iron-ajax url="/Administracao/DeleteApprovalGroup"
+                   last-response="{{deleteResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete"
+                   on-response="_deleteResponse"
+                   content-type="application/json">
+        </iron-ajax>
         <div class="row">
             <div class="col-lg-2">
                 <h2 class="separator">Novo Registo</h2>
@@ -220,6 +227,22 @@
                         this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
                     }
                 },
+                _deleteResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        if (this.deleteResult == "101") {
+                            this.openToastError('Impossivel eliminar registo!');
+                            this.$.page_databound_ajax.generateRequest();
+
+                        } else {
+                            this.openToast('Registo elimimando com sucesso!');
+                            this.$.page_databound_ajax.generateRequest();
+                        }
+                    }
+                    else {
+                        this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
+                    }
+                },
                 _cancel: function () {
                     this.$.page_databound_ajax.generateRequest();
                     this.$.gridDescriptionApprovals.clearCache();
@@ -230,9 +253,8 @@
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
-                    this.$.ajax_update.url = "/Administracao/UpdateApprovalGroup";
-                    this.$.ajax_update.body = JSON.stringify(this.result);
-                    this.$.ajax_update.generateRequest();
+                    this.$.ajax_delete.body = JSON.stringify(data.model.item);
+                    this.$.ajax_delete.generateRequest();
                 }
             });
         });
