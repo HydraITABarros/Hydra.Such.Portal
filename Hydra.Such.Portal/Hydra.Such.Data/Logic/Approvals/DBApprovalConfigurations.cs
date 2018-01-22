@@ -145,8 +145,8 @@ namespace Hydra.Such.Data.Logic.Approvals
                     CreateUser = x.UtilizadorCriação,
                     UpdateDate = x.DataHoraModificação,
                     UpdateUser = x.UtilizadorModificação,
-                    StartDate = x.DataInicial.HasValue ? x.DataInicial.Value.ToString("yyyy-MM-dd hh:mm:ss.ff") : "",
-                    EndDate = x.DataFinal.HasValue ? x.DataFinal.Value.ToString("yyyy-MM-dd hh:mm:ss.ff") : ""
+                    StartDate = x.DataInicial.HasValue ? x.DataInicial.Value.ToString("yyyy-MM-dd") : "",
+                    EndDate = x.DataFinal.HasValue ? x.DataFinal.Value.ToString("yyyy-MM-dd") : ""
 
                 };
             }

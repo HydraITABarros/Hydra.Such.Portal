@@ -25,6 +25,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
+      
+
         public static AçõesDeConfeção Create(AçõesDeConfeção ObjectToCreate)
         {
             try
@@ -87,21 +89,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
 
         #endregion
 
-        public static List<AçõesDeConfeção> GetAllFiles()
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    return ctx.AçõesDeConfeção.ToList();
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
+     
         public static AçõesDeConfeção ParseToDb(this ActionsConfectionViewModel x)
         {
             if (x != null)
