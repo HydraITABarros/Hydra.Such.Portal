@@ -203,14 +203,14 @@
                     },
                 },
                 ready: function () {
-                    var option="@ViewBag.Groups";
+                    var option="@ViewBag.Option";
                     this.$.page_databound_ajax.body = JSON.stringify(option);
                     this.$.page_databound_ajax.generateRequest();
                 },
                 _create: function () {
                     var type = 1;
                     var group = null;
-                    if ("@ViewBag.Groups" !="hidden") {
+                    if ("@ViewBag.Option" !="Grupos") {
                         type = 0;
                         group = this.$.ddGroup.value;
                     }

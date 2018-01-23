@@ -881,9 +881,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult UpdateConfectionProcedure([FromBody] List<ProceduresConfectionViewModel> data)
         {
-            List<ProcedimentosDeConfeção> results = ProceduresConfection.GetAll();
-            results.RemoveAll(x => data.Any(u => u.TechnicalSheetNo == x.NºPrato && u.actionNo== x.CódigoAção));
-            results.ForEach(x => ProceduresConfection.Delete(x));
+
             data.ForEach(x => {
                 x.UpdateUser = User.Identity.Name;
                 ProceduresConfection.Update(ProceduresConfection.ParseToDatabase(x));
@@ -939,9 +937,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult UpdateActionsConfection([FromBody] List<ActionsConfectionViewModel> data)
         {
-            List<AçõesDeConfeção> results = DBActionsConfection.GetAll();
-            results.RemoveAll(x => data.Any(u => u.Code == x.Código));
-            results.ForEach(x => DBActionsConfection.Delete(x));
+           
             data.ForEach(x => { 
                 x.UpdateUser = User.Identity.Name;
                 DBActionsConfection.Update(DBActionsConfection.ParseToDb(x));
@@ -959,9 +955,17 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.ProjectNo = id ?? "";
                 ViewBag.UPermissions = UPerm;
-                @ViewBag.Groups = "";
-                if (option== "Grupos")
-                   @ViewBag.Groups = "hidden";
+               
+                if (option == "Grupos")
+                {
+                    @ViewBag.Option = "Grupos";
+                    @ViewBag.Groups = "hidden";
+                }
+                else
+                {
+                    @ViewBag.Option = "linhas";
+                    @ViewBag.Groups = "";
+                }
                 return View();
             }
             else
@@ -975,7 +979,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetClassificationFilesTechniques([FromBody] string option)
         {
             List<ClassificationFilesTechniquesViewModel> result;
-            if(option=="hidden")
+            if(option== "Grupos")
                 result = DBClassificationFilesTechniques.ParseToViewModel(DBClassificationFilesTechniques.GetTypeFiles(1));
             else
                 result = DBClassificationFilesTechniques.ParseToViewModel(DBClassificationFilesTechniques.GetTypeFiles(0));
@@ -1014,9 +1018,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult UpdateClassificationTechniques([FromBody] List<ClassificationFilesTechniquesViewModel> data)
         {
-            List<ClassificaçãoFichasTécnicas> results = DBClassificationFilesTechniques.GetTypeFiles(data[0].Type ?? 0);
-            results.RemoveAll(x => data.Any(u => u.Code == x.Código));
-            results.ForEach(x => DBClassificationFilesTechniques.Delete(x));
+
             data.ForEach(x => {
                 x.UpdateUser = User.Identity.Name;
                 DBClassificationFilesTechniques.Update(DBClassificationFilesTechniques.ParseToDatabase(x));

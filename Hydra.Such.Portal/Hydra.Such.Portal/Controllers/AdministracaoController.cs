@@ -2326,14 +2326,17 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-     
+        [HttpPost]
+        public JsonResult DeteleApprovalConfig([FromBody] ApprovalConfigurationsViewModel data)
+        {
+            var result = DBApprovalConfigurations.Delete(DBApprovalConfigurations.ParseToDatabase(data));
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult UpdateApprovalConfig([FromBody] List<ApprovalConfigurationsViewModel> data)
         {
-            List<ConfiguraçãoAprovações> results = DBApprovalConfigurations.GetAll();
-            results.RemoveAll(x => data.Any(u => u.Id == x.Id));
-            results.ForEach(x => DBApprovalConfigurations.Delete(x));
+  
             data.ForEach(x =>
             {
                 ConfiguraçãoAprovações aprovConfig = new ConfiguraçãoAprovações()
@@ -2495,13 +2498,10 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult DeteleDetailsApprovalGroup([FromBody] List<ApprovalUserGroupViewModel> data)
+        public JsonResult DeteleDetailsApprovalGroup([FromBody] ApprovalUserGroupViewModel data)
         {
-            List<UtilizadoresGruposAprovação> results = DBApprovalUserGroup.GetByGroup(data[0].ApprovalGroup);
-            results.RemoveAll(x => data.Any(u => u.ApprovalUser == x.UtilizadorAprovação && u.ApprovalGroup==x.GrupoAprovação));
-            results.ForEach(x => DBApprovalUserGroup.Delete(x));
+            var result = DBApprovalUserGroup.Delete(DBApprovalUserGroup.ParseToDb(data));
 
-          
             return Json(data);
         }
         #endregion
@@ -2540,13 +2540,17 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
             return Json(result);
         }
+        [HttpPost]
+        public JsonResult DeletePlace([FromBody] PlacesViewModel data)
+        {
+            var result = DBPlaces.Delete(DBPlaces.ParseToDB(data));
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult UpdatePlace([FromBody] List<PlacesViewModel> data)
         {
-            List<Locais> results = DBPlaces.GetAll();
-            results.RemoveAll(x => data.Any(u => u.Code == x.Código));
-            results.ForEach(x => DBPlaces.Delete(x));
+           
             data.ForEach(x =>
             {
                 Locais localval = new Locais()
