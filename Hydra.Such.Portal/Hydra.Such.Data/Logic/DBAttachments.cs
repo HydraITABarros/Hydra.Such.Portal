@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,13 @@ namespace Hydra.Such.Data.Logic
     public class DBAttachments
     {
         #region CRUD
-        public static Anexos GetById(int id)
+        public static List<Anexos> GetById(string id)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Anexos.Where(x => x.NºLinha == id).FirstOrDefault();
+                    return ctx.Anexos.Where(x => x.NºOrigem == id).ToList();
                 }
             }
             catch (Exception ex)
@@ -141,5 +142,42 @@ namespace Hydra.Such.Data.Logic
         }
 
         #endregion
+
+        public static AttachmentsViewModel ParseToViewModel(Anexos x)
+        {
+            AttachmentsViewModel result = new AttachmentsViewModel()
+            {
+               DocLineNo = x.NºLinha,
+               DocNumber = x.NºOrigem,
+               DocType = x.TipoOrigem,
+               Url = x.UrlAnexo,
+               CreateDateTime = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
+               UpdateDateTime = x.DataHoraModificação.HasValue ? x.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
+               CreateUser = x.UtilizadorCriação,
+               UpdateUser = x.UtilizadorModificação
+            };
+
+            return result;
+
+        }
+
+        public static Anexos ParseToDB(AttachmentsViewModel x)
+        {
+            Anexos result = new Anexos()
+            {
+                NºLinha = x.DocLineNo,
+                NºOrigem = x.DocNumber,
+                TipoOrigem = x.DocType,
+                UrlAnexo = x.Url,
+                DataHoraCriação = x.CreateDateTime != null ? DateTime.Parse(x.CreateDateTime) : (DateTime?)null,
+                DataHoraModificação = x.CreateDateTime != null ? DateTime.Parse(x.CreateDateTime) : (DateTime?)null,
+                UtilizadorCriação = x.CreateUser,
+                UtilizadorModificação = x.UpdateUser
+            };
+
+            return result;
+
+        }
+
     }
 }

@@ -70,6 +70,11 @@ namespace Hydra.Such.Portal
             var NAVWSConfigurations = Configuration.GetSection("NAVWSConfigurations");
             services.Configure<NAVWSConfigurations>(NAVWSConfigurations);
 
+            // ABARROS -> ADD NAV CONFIGURATIONS TO THE SERVICE
+            var GeneralConfigurations = Configuration.GetSection("GeneralConfigurations");
+            services.Configure<GeneralConfigurations>(GeneralConfigurations);
+
+
             // ABARROS -> Activate Session Variables
             services.AddSession(s => s.IdleTimeout = TimeSpan.FromMinutes(30));
         }
