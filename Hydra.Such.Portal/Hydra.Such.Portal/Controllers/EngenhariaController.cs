@@ -20,11 +20,13 @@ namespace Hydra.Such.Portal.Controllers
     {
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
+        private readonly GeneralConfigurations _configup;
 
-        public EngenhariaController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        public EngenhariaController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IOptions<GeneralConfigurations> appUploadSettings)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
+            _configup = appUploadSettings.Value;
         }
 
         public IActionResult Index()
@@ -383,6 +385,7 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 3);
             if (UPerm != null && UPerm.Read.Value)
             {
+                ViewBag.UploadURL = _configup.FileUploadFolder;
                 ViewBag.Area = 1;
                 ViewBag.PreRequesitionNo = PreRequesitionNo ?? "";
                 ViewBag.UPermissions = UPerm;

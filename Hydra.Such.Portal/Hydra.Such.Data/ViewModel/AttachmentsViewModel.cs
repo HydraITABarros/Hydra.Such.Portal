@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel
 {
-    public class AttachmentsViewModel
+    public class AttachmentsViewModel : ErrorHandler
     {
         public int DocType { get; set; }
         public string DocNumber { get; set; }

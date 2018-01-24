@@ -150,6 +150,21 @@
 
 
 
+        <iron-ajax url="/PreRequisicoes/LoadAttachments"
+                   last-response="{{uploads}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_update_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PreRequisicoes/DeleteAttachments"
+                   last-response="{{deleted_files}}"
+                   method="post"
+                   handle-as="json"
+                   id="delete_files_ajax"
+                   on-response="_deletedAttachResponse"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/PreRequisicoes/GetPreRequesitionDetails"
                    last-response="{{data}}"
                    method="post"
@@ -251,12 +266,6 @@
             </template>
         </template>
 
-        <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}" method="POST" headers="{'Accept': 'application/json'}"timeout=15000>
-            
-        </vaadin-upload>
-
-
-
         <div class="row" style="display: {{ _showPreReqLines }};">
             <div class="col-lg-12">
                 <paper-button raised id="btnContractAdd" class="" on-tap="_createNewPreReq"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
@@ -274,6 +283,10 @@
                                 <paper-tab>Reparação</paper-tab>
                                 <paper-tab>Recolha</paper-tab>
                                 <paper-tab>Entrega (Fornecedor)</paper-tab>
+
+                                <template is="dom-if" if="{{ !_isCreate }}">
+                                    <paper-tab>Anexos</paper-tab>
+                                </template>
                             </paper-tabs>
 
                             <iron-pages selected="{{selected}}">
@@ -405,7 +418,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <!--Reparação-->
                                 <div>
                                     <div class="col-lg-3 alignPoga">
@@ -418,7 +430,6 @@
                                         <vaadin-date-picker label="Data Entrega Armazém" id="DeliveryWarehouseDate" name="DeliveryWarehouseDate" value="{{data.deliveryWarehouseDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                     </div>
                                 </div>
-
                                 <!--Recolha-->
                                 <div>
                                     <div class="row break_clear">
@@ -487,7 +498,48 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!--Anexos-->
+                                <div>
+                                    <div class="row break_clear">
+                                        <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
 
+                                        </vaadin-upload>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+
+                                            <vaadin-grid-column width="70%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="url" />
+                                                </template>
+                                                <template>
+                                                    <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="20%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="createDateTime" />
+                                                </template>
+                                                <template>
+                                                    {{item.createDateTime}}
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="10%" resizable>
+                                                <template class="header">
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                                            <paper-button class="btnRemove" raised on-tap="_deleteFiles">Eliminar</paper-button>
+                                                        </template>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                        </vaadin-grid>
+                                    </div>
+                                </div>
                             </iron-pages>
                             <div class="col-lg-12">
                                 <div class="row">
@@ -977,12 +1029,13 @@
                                 </template>
                             </vaadin-grid-column>
 
-                            <vaadin-grid-column resizable>
+                            <vaadin-grid-column width="10%">
                                 <template class="header">
                                 </template>
                                 <template>
                                     <center>
                                         <template is="dom-if" if="{{ _permissions.update }}">
+                                            <!--<paper-button class="btnSave" raised on-tap="_btnUpload" disabled="{{_permissionsCreate}}">Anexos</paper-button>-->
                                             <paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>
                                         </template>
                                     </center>
@@ -1084,6 +1137,66 @@
             </div>
         </paper-dialog>
 
+        <!-- Paper Dialog Anexos-->
+        <!--<paper-dialog id="dialogAttach" style="width:70%">
+        <h2>Anexos</h2>
+        <div>
+            <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
+
+            </vaadin-upload>
+            <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                <vaadin-grid-column width="120px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="docType">Tipo Origem</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="docType" />
+                    </template>
+                    <template>
+                        {{item.docType}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="docNumber">Nº Origem</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="docNumber" />
+                    </template>
+                    <template>
+                        {{item.docNumber}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="docLineNo">Nº Linha</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="docLineNo" />
+                    </template>
+                    <template>
+                        {{item.docLineNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="80%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="url" />
+                    </template>
+                    <template>
+                        {{item.url}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="20%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="createDateTime" />
+                    </template>
+                    <template>
+                        {{item.createDateTime}}
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+        </div>
+        <div class="buttons">
+            <paper-button dialog-dismiss>Cancelar</paper-button>
+        </div>
+    </paper-dialog>-->
+
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -1129,8 +1242,20 @@
                         type: String,
                         notify: true,
                         value: "none"
+                    },
+                    _lineno: {
+                        type: Number,
+                        value: 0
+                    },
+                    _uploadurl: {
+                        type: String,
+                        notify: true,
+                        value: ""
                     }
                 },
+                observers: [
+                    '_onCacheLoaded(data, CBPurchaseLineGrid, CBRequesitionType, LProjectFunctionalAreaCodes, LProjectResponsabilityCenterCodes, LProjectRegionCodes, CBVehicle, CBJobNo, CBVendor, CBLocal, CBItems, CBLocations, CBPurchaseHeader, CBPurchaseLine)'
+                ],
                 ready: function () {
                     //GET CONTRACT DATA
 
@@ -1138,8 +1263,52 @@
                         this._isCreate = false;
                     }
 
-                    this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
-                    this.$.page_databound_ajax.generateRequest();
+                    debugger;
+                    if (this._isCreate == false) {
+                        this.$.UploadRequest.addEventListener('upload-response', function (e) {
+                            if (e.detail.xhr.status == 200) {
+                                e.detail.xhr.requestURL;
+                                var dd = document.querySelector("x-prerequisitions");
+                                dd.$.page_update_ajax.generateRequest();
+                            }
+                        });
+                    }
+
+                    if (this._isCreate == false) {
+                        debugger;
+                        this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
+                        this.$.page_update_ajax.generateRequest();
+                    }
+                },
+
+                _onCacheLoaded: function (data, CBPurchaseLineGrid, CBRequesitionType, LProjectFunctionalAreaCodes, LProjectResponsabilityCenterCodes, LProjectRegionCodes, CBVehicle, CBJobNo, CBVendor, CBLocal, CBItems, CBLocations, CBPurchaseHeader, CBPurchaseLine) {
+                    debugger;
+                    if (!this.Flag) {
+                        this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    this.Flag = true;
+                },
+
+                _deleteFiles: function (e) {
+                    var index = this.dataLines.lines.indexOf(e.model.item);
+                    this.dataLines.lines.splice(index, 1);
+                    
+                    this.$.delete_files_ajax.body = JSON.stringify(e.model.item);
+                    this.$.delete_files_ajax.generateRequest();
+                },
+
+                _deletedAttachResponse: function (e) {
+                    debugger;
+                    if (this.deleted_files.eReasonCode === 1) {
+                        this._openToast("Anexo eliminado com sucesso.");
+
+                        this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
+                        this.$.page_update_ajax.generateRequest();
+
+                    } else if (this.deleted_files.eReasonCode === 2) {
+                        this._openToastError("Ocorreu um erro ao eliminar o anexo.");
+                    }
                 },
                 _onSearchTermChanged: function (value) {
                     var id = this.$.requesitionType.value;
@@ -1381,6 +1550,7 @@
                         window.location.href = "../PreRequisicoesDetalhes/";
                     }
                 },
+
                 //Helpers
                 _executeRequest: function (url, data) {
                     this.data.contractType = 3;
@@ -1391,7 +1561,7 @@
 
                 //Grid
                 _clFormatSupplierProductCode: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.CBItems != undefined) {
                         var sel = this.CBItems.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -1401,7 +1571,7 @@
                 },
 
                 _clFormatProjectNo: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.CBJobNo != undefined) {
                         var sel = this.CBJobNo.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.id;
@@ -1411,7 +1581,7 @@
                 },
 
                 _clFormatvehicle: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.CBVehicle != undefined) {
                         var sel = this.CBVehicle.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.id;
@@ -1421,7 +1591,7 @@
                 },
 
                 _clFormatsupplierNo: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.CBVendor != undefined) {
                         var sel = this.CBVendor.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -1431,7 +1601,7 @@
                 },
 
                 _clFormatLocation: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.CBLocations != undefined) {
                         var sel = this.CBLocations.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -1440,7 +1610,7 @@
                     return "";
                 },
                 _clFormatRegion: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.LProjectRegionCodes != undefined) {
                         var sel = this.LProjectRegionCodes.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -1449,7 +1619,7 @@
                     return "";
                 },
                 _clFormatFunctionalArea: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.LProjectFunctionalAreaCodes != undefined) {
                         var sel = this.LProjectFunctionalAreaCodes.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -1458,7 +1628,7 @@
                     return "";
                 },
                 _clFormatOpenOrderNo: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.CBPurchaseHeader != undefined) {
                         var sel = this.CBPurchaseHeader.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.id;
@@ -1468,7 +1638,7 @@
                 },
 
                 _clFormatOpenOrderLineNo: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.CBPurchaseLineGrid != undefined) {
                         debugger;
                         var sel = this.CBPurchaseLineGrid.find(x => x.id == param);
                         if (sel != undefined) {
@@ -1479,7 +1649,7 @@
                 },
 
                 _clFormatResponsabilityCenter: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.LProjectResponsabilityCenterCodes != undefined) {
                         var sel = this.LProjectResponsabilityCenterCodes.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -1533,6 +1703,20 @@
 
                     //this.$.gridUserAccesses.clearCache();
                 },
+
+                //_btnUpload: function (e) {
+                //    debugger;
+                //    var index = this.dataLines.lines.indexOf(e.model.item);
+                //    this.dataLines.lines.splice(index, 1);
+                //    this._lineno = e.model.item.lineNo;
+
+                //    if (e != null) {
+                //        this.$.dialogAttach.open();
+                //        this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno, "linha": this._lineno });
+                //        this.$.page_update_ajax.generateRequest();
+                //    }
+                //},
+
                 _lineSelected: function (item) {
                     if (item != null) {
                         var oSel = this.dataLines.lines.find(x => x.selected);
@@ -1611,8 +1795,6 @@
                 _pendingreq: function (e) {
                     window.location.href = "../RequisicoesPendentes/";
                 }
-            
-            
             });
        });
     </script>

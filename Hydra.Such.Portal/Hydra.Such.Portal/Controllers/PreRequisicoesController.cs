@@ -10,11 +10,21 @@ using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.Request;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using Hydra.Such.Portal.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Hydra.Such.Portal.Controllers
 {
     public class PreRequisicoesController : Controller
     {
+        private readonly GeneralConfigurations _config;
+
+        public PreRequisicoesController(IOptions<GeneralConfigurations> appSettings)
+        {
+            _config = appSettings.Value;
+        }
+
+
         public IActionResult Index()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
@@ -66,6 +76,7 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
             if (UPerm != null && UPerm.Read.Value)
             {
+                
                 ViewBag.PreRequesitionNo = PreRequesitionNo ?? "";
                 ViewBag.UPermissions = UPerm;
                 return View();
@@ -689,31 +700,87 @@ namespace Hydra.Such.Portal.Controllers
 
         #endregion
 
-
+        #region Attachments
         [HttpPost]
         [Route("PreRequisicoes/FileUpload")]
         [Route ("PreRequisicoes/FileUpload/{id}/{linha}")]
-        public JsonResult FileUpload(string id, string linha)
+        public JsonResult FileUpload(string id, int linha)
         {
-            var files = Request.Form.Files;
-            foreach(var file in files)
+            try
             {
-                string filename = Path.GetFileName(file.FileName);
-                var path = Path.Combine("wwwroot/Upload/", id + "_" + filename);
-                using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                var files = Request.Form.Files;
+                string full_filename;
+                foreach (var file in files)
                 {
-                    file.CopyTo(dd);
+                    try
+                    {
+                        string filename = Path.GetFileName(file.FileName);
+                        full_filename = id + "_" + filename;
+                        var path = Path.Combine(_config.FileUploadFolder, full_filename);
+                        using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                        {
+                            file.CopyTo(dd);
+
+                            Anexos newfile = new Anexos();
+                            newfile.NºOrigem = id;
+                            newfile.UrlAnexo = full_filename;
+                            newfile.TipoOrigem = 1;
+                            newfile.DataHoraCriação = DateTime.Now;
+                            newfile.UtilizadorCriação = User.Identity.Name;
+
+                            DBAttachments.Create(newfile);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
                 }
             }
-            //var path = Path.Combine(Server.MapPath("~/wwwroot/Upload/"), filename);
-            //file.SaveAs(path);
-            // Add avatar reference to model and save
-            //model.AvatarUrl = string.Concat("Uploads/Photo/", filename);
-            //_db.EventModels.AddObject(model);
-            //_db.SaveChanges();
-
+            catch (Exception)
+            {
+                throw;
+            }
             return Json("");
-
         }
+
+        [HttpPost]
+        public JsonResult LoadAttachments([FromBody] JObject requestParams)
+        {
+            string id = requestParams["id"].ToString();
+            //string line = requestParams["linha"].ToString();
+            //int lineNo = Int32.Parse(line);
+
+            List<Anexos> list = DBAttachments.GetById(id);
+            List<AttachmentsViewModel> attach = new List<AttachmentsViewModel>();
+            list.ForEach(x => attach.Add(DBAttachments.ParseToViewModel(x)));
+            return Json(attach);
+        }
+
+        [HttpGet]
+        public FileStreamResult DownloadFile(string id)
+        {
+            return new FileStreamResult(new FileStream(_config.FileUploadFolder + id, FileMode.Open), "application/xlsx");
+        }
+
+        
+        [HttpPost]
+        public JsonResult DeleteAttachments([FromBody] AttachmentsViewModel requestParams)
+        {
+            try
+            {
+                System.IO.File.Delete(_config.FileUploadFolder + requestParams.Url);
+                DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
+                requestParams.eReasonCode = 1;
+
+            }
+            catch (Exception ex)
+            {
+                requestParams.eReasonCode = 2;
+                return Json(requestParams);
+            }
+            return Json(requestParams);
+        }
+        #endregion
     }
 }
