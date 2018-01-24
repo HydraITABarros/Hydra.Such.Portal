@@ -1301,13 +1301,13 @@
                 _deletedAttachResponse: function (e) {
                     debugger;
                     if (this.deleted_files.eReasonCode === 1) {
-                        this._openToast("Ficheiro eliminado com sucesso.");
+                        this._openToast("Anexo eliminado com sucesso.");
 
                         this.$.page_update_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
                         this.$.page_update_ajax.generateRequest();
 
                     } else if (this.deleted_files.eReasonCode === 2) {
-                        this._openToastError("Ocorreu um erro ao eliminar o ficheiro.");
+                        this._openToastError("Ocorreu um erro ao eliminar o anexo.");
                     }
                 },
                 _onSearchTermChanged: function (value) {
