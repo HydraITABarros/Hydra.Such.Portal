@@ -1313,10 +1313,12 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetUnitStockeeping()
         {
-            List<DDMessageString> result = DBStockkeepingUnit.GetAll().Select(x => new DDMessageString()
+            List<DDMessageRelated> result = DBStockkeepingUnit.GetAll().Select(x => new DDMessageRelated()
             {
                 id = x.NºProduto,
-                value = x.Descrição
+                value = x.Descrição,
+                extra= x.CustoUnitário.ToString(),
+                extra2=x.CódUnidadeMedidaProduto
             }).ToList();
 
             return Json(result);
@@ -1452,5 +1454,8 @@ namespace Hydra.Such.Portal.Controllers
         public string id { get; set; }
         public string value { get; set; }
         public string extra { get; set; }
+        public string extra2 { get; set; }
     }
+
+   
 }
