@@ -853,6 +853,41 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult CreateConfectionProcedure([FromBody] ProceduresConfectionViewModel data)
+        {
+            data.CreateUser = User.Identity.Name;
+            string eReasonCode = "";
+            //Create new 
+            eReasonCode = ProceduresConfection.Create(ProceduresConfection.ParseToDatabase(data)) == null ? "101" : "";
+
+            if (String.IsNullOrEmpty(eReasonCode))
+            {
+                return Json(data);
+            }
+            else
+            {
+                return Json(eReasonCode);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteConfectionProcedure([FromBody] ProceduresConfectionViewModel data)
+        {
+            var result = ProceduresConfection.Delete(ProceduresConfection.ParseToDatabase(data));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateConfectionProcedure([FromBody] List<ProceduresConfectionViewModel> data)
+        {
+
+            data.ForEach(x => {
+                x.UpdateUser = User.Identity.Name;
+                ProceduresConfection.Update(ProceduresConfection.ParseToDatabase(x));
+            });
+            return Json(data);
+        }
         #endregion
 
         #region Acções Confeção
@@ -878,17 +913,59 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        #endregion
+        [HttpPost]
+        public JsonResult CreateActionsConfection([FromBody] ActionsConfectionViewModel data)
+        {
+            data.CreateUser = User.Identity.Name;
+            DBActionsConfection.Create(DBActionsConfection.ParseToDb(data));
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteActionsConfection([FromBody] ActionsConfectionViewModel data)
+        {
+
+            if (ProceduresConfection.GetAllbyActionNo(data.Code).Count()==0)
+            {
+                var result = DBActionsConfection.Delete(DBActionsConfection.ParseToDb(data));
+                return Json(result);
+            }
+            else
+                return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateActionsConfection([FromBody] List<ActionsConfectionViewModel> data)
+        {
+           
+            data.ForEach(x => { 
+                x.UpdateUser = User.Identity.Name;
+                DBActionsConfection.Update(DBActionsConfection.ParseToDb(x));
+            });
+            return Json(data);
+        }
+            #endregion
 
         #region Classificação Fichas Técnicas
 
-        public IActionResult ClassificacaoFichasTecnicas(string id)
+        public IActionResult ClassificacaoFichasTecnicas(string id, string option)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 19);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id ?? "";
                 ViewBag.UPermissions = UPerm;
+               
+                if (option == "Grupos")
+                {
+                    @ViewBag.Option = "Grupos";
+                    @ViewBag.Groups = "hidden";
+                }
+                else
+                {
+                    @ViewBag.Option = "linhas";
+                    @ViewBag.Groups = "";
+                }
                 return View();
             }
             else
@@ -897,12 +974,57 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public JsonResult GetClassificationFilesTechniques()
+        //O : Lines of Groups
+        //1 : Group
+        public JsonResult GetClassificationFilesTechniques([FromBody] string option)
         {
-            List<ClassificationFilesTechniquesViewModel> result = DBClassificationFilesTechniques.ParseToViewModel(DBClassificationFilesTechniques.GetAll());
+            List<ClassificationFilesTechniquesViewModel> result;
+            if(option== "Grupos")
+                result = DBClassificationFilesTechniques.ParseToViewModel(DBClassificationFilesTechniques.GetTypeFiles(1));
+            else
+                result = DBClassificationFilesTechniques.ParseToViewModel(DBClassificationFilesTechniques.GetTypeFiles(0));
+
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult CreateClassificationTechniques([FromBody] ClassificationFilesTechniquesViewModel data)
+        {
+           
+            data.CreateUser = User.Identity.Name;
+            if (DBClassificationFilesTechniques.Create(DBClassificationFilesTechniques.ParseToDatabase(data)) != null)
+                return Json(data);
+            else
+                return null;
+        }
+
+        [HttpPost]
+        public JsonResult DeleteClassificationTechniques([FromBody] ClassificationFilesTechniquesViewModel data)
+        {
+           
+            //Delete lines of Groups
+            if (data.Type == 1)
+            {
+                if (DBClassificationFilesTechniques.GetTypeFiles(0).Exists(x=> x.Grupo== data.Code))
+                {
+                    return Json(null);
+                }
+            }
+            // Delete Group
+            var result = DBClassificationFilesTechniques.Delete(DBClassificationFilesTechniques.ParseToDatabase(data));
+
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult UpdateClassificationTechniques([FromBody] List<ClassificationFilesTechniquesViewModel> data)
+        {
+
+            data.ForEach(x => {
+                x.UpdateUser = User.Identity.Name;
+                DBClassificationFilesTechniques.Update(DBClassificationFilesTechniques.ParseToDatabase(x));
+            });
+            return Json(data);
+        }
         #endregion
     }
 }

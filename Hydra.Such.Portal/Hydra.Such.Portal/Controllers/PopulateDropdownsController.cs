@@ -215,6 +215,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+       
         [HttpPost]
         public JsonResult GetFolhaDeHoraAjudaTipoCusto()
         {
@@ -1346,6 +1347,28 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetGroupsClassificationTechniques()
+        {
+            List<DDMessage> result = DBClassificationFilesTechniques.GetTypeFiles(1).Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetActionsConfection()
+        {
+            List<DDMessage> result = DBActionsConfection.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetStockkeepingUnit( string product)
         {
             List<NAVStockKeepingUnitViewModel> StockkeepingUnit = DBNAV2017StockKeepingUnit.GetByProductsNo(_config.NAVDatabaseName, _config.NAVCompanyName, product).ToList();
@@ -1384,6 +1407,16 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetRecTechnicPlatesType()
+        {
+            List<DDMessageString> result = DBRecordTechnicalOfPlates.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.NºPrato,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
         [HttpPost]
         public IActionResult GetLinesRecordTechnicalOfPlatesCode([FromBody] string type)
         {

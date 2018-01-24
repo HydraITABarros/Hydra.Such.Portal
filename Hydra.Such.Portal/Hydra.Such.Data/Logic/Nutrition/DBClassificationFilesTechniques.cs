@@ -101,6 +101,20 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
+        public static List<ClassificaçãoFichasTécnicas> GetTypeFiles(int Type)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ClassificaçãoFichasTécnicas.Where(x => x.Tipo == Type).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         public static ClassificaçãoFichasTécnicas ParseToDatabase(this ClassificationFilesTechniquesViewModel x)
         {
@@ -108,13 +122,14 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 return new ClassificaçãoFichasTécnicas()
                 {
+
                     Código = x.Code,
                     Tipo = x.Type,
                     Descrição = x.Description,
                     Grupo = x.Group,
                     DataHoraCriação = x.CreateDate,
                     DataHoraModificação = x.UpdateDate,
-                    UtilizadorCriação = x.UpdateUser,
+                    UtilizadorCriação = x.CreateUser,
                     UtilizadorModificação = x.UpdateUser
                 };
             }

@@ -102,46 +102,25 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static bool Delete(int cod)
+        public static bool Delete(Locais ObjectToDelete)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    Locais places = ctx.Locais.Where(x => x.Código == cod).FirstOrDefault();
-                    if (places != null)
-                    {
-                        ctx.Locais.Remove(places);
-                        ctx.SaveChanges();
-                        return true;
-                    }
-                }
-            }
-            catch { }
-            return false;
-        }
-
-        public static bool Delete(Locais item)
-        {
-            return Delete(new List<Locais> { item });
-        }
-
-        public static bool Delete(List<Locais> items)
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    ctx.Locais.RemoveRange(items);
+                    ctx.Locais.Remove(ObjectToDelete);
                     ctx.SaveChanges();
                 }
+
                 return true;
             }
             catch (Exception ex)
             {
+
                 return false;
             }
         }
+
 
         #endregion
 
