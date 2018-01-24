@@ -641,6 +641,40 @@ namespace Hydra.Such.Portal.Controllers
                             DBRequest.Create(createReq);
                             if(createReq.NºRequisição != null)
                             {
+                                //copy files
+                                var preReq = data.PreRequesitionsNo;
+                                List<Anexos> FilesLoaded = DBAttachments.GetById(preReq);
+                                foreach(var file in FilesLoaded)
+                                {
+                                    try
+                                    {
+                                        string FileName = file.UrlAnexo;
+                                        string NewFileName = FileName.Substring(FileName.IndexOf('_'));
+                                        try
+                                        {
+                                            System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + createReq.NºRequisição + NewFileName);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            throw;
+                                        }
+
+                                        AttachmentsViewModel CopyFile = new AttachmentsViewModel();
+                                        CopyFile.DocNumber = createReq.NºRequisição;
+                                        CopyFile.CreateUser = User.Identity.Name;
+                                        CopyFile.DocType = 2;
+                                        CopyFile.Url = NewFileName;
+                                        DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
+                                    }
+                                    catch (Exception)
+                                    {
+                                        data.eReasonCode = 0;
+                                        data.eMessage = "Ocorreu um erro ao copiar os anexos.";
+                                        throw;
+                                    }
+                                    
+                                }
+
                                 //Update Last Numeration Used
                                 ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
                                 ConfigNumerations.ÚltimoNºUsado = RequisitionNo;
