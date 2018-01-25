@@ -10,7 +10,7 @@ namespace Hydra.Such.Data.ViewModel
 {
    public class NAVOpenOrderLinesViewModels
     {
-        public int id { get; set; }
+        public string id { get; set; }
         public int DocumentType { get; set; }
         public string DocumentNO { get; set; }
         public int Line_No { get; set; }

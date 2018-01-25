@@ -17,7 +17,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             [Area("Nutricao")]
             public IActionResult Detalhes()
             {
-                UserAccessesViewModel userPermissions =  DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 40);
+                UserAccessesViewModel userPermissions =  DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 42);
                 if (userPermissions != null && userPermissions.Read.Value)
                 {
                     ViewBag.UPermissions = userPermissions;
@@ -32,7 +32,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             [Area("Nutricao")]
             public IActionResult FichaTecnica(string id)
             {
-                UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 40);
+                UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 42);
                 if (userPermissions != null && userPermissions.Read.Value)
                 {
                     if (!string.IsNullOrEmpty(id))
