@@ -14,6 +14,17 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string UnitMeasureCode { get; set; }
         public string LocalCode { get; set; }
         public bool? LocalMarket { get; set; }
+        /// <summary>
+        /// For filter purposes
+        /// </summary>
+        public string LocalMarketStringValue
+        {
+            get
+            {
+                bool b = this.LocalMarket.HasValue ? this.LocalMarket.Value : false;
+                return b ? "Sim" : "Não";
+            }
+        }
         public decimal? QuantityToRequire { get; set; }
         public decimal? QuantityRequired { get; set; }
         public decimal? QuantityToProvide { get; set; }
@@ -39,8 +50,42 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? BudgetValue { get; set; }
         public int? MaintenanceOrderLineNo { get; set; }
         public bool? CreateMarketSearch { get; set; }
+        /// <summary>
+        /// For filter purposes
+        /// </summary>
+        public string CreateMarketSearchStringValue
+        {
+            get
+            {
+                bool b = this.CreateMarketSearch.HasValue ? this.CreateMarketSearch.Value : false;
+                return b ? "Sim" : "Não";
+            }
+        }
+
         public bool? SubmitPrePurchase { get; set; }
+        /// <summary>
+        /// For filter purposes
+        /// </summary>
+        public string SubmitPrePurchaseStringValue
+        {
+            get
+            {
+                bool b = this.SubmitPrePurchase.HasValue ? this.SubmitPrePurchase.Value : false;
+                return b ? "Sim" : "Não";
+            }
+        }
         public bool? SendPrePurchase { get; set; }
+        /// <summary>
+        /// For filter purposes
+        /// </summary>
+        public string SendPrePurchaseStringValue
+        {
+            get
+            {
+                bool b = this.SendPrePurchase.HasValue ? this.SendPrePurchase.Value : false;
+                return b ? "Sim" : "Não";
+            }
+        }
         public string LocalMarketDate { get; set; }
         public string LocalMarketUser { get; set; }
         public bool? SendForPurchase { get; set; }

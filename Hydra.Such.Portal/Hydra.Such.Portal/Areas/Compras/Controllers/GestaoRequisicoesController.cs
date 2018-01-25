@@ -12,9 +12,9 @@ using Hydra.Such.Data.NAV;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Portal.Services;
+using Hydra.Such.Portal.Extensions;
 using Hydra.Such.Data.Logic.Project;
-////tmp
-//using Microsoft.AspNetCore.Http;
+
 
 namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
@@ -62,14 +62,13 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
 
-
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
                 ViewBag.RequisitionId = id;
                 ViewBag.ApprovedRequisitionEnumValue = (int)RequisitionStates.Approved;
                 ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
-
+                ViewBag.ReportServerURL = _config.ReportServerURL;
                 return View();
             }
             else
@@ -939,25 +938,67 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             return Json(item);
         }
 
+        //[Area("Compras")]
+        //public IActionResult CreateTransferShipment(string id)
+        //{
+        //    try
+        //    {
+        //        if (!string.IsNullOrEmpty(id))
+        //        {
+        //            RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
+        //            GenericResult result = serv.CreateTransferShipmentFor(id);
+        //            if (result.CompletedSuccessfully)
+        //            {
+        //                byte[] fileContents = Convert.FromBase64String(result.ResultValue);
+        //                Request.HttpContext.Response.Headers.Add("content-disposition", "filename=GuiaTransporte.pdf");
+        //                return File(fileContents, "application/pdf");
+        //            }
+        //        }
+        //    }
+        //    catch { }
+        //    return RedirectToAction("InternalServerError", "Error", new { area = "" });
+        //}
+        
         [Area("Compras")]
-        public IActionResult CreateTransferShipment(string id)
+        public JsonResult CreateTransferShipment([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
         {
+            string requisitionId = string.Empty;
+
+            if (requestParams != null)
+            {
+                requisitionId = requestParams["requisitionId"].ToString();
+            }
+            /*
+             * Test
+             
+            var createTransferShipResult = new FileActionResult()
+            {
+                eReasonCode = 1,
+                Base64FileContent = "JVBERi0xLjMKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZwovT3V0bGluZXMgMiAwIFIKL1BhZ2VzIDMgMCBSID4+CmVuZG9iagoyIDAgb2JqCjw8IC9UeXBlIC9PdXRsaW5lcyAvQ291bnQgMCA+PgplbmRvYmoKMyAwIG9iago8PCAvVHlwZSAvUGFnZXMKL0tpZHMgWzYgMCBSCl0KL0NvdW50IDEKL1Jlc291cmNlcyA8PAovUHJvY1NldCA0IDAgUgovRm9udCA8PCAKL0YxIDggMCBSCj4+Cj4+Ci9NZWRpYUJveCBbMC4wMDAgMC4wMDAgNjEyLjAwMCA3OTIuMDAwXQogPj4KZW5kb2JqCjQgMCBvYmoKWy9QREYgL1RleHQgXQplbmRvYmoKNSAwIG9iago8PAovQ3JlYXRvciAoRE9NUERGKQovQ3JlYXRpb25EYXRlIChEOjIwMTUwNzIwMTMzMzIzKzAyJzAwJykKL01vZERhdGUgKEQ6MjAxNTA3MjAxMzMzMjMrMDInMDAnKQo+PgplbmRvYmoKNiAwIG9iago8PCAvVHlwZSAvUGFnZQovUGFyZW50IDMgMCBSCi9Db250ZW50cyA3IDAgUgo+PgplbmRvYmoKNyAwIG9iago8PCAvRmlsdGVyIC9GbGF0ZURlY29kZQovTGVuZ3RoIDY2ID4+CnN0cmVhbQp4nOMy0DMwMFBAJovSuZxCFIxN9AwMzRTMDS31DCxNFUJSFPTdDBWMgKIKIWkKCtEaIanFJZqxCiFeCq4hAO4PD0MKZW5kc3RyZWFtCmVuZG9iago4IDAgb2JqCjw8IC9UeXBlIC9Gb250Ci9TdWJ0eXBlIC9UeXBlMQovTmFtZSAvRjEKL0Jhc2VGb250IC9UaW1lcy1Cb2xkCi9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nCj4+CmVuZG9iagp4cmVmCjAgOQowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDggMDAwMDAgbiAKMDAwMDAwMDA3MyAwMDAwMCBuIAowMDAwMDAwMTE5IDAwMDAwIG4gCjAwMDAwMDAyNzMgMDAwMDAgbiAKMDAwMDAwMDMwMiAwMDAwMCBuIAowMDAwMDAwNDE2IDAwMDAwIG4gCjAwMDAwMDA0NzkgMDAwMDAgbiAKMDAwMDAwMDYxNiAwMDAwMCBuIAp0cmFpbGVyCjw8Ci9TaXplIDkKL1Jvb3QgMSAwIFIKL0luZm8gNSAwIFIKPj4Kc3RhcnR4cmVmCjcyNQolJUVPRgo=",
+            };
+            */
+            var createTransferShipResult = new FileActionResult()
+            {
+                eReasonCode = 2,
+                eMessage = "Ocorreu um erro ao criar a guia de transporte."
+            };
+
             try
             {
-                if (!string.IsNullOrEmpty(id))
+                if (!string.IsNullOrEmpty(requisitionId))
                 {
                     RequisitionService serv = new RequisitionService(_configws, HttpContext.User.Identity.Name);
-                    GenericResult result = serv.CreateTransferShipmentFor(id);
+                    GenericResult result = serv.CreateTransferShipmentFor(requisitionId);
                     if (result.CompletedSuccessfully)
                     {
-                        byte[] fileContents = Convert.FromBase64String(result.ResultValue);
-                        Request.HttpContext.Response.Headers.Add("content-disposition", "filename=GuiaTransporte.pdf");
-                        return File(fileContents, "application/pdf");
+                        createTransferShipResult.Base64FileContent = result.ResultValue;
+                        createTransferShipResult.eReasonCode = 1;
                     }
                 }
             }
             catch { }
-            return RedirectToAction("AccessDenied", "Error", new { area = "" });
+
+            return Json(createTransferShipResult);
         }
 
         [HttpPost]
@@ -987,31 +1028,184 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
             return Json(item);
         }
-        
+
+        [HttpPost]
         [Area("Compras")]
-        public IActionResult CreatePDF()
+        public JsonResult SubmitForApproval([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
         {
-            
-            byte[] fileContents = Convert.FromBase64String("");//pdf
+            string requisitionId = string.Empty;
 
-            //if (fileContents != null)
-            //{
-            //Response.Clear();
-            //Request.HttpContext.Response.Headers.Add("content-disposition", "filename=GuiaTransporte.pdf");
-            //Response.ContentType = "application/pdf";
-            ////Response.BinaryWrite(fileContents);
-            //Response.Body.WriteAsync(fileContents, 0, fileContents.Length);
-            //}
-
-            //HttpContext.Response.ContentType = "application/pdf";
-
-            //HttpContext.Response.Headers.Add("x-filename", "report.pdf");
-            //HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "x-filename");
-            //HttpContext.Response.Body.Write(result, 0, result.Length);
-            //return new ContentResult();
-            Request.HttpContext.Response.Headers.Add("content-disposition", "filename=GuiaTransporte.pdf");
-            return File(fileContents, "application/pdf");
+            if (requestParams != null)
+            {
+                requisitionId = requestParams["requisitionId"].ToString();
+            }
+            ErrorHandler result = new ErrorHandler();
+            if (!string.IsNullOrEmpty(requisitionId))
+            {
+                result = ApprovalMovementsManager.StartApprovalMovement(1, 1, 1000, requisitionId, User.Identity.Name);
+            }
+            else
+            {
+                result = new ErrorHandler()
+                {
+                    eReasonCode = 2,
+                    eMessage = "O código da requisição é nulo ou vazio.",
+                };
+            }
+            return Json(result);
         }
+
+
+        #region Pontos de Situação
+        [Area("Compras")]
+        public IActionResult PontosSituacao()
+        {
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
+
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [Area("Compras")]
+        public IActionResult PontoSituacaoRequisicao(string id, string param)
+        {
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                ViewBag.RequisitionNo = id;
+                ViewBag.AutoOpenDialogOnLineNo = param;
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult GetStatesOfPlay(string id)
+        {
+            List<StateOfPlayViewModel> items;
+            if (string.IsNullOrEmpty(id))
+            {
+                items = DBStateOfPlay.GetAll()
+                    .ParseToViewModel()
+                    .OrderBy(x => x.Read)
+                    .ToList();
+            }
+            else
+            { 
+                items = DBStateOfPlay.GetForRequisition(id)
+                    .ParseToViewModel()
+                    .OrderBy(x => x.Read)
+                    .ToList();
+            }
+            return Json(items);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult ConfirmStateOfPlayReading([FromBody] StateOfPlayViewModel item)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 2;
+            result.eMessage = "Ocorreu um erro ao confirmar a leitura.";
+
+            if (item != null)
+            {
+                item.Read = true;
+                var updatedItem = DBStateOfPlay.Update(item.ParseToDB());
+                if (updatedItem != null)
+                {
+                    item = updatedItem.ParseToViewModel();
+                    result.eReasonCode = 1;
+                    result.eMessage = "Confirmação de leitura efetuada com sucesso.";
+                }
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult AddStateOfPlay([FromBody] StateOfPlayViewModel item)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 2;
+            result.eMessage = "Ocorreu um erro ao adicionar o ponto de situação.";
+
+            if (item != null)
+            {
+                item.QuestionDate = DateTime.Now;
+                item.QuestionedBy = User.Identity.Name;
+                item.Read = false;
+                var createdItem = DBStateOfPlay.Create(item.ParseToDB());
+                if (createdItem != null)
+                {
+                    item = createdItem.ParseToViewModel();
+                    result.eReasonCode = 1;
+                    result.eMessage = "Ponto de situação criado com sucesso.";
+                }
+            }
+            item.eReasonCode = result.eReasonCode;
+            item.eMessage = result.eMessage;
+
+            return Json(item);
+        }
+
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult SendResponse([FromBody] StateOfPlayViewModel item)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 2;
+            result.eMessage = "Ocorreu um erro ao adicionar o ponto de situação.";
+
+            if (item != null)
+            {
+                item.AnswerDate = DateTime.Now;
+                item.AnsweredBy = User.Identity.Name;
+                item.Answer = item.Answer;
+
+                var createdItem = DBStateOfPlay.Update(item.ParseToDB());
+                if (createdItem != null)
+                {
+                    item = createdItem.ParseToViewModel();
+                    
+                    SMTPEmailSender mailSender = new SMTPEmailSender();
+                    string htmlTemplateMessage = "Caro utilizador,<br /><br />Foram adicionados os comentários ao seu pedido de ponto de situação da requisição {0} ({1}):<br />\"<i>{2}</i>\"<h3>Comentários</h3><p>{3}</p>";
+                    string emailBody = string.Format(htmlTemplateMessage, item.RequisitionNo, item.QuestionDate.ToShortDateString(), item.Question, item.Answer);
+
+                    var sendMailResult = mailSender.SendMailAsync(User.Identity.Name, item.QuestionedBy, "Resposta a pedido de ponto de situação", emailBody);
+                    if (sendMailResult.IsCompletedSuccessfully)
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "Resposta enviada com sucesso.";
+                    }
+                    else
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "Não foi possível enviar email ao utilizador que criou o pedido (" + item.QuestionedBy + ")";
+                    }
+                }
+            }
+            item.eReasonCode = result.eReasonCode;
+            item.eMessage = result.eMessage;
+
+            return Json(item);
+        }
+        #endregion
 
         [Area("Compras")]
         public IActionResult HistoricoRequisicoes()

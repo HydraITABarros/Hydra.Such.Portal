@@ -258,9 +258,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nº Origem")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.NºLinha)
-                    .HasColumnName("Nº Linha")
-                    .ValueGeneratedOnAdd();
+                entity.Property(e => e.NºLinha).HasColumnName("Nº Linha");
 
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
@@ -5874,6 +5872,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ResponsávelVisar)
                     .HasColumnName("Responsável Visar")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.TipoRefeição).HasColumnName("Tipo Refeição");
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")

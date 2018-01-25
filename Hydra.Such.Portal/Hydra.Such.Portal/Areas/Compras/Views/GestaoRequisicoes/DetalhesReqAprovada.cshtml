@@ -9,6 +9,7 @@
 <x-requisitiondetails _requisitionid="@ViewBag.RequisitionId" 
                       _requisitionstatus="@ViewBag.ApprovedRequisitionEnumValue" 
                       _requisitionstatesenum='@Html.Raw(Json.Serialize(ViewBag.RequisitionStatesEnumString))' 
-                      _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+                      _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
+                      _reportserverurl="@ViewBag.ReportServerURL">
 </x-requisitiondetails>
 
