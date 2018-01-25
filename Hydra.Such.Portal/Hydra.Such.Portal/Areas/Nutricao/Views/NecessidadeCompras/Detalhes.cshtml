@@ -51,9 +51,8 @@
         <iron-ajax url="/PopulateDropdowns/getSupplier" id="ajax_supplierGridresult" last-response="{{supplierGridresult}}" on-response="_supplierGridResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{unitmeasureresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/NecessidadeCompras/GetGridValues" id="ajax_getgrid" last-response="{{data}}" on-response="_getgridResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-    <iron-ajax url="/Nutricao/NecessidadeCompras/UpdateShoppingNecessity" id="ajax_update" last-response="{{updatedata}}" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
-    <iron-ajax url="/Nutricao/NecessidadeCompras/CreateShoppingNecessity" id="ajax_Create" last-response="{{updatedata}}" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
-       
+        <iron-ajax url="/Nutricao/NecessidadeCompras/UpdateShoppingNecessity" id="ajax_update" last-response="{{updatedata}}" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/NecessidadeCompras/CreateShoppingNecessity" id="ajax_Create" last-response="{{updatedata}}" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>       
         <iron-ajax url="/Nutricao/NecessidadeCompras/GenerateRequesition" id="ajax_requesitionupdate" last-response="{{datarequesition}}" method="post" on-response="_requesitionResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/NecessidadeCompras/GetModelRequisition" last-response="{{resultModelRequisition}}" auto method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations"  last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>

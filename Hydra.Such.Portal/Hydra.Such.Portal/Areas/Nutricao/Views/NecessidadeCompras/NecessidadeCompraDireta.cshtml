@@ -25,8 +25,6 @@
 <link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectList.html" />
-<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
-<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
@@ -40,26 +38,20 @@
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
         <div class="subMenu" hidden="{{ _permissionssubMenu }}">
-            <paper-button class="tablinks" on-tap="_requestModels"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Copiar Modelos de requisição</paper-button>
             <paper-button class="tablinks" on-tap="_addRequesition"><i class="fa fa-get-pocket" aria-hidden="true"></i> Geração de requisições </paper-button>
         </div><!--on-response="_gridListResponse"-->
 
         <iron-ajax url="/PopulateDropdowns/GetProdUnits" id="ajax_prodUnit" last-response="{{prodUnitValresult}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/NecessityDirectShoppingLines" id="ajax_nOrderLines" auto last-response="{{cbopenorderlines}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getNecessityDirectShoppingLine" id="ajax_result" last-response="{{result}}" on-response="_resultResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/getOpenOrderLine" id="ajax_result2" last-response="{{result2}}" on-response="_GridprodChangeResult" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/getNecessityDirectShoppingLine" id="ajax_result2" last-response="{{result2}}" on-response="_GridprodChangeResult" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getSupplier" id="ajax_supplierresult" last-response="{{supplierresult}}" on-response="_supplierResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getSupplier" id="ajax_supplierGridresult" last-response="{{supplierGridresult}}" on-response="_supplierGridResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{unitmeasureresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/NecessidadeCompras/GetGridValuesWithoutDatePriceSup" id="ajax_getgrid" last-response="{{data}}" on-response="_getgridResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/NecessidadeCompras/UpdateDirectShoppingNecessity" id="ajax_update" last-response="{{updatedata}}" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/NecessidadeCompras/GenerateRequesition" id="ajax_requesitionupdate" last-response="{{datarequesition}}" method="post" on-response="_requesitionResponse" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/NecessidadeCompras/GetModelRequisition" last-response="{{resultModelRequisition}}" auto method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/NecessidadeCompras/GenerateRequesitionByDirectShopNeclines" id="ajax_requesitionupdate" last-response="{{datarequesition}}" method="post" on-response="_requesitionResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/NecessidadeCompras/GetProductivityUnits" last-response="{{produnitresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/NecessidadeCompras/GenerateByRequesition" id="grid_generatebyreq_ajax" last-response="{{genbyreqresult}}" on-response="_benbyreqResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
-
 
         <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-3">
@@ -219,7 +211,7 @@
                 </template>
                 <template>
                     <template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-combo-box items="[[cbopenorderlines]]" disabled="{{ !_permissionsVal.update }}" id="mOpenOrderLinesId" on-value-changed="_openOrderGridLinesOnChange" item-value-path="numb" item-label-path="numb" value="{{item.productNo}}">
+                        <vaadin-combo-box items="[[cbopenorderlines]]" on-value-changed="_openOrderGridLinesOnChange" item-value-path="id" item-label-path="numb" value="{{item.id}}">
                             <template>
                                 <table width="300px">
                                     <tr>
@@ -330,7 +322,7 @@
 
                 </template>
             </vaadin-grid-column>
-        <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable>
             <template class="header">
                 <vaadin-grid-sorter path="supplierName">Nome Fornecedor</vaadin-grid-sorter>
                 <vaadin-grid-filter path="supplierName" />
@@ -344,7 +336,7 @@
                 </template>
             </template>
         </vaadin-grid-column>
-        <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable>
             <template class="header">
                 <vaadin-grid-sorter path="observation">Observações</vaadin-grid-sorter>
                 <vaadin-grid-filter path="observation" />
@@ -368,63 +360,12 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
-        <!-- Paper Dialog Movimentos de Projeto-->
-        <paper-dialog id="dialog" class="dialgoBox">
-            <h2 class="dialogTitle">Movimentos de Projeto</h2>
-            <vaadin-grid aria-label="Modelos de Requisições" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="ModelRequisitionTable" items="[[resultModelRequisition]]">
-                <vaadin-grid-selection-column auto-select>
-                </vaadin-grid-selection-column>
-                <vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="requisitionNo"> Nº Requisição</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="requisitionNo" />
-                    </template>
-                    <template>
-                        {{item.requisitionNo}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="localCode"> Código Localização</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="localCode" />
-                    </template>
-                    <template>
-                        [[_parseLocalCode(item.localCode)]]
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="unitFoodProduction">Unidade Produtiva Alimentação</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="unitFoodProduction" />
-                    </template>
-                    <template>
-                        [[ _parseUnitFoodProd(item.unitFoodProduction) ]]
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="160px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="receivedDate">Data Receção</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="receivedDate" />
-                    </template>
-                    <template>
-                        [[ _parseDateFormat(item.receivedDate) ]]
-                    </template>
-                </vaadin-grid-column>
-            </vaadin-grid>
-            <div class="buttons">
-                <paper-button class="btnSave" raised on-tap="_confirm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
-            </div>
-        </paper-dialog>
-
-
-        <div class="marginSpace" hidden="{{ !_permissionsVal.update }}">
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-        </div>
-        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+    <div class="marginSpace" hidden="{{ !_permissionsVal.update }}">
+        <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+    </div>
+    <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+    <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
     </template>
     <script>
@@ -517,6 +458,21 @@
                     type: String,
                     notify: true,
                     value: ""
+                },
+                _documentNOGrid: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                _lineNoGrid: {
+                type: Number,
+                    notify: true,
+                    value: ""
+                },
+                _numbGrid: {
+                type: String,
+                    notify: true,
+                    value: ""
                 }
             },
             observers: [
@@ -532,19 +488,17 @@
                         this._permissionssubMenu = true;
                     }
                     if (prodUnitId != null && prodUnitDesc != "") {
+                        debugger;
                         this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
                         this.$.ajax_getgrid.generateRequest();
-                        this.$.grid_databound_ajax.generateRequest();
                     } else {
                         this.$.ajax_getgrid.body = JSON.stringify(null);
                         this.$.ajax_getgrid.generateRequest();
-                        this.$.grid_databound_ajax.generateRequest();
                     }
                     this.Flag = true;
                 }
             },
             ready: function () {
-                debugger;
                 var prodUnitId = @ViewBag.ProductivityUnitId;
                 var prodUnitDesc = @Html.Raw(Json.Serialize(ViewBag.ProductivityUnitDesc));
                 //get premissions to CRUD
@@ -555,13 +509,11 @@
                 if (prodUnitId != null && prodUnitDesc != "") {
                     this.prodUnitNo = prodUnitId;
                     this.descriptionUnit = prodUnitDesc;
-
                 }
             },
 
             _openOrderLinesOnChange: function(e) {
                 if (e.detail.value) {
-                    debugger;
                     var res = e.detail.value.split(" ");
                     this._documentNO = res[0];
                     this._lineNo = res[1];
@@ -579,46 +531,23 @@
             //Works with functions _GridprodChangeResult and _supplierGridResponse
             _openOrderGridLinesOnChange: function (e) {
                 if (e.detail.value) {
-                    var datePS = "";
-                    var oSel = this.data.find(x => x.selected);
-                    if (oSel != undefined && e.detail.value != undefined) {
-                        if (oSel.dateByPriceSupplier != "" && oSel.dateByPriceSupplier != null) {
-                            datePS = oSel.dateByPriceSupplier.split("-");
-                            datePS = datePS[2] + "-" + datePS[1] + "-" + datePS[0];
-                        }
-                        if (datePS != "") {
-                            this.$.ajax_result2.body = JSON.stringify(e.detail.value);
+                            var res = e.detail.value.split(" ");
+                            this._documentNOGrid = res[0];
+                            this._lineNoGrid = res[1];
+                            this._numbGrid = res[2];
+                            this.$.ajax_result2.body = JSON.stringify(this._numbGrid);
                             this.$.ajax_result2.params = {
-                                "documentNO": "",
-                                "date": oSel.dateByPriceSupplier
+                                "documentNO": this._documentNOGrid,
+                                "LineNo": this._lineNoGrid
                             };
                             this.$.ajax_result2.generateRequest();
-                        }
-                    }
                 }
             },
 
             _addRequesition() {
                     if (this.$.prodUnitNoId.value != "" &&
                         this.$.descriptionUnitId.value != "")
-                    //Validações
                     {
-                        this.data.unshift({
-                            productionUnitNo: this.$.prodUnitNoId.value,
-                            productUnitDescription: this.$.descriptionUnitId.value,
-                            expectedReceptionDate: this.$.dpExpectedReceiptId.value,
-                            localCode: this.$.codStockUnitId.value,
-                            productNo: this.$.mOpenOrderLinesId.value,
-                            supplierNo: this.$.supplierNoId.value,
-                            description: this.$.prodCodId.value,
-                            unitMeasureCode: this.$.unitofMeasureCodeId.value,
-                            quantity: this.$.qtyID.value,
-                            directUnitCost: this.$.unitCostId.value,
-                            totalValue: this.$.amountId.value,
-                            supplierName: this.$.SupplierNameId.value,
-                        });
-                        // Save to DB
-
                         this.$.ajax_requesitionupdate.body = JSON.stringify(this.data);
                         this.$.ajax_requesitionupdate.generateRequest();
                     }
@@ -627,10 +556,8 @@
                     }
             },
             _add() {
-                debugger;
                     if (this.$.prodUnitNoId.value != "" &&
                         this.$.descriptionUnitId.value != "")
-                    //Validações
                     {
                         this.data.unshift({
                             productionUnitNo: this.$.prodUnitNoId.value,
@@ -657,7 +584,7 @@
                         this._openToastError("Os campos Nº Unidade Produtiva e Descrição são obrigatorios.");
                     }
             },
-            _update: function() {
+            _update: function () {
                 this.$.ajax_update.body = JSON.stringify(this.data);
                 this.$.ajax_update.generateRequest();
             },
@@ -722,25 +649,6 @@
                 this.$.ToastError.text = message;
                 this.$.ToastError.open();
             },
-            _requestModels: function() {
-                this.$.dialog.open();
-                if (this.resultModelRequisition == null ||
-                    this.resultModelRequisition == undefined ||
-                    this.resultModelRequisition.length == 0) {
-                    this._openToastError("Não existem Modelos de Requisições.");
-                }
-
-            },
-            _confirm: function (selectedItem, selectedItems) {
-                if (this.selectedItems != null && this.selectedItems != "") {
-                    var selItms = this.selectedItems;
-                    this.$.grid_generatebyreq_ajax.body = JSON.stringify(selItms);
-                    this.$.grid_generatebyreq_ajax.generateRequest();
-                } else {
-                    this._openToastError("Não foi selecionada nenhuma linha.");
-                }
-
-            },
 
             //calculate the total value form the hader
             _calcTotals: function (e) {
@@ -788,7 +696,6 @@
                 this.$.gridneedshopping.clearCache();
             },
             _prodUnitChange: function (e) {
-                debugger;
                 if (e.detail.value != null && e.detail.value != "") {
                     var sel = this.prodUnitValresult.find(x => x.id == e.detail.value);
                     if (sel != undefined) {
@@ -800,7 +707,6 @@
 
             //All Response
             _resultResponse: function (result) {
-                debugger;
                 if (result != null) {
 
                     this.$.supplierNoId.value = this.result.buyFromVendorNo;
@@ -840,35 +746,15 @@
                         this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
                         this.$.ajax_getgrid.generateRequest();
                         this.$.gridneedshopping.clearCache();
-                        this.$.dialog.close();
                     } else {
                         this._openToastError(this.updatedata.eMessage);
                     }
                 } else {
                     this._openToastError("Occorreu um erro ao atualizar.");
                 }
-            },
-            _benbyreqResponse: function (e) {
-                var self = this;
-                if (e.detail.status === 200) {
-                    if (this.genbyreqresult.eReasonCode === 1) {
-                        var prodUnitId = @ViewBag.ProductivityUnitId;
-                        this.$.ajax_getgrid.body = JSON.stringify(prodUnitId);
-                        this.$.ajax_getgrid.generateRequest();
-                        this.$.gridneedshopping.clearCache();
-                        this._openToast(this.genbyreqresult.eMessage);
-                    }
-                    else
-                    {
-                        this._openToastError(this.genbyreqresult.eMessage);
-                    }
-                }
-                else
-                {
-                    this._openToastError("Occorreu um erro ao atualizar o Diário de requisição Unid. Produtiva.");
-                }
-            },
+            },    
             _requesitionResponse: function (e) {
+                debugger;
                 if (e.detail.status === 200) {
                     if (this.datarequesition.eReasonCode === 1) {
                         this._openToast(this.datarequesition.eMessage);
@@ -900,28 +786,12 @@
                 }
                 return "";
             },
-            _parseDateFormat: function (date) {
-                if (date != null && date != "") {
-                    var x = date.split("-");
-                    return x[2] + "-" + x[1] + "-" + x[0];
-                }
-                return "";
-            },
             _parseLocalCode: function (param) {
                 if (param != undefined) {
 
                     var sel = this.locationsresult.find(x => x.id == param);
                     if (sel != undefined) {
                         return sel.value;
-                    }
-                }
-                return "";
-            },
-            _parseUnitFoodProd: function (param) {
-                if (param != undefined) {
-                    var sel = this.produnitresult.find(x => x.productivityUnitNo == param);
-                    if (sel != undefined) {
-                        return sel.description;
                     }
                 }
                 return "";
