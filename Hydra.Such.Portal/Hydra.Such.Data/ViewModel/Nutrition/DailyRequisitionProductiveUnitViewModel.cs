@@ -33,6 +33,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string OrderLineOpenNo { get; set; }
         public string ProductUnitDescription { get; set; }
         public string DocumentNo { get; set; }
+        public string Observation { get; set; }
 
     }
 }

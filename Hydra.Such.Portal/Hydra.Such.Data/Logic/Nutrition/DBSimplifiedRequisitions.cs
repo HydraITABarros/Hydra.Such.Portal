@@ -109,7 +109,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.RequisiçõesSimplificadas.Where(x => x.ResponsávelCriação == CreateResponsible).ToList();
+                    return ctx.RequisiçõesSimplificadas.Where(x => x.ResponsávelCriação == CreateResponsible && x.Estado!=3).ToList();
                 }
             }
             catch (Exception ex)

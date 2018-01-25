@@ -229,7 +229,39 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.FeeUnits;
             return Json(result);
         }
+        [HttpPost]
+        public JsonResult NecessityDirectShoppingLines()
+        {
+            List<NAVOpenOrderLinesViewModels> result = DBNAV2017NecessityDirectShopping.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult getNecessityDirectShoppingLine([FromBody] string numb, string documentNO, int LineNo)
+        {
+            NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
+            try
+            {
+                List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
+                result = DBNAV2017NecessityDirectShopping.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
 
+                if (result != null && result.Count > 0 && !string.IsNullOrEmpty(documentNO) && !string.IsNullOrEmpty(numb) && LineNo > 0)
+                {
+                    foreach (NAVOpenOrderLinesViewModels item in result)
+                    {
+                        if (documentNO == item.DocumentNO && numb == item.Numb && LineNo == item.Line_No)
+                        {
+                            getorderline = item;
+                        }
+                    }
+                }
+                return Json(getorderline);
+            }
+            catch (Exception e)
+            {
+                return Json(getorderline);
+            }
+
+        }
 
         [HttpPost]
         public JsonResult OpenOrderLines([FromBody] DateTime? date)
@@ -237,7 +269,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVOpenOrderLinesViewModels> result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "").ToList();
             return Json(result);
         }
-
+        
         [HttpPost]
         public JsonResult getOpenOrderLine([FromBody] string numb, string documentNO, DateTime? date)
         {
@@ -273,7 +305,6 @@ namespace Hydra.Such.Portal.Controllers
                         }
                     }
                 }
-                int t = count;
                 return Json(getorderline);
             }
             catch (Exception e)
@@ -1313,10 +1344,12 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetUnitStockeeping()
         {
-            List<DDMessageString> result = DBStockkeepingUnit.GetAll().Select(x => new DDMessageString()
+            List<DDMessageRelated> result = DBStockkeepingUnit.GetAll().Select(x => new DDMessageRelated()
             {
                 id = x.NºProduto,
-                value = x.Descrição
+                value = x.Descrição,
+                extra= x.CustoUnitário.ToString(),
+                extra2=x.CódUnidadeMedidaProduto
             }).ToList();
 
             return Json(result);
@@ -1452,5 +1485,8 @@ namespace Hydra.Such.Portal.Controllers
         public string id { get; set; }
         public string value { get; set; }
         public string extra { get; set; }
+        public string extra2 { get; set; }
     }
+
+   
 }

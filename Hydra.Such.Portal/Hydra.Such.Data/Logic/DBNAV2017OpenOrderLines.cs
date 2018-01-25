@@ -16,7 +16,6 @@ namespace Hydra.Such.Data.Logic
                 List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
                 using (var ctx = new SuchDBContextExtention())
                 {
-                    int index = 1;
                     var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
@@ -30,7 +29,7 @@ namespace Hydra.Such.Data.Logic
                     {
                         result.Add(new NAVOpenOrderLinesViewModels()
                         {
-                              id = index++,
+                              id = temp.DocumentNO + " " + temp.Line_No + " " + temp.Numb,
                               DocumentType = (int)temp.DocumentType,
                               DocumentNO =(string)temp.DocumentNO,
                               Line_No = (int)temp.Line_No,

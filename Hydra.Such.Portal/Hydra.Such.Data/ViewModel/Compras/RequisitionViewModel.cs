@@ -19,7 +19,10 @@ namespace Hydra.Such.Data.ViewModel.Compras
         [Description("Aprovado")]
         Approved,
         [Description("Disponibilizado")]
-        Available
+        Available,
+        [Description("Arquivado")]
+        Archived
+
     }
 
     public class RequisitionViewModel : ErrorHandler
