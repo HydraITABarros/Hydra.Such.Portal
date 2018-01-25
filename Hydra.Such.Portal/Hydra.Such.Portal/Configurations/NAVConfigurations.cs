@@ -9,5 +9,6 @@ namespace Hydra.Such.Portal.Configurations
     {
         public string NAVDatabaseName { get; set; }
         public string NAVCompanyName { get; set; }
+        public string ReportServerURL { get; set; }
     }
 }

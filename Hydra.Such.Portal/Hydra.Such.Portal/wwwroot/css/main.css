@@ -113,7 +113,7 @@ ul.nav li:hover {
 }
 
 .btnRemove {
-    max-width: 125px !important;
+    max-width: 200px !important;
     min-width: 50px !important;
     height: 30px !important;
     background-color: #D5662F;

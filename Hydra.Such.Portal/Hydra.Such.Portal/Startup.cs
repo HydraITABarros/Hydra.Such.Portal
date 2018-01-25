@@ -86,12 +86,24 @@ namespace Hydra.Such.Portal
             {
                 routes.MapRoute(
                   name: "areaRoute",
-                  template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                  template: "{area:exists}/{controller=Home}/{action=Index}/{id?}/{param?}"
                 );
 
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}/{param?}"
+                );
+
+                //routes.MapRoute(
+                //    name: "areaRouteWithParam",
+                //    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}/{param?}"
+                //);
+
+                //routes.MapRoute(
+                //    name: "defaultWithParam",
+                //    template: "{controller=Home}/{action=Index}/{id?}/{param?}"
+                //);
+
             });
 
             //app.UseMvc(routes =>

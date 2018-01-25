@@ -1,0 +1,329 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <Description />
+  <DataSet Name="ReportRequisicao">
+    <Query>
+      <DataSourceReference>eSuchDS</DataSourceReference>
+      <DataSetParameters>
+        <DataSetParameter Name="@NoRequisicao">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>true</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+        </DataSetParameter>
+      </DataSetParameters>
+      <CommandText>SELECT        [Linhas Requisição].[Nº Linha], [Linhas Requisição].Descrição, [Linhas Requisição].[Quantidade a Requerer], [Linhas Requisição].[Código Localização] AS LineLocalization, [Linhas Requisição].[Nº Projeto] AS LineProjNo, 
+                         [Linhas Requisição].[Código Unidade Medida], Requisição.[Nº Requisição], Requisição.Área, Requisição.Estado, Requisição.[Nº Projeto], Requisição.[Código Região], Requisição.[Código Área Funcional], 
+                         Requisição.[Código Centro Responsabilidade], Requisição.[Código Localização], Requisição.[Nº Funcionário], Requisição.Viatura, Requisição.[Data Receção], Requisição.Urgente, Requisição.Amostra, Requisição.Anexo, 
+                         Requisição.Imobilizado, Requisição.[Compra a Dinheiro], Requisição.[Código Local Recolha], Requisição.[Código Local Entrega], Requisição.Observações, Requisição.[Modelo de Requisição], Requisição.[Data/Hora Criação], 
+                         Requisição.[Utilizador Criação], Requisição.[Data/Hora Modificação], Requisição.[Utilizador Modificação], Requisição.[Cabimento Orçamental], Requisição.Exclusivo, Requisição.[Já Executado], Requisição.Equipamento, 
+                         Requisição.[Reposição de Stock], Requisição.Reclamação, Requisição.[Nº Requisição Reclamada], Requisição.[Responsável Criação], Requisição.[Responsável Aprovação], Requisição.[Responsável Validação], 
+                         Requisição.[Responsável Receção], Requisição.[Data Aprovação], Requisição.[Data Validação], Requisição.[Unidade Produtiva Alimentação], Requisição.[Requisição Nutrição], Requisição.[Requisição Detergentes], 
+                         Requisição.[Nº Procedimento CCP], Requisição.Aprovadores, Requisição.[Mercado Local], Requisição.[Região Mercado Local], Requisição.[Reparação com Garantia], Requisição.EMM, Requisição.[Data Entrega Armazém], 
+                         Requisição.[Local de Recolha], Requisição.[Morada Recolha], Requisição.[Morada 2 Recolha], Requisição.[Código Postal Recolha], Requisição.[Localidade Recolha], Requisição.[Contato Recolha], 
+                         Requisição.[Responsável Receção Recolha], Requisição.[Local Entrega], Requisição.[Morada Entrega], Requisição.[Morada 2 Entrega], Requisição.[Código Postal Entrega], Requisição.[Localidade Entrega], 
+                         Requisição.[Contato Entrega], Requisição.[Responsável Receção Receção], Requisição.[Nº Fatura], Requisição.[Data Mercado Local], Requisição.[Data Requisição], Requisição.[Nº Consulta Mercado], 
+                         Requisição.[Nº Encomenda], Requisição.Orçamento, Requisição.[Valor Estimado]
+FROM            Requisição INNER JOIN
+                         [Linhas Requisição] ON Requisição.[Nº Requisição] = [Linhas Requisição].[Nº Requisição]
+WHERE        (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
+    </Query>
+    <Fields>
+      <Field Name="Nº_Linha">
+        <DataField>Nº Linha</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="Descrição">
+        <DataField>Descrição</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Quantidade_a_Requerer">
+        <DataField>Quantidade a Requerer</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="LineLocalization">
+        <DataField>LineLocalization</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="LineProjNo">
+        <DataField>LineProjNo</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Código_Unidade_Medida">
+        <DataField>Código Unidade Medida</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Nº_Requisição">
+        <DataField>Nº Requisição</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Área">
+        <DataField>Área</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="Estado">
+        <DataField>Estado</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="Nº_Projeto">
+        <DataField>Nº Projeto</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Código_Região">
+        <DataField>Código Região</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Código_Área_Funcional">
+        <DataField>Código Área Funcional</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Código_Centro_Responsabilidade">
+        <DataField>Código Centro Responsabilidade</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Código_Localização">
+        <DataField>Código Localização</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Nº_Funcionário">
+        <DataField>Nº Funcionário</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Viatura">
+        <DataField>Viatura</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Data_Receção">
+        <DataField>Data Receção</DataField>
+        <rd:TypeName>System.DateTime</rd:TypeName>
+      </Field>
+      <Field Name="Urgente">
+        <DataField>Urgente</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Amostra">
+        <DataField>Amostra</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Anexo">
+        <DataField>Anexo</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Imobilizado">
+        <DataField>Imobilizado</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Compra_a_Dinheiro">
+        <DataField>Compra a Dinheiro</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Código_Local_Recolha">
+        <DataField>Código Local Recolha</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="Código_Local_Entrega">
+        <DataField>Código Local Entrega</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="Observações">
+        <DataField>Observações</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Modelo_de_Requisição">
+        <DataField>Modelo de Requisição</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Data_Hora_Criação">
+        <DataField>Data/Hora Criação</DataField>
+        <rd:TypeName>System.DateTime</rd:TypeName>
+      </Field>
+      <Field Name="Utilizador_Criação">
+        <DataField>Utilizador Criação</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Data_Hora_Modificação">
+        <DataField>Data/Hora Modificação</DataField>
+        <rd:TypeName>System.DateTime</rd:TypeName>
+      </Field>
+      <Field Name="Utilizador_Modificação">
+        <DataField>Utilizador Modificação</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Cabimento_Orçamental">
+        <DataField>Cabimento Orçamental</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Exclusivo">
+        <DataField>Exclusivo</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Já_Executado">
+        <DataField>Já Executado</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Equipamento">
+        <DataField>Equipamento</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Reposição_de_Stock">
+        <DataField>Reposição de Stock</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Reclamação">
+        <DataField>Reclamação</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Nº_Requisição_Reclamada">
+        <DataField>Nº Requisição Reclamada</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Responsável_Criação">
+        <DataField>Responsável Criação</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Responsável_Aprovação">
+        <DataField>Responsável Aprovação</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Responsável_Validação">
+        <DataField>Responsável Validação</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Responsável_Receção">
+        <DataField>Responsável Receção</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Data_Aprovação">
+        <DataField>Data Aprovação</DataField>
+        <rd:TypeName>System.DateTime</rd:TypeName>
+      </Field>
+      <Field Name="Data_Validação">
+        <DataField>Data Validação</DataField>
+        <rd:TypeName>System.DateTime</rd:TypeName>
+      </Field>
+      <Field Name="Unidade_Produtiva_Alimentação">
+        <DataField>Unidade Produtiva Alimentação</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Requisição_Nutrição">
+        <DataField>Requisição Nutrição</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Requisição_Detergentes">
+        <DataField>Requisição Detergentes</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Nº_Procedimento_CCP">
+        <DataField>Nº Procedimento CCP</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Aprovadores">
+        <DataField>Aprovadores</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Mercado_Local">
+        <DataField>Mercado Local</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Região_Mercado_Local">
+        <DataField>Região Mercado Local</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Reparação_com_Garantia">
+        <DataField>Reparação com Garantia</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="EMM">
+        <DataField>EMM</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Data_Entrega_Armazém">
+        <DataField>Data Entrega Armazém</DataField>
+        <rd:TypeName>System.DateTime</rd:TypeName>
+      </Field>
+      <Field Name="Local_de_Recolha">
+        <DataField>Local de Recolha</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="Morada_Recolha">
+        <DataField>Morada Recolha</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Morada_2_Recolha">
+        <DataField>Morada 2 Recolha</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Código_Postal_Recolha">
+        <DataField>Código Postal Recolha</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Localidade_Recolha">
+        <DataField>Localidade Recolha</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Contato_Recolha">
+        <DataField>Contato Recolha</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Responsável_Receção_Recolha">
+        <DataField>Responsável Receção Recolha</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Local_Entrega">
+        <DataField>Local Entrega</DataField>
+        <rd:TypeName>System.Int32</rd:TypeName>
+      </Field>
+      <Field Name="Morada_Entrega">
+        <DataField>Morada Entrega</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Morada_2_Entrega">
+        <DataField>Morada 2 Entrega</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Código_Postal_Entrega">
+        <DataField>Código Postal Entrega</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Localidade_Entrega">
+        <DataField>Localidade Entrega</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Contato_Entrega">
+        <DataField>Contato Entrega</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Responsável_Receção_Receção">
+        <DataField>Responsável Receção Receção</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Nº_Fatura">
+        <DataField>Nº Fatura</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Data_Mercado_Local">
+        <DataField>Data Mercado Local</DataField>
+        <rd:TypeName>System.DateTime</rd:TypeName>
+      </Field>
+      <Field Name="Data_Requisição">
+        <DataField>Data Requisição</DataField>
+        <rd:TypeName>System.DateTime</rd:TypeName>
+      </Field>
+      <Field Name="Nº_Consulta_Mercado">
+        <DataField>Nº Consulta Mercado</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Nº_Encomenda">
+        <DataField>Nº Encomenda</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Orçamento">
+        <DataField>Orçamento</DataField>
+        <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="Valor_Estimado">
+        <DataField>Valor Estimado</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>
