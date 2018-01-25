@@ -9,6 +9,7 @@ using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Nutrition;
+using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Portal.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,14 +20,15 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
     public class RequisicoesSimplificadasController : Controller
     {
-        ProjetosController register = new ProjetosController();
+        ProjetosController register;
         private readonly NAVWSConfigurations configws;
         private ErrorHandler mensage = new ErrorHandler();
 
 
-        public RequisicoesSimplificadasController(IOptions<NAVWSConfigurations> NAVWSConfigs)
+        public RequisicoesSimplificadasController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
         {
             this.configws = NAVWSConfigs.Value;
+            register = new ProjetosController(appSettings, NAVWSConfigs);
         }
 
 
@@ -198,7 +200,49 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             return Json(result);
         }
-        
+
+
+        [Area("Nutricao")]
+        [HttpPost]
+        public JsonResult FinishSimplifiedRequisition([FromBody] List<SimplifiedRequisitionLineViewModel> items)
+        {
+            if (items != null)
+            {
+                mensage.eReasonCode = 100;
+                foreach (var item in items)
+                {
+                    UnidadeDeArmazenamento product = DBStockkeepingUnit.GetById(item.Code);
+                    if (product.Bloqueado == true)
+                    {
+                        mensage.eReasonCode = 101;
+                        mensage.eMessage = "A linha Nº:" + item.LineNo + " contem o produto " + item.Description + " bloqueado";
+                        break;
+                    }
+                  
+                    item.Status = 2;
+                }
+                if (mensage.eReasonCode == 100)
+                {
+                    items.ForEach(x=> DBSimplifiedRequisitionLines.Update(DBSimplifiedRequisitionLines.ParseToDatabase(x)));
+
+                    SimplifiedRequisitionViewModel requisitionSimpli = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetById(items[0].RequisitionNo));
+                    requisitionSimpli.Status = 2;
+                    requisitionSimpli.Finished = true;
+                    DBSimplifiedRequisitions.Update(DBSimplifiedRequisitions.ParseToDatabase(requisitionSimpli));
+
+                    mensage.eReasonCode = 100;
+                    mensage.eMessage = "Requisição terminada com Sucesso";
+                }
+            }
+            else
+            {
+                mensage.eReasonCode = 101;
+                mensage.eMessage = "Erro ao terminar";
+            }
+            
+            return Json(mensage);           
+        }
+
         // 100 - Sucesso
         // 101 - Ocorreu um erro desconhecido
 
@@ -455,6 +499,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                     CLocation.CódigoÁreaFuncional = item.FunctionalAreaCode;
                     CLocation.CódigoCentroResponsabilidade = item.ResponsabilityCenterCode;
                     CLocation.NºProjeto = item.ProjectNo;
+                    CLocation.TipoRefeição = item.MealType;
                     CLocation.DataHoraAprovação = item.ApprovalDate != "" && item.ApprovalDate != null ? DateTime.Parse(item.ApprovalDate) : (DateTime?)null;
                     CLocation.DataHoraEnvio = item.ShipDate != "" && item.ShipDate != null ? DateTime.Parse(item.ShipDate) : (DateTime?)null;
                     CLocation.DataHoraDisponibilização = item.AvailabilityDate != "" && item.AvailabilityDate != null ? DateTime.Parse(item.AvailabilityDate) : (DateTime?)null;
@@ -527,7 +572,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                         lines.ForEach(x =>
                              {
                                  x.NºProjeto = CLocation.NºProjeto;
-                                 x.TipoRefeição = 0;
+                                 x.TipoRefeição = CLocation.TipoRefeição;
                                  x.CódLocalização = CLocation.CódLocalização;
                                  x.CódigoRegião = CLocation.CódigoRegião;
                                  x.CódigoÁreaFuncional = CLocation.CódigoÁreaFuncional;

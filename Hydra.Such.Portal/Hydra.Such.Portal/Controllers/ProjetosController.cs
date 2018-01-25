@@ -27,10 +27,7 @@ namespace Hydra.Such.Portal.Controllers
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
         }
-        public ProjetosController()
-        {
-      
-        }
+
         #region Home
         [HttpPost]
         public JsonResult GetListProjectsByArea([FromBody] JObject requestParams)

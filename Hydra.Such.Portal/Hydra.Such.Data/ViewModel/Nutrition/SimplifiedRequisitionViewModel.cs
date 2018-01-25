@@ -15,6 +15,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string RegionCode { get; set; }
         public string FunctionalAreaCode { get; set; }
         public string ResponsabilityCenterCode { get; set; }
+        public int? MealType { get; set; }
         public string ProjectNo { get; set; }
         public string ApprovalDate { get; set; }
         public string ApprovalTime { get; set; }
