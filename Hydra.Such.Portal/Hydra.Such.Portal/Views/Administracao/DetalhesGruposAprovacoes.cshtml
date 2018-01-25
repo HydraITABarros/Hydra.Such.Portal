@@ -78,7 +78,13 @@
                    on-response="_updateResponse"
                    content-type="application/json">
         </iron-ajax>
-
+        <iron-ajax last-response="{{deleteResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete"
+                   on-response="_deleteResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/GetUtilizadores"
                    last-response="{{UsersList}}"
@@ -95,7 +101,7 @@
                 <h2 class="separator"> @ViewBag.GroupApproval</h2>
             </div>
         </div>
-      
+
         <div class="row">
             <div class="col-lg-4">
                 <vaadin-combo-box items="[[UsersList]]" id="ddUser" item-value-path="id" item-label-path="value" value="{{ddUser}}" label="Utilizador Aprovação" disabled="{{ _permissionsCreate }}">
@@ -179,7 +185,7 @@
                 openToastError: function (message) {
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
-                },              
+                },
                 _createApprovalGroupDetails: function () {
                     if (this.$.ddUser.value != null && this.$.ddUser.value != "") {
                         var line = {
@@ -192,7 +198,7 @@
                         else {
                             this.result.push(line);
                         }
-                        
+
                         this.$.ajax_update.body = JSON.stringify(line);
                         this.$.ajax_update.url = "/Administracao/CreateDetailsApprovalGroup";
                         this.$.ajax_update.generateRequest();
@@ -219,6 +225,18 @@
                         this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
                     }
                 },
+                 _deleteResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        this.openToast('Eliminado com sucesso!');
+                        this.$.page_databound_ajax.body = JSON.stringify(@ViewBag.IDGroupApproval);
+                        this.$.page_databound_ajax.generateRequest();
+                        
+                    }
+                    else {
+                        this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
+                    }
+                },
                 _cancel: function () {
                     this.$.page_databound_ajax.generateRequest();
                     this.$.gridDetailsGroupApprovals.clearCache();
@@ -229,9 +247,9 @@
                 _deleteAccessProfile: function (data) {
                     var index = this.result.indexOf(data.model.item);
                     this.result.splice(index, 1);
-                    this.$.ajax_update.url = "/Administracao/DeteleDetailsApprovalGroup";
-                    this.$.ajax_update.body = JSON.stringify(this.result);
-                    this.$.ajax_update.generateRequest();
+                    this.$.ajax_delete.url = "/Administracao/DeteleDetailsApprovalGroup";
+                    this.$.ajax_delete.body = JSON.stringify(data.model.item);
+                    this.$.ajax_delete.generateRequest();
                 }
             });
         });

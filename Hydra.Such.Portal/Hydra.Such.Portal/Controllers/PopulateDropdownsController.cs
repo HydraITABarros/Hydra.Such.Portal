@@ -215,6 +215,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+       
         [HttpPost]
         public JsonResult GetFolhaDeHoraAjudaTipoCusto()
         {
@@ -1343,10 +1344,12 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetUnitStockeeping()
         {
-            List<DDMessageString> result = DBStockkeepingUnit.GetAll().Select(x => new DDMessageString()
+            List<DDMessageRelated> result = DBStockkeepingUnit.GetAll().Select(x => new DDMessageRelated()
             {
                 id = x.NºProduto,
-                value = x.Descrição
+                value = x.Descrição,
+                extra= x.CustoUnitário.ToString(),
+                extra2=x.CódUnidadeMedidaProduto
             }).ToList();
 
             return Json(result);
@@ -1374,6 +1377,28 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
 
             return Json(products);
+        }
+
+        [HttpPost]
+        public JsonResult GetGroupsClassificationTechniques()
+        {
+            List<DDMessage> result = DBClassificationFilesTechniques.GetTypeFiles(1).Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetActionsConfection()
+        {
+            List<DDMessage> result = DBActionsConfection.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
         }
 
         [HttpPost]
@@ -1416,6 +1441,16 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetRecTechnicPlatesType()
+        {
+            List<DDMessageString> result = DBRecordTechnicalOfPlates.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.NºPrato,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+        [HttpPost]
         public IActionResult GetLinesRecordTechnicalOfPlatesCode([FromBody] string type)
         {
             List<DDMessageRelated> result = new List<DDMessageRelated>();
@@ -1450,5 +1485,8 @@ namespace Hydra.Such.Portal.Controllers
         public string id { get; set; }
         public string value { get; set; }
         public string extra { get; set; }
+        public string extra2 { get; set; }
     }
+
+   
 }

@@ -98,6 +98,21 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
+
+        public static List<ProcedimentosDeConfeção> GetAllbyActionNo(int actionNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ProcedimentosDeConfeção.Where(x => x.CódigoAção == actionNo).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         #endregion
         public static ProceduresConfectionViewModel ParseToViewModel(this ProcedimentosDeConfeção item)
         {
@@ -123,6 +138,32 @@ namespace Hydra.Such.Data.Logic.Nutrition
             if (items != null)
                 items.ForEach(x =>
                     parsedItems.Add(x.ParseToViewModel()));
+            return parsedItems;
+        }
+        public static ProcedimentosDeConfeção ParseToDatabase(this ProceduresConfectionViewModel item)
+        {
+            if (item != null)
+            {
+                return new ProcedimentosDeConfeção()
+                {
+                    NºPrato=item.TechnicalSheetNo,
+                    CódigoAção=item.actionNo,
+                    Descrição=item.description,
+                    NºOrdem=item.orderNo,
+                    DataHoraCriação = item.CreateDateTime,
+                    DataHoraModificação = item.UpdateDateTime,
+                    UtilizadorCriação = item.UpdateUser,
+                    UtilizadorModificação= item.UpdateUser
+                };
+            }
+            return null;
+        }
+        public static List<ProcedimentosDeConfeção> ParseToDatabase(this List<ProceduresConfectionViewModel> items)
+        {
+            List<ProcedimentosDeConfeção> parsedItems = new List<ProcedimentosDeConfeção>();
+            if (items != null)
+                items.ForEach(x =>
+                    parsedItems.Add(x.ParseToDatabase()));
             return parsedItems;
         }
     }

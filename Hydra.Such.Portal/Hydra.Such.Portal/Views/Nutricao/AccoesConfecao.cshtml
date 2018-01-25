@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Grupos Aprovacões";
+    ViewData["Title"] = "Acções Confeção";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -25,18 +25,13 @@
 @*textfield*@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html">
-<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html">
-
-<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html">
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html">
 
 
 <h1 class="title">@ViewData["Title"]</h1>
 
-<x-groupapprovals></x-groupapprovals>
+<x-actionsconfection></x-actionsconfection>
 
-<dom-module id="x-groupapprovals">
+<dom-module id="x-actionsconfection">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -59,7 +54,7 @@
         </custom-style>
 
         @*POPULATE GRID*@
-        <iron-ajax url="/Administracao/GetApprovalGroup"
+        <iron-ajax url="/Nutricao/GetActionsConfection"
                    last-response="{{result}}"
                    method="post"
                    auto
@@ -68,76 +63,79 @@
                    content-type="application/json">
         </iron-ajax>
 
-        @*POPULATE Update*@
-        <iron-ajax last-response="{{createResult}}"
+        <iron-ajax url="/Nutricao/UpdateActionsConfection"
+                   last-response="{{result}}"
                    method="post"
+                   on-response="_updateResponse"
                    handle-as="json"
                    id="ajax_update"
-                   on-response="_updateResponse"
-                   content-type="application/json">
-        </iron-ajax>
-        <iron-ajax url="/Administracao/DeleteApprovalGroup"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Nutricao/CreateActionsConfection"
+                   last-response="{{createResult}}"
+                   method="post"
+                   on-response="_createResponse"
+                   handle-as="json"
+                   id="ajax_create"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Nutricao/DeleteActionsConfection"
                    last-response="{{deleteResult}}"
                    method="post"
+                   on-response="_deleteResponse"
                    handle-as="json"
                    id="ajax_delete"
-                   on-response="_deleteResponse"
-                   content-type="application/json">
-        </iron-ajax>
+                   content-type="application/json"></iron-ajax>
+
         <div class="row">
             <div class="col-lg-2">
-                <h2 class="separator">Novo Registo</h2>
+                <h2 class="separator">Registos</h2>
             </div>
         </div>
-        <div class="row">        
-          
+        <div class="row">
             <div class="col-lg-2">
-                <vaadin-text-field id="ddDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                <vaadin-text-field id="ddDescription" label="Descrição" disabled="{{ _permissions.Create }}"></vaadin-text-field>
             </div>
-
             <div class="col-lg-2 alignPoga">
-                <paper-button id="btnAddNew" class="btnSave" on-tap="_createApprovalGroup" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissions.Create }}">Criar</paper-button>
             </div>
         </div>
-        <br />
-
-        <vaadin-grid id="gridDescriptionApprovals" aria-label="gridDescriptionApprovals" items="[[result]]" class="grid" multi-sort="true">
-            <vaadin-grid-column resizable>
+        <vaadin-grid id="gridActionsConfection" aria-label="gridActionsConfection" items="[[result]]" class="grid" multi-sort="true">
+            <vaadin-grid-column resizable width="160px">
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code" />
                 </template>
                 <template>
-                    <vaadin-text-field id="ddcodGroup" value="{{item.code}}" disabled></vaadin-text-field>
+                    <vaadin-text-field value="{{item.code}}" disabled="{{ _permissions.Update }}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column resizable>
+            <vaadin-grid-column resizable width="160px">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
                 </template>
                 <template>
-                    <vaadin-text-field  value="{{item.description}}" disabled="{{  _permissionsUpdate  }}">
+                    <vaadin-text-field value="{{item.description}}" disabled="{{ _permissions.Update }}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="10%" resizable>
+            <vaadin-grid-column with="10%">
                 <template class="header">
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnEdit" raised on-tap="_detailsAcess">Detalhes</paper-button>
-                        <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                        <paper-button class="btnRemove" raised on-tap="_delete" disabled="{{ _permissions.Delete }}">Eliminar</paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
         <div class="marginSpace">
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissions.Update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissions.Update }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
         </div>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
     </template>
 
     <script>
@@ -153,7 +151,7 @@
         }
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-groupapprovals',
+                is: 'x-actionsconfection',
                 properties: {
                     _permissionsUpdate: {
                         type: Boolean,
@@ -171,6 +169,65 @@
                 ready: function () {
                     this.$.page_databound_ajax.generateRequest();
                 },
+                _create: function () {
+                    this.$.ajax_create.body = JSON.stringify({ description: this.$.ddDescription.value });
+                    this.$.ajax_create.generateRequest();
+                    this.$.gridActionsConfection.clearCache();
+                },
+                _update: function () {
+                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.generateRequest();
+                    this.$.gridActionsConfection.clearCache();
+                },
+                _delete: function (e) {
+                    this.$.ajax_delete.body = JSON.stringify(e.model.item);
+                    this.$.ajax_delete.generateRequest();
+                    this.result = this.result.filter(function (item) {
+                        return item != e.model.item;
+                    });
+                    this.$.gridActionsConfection.clearCache();
+                },
+                _cancel: function () {
+                    this.$.page_databound_ajax.generateRequest();
+                    this.$.gridActionsConfection.clearCache();
+                },
+                _updateResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this.openToast("Tabela atualizada.");
+                    }
+                    else {
+                        this.openToastError("Occorreu um erro ao atualizar a Tabela.");
+                    }
+                },
+                _createResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        this.ddDescription = "";
+                        this.$.page_databound_ajax.generateRequest();
+                        this.openToast("Tabela atualizada.");
+                    }
+                    else {
+                        this.openToastError("Occorreu um erro ao atualizar a Tabela.");
+                    }
+                },
+                _deleteResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        if (this.deleteResult != null) {
+                            this.$.page_databound_ajax.generateRequest();
+                            this.openToast("Registo eliminado.");
+                        }
+                        else {
+                            this.$.page_databound_ajax.generateRequest();
+                            this.openToastError("Impossivel elimiar registo");
+                        }
+                    }
+                    else {
+                        this.openToastError("Occorreu um erro ao atualizar a Tabela.");
+                    }
+                },
                 openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
@@ -178,85 +235,9 @@
                 openToastError: function (message) {
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
-                },
-
-                _update: function () {
-                    this.$.ajax_update.url = "/Administracao/UpdateApprovalGroup";
-                    this.$.ajax_update.body = JSON.stringify(this.result);
-                    this.$.ajax_update.generateRequest();
-                    this.$.gridDescriptionApprovals.clearCache();
-                },
-
-                _createApprovalGroup: function () {
-                    if (this.$.ddDescription.value != null && this.$.ddDescription.value != "") {
-                        var line = {
-                            Description: this.$.ddDescription.value
-                        }
-                        if (this.result == null) {
-                            this.result = line;
-                        }
-                        else {
-                            this.result.push(line);
-                        }
-                        this.$.ajax_update.body = JSON.stringify(line);
-                        this.$.ajax_update.url = "/Administracao/CreateApprovalGroup";
-                        this.$.ajax_update.generateRequest();
-                    }
-                    else {
-                        this.openToastError("A descrição não pode ser vazia");
-                    }
-                },
-                _detailsAcess: function (e) {
-                    window.location.href = "/Administracao/DetalhesGruposAprovacoes/" + e.model.item.code; 
-                },
-                _updateResponse: function (e) {
-                    var self = this;
-                    if (e.detail.status === 200) {
-                        if (this.createResult == "101") {
-                            this.openToastError('Registo duplicado!');
-                            this.$.page_databound_ajax.generateRequest();
-
-                        } else {
-                            this.openToast('Atualizado com sucesso!');
-                            this.$.page_databound_ajax.generateRequest();
-                            this.$.ddDescription.value = "";
-                            
-                        }
-                    }
-                    else {
-                        this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
-                    }
-                },
-                _deleteResponse: function (e) {
-                    var self = this;
-                    if (e.detail.status === 200) {
-                        if (this.deleteResult == "101") {
-                            this.openToastError('Impossivel eliminar registo!');
-                            this.$.page_databound_ajax.generateRequest();
-
-                        } else {
-                            this.openToast('Registo elimimando com sucesso!');
-                            this.$.page_databound_ajax.generateRequest();
-                        }
-                    }
-                    else {
-                        this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
-                    }
-                },
-                _cancel: function () {
-                    this.$.page_databound_ajax.generateRequest();
-                    this.$.gridDescriptionApprovals.clearCache();
-                },
-
-                _deleteAccessProfile: function (data) {
-                    var index = this.result.indexOf(data.model.item);
-                    this.result.splice(index, 1);
-                    this.$.ajax_delete.body = JSON.stringify(data.model.item);
-                    this.$.ajax_delete.generateRequest();
                 }
+
             });
         });
     </script>
 </dom-module>
-
-
