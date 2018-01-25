@@ -14,6 +14,7 @@
 
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
 
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
@@ -407,7 +408,7 @@
                                             <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{data.receptionDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="Notes" name="Notes" label="Observações" value="{{data.notes}}"></vaadin-text-field>
+                                            <such-textarea rows="5" value="{{data.notes}}" id="Notes" name="Notes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
                                         </div>
                                     </div>
 
