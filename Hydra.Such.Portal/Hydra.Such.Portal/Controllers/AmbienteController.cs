@@ -8,12 +8,21 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.Logic.Contracts;
 using Hydra.Such.Data.Database;
+using Hydra.Such.Portal.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Hydra.Such.Portal.Controllers
 {
     [Authorize]
     public class AmbienteController : Controller
     {
+        private readonly GeneralConfigurations _config;
+
+        public AmbienteController(IOptions<GeneralConfigurations> appSettings)
+        {
+            _config = appSettings.Value;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -344,6 +353,60 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+        #endregion
+
+        #region Pré-Requisições
+
+        public IActionResult PreRequisicoesLista()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 2, 3);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                
+                ViewBag.Area = 2;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult PreRequisicoesDetalhes(string PreRequesitionNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 2, 3);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UploadURL = _config.FileUploadFolder;
+                ViewBag.Area = 2;
+                ViewBag.PreRequesitionNo = PreRequesitionNo ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        #endregion
+
+        #region Pending Requesitions
+        public IActionResult RequisicoesPendentes()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 2, 0);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 2;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         #endregion
     }
 }

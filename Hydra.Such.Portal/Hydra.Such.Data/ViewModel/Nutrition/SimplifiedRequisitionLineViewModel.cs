@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Nutrition
 {
-    public class SimplifiedRequisitionLineViewModel
+    public class SimplifiedRequisitionLineViewModel : ErrorHandler
     {
         public string RequisitionNo { get; set; }
         public int LineNo { get; set; }
@@ -21,6 +21,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public decimal? TotalCost { get; set; }
         public string ProjectNo { get; set; }
         public int? MealType { get; set; }
+        public string DescriptionMeal { get; set; }
         public string RegionCode { get; set; }
         public string FunctionAreaCode { get; set; }
         public string ResponsabilityCenterCode { get; set; }
@@ -31,5 +32,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string CreateUser { get; set; }
         public DateTime? UpdateDate { get; set; }
         public string UpdateUser { get; set; }
+
+        
     }
 }

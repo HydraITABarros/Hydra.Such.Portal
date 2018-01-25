@@ -314,14 +314,24 @@ namespace Hydra.Such.Portal.Configurations
             },
             new EnumData()
             {
-                Id = 39,
+                Id = 41,
                 Value = "Necessidade de Compras"
             },
             new EnumData()
             {
-                Id = 40,
+                Id = 42,
                 Value = "Fichas Tecnicas de Pratos"
             },
+            new EnumData()
+            {
+                Id = 43,
+                Value = "Histórico de Requisições"
+            },
+            new EnumData()
+            {
+                Id = 44,
+                Value = "Necessidade de Compras Direta"
+            }
         };
 
         public static readonly List<EnumData> ProposalStatus = new List<EnumData>(){
@@ -1150,6 +1160,23 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> RequisitionsStatus = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Pendente"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Aprovado"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Registado"
+            }
+        };
         public static readonly List<EnumData> ProcedimentosCcpType = new List<EnumData>()
         {
             new EnumData()
@@ -1568,7 +1595,7 @@ namespace Hydra.Such.Portal.Configurations
             },
              new EnumData
             {
-                Id = 2,
+                Id = 3,
                 Value = "Depósito"
             }
         };

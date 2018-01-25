@@ -1762,6 +1762,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºUnidadeProdutiva).HasColumnName("Nº Unidade Produtiva");
 
+                entity.Property(e => e.Observações).HasColumnType("text");
+
                 entity.Property(e => e.QuantidadePorUnidMedida).HasColumnName("Quantidade por Unid. Medida");
 
                 entity.Property(e => e.TabelaPreçosFornecedor).HasColumnName("Tabela Preços Fornecedor");

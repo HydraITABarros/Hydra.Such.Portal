@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.ServiceModel;
 using System.Threading.Tasks;
+using WSGenericCodeUnit;
 
 namespace Hydra.Such.Data.NAV
 {
@@ -76,5 +77,23 @@ namespace Hydra.Such.Data.NAV
             //    return null;
             //}
         }
+
+        public static async Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> GetALLNavLocationProduct(string pItemNo, string pLocationCode,NAVWSConfigurations WSConfigurations)
+        {
+
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_Generic_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSGenericCodeUnit.WsGeneric_PortClient ws_Client = new WSGenericCodeUnit.WsGeneric_PortClient(navWSBinding, WS_URL);
+            ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+
+             return await ws_Client.FxGetStock_ItemLocationAsync(pItemNo, pLocationCode);
+
+          
+
+        }
+
+   
     }
 }

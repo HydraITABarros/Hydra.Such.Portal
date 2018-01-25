@@ -1,0 +1,337 @@
+﻿
+@{
+    ViewData["Title"] = "Procedimento Confeção";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@*grid*@
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
+@*mixin*@
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+@*ironform*@
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+@*paperinput*@
+<link rel="import" href="~/lib/paper-input/paper-input.html" />
+@*button*@
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+@*toast*@
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+@*textfield*@
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html">
+
+<h1 class="title">@ViewData["Title"]</h1>
+
+<x-proceduresconfection></x-proceduresconfection>
+
+<dom-module id="x-proceduresconfection">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                paper-input {
+                    max-width: 450px !important;
+                }
+            </style>
+        </custom-style>
+
+        @*POPULATE GRID*@
+        <iron-ajax url="/Nutricao/GetConfectionProcedure"
+                   last-response="{{result}}"
+                   method="post"
+                   auto
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Nutricao/UpdateConfectionProcedure"
+                   last-response="{{result}}"
+                   method="post"
+                   on-response="_updateResponse"
+                   handle-as="json"
+                   id="ajax_update"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Nutricao/CreateConfectionProcedure"
+                   last-response="{{createResult}}"
+                   method="post"
+                   on-response="_createResponse"
+                   handle-as="json"
+                   id="ajax_create"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Nutricao/DeleteConfectionProcedure"
+                   last-response="{{deleteResult}}"
+                   method="post"
+                   on-response="_deleteResponse"
+                   handle-as="json"
+                   id="ajax_delete"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetActionsConfection"
+                   last-response="{{ActionConfectionList}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetRecTechnicPlatesType"
+                   last-response="{{TechnicalSheetList}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="row">
+            <div class="col-lg-2">
+                <h2 class="separator">Registos</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2">
+                <vaadin-combo-box items="[[TechnicalSheetList]]" id="ddTechnicalSheetNo" item-value-path="id" item-label-path="id" label="Nº do Prato">
+                    <template>
+                        <table width="140px">
+                            <tr>
+                                <td width="30%">[[item.id]]</td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-combo-box items="[[ActionConfectionList]]" id="ddActionNo" item-value-path="id" item-label-path="value" label="Código Acção">
+                    <template>
+                        <table width="140px">
+                            <tr>
+                                <td width="80%"> <b>[[item.value]]</b></td>
+                                <td width="20%">[[item.id]]</td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-text-field id="ddDescription" label="Descrição"></vaadin-text-field>
+            </div>
+            <div class="col-lg-2">
+                <vaadin-text-field id="ddOrderNo" type="number" label="Nº de Ordem"></vaadin-text-field>
+            </div>
+            <div class="col-lg-2 alignPoga">
+                <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissions.Create }}">Criar</paper-button>
+            </div>
+        </div>
+        <br />
+        <vaadin-grid id="gridProceduresConfection" aria-label="gridProceduresConfection" items="[[result]]" class="grid" multi-sort="true">
+            <vaadin-grid-column>
+                <template class="header">
+                    <vaadin-grid-sorter path="technicalSheetNo">Nº de Prato </vaadin-grid-sorter>
+                    <vaadin-grid-filter path="technicalSheetNo" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[TechnicalSheetList]]" id="technicalSheetList" item-value-path="id" item-label-path="id" value="{{item.technicalSheetNo}}">
+                        <template>
+                            <table width="200px">
+                                <tr>
+                                    <td width="30%">[[item.id]]</td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">
+                    <vaadin-grid-sorter path="actionNo">Código Acção </vaadin-grid-sorter>
+                    <vaadin-grid-filter path="actionNo" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[ActionConfectionList]]" id="actionNo" item-value-path="id" item-label-path="value" value="{{item.actionNo}}" >
+                        <template>
+                            <table width="200px">
+                                <tr>
+                                    <td width="70%"> <b>[[item.value]]</b></td>
+                                    <td width="30%">[[item.id]]</td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.description}}" disabled="{{ _permissions.Update }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="160px">
+                <template class="header">
+                    <vaadin-grid-sorter path="orderNo">Nº de Ordem</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="orderNo" />
+                </template>
+                <template>
+                    <vaadin-text-field type="number" value="{{item.orderNo}}" disabled="{{ _permissions.Update }}"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column with="10%">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnRemove" raised on-tap="_delete" disabled="{{ _permissions.Delete }}">Eliminar</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+        <div class="marginSpace">
+            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissions.Update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissions.Update }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+        </div>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+    </template>
+
+    <script>
+        var CreateValue = true, UpdateValue = true, DeleteValue = true;
+         if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' =="false") {
+            CreateValue = false;
+        }
+        if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' =="false") {
+            UpdateValue = false;
+        }
+        if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' =="false") {
+            DeleteValue = false;
+        }
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-proceduresconfection',
+                properties: {
+                    _permissionsUpdate: {
+                        type: Boolean,
+                        value: UpdateValue
+                    },
+                    _permissionsCreate: {
+                        type: Boolean,
+                        value: CreateValue
+                    },
+                    _permissionsDelete: {
+                        type: Boolean,
+                        value: DeleteValue
+                    },
+                },
+                ready: function () {
+                    var option="@ViewBag.Groups";
+                    this.$.page_databound_ajax.body = JSON.stringify(option);
+                    this.$.page_databound_ajax.generateRequest();
+                },
+                _create: function () {
+
+                    var line = {
+                        Description: this.$.ddDescription.value,
+                        ActionNo: this.$.ddActionNo.value,
+                        OrderNo: this.$.ddOrderNo.value,
+                        TechnicalSheetNo: this.$.ddTechnicalSheetNo.value
+                    };
+
+                    this.$.ajax_create.body = JSON.stringify(line);
+                    this.$.ajax_create.generateRequest();
+                    this.$.gridProceduresConfection.clearCache();
+                },
+                _update: function () {
+                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.generateRequest();
+                    this.$.gridProceduresConfection.clearCache();
+                },
+                _delete: function (e) {
+                    this.$.ajax_delete.body = JSON.stringify(e.model.item);
+                    this.$.ajax_delete.generateRequest();
+                    this.result = this.result.filter(function (item) {
+                        return item != e.model.item;
+                    });
+                    this.$.gridProceduresConfection.clearCache();
+                },
+                _cancel: function () {
+                    this.$.page_databound_ajax.generateRequest();
+                    this.$.gridProceduresConfection.clearCache();
+                },
+                _updateResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this.openToast("Tabela atualizada.");
+                    }
+                    else {
+                        this.openToastError("Occorreu um erro ao atualizar a Tabela.");
+                    }
+                },
+                _createResponse: function (e) {
+                    if (e.detail.status === 200) {
+                        if (this.createResult == "101") {
+                            this.openToastError('Registo duplicado!');
+                            this.$.page_databound_ajax.generateRequest();
+
+                        } else {
+                            this.openToast('Registo criado com sucesso!');
+                            this.$.page_databound_ajax.generateRequest();
+                            this.$.ddDescription.value = "";
+                            this.$.ddActionNo.value = "";
+                            this.$.ddOrderNo.value = "";
+                            this.$.ddTechnicalSheetNo.value = "";
+                        }
+                    }
+                    else {
+                        this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
+                    }
+                },
+                _deleteResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+
+                        this.$.page_databound_ajax.generateRequest();
+                        this.openToast("Registo eliminado com sucesso.");
+                    }
+                    else {
+                        this.openToastError("Occorreu um erro ao atualizar a Tabela.");
+                    }
+                },
+                openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                }
+            });
+        });
+    </script>
+</dom-module>

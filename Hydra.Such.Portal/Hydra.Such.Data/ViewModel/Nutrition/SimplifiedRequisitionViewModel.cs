@@ -49,5 +49,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string CreateUser { get; set; }
         public DateTime? UpdateDate { get; set; }
         public string UpdateUser { get; set; }
+
+        
     }
 }

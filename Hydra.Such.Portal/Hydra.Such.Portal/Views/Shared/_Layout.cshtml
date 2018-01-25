@@ -43,13 +43,15 @@
                             <a href="#"> Engenharia <span class="arrow"></span></a>
                         </li>
                         <ul class="sub-menu collapse" id="Engenharia">
-                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Engenharia")</li>
-                            <li>@Html.ActionLink("Propostas", "Propostas", "Engenharia")</li>
-                            <li>@Html.ActionLink("Contratos", "Contratos", "Engenharia")</li>
-                            <li>@Html.ActionLink("Projetos", "Projetos", "Engenharia")</li>
-                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Engenharia")</li>
-                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos")</li>
-                            <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos")</li>
+                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Engenharia", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Propostas", "Propostas", "Engenharia", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Contratos", "Contratos", "Engenharia", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Projetos", "Projetos", "Engenharia", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Engenharia", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "Engenharia", new { area = "" }, null)</li>
+
+                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos", new { area = "" }, null)</li>
                             <li data-toggle="collapse" data-target="#FolhasDeHorasEngenharia" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
                                 <ul class="sub-menu collapse" id="FolhasDeHorasEngenharia">
@@ -69,13 +71,15 @@
                             <a href="#"> Ambiente <span class="arrow"></span></a>
                         </li>
                         <ul class="sub-menu collapse" id="Ambiente">
-                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Ambiente")</li>
-                            <li>@Html.ActionLink("Propostas", "Propostas", "Ambiente")</li>
-                            <li>@Html.ActionLink("Contratos", "Contratos", "Ambiente")</li>
-                            <li>@Html.ActionLink("Projetos", "Projetos", "Ambiente")</li>
-                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Ambiente")</li>
-                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos")</li>
-                            <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos")</li>
+                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Ambiente", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Propostas", "Propostas", "Ambiente", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Contratos", "Contratos", "Ambiente", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Projetos", "Projetos", "Ambiente", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Ambiente", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "Ambiente", new { area = "" }, null)</li>
+
+                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos", new { area = "" }, null)</li>
                             <li data-toggle="collapse" data-target="#FolhasDeHorasAmbiente" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
                                 <ul class="sub-menu collapse" id="FolhasDeHorasAmbiente">
@@ -95,15 +99,16 @@
                             <a href="#"> Nutricao <span class="arrow"></span></a>
                         </li>
                         <ul class="sub-menu collapse" id="Nutricao">
-                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Nutricao")</li>
-                            <li>@Html.ActionLink("Propostas", "Propostas", "Nutricao")</li>
-                            <li>@Html.ActionLink("Contratos", "Contratos", "Nutricao")</li>
-                            <li>@Html.ActionLink("Projetos", "Projetos", "Nutricao")</li>
-                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Nutricao")</li>
-                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos")</li>
-                            <li>@Html.ActionLink("Movimento de Produtos", "MovimentoProdutos", "Nutricao")</li>
-                            <li>@Html.ActionLink("Unidade de Medida de Produto", "UnidadeMedidaProduto", "Nutricao")</li>
-                            <li>@Html.ActionLink("Unidade de Armazem", "UnidadeArmazenamento", "Nutricao")</li>
+                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Propostas", "Propostas", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Contratos", "Contratos", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Projetos", "Projetos", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Movimento de Produtos", "MovimentoProdutos", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Unidade de Medida de Produto", "UnidadeMedidaProduto", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Unidade de Armazem", "UnidadeArmazenamento", "Nutricao", new { area = "" }, null)</li>
 
                             <li data-toggle="collapse" data-target="#FolhasDeHorasNutricao" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
@@ -122,6 +127,7 @@
                             <li>@Html.ActionLink("Modelos Req. Simplificadas", "ModelosReqSimplificada", "Nutricao", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Requisições Simplificadas", "RequisicoesSimplificadas", "Nutricao", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Requisições para Registar", "RequisicoesSimplificadas", "Nutricao", new { area = "", option = 1 }, null)</li>
+                            <li>@Html.ActionLink("Fichas Tecnicas de Pratos", "FichasTecnicasPratos/Detalhes", "Nutricao")</li>
 
                         </ul>
 
@@ -130,28 +136,32 @@
                             <a href="#"> Vendas <span class="arrow"></span></a>
                         </li>
                         <ul class="sub-menu collapse" id="Vendas">
-                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Vendas")</li>
-                            <li>@Html.ActionLink("Propostas", "Propostas", "Vendas")</li>
-                            <li>@Html.ActionLink("Contratos", "Contratos", "Vendas")</li>
-                            <li>@Html.ActionLink("Projetos", "Projetos", "Vendas")</li>
-                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Vendas")</li>
-                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos")</li>
-                            <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos")</li>
-                            <li>@Html.ActionLink("Requisições", "Requisicoes", "Vendas")</li>
-                            <li>@Html.ActionLink("Contactos", "Index", "Contactos")</li>
-                            <li>@Html.ActionLink("Administração", "Administracao", "Vendas")</li>
+                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Vendas", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Propostas", "Propostas", "Vendas", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Contratos", "Contratos", "Vendas", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Projetos", "Projetos", "Vendas", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Vendas", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "Vendas", new { area = "" }, null)</li>
+
+                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Requisições", "Requisicoes", "Vendas", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Contactos", "Index", "Contactos", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Administração", "Administracao", "Vendas", new { area = "" }, null)</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#Apoio" class="collapsed active">
                             <a href="#"> Apoio <span class="arrow"></span></a>
                         </li>
                         <ul class="sub-menu collapse" id="Apoio">
-                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Apoio")</li>
-                            <li>@Html.ActionLink("Propostas", "Propostas", "Apoio")</li>
-                            <li>@Html.ActionLink("Contratos", "Contratos", "Apoio")</li>
-                            <li>@Html.ActionLink("Projetos", "Projetos", "Apoio")</li>
-                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Apoio")</li>
-                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos")</li>
+                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Apoio", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Propostas", "Propostas", "Apoio", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Contratos", "Contratos", "Apoio", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Projetos", "Projetos", "Apoio", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Apoio", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "Apoio", new { area = "" }, null)</li>
+
+                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos", new { area = "" }, null)</li>
                             <li data-toggle="collapse" data-target="#FolhasDeHorasApoio" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
                                 <ul class="sub-menu collapse" id="FolhasDeHorasApoio">
@@ -170,12 +180,14 @@
                             <a href="#"> P&O <span class="arrow"></span></a>
                         </li>
                         <ul class="sub-menu collapse" id="PO">
-                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "PO")</li>
-                            <li>@Html.ActionLink("Propostas", "Propostas", "PO")</li>
-                            <li>@Html.ActionLink("Contratos", "Contratos", "PO")</li>
-                            <li>@Html.ActionLink("Projetos", "Projetos", "PO")</li>
-                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "PO")</li>
-                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos")</li>
+                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "PO", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Propostas", "Propostas", "PO", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Contratos", "Contratos", "PO", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Projetos", "Projetos", "PO", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "PO", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "PO", new { area = "" }, null)</li>
+
+                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos", new { area = "" }, null)</li>
                             <li data-toggle="collapse" data-target="#FolhasDeHorasPO" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
                                 <ul class="sub-menu collapse" id="FolhasDeHorasPO">
@@ -193,12 +205,14 @@
                             <a href="#"> Novas Áreas <span class="arrow"></span></a>
                         </li>
                         <ul class="sub-menu collapse" id="NovasAreas">
-                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "NovasAreas")</li>
-                            <li>@Html.ActionLink("Propostas", "Propostas", "NovasAreas")</li>
-                            <li>@Html.ActionLink("Contratos", "Contratos", "NovasAreas")</li>
-                            <li>@Html.ActionLink("Projetos", "Projetos", "NovasAreas")</li>
-                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "NovasAreas")</li>
-                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos")</li>
+                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "NovasAreas", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Propostas", "Propostas", "NovasAreas", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Contratos", "Contratos", "NovasAreas", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Projetos", "Projetos", "NovasAreas", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "NovasAreas", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "NovasAreas", new { area = "" }, null)</li>
+
+                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos", new { area = "" }, null)</li>
                             <li data-toggle="collapse" data-target="#FolhasDeHorasNovasAreas" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
                                 <ul class="sub-menu collapse" id="FolhasDeHorasNovasAreas">
@@ -216,13 +230,15 @@
                             <a href="#"> Internacionalizações <span class="arrow"></span></a>
                         </li>
                         <ul class="sub-menu collapse" id="Internacionalizacoes">
-                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Internacionalizacoes")</li>
-                            <li>@Html.ActionLink("Propostas", "Propostas", "Internacionalizacoes")</li>
-                            <li>@Html.ActionLink("Contratos", "Contratos", "Internacionalizacoes")</li>
-                            <li>@Html.ActionLink("Projetos", "Projetos", "Internacionalizacoes")</li>
-                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Internacionalizacoes")</li>
-                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos")</li>
-                            <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos")</li>
+                            <li>@Html.ActionLink("Oportunidades", "Oportunidades", "Internacionalizacoes", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Propostas", "Propostas", "Internacionalizacoes", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Contratos", "Contratos", "Internacionalizacoes", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Projetos", "Projetos", "Internacionalizacoes", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Internacionalizacoes", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "Internacionalizacoes", new { area = "" }, null)</li>
+
+                            <li>@Html.ActionLink("Faturação", "Faturacao", "Projetos", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Avença Fixa", "AvencaFixa", "Contratos", new { area = "" }, null)</li>
                             <li data-toggle="collapse" data-target="#FolhasDeHorasInternacionalizacoes" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
                                 <ul class="sub-menu collapse" id="FolhasDeHorasInternacionalizacoes">
@@ -265,11 +281,11 @@
                                 </ul>
                             </li>
                             @* zpgm.> *@
-                            <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "Compras")</li>
-                            <li>@Html.ActionLink("Requisições Aprovadas", "GestaoRequisicoes/RequisicoesAprovadas", "Compras")</li>
-                            <li>@Html.ActionLink("Gestão de Requisições", "GestaoRequisicoes/Detalhes", "Compras")</li>
-                            <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras")</li>
-                            <li>@Html.ActionLink("Administração", "Administracao", "Compras")</li>
+                            <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "Compras", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Requisições Aprovadas", "GestaoRequisicoes/RequisicoesAprovadas", "Compras", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Gestão de Requisições", "GestaoRequisicoes/Detalhes", "Compras", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Administração", "Administracao", "Compras", new { area = "" }, null)</li>
                         </ul>
 
                         <li data-toggle="collapse" data-target="#Administracao" class="collapsed active">

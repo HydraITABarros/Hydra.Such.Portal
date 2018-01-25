@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Controllers\PREREQ0249_0_Amadora_VASCOMANUELSOARESCORVEIRA_Semana_de_22_01_2018_a_28_01_2018 (1).xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="Areas\Compras\Views\GestaoRequisicoes\PontoSituacao - Copy.cshtml" />
     <Content Remove="Areas\Compras\Views\GestaoRequisicoes\PontoSituacao.cshtml" />
   </ItemGroup>
@@ -39,6 +43,7 @@
     <Folder Include="Areas\Nutricao\Data\" />
     <Folder Include="Areas\Nutricao\Models\" />
     <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\Upload\" />
     <Folder Include="wwwroot\reports\" />
   </ItemGroup>
 

@@ -463,7 +463,7 @@
                         </div>
                     </div>
                 </iron-form>
-                <div class="row break_clear marginSpace">
+                <div class="row break_clear marginSpace" hidden ="{{_isArchived}}">
                     <paper-button raised id="btnLocalMarketValidation" style="width: 250px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>
                     <paper-button raised id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
                     <paper-button raised id="btnRegistProvide" style="width: 150px !important;" on-tap="_RegistProvide"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Disponibilizar</paper-button>
@@ -486,8 +486,8 @@
                 <div class="col-md-12 col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">Linhas</div>
-                        <div class="panel-body">
-                            <div class="row">
+                        <div class="panel-body" >
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="col-lg-3">
                                     <vaadin-combo-box items="[[locationsresult]]" id="localCodeId" item-value-path="id" item-label-path="value" value="" label="Código Localização">
                                         <template>
@@ -528,7 +528,7 @@
                                     </vaadin-combo-box>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="col-lg-3">
                                     <vaadin-text-field id="quantityToRequireId" name="quantityToRequireName" label="Quantidade A Requerer" value=""></vaadin-text-field>
                                 </div>
@@ -542,7 +542,7 @@
                                     <vaadin-text-field id="quantityAvailableId" name="quantityAvailableName" label="Quantidade Disponibilizada" value=""></vaadin-text-field>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="col-lg-3">
                                     <vaadin-text-field id="quantityReceivableId" name="quantityReceivableName" label="Quantidade A Receber" value=""></vaadin-text-field>
                                 </div>
@@ -556,7 +556,7 @@
                                     <vaadin-text-field id="unitCostsouldId" name="unitCostsouldName" label="Preço Unitário Venda" value=""></vaadin-text-field>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="col-lg-3">
                                     <vaadin-text-field id="budgetValueId" name="budgetValueName" label="Valor Orçamento" value=""></vaadin-text-field>
                                 </div>
@@ -568,7 +568,7 @@
                                     <vaadin-text-field id="queryCreatedMarketNoId" name="queryCreatedMarketNoName" label="Nº de Consulta Mercado Criada" value=""></vaadin-text-field>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="col-lg-3 alignPoga">
                                     <vaadin-checkbox id="sendPrePurchaseId">Enviar Pré Compra</vaadin-checkbox>
                                 </div>
@@ -591,7 +591,7 @@
                                     <vaadin-text-field id="maintenanceOrderLineNoId" name="maintenanceOrderLineNoName" label="Nº Linha Ordem Manutenção" value=""></vaadin-text-field>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="col-lg-3">
                                     <vaadin-combo-box items="[[CBVehicle]]" id="vehicleId" item-value-path="id" item-label-path="id" value="" label="Viatura">
                                         <template>
@@ -615,7 +615,7 @@
                                     <vaadin-checkbox id="chkLocalMarket">Mercado Local</vaadin-checkbox>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="col-lg-3">
                                     <vaadin-combo-box items="[[OpenOrderHeaderIds]]" id="openOrderHeaderId" item-value-path="id" item-label-path="id" label="Nº Encomenda Aberto" on-change="_populateOpenOrderLines" disabled="{{ !_permissions.update }}">
                                         <template>
@@ -641,8 +641,7 @@
                                     </vaadin-combo-box>
                                 </div>
                             </div>
-
-                            <div class="row">
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="marginSpace">
                                     <template is="dom-if" if="{{ !isReadOnly() }}">
                                         <paper-button raised id="btnCreate" class="btnSave" on-tap="_createRequisitionLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
@@ -943,7 +942,7 @@
 
 
                                     <template is="dom-if" if="{{ !isReadOnly() }}">
-                                        <vaadin-grid-column width="100px" resizable>
+                                        <vaadin-grid-column width="100px" resizable hidden ="{{_isArchived}}">
                                             <template class="header">
                                             </template>
                                             <template>
@@ -1035,6 +1034,10 @@
                         _reportserverurl: {
                             type: String,
                         }
+                        _isArchived: {
+                            type: Boolean,
+                            value: false
+                        }
                     },
                     observers: [
                         '_onCacheLoaded(data,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,locationsresult,CBProducts,unitofmeasureresult,cboSupplier,Requisition)'
@@ -1057,7 +1060,11 @@
                     },
                     _onCacheLoaded: function (data, LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, locationsresult, CBProducts, unitofmeasureresult, cboSupplier, Requisition) {
                         if (!this.Flag) {
+                            debugger;
                             this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                            if (this._requisitionstatus === 6) {
+                                this._isArchived = true;
+                            }
                             this.$.requisition_datasource.generateRequest();
                         }
                         this.Flag = true;
@@ -1317,31 +1324,26 @@
                         }
                     },
                     _RegistProvide: function () {
-                        debugger;
                         this.$.regist_datasource.body = JSON.stringify(this.Requisition);
                         this.$.regist_datasource.params = { "registType": "Disponibilizar" };
                         this.$.regist_datasource.generateRequest();
                     },
                     _RegistToReceive: function () {
-                        debugger;
                         this.$.regist_datasource.body = JSON.stringify(this.Requisition);
                         this.$.regist_datasource.params = { "registType": "Receber" };
                         this.$.regist_datasource.generateRequest();
                     },
                     _RegistOverrideValidation: function () {
-                        debugger;
                         this.$.regist_datasource.body = JSON.stringify(this.Requisition);
                         this.$.regist_datasource.params = { "registType": "Anular Validacao" };
                         this.$.regist_datasource.generateRequest();
                     },
                     _RegistCancelApproval: function () {
-                        debugger;
                         this.$.regist_datasource.body = JSON.stringify(this.Requisition);
                         this.$.regist_datasource.params = { "registType": "Anular Aprovacao" };
                         this.$.regist_datasource.generateRequest();
                     },
                     _RegistCloseRequest: function () {
-                        debugger;
                         this.$.regist_datasource.body = JSON.stringify(this.Requisition);
                         this.$.regist_datasource.params = { "registType": "Fechar Requisicao" };
                         this.$.regist_datasource.generateRequest();
@@ -1454,9 +1456,12 @@
                         }
                     },
                     _registTypeResponse: function (e) {
+                        debugger;
                         if (this.regist.eReasonCode == "1") {
                             this._openToast(this.regist.eMessage);
-
+                            if (this.regist.state === 6) {
+                                window.location.href = "/Compras/GestaoRequisicoes/HistóricoCabeçalhoRequisicao/" + this._requisitionid;
+                            }
                             try {
                                 this.$.grdRequisitionLines.clearCache();
                             }

@@ -27,7 +27,7 @@ namespace Hydra.Such.Portal.Controllers
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
         }
-        
+
         #region Home
         [HttpPost]
         public JsonResult GetListProjectsByArea([FromBody] JObject requestParams)
@@ -683,6 +683,129 @@ namespace Hydra.Such.Portal.Controllers
             return Json(dp);
         }
 
+        public JsonResult UpdateProjectDiaryRequisition( List<ProjectDiaryViewModel> dp, string projectNo, string userName)
+        {
+            List<DiárioDeProjeto> previousList;
+            if (projectNo == null || projectNo == "")
+            {
+                // Get All
+                previousList = DBProjectDiary.GetAll(userName);
+            }
+            else
+            {
+                previousList = DBProjectDiary.GetByProjectNo(projectNo, userName);
+            }
+
+
+            //previousList.RemoveAll(x => !dp.Any(u => u.LineNo == x.NºLinha));
+            //previousList.ForEach(x => DBProjectDiary.Delete(x));
+            foreach (DiárioDeProjeto line in previousList)
+            {
+                if (!dp.Any(x => x.LineNo == line.NºLinha))
+                {
+                    DBProjectDiary.Delete(line);
+                }
+            }
+
+            //Update or Create
+            try
+            {
+                dp.ForEach(x =>
+                {
+                    List<DiárioDeProjeto> dpObject = DBProjectDiary.GetByLineNo(x.LineNo, userName);
+
+                    if (dpObject.Count > 0)
+                    {
+                        DiárioDeProjeto newdp = dpObject.FirstOrDefault();
+
+                        newdp.NºLinha = x.LineNo;
+                        newdp.NºProjeto = x.ProjectNo;
+                        newdp.Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date);
+                        newdp.TipoMovimento = x.MovementType;
+                        newdp.Tipo = x.Type;
+                        newdp.Código = x.Code;
+                        newdp.Descrição = x.Description;
+                        newdp.Quantidade = x.Quantity;
+                        newdp.CódUnidadeMedida = x.MeasurementUnitCode;
+                        newdp.CódLocalização = x.LocationCode;
+                        newdp.GrupoContabProjeto = x.ProjectContabGroup;
+                        newdp.CódigoRegião = x.RegionCode;
+                        newdp.CódigoÁreaFuncional = x.FunctionalAreaCode;
+                        newdp.CódigoCentroResponsabilidade = x.ResponsabilityCenterCode;
+                        newdp.Utilizador = userName;
+                        newdp.CustoUnitário = x.UnitCost;
+                        newdp.CustoTotal = x.TotalCost;
+                        newdp.PreçoUnitário = x.UnitPrice;
+                        newdp.PreçoTotal = x.TotalPrice;
+                        newdp.Faturável = x.Billable;
+                        newdp.Registado = false;
+                        newdp.FaturaANºCliente = x.InvoiceToClientNo;
+                        newdp.Moeda = x.Currency;
+                        newdp.ValorUnitárioAFaturar = x.UnitValueToInvoice;
+                        newdp.TipoRefeição = x.MealType;
+                        newdp.CódGrupoServiço = x.ServiceGroupCode;
+                        newdp.NºGuiaResíduos = x.ResidueGuideNo;
+                        newdp.NºGuiaExterna = x.ExternalGuideNo;
+                        newdp.DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate);
+                        newdp.CódServiçoCliente = x.ServiceClientCode;
+                        newdp.Faturada = x.Billed;
+                        newdp.DataHoraModificação = DateTime.Now;
+                        newdp.UtilizadorModificação = userName;
+                        DBProjectDiary.Update(newdp);
+                    }
+                    else
+                    {
+                        DiárioDeProjeto newdp = new DiárioDeProjeto()
+                        {
+                            NºProjeto = x.ProjectNo,
+                            Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date),
+                            TipoMovimento = x.MovementType,
+                            Tipo = x.Type,
+                            Código = x.Code,
+                            Descrição = x.Description,
+                            Quantidade = x.Quantity,
+                            CódUnidadeMedida = x.MeasurementUnitCode,
+                            CódLocalização = x.LocationCode,
+                            GrupoContabProjeto = x.ProjectContabGroup,
+                            CódigoRegião = x.RegionCode,
+                            CódigoÁreaFuncional = x.FunctionalAreaCode,
+                            CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
+                            Utilizador = userName,
+                            CustoUnitário = x.UnitCost,
+                            CustoTotal = x.TotalCost,
+                            PreçoUnitário = x.UnitPrice,
+                            PreçoTotal = x.TotalPrice,
+                            Faturável = x.Billable,
+                            Registado = false,
+                            FaturaANºCliente = x.InvoiceToClientNo,
+                            Moeda = x.Currency,
+                            ValorUnitárioAFaturar = x.UnitValueToInvoice,
+                            TipoRefeição = x.MealType,
+                            CódGrupoServiço = x.ServiceGroupCode,
+                            NºGuiaResíduos = x.ResidueGuideNo,
+                            NºGuiaExterna = x.ExternalGuideNo,
+                            DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
+                            CódServiçoCliente = x.ServiceClientCode
+
+                        };
+
+                        newdp.Faturada = false;
+                        newdp.DataHoraCriação = DateTime.Now;
+                        newdp.UtilizadorCriação = userName;
+                        DBProjectDiary.Create(newdp);
+                    }
+
+
+                });
+            }
+            catch (Exception e)
+            {
+                throw ;
+            }
+
+
+            return Json(dp);
+        }
         public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo)
         {
             //Create
@@ -847,6 +970,82 @@ namespace Hydra.Such.Portal.Controllers
             return Json(dp);
         }
 
+        public JsonResult RegisterDiaryLinesRequisition( List<ProjectDiaryViewModel> dp, string userName)
+        {
+            //Guid transactID = Guid.NewGuid();
+
+            //Create Lines in NAV
+            //Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
+            //TCreateNavDiaryLine.Wait();
+
+            ////Register Lines in NAV
+            //Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
+            //TRegisterNavDiaryLine.Wait();
+
+            //SET INTEGRATED IN DB
+            if (dp != null)
+            {
+                dp.ForEach(x =>
+                {
+                    if (x.Code != null)
+                    {
+                        DiárioDeProjeto newdp = DBProjectDiary.GetAllByCode(userName, x.Code);
+                        if (newdp != null)
+                        {
+                            //newdp.Registado = true;
+                            //newdp.UtilizadorModificação = User.Identity.Name;
+                            //newdp.DataHoraModificação = DateTime.Now;
+                            DBProjectDiary.Delete(newdp);
+
+                            MovimentosDeProjeto ProjectMovement = new MovimentosDeProjeto()
+                            {
+                                //NºLinha = newdp.NºLinha,
+                                NºProjeto = newdp.NºProjeto,
+                                Data = newdp.Data,
+                                TipoMovimento = newdp.TipoMovimento,
+                                Tipo = newdp.Tipo,
+                                Código = newdp.Código,
+                                Descrição = newdp.Descrição,
+                                Quantidade = newdp.Quantidade,
+                                CódUnidadeMedida = newdp.CódUnidadeMedida,
+                                CódLocalização = newdp.CódLocalização,
+                                GrupoContabProjeto = newdp.GrupoContabProjeto,
+                                CódigoRegião = newdp.CódigoRegião,
+                                CódigoÁreaFuncional = newdp.CódigoÁreaFuncional,
+                                CódigoCentroResponsabilidade = newdp.CódigoCentroResponsabilidade,
+                                Utilizador = userName,
+                                CustoUnitário = newdp.CustoUnitário,
+                                CustoTotal = newdp.CustoTotal,
+                                PreçoUnitário = newdp.PreçoUnitário,
+                                PreçoTotal = newdp.PreçoTotal,
+                                Faturável = newdp.Faturável,
+                                Registado = true,
+                                Faturada = false,
+                                FaturaANºCliente = newdp.FaturaANºCliente,
+                                Moeda = newdp.Moeda,
+                                ValorUnitárioAFaturar = newdp.ValorUnitárioAFaturar,
+                                TipoRefeição = newdp.TipoRefeição,
+                                CódGrupoServiço = newdp.CódGrupoServiço,
+                                NºGuiaResíduos = newdp.NºGuiaResíduos,
+                                NºGuiaExterna = newdp.NºGuiaExterna,
+                                DataConsumo = newdp.DataConsumo,
+                                CódServiçoCliente = newdp.CódServiçoCliente,
+                                UtilizadorCriação = userName,
+                                DataHoraCriação = DateTime.Now,
+                                FaturaçãoAutorizada = false
+                            };
+
+                            DBProjectMovements.Create(ProjectMovement);
+                        }
+
+
+                    }
+                });
+            }
+
+
+            return Json(dp);
+        }
         [HttpPost]
         public JsonResult GetMovements([FromBody] string projectNo)
         {

@@ -13,6 +13,8 @@ using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Portal.Services;
 using Hydra.Such.Portal.Extensions;
+using Hydra.Such.Data.Logic.Project;
+
 
 namespace Hydra.Such.Portal.Areas.Compras.Controllers
 {
@@ -96,6 +98,26 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             }
         }
 
+        [Area("Compras")]
+        public IActionResult HistóricoCabeçalhoRequisicao(string id)
+        {
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 43);
+
+
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                ViewBag.RequisitionId = id;
+                ViewBag.ArchivedRequisitionEnumValue = (int)RequisitionStates.Archived;
+                ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
         [HttpPost]
         [Area("Compras")]
         public JsonResult GridRequestLineValues(/*[FromBody] string id*/)
@@ -149,7 +171,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             newdp.Descrição = x.Description;
                             newdp.CódigoUnidadeMedida = x.UnitMeasureCode;
                             newdp.CódigoLocalização = x.LocalCode;
-                            newdp.MercadoLocal = x.LocalMarket;
+                            newdp.MercadoLocal =x.LocalMarket != null ? x.LocalMarket : false;
                             newdp.QuantidadeARequerer = x.QuantityToRequire;
                             newdp.QuantidadeRequerida = x.QuantityRequired;
                             newdp.QuantidadeADisponibilizar = x.QuantityToProvide;
@@ -159,7 +181,6 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             newdp.QuantidadePendente = x.QuantityPending;
                             newdp.CustoUnitário = x.UnitCost;
                             newdp.DataReceçãoEsperada = string.IsNullOrEmpty(x.ExpectedReceivingDate) ? (DateTime?)null : DateTime.Parse(x.ExpectedReceivingDate);
-                            newdp.Faturável = x.Billable;
                             newdp.NºProjeto = x.ProjectNo;
                             newdp.CódigoRegião = x.RegionCode;
                             newdp.CódigoÁreaFuncional = x.FunctionalAreaCode;
@@ -174,15 +195,15 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             newdp.PreçoUnitárioVenda = x.UnitCostsould;
                             newdp.ValorOrçamento = x.BudgetValue;
                             newdp.NºLinhaOrdemManutenção = x.MaintenanceOrderLineNo;
-                            newdp.CriarConsultaMercado = x.CreateMarketSearch;
-                            newdp.EnviarPréCompra = x.SubmitPrePurchase;
-                            newdp.EnviadoPréCompra = x.SendPrePurchase;
+                            newdp.CriarConsultaMercado = x.CreateMarketSearch != null ? x.CreateMarketSearch : false;
+                            newdp.EnviarPréCompra = x.SubmitPrePurchase != null ? x.SubmitPrePurchase : false;
+                            newdp.EnviadoPréCompra = x.SendPrePurchase != null ? x.SendPrePurchase : false;
                             newdp.DataMercadoLocal = string.IsNullOrEmpty(x.LocalMarketDate) ? (DateTime?)null : DateTime.Parse(x.LocalMarketDate);
                             newdp.UserMercadoLocal = x.LocalMarketUser;
-                            newdp.EnviadoParaCompras = x.SendForPurchase;
+                            newdp.EnviadoParaCompras = x.SendForPurchase != null ? x.SendForPurchase : false;
                             newdp.DataEnvioParaCompras = string.IsNullOrEmpty(x.SendForPurchaseDate) ? (DateTime?)null : DateTime.Parse(x.SendForPurchaseDate);
-                            newdp.ValidadoCompras = x.PurchaseValidated;
-                            newdp.RecusadoCompras = x.PurchaseRefused;
+                            newdp.ValidadoCompras = x.PurchaseValidated != null ? x.PurchaseValidated : false;
+                            newdp.RecusadoCompras = x.PurchaseRefused != null ? x.PurchaseRefused : false;
                             newdp.MotivoRecusaMercLocal = x.ReasonToRejectionLocalMarket;
                             newdp.DataRecusaMercLocal = string.IsNullOrEmpty(x.RejectionLocalMarketDate) ? (DateTime?)null : DateTime.Parse(x.RejectionLocalMarketDate);
                             newdp.IdCompra = x.PurchaseId;
@@ -196,7 +217,9 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             newdp.RegiãoMercadoLocal = x.MarketLocalRegion;
                             newdp.NºCliente = x.CustomerNo;
                             newdp.Aprovadores = x.Approvers;
+                            newdp.Faturável = x.Billable != null ? x.Billable : false;
                             DBRequestLine.Update(newdp);
+                            
                         }
                         else
                         {
@@ -209,7 +232,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                 Descrição = x.Description,
                                 CódigoUnidadeMedida = x.UnitMeasureCode,
                                 CódigoLocalização = x.LocalCode,
-                                MercadoLocal = x.LocalMarket,
+                                MercadoLocal = x.LocalMarket != null ? x.LocalMarket : false,
                                 QuantidadeARequerer = x.QuantityToRequire,
                                 QuantidadeRequerida = x.QuantityRequired,
                                 QuantidadeADisponibilizar = x.QuantityToProvide,
@@ -219,7 +242,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                 QuantidadePendente = x.QuantityPending,
                                 CustoUnitário = x.UnitCost,
                                 DataReceçãoEsperada = string.IsNullOrEmpty(x.ExpectedReceivingDate) ? (DateTime?)null : DateTime.Parse(x.ExpectedReceivingDate),
-                                Faturável = x.Billable,
+                                Faturável = x.Billable != null ? x.Billable : false,
                                 NºProjeto = x.ProjectNo,
                                 CódigoRegião = x.RegionCode,
                                 CódigoÁreaFuncional = x.FunctionalAreaCode,
@@ -234,15 +257,15 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                 PreçoUnitárioVenda = x.UnitCostsould,
                                 ValorOrçamento = x.BudgetValue,
                                 NºLinhaOrdemManutenção = x.MaintenanceOrderLineNo,
-                                CriarConsultaMercado = x.CreateMarketSearch,
-                                EnviarPréCompra = x.SubmitPrePurchase,
-                                EnviadoPréCompra = x.SendPrePurchase,
+                                CriarConsultaMercado = x.CreateMarketSearch != null ? x.CreateMarketSearch : false,
+                                EnviarPréCompra = x.SubmitPrePurchase != null ? x.SubmitPrePurchase : false,
+                                EnviadoPréCompra = x.SendPrePurchase != null ? x.SendPrePurchase : false,
                                 DataMercadoLocal = string.IsNullOrEmpty(x.LocalMarketDate) ? (DateTime?)null : DateTime.Parse(x.LocalMarketDate),
                                 UserMercadoLocal = x.LocalMarketUser,
-                                EnviadoParaCompras = x.SendForPurchase,
+                                EnviadoParaCompras = x.SendForPurchase != null ? x.SendForPurchase : false,
                                 DataEnvioParaCompras = string.IsNullOrEmpty(x.SendForPurchaseDate) ? (DateTime?)null : DateTime.Parse(x.SendForPurchaseDate),
-                                ValidadoCompras = x.PurchaseValidated,
-                                RecusadoCompras = x.PurchaseRefused,
+                                ValidadoCompras = x.PurchaseValidated != null ? x.PurchaseValidated : false,
+                                RecusadoCompras = x.PurchaseRefused != null ? x.PurchaseRefused : false,
                                 MotivoRecusaMercLocal = x.ReasonToRejectionLocalMarket,
                                 DataRecusaMercLocal = string.IsNullOrEmpty(x.RejectionLocalMarketDate) ? (DateTime?)null : DateTime.Parse(x.RejectionLocalMarketDate),
                                 IdCompra = x.PurchaseId,
@@ -311,7 +334,25 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
             return Json(result);
         }
+        [HttpPost]
+        [Area("Compras")]
+        public JsonResult GetAllRequisitionshistoric()
+        {
+            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Archived).ParseToViewModel();
 
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == 1).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == 2).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == 3).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
+            return Json(result);
+        }
         [HttpPost]
         [Area("Compras")]
         public JsonResult GetRequisition([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
@@ -402,9 +443,12 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         {
             if (item != null)
             {
+                item.eReasonCode = 1;
                 string quantityInvalid = "";
                 string prodNotStockkeepUnit = "";
                 string prodQuantityOverStock = "";
+                string ReqLineNotCreateDP = "";
+                int ReqLinesToHistCount = 0;
                 switch (registType)
                 {
                     case "Disponibilizar":
@@ -493,9 +537,13 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             item.eReasonCode = 3;
                             item.eMessage = "Esta requisição não está validada.";
                         }
+                        if (item.eReasonCode == 1)
+                        {
+                            item.eMessage = "A Requisição está disponivel";
+                        }
                         break;
                     case "Receber":
-                        if (item.State == RequisitionStates.Available)
+                        if (item.State == RequisitionStates.Validated)
                         {
                             List<RequisitionLineViewModel> getrlines = DBRequestLine.GetAllByRequisiçãos(item.RequisitionNo).ParseToViewModel();
                             List<NAVStockKeepingUnitViewModel> StockkeepingUnit = new List<NAVStockKeepingUnitViewModel>();
@@ -582,7 +630,83 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                 if (prodNotStockkeepUnit != "")
                                 {
                                     item.eReasonCode = 7;
-                                    item.eMessage = " O(s) Produto(s) " + prodNotStockkeepUnit + " não existe ou existem no Stockkeeping Unit do Nav";
+                                    item.eMessage = " O(s) Produto(s) " + prodNotStockkeepUnit +
+                                                    " não existe ou existem no Stockkeeping Unit do Nav";
+                                }
+                                else
+                                {
+                                    foreach (RequisitionLineViewModel RLItem in getrlines)
+                                    {
+                                        DiárioDeProjeto newRL = new DiárioDeProjeto();
+                                        DiárioDeProjeto newdp = new DiárioDeProjeto()
+                                        {
+                                            NºProjeto = item.ProjectNo,
+                                            Data = DateTime.Now,
+                                            Tipo = RLItem.Type,
+                                            Código = RLItem.Code,
+                                            Descrição = RLItem.Description,
+                                            Quantidade = RLItem.QuantityReceivable,
+                                            CódUnidadeMedida = RLItem.UnitMeasureCode,
+                                            CódLocalização = item.LocalCode,
+                                            CódigoRegião = item.RegionCode,
+                                            CódigoÁreaFuncional = item.FunctionalAreaCode,
+                                            CódigoCentroResponsabilidade = item.CenterResponsibilityCode,
+                                            Utilizador =User.Identity.Name,
+                                            CustoUnitário = RLItem.UnitCost,
+                                            PreçoUnitário = RLItem.UnitCostsould,
+                                            Faturável = RLItem.Billable,
+                                            NºRequisição = item.RequisitionNo,
+                                            NºLinhaRequisição = RLItem.LineNo,
+                                            AcertoDePreços = false,
+                                            FaturaçãoAutorizada = false,
+                                            NºFuncionário = item.EmployeeNo,
+                                            Registado =false,
+                                            Faturada = false,
+                                        };
+                                        newdp.DataHoraCriação = DateTime.Now;
+                                        newdp.UtilizadorCriação = User.Identity.Name;
+                                        newRL = DBProjectDiary.Create(newdp);
+                                        if (newRL == null)
+                                        {
+                                            if (ReqLineNotCreateDP == "")
+                                            {
+                                                ReqLineNotCreateDP = item.RequisitionNo;
+                                            }
+                                            else
+                                            {
+                                                ReqLineNotCreateDP = ReqLineNotCreateDP + " , " + item.RequisitionNo;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if ((RLItem.QuantityRequired - RLItem.QuantityReceived) == 0 )
+                                            {
+                                                ReqLinesToHistCount++;
+                                            }
+                                        }
+                                    }
+                                    if (ReqLineNotCreateDP != "")
+                                    {
+                                        item.eReasonCode = 15;
+                                        item.eMessage =
+                                            "As linhas " + ReqLineNotCreateDP +
+                                            " não passaram para os diarios de projeto";
+                                    }
+                                    else
+                                    {
+                                        if (ReqLinesToHistCount == getrlines.Count)
+                                        {
+                                            item.State = RequisitionStates.Archived;
+                                            item.UpdateUser = User.Identity.Name;
+                                            item.UpdateDate = DateTime.Now;
+                                            RequisitionViewModel reqtoArchived = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
+                                            if (reqtoArchived == null)
+                                            {
+                                                item.eReasonCode = 14;
+                                                item.eMessage = "Ocorreu Um erro ao mandar para o histórico";
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -590,6 +714,10 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         {
                             item.eReasonCode = 11;
                             item.eMessage = "Esta requisição não está Disponível.";
+                        }
+                        if (item.eReasonCode == 1)
+                        {
+                            item.eMessage = "A Requisição recebida";
                         }
                         break;
                     case "Anular Aprovacao":
@@ -628,6 +756,10 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             item.eReasonCode = 2;
                             item.eMessage = "Esta requisição não está aprovada";
                         }
+                        if (item.eReasonCode == 1)
+                        {
+                            item.eMessage = "A Aprovação foi anulada";
+                        }
                         break;
                     case "Anular Validacao":
                         if (item.State == RequisitionStates.Validated)
@@ -665,10 +797,25 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             item.eReasonCode = 3;
                             item.eMessage = "Esta requisição não está validada";
                         }
+                        if (item.eReasonCode == 1)
+                        {
+                            item.eMessage = "A Validação foi anulada";
+                        }
                         break;
                     case "Fechar Requisicao":
-                        item.eReasonCode = 14;
-                        item.eMessage = "Falta especificações ";
+                        item.State = RequisitionStates.Archived;
+                        item.UpdateUser = User.Identity.Name;
+                        item.UpdateDate = DateTime.Now;
+                        RequisitionViewModel reqArchived = DBRequest.Update(item.ParseToDB()).ParseToViewModel();
+                        if (reqArchived == null)
+                        {
+                            item.eReasonCode = 14;
+                        item.eMessage = "Ocorreu Um erro ao mandar para o histórico";
+                        }
+                        if (item.eReasonCode == 1)
+                        {
+                            item.eMessage = "Requisição foi para histórico";
+                        }
                         break;
                     default:
                         item.eReasonCode = 10;
@@ -1058,6 +1205,21 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
 
             return Json(item);
         }
-        #endregion
+
+        [Area("Compras")]
+        public IActionResult HistoricoRequisicoes()
+        {
+            UserAccessesViewModel userPermissions =
+                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 43);
+            if (userPermissions != null && userPermissions.Read.Value)
+            {
+                ViewBag.UPermissions = userPermissions;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
     }
 }
