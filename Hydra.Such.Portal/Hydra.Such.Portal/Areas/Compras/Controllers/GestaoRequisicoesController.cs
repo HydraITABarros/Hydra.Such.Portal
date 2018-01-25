@@ -1205,6 +1205,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
 
             return Json(item);
         }
+        #endregion
 
         [Area("Compras")]
         public IActionResult HistoricoRequisicoes()
