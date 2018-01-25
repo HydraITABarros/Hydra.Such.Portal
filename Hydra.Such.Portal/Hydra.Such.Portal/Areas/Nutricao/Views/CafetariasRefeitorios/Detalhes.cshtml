@@ -458,6 +458,7 @@
                 _openCashFlowReport: function (e) {
                     //window.open("@ViewBag.ReportServerURL" + "FolhaCaixa&CodCafetaria=" + this.data.code + "&CodUnidProd=" + this.data.productivityUnitNo, "_blank");
                     this.$.rptContainer.src = "@ViewBag.ReportServerURL" + "FolhaCaixa&CodCafetaria=" + this.data.code + "&CodUnidProd=" + this.data.productivityUnitNo; //this._getPDFContent();
+                    this.$.rptDialog.open();
                 },
                 _closeRptDialog: function () {
                     this.$.rptContainer.src = "about:blank";
