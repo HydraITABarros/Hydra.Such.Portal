@@ -258,9 +258,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nº Origem")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.NºLinha)
-                    .HasColumnName("Nº Linha")
-                    .ValueGeneratedOnAdd();
+                entity.Property(e => e.NºLinha).HasColumnName("Nº Linha");
 
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")

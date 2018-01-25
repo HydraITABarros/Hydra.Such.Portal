@@ -24,7 +24,7 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
-        
+
         <style>
             vaadin-combo-box {
                 margin-top: 0px !important;
@@ -121,7 +121,7 @@
                 padding-top: 0px !important;
             }
         </style>
-        
+
         <iron-ajax url="/Viaturas/GetList" id="grid_databound_ajax" last-response="{{vehicleresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectListDiary" id="grid_GetAllProject_ajax" last-response="{{projectresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" id="grid_Locations_ajax" last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -130,7 +130,7 @@
         <iron-ajax url="/PopulateDropdowns/GetProductsCode" auto id="ajax_code_options" last-response="{{CBProducts}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getSupplier" id="ajax_supplier_options" last-response="{{cboSupplier}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllClients" id="ajax_clients_options" last-response="{{cboClients}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetEmployees" id="ajax_employees_options" last-response="{{cboEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetEmployees" id="ajax_employees_options" last-response="{{cboEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{CBLocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVJobNo" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -147,13 +147,13 @@
                    last-response="{{Requisition}}"
                    method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Compras/GestaoRequisicoes/DeleteRequisitionLine"
-                   id="deleteReqLine_ajax" 
-                   last-response="{{DelReqLineResponse}}" 
-                   on-response="_deleteReqLineResponse" 
+                   id="deleteReqLine_ajax"
+                   last-response="{{DelReqLineResponse}}"
+                   on-response="_deleteReqLineResponse"
                    method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Compras/GestaoRequisicoes/CreateRequisitionLine" 
-                   id="createReqLine_ajax" 
-                   last-response="{{AddReqLineResponse}}" 
+        <iron-ajax url="/Compras/GestaoRequisicoes/CreateRequisitionLine"
+                   id="createReqLine_ajax"
+                   last-response="{{AddReqLineResponse}}"
                    on-response="_createReqLineResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Compras/GestaoRequisicoes/ValidateLocalMarketForRequisition"
                    last-response="{{Requisition}}"
@@ -198,7 +198,20 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-
+        <iron-ajax url="/Compras/GestaoRequisicoes/CreateTransferShipment"
+                   last-response="{{TransferShipmentResponse}}"
+                   id="createTransferShipment_ajax"
+                   on-response="_createTransferShipmentResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/SubmitForApproval"
+                   last-response="{{SubmitForApprovalResponse}}"
+                   id="submitForApproval_ajax"
+                   on-response="_submitForApprovalResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -212,7 +225,7 @@
                                 <paper-tab>Recolha</paper-tab>
                                 <paper-tab>Entrega (Fornecedor)</paper-tab>
                             </paper-tabs>
-                            
+
                             <iron-pages selected="{{selected}}">
                                 <!--Geral-->
                                 <div>
@@ -328,13 +341,13 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <!--<div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBJobNo]]" id="CBJobNo" item-value-path="id" item-label-path="id" value="{{Requisition.projectNo}}" label="Nº Ordem/Projeto" disabled>
-                                                <template>
-                                                    <b>[[item.id]]</b>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>-->
-                                        
+                                        <vaadin-combo-box items="[[CBJobNo]]" id="CBJobNo" item-value-path="id" item-label-path="id" value="{{Requisition.projectNo}}" label="Nº Ordem/Projeto" disabled>
+                                            <template>
+                                                <b>[[item.id]]</b>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>-->
+
                                         <div class="col-md-3 ">
                                             <!--<vaadin-text-field id="Notes" name="Notes" label="Observações" value="{{Requisition.comments}}" disabled></vaadin-text-field>-->
                                             <!--<such-textarea rows="5" value="{{Requisition.comments}}" id="Notes" name="Notes" label="Observações" disabled> </such-textarea>-->
@@ -433,24 +446,24 @@
                             </iron-pages>
                             <div class="row break_clear marginSpace">
                                 <!--<template is="dom-if" if="{{ _permissions.create }}">
-                                    <template is="dom-if" if="{{ _isCreate }}">
-                                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                <template is="dom-if" if="{{ _isCreate }}">
+                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                </template>
+                                <template is="dom-if" if="{{ !_isCreate }}">
+                                    <template is="dom-if" if="{{ _permissions.update }}">
+                                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                        <paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>
                                     </template>
-                                    <template is="dom-if" if="{{ !_isCreate }}">
-                                        <template is="dom-if" if="{{ _permissions.update }}">
-                                            <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                            <paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>
-                                        </template>
-                                    </template>
-                                    <template is="dom-if" if="{{ _permissions.delete }}">
-                                        <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                    </template>
-                                </template>-->
+                                </template>
+                                <template is="dom-if" if="{{ _permissions.delete }}">
+                                    <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                </template>
+                            </template>-->
                             </div>
                         </div>
                     </div>
                 </iron-form>
-                <div class="row break_clear marginSpace">
+                <div class="row break_clear marginSpace" hidden ="{{_isArchived}}">
                     <paper-button raised id="btnLocalMarketValidation" style="width: 250px !important;" on-tap="_validateLocalMarket"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validação Mercado Local</paper-button>
                     <paper-button raised id="btnValidate" on-tap="_validateRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Validar</paper-button>
                     <paper-button raised id="btnRegistProvide" style="width: 150px !important;" on-tap="_RegistProvide"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Disponibilizar</paper-button>
@@ -462,7 +475,10 @@
                     <paper-button raised id="btnCreateMarketConsult" on-tap="_createPurchaseOrder"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Encomenda de Compra</paper-button>
                     <paper-button raised id="btnCreateMarketConsult" on-tap="_createTransferShipment"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Guia de Transporte</paper-button>
                     <paper-button raised id="btnCreateMarketConsult" on-tap="_sendPrePurchase"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Enviar Pré- Encomenda</paper-button>
-                </div>  
+                    <paper-button raised id="btnPrint" on-tap="_printRequisition"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>
+                    <paper-button raised id="btnSubmitForApproval" on-tap="_submitForApproval"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Enviar para Aprovação</paper-button>
+                    <paper-button raised id="btnStatOfPlay" on-tap="_redirectToStatOfPlay"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Ponto situação</paper-button>
+                </div>
             </div>
         </div>
         <div id="PreRequiLinesPanel" class="panel panel-default">
@@ -470,8 +486,8 @@
                 <div class="col-md-12 col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">Linhas</div>
-                        <div class="panel-body">
-                            <div class="row">
+                        <div class="panel-body" >
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="col-lg-3">
                                     <vaadin-combo-box items="[[locationsresult]]" id="localCodeId" item-value-path="id" item-label-path="value" value="" label="Código Localização">
                                         <template>
@@ -512,7 +528,7 @@
                                     </vaadin-combo-box>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="col-lg-3">
                                     <vaadin-text-field id="quantityToRequireId" name="quantityToRequireName" label="Quantidade A Requerer" value=""></vaadin-text-field>
                                 </div>
@@ -526,7 +542,7 @@
                                     <vaadin-text-field id="quantityAvailableId" name="quantityAvailableName" label="Quantidade Disponibilizada" value=""></vaadin-text-field>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="col-lg-3">
                                     <vaadin-text-field id="quantityReceivableId" name="quantityReceivableName" label="Quantidade A Receber" value=""></vaadin-text-field>
                                 </div>
@@ -540,19 +556,19 @@
                                     <vaadin-text-field id="unitCostsouldId" name="unitCostsouldName" label="Preço Unitário Venda" value=""></vaadin-text-field>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="col-lg-3">
                                     <vaadin-text-field id="budgetValueId" name="budgetValueName" label="Valor Orçamento" value=""></vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3 alignPoga">
                                     <vaadin-checkbox id="createMarketSearchId">Criar Consulta Mercado</vaadin-checkbox>
                                 </div>
-                                
+
                                 <div class="col-lg-3">
                                     <vaadin-text-field id="queryCreatedMarketNoId" name="queryCreatedMarketNoName" label="Nº de Consulta Mercado Criada" value=""></vaadin-text-field>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="col-lg-3 alignPoga">
                                     <vaadin-checkbox id="sendPrePurchaseId">Enviar Pré Compra</vaadin-checkbox>
                                 </div>
@@ -575,7 +591,7 @@
                                     <vaadin-text-field id="maintenanceOrderLineNoId" name="maintenanceOrderLineNoName" label="Nº Linha Ordem Manutenção" value=""></vaadin-text-field>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="col-lg-3">
                                     <vaadin-combo-box items="[[CBVehicle]]" id="vehicleId" item-value-path="id" item-label-path="id" value="" label="Viatura">
                                         <template>
@@ -599,7 +615,7 @@
                                     <vaadin-checkbox id="chkLocalMarket">Mercado Local</vaadin-checkbox>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="col-lg-3">
                                     <vaadin-combo-box items="[[OpenOrderHeaderIds]]" id="openOrderHeaderId" item-value-path="id" item-label-path="id" label="Nº Encomenda Aberto" on-change="_populateOpenOrderLines" disabled="{{ !_permissions.update }}">
                                         <template>
@@ -625,8 +641,7 @@
                                     </vaadin-combo-box>
                                 </div>
                             </div>
-
-                            <div class="row">
+                            <div class="row" hidden ="{{_isArchived}}">
                                 <div class="marginSpace">
                                     <template is="dom-if" if="{{ !isReadOnly() }}">
                                         <paper-button raised id="btnCreate" class="btnSave" on-tap="_createRequisitionLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
@@ -904,7 +919,7 @@
                                             [[ _getResponsCenterDescription(item.centerResponsibilityCode)]]
                                         </template>
                                     </vaadin-grid-column>
-                                    
+
                                     <vaadin-grid-column width="160px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
@@ -914,7 +929,7 @@
                                             {{item.openOrderNo}}
                                         </template>
                                     </vaadin-grid-column>
-                                    
+
                                     <vaadin-grid-column width="160px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
@@ -927,7 +942,7 @@
 
 
                                     <template is="dom-if" if="{{ !isReadOnly() }}">
-                                        <vaadin-grid-column width="100px" resizable>
+                                        <vaadin-grid-column width="100px" resizable hidden ="{{_isArchived}}">
                                             <template class="header">
                                             </template>
                                             <template>
@@ -959,6 +974,13 @@
                 </div>
             </template>
         </paper-toast>
+
+        <paper-dialog id="rptDialog" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeRptDialog"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
     </template>
     <script>
             document.addEventListener('WebComponentsReady', function () {
@@ -1009,6 +1031,13 @@
                             type: Boolean,
                             value: false
                         },
+                        _reportserverurl: {
+                            type: String,
+                        }
+                        _isArchived: {
+                            type: Boolean,
+                            value: false
+                        }
                     },
                     observers: [
                         '_onCacheLoaded(data,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,locationsresult,CBProducts,unitofmeasureresult,cboSupplier,Requisition)'
@@ -1031,7 +1060,11 @@
                     },
                     _onCacheLoaded: function (data, LProjectResponsabilityCenterCodes, LProjectRegionCodes, LProjectFunctionalAreaCodes, locationsresult, CBProducts, unitofmeasureresult, cboSupplier, Requisition) {
                         if (!this.Flag) {
+                            debugger;
                             this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                            if (this._requisitionstatus === 6) {
+                                this._isArchived = true;
+                            }
                             this.$.requisition_datasource.generateRequest();
                         }
                         this.Flag = true;
@@ -1054,14 +1087,54 @@
                         this.Requisition.eMessages = [];
                     },
 
-                    
+                    _validateUserInputForLine() {
+                        //Ex.:
+                        /*
+                        if (this.$.lineQuantity.validate()) {
+                            return true;
+                        }
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                        */
+                        return true;
+                    },
+                    _resetUserInputForLine() {
+                        this.$.requisitionNo.value = "";
+                        this.$.codeId.value = "";
+                        this.$.descriptionId.value = "";
+                        this.$.unitMeasureCodeId.value = "";
+                        this.$.localCodeId.value = "";
+                        this.$.quantityToRequireId.value = "";
+                        this.$.quantityRequiredId.value = "";
+                        this.$.quantityToProvideId.value = "";
+                        this.$.quantityAvailableId.value = "";
+                        this.$.quantityReceivableId.value = "";
+                        this.$.quantityReceivedId.value = "";
+                        this.$.unitCostId.value = "";
+                        this.$.RegionCode.value = "";
+                        this.$.FunctionalAreaCode.value = "";
+                        this.$.ResponsabilityCenterCode.value = "";
+                        this.$.vehicleId.value = "";
+                        this.$.unitCostsouldId.value = "";
+                        this.$.budgetValueId.value = "";
+                        this.$.maintenanceOrderLineNoId.value = "";
+                        this.$.createMarketSearchId.checked = false;
+                        this.$.submitPrePurchaseId.checked = false;
+                        this.$.sendPrePurchaseId.checked = false;
+                        this.$.supplierNoId.value = "";
+                        this.$.openOrderHeaderId.value = "";
+                        this.$.openOrderLineId.value = "";
+                        this.$.queryCreatedMarketNoId.value = "";
+                        this.$.projectId.value = "";
+                        this.$.chkLocalMarket.checked = false;
+                    },
+                    _notImplemented() {
+                        alert("Funcionalidade não especificada e/ou a aguardar esclarecimentos.");
+                    },
+
                     _validateLocalMarket: function () {
                         this.$.validateLocalMarket_datasource.body = JSON.stringify(this.Requisition);
                         this.$.validateLocalMarket_datasource.generateRequest();
-                    },
-                    _validateRequisition: function () {
-                        this.$.validaterequisition_datasource.body = JSON.stringify(this.Requisition);
-                        this.$.validaterequisition_datasource.generateRequest();
                     },
                     _validateLocalMarketResponse: function (e) {
                         if (this.Requisition.eReasonCode == "1") {
@@ -1075,7 +1148,10 @@
                         }
 
                     },
-
+                    _validateRequisition: function () {
+                        this.$.validaterequisition_datasource.body = JSON.stringify(this.Requisition);
+                        this.$.validaterequisition_datasource.generateRequest();
+                    },
                     _validateRequisitionResponse: function (e) {
                         if (this.Requisition.eReasonCode == "1") {
                             this._openToast(this.Requisition.eMessage);
@@ -1156,49 +1232,7 @@
                         }
                         return "";
                     },
-
-                    _validateUserInputForLine() {
-                        //Ex.:
-                        /*
-                        if (this.$.lineQuantity.validate()) {
-                            return true;
-                        }
-                        this._openToastError("Verifique os dados inseridos.");
-                        return false;
-                        */
-                        return true;
-                    },
-                    _resetUserInputForLine() {
-                        this.$.requisitionNo.value = "";
-                        this.$.codeId.value = "";
-                        this.$.descriptionId.value = "";
-                        this.$.unitMeasureCodeId.value = "";
-                        this.$.localCodeId.value = "";
-                        this.$.quantityToRequireId.value = "";
-                        this.$.quantityRequiredId.value = "";
-                        this.$.quantityToProvideId.value = "";
-                        this.$.quantityAvailableId.value = "";
-                        this.$.quantityReceivableId.value = "";
-                        this.$.quantityReceivedId.value = "";
-                        this.$.unitCostId.value = "";
-                        this.$.RegionCode.value = "";
-                        this.$.FunctionalAreaCode.value = "";
-                        this.$.ResponsabilityCenterCode.value = "";
-                        this.$.vehicleId.value = "";
-                        this.$.unitCostsouldId.value = "";
-                        this.$.budgetValueId.value = "";
-                        this.$.maintenanceOrderLineNoId.value = "";
-                        this.$.createMarketSearchId.checked = false;
-                        this.$.submitPrePurchaseId.checked = false;
-                        this.$.sendPrePurchaseId.checked = false;
-                        this.$.supplierNoId.value = "";
-                        this.$.openOrderHeaderId.value = "";
-                        this.$.openOrderLineId.value = "";
-                        this.$.queryCreatedMarketNoId.value = "";
-                        this.$.projectId.value = "";
-                        this.$.chkLocalMarket.checked = false;
-                    },
-
+                    
                     _createRequisitionLine: function () {
                         if (this._validateUserInputForLine()) {
                             var newReqLine = {
@@ -1247,7 +1281,6 @@
                             this._openToastError(this.AddReqLineResponse.eMessage);
                         }
                     },
-
                     _deleteRequisitionLine: function (e) {
                         var ajax_request = this.$.deleteReqLine_ajax;
 
@@ -1291,39 +1324,31 @@
                         }
                     },
                     _RegistProvide: function () {
-                        debugger;
                         this.$.regist_datasource.body = JSON.stringify(this.Requisition);
                         this.$.regist_datasource.params = { "registType": "Disponibilizar" };
                         this.$.regist_datasource.generateRequest();
                     },
                     _RegistToReceive: function () {
-                        debugger;
                         this.$.regist_datasource.body = JSON.stringify(this.Requisition);
                         this.$.regist_datasource.params = { "registType": "Receber" };
                         this.$.regist_datasource.generateRequest();
                     },
                     _RegistOverrideValidation: function () {
-                        debugger;
                         this.$.regist_datasource.body = JSON.stringify(this.Requisition);
                         this.$.regist_datasource.params = { "registType": "Anular Validacao" };
                         this.$.regist_datasource.generateRequest();
                     },
                     _RegistCancelApproval: function () {
-                        debugger;
                         this.$.regist_datasource.body = JSON.stringify(this.Requisition);
                         this.$.regist_datasource.params = { "registType": "Anular Aprovacao" };
                         this.$.regist_datasource.generateRequest();
                     },
                     _RegistCloseRequest: function () {
-                        debugger;
                         this.$.regist_datasource.body = JSON.stringify(this.Requisition);
                         this.$.regist_datasource.params = { "registType": "Fechar Requisicao" };
                         this.$.regist_datasource.generateRequest();
                     },
-
-                    _notImplemented() {
-                        alert("Funcionalidade não especificada e/ou a aguardar esclarecimentos.");
-                    },
+                    
                     _createMarketConsult: function () {
                         this._notImplemented();
                         return;
@@ -1353,9 +1378,54 @@
                                 this._openToastError(this.Requisition.eMessage);
                         }
                     },
+                    _printRequisition: function () {
+                        //window.open(this._reportserverurl + "Requisi%C3%A7%C3%B5es&CodRequisicao=" + this.Requisition.requisitionNo, "_blank");
+                        this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                        this.$.rptDialog.open();
+                    },
+                    _closeRptDialog: function () {
+                        this.$.rptContainer.src = "about:blank";
+                        this.$.rptDialog.close();
+                    },
                     _createTransferShipment: function () {
-                        //window.location.href = "/Compras/GestaoRequisicoes/CreateTransferShipment/" + this.Requisition.requisitionNo;
-                        window.open("/Compras/GestaoRequisicoes/CreateTransferShipment/" + this.Requisition.requisitionNo, "_blank");
+                        //window.open("/Compras/GestaoRequisicoes/CreateTransferShipment/" + this.Requisition.requisitionNo, "_blank");
+                        this.$.createTransferShipment_ajax.body = JSON.stringify({ "requisitionId": this.Requisition.requisitionNo });
+                        this.$.createTransferShipment_ajax.generateRequest();
+                    },
+                    _createTransferShipmentResponse: function (e) {
+                        if (this.TransferShipmentResponse.eReasonCode == "1") {
+                            var blob = this._convertBase64ToBlob(this.TransferShipmentResponse.base64FileContent, "application/pdf");
+                            var blobUrl = URL.createObjectURL(blob);
+
+                            this.$.rptContainer.src = blobUrl;
+                            this.$.rptDialog.open();
+                            //URL.revokeObjectURL(blobUrl);
+                        }
+                        else {
+                            this._openToastError(this.TransferShipmentResponse.eMessage);
+                        }
+                    },
+                    _convertBase64ToBlob: function (b64Data, contentType, sliceSize) {
+                        contentType = contentType || '';
+                        sliceSize = sliceSize || 512;
+
+                        var byteCharacters = atob(b64Data);
+                        var byteArrays = [];
+
+                        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+                            var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+                            var byteNumbers = new Array(slice.length);
+                            for (var i = 0; i < slice.length; i++) {
+                                byteNumbers[i] = slice.charCodeAt(i);
+                            }
+
+                            var byteArray = new Uint8Array(byteNumbers);
+
+                            byteArrays.push(byteArray);
+                        }
+                        var blob = new Blob(byteArrays, { type: contentType });
+                        return blob;
                     },
                     _sendPrePurchase: function () {
                         this.$.sendPrePurchase_ajax.body = JSON.stringify(this.Requisition);
@@ -1386,9 +1456,12 @@
                         }
                     },
                     _registTypeResponse: function (e) {
+                        debugger;
                         if (this.regist.eReasonCode == "1") {
                             this._openToast(this.regist.eMessage);
-
+                            if (this.regist.state === 6) {
+                                window.location.href = "/Compras/GestaoRequisicoes/HistóricoCabeçalhoRequisicao/" + this._requisitionid;
+                            }
                             try {
                                 this.$.grdRequisitionLines.clearCache();
                             }
@@ -1400,6 +1473,21 @@
                             this._openToastError(this.regist.eMessage);
                         }
                     },
+                    _submitForApproval: function () {
+                        this.$.submitForApproval_ajax.body = JSON.stringify({ "requisitionId": this.Requisition.requisitionNo });
+                        this.$.submitForApproval_ajax.generateRequest();
+                    },
+                    _submitForApprovalResponse: function (e) {
+                        if (this.SubmitForApprovalResponse.eReasonCode == "100") {
+                            this._openToast(this.SubmitForApprovalResponse.eMessage);
+                        }
+                        else {
+                            this._openToastError(this.SubmitForApprovalResponse.eMessage);
+                        }
+                    },
+                    _redirectToStatOfPlay: function () {
+                        window.location.href = "/Compras/GestaoRequisicoes/PontoSituacaoRequisicao/" + this._requisitionid;
+                    }
             });
         });
     </script>

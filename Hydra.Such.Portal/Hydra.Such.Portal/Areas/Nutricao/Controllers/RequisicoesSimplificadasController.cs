@@ -9,6 +9,7 @@ using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Nutrition;
+using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Portal.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,14 +20,15 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
     public class RequisicoesSimplificadasController : Controller
     {
-        ProjetosController register = new ProjetosController();
+        ProjetosController register;
         private readonly NAVWSConfigurations configws;
         private ErrorHandler mensage = new ErrorHandler();
 
 
-        public RequisicoesSimplificadasController(IOptions<NAVWSConfigurations> NAVWSConfigs)
+        public RequisicoesSimplificadasController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
         {
             this.configws = NAVWSConfigs.Value;
+            register = new ProjetosController(appSettings, NAVWSConfigs);
         }
 
 

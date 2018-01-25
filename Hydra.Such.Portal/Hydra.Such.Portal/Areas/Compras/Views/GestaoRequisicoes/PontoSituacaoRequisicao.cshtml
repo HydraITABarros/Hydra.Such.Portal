@@ -1,0 +1,352 @@
+﻿
+@{
+    ViewData["Title"] = "Ponto Situação de Requisição";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib\datetime-picker-master/time-element.html" />
+
+<h1 class="title">Ponto Situação de Requisição</h1>
+<x-stateofplaydetails></x-stateofplaydetails>
+
+<dom-module id="x-stateofplaydetails">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <iron-ajax url="/Compras/GestaoRequisicoes/AddStateOfPlay" id="addStateOfPlay_ajax" last-response="{{AddStateOfPlayResponse}}" on-response="_addStateOfPlayResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/ConfirmStateOfPlayReading" id="confirmReading_ajax" last-response="{{ConfirmReadingResponse}}" on-response="_confirmReadingResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/GetStatesOfPlay" id="getStatesOfPlay_ajax" last-response="{{StatesOfPlay}}" on-response="_getStatesOfPlayResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Compras/GestaoRequisicoes/SendResponse" id="sendResponse_ajax" last-response="{{SendResponseResult}}" on-response="_sendResponseResult" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <div class="row">
+            <div class="col-lg-12">
+                <paper-button raised on-tap="_redirectToRequisitionDetails"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Detalhes Requisição</paper-button>
+                <paper-button raised on-tap="_openNewItemForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Novo Ponto Situação</paper-button>
+            </div>
+        </div>
+        <div class="row break_frm">
+
+            <div class="col-md-12 col-md-12 col-lg-12">
+
+                <iron-form id="frmRequisition">
+                    <div class="panel panel-default">
+
+                        <vaadin-grid id="grdItems" aria-label="ProfileModelsTabel" items="{{StatesOfPlay}}" class="grid" active-item="{{_selectedItem}}">
+                            <vaadin-grid-column width="60px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="readStringValue" direction="desc">Lido</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="readStringValue" />
+                                </template>
+                                <template>
+                                    {{ item.readStringValue }}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="160px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="question">Pergunta</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="question" />
+                                </template>
+                                <template>
+                                    {{item.question}}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="160px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="answer">Resposta</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="answer" />
+                                </template>
+                                <template>
+                                    {{item.answer}}
+                                </template>
+                            </vaadin-grid-column>
+
+                        </vaadin-grid>
+                    </div>
+                </iron-form>
+            </div>
+        </div>
+        <paper-dialog id="dlgDetails" style="width: 800px; height: 700px; padding: 10px; box-shadow: 4px 8px 14px 8px #888888;" modal>
+            <div class="col-md-12 col-md-12 col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Ponto de Situação</div>
+                    <div class="panel-body">
+                        <div class="row break_clear" style="height: 30px;">
+                            <div class="col-md-6 ">
+                                <span id="lblQuestionDate">{{_getDate(_selectedItem.questionDate)}}</span>
+                            </div>
+                            <div class="col-md-6 alignRight">
+                                <span id="lblQuestionedBy">{{_selectedItem.questionedBy}}</span>
+                            </div>
+                        </div>
+                        <div class="row break_clear">
+                            <div class="col-md-12 ">
+                                <such-textarea rows="5" value="{{_selectedItem.question}}" id="txtQuestion" name="txtQuestion" label="" required> </such-textarea>
+                                <div id="QuestionContainer" style="overflow-y: auto; height: 100px;padding-top: 5px;">
+                                    <span id="lblQuestion">{{_selectedItem.question}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alignRight" style="height: 50px;">
+                            <paper-button id="btnConfirmReading" class="btnRemove" on-tap="_confirmReading"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Confirmar Leitura</paper-button>
+                            <paper-button id="btnSaveQuestion" class="btnRemove" on-tap="_addStateOfPlay"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Enviar</paper-button>
+                        </div>
+
+                    </div>
+                    <div class="panel-heading">Resposta</div>
+                    <div class="panel-body">
+                        <div class="row break_clear" style="height: 30px;">
+                            <div class="col-md-6 ">
+                                @*<vaadin-text-field id="txtAnswerDate" name="txtAnswerDate" label="Data" value="{{_getDatePart(_selectedItem.answerDate)}}" disabled></vaadin-text-field>*@
+                                <span id="lblAnswerDate">{{_getDate(_selectedItem.answerDate)}}</span>
+                            </div>
+                            <div class="col-md-6 alignRight">
+                                @*<vaadin-text-field id="txtAnswerTime" name="txtAnswerTime" label="Hora" value="{{_getTimePart(_selectedItem.answerDate)}}" disabled></vaadin-text-field>*@
+                                @*<vaadin-text-field id="txtAnsweredBy" name="txtAnsweredBy" label="Utilizador" value="{{_selectedItem.answeredBy}}" disabled></vaadin-text-field>*@
+                                <span id="lblAnsweredBy">{{_getDate(_selectedItem.answeredBy)}}</span>
+                            </div>
+                        </div>
+                        <div class="row break_clear">
+                            <div class="col-md-12 ">
+                                <such-textarea rows="5" value="{{_selectedItem.answer}}" id="txtAnswer" name="txtAnswer" label="" required> </such-textarea>
+                            </div>
+                        </div>
+                        <div class="alignRight">
+                            <paper-button id="btnSaveResponse" class="btnRemove" on-tap="_sendResponse"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Enviar</paper-button>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="alignRight">
+                    <paper-button class="btnRemove" on-tap="_closeDetailsDialog"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+                </div>
+            </div>
+        </paper-dialog>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-stateofplaydetails',
+                properties: {
+                    _filterActive: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _selectedItem: {
+                        observer: '_onItemSelected'
+                    },
+                    _requisitionNo: {
+                        type: String,
+                        value: "@ViewBag.RequisitionNo"
+                    },
+                    _lineNo: {
+                        type: String,
+                        value: "@ViewBag.AutoOpenDialogOnLineNo"
+                    }
+                },
+                ready: function () {
+                    this.$.getStatesOfPlay_ajax.body = JSON.stringify(this._requisitionNo);
+                    this.$.getStatesOfPlay_ajax.generateRequest();
+                },
+                _redirectToRequisitionDetails: function () {
+                    if (this._requisitionNo != undefined) {
+                        window.location.href = "/Compras/GestaoRequisicoes/LinhasRequisicao/" + this._requisitionNo;
+                    }
+                },
+                _getStatesOfPlayResponse: function () {
+                    debugger;
+                    if (this._lineNo != "") {
+                        var id = parseInt(this._lineNo);
+                        var itemToOpen = this.StatesOfPlay.find(x => x.stateOfPlayId == id);
+                        if (itemToOpen != undefined) {
+                            this._selectedItem = itemToOpen;
+                            this._onItemSelected(itemToOpen);
+                            // Prevent the dialog from opening automatically again.
+                            this._lineNo = null;
+                        }
+                    }
+                },
+                _onItemSelected: function (item) {
+                    if (item != null) {
+                        this._setAvailableControls();
+                        this.$.dlgDetails.open();
+                    }
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _closeDetailsDialog: function () {
+                    this._selectedItem = null;
+                    this.$.dlgDetails.close();
+                },
+                _parseBool: function (value) {
+                    return value ? "Sim" : "Não";
+                },
+                _getDate: function (date) {
+                    return this._getDatePart(date) + "  " + this._getTimePart(date);
+                },
+                _getDatePart: function (date) {
+                    if (date != undefined) {
+                        var tmpDate = new Date(date);
+                        var day = tmpDate.getDate();
+                        var month = tmpDate.getMonth() + 1;
+                        return (day < 9 ? "0" + day.toString() : day.toString()) + "-" +
+                            (month < 9 ? "0" + month.toString() : month.toString()) +
+                            "-" + tmpDate.getFullYear().toString();
+                    }
+                    return "";
+                },
+                _getTimePart: function (date) {
+                    if (date != undefined) {
+                        var tmpDate = new Date(date);
+                        var hour = tmpDate.getHours();
+                        var minutes = tmpDate.getMinutes();
+                        return (hour < 9 ? "0" + hour.toString() : hour.toString()) + ":" + (minutes < 9 ? "0" + minutes.toString() : minutes.toString());
+                    }
+                    return "";
+                },
+                _validateUserInputForNewItem: function () {
+                    if (this.$.txtQuestion.validate()) {
+                        return true;
+                    }
+                    return false;
+                },
+                _validateUserInputForResponse: function () {
+                    if (this.$.txtAnswer.validate()) {
+                        return true;
+                    }
+                    return false;
+                },
+                _addStateOfPlay: function () {
+                    if (this._validateUserInputForNewItem()) {
+                        var newItem = {
+                            requisitionNo: this._requisitionNo,
+                            question: this.$.txtQuestion.value,
+                        };
+                        this.$.addStateOfPlay_ajax.body = JSON.stringify(newItem);
+                        this.$.addStateOfPlay_ajax.generateRequest();
+                    }
+                    else {
+                        this._openToastError("Verifique os dados inseridos.");
+                    }
+                },
+                _addStateOfPlayResponse: function () {
+                    if (this.AddStateOfPlayResponse.eReasonCode == "1") {
+                        this._selectedItem = this.AddStateOfPlayResponse;
+                        this._openToast(this.AddStateOfPlayResponse.eMessage);
+                        this.$.getStatesOfPlay_ajax.generateRequest();
+                        this.$.grdItems.clearCache();
+
+                    }
+                    else {
+                        this._openToastError(this.AddStateOfPlayResponse.eMessage);
+                    }
+                },
+                _confirmReading: function () {
+                    this.$.confirmReading_ajax.body = JSON.stringify(this._selectedItem);
+                    this.$.confirmReading_ajax.generateRequest();
+                },
+                _confirmReadingResponse: function () {
+                    if (this.ConfirmReadingResponse.eReasonCode == "1") {
+                        this._openToast(this.ConfirmReadingResponse.eMessage);
+                        this._selectedItem.read = true;
+                        this._setAvailableControls();
+                    }
+                    else {
+                        this._openToastError(this.ConfirmReadingResponse.eMessage);
+                    }
+                },
+                _sendResponse: function () {
+                    if (this._validateUserInputForResponse()) {
+                        this.$.sendResponse_ajax.body = JSON.stringify(this._selectedItem);
+                        this.$.sendResponse_ajax.generateRequest();
+                    }
+                    else {
+                        this._openToastError("Verifique os dados inseridos.");
+                    }
+                },
+                _sendResponseResult: function () {
+                    if (this.SendResponseResult.eReasonCode == "1") {
+                        this._openToast(this.SendResponseResult.eMessage);
+                        this.$.grdItems.clearCache();
+                    }
+                    else {
+                        this._openToastError(this.SendResponseResult.eMessage);
+                    }
+                },
+                _openNewItemForm: function () {
+                    this._setAvailableControls();
+                    this.$.txtQuestion.value = "";
+                    this.$.txtAnswer.value = "";
+                    this.$.dlgDetails.open();
+                },
+                _setAvailableControls: function () {
+                    if (this._selectedItem == undefined) {
+                        this.$.btnConfirmReading.setAttribute("hidden", "true");
+                        this.$.btnSaveResponse.setAttribute("hidden", "true");
+
+                        this.$.txtAnswer.setAttribute("disabled", "disabled");
+                        this.$.btnSaveQuestion.removeAttribute("hidden");
+
+                        this.$.txtQuestion.removeAttribute("hidden");
+                        this.$.QuestionContainer.setAttribute("hidden", "true");
+                    }
+                    else {
+                        if (this._selectedItem.read) {
+                            this.$.btnConfirmReading.setAttribute("hidden", "true");
+                            this.$.btnSaveQuestion.setAttribute("hidden", "true");
+                            this.$.txtQuestion.setAttribute("hidden", "true");
+                            this.$.QuestionContainer.removeAttribute("hidden");
+                        }
+                        else {
+                            this.$.btnConfirmReading.removeAttribute("hidden");
+                            this.$.btnSaveQuestion.removeAttribute("hidden");
+                            
+                            if (this.$.lblQuestionedBy.innerText == "@User.Identity.Name") {
+                                this.$.txtQuestion.removeAttribute("hidden");
+                                this.$.QuestionContainer.setAttribute("hidden", "true");
+                            }
+                            else {
+                                this.$.txtQuestion.setAttribute("hidden", "true");
+                                this.$.QuestionContainer.removeAttribute("hidden");
+                            }
+                        }
+                        this.$.btnSaveResponse.removeAttribute("hidden");
+                        this.$.txtAnswer.removeAttribute("disabled");
+                    }
+                }
+            });
+        });
+    </script>
+</dom-module>
