@@ -5873,6 +5873,8 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Responsável Visar")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.TipoRefeição).HasColumnName("Tipo Refeição");
+
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);
