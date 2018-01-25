@@ -6,6 +6,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
 {
    public class DailyRequisitionProductiveUnitViewModel : ErrorHandler
     {
+        public string id { get; set; }
         public int LineNo { get; set; }
         public int? ProductionUnitNo  { get; set; }
         public string ProductNo { get; set; }

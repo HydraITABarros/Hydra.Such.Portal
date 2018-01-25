@@ -163,6 +163,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 return new DailyRequisitionProductiveUnitViewModel()
                 {
+                    id = item.NºEncomendaAberto + " " + item.NºLinhaEncomendaAberto + " " + item.NºProduto,
                     LineNo = item.NºLinha,
                     Description = item.Descrição,
                     CreateDateTime = item.DataHoraCriação,
@@ -189,7 +190,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     UnitMeasureCode = item.CódUnidadeMedida,
                     UpdateDateTime = item.DataHoraModificação,
                     UpdateUser = item.UtilizadorCriação,
-                    DocumentNo = item.NºDocumento
+                    DocumentNo = item.NºDocumento,
+                    Observation = item.Observações
                 };
             }
             return null;
