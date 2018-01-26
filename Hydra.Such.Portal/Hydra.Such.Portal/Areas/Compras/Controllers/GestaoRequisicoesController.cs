@@ -89,6 +89,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 ViewBag.RequisitionId = id;
                 ViewBag.ValidatedRequisitionEnumValue = (int)RequisitionStates.Validated;
                 ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
+                ViewBag.ReportServerURL = _config.ReportServerURL;
 
                 return View();
             }
@@ -110,6 +111,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 ViewBag.RequisitionId = id;
                 ViewBag.ArchivedRequisitionEnumValue = (int)RequisitionStates.Archived;
                 ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
+                ViewBag.ReportServerURL = _config.ReportServerURL;
 
                 return View();
             }
@@ -1075,14 +1077,14 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         }
 
         [Area("Compras")]
-        public IActionResult PontoSituacaoRequisicao(string id, string param)
+        public IActionResult PontoSituacaoRequisicao([FromQuery] string reqId,[FromQuery] string lineId)
         {
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 4);
             if (userPermissions != null && userPermissions.Read.Value)
             {
                 ViewBag.UPermissions = userPermissions;
-                ViewBag.RequisitionNo = id;
-                ViewBag.AutoOpenDialogOnLineNo = param;
+                ViewBag.RequisitionNo = reqId;
+                ViewBag.AutoOpenDialogOnLineNo = lineId;
 
                 return View();
             }
@@ -1195,7 +1197,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                     }
                     else
                     {
-                        result.eReasonCode = 1;
+                        result.eReasonCode = 2;
                         result.eMessage = "Não foi possível enviar email ao utilizador que criou o pedido (" + item.QuestionedBy + ")";
                     }
                 }

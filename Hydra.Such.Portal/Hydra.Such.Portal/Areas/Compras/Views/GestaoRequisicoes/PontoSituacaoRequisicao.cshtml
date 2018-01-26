@@ -49,12 +49,9 @@
             </div>
         </div>
         <div class="row break_frm">
-
-            <div class="col-md-12 col-md-12 col-lg-12">
-
+            <div class="col-md-12">
                 <iron-form id="frmRequisition">
                     <div class="panel panel-default">
-
                         <vaadin-grid id="grdItems" aria-label="ProfileModelsTabel" items="{{StatesOfPlay}}" class="grid" active-item="{{_selectedItem}}">
                             <vaadin-grid-column width="60px" resizable>
                                 <template class="header">
@@ -83,14 +80,14 @@
                                     {{item.answer}}
                                 </template>
                             </vaadin-grid-column>
-
                         </vaadin-grid>
                     </div>
                 </iron-form>
             </div>
         </div>
+
         <paper-dialog id="dlgDetails" style="width: 800px; height: 700px; padding: 10px; box-shadow: 4px 8px 14px 8px #888888;" modal>
-            <div class="col-md-12 col-md-12 col-lg-12">
+            <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">Ponto de Situação</div>
                     <div class="panel-body">
@@ -114,34 +111,27 @@
                             <paper-button id="btnConfirmReading" class="btnRemove" on-tap="_confirmReading"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Confirmar Leitura</paper-button>
                             <paper-button id="btnSaveQuestion" class="btnRemove" on-tap="_addStateOfPlay"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Enviar</paper-button>
                         </div>
-
                     </div>
                     <div class="panel-heading">Resposta</div>
                     <div class="panel-body">
                         <div class="row break_clear" style="height: 30px;">
                             <div class="col-md-6 ">
-                                @*<vaadin-text-field id="txtAnswerDate" name="txtAnswerDate" label="Data" value="{{_getDatePart(_selectedItem.answerDate)}}" disabled></vaadin-text-field>*@
                                 <span id="lblAnswerDate">{{_getDate(_selectedItem.answerDate)}}</span>
                             </div>
                             <div class="col-md-6 alignRight">
-                                @*<vaadin-text-field id="txtAnswerTime" name="txtAnswerTime" label="Hora" value="{{_getTimePart(_selectedItem.answerDate)}}" disabled></vaadin-text-field>*@
-                                @*<vaadin-text-field id="txtAnsweredBy" name="txtAnsweredBy" label="Utilizador" value="{{_selectedItem.answeredBy}}" disabled></vaadin-text-field>*@
-                                <span id="lblAnsweredBy">{{_getDate(_selectedItem.answeredBy)}}</span>
+                                <span id="lblAnsweredBy">{{_selectedItem.answeredBy}}</span>
                             </div>
                         </div>
                         <div class="row break_clear">
                             <div class="col-md-12 ">
-                                <such-textarea rows="5" value="{{_selectedItem.answer}}" id="txtAnswer" name="txtAnswer" label="" required> </such-textarea>
+                                <such-textarea rows="5" value="{{_selectedItem.answer}}" id="txtAnswer" name="txtAnswer" label=""> </such-textarea>
                             </div>
                         </div>
-                        <div class="alignRight">
+                        <div class="alignRight" style="height: 50px;">
                             <paper-button id="btnSaveResponse" class="btnRemove" on-tap="_sendResponse"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Enviar</paper-button>
-
+                            <paper-button class="btnRemove" on-tap="_closeDetailsDialog"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
                         </div>
                     </div>
-                </div>
-                <div class="alignRight">
-                    <paper-button class="btnRemove" on-tap="_closeDetailsDialog"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
                 </div>
             </div>
         </paper-dialog>
@@ -180,14 +170,12 @@
                     }
                 },
                 _getStatesOfPlayResponse: function () {
-                    debugger;
                     if (this._lineNo != "") {
                         var id = parseInt(this._lineNo);
                         var itemToOpen = this.StatesOfPlay.find(x => x.stateOfPlayId == id);
                         if (itemToOpen != undefined) {
                             this._selectedItem = itemToOpen;
                             this._onItemSelected(itemToOpen);
-                            // Prevent the dialog from opening automatically again.
                             this._lineNo = null;
                         }
                     }
@@ -243,7 +231,7 @@
                     return false;
                 },
                 _validateUserInputForResponse: function () {
-                    if (this.$.txtAnswer.validate()) {
+                    if (this.$.txtAnswer.hasValue) {
                         return true;
                     }
                     return false;
@@ -293,7 +281,7 @@
                         this.$.sendResponse_ajax.generateRequest();
                     }
                     else {
-                        this._openToastError("Verifique os dados inseridos.");
+                        this._openToastError("O campo Resposta não pode ser vazio.");
                     }
                 },
                 _sendResponseResult: function () {
