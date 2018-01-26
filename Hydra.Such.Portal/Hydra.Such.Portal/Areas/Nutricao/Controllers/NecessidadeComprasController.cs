@@ -27,37 +27,11 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             _configws = NAVWSConfigs.Value;
         }
 
+        #region Necessidade de Compras
         [Area("Nutricao")]
         public IActionResult Detalhes(int? id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 41);
-            if (UPerm != null && UPerm.Read.Value)
-            {  
-                ViewBag.UPermissions = UPerm;
-                if (id != null && id > 0)
-                {
-                    ViewBag.ProductivityUnityNo = id;
-                    UnidadesProdutivas ProductivityUnitDB = DBProductivityUnits.GetById((int) id);
-                    ViewBag.ProductivityUnitId = ProductivityUnitDB.NºUnidadeProdutiva;
-                    ViewBag.ProductivityUnitDesc = ProductivityUnitDB.Descrição;
-                }
-                else
-                {
-                    ViewBag.ProductivityUnitId =0;
-                    ViewBag.ProductivityUnitDesc = "";
-                }
-                return View();
-            }
-            else
-            {
-                return RedirectToAction("AccessDenied", "Error");
-            }
-        }
-
-        [Area("Nutricao")]
-        public IActionResult NecessidadeCompraDireta(int? id)
-        {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 44);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -89,150 +63,22 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         }
         [HttpPost]
         [Area("Nutricao")]
-        public JsonResult GetGridValuesWithoutDatePriceSup([FromBody]int id)
-        {
-            List<DailyRequisitionProductiveUnitViewModel> result = DBShoppingNecessity.GetAllDirectById(id).ParseToViewModel();
-            return Json(result);
-        }
-
-
-        [HttpPost]
-        [Area("Nutricao")]
         public JsonResult GetModelRequisition()
-            {
-                List<RequisitionViewModel> result = DBRequest.GetAllModelRequest().ParseToViewModel();
-                //Apply User Dimensions Validations
-                List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                //Regions
-                if (CUserDimensions.Where(y => y.Dimensão == 1).Count() > 0)
-                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
-                //FunctionalAreas
-                if (CUserDimensions.Where(y => y.Dimensão == 2).Count() > 0)
-                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
-                //ResponsabilityCenter
-                if (CUserDimensions.Where(y => y.Dimensão == 3).Count() > 0)
-                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
-            return Json(result);
-        }
-        [HttpPost]
-        [Area("Nutricao")]
-        public JsonResult UpdateDirectShoppingNecessity([FromBody] List<DailyRequisitionProductiveUnitViewModel> dp)
         {
-            ErrorHandler result = new ErrorHandler();
-            string notupdate = "";
-            if (dp != null)
-            {
-                List<DiárioRequisiçãoUnidProdutiva> previousList;
-                // Get All
-                previousList = DBShoppingNecessity.GetAllWithoutPriceSup();
-                foreach (DiárioRequisiçãoUnidProdutiva line in previousList)
-                {
-                    if (!dp.Any(x => x.LineNo == line.NºLinha))
-                    {
-                        DBShoppingNecessity.Delete(line);
-                    }
-                }
-
-                //Update or Create
-                try
-                {
-                    dp.ForEach(x =>
-                    {
-                        List<DiárioRequisiçãoUnidProdutiva> dpObject = DBShoppingNecessity.GetByLineNoWithoutPriceSup(x.LineNo);
-
-                        if (dpObject.Count > 0)
-                        {
-                            DiárioRequisiçãoUnidProdutiva newdp = dpObject.FirstOrDefault();
-
-                            newdp.NºLinha = x.LineNo;
-                            newdp.NºUnidadeProdutiva = x.ProductionUnitNo;
-                            newdp.NºProduto = x.ProductNo;
-                            newdp.Descrição = x.Description;
-                            newdp.CódUnidadeMedida = x.UnitMeasureCode;
-                            newdp.Quantidade = x.Quantity;
-                            newdp.CustoUnitárioDireto = x.DirectUnitCost;
-                            newdp.Valor = x.TotalValue;
-                            newdp.NºFornecedor = x.SupplierNo;
-                            newdp.DataHoraModificação = DateTime.Now;
-                            newdp.UtilizadorModificação = User.Identity.Name;
-                            newdp.CodigoLocalização = x.LocalCode;
-                            newdp.NomeFornecedor = x.SupplierName;
-                            newdp.NºEncomendaAberto = x.OpenOrderNo;
-                            newdp.NºLinhaEncomendaAberto = x.OrderLineOpenNo;
-                            newdp.DescriçãoUnidadeProduto = x.ProductUnitDescription;
-                            newdp.DataReceçãoEsperada = string.IsNullOrEmpty(x.ExpectedReceptionDate)
-                                ? (DateTime?)null
-                                : DateTime.Parse(x.ExpectedReceptionDate);
-                            newdp.Observações = x.Observation;
-                            newdp = DBShoppingNecessity.Update(newdp);
-                            if (newdp == null)
-                            {
-                                result.eReasonCode = 3;
-                                result.eMessage =
-                                    "Ocorreu um erro ao Atualizar a Diário Requisição Unid. Produtiva";
-                            }
-                            else
-                            {
-                                result.eReasonCode = 1;
-                                result.eMessage = "Diário requisição Unid. Produtiva foi atualizado";
-                            }
-                        }
-                        else
-                        {
-                            DiárioRequisiçãoUnidProdutiva newdp = new DiárioRequisiçãoUnidProdutiva()
-                            {
-                                NºLinha = x.LineNo,
-                                NºUnidadeProdutiva = x.ProductionUnitNo,
-                                NºProduto = x.ProductNo,
-                                Descrição = x.Description,
-                                CódUnidadeMedida = x.UnitMeasureCode,
-                                Quantidade = x.Quantity,
-                                Valor = x.TotalValue,
-                                NºFornecedor = x.SupplierNo,
-                                CodigoLocalização = x.LocalCode,
-                                NomeFornecedor = x.SupplierName,
-                                NºEncomendaAberto = x.OpenOrderNo,
-                                NºLinhaEncomendaAberto = x.OrderLineOpenNo,
-                                DescriçãoUnidadeProduto = x.ProductUnitDescription,
-                                DataReceçãoEsperada = string.IsNullOrEmpty(x.ExpectedReceptionDate)
-                                    ? (DateTime?)null
-                                    : DateTime.Parse(x.ExpectedReceptionDate),
-                                Observações = x.Observation
-                            };
-                            newdp.UtilizadorCriação = User.Identity.Name;
-                            newdp.DataHoraCriação = DateTime.Now;
-                            newdp = DBShoppingNecessity.Create(newdp);
-                            if (newdp == null)
-                            {
-                                result.eReasonCode = 4;
-                                result.eMessage =
-                                    "Ocorreu um erro ao criar a Diário Requisição Unid. Produtiva";
-                            }
-                            else
-                            {
-                                result.eReasonCode = 1;
-                                result.eMessage = "O registo Diário requisição Unid. Produtiva foi criado";
-                            }
-                        }
-
-                    });
-                }
-                catch (Exception e)
-                {
-                    result.eReasonCode = 5;
-                    result.eMessage =
-                        "Ocorreu um erro não com Diário Requisição Unid. Produtiva";
-                }
-            }
-            else
-            {
-                result.eReasonCode = 2;
-                result.eMessage = "Occorreu um erro ao atualizar o Diário de requisição Unid. Produtiva.";
-            }
+            List<RequisitionViewModel> result = DBRequest.GetAllModelRequest().ParseToViewModel();
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (CUserDimensions.Where(y => y.Dimensão == 1).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (CUserDimensions.Where(y => y.Dimensão == 2).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (CUserDimensions.Where(y => y.Dimensão == 3).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.CenterResponsibilityCode));
             return Json(result);
         }
-
-
         [HttpPost]
         [Area("Nutricao")]
         public JsonResult UpdateShoppingNecessity([FromBody] List<DailyRequisitionProductiveUnitViewModel> dp)
@@ -251,7 +97,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                         DBShoppingNecessity.Delete(line);
                     }
                 }
-           
+
                 //Update or Create
                 try
                 {
@@ -262,7 +108,20 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                         if (dpObject.Count > 0)
                         {
                             DiárioRequisiçãoUnidProdutiva newdp = dpObject.FirstOrDefault();
+                            string[] tokens = x.id.Split(' ');
 
+                            if (tokens[0] != x.OpenOrderNo)
+                            {
+                                x.OpenOrderNo = tokens[0];
+                            }
+                            if (tokens[1] != x.OrderLineOpenNo)
+                            {
+                                x.OrderLineOpenNo = tokens[1];
+                            }
+                            if (tokens[2] != x.ProductNo)
+                            {
+                                x.ProductNo = tokens[2];
+                            }
                             newdp.NºLinha = x.LineNo;
                             newdp.NºUnidadeProdutiva = x.ProductionUnitNo;
                             newdp.NºProduto = x.ProductNo;
@@ -280,10 +139,10 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                             newdp.UtilizadorCriação = x.CreateUser;
                             newdp.UtilizadorModificação = User.Identity.Name;
                             newdp.DataReceçãoEsperada = string.IsNullOrEmpty(x.ExpectedReceptionDate)
-                                ? (DateTime?) null
+                                ? (DateTime?)null
                                 : DateTime.Parse(x.ExpectedReceptionDate);
                             newdp.DataPPreçoFornecedor = string.IsNullOrEmpty(x.DateByPriceSupplier)
-                                ? (DateTime?) null
+                                ? (DateTime?)null
                                 : DateTime.Parse(x.DateByPriceSupplier);
                             newdp.CodigoLocalização = x.LocalCode;
                             newdp.QuantidadePorUnidMedida = x.QuantitybyUnitMeasure;
@@ -326,10 +185,10 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                                 DataHoraModificação = x.UpdateDateTime,
                                 UtilizadorModificação = User.Identity.Name,
                                 DataReceçãoEsperada = string.IsNullOrEmpty(x.ExpectedReceptionDate)
-                                    ? (DateTime?) null
+                                    ? (DateTime?)null
                                     : DateTime.Parse(x.ExpectedReceptionDate),
                                 DataPPreçoFornecedor = string.IsNullOrEmpty(x.DateByPriceSupplier)
-                                    ? (DateTime?) null
+                                    ? (DateTime?)null
                                     : DateTime.Parse(x.DateByPriceSupplier),
                                 CodigoLocalização = x.LocalCode,
                                 QuantidadePorUnidMedida = x.QuantitybyUnitMeasure,
@@ -357,7 +216,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                                 result.eMessage = "O registo Diário requisição Unid. Produtiva foi criado";
                             }
                         }
-                       
+
                     });
                 }
                 catch (Exception e)
@@ -374,7 +233,6 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             return Json(result);
         }
-
         [HttpPost]
         [Area("Nutricao")]
         public JsonResult CreateShoppingNecessity([FromBody] List<DailyRequisitionProductiveUnitViewModel> dp)
@@ -512,161 +370,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             List<ProductivityUnitViewModel> result = DBProductivityUnits.ParseListToViewModel(DBProductivityUnits.GetAll());
             return Json(result);
         }
-
-
-        //Generate Requisitions and Requisitions Lines by Shopping Necessity lines
-        [HttpPost]
-        [Area("Nutricao")]
-        public JsonResult GenerateRequesition([FromBody] List<DailyRequisitionProductiveUnitViewModel> data)
-        {
-            Requisição resultRq = new Requisição();
-            LinhasRequisição resultRqLines = new LinhasRequisição();
-            ErrorHandler result = new ErrorHandler();
-            int rLinesCreated = 0;
-            int rLinesNotCreated = 0;
-
-            //Get Contract Numeration
-            Configuração Configs = DBConfigurations.GetById(1);
-            int ProjectNumerationConfigurationId = 0;
-            ProjectNumerationConfigurationId = Configs.NumeraçãoRequisições.Value;
-            try
-            {
-                //get formulary values
-                DailyRequisitionProductiveUnitViewModel valrProd = new DailyRequisitionProductiveUnitViewModel();
-                foreach (DailyRequisitionProductiveUnitViewModel getform in data)
-                {
-                    if (getform.LineNo<=0)
-                    {
-                        valrProd = getform;
-                    }
-                }
-                //get all lines with quantity > 0
-                List<DailyRequisitionProductiveUnitViewModel> allprod = new List<DailyRequisitionProductiveUnitViewModel>();
-                foreach (DailyRequisitionProductiveUnitViewModel getlines in data)
-                {
-                    if (getlines.Quantity > 0)
-                    {
-                        allprod.Add(getlines);
-                    }
-                }
-                if (allprod != null && allprod.Count > 0)
-                {
-                    UnidadesProdutivas ProductivityUnitDB =
-                        DBProductivityUnits.GetById((int) valrProd.ProductionUnitNo);
-                    if (valrProd != null && ProductivityUnitDB != null)
-                    {
-                        // CREATE requisition
-                        resultRq.NºRequisição =
-                            DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId,
-                                (resultRq.NºRequisição == "" || resultRq.NºRequisição == null));
-                        resultRq.CódigoÁreaFuncional = ProductivityUnitDB.CódigoÁreaFuncional;
-                        resultRq.CódigoCentroResponsabilidade = ProductivityUnitDB.CódigoCentroResponsabilidade;
-                        resultRq.CódigoRegião = ProductivityUnitDB.CódigoRegião;
-                        resultRq.CódigoLocalização = valrProd.LocalCode;
-                        resultRq.UnidadeProdutivaAlimentação = Convert.ToString(ProductivityUnitDB.NºUnidadeProdutiva);
-                        resultRq.RequisiçãoNutrição = true;
-                        resultRq.DataReceção = string.IsNullOrEmpty(valrProd.ExpectedReceptionDate)
-                            ? (DateTime?) null
-                            : DateTime.Parse(valrProd.ExpectedReceptionDate);
-                        resultRq.Aprovadores = "";
-                        resultRq.UtilizadorCriação = User.Identity.Name;
-                        resultRq.DataHoraCriação = DateTime.Now;
-                        resultRq.Estado = (int) RequisitionStates.Pending;
-                        resultRq = DBRequest.Create(resultRq);
-                        if (resultRq == null)
-                        {
-                            result.eReasonCode = 3;
-                            result.eMessage = "Ocorreu um erro ao criar a Requisição.";
-                        }
-                        else
-                        {
-                            //Update Last Numeration Used
-                            ConfiguraçãoNumerações ConfigNumerations =
-                                DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
-                            ConfigNumerations.ÚltimoNºUsado = resultRq.NºRequisição;
-                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                            DBNumerationConfigurations.Update(ConfigNumerations);
-                            result.eReasonCode = 1;
-                        }
-
-                        if (allprod != null && allprod.Count > 0 && resultRq.NºRequisição != null)
-                        {
-
-                            // CREATE requisition Lines
-                            foreach (DailyRequisitionProductiveUnitViewModel rpu in allprod)
-                            {
-                                try
-                                {
-                                    if (ProductivityUnitDB != null)
-                                    {
-                                        resultRqLines.NºRequisição = resultRq.NºRequisição;
-                                        resultRqLines.Tipo = 2;
-                                        resultRqLines.Código = rpu.ProductNo;
-                                        resultRqLines.Descrição = rpu.Description;
-                                        resultRqLines.CódigoUnidadeMedida = rpu.UnitMeasureCode;
-                                        resultRqLines.QtdPorUnidadeDeMedida = rpu.QuantitybyUnitMeasure;
-                                        resultRqLines.CódigoLocalização = rpu.LocalCode;
-                                        resultRqLines.QuantidadeARequerer = rpu.Quantity;
-                                        resultRqLines.CustoUnitário = rpu.DirectUnitCost;
-                                        resultRqLines.NºFornecedor = rpu.SupplierNo;
-                                        resultRqLines.DataReceçãoEsperada =
-                                            string.IsNullOrEmpty(rpu.ExpectedReceptionDate)
-                                                ? (DateTime?) null
-                                                : DateTime.Parse(rpu.ExpectedReceptionDate);
-                                        resultRqLines.CódigoProdutoFornecedor = rpu.SupplierProductCode;
-                                        resultRqLines.NºEncomendaAberto = rpu.OpenOrderNo;
-                                        resultRqLines.NºLinhaEncomendaAberto = Convert.ToInt32(rpu.OrderLineOpenNo);
-                                        resultRqLines.CódigoÁreaFuncional = ProductivityUnitDB.CódigoÁreaFuncional;
-                                        resultRqLines.CódigoCentroResponsabilidade =
-                                            ProductivityUnitDB.CódigoCentroResponsabilidade;
-                                        resultRqLines.CódigoRegião = ProductivityUnitDB.CódigoRegião;
-                                        resultRqLines.UtilizadorCriação = User.Identity.Name;
-                                        resultRqLines = DBRequestLine.Create(resultRqLines);
-                                        if (resultRqLines == null)
-                                        {
-                                            rLinesCreated++;
-                                        }
-                                        else
-                                        {
-                                            rLinesNotCreated++;
-                                        }
-                                    }
-                                    if (rLinesCreated > 0 && rLinesNotCreated > 0)
-                                    {
-                                        result.eReasonCode = 6;
-                                        result.eMessage = "Algumas linhas de requisição não foram criadas";
-                                    }
-                                }
-                                catch (Exception e)
-                                {
-                                    result.eReasonCode = 4;
-                                    result.eMessage = "Ocorreu um erro ao criar as linhas de requisição";
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    result.eReasonCode = 7;
-                    result.eMessage = "Só é possivel gerar Requisições quando existem linhas com a quantidade superior a 0.";
-                }
-               
-            }
-            catch (Exception e)
-            {
-                result.eReasonCode = 5;
-                result.eMessage = "Ocorreu um erro ao gerar a requisição";
-            }
-
-            if (result == null || result.eReasonCode==1)
-            {
-                result.eReasonCode = 1;
-                result.eMessage = "Gerou a requisição com sucesso!";
-            }
-            return Json(result);
-        }
-
+        
         //Create Shopping Necessity lines by copying Requisitions Lines 
         [Area("Nutricao")]
         public JsonResult GenerateByRequesition([FromBody] List<RequisitionViewModel> data)
@@ -747,7 +451,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                                 NºUnidadeProdutiva = ProductivityUnitDB.NºUnidadeProdutiva,
                                 Quantidade = 0,
                                 DataReceçãoEsperada = string.IsNullOrEmpty(rpu.ReceivedDate)
-                                    ? (DateTime?) null
+                                    ? (DateTime?)null
                                     : DateTime.Parse(rpu.ReceivedDate),
                                 CodigoLocalização = rpu.LocalCode,
                                 NºProduto = lr.Código,
@@ -783,8 +487,8 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                         }
                         else
                         {
-                                rqWithOutLines = rqWithOutLines + ", " + rpu.RequisitionNo;
-                                CountRqWithOutLines++;
+                            rqWithOutLines = rqWithOutLines + ", " + rpu.RequisitionNo;
+                            CountRqWithOutLines++;
                         }
                     }
                 }
@@ -796,7 +500,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 }
                 else
                 {
-                    if (rqWithOutLines != "" && CountRqWithOutLines >1)
+                    if (rqWithOutLines != "" && CountRqWithOutLines > 1)
                     {
                         resultValidation.eReasonCode = 4;
                         resultValidation.eMessage = "As Requisições " + rqWithOutLines +
@@ -817,6 +521,439 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             return Json(resultValidation);
         }
+        //Generate Requisitions and Requisitions Lines by Shopping Necessity lines
+        [HttpPost]
+        [Area("Nutricao")]
+        public JsonResult GenerateRequesition([FromBody] List<DailyRequisitionProductiveUnitViewModel> data)
+        {
+            ErrorHandler result = new ErrorHandler();
+            int rLinesNotCreated = 0;
+            if (data != null && data.Count > 0)
+            {
+                foreach (DailyRequisitionProductiveUnitViewModel NecShopDirect in data)
+                {
+                    Requisição resultRq = new Requisição();
+                    LinhasRequisição resultRqLines = new LinhasRequisição();
 
+                    //Get Contract Numeration
+                    Configuração Configs = DBConfigurations.GetById(1);
+                    int ProjectNumerationConfigurationId = 0;
+                    ProjectNumerationConfigurationId = Configs.NumeraçãoRequisições.Value;
+                    try
+                    {
+                        if (NecShopDirect.Quantity > 0 && NecShopDirect.LineNo > 0)
+                        {
+                            UnidadesProdutivas ProductivityUnitDB = DBProductivityUnits.GetById((int)NecShopDirect.ProductionUnitNo);
+                            if (ProductivityUnitDB != null)
+                            {
+                                // CREATE requisition
+                                resultRq.NºRequisição =
+                                    DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId,
+                                        (resultRq.NºRequisição == "" || resultRq.NºRequisição == null));
+                                resultRq.CódigoÁreaFuncional = ProductivityUnitDB.CódigoÁreaFuncional;
+                                resultRq.CódigoCentroResponsabilidade = ProductivityUnitDB.CódigoCentroResponsabilidade;
+                                resultRq.CódigoRegião = ProductivityUnitDB.CódigoRegião;
+                                resultRq.CódigoLocalização = NecShopDirect.LocalCode;
+                                resultRq.UnidadeProdutivaAlimentação = Convert.ToString(ProductivityUnitDB.NºUnidadeProdutiva);
+                                resultRq.RequisiçãoNutrição = true;
+                                resultRq.DataReceção = string.IsNullOrEmpty(NecShopDirect.ExpectedReceptionDate)
+                                    ? (DateTime?)null
+                                    : DateTime.Parse(NecShopDirect.ExpectedReceptionDate);
+                                resultRq.Aprovadores = User.Identity.Name;
+                                resultRq.UtilizadorCriação = User.Identity.Name;
+                                resultRq.DataHoraCriação = DateTime.Now;
+                                resultRq.Estado = (int)RequisitionStates.Pending;
+                                resultRq = DBRequest.Create(resultRq);
+                                if (resultRq == null)
+                                {
+                                    result.eReasonCode = 3;
+                                    result.eMessage = "Ocorreu um erro ao criar a Requisição.";
+                                }
+                                else
+                                {
+                                    //Update Last Numeration Used
+                                    ConfiguraçãoNumerações ConfigNumerations =
+                                        DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+                                    ConfigNumerations.ÚltimoNºUsado = resultRq.NºRequisição;
+                                    ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                                    DBNumerationConfigurations.Update(ConfigNumerations);
+                                    result.eReasonCode = 1;
+                                }
+                                if (resultRq.NºRequisição != null)
+                                {
+                                    // CREATE requisition Lines
+                                    try
+                                    {
+                                        if (ProductivityUnitDB != null)
+                                        {
+                                            resultRqLines.NºRequisição = resultRq.NºRequisição;
+                                            resultRqLines.Tipo = 2;
+                                            resultRqLines.Código = NecShopDirect.ProductNo;
+                                            resultRqLines.Descrição = NecShopDirect.Description;
+                                            resultRqLines.CódigoUnidadeMedida = NecShopDirect.UnitMeasureCode;
+                                            resultRqLines.QtdPorUnidadeDeMedida = NecShopDirect.QuantitybyUnitMeasure;
+                                            resultRqLines.CódigoLocalização = NecShopDirect.LocalCode;
+                                            resultRqLines.QuantidadeARequerer = NecShopDirect.Quantity;
+                                            resultRqLines.CustoUnitário = NecShopDirect.DirectUnitCost;
+                                            resultRqLines.NºFornecedor = NecShopDirect.SupplierNo;
+                                            resultRqLines.DataReceçãoEsperada =
+                                                string.IsNullOrEmpty(NecShopDirect.ExpectedReceptionDate)
+                                                    ? (DateTime?)null
+                                                    : DateTime.Parse(NecShopDirect.ExpectedReceptionDate);
+                                            resultRqLines.CódigoProdutoFornecedor = NecShopDirect.SupplierProductCode;
+                                            resultRqLines.NºEncomendaAberto = NecShopDirect.OpenOrderNo;
+                                            resultRqLines.NºLinhaEncomendaAberto = Convert.ToInt32(NecShopDirect.OrderLineOpenNo);
+                                            resultRqLines.CódigoÁreaFuncional = ProductivityUnitDB.CódigoÁreaFuncional;
+                                            resultRqLines.CódigoCentroResponsabilidade =
+                                                ProductivityUnitDB.CódigoCentroResponsabilidade;
+                                            resultRqLines.CódigoRegião = ProductivityUnitDB.CódigoRegião;
+                                            resultRqLines.UtilizadorCriação = User.Identity.Name;
+                                            resultRqLines = DBRequestLine.Create(resultRqLines);
+                                            if (resultRqLines == null)
+                                            {
+                                                rLinesNotCreated++;
+                                            }
+                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        result.eReasonCode = 4;
+                                        result.eMessage = "Ocorreu um erro ao criar as linhas de requisição";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        result.eReasonCode = 5;
+                        result.eMessage = "Ocorreu um erro ao gerar a requisição";
+                    }
+                }
+            }
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Ocorreu um erro: A lista esta vazia";
+            }
+            if (rLinesNotCreated > 0)
+            {
+                if (rLinesNotCreated == data.Count)
+                {
+                    result.eReasonCode = 6;
+                    result.eMessage = "Ocorreu um erro: As linhas de requisição não foram criadas";
+                }
+                else
+                {
+                    result.eReasonCode = 7;
+                    result.eMessage = "Ocorreu um erro: Algumas linhas de requisição não foram criadas";
+                }
+            }
+            if (result == null || result.eReasonCode == 1)
+            {
+                result.eReasonCode = 1;
+                result.eMessage = "Gerou a requisição com sucesso!";
+            }
+            return Json(result);
+        }
+        #endregion
+
+        #region Necessidade de Compras Diretas
+        [Area("Nutricao")]
+        public IActionResult NecessidadeCompraDireta(int? id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 44);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                if (id != null && id > 0)
+                {
+                    ViewBag.ProductivityUnityNo = id;
+                    UnidadesProdutivas ProductivityUnitDB = DBProductivityUnits.GetById((int)id);
+                    ViewBag.ProductivityUnitId = ProductivityUnitDB.NºUnidadeProdutiva;
+                    ViewBag.ProductivityUnitDesc = ProductivityUnitDB.Descrição;
+                }
+                else
+                {
+                    ViewBag.ProductivityUnitId = 0;
+                    ViewBag.ProductivityUnitDesc = "";
+                }
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+        [HttpPost]
+        [Area("Nutricao")]
+        public JsonResult UpdateDirectShoppingNecessity([FromBody] List<DailyRequisitionProductiveUnitViewModel> dp)
+        {
+            ErrorHandler result = new ErrorHandler();
+            string notupdate = "";
+            if (dp != null)
+            {
+                List<DiárioRequisiçãoUnidProdutiva> previousList;
+                // Get All
+                previousList = DBShoppingNecessity.GetAllWithoutPriceSup();
+                foreach (DiárioRequisiçãoUnidProdutiva line in previousList)
+                {
+                    if (!dp.Any(x => x.LineNo == line.NºLinha))
+                    {
+                        DBShoppingNecessity.Delete(line);
+                    }
+                }
+
+                //Update or Create
+                try
+                {
+                    dp.ForEach(x =>
+                    {
+                        List<DiárioRequisiçãoUnidProdutiva> dpObject = DBShoppingNecessity.GetByLineNoWithoutPriceSup(x.LineNo);
+
+                        if (dpObject.Count > 0)
+                        {
+                            DiárioRequisiçãoUnidProdutiva newdp = dpObject.FirstOrDefault();
+                            string[] tokens = x.id.Split(' ');
+
+                            if (tokens[0] != x.OpenOrderNo)
+                            {
+                                x.OpenOrderNo = tokens[0];
+                            }
+                            if (tokens[1] != x.OrderLineOpenNo)
+                            {
+                                x.OrderLineOpenNo = tokens[1];
+                            }
+                            if (tokens[2] != x.ProductNo)
+                            {
+                                x.ProductNo = tokens[2];
+                            }
+                            newdp.NºLinha = x.LineNo;
+                            newdp.NºUnidadeProdutiva = x.ProductionUnitNo;
+                            newdp.NºProduto = x.ProductNo;
+                            newdp.Descrição = x.Description;
+                            newdp.CódUnidadeMedida = x.UnitMeasureCode;
+                            newdp.Quantidade = x.Quantity;
+                            newdp.CustoUnitárioDireto = x.DirectUnitCost;
+                            newdp.Valor = x.TotalValue;
+                            newdp.NºFornecedor = x.SupplierNo;
+                            newdp.DataHoraModificação = DateTime.Now;
+                            newdp.UtilizadorModificação = User.Identity.Name;
+                            newdp.CodigoLocalização = x.LocalCode;
+                            newdp.NomeFornecedor = x.SupplierName;
+                            newdp.NºEncomendaAberto = x.OpenOrderNo;
+                            newdp.NºLinhaEncomendaAberto = x.OrderLineOpenNo;
+                            newdp.DescriçãoUnidadeProduto = x.ProductUnitDescription;
+                            newdp.DataReceçãoEsperada = string.IsNullOrEmpty(x.ExpectedReceptionDate)
+                                ? (DateTime?)null
+                                : DateTime.Parse(x.ExpectedReceptionDate);
+                            newdp.Observações = x.Observation;
+                            newdp = DBShoppingNecessity.Update(newdp);
+                            if (newdp == null)
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage =
+                                    "Ocorreu um erro ao Atualizar a Diário Requisição Unid. Produtiva";
+                            }
+                            else
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "Diário requisição Unid. Produtiva foi atualizado";
+                            }
+                        }
+                        else
+                        {
+                            DiárioRequisiçãoUnidProdutiva newdp = new DiárioRequisiçãoUnidProdutiva()
+                            {
+                                NºLinha = x.LineNo,
+                                NºUnidadeProdutiva = x.ProductionUnitNo,
+                                NºProduto = x.ProductNo,
+                                Descrição = x.Description,
+                                CódUnidadeMedida = x.UnitMeasureCode,
+                                Quantidade = x.Quantity,
+                                Valor = x.TotalValue,
+                                NºFornecedor = x.SupplierNo,
+                                CodigoLocalização = x.LocalCode,
+                                NomeFornecedor = x.SupplierName,
+                                NºEncomendaAberto = x.OpenOrderNo,
+                                NºLinhaEncomendaAberto = x.OrderLineOpenNo,
+                                DescriçãoUnidadeProduto = x.ProductUnitDescription,
+                                DataReceçãoEsperada = string.IsNullOrEmpty(x.ExpectedReceptionDate)
+                                    ? (DateTime?)null
+                                    : DateTime.Parse(x.ExpectedReceptionDate),
+                                CustoUnitárioDireto = x.DirectUnitCost,
+                                Observações = x.Observation
+                            };
+                            newdp.UtilizadorCriação = User.Identity.Name;
+                            newdp.DataHoraCriação = DateTime.Now;
+                            newdp = DBShoppingNecessity.Create(newdp);
+                            if (newdp == null)
+                            {
+                                result.eReasonCode = 4;
+                                result.eMessage =
+                                    "Ocorreu um erro ao criar a Diário Requisição Unid. Produtiva";
+                            }
+                            else
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "O registo Diário requisição Unid. Produtiva foi criado";
+                            }
+                        }
+
+                    });
+                }
+                catch (Exception e)
+                {
+
+                    result.eReasonCode = 5;
+                    result.eMessage =
+                        "Ocorreu um erro não com Diário Requisição Unid. Produtiva";
+                }
+            }
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Occorreu um erro ao atualizar o Diário de requisição Unid. Produtiva.";
+            }
+            return Json(result);
+        }
+        [HttpPost]
+        [Area("Nutricao")]
+        public JsonResult GetGridValuesWithoutDatePriceSup([FromBody]int id)
+        {
+            List<DailyRequisitionProductiveUnitViewModel> result = DBShoppingNecessity.GetAllDirectById(id).ParseToViewModel();
+            return Json(result);
+        }
+        //Generate Requisitions and Requisitions Lines by Shopping Necessity lines
+        [HttpPost]
+        [Area("Nutricao")]
+        public JsonResult GenerateRequesitionByDirectShopNeclines([FromBody] List<DailyRequisitionProductiveUnitViewModel> data)
+        {
+            ErrorHandler result = new ErrorHandler();
+            int rLinesNotCreated = 0;
+            if (data != null && data.Count>0)
+            {
+                foreach (DailyRequisitionProductiveUnitViewModel NecShopDirect in data)
+                {
+                    Requisição resultRq = new Requisição();
+                    LinhasRequisição resultRqLines = new LinhasRequisição();
+
+                    //Get Contract Numeration
+                    Configuração Configs = DBConfigurations.GetById(1);
+                    int ProjectNumerationConfigurationId = 0;
+                    ProjectNumerationConfigurationId = Configs.NumeraçãoRequisições.Value;
+
+                    try
+                    {
+                        if (NecShopDirect.Quantity > 0 && NecShopDirect.LineNo > 0)
+                        {
+                            UnidadesProdutivas ProductivityUnitDB = DBProductivityUnits.GetById((int)NecShopDirect.ProductionUnitNo);
+                            if (ProductivityUnitDB != null)
+                            {
+                                // CREATE requisition
+                                resultRq.NºRequisição = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId,(resultRq.NºRequisição == "" || resultRq.NºRequisição == null));
+                                resultRq.CódigoÁreaFuncional = ProductivityUnitDB.CódigoÁreaFuncional;
+                                resultRq.CódigoCentroResponsabilidade = ProductivityUnitDB.CódigoCentroResponsabilidade;
+                                resultRq.CódigoRegião = ProductivityUnitDB.CódigoRegião;
+                                resultRq.Aprovadores = User.Identity.Name;
+                                resultRq.CódigoLocalização = NecShopDirect.LocalCode;
+                                resultRq.UnidadeProdutivaAlimentação = Convert.ToString(ProductivityUnitDB.NºUnidadeProdutiva);
+                                resultRq.RequisiçãoNutrição = true;
+                                resultRq.CompraADinheiro = true;
+                                resultRq.Observações = NecShopDirect.Observation;
+                                resultRq.DataReceção = string.IsNullOrEmpty(NecShopDirect.ExpectedReceptionDate) ? (DateTime?)null : DateTime.Parse(NecShopDirect.ExpectedReceptionDate);
+                                resultRq.UtilizadorCriação = User.Identity.Name;
+                                resultRq.DataHoraCriação = DateTime.Now;
+                                resultRq.Estado = (int)RequisitionStates.Pending;
+                                resultRq = DBRequest.Create(resultRq);
+                                if (resultRq == null)
+                                {
+                                    result.eReasonCode = 3;
+                                    result.eMessage = "Ocorreu um erro ao criar a Requisição.";
+                                }
+                                else
+                                {
+                                    //Update Last Numeration Used
+                                    ConfiguraçãoNumerações ConfigNumerations =
+                                        DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+                                    ConfigNumerations.ÚltimoNºUsado = resultRq.NºRequisição;
+                                    ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                                    DBNumerationConfigurations.Update(ConfigNumerations);
+                                    result.eReasonCode = 1;
+                                }
+                                if (resultRq.NºRequisição != null)
+                                {
+                                    // CREATE requisition Lines
+                                        try
+                                        {
+                                            if (ProductivityUnitDB != null)
+                                            {
+                                                resultRqLines.NºRequisição = resultRq.NºRequisição;
+                                                resultRqLines.Tipo = 2;
+                                                resultRqLines.Código = NecShopDirect.ProductNo;
+                                                resultRqLines.Descrição = NecShopDirect.Description;
+                                                resultRqLines.CódigoUnidadeMedida = NecShopDirect.UnitMeasureCode;
+                                                resultRqLines.CódigoLocalização = NecShopDirect.LocalCode;
+                                                resultRqLines.QuantidadeARequerer = NecShopDirect.Quantity;
+                                                resultRqLines.CustoUnitário = NecShopDirect.DirectUnitCost;
+                                                resultRqLines.NºFornecedor = NecShopDirect.SupplierNo;
+                                                resultRqLines.DataReceçãoEsperada =
+                                                string.IsNullOrEmpty(NecShopDirect.ExpectedReceptionDate)
+                                                    ? (DateTime?)null
+                                                    : DateTime.Parse(NecShopDirect.ExpectedReceptionDate);
+                                                resultRqLines.CódigoRegião = ProductivityUnitDB.CódigoRegião;
+                                                resultRqLines.CódigoÁreaFuncional = ProductivityUnitDB.CódigoÁreaFuncional;
+                                                resultRqLines.CódigoCentroResponsabilidade = ProductivityUnitDB.CódigoCentroResponsabilidade;
+                                                resultRqLines.UtilizadorCriação = User.Identity.Name;
+                                                resultRqLines = DBRequestLine.Create(resultRqLines);
+                                                if (resultRqLines == null)
+                                                {
+                                                    rLinesNotCreated++;
+                                                }
+                                            }
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            result.eReasonCode = 4;
+                                            result.eMessage = "Ocorreu um erro ao criar as linhas de requisição";
+                                        }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        result.eReasonCode = 5;
+                        result.eMessage = "Ocorreu um erro ao gerar a requisição";
+                    }
+
+                }
+            }
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Ocorreu um erro: A lista esta vazia";
+            }
+            if (rLinesNotCreated>0)
+            {
+                if (rLinesNotCreated == data.Count)
+                {
+                    result.eReasonCode = 6;
+                    result.eMessage = "Ocorreu um erro: As linhas de requisição não foram criadas";
+                }
+                else
+                {
+                    result.eReasonCode = 7;
+                    result.eMessage = "Ocorreu um erro: Algumas linhas de requisição não foram criadas";
+                }
+            }
+            if (result == null || result.eReasonCode == 1)
+            {
+                result.eReasonCode = 1;
+                result.eMessage = "Gerou a requisição com sucesso!";
+            }
+            return Json(result);
+        }
+        #endregion
     }
 }

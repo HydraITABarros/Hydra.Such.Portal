@@ -76,10 +76,11 @@
         <iron-ajax id="deleteReqTemplateLine_ajax" url="/Nutricao/ModelosReqSimplificada/DeleteReqTemplateLine" last-response="{{DelReqTemplateLineResponse}}" on-response="_deleteReqTemplateLineResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax id="updateReqTemplateLines_ajax" url="/Nutricao/ModelosReqSimplificada/UpdateReqTemplateLines" last-response="{{UpdReqTemplateLineResponse}}" on-response="_updateReqTemplateLinesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax id="createReqTemplateLine_ajax" url="/Nutricao/ModelosReqSimplificada/CreateReqTemplateLine" last-response="{{AddReqTemplateLineResponse}}" on-response="_createReqTemplateLineResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax id="validateNumeration_ajax" url="/Nutricao/ModelosReqSimplificada/ValidateNumeration" last-response="{{numValidationResponse}}" on-response="_onNumValidationResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         @*POPULATE DROPDOWNS*@
         @*<iron-ajax url="/PopulateDropdowns/GetNutritionReqTemplateTypes" last-response="{{CBRequisitionModelTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
-        
+
         <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetMealTypes" last-response="{{CBMealTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -388,7 +389,7 @@
                                     </template>
                                 </vaadin-combo-box>
                             </template>
-                            <template is="dom-if" if="{{ !item.selected }}">                                
+                            <template is="dom-if" if="{{ !item.selected }}">
                                 [[_getUnitOfMeasureDescription(item.unitOfMeasure)]]
                             </template>
                         </template>
@@ -618,7 +619,7 @@
                     '_onCacheLoaded(CBProducts,CBFunctionalAreas,CBResponsabilityCenters,CBRegions,CBUnitsOfMeasure, CBMealTypes, CBProjects)'
                 ],
                 _onCacheLoaded: function (products, functionalAreas, responsabilityCenters, regions, unitsOfMeasure, mealTypes, projects) {
-                    this.$.reqTemplateHeader_databound.body = JSON.stringify(@ViewBag.requisitionTemplateId);
+                    this.$.reqTemplateHeader_databound.body = JSON.stringify("@ViewBag.requisitionTemplateId");
                     this.$.reqTemplateHeader_databound.generateRequest();
 
                     this._isCreate = "@ViewBag.FormType" == "0";
@@ -652,9 +653,20 @@
                 //CRUD
                 _createReqTemplate: function () {
                     if (this._validateUserInputForHeader()) {
-                        this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/CreateReqTemplate"
-                        this.$.reqTemplateHeader_databound.body = JSON.stringify(this.data);
-                        this.$.reqTemplateHeader_databound.generateRequest();
+                        this.$.validateNumeration_ajax.body = JSON.stringify(this.data);
+                        this.$.validateNumeration_ajax.generateRequest();
+                    }
+                },
+                _onNumValidationResponse: function (data) {
+                    if (data.detail.status === 200) {
+                        if (this.numValidationResponse == "") {
+                            this.$.reqTemplateHeader_databound.url = "/Nutricao/ModelosReqSimplificada/CreateReqTemplate"
+                            this.$.reqTemplateHeader_databound.body = JSON.stringify(this.data);
+                            this.$.reqTemplateHeader_databound.generateRequest();
+                        }
+                        else {
+                            this._showErrorMessage(this.numValidationResponse);
+                        }
                     }
                 },
                 _updateReqTemplate: function () {
@@ -748,10 +760,9 @@
                             productId: this.$.lineProductId.value,
                             productDescription: this.$.lineProductDescription.value,
                             unitOfMeasure: this.$.lineUnitOfMeasure.value,
-                            quantity: this.$.lineQuantity.value,
-                            unitCost: this.$.lineUnitValue.value,
-                            mealType: this.$.lineMealType.value,
-                            //mealTypeDescription = this.$.lineMealTypeDescription.value,
+                            quantity: this.$.lineQuantity.value == "" ? 0 : this.$.lineQuantity.value,
+                            unitCost: this.$.lineUnitValue.value == "" ? 0 : this.$.lineUnitValue.value,
+                            mealType: this.$.lineMealType.value == "" ? 0 : this.$.lineMealType.value,
                             projectId: this.$.lineProjectId.value,
                             codeRegion: this.$.lineCodeRegion.value,
                             codeFunctionalArea: this.$.lineCodeFunctionalArea.value,
