@@ -224,7 +224,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             result.TotalConsumption = DBProjectDiary.GetProjectTotaConsumption(result.ProjectNo);
 
             decimal totalMeals = DBNAV2017CoffeeShops.GetTotalMeals(navDatabaseName, navCompanyName, result.ProjectNo);
-            result.TotalMeals = totalMeals;
+            result.NumberOfMeals = totalMeals;
 
             return result;
         }

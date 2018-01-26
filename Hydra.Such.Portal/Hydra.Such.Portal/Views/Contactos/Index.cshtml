@@ -9,6 +9,7 @@
     <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
     <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
     <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+    <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
     @*<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
     <link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">*@
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
@@ -23,13 +24,14 @@
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <iron-ajax auto method="post" handle-as="json" content-type="application/json" last-response="{{Contacts}}" id="contacts_grid_datasource" url="/Contactos/GetContacts"></iron-ajax>
+        <iron-ajax id="contacts_grid_datasource" url="/Contactos/GetContacts" last-response="{{Contacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax id="deleteContact_ajax" url="/Contactos/DeleteContact" last-response="{{DeleteContactResponse}}" on-response="_deleteContactResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <div class="marginSpace">
             <paper-button class="btnSave" raised on-tap="_redirectToNewContactForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
         </div>
 
-        <vaadin-grid aria-label="ContactsTable" items="[[Contacts]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid id="grdContacts" aria-label="Contacts Table" items="[[Contacts]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="10%">
                 <template class="header">
                     <vaadin-grid-sorter path="id">ID</vaadin-grid-sorter>
@@ -39,7 +41,7 @@
                     {{item.id}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="90%">
+            <vaadin-grid-column width="80%">
                 <template class="header">
                     <vaadin-grid-sorter path="nome">Nome</vaadin-grid-sorter>
                     <vaadin-grid-filter path="name" />
@@ -48,8 +50,17 @@
                     {{item.name}}
                 </template>
             </vaadin-grid-column>
-        </vaadin-grid>
+            <vaadin-grid-column width="10%">
+                <template class="header">
+                </template>
+                <template>
+                    <paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteContact"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                </template>
+            </vaadin-grid-column>
 
+        </vaadin-grid>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -64,6 +75,14 @@
                         value: true
                     }
                 },
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
                 _onContactRowSelected: function (item) {
                     if (item != null) {
                         window.location.href = "/Contactos/Detalhes/" + item.id;
@@ -73,7 +92,41 @@
                     if (item != null) {
                         window.location.href = "/Contactos/Detalhes";
                     }
-                }
+                },
+                _deleteContact: function (e) {
+                    var ajax_request = this.$.deleteContact_ajax;
+                    
+                    var contactToDelete = e.model.item;//this.activeItem;
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o contacto " + contactToDelete.id + "?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(contactToDelete);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _deleteContactResponse: function (e) {
+                    if (this.DeleteContactResponse) {
+                        this.$.contacts_grid_datasource.generateRequest();
+                        this._openToast("Contacto eliminado com sucesso.");
+                    }
+                    else {
+                        this._openToastError("Ocorreu um erro ao eliminar o contacto.");
+                    }
+                },
             });
         });
     </script>

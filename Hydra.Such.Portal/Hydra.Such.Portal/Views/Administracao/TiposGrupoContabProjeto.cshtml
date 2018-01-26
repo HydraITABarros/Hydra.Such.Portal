@@ -321,9 +321,10 @@
                 this.$.gridContabGroupTypes.clearCache();
             },
             _createContabGroupType: function () {
+                debugger;
                 this.result.unshift({
 
-                    description: this.ddDescription,
+                    description: this.$.ddDescription.value,
                     region: this.ddRegion,
                     functionalAreaCode: this.ddFunctionalArea,
                     responsabilityCenter: this.ddResponsabilityCenter
