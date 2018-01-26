@@ -271,9 +271,8 @@ namespace Hydra.Such.Portal.Controllers
         }
         
         [HttpPost]
-        public JsonResult getOpenOrderLine([FromBody] string numb, string documentNO, DateTime? date)
+        public JsonResult getOpenOrderLine([FromBody] string numb, string documentNO, int LineNo, DateTime? date)
         {
-            int count = 0;
             NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
             try
             {
@@ -281,26 +280,13 @@ namespace Hydra.Such.Portal.Controllers
                 result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "").ToList();
                 if (result != null && result.Count > 0 &&
                     !string.IsNullOrEmpty(documentNO) &&
-                    !string.IsNullOrEmpty(numb))
+                    !string.IsNullOrEmpty(numb)
+                    && LineNo > 0)
                 {
                     foreach (NAVOpenOrderLinesViewModels item in result)
                     {
-                        if (documentNO == item.DocumentNO && numb == item.Numb)
+                        if (documentNO == item.DocumentNO && numb == item.Numb && LineNo == item.Line_No)
                         {
-                            getorderline = item;
-                        }
-                    }
-                }
-                if (result != null && result.Count > 0 &&
-                    string.IsNullOrEmpty(documentNO) &&
-                    !string.IsNullOrEmpty(numb))
-                {
-                    
-                    foreach (NAVOpenOrderLinesViewModels item in result)
-                    {
-                        if (numb == item.Numb)
-                        {
-                            count++;
                             getorderline = item;
                         }
                     }
@@ -1358,12 +1344,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProducts()
         {
-            List<DDMessageString> products = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
-            {
-                id = x.Code,
-                value = x.Name
-            }).ToList();
-
+            List<NAVProductsViewModel> products = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             return Json(products);
         }
 

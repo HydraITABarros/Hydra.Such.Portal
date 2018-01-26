@@ -44,7 +44,9 @@
             <paper-button class="tablinks" on-tap="_addRequesition"><i class="fa fa-get-pocket" aria-hidden="true"></i> Geração de requisições </paper-button>
         </div><!--on-response="_gridListResponse"-->
         <iron-ajax url="/PopulateDropdowns/GetProdUnits" id="ajax_prodUnit" last-response="{{prodUnitValresult}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/OpenOrderLines" id="ajax_nOrderLines" last-response="{{cbopenorderlines}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/OpenOrderLines" id="ajax_nOrderLines"  last-response="{{cbopenorderlines}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/OpenOrderLines" id="ajax_nOrderGridLines"  last-response="{{cbopenorderlinesGrid}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+       
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLine" id="ajax_result" last-response="{{result}}" on-response="_resultResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLine" id="ajax_result2" last-response="{{result2}}" on-response="_GridprodChangeResult" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getSupplier" id="ajax_supplierresult" last-response="{{supplierresult}}" on-response="_supplierResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -100,7 +102,7 @@
                 </vaadin-combo-box>
             </div>
             <div class="col-md-3">
-                <vaadin-combo-box items="[[cbopenorderlines]]" id="mOpenOrderLinesId" on-value-changed="_openOrderLinesOnChange" item-value-path="numb" item-label-path="numb" value="" label="Nº Produto">
+                <vaadin-combo-box items="[[cbopenorderlines]]" id="mOpenOrderLinesId" on-value-changed="_openOrderLinesOnChange" item-value-path="id" item-label-path="numb" value="" label="Nº Produto">
                     <template>
                         <table width="300px">
                             <tr>
@@ -154,12 +156,6 @@
             <div class="col-md-3 ">
                 <vaadin-text-field id="SupplierNameId" name="SupplierName" label="Nome Fornecedor" value="{{SupplierName}}" disabled></vaadin-text-field>
             </div>
-            <div class="col-md-3 " hidden>
-                <vaadin-text-field id="documentNoId" name="DocumentNoName" label="Nº Documento" value="{{DocumentNo}}" disabled></vaadin-text-field>
-            </div>
-            <div class="col-md-3 " hidden>
-                <vaadin-text-field id="OrderLineOpenNoId" name="OrderLineOpenNoName" label="Nº Linha Encomenda Aberto" value="" disabled></vaadin-text-field>
-            </div>
         </div>
         <div class="row"  hidden="{{ !_permissionsVal.create }}">
             <div class="col-lg-2 alignPoga">
@@ -207,7 +203,7 @@
         <template>
 
             <template is="dom-if" if="{{ item.selected }}">
-                <vaadin-date-picker value="{{item.expectedReceptionDate}}" disabled="{{ !_permissionsVal.update }}"></vaadin-date-picker>
+                <vaadin-date-picker  value="{{item.expectedReceptionDate}}" disabled="{{ !_permissionsVal.update }}"></vaadin-date-picker>
             </template>
             <template is="dom-if" if="{{ !item.selected }}">
                 [[ _parseExpectedReception(item.expectedReceptionDate) ]]
@@ -221,10 +217,10 @@
         </template>
         <template>
             <template is="dom-if" if="{{ item.selected }}">
-                <vaadin-date-picker value="{{item.dateByPriceSupplier}}" disabled="{{ !_permissionsVal.update }}"></vaadin-date-picker>
+                <vaadin-date-picker on-value-changed="_DatePriceGridChange" value="{{item.dateByPriceSupplier}}" disabled="{{ !_permissionsVal.update }}"></vaadin-date-picker>
             </template>
             <template is="dom-if" if="{{ !item.selected }}">
-                [[ _parseExpectedReception(item.dateByPriceSupplier) ]]
+                [[ _parseSupplierDateReception(item.dateByPriceSupplier) ]]
             </template>
 
         </template>
@@ -259,7 +255,7 @@
         </template>
         <template>
             <template is="dom-if" if="{{ item.selected }}">
-                <vaadin-combo-box items="[[cbopenorderlines]]" disabled="{{ !_permissionsVal.update }}" id="mOpenOrderLinesId" on-value-changed="_openOrderGridLinesOnChange" item-value-path="numb" item-label-path="numb" value="{{item.productNo}}">
+                <vaadin-combo-box items="[[cbopenorderlinesGrid]]" disabled="{{ !_permissionsVal.update }}" id="mOpenOrderLinesId" on-value-changed="_openOrderGridLinesOnChange" item-value-path="id" item-label-path="numb" value="{{item.id}}">
                     <template>
                         <table width="300px">
                             <tr>
@@ -488,11 +484,12 @@
 
 
     <div class="marginSpace"  hidden="{{ !_permissionsVal.update }}">
-            <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-        </div>
-        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+    </div>
+        
+    <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+    <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
     </template>
     <script>
@@ -579,6 +576,36 @@
                 _NotSelectedprodUnit: {
                     type: Boolean,
                     value: false
+                },
+                _documentNo: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                _lineNo: {
+                type: Number,
+                notify: true,
+                value: ""
+                },
+                _numb: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                _documentNOGrid: {
+                    type: String,
+                    notify: true,
+                    value: ""
+                },
+                _lineNoGrid: {
+                    type: Number,
+                    notify: true,
+                    value: ""
+                },
+                _numbGrid: {
+                    type: String,
+                    notify: true,
+                    value: ""
                 }
             },
             observers: [
@@ -590,6 +617,14 @@
                     var x = date.split("-");
                     return x[2] + "-" + x[1] + "-" + x[0];
                 }
+                return "";
+            },
+            _parseSupplierDateReception: function (date) {
+                if (date != null && date != "") {
+                    var x = date.split("-");
+                    return x[2] + "-" + x[1] + "-" + x[0];
+                }
+                return "";
             },
 
             _onCacheLoaded: function (locationsresult) {
@@ -614,7 +649,6 @@
                         }
                     },
             ready: function () {
-                debugger;
                         var prodUnitId = @ViewBag.ProductivityUnitId;
                         var prodUnitDesc = @Html.Raw(Json.Serialize(ViewBag.ProductivityUnitDesc));
                         //get premissions to CRUD
@@ -633,14 +667,36 @@
                              this.$.ajax_prodUnit.generateRequest();
                              
                          }
-                    },
-            _DatePriceChange: function(e) {
-                        if (e.detail.value != null &&
-                            e.detail.value != "" &&
-                            this.$.mOpenOrderLinesId.value != null &&
-                            this.$.mOpenOrderLinesId.value != "") {
-                            this.$.ajax_result.body = JSON.stringify(this.$.mOpenOrderLinesId.value);
-                            this.$.ajax_result.params = { "date": e.detail.value };
+            },
+            _DatePriceGridChange:function (e) {
+                if (e.detail.value != null && e.detail.value != "" &&
+                    this._numbGrid != null && this._numbGrid != "" &&
+                    this._lineNoGrid != null && this._lineNoGrid != "" &&
+                    this._documentNOGrid != null && this._documentNOGrid != "")
+                    {
+                        this.$.ajax_result.body = JSON.stringify(this._numbGrid);
+                        this.$.ajax_result.params = {
+                            "documentNO": this._documentNOGrid,
+                            "LineNo": this._lineNoGrid,
+                            "date": e.detail.value
+                        };
+                    this.$.ajax_result.generateRequest();
+                } else {
+                    if (e.detail.value != null &&
+                        e.detail.value != "") {
+                        this.$.ajax_nOrderGridLines.body = JSON.stringify(e.detail.value);
+                        this.$.ajax_nOrderGridLines.generateRequest();
+                    }
+                }
+            },
+            _DatePriceChange: function (e) {
+                        if (e.detail.value != null && e.detail.value != "" && this._numb != null && this._numb != "") {
+                            this.$.ajax_result.body = JSON.stringify(this._numb);
+                            this.$.ajax_result.params = {
+                                "documentNO": this._documentNO,
+                                "LineNo": this._lineNo,
+                                "date": e.detail.value
+                            };
                             this.$.ajax_result.generateRequest();
                         } else {
                             if (e.detail.value != null &&
@@ -653,26 +709,24 @@
             _getgridResponse: function (data) {
                         if (data != null) {
                             if (data.detail.status === 200) {
-                                for (var i = 0; i < this.data.length; i++) {
-                                    this.$.ajax_nOrderLines.body = JSON.stringify(this.data[i].dateByPriceSupplier);
-                                    this.$.ajax_nOrderLines.generateRequest();
-                                }
+                                
                             } else {
                                 this._openToastError("Occorreu um erro ao atualizar o Diário de requisição Unid. Produtiva.");
                             }
                         }
                     },
-            _openOrderLinesOnChange: function(e) {
+            _openOrderLinesOnChange: function (e) {
                 if (e.detail.value) {
-
-                            this.$.ajax_result.body = JSON.stringify(e.detail.value);
-                            this.$.documentNoId.value = this.$.mOpenOrderLinesId.selectedItem.documentNO;
+                    var res = e.detail.value.split(" ");
+                    this._documentNo = res[0];
+                    this._lineNo = res[1];
+                    this._numb = res[2];
+                    this.$.ajax_result.body = JSON.stringify(this._numb);
                             var dateVPrice = this.$.dpVendedorPriceId.value;
-                            if (dateVPrice == "") {
-                                dateVPrice = "01-01-1753";
-                            }
+                            if (dateVPrice == "") { dateVPrice = "01-01-1753";}
                             this.$.ajax_result.params = {
-                                "documentNO": this.$.mOpenOrderLinesId.selectedItem.documentNO,
+                                "documentNO": this._documentNo,
+                                "LineNo": this._lineNo,
                                 "date": dateVPrice
                             };
                             this.$.ajax_result.generateRequest();
@@ -683,25 +737,31 @@
             //Works with functions _GridprodChangeResult and _supplierGridResponse
             _openOrderGridLinesOnChange: function (e) {
                 if (e.detail.value) {
+                            var res = e.detail.value.split(" ");
+                            this._documentNOGrid = res[0];
+                            this._lineNoGrid = res[1];
+                            this._numbGrid = res[2];
                             var datePS = "";
                             var oSel = this.data.find(x => x.selected);
+
                             if (oSel != undefined && e.detail.value != undefined) {
                                 if (oSel.dateByPriceSupplier != "" && oSel.dateByPriceSupplier != null) {
                                     datePS = oSel.dateByPriceSupplier.split("-");
                                     datePS = datePS[2] + "-" + datePS[1] + "-" + datePS[0];
                                 }
                                 if (datePS != "") {
-                                    this.$.ajax_result2.body = JSON.stringify(e.detail.value);
+                                    this.$.ajax_result2.body = JSON.stringify(this._numbGrid);
                                     this.$.ajax_result2.params = {
-                                        "documentNO": "",
-                               "date": oSel.dateByPriceSupplier
+                                        "documentNO": this._documentNOGrid,
+                                        "LineNo": this._lineNoGrid,
+                                        "date": datePS
                                     };
                                     this.$.ajax_result2.generateRequest();
                                 }
                             }
                         }
                     },
-            _resultResponse: function(result) {
+            _resultResponse: function (result) {
                 if (result != null) {
                
                             this.$.supplierNoId.value = this.result.buyFromVendorNo;
@@ -711,11 +771,9 @@
                             this.$.unitCostId.value = this.result.unitCost;
                             this.$.amountId.value = this.result.amount;
                             this.$.unitofMeasureCodeId.value = this.result.unitofMeasureCode;
-                            this.$.OrderLineOpenNoId.value = this.result.line_No;
                             if (this.result.locationCode != "") {
                                 this.$.codStockUnitId.value = this.result.locationCode;
                             }
-
                         }
                         this.$.ajax_supplierresult.body = JSON.stringify(this.$.supplierNoId.value);
                         this.$.ajax_supplierresult.generateRequest();
@@ -737,89 +795,22 @@
                         }
                     },
             _addRequesition() {
-                if (this._NotSelectedprodUnit == true) {
-                    if (this.$.dpExpectedReceiptId.value != null &&
-                        this.$.dpVendedorPriceId.value != null &&
-                        this.$.dpExpectedReceiptId.value != "" &&
-                        this.$.dpVendedorPriceId.value != "" &&
-                        this.$.prodUnitNoId.value != "" &&
-                        this.$.descriptionUnitId.value != "")
-                    //Validações
-                    {
-                        this.data.unshift({
-                            productionUnitNo: this.$.prodUnitNoId.value,
-                            productUnitDescription: this.$.descriptionUnitId.value,
-                            expectedReceptionDate: this.$.dpExpectedReceiptId.value,
-                            dateByPriceSupplier: this.$.dpVendedorPriceId.value,
-                            localCode: this.$.codStockUnitId.value,
-                            productNo: this.$.mOpenOrderLinesId.value,
-                            supplierNo: this.$.supplierNoId.value,
-                            description: this.$.prodCodId.value,
-                            unitMeasureCode: this.$.unitofMeasureCodeId.value,
-                            quantity: this.$.qtyID.value,
-                            quantitybyUnitMeasure: this.$.QtyforMeasId.value,
-                            directUnitCost: this.$.unitCostId.value,
-                            totalValue: this.$.amountId.value,
-                            supplierProductCode: this.$.supplierProdCodeId.value,
-                            supplierProductDescription: this.$.supplierProdDescriptionId.value,
-                            supplierName: this.$.SupplierNameId.value,
-                            documentNo: this.$.documentNoId.value,
-                            openOrderNo: this.$.documentNoId.value,
-                            orderLineOpenNo :this.$.OrderLineOpenNoId.value
-                        });
-                           
-                        // Save to DB
-
-                        this.$.ajax_requesitionupdate.body = JSON.stringify(this.data);
-                        this.$.ajax_requesitionupdate.generateRequest();
-                    }
-                    else {
-                        this._openToastError("Os campos Data Receção Esperada, Data p/ Preço Fornecedor, Nº Unidade Produtiva e Descrição são obrigatorios.");
-                    }
-                }
-                else {
-                    if (this.$.dpExpectedReceiptId.value != null &&
-                        this.$.dpVendedorPriceId.value != null &&
-                        this.$.dpExpectedReceiptId.value != "" &&
-                        this.$.dpVendedorPriceId.value != "")
-                    //Validações
-                    {
-                        this.data.unshift({
-                            productionUnitNo: this.$.prodUnitNoId.value,
-                            productUnitDescription: this.$.descriptionUnitId.value,
-                            expectedReceptionDate: this.$.dpExpectedReceiptId.value,
-                            dateByPriceSupplier: this.$.dpVendedorPriceId.value,
-                            localCode: this.$.codStockUnitId.value,
-                            productNo: this.$.mOpenOrderLinesId.value,
-                            supplierNo: this.$.supplierNoId.value,
-                            description: this.$.prodCodId.value,
-                            unitMeasureCode: this.$.unitofMeasureCodeId.value,
-                            quantity: this.$.qtyID.value,
-                            quantitybyUnitMeasure: this.$.QtyforMeasId.value,
-                            directUnitCost: this.$.unitCostId.value,
-                            totalValue: this.$.amountId.value,
-                            supplierProductCode: this.$.supplierProdCodeId.value,
-                            supplierProductDescription: this.$.supplierProdDescriptionId.value,
-                            supplierName: this.$.SupplierNameId.value,
-                            documentNo: this.$.documentNoId.value,
-                            openOrderNo: this.$.documentNoId.value,
-                            orderLineOpenNo :this.$.OrderLineOpenNoId.value
-                        });
-                           
-                        // Save to DB
-
-                        this.$.ajax_requesitionupdate.body = JSON.stringify(this.data);
-                        this.$.ajax_requesitionupdate.generateRequest();
-
-                    }
-                    else {
-                        this._openToastError("Os campos Data Receção Esperada e Data p/ Preço Fornecedor são obrigatorios.");
-                    }
-                } 
-                    },
-            _add() {
                 debugger;
                 if (this._NotSelectedprodUnit == true) {
+
+                        // Save to DB
+                        this.$.ajax_requesitionupdate.body = JSON.stringify(this.data);
+                        this.$.ajax_requesitionupdate.generateRequest();
+                }
+                else {
+          
+                        // Save to DB
+                        this.$.ajax_requesitionupdate.body = JSON.stringify(this.data);
+                        this.$.ajax_requesitionupdate.generateRequest();
+                    } 
+                },
+            _add() {
+                if (this._NotSelectedprodUnit == true) {
                     if (this.$.dpExpectedReceiptId.value != null &&
                         this.$.dpVendedorPriceId.value != null &&
                         this.$.dpExpectedReceiptId.value != "" &&
@@ -834,7 +825,7 @@
                             expectedReceptionDate: this.$.dpExpectedReceiptId.value,
                             dateByPriceSupplier: this.$.dpVendedorPriceId.value,
                             localCode: this.$.codStockUnitId.value,
-                            productNo: this.$.mOpenOrderLinesId.value,
+                            productNo: this._numb,
                             supplierNo: this.$.supplierNoId.value,
                             description: this.$.prodCodId.value,
                             unitMeasureCode: this.$.unitofMeasureCodeId.value,
@@ -845,9 +836,9 @@
                             supplierProductCode: this.$.supplierProdCodeId.value,
                             supplierProductDescription: this.$.supplierProdDescriptionId.value,
                             supplierName: this.$.SupplierNameId.value,
-                            documentNo: this.$.documentNoId.value,
-                            openOrderNo: this.$.documentNoId.value,
-                            orderLineOpenNo: this.$.OrderLineOpenNoId.value
+                            documentNo: this.$._documentNo,
+                            openOrderNo: this.$._documentNo,
+                            orderLineOpenNo: this._lineNo
                         });
 
 
@@ -879,7 +870,7 @@
                             expectedReceptionDate: this.$.dpExpectedReceiptId.value,
                             dateByPriceSupplier: this.$.dpVendedorPriceId.value,
                             localCode: this.$.codStockUnitId.value,
-                            productNo: this.$.mOpenOrderLinesId.value,
+                            productNo: this._numb,
                             supplierNo: this.$.supplierNoId.value,
                             description: this.$.prodCodId.value,
                             unitMeasureCode: this.$.unitofMeasureCodeId.value,
@@ -890,9 +881,9 @@
                             supplierProductCode: this.$.supplierProdCodeId.value,
                             supplierProductDescription: this.$.supplierProdDescriptionId.value,
                             supplierName: this.$.SupplierNameId.value,
-                            documentNo: this.$.documentNoId.value,
-                            openOrderNo: this.$.documentNoId.value,
-                            orderLineOpenNo: this.$.OrderLineOpenNoId.value
+                            documentNo: this._documentNo,
+                            openOrderNo: this._documentNo,
+                            orderLineOpenNo: this._lineNo 
                         });
 
 
@@ -949,6 +940,7 @@
                         }
                     },
             _lineSelected: function (item) {
+                debugger;
                         if (item != null) {
                             var oSel = this.data.find(x => x.selected);
                             if (oSel != undefined) {
@@ -957,6 +949,12 @@
                             var sel = this.data.find(x => x == item);
                             if (sel != undefined) {
                                 this.data.find(x => x == item).selected = true;
+                                if (item.dateByPriceSupplier != "" && item.dateByPriceSupplier != null) {
+                                    var x = item.dateByPriceSupplier.split("-");
+                                    var datapriceSupp = x[2] + "-" + x[1] + "-" + x[0];
+                                    this.$.ajax_nOrderGridLines.body = JSON.stringify(datapriceSupp);
+                                    this.$.ajax_nOrderGridLines.generateRequest();
+                                }
                                 this.$.gridneedshopping.clearCache();
                             }
                         }
@@ -1105,7 +1103,6 @@
                 this.$.gridneedshopping.clearCache();
             },
             _prodUnitChange: function (e) {
-                debugger;
                 if (e.detail.value != null && e.detail.value != "") {
                     var sel = this.prodUnitValresult.find(x => x.id == e.detail.value);
                     if (sel != undefined) {
@@ -1116,6 +1113,7 @@
             },
             _requesitionResponse: function (e) {
                 if (e.detail.status === 200) {
+                    debugger;
                     if (this.datarequesition.eReasonCode === 1) {
                         this._openToast(this.datarequesition.eMessage);
                     } else {
