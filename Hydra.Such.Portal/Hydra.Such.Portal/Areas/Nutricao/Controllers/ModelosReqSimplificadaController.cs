@@ -82,26 +82,76 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
         [HttpPost]
         [Area("Nutricao")]
+        public JsonResult ValidateNumeration([FromBody] SimplifiedReqTemplateViewModel item)
+        {
+            //Get Project Numeration
+            Configuração conf = DBConfigurations.GetById(1);
+            if (conf != null)
+            {
+                int numModReqSimplificadas = conf.NumeraçãoModReqSimplificadas.Value;
+
+                ConfiguraçãoNumerações numConf = DBNumerationConfigurations.GetById(numModReqSimplificadas);
+
+                //Validate if id is valid
+                if (!(item.RequisitionTemplateId == "" || item.RequisitionTemplateId == null) && !numConf.Manual.Value)
+                {
+                    return Json("A numeração configurada para os modelos de requisição simplifacada não permite inserção manual.");
+                }
+                else if (item.RequisitionTemplateId == "" && !numConf.Automático.Value)
+                {
+                    return Json("É obrigatório inserir o Nº Modelo.");
+                }
+            }
+            else
+            {
+                return Json("Não foi possivel obter as configurações base de numeração.");
+            }
+            return Json("");
+        }
+
+        [HttpPost]
+        [Area("Nutricao")]
         public JsonResult CreateReqTemplate([FromBody] SimplifiedReqTemplateViewModel item)
         {
             try
             {
                 if (item != null)
                 {
-                    item.CreateUser = User.Identity.Name;
+                    string entityId = "";
+                    bool autoGenId = false;
 
-                    var createdItem = DBSimplifiedReqTemplates.Create(item.ParseToDB());
+                    //Get Numeration
+                    Configuração conf = DBConfigurations.GetById(1);
+                    int entityNumerationConfId = conf.NumeraçãoModReqSimplificadas.Value;
 
-                    if (createdItem != null)
+                    if (item.RequisitionTemplateId == "" || item.RequisitionTemplateId == null)
                     {
-                        item = createdItem.ParseToViewModel();
-                        item.eReasonCode = 1;
-                        item.eMessage = "Registo criado com sucesso.";
+                        autoGenId = true;
+                        entityId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                        item.RequisitionTemplateId = entityId;
+                    }
+                    if (item.RequisitionTemplateId != null)
+                    {
+                        item.CreateUser = User.Identity.Name;
+
+                        var createdItem = DBSimplifiedReqTemplates.Create(item.ParseToDB());
+
+                        if (createdItem != null)
+                        {
+                            item = createdItem.ParseToViewModel();
+                            item.eReasonCode = 1;
+                            item.eMessage = "Registo criado com sucesso.";
+                        }
+                        else
+                        {
+                            item.eReasonCode = 3;
+                            item.eMessage = "Ocorreu um erro ao inserir os dados na base de dados.";
+                        }
                     }
                     else
                     {
-                        item.eReasonCode = 3;
-                        item.eMessage = "Ocorreu um erro ao inserir os dados na base de dados.";
+                        item.eReasonCode = 5;
+                        item.eMessage = "A numeração configurada não é compativel com a inserida.";
                     }
                 }
             }
