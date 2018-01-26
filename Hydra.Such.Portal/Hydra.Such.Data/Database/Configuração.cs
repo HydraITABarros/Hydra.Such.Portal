@@ -25,6 +25,7 @@ namespace Hydra.Such.Data.Database
         public int? NumeraçãoPréRequisições { get; set; }
         public int? NumeraçãoRequisições { get; set; }
         public int? NumeraçãoFichasTécnicasDePratos { get; set; }
+        public int? NumeraçãoModReqSimplificadas { get; set; }
 
         public ConfiguraçãoNumerações NumeraçãoContratosNavigation { get; set; }
         public ConfiguraçãoNumerações NumeraçãoFolhasDeHorasNavigation { get; set; }

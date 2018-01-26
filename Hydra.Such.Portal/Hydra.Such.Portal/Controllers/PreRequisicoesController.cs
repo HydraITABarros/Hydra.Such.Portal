@@ -754,6 +754,7 @@ namespace Hydra.Such.Portal.Controllers
                         using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                         {
                             file.CopyTo(dd);
+                            dd.Dispose();
 
                             Anexos newfile = new Anexos();
                             newfile.NºOrigem = id;
@@ -763,6 +764,10 @@ namespace Hydra.Such.Portal.Controllers
                             newfile.UtilizadorCriação = User.Identity.Name;
 
                             DBAttachments.Create(newfile);
+                            if(newfile.NºLinha == 0)
+                            {
+                                System.IO.File.Delete(path);
+                            }
                         }
                     }
                     catch (Exception)
