@@ -74,7 +74,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioRequisiçãoUnidProdutiva.ToList();
+                    return ctx.DiárioRequisiçãoUnidProdutiva.Where(x => x.DataPPreçoFornecedor != null).ToList();
                 }
             }
             catch (Exception ex)
@@ -147,7 +147,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DiárioRequisiçãoUnidProdutiva.Where(x => x.NºLinha == LineNo).ToList();
+                    return ctx.DiárioRequisiçãoUnidProdutiva.Where(x => x.NºLinha == LineNo && x.DataPPreçoFornecedor != null).ToList();
                 }
             }
             catch (Exception ex)
