@@ -1381,10 +1381,15 @@
                                 this._openToastError(this.Requisition.eMessage);
                         }
                     },
-                    _printRequisition: function () {
-                        //window.open(this._reportserverurl + "Requisi%C3%A7%C3%B5es&CodRequisicao=" + this.Requisition.requisitionNo, "_blank");
-                        this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
-                        this.$.rptDialog.open();
+                    _printRequisition: function () { 
+                        if (this._reportserverurl != undefined) {
+                            //window.open(this._reportserverurl + "Requisi%C3%A7%C3%B5es&CodRequisicao=" + this.Requisition.requisitionNo, "_blank");
+                            this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
                     },
                     _closeRptDialog: function () {
                         this.$.rptContainer.src = "about:blank";
