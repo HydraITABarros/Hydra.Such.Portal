@@ -762,6 +762,7 @@
                                             </template>
                                         </vaadin-combo-box>
 
+
                                         <!--<such-selectbox id="_CLGridSupplierProductCode" value="{{item.supplierProductCode}}"
                                             items="[[CBItems]]"
                                             text-path="code"
@@ -837,7 +838,6 @@
                                     <vaadin-grid-filter path="projectNo" />
                                 </template>
                                 <template>
-
                                     <template is="dom-if" if="{{ item.selected }}">
                                         <vaadin-combo-box items="[[CBJobNo]]" id="_CLGridProjectNo" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}">
                                             <template>
