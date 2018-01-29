@@ -232,8 +232,16 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult NecessityDirectShoppingLines()
         {
-            List<NAVOpenOrderLinesViewModels> result = DBNAV2017NecessityDirectShopping.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
-            return Json(result);
+            List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
+            try
+            {
+                result = DBNAV2017NecessityDirectShopping.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+                return Json(result);
+            }
+            catch (Exception e)
+            {
+                return Json(result);
+            }
         }
         [HttpPost]
         public JsonResult getNecessityDirectShoppingLine([FromBody] string numb, string documentNO, int LineNo)
@@ -574,6 +582,17 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = x.Code,
                 value = x.Name
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllAction()
+        {
+            List<DDMessageString> result = DBActionsConfection.GetAll().Select(x => new DDMessageString()
+            {
+                id = Convert.ToString(x.Código),
+                value = x.Descrição
             }).ToList();
             return Json(result);
         }
