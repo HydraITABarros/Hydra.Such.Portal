@@ -284,7 +284,13 @@
                             @* zpgm.> *@
                             <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "Compras", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Requisições Aprovadas", "GestaoRequisicoes/RequisicoesAprovadas", "Compras", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Gestão de Requisições", "GestaoRequisicoes/Detalhes", "Compras", new { area = "" }, null)</li>
+                            <li data-toggle="collapse" data-target="#Compras" class="collapsed active">
+                                <a href="#"> Gestão de Requisições <span class="arrow"></span></a>
+                                <ul>
+                                    <li>@Html.ActionLink("Requisições", "GestaoRequisicoes/Detalhes", "Compras", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Pontos de Situação", "GestaoRequisicoes/PontosSituacao", "Compras", new { area = "" }, null)</li>
+                                </ul>
+                            </li>
                             <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "Compras", new { area = "" }, null)</li>
                         </ul>
