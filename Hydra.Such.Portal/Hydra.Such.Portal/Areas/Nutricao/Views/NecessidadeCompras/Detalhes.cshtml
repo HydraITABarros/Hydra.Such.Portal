@@ -795,7 +795,6 @@
                         }
                     },
             _addRequesition() {
-                debugger;
                 if (this._NotSelectedprodUnit == true) {
 
                         // Save to DB
@@ -940,7 +939,6 @@
                         }
                     },
             _lineSelected: function (item) {
-                debugger;
                         if (item != null) {
                             var oSel = this.data.find(x => x.selected);
                             if (oSel != undefined) {
@@ -950,8 +948,8 @@
                             if (sel != undefined) {
                                 this.data.find(x => x == item).selected = true;
                                 if (item.dateByPriceSupplier != "" && item.dateByPriceSupplier != null) {
-                                    var x = item.dateByPriceSupplier.split("-");
-                                    var datapriceSupp = x[2] + "-" + x[1] + "-" + x[0];
+                                    var dataprice = item.dateByPriceSupplier.split("-");
+                                    var datapriceSupp = dataprice[2] + "-" + dataprice[1] + "-" + dataprice[0];
                                     this.$.ajax_nOrderGridLines.body = JSON.stringify(datapriceSupp);
                                     this.$.ajax_nOrderGridLines.generateRequest();
                                 }
@@ -1113,7 +1111,6 @@
             },
             _requesitionResponse: function (e) {
                 if (e.detail.status === 200) {
-                    debugger;
                     if (this.datarequesition.eReasonCode === 1) {
                         this._openToast(this.datarequesition.eMessage);
                     } else {

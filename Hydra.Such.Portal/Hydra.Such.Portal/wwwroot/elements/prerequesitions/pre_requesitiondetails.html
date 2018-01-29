@@ -751,16 +751,16 @@
                                 </template>
                                 <template>
                                     <template is="dom-if" if="{{ item.selected }}">
-                                        <vaadin-combo-box items="[[CBItems]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" item-value-path="code" item-label-path="name" value="{{item.supplierProductCode}}" disabled="{{ !_permissions.update }}">
+                                        <vaadin-combo-box items="[[CBItems]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" item-value-path="code" item-label-path="code" value="{{item.supplierProductCode}}" disabled="{{ !_permissions.update }}">
                                             <template>
                                                 <paper-icon-item>
                                                     <paper-item-body>
-                                                        <div>[[item.code]]
-                                                        [[item.name]]</div>
+                                                        <div>[[item.code]]</div>
                                                     </paper-item-body>
                                                 </paper-icon-item>
                                             </template>
                                         </vaadin-combo-box>
+
 
                                         <!--<such-selectbox id="_CLGridSupplierProductCode" value="{{item.supplierProductCode}}"
                                             items="[[CBItems]]"
@@ -837,7 +837,6 @@
                                     <vaadin-grid-filter path="projectNo" />
                                 </template>
                                 <template>
-
                                     <template is="dom-if" if="{{ item.selected }}">
                                         <vaadin-combo-box items="[[CBJobNo]]" id="_CLGridProjectNo" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}">
                                             <template>
@@ -1581,7 +1580,7 @@
                     if (param != undefined && this.CBItems != undefined) {
                         var sel = this.CBItems.find(x => x.code == param);
                         if (sel != undefined) {
-                            return sel.name;
+                            return sel.code;
                         }
                     }
                     return "";
