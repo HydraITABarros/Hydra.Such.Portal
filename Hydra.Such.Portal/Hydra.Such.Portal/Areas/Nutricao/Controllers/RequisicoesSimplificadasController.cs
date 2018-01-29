@@ -80,9 +80,10 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [HttpPost]
         public JsonResult GetSimplifiedRequisitionLines([FromBody] SimplifiedRequisitionLineViewModel item)
         {
+            List<SimplifiedRequisitionLineViewModel> result = new List<SimplifiedRequisitionLineViewModel>();
             if (item != null)
             {
-                List<SimplifiedRequisitionLineViewModel> result = DBSimplifiedRequisitionLines.ParseToViewModel(DBSimplifiedRequisitionLines.GetById(item.RequisitionNo));
+                result = DBSimplifiedRequisitionLines.ParseToViewModel(DBSimplifiedRequisitionLines.GetById(item.RequisitionNo));
                 if (result.Count() != 0 && result[0].MealType >0)
                 {
                     TiposRefeição typeMeal = DBMealTypes.GetById(result[0].MealType ?? 0 );
@@ -94,7 +95,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
                 return Json(result);
             }
-            return Json(null);
+            return Json(result);
         }
 
         [Area("Nutricao")]
@@ -110,18 +111,22 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 //Registar requisições aprovadas
                 if (ViewBag.Approval == "resgitar" )
                 {
-                    ViewBag.LockFields = false;
-                    UPerm.Update = false;
+                    ViewBag.LockFields = true;
+                    UPerm.Create = false;
+                    ViewBag.Option = "resgitar";
                 }
                 //Histórico requisições aprovadas
                 else if (ViewBag.Approval == "historico")
                 {   
                     ViewBag.LockFields = true;
                     UPerm.Update = false;
+                    UPerm.Create = false;
+                    UPerm.Delete = false;
+                    ViewBag.Option = "historico";
                 }
                 else
                 {                   
-                    ViewBag.LockFields = true;
+                    ViewBag.LockFields = false;
                 }
 
                 ViewBag.RequestNo = id ?? "";
@@ -159,16 +164,23 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 item.CreateUser = User.Identity.Name;
                 item.CreateResponsible = User.Identity.Name;
 
-
-                if (DBSimplifiedRequisitions.Create(DBSimplifiedRequisitions.ParseToDatabase(item))!=null)
+                if (DBSimplifiedRequisitions.GetById(item.RequisitionNo) != null)
                 {
-                    item.eReasonCode = 100;
-                    item.eMessage = "Requisição Simplificada criada com sucesso.";
+                    item.eReasonCode = 101;
+                    item.eMessage = "O Nº "+ item.RequisitionNo+ " já existe!";
                 }
                 else
                 {
-                    item.eReasonCode = 101;
-                    item.eMessage = "Ocorreu um erro ao criar a Requisição Simplificada.";
+                    if (DBSimplifiedRequisitions.Create(DBSimplifiedRequisitions.ParseToDatabase(item)) != null)
+                    {
+                        item.eReasonCode = 100;
+                        item.eMessage = "Requisição Simplificada criada com sucesso.";
+                    }
+                    else
+                    {
+                        item.eReasonCode = 101;
+                        item.eMessage = "Ocorreu um erro ao criar a Requisição Simplificada.";
+                    }
                 }
             }
             return Json(item);
@@ -206,7 +218,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [HttpPost]
         public JsonResult FinishSimplifiedRequisition([FromBody] List<SimplifiedRequisitionLineViewModel> items)
         {
-            if (items != null)
+            if (items != null && items.Count>0)
             {
                 mensage.eReasonCode = 100;
                 foreach (var item in items)
@@ -218,12 +230,18 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                         mensage.eMessage = "A linha Nº:" + item.LineNo + " contem o produto " + item.Description + " bloqueado";
                         break;
                     }
-                  
+                    item.QuantityApproved = item.QuantityToRequire;
                     item.Status = 2;
                 }
                 if (mensage.eReasonCode == 100)
                 {
-                    items.ForEach(x=> DBSimplifiedRequisitionLines.Update(DBSimplifiedRequisitionLines.ParseToDatabase(x)));
+                    items.ForEach(x =>
+                    {
+                        x.QuantityApproved = x.QuantityToRequire;
+                        x.Status = 2;
+                        DBSimplifiedRequisitionLines.Update(DBSimplifiedRequisitionLines.ParseToDatabase(x));
+
+                    });
 
                     SimplifiedRequisitionViewModel requisitionSimpli = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetById(items[0].RequisitionNo));
                     requisitionSimpli.Status = 2;
@@ -237,7 +255,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             else
             {
                 mensage.eReasonCode = 101;
-                mensage.eMessage = "Erro ao terminar";
+                mensage.eMessage = "Nessecita de linhas de requisição ao terminar!!";
             }
             
             return Json(mensage);           
@@ -522,7 +540,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                     CLocation.Visadores = item.Visor;
                     CLocation.DataReceçãoLinhas = item.ReceiptLinesDate;
                     CLocation.RequisiçãoNutrição = item.NutritionRequisition;
-                    CLocation.DataReceçãoEsperada = item.ReceiptPreviewDate != "" && item.ReceiptPreviewDate != null ? DateTime.Parse(item.ReceiptPreviewDate) : (DateTime?)null;
+                    CLocation.DataReceçãoEsperada = string.IsNullOrEmpty(item.ReceiptPreviewDate) ? (DateTime?)null : DateTime.Parse(item.ReceiptPreviewDate);
                     CLocation.RequisiçãoModelo = item.ModelRequisition;
                     CLocation.DataHoraModificação = DateTime.Now;
                     CLocation.UtilizadorModificação = User.Identity.Name;
@@ -605,8 +623,11 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             SimplifiedRequisitionViewModel result = new SimplifiedRequisitionViewModel();
             if (item != null)
             {
-                RequisiçõesSimplificadas CLocation = DBSimplifiedRequisitions.GetById(item.RequisitionNo);
+                // Delete Lines Requisitions
+                List<LinhasRequisiçõesSimplificadas> CLinhas = DBSimplifiedRequisitionLines.GetById(item.RequisitionNo);
+                CLinhas.ForEach(x=> DBSimplifiedRequisitionLines.Delete(x));
 
+                RequisiçõesSimplificadas CLocation = DBSimplifiedRequisitions.GetById(item.RequisitionNo);
                 if (DBSimplifiedRequisitions.Delete(CLocation))
                 {
                     result.eReasonCode = 100;
@@ -633,17 +654,17 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
                 if (DBSimplifiedRequisitionLines.Delete(DBSimplifiedRequisitionLines.ParseToDatabase(data)))
                 {
-                    mensage.eReasonCode = 100;
-                    mensage.eMessage = "Linha Requisição Simplificada removida com sucesso.";
+                    data.eReasonCode = 100;
+                    data.eMessage = "Linha Requisição Simplificada removida com sucesso.";
                 }
                 else
                 {
-                    mensage.eReasonCode = 101;
-                    mensage.eMessage = "Ocorreu um erro ao remover a Linha Requisição Simplificada.";
+                    data.eReasonCode = 101;
+                    data.eMessage = "Ocorreu um erro ao remover a Linha Requisição Simplificada.";
                 }
 
             }
-            return Json(mensage);
+            return Json(data);
         }
     }
 }

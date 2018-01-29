@@ -139,7 +139,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             return new SimplifiedRequisitionViewModel()
             {
                 RequisitionNo = x.NºRequisição,
-                Status = x.Estado,
+                Status = x.Estado ,
                 RequisitionDate = x.DataHoraRequisição.HasValue ? x.DataHoraRequisição.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) : "",
                 RequisitionTime = x.DataHoraRequisição.HasValue ? x.DataHoraRequisição.Value.ToString("HH:mm", CultureInfo.InvariantCulture) : "",
                 RegistrationDate = x.DataRegisto.HasValue ? x.DataRegisto.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) : "",
