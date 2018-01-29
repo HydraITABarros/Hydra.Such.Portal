@@ -111,7 +111,7 @@
                 },
                 _onItemSelected: function (item) {
                     if (item != null) {
-                        window.location.href = "/Compras/GestaoRequisicoes/PontoSituacaoRequisicao/?" + item.requisitionNo + "/" + item.stateOfPlayId;
+                        window.location.href = "/Compras/GestaoRequisicoes/PontoSituacaoRequisicao/?reqid=" + item.requisitionNo + "&lineid=" + item.stateOfPlayId;
                     }
                 },
                 _redirectToRequisitionDetails: function (e) {
