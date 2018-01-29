@@ -109,7 +109,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.RequisiçõesSimplificadas.Where(x => x.ResponsávelCriação == CreateResponsible && x.Estado!=3).ToList();
+                    return ctx.RequisiçõesSimplificadas.Where(x => x.ResponsávelCriação == CreateResponsible).ToList();
                 }
             }
             catch (Exception ex)
@@ -117,7 +117,20 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
-
+        public static List<RequisiçõesSimplificadas> GetByCreateResponsiblePendente(string CreateResponsible)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.RequisiçõesSimplificadas.Where(x => x.ResponsávelCriação == CreateResponsible && x.Estado == 1).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         public static List<RequisiçõesSimplificadas> GetByApprovals(int approvalTrue)
         {
             try
