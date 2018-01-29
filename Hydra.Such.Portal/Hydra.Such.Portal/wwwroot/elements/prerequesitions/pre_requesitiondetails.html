@@ -751,12 +751,11 @@
                                 </template>
                                 <template>
                                     <template is="dom-if" if="{{ item.selected }}">
-                                        <vaadin-combo-box items="[[CBItems]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" item-value-path="code" item-label-path="name" value="{{item.supplierProductCode}}" disabled="{{ !_permissions.update }}">
+                                        <vaadin-combo-box items="[[CBItems]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" item-value-path="code" item-label-path="code" value="{{item.supplierProductCode}}" disabled="{{ !_permissions.update }}">
                                             <template>
                                                 <paper-icon-item>
                                                     <paper-item-body>
-                                                        <div>[[item.code]]
-                                                        [[item.name]]</div>
+                                                        <div>[[item.code]]</div>
                                                     </paper-item-body>
                                                 </paper-icon-item>
                                             </template>
@@ -1581,7 +1580,7 @@
                     if (param != undefined && this.CBItems != undefined) {
                         var sel = this.CBItems.find(x => x.code == param);
                         if (sel != undefined) {
-                            return sel.name;
+                            return sel.code;
                         }
                     }
                     return "";
