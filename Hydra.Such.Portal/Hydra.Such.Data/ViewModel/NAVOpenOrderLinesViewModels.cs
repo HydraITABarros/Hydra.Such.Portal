@@ -66,6 +66,5 @@ namespace Hydra.Such.Data.ViewModel
         public int ProdOrderLineN { get; set; }
         public DateTime ContractStartingDate { get; set; }
         public DateTime ContractEndingDate { get; set; }
-
     }
 }

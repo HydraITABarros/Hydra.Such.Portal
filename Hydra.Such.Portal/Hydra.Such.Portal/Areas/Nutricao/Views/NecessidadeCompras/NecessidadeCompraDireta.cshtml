@@ -29,6 +29,7 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <h1 class="title">Produtos p/ Criação de Encomendas de Compras Diretas</h1>
 <x-directneedshopping></x-directneedshopping>
 
@@ -52,8 +53,105 @@
         <iron-ajax url="/Nutricao/NecessidadeCompras/UpdateDirectShoppingNecessity" id="ajax_update" last-response="{{updatedata}}" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/NecessidadeCompras/GenerateRequesitionByDirectShopNeclines" id="ajax_requesitionupdate" last-response="{{datarequesition}}" method="post" on-response="_requesitionResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        
+    <style>
+        vaadin-combo-box {
+            margin-top: 0px !important;
+            width: 100% !important;
+        }
 
-        <div class="row" hidden="{{ !_permissionsVal.create }}">
+        vaadin-date-picker {
+            margin-top: 0px !important;
+            width: 100% !important;
+        }
+
+        vaadin-text-field {
+            margin-top: 0px !important;
+            width: 100%;
+        }
+
+        paper-button {
+            margin-top: 10px;
+        }
+
+        .break_clear {
+            margin-top: 15px;
+            margin-right: 0px !important;
+            margin-left: 0px !important;
+        }
+
+        .break_frm {
+            margin-top: 15px;
+        }
+
+        .label_custom {
+            color: var(--valo-contrast-60pct) !important;
+            font-weight: 500 !important;
+            font-size: var(--valo-font-size-s) !important;
+            margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+            margin-bottom: var(--valo-space-xs) !important;
+            transition: color 0.4s !important;
+            line-height: 1 !important;
+            font-family: var(--valo-font-family) !important;
+        }
+
+        datetime-picker {
+            border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+            background-color: var(--valo-contrast-5pct);
+            color: var(--valo-contrast-60pct) !important;
+            width: 100%;
+        }
+
+        .marginSpace {
+            margin: 0px !important;
+        }
+
+        textarea {
+            background-color: #f5f5f5;
+            border: none;
+            border-radius: 3px 4px;
+            align-self: baseline;
+            font-weight: 500;
+        }
+
+        textarea:hover {
+            background-color: #eeeeee;
+        }
+
+        textarea:focus {
+            background-color: white;
+            border: none;
+            outline: 1px solid #eeeeee;
+            border-radius: 3px 4px;
+        }
+
+        datetime-picker {
+            --datetime-selected-background: #71BCC1 !important;
+            --datetime-background: #1f3133;
+            --datetime-color: #eeeeee;
+        }
+
+        paper-collapse-item {
+        --paper-item: {
+            padding: 0 0;
+        };
+         --paper-collapse-item-header: {
+             padding: 0 15px;
+             color: #333;
+             background-color: #f5f5f5;
+             border-bottom: solid #ddd 1px;
+             border-top-left-radius: 3px;
+             border-top-right-radius: 3px;
+
+         };
+          }
+
+          .panel-body {
+              padding-top: 0px !important;
+          }
+    </style>
+
+    <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-3">
                 <vaadin-text-field id="prodUnitNoId" name="prodUnitNoName" label="Nº Unidade Produtiva" value="{{prodUnitNo}}" disabled>
                 </vaadin-text-field>
@@ -65,45 +163,33 @@
                 <vaadin-date-picker label="Data Receção Esperada" id="dpExpectedReceiptId" name="dpExpectedReceiptName" value="{{dpExpectedReceipt}}"></vaadin-date-picker>
             </div>
             <div class="col-md-3">
-                <vaadin-combo-box items="[[locationsresult]]" id="codStockUnitId" on-value-changed="_localCodeOnChange" item-value-path="id" item-label-path="value" value="{{codStockUnit}}" label="Código Localização">
-                    <template>
-                        <table width="350px">
-                            <tr>
-                                <td width="30%">[[item.id]]</td>
-                                <td width="70%"><b>[[item.value]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
+                <such-selectbox id="codStockUnitId" value="{{codStockUnit}}" label="Código Localização" on-value-changed="_localCodeOnChange"
+                                items="[[locationsresult]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                </such-selectbox>
             </div>
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-3">
-                <vaadin-combo-box items="[[cbopenorderlines]]" id="mOpenOrderLinesId" on-value-changed="_openOrderLinesOnChange" item-value-path="id" item-label-path="numb" value="" label="Nº Produto">
-                    <template>
-                        <table width="300px">
-                            <tr>
-                                <td width="20%"><b>[[item.numb]]</b></td>
-                                <td width="60%">[[item.description]]</td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
+                <such-selectbox id="mOpenOrderLinesId" value="{{codStockUnit}}" label="Nº Produto" on-value-changed="_openOrderLinesOnChange"
+                                items="[[cbopenorderlines]]"
+                                text-path="numb"
+                                value-path="id"
+                                fields='[{"field":"documentNO", "name":"Nº Documento"},{"field":"line_No", "name":"Nº Linha"},{"field":"numb", "name":"Nº Produto"}, {"field":"description", "name":"Descrição"}]'>
+                </such-selectbox>
             </div>
             <div class="col-md-3 ">
-                <vaadin-text-field id="prodCodId" name="prodCodName" label="Descrição Produto" value="{{prodCod}}" disabled></vaadin-text-field>
+                <vaadin-text-field id="prodCodId" name="prodCodName" label="Descrição Produto" value="{{prodCod}}" ></vaadin-text-field>
             </div>
             <div class="col-md-3">
-                <vaadin-combo-box items="[[unitmeasureresult]]" id="unitofMeasureCodeId" item-value-path="id" item-label-path="value" value="" label="Unidade Medida" disabled>
-                    <template>
-                        <table width="200px">
-                            <tr>
-                                <td width="20%">[[item.id]]</td>
-                                <td width="80%"><b>[[item.value]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
+                <such-selectbox id="unitofMeasureCodeId" value="{{codStockUnit}}" label="Unidade Medida" disabled
+                                items="[[unitmeasureresult]]"
+                                text-path="value"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Código"}, {"field":"description", "name":"Descrição"}]'>
+                </such-selectbox>
             </div>
             <div class="col-md-3">
                 <vaadin-text-field id="qtyID" name="qtyName" pattern="^[0-9]\d*(\.\d+)?$" label="Quantidade" class="alignRight" value="{{qty}}" on-value-changed="_calcTotals"></vaadin-text-field>
