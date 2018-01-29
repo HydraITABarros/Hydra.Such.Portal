@@ -78,7 +78,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else if (item.Id == "" && !numConf.Automático.Value)
                 {
-                    return Json("É obrigatório inserir o Nº de Projeto.");
+                    return Json("É obrigatório inserir o Nº de Contacto.");
                 }
             }
             else

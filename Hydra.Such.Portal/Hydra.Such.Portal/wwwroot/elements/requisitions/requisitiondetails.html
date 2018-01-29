@@ -784,24 +784,26 @@
                                     <vaadin-grid-column width="160px" resizable>
                                         <template class="header">
                                             <p class="alignCenter">Criar Consulta Mercado</p>
-                                            <vaadin-grid-filter path="createMarketSearch" value="[[_createMarketSearchFilterActive]]">
-                                                <vaadin-checkbox checked="{{_createMarketSearchFilterActive}}"></vaadin-checkbox>
+                                            <vaadin-grid-filter path="createMarketSearchStringValue">
+                                                <!-- value="[[_createMarketSearchFilterActive]]"><vaadin-checkbox checked="{{_createMarketSearchFilterActive}}"></vaadin-checkbox>-->
                                             </vaadin-grid-filter>
                                         </template>
                                         <template>
-                                            <vaadin-checkbox checked=" {{item.createMarketSearch}}" disabled></vaadin-checkbox>
+                                            <!--<vaadin-checkbox checked=" {{item.createMarketSearch}}" disabled></vaadin-checkbox>-->
+                                            {{item.createMarketSearchStringValue}}
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column width="130px" resizable>
                                         <template class="header">
                                             <p class="alignCenter">Mercado Local</p>
-                                            <vaadin-grid-filter path="localMarket" value="[[_localMarketFilterActive]]">
-                                                <vaadin-checkbox checked="{{_localMarketFilterActive}}"></vaadin-checkbox>
+                                            <vaadin-grid-filter path="localMarketStringValue">
+                                                <!--value="[[_localMarketFilterActive]]"><vaadin-checkbox checked="{{_localMarketFilterActive}}"></vaadin-checkbox>-->
                                             </vaadin-grid-filter>
                                         </template>
                                         <template>
-                                            <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
+                                            <!--<vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>-->
+                                            {{item.localMarketStringValue}}
                                         </template>
                                     </vaadin-grid-column>
 
@@ -828,25 +830,26 @@
                                     <vaadin-grid-column width="160px" resizable>
                                         <template class="header">
                                             <p class="alignCenter">Enviar Pré Compra</p>
-                                            <vaadin-grid-filter path="submitPrePurchase" value="[[_submitPrePurchaseFilterActive]]">
-                                                <vaadin-checkbox checked="{{_submitPrePurchaseFilterActive}}"></vaadin-checkbox>
+                                            <vaadin-grid-filter path="submitPrePurchaseStringValue">
+                                                <!--value="[[_submitPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_submitPrePurchaseFilterActive}}"></vaadin-checkbox>-->
                                             </vaadin-grid-filter>
                                         </template>
                                         <template>
-                                            <vaadin-checkbox checked="{{item.submitPrePurchase}}" disabled></vaadin-checkbox>
-
+                                            <!--<vaadin-checkbox checked="{{item.submitPrePurchase}}" disabled></vaadin-checkbox>-->
+                                            {{item.submitPrePurchaseStringValue}}
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column width="160px" resizable>
                                         <template class="header">
                                             <p class="alignCenter">Enviado Pré Compra</p>
-                                            <vaadin-grid-filter path="sendPrePurchase" value="[[_sendPrePurchaseFilterActive]]">
-                                                <vaadin-checkbox checked="{{_sendPrePurchaseFilterActive}}"></vaadin-checkbox>
+                                            <vaadin-grid-filter path="sendPrePurchaseStringValue">
+                                                <!-- value="[[_sendPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_sendPrePurchaseFilterActive}}"></vaadin-checkbox>-->
                                             </vaadin-grid-filter>
                                         </template>
                                         <template>
-                                            <vaadin-checkbox checked=" {{item.sendPrePurchase}}" disabled></vaadin-checkbox>
+                                            <!--<vaadin-checkbox checked=" {{item.sendPrePurchase}}" disabled></vaadin-checkbox>-->
+                                            {{item.sendPrePurchaseStringValue}}
                                         </template>
                                     </vaadin-grid-column>
 
@@ -1033,7 +1036,7 @@
                         },
                         _reportserverurl: {
                             type: String,
-                        }
+                        },
                         _isArchived: {
                             type: Boolean,
                             value: false
@@ -1378,10 +1381,15 @@
                                 this._openToastError(this.Requisition.eMessage);
                         }
                     },
-                    _printRequisition: function () {
-                        //window.open(this._reportserverurl + "Requisi%C3%A7%C3%B5es&CodRequisicao=" + this.Requisition.requisitionNo, "_blank");
-                        this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
-                        this.$.rptDialog.open();
+                    _printRequisition: function () { 
+                        if (this._reportserverurl != undefined) {
+                            //window.open(this._reportserverurl + "Requisi%C3%A7%C3%B5es&CodRequisicao=" + this.Requisition.requisitionNo, "_blank");
+                            this.$.rptContainer.src = this._reportserverurl + "RequisitionReport&NoRequisicao=" + this.Requisition.requisitionNo;
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
                     },
                     _closeRptDialog: function () {
                         this.$.rptContainer.src = "about:blank";

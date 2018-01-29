@@ -258,7 +258,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nº Origem")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.NºLinha).HasColumnName("Nº Linha");
+                entity.Property(e => e.NºLinha)
+                    .HasColumnName("Nº Linha")
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
@@ -5825,7 +5827,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataReceçãoEsperada)
                     .HasColumnName("Data Receção Esperada")
-                    .HasColumnType("date");
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.DataReceçãoLinhas).HasColumnName("Data Receção Linhas");
 
