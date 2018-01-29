@@ -14,7 +14,7 @@
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
-<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" >
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html">
 
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
@@ -23,14 +23,28 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+
 
 @if (ViewBag.RequestNo == "" || ViewBag.RequestNo == "0")
 {
     <h1 class="title">Criar Requisição Simplificada</h1>
 }
+else if (ViewBag.Option == "historico")
+{
+    <h1 class="title">Histórico Requisição Simplificada</h1>
+}
+else if (ViewBag.Option == "resgitar")
+{
+    <h1 class="title">Registar Requisição Simplificada</h1>
+}
 else
 {
-    <h1 class="title">Requisição Simplificada @ViewBag.ContractNo</h1>
+    <h1 class="title">Requisição Simplificada </h1>
 }
 
 <x-simplifiedreqdetails _requestno="@ViewBag.RequestNo" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-simplifiedreqdetails>
@@ -64,7 +78,7 @@ else
 
 
         <!-- DROPDOWNS POPULATE -->
-        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" body="[{'UserId': '3'}]" last-response="{{CBFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -80,6 +94,14 @@ else
                    handle-as="json"
                    id="page_databound_ajax"
                    on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Nutricao/RequisicoesSimplificadas/GetSimplifiedRequisitionData"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax2"
+                   on-response="_responseProcessor2"
                    content-type="application/json"></iron-ajax>
 
         <iron-ajax last-response="{{requisitions}}"
@@ -114,21 +136,42 @@ else
                    on-response="_responseDeleteLinesProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax last-response="{{resultModels}}"
+                   method="post"
+                   handle-as="json"
+                   id="get_models_ajax"
+                   on-response="_responseGetModels"
+                   content-type="application/json"></iron-ajax>
 
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="row">
                 <div class="col-lg-12">
                     <template is="dom-if" if="{{ _permissions.create }}">
-                        <paper-button raised id="btnProjectAdd" class="" on-tap="_createNew"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-    
-                    <paper-button raised id="btnProjectAdd"  on-tap="_finishRequisition">&nbsp; Terminar</paper-button>
-                </template>
+                        <div class="subMenu">
+                            <paper-button class="tablinks" on-tap="_createNew"><i class="fa fa-plus-square" aria-hidden="true"></i> Nova Requisição</paper-button>
+                            <paper-button class="tablinks" on-tap="_finishRequisition"><i class="fa fa-check-square" aria-hidden="true"></i> Terminar Requisição</paper-button>
+                        </div>
+                    </template>
+                </div>
             </div>
+
+        </template>
+        <template is="dom-if" if="{{ _isCreate }}">
+            <div class="row">
+                <div class="col-lg-12">
+                    <template is="dom-if" if="{{ _permissions.create }}">
+                        <div class="subMenu">
+                            <paper-button class="tablinks" on-tap="_copyModel"><i class="fa fa-clone" aria-hidden="true"></i> Copiar Requisição de Modelo</paper-button>
+                            <paper-button class="tablinks" on-tap="_copyHistory"><i class="fa fa-clone" aria-hidden="true"></i> Copiar Requisição de Histórico</paper-button>
+                        </div>
+                    </template>
+                </div>
             </div>
+
         </template>
         &nbsp;
         @* Botões de registar requisições aprovadas*@
-        <div class="subMenu" id="ddmarginSpace3">
+        <div class="subMenu" id="ddsubMenu">
             <paper-button class="tablinks" on-tap="_registeRequisiApproval"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
             <paper-button class="tablinks" on-tap="_desaprovarRequisiApproval"><i class="fa fa-check-square" aria-hidden="true"></i> Desaprovar Requisições</paper-button>
             <paper-button class="tablinks" on-tap="_historyRequisiApproval"><i class="fa fa-check-square" aria-hidden="true"></i> Arquivar Requisições</paper-button>
@@ -171,7 +214,7 @@ else
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBProjects]]" id="ProjectNo" item-value-path="id" item-label-path="value" value="{{result.projectNo}}" label="Nº Projeto" disabled="{{ !_permissions.update }}" on-value-changed="_projectoNoChanged">
+                                            <vaadin-combo-box items="[[CBProjects]]" id="ProjectNo" item-value-path="id" item-label-path="value" value="{{result.projectNo}}" label="Nº Projeto" disabled="@ViewBag.LockFields" on-value-changed="_projectoNoChanged">
                                                 <template>
                                                     <b>[[item.value]]</b>
                                                 </template>
@@ -184,12 +227,12 @@ else
                                             <vaadin-text-field value="{{result.observations}}" maxlength="50" id="LObservations" name="LObservations" label="Observações" disabled="{{ !_permissions.create }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-text-field value="{{result.totalCost}}" maxlength="20" id="LTotalCost" name="LTotalCost" label="Custo Total" disabled> </vaadin-text-field>
+                                            <vaadin-text-field id="LTotalCost" name="LTotalCost" label="Custo Total" disabled> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{result.regionCode}}" label="Cód. Região" disabled="{{ @ViewBag.LockFields }}" on-value-changed="_regionCodeChanged">
+                                            <vaadin-combo-box items="[[CBRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{result.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.create }}" on-value-changed="_regionCodeChanged">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -201,7 +244,7 @@ else
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{result.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ @ViewBag.LockFields }}" on-value-changed="_areaCodeChanged">
+                                            <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{result.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.create }}" on-value-changed="_areaCodeChanged">
                                                 <template>
                                                     <table width="200px">
                                                         <tr>
@@ -213,7 +256,7 @@ else
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-lg-3">
-                                            <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{result.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ @ViewBag.LockFields }}" on-value-changed="_responsabilityCenterCodeChanged">
+                                            <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{result.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.create }}" on-value-changed="_responsabilityCenterCodeChanged">
                                                 <template>
                                                     <table width="200px">
                                                         <tr>
@@ -225,7 +268,7 @@ else
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-lg-3 ">
-                                            <vaadin-date-picker label="Data Receção" id="LReceiptPreviewDate" name="LReceiptPreviewDate" value="{{result.receiptPreviewDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                            <vaadin-date-picker label="Data Receção" id="LReceiptPreviewDate" name="LReceiptPreviewDate" value="20-1-2018" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
                                         </div>
 
                                     </div>
@@ -266,7 +309,7 @@ else
                                 </div>
                             </iron-pages>
 
-                            <div class="marginSpace" id="ddmarginSpace">
+                            <div class="marginSpace" id="ddmarginSpaceCabe">
                                 <template is="dom-if" if="{{ _isCreate }}">
                                     <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </template>
@@ -276,15 +319,10 @@ else
                                     </template>
                                     <template is="dom-if" if="{{ _permissions.delete }}">
                                         <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-
                                     </template>
                                 </template>
                             </div>
-                            <div class="marginSpace" id="ddmarginSpace2">
-                                <template is="dom-if" if="{{ _isCreate }}">
-                                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                </template>
-                            </div>
+
 
                         </div>
                     </div>
@@ -303,460 +341,523 @@ else
                    method="post"
                    handle-as="json"
                    id="contractLines_databound_ajax"
+                   on-response="_responseContractLines"
                    content-type="application/json"></iron-ajax>
 
-        
+
         <div class="row break_frm" style="display: {{ _showLines }};">
-                <div class="col-md-12 col-lg-12">
-                    <div class="panel panel-default">
+            <div class="col-md-12 col-lg-12">
+                <div class="panel panel-default">
+                    <iron-form id="formcontractLines">
                         <div class="panel-heading">Linhas</div>
-                        <div class="panel-body">
-                            <div id="formLinesReq">
-                                <div class="row" style="display: {{ _showLinesForm }};">
-                                    <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBLocations]]" id="_CLLocationCode" name="_LLLocation" item-value-path="id" item-label-path="value" value="{{_LLLocation}}" label="Localização" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                            <template>
-                                                <b>[[item.value]]</b>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBProductos]]" id="_CLCode" name="_LLProduct" item-value-path="id" item-label-path="id" value="{{_LLProduct}}" label="Nº Produto" disabled="{{ !_permissions.update }}" on-value-changed="_productChanged" required error-message="Este campo é obrigatório">
-                                            <template>
-                                                <b>[[item.id]]</b>
-                                                <b>[[item.value]]</b>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>
+                        <div class="panel-body" >
 
-                                    <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_LLDescription}}" id="_CLDescription" name="_LLDescription" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_LLUnitCost}}" type="number" id="_CLUnitCost" name="_LLDescription" label="Preço Unico" disabled>  €</vaadin-text-field>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBMeasureUnits]]" id="_CLMeasureUnitNo" name="_LLMeasureUnit" item-value-path="id" item-label-path="value" value="{{_LLMeasureUnit}}" label="Cód. Unidade Medida" disabled="{{ !_permissions.update }}">
-                                            <template>
-                                                <b>[[item.value]]</b>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>
-
-                                    <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_LLQuantityToRequire}}" type="number" id="_CLQuantityToRequire" name="_LLQuantityToRequire" label="Quantidade a requerer" disabled="{{ !_permissions.update }}" on-value-changed="_readQuantity" required error-message="Este campo é obrigatório"> </vaadin-text-field>
-                                    </div>
-
+                            <div class="row" style="display: {{ _showLinesForm }};">
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBLocations]]" id="_CLLocationCode" name="_LLLocation" item-value-path="id" item-label-path="value" value="{{_LLLocation}}" label="Localização" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                        <template>
+                                            <b>[[item.value]]</b>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBProductos]]" id="_CLCode" name="_LLProduct" item-value-path="id" item-label-path="id" value="{{_LLProduct}}" label="Nº Produto" disabled="{{ !_permissions.update }}" on-value-changed="_productChanged" required error-message="Este campo é obrigatório">
+                                        <template>
+                                            <b>[[item.id]]</b>
+                                            <b>[[item.value]]</b>
+                                        </template>
+                                    </vaadin-combo-box>
                                 </div>
 
-                                <div class="row" style="display: {{ _showLinesForm }};">
-                                    <div class="col-lg-2">
-                                        <vaadin-text-field value="{{_LLTotalCost}} " id="_CLTotalCost" name="_LLTotalCost" label="Custo Total" disabled> </vaadin-text-field>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBProjects]]" id="_CLProjectNo" item-value-path="id" item-label-path="value" value="{{result.projectNo}}" label="Nº Projeto" disabled="{{ _lockFields }}">
-                                            <template>
-                                                <b>[[item.value]]</b>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>
-
-                                    <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBMealType]]" id="_CLMealType" item-value-path="id" item-label-path="value" value="{{result.mealType}}" label="Tipo Refeição" disabled="{{ _lockFields }}">
-                                            <template>
-                                                <b>[[item.value]]</b>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>
-
-
-                                    <div class="col-lg-2">
-                                        <vaadin-date-picker label="Data Registo" id="_CLRegistrationDate" name="_CLRegistrationDate" value="{{_LLRegistrationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                    </div>
-
-                                    <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBRegionCodes]]" id="_CLRegionCode" name="_CLRegion" item-value-path="id" item-label-path="value" value="{{result.regionCode}}" label="Cód. Região" disabled="{{ _lockFields }}">
-                                            <template>
-                                                <table width="180px">
-                                                    <tr>
-                                                        <td width="20%">[[item.id]]</td>
-                                                        <td width="80%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>
-
-                                    <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="_CLFunctionalArea" name="_CLFunctionalArea" item-value-path="id" item-label-path="value" value="{{result.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ _lockFields }}">
-                                            <template>
-                                                <table width="200px">
-                                                    <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLCenterCodeResponsability" item-value-path="id" item-label-path="value" value="{{result.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{_lockFields }}">
-                                            <template>
-                                                <table width="200px">
-                                                    <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>
+                                <div class="col-lg-2">
+                                    <vaadin-text-field value="{{_LLDescription}}" id="_CLDescription" name="_LLDescription" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                 </div>
-                                <div class="marginSpace" id="ddmarginSpace">
-                                    <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-
+                                <div class="col-lg-2">
+                                    <vaadin-text-field value="{{_LLUnitCost}}" type="number" id="_CLUnitCost" name="_LLDescription" label="Preço Unico" disabled>  €</vaadin-text-field>
                                 </div>
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBMeasureUnits]]" id="_CLMeasureUnitNo" name="_LLMeasureUnit" item-value-path="id" item-label-path="value" value="{{_LLMeasureUnit}}" label="Cód. Unidade Medida" disabled>
+                                        <template>
+                                            <b>[[item.value]]</b>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <vaadin-text-field value="{{_LLQuantityToRequire}}" type="number" id="_CLQuantityToRequire" name="_LLQuantityToRequire" label="Quantidade a requerer" disabled="{{ !_permissions.update }}" on-value-changed="_readQuantity" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                </div>
+
                             </div>
-                            <div class="row">
-                                <vaadin-grid aria-label="RequisitionLines" id="grid_requisitionlines" name="grid_requisitionlines" items="[[dataLines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
-                                    <vaadin-grid-column width="100px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="requisitionNo">Nº</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="requisitionNo" />
-                                        </template>
-                                        <template>
-                                            {{item.requisitionNo}}
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="125px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="code">Nº Produto</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="code" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBProductos]]" id="_LLGridProductNo" name="_LLGridProductNo" item-value-path="id" item-label-path="value" value="{{item.code}}" on-change="_onChangeProduct">
-                                                    <template>
-                                                        <paper-icon-item>
-                                                            <paper-item-body two-line>
-                                                                <div>[[item.value]]</div>
-                                                            </paper-item-body>
-                                                        </paper-icon-item>
-                                                    </template>
-                                                </vaadin-combo-box>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.code}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="200px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="locationCode">Localização</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="locationCode" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBLocations]]" id="_CLGridCode" name="_LLGridCode" item-value-path="id" item-label-path="value" value="{{item.locationCode}}">
-                                                    <template>
-                                                        <b>[[item.value]]</b>
-                                                    </template>
-                                                </vaadin-combo-box>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.locationCode}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="200px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="description" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.description}}" id="_LLGridDescription" name="_LLGridDescription" disabled> </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.description}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="170px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="measureUnitNo">Cód. Uni. Medida</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="measureUnitNo" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBMeasureUnits]]" id="_CLGridMeasureUnit" name="_CLGridMeasureUnit" item-value-path="id" item-label-path="id" value="{{item.measureUnitNo}}" disabled>
-                                                    <template>
-                                                        <paper-icon-item>
-                                                            <paper-item-body two-line>
-                                                                <div>[[item.value]]</div>
-                                                            </paper-item-body>
-                                                        </paper-icon-item>
-                                                    </template>
-                                                </vaadin-combo-box>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.measureUnitNo}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="120px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="quantityToRequire">Quantidade a Requerer</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="quantityToRequire" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.quantityToRequire}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" > </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.quantityToRequire}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="120px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="quantityToApprove">Quantidade a Aprovar</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="quantityToApprove" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.quantityToApprove}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled> </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.quantityToApprove}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="120px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="quantityApproved">Quantidade Aprovada</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="quantityApproved" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.quantityApproved}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled> </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.quantityApproved}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="120px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="quantityReceipt">Quantidade Registada</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="quantityReceipt" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.quantityReceipt}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled> </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.quantityReceipt}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="120px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="unitCost" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.unitCost}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled><div slot="suffix">€</div> </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.unitCost}} €
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="150px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="totalCost" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.totalCost}}" id="_LLGridUnitPrice" name="_LLGridUnitPrice" disabled> <div slot="suffix">€</div></vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.totalCost}} €
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="150px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="requisitionDate">Data de Registo</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="requisitionDate" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.requisitionDate}}" id="_LLGridUnitPrice" name="_LLGridUnitPrice" disabled> <div slot="suffix">€</div></vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.requisitionDate}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="125px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="projectNo" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBProjects]]" id="_LLGridProjectNo" name="_LLGridProjectNo" item-value-path="id" item-label-path="id" value="{{item.projectNo}}" disabled>
-                                                    <template>
-                                                        <paper-icon-item>
-                                                            <paper-item-body two-line>
-                                                                <div>[[item.id]]</div>
-                                                            </paper-item-body>
-                                                        </paper-icon-item>
-                                                    </template>
-                                                </vaadin-combo-box>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.projectNo}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="120px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="mealType">Tipo Refeição</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="mealType" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBMealType]]" id="_LLMealType" name="_LLMealType" item-value-path="id" item-label-path="id" value="{{item.mealType}}" disabled>
-                                                    <template>
-                                                        <paper-icon-item>
-                                                            <paper-item-body two-line>
-                                                                <div>[[item.id]]</div>
-                                                            </paper-item-body>
-                                                        </paper-icon-item>
-                                                    </template>
-                                                </vaadin-combo-box>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.mealType}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="120px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="mealType">Descrição Refeição</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="mealType" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="[[_descriptionMeal(item.mealType)]]" id="DescriptionMeal" name="_LLGridUnitPrice" disabled> </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                [[_descriptionMeal(item.mealType)]]
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="125px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="codeRegion" />
-                                        </template>
-                                        <template>
 
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBRegionCodes]]" id="_CLGridRegion" name="_CLGridRegion" item-value-path="id" item-label-path="id" value="{{item.codeRegion}}" disabled="{{ _lockFields }}">
-                                                    <template>
-                                                        <paper-icon-item>
-                                                            <paper-item-body two-line>
-                                                                <div>[[item.id]]</div>
-                                                            </paper-item-body>
-                                                        </paper-icon-item>
-                                                    </template>
-                                                </vaadin-combo-box>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.codeRegion}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="190px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="codeFunctionalArea">Cód. Area Funcional</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="codeFunctionalArea" />
-                                        </template>
+                            <div class="row" style="display: {{ _showLinesForm }};">
+                                <div class="col-lg-2">
+                                    <vaadin-text-field value="{{_LLTotalCost}} " id="_CLTotalCost" name="_LLTotalCost" label="Custo Total" disabled> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBProjects]]" id="_CLProjectNo" item-value-path="id" item-label-path="value" value="{{result.projectNo}}" label="Nº Projeto" disabled="{{ _lockFields }}">
                                         <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="_CLGridFunctionalArea" name="_CLGridFunctionalArea" item-value-path="id" item-label-path="id" value="{{item.functionAreaCode}}" disabled="{{ _lockFields }}">
-                                                    <template>
-                                                        <paper-icon-item>
-                                                            <paper-item-body two-line>
-                                                                <div>[[item.id]]</div>
-                                                            </paper-item-body>
-                                                        </paper-icon-item>
-                                                    </template>
-                                                </vaadin-combo-box>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.functionAreaCode}}
-                                            </template>
+                                            <b>[[item.value]]</b>
                                         </template>
-                                    </vaadin-grid-column>
-                                    <vaadin-grid-column width="200px">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="codeResponsabilityCenter" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLGridResponsabilityCenter" name="_CLGridResponsabilityCenter" item-value-path="id" item-label-path="id" value="{{item.responsabilityCenterCode}}" disabled>
-                                                    <template>
-                                                        <paper-icon-item>
-                                                            <paper-item-body two-line>
-                                                                <div>[[item.id]]</div>
-                                                            </paper-item-body>
-                                                        </paper-icon-item>
-                                                    </template>
-                                                </vaadin-combo-box>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.responsabilityCenterCode}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
+                                    </vaadin-combo-box>
+                                </div>
 
-                                    <vaadin-grid-column>
-                                        <template class="header">
-                                        </template>
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBMealType]]" id="_CLMealType" item-value-path="id" item-label-path="value" value="{{result.mealType}}" label="Tipo Refeição" disabled="{{ _lockFields }}">
                                         <template>
-                                            <center>
-                                                <template is="dom-if" if="{{ !_permissions.detele}}">
-                                                    <paper-button class="btnRemove" raised on-tap="_deleteRequisitionsLine">Eliminar</paper-button>
+                                            <b>[[item.value]]</b>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+
+
+                                <div class="col-lg-2">
+                                    <vaadin-date-picker label="Data Registo" id="_CLRegistrationDate" name="_CLRegistrationDate" value="{{_LLRegistrationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBRegionCodes]]" id="_CLRegionCode" name="_CLRegion" item-value-path="id" item-label-path="value" value="{{result.regionCode}}" label="Cód. Região" disabled="{{ _lockFields }}">
+                                        <template>
+                                            <table width="180px">
+                                                <tr>
+                                                    <td width="20%">[[item.id]]</td>
+                                                    <td width="80%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="_CLFunctionalArea" name="_CLFunctionalArea" item-value-path="id" item-label-path="value" value="{{result.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ _lockFields }}">
+                                        <template>
+                                            <table width="200px">
+                                                <tr>
+                                                    <td width="40%">[[item.id]]</td>
+                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLCenterCodeResponsability" item-value-path="id" item-label-path="value" value="{{result.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{_lockFields }}">
+                                        <template>
+                                            <table width="200px">
+                                                <tr>
+                                                    <td width="40%">[[item.id]]</td>
+                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="marginSpace" id="ddmarginSpace">
+                                        <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                    </div>
+                                 </div>
+                              </div>
+                            <br/>
+
+
+                                <div class="row">
+                                    <vaadin-grid aria-label="RequisitionLines" id="grid_requisitionlines" name="grid_requisitionlines" items="[[dataLines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
+                                        <vaadin-grid-column width="100px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="requisitionNo">Nº</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="requisitionNo" />
+                                            </template>
+                                            <template>
+                                                {{item.requisitionNo}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="125px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="code">Nº Produto</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="code" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-combo-box items="[[CBProductos]]" id="_LLGridProductNo" name="_LLGridProductNo" item-value-path="id" item-label-path="value" value="{{item.code}}" on-change="_onChangeProduct" disabled="{{ !_permissions.update }}">
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.value]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
                                                 </template>
-                                            </center>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.code}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="200px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="locationCode">Localização</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="locationCode" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-combo-box items="[[CBLocations]]" id="_CLGridCode" name="_LLGridCode" item-value-path="id" item-label-path="value" value="{{item.locationCode}}" disabled="{{ !_permissions.update }}">
+                                                        <template>
+                                                            <b>[[item.value]]</b>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.locationCode}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="200px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="description" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.description}}" id="_LLGridDescription" name="_LLGridDescription" disabled> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.description}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="170px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="measureUnitNo">Cód. Uni. Medida</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="measureUnitNo" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-combo-box items="[[CBMeasureUnits]]" id="_CLGridMeasureUnit" name="_CLGridMeasureUnit" item-value-path="id" item-label-path="id" value="{{item.measureUnitNo}}" disabled>
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.value]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.measureUnitNo}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="120px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="quantityToRequire">Quantidade a Requerer</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="quantityToRequire" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.quantityToRequire}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire"> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.quantityToRequire}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="120px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="quantityToApprove">Quantidade a Aprovar</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="quantityToApprove" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.quantityToApprove}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.quantityToApprove}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="120px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="quantityApproved">Quantidade Aprovada</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="quantityApproved" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.quantityApproved}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.quantityApproved}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="120px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="quantityReceipt">Quantidade Registada</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="quantityReceipt" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.quantityReceipt}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled="@ViewBag.LockFields"> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.quantityReceipt}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="120px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="unitCost" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.unitCost}}" id="_LLGridQuantityToRequire" name="_LLGridQuantityToRequire" disabled><div slot="suffix">€</div> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.unitCost}} €
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="totalCost" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.totalCost}}" id="_LLGridUnitPrice" name="_LLGridUnitPrice" disabled> <div slot="suffix">€</div></vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.totalCost}} €
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="requisitionDate">Data de Registo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="requisitionDate" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.requisitionDate}}" id="_LLGridrequisitionDate" name="_LLGridrequisitionDate" disabled> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.requisitionDate}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="125px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="projectNo" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-combo-box items="[[CBProjects]]" id="_LLGridProjectNo" name="_LLGridProjectNo" item-value-path="id" item-label-path="id" value="{{item.projectNo}}" disabled>
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.id]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.projectNo}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="120px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="mealType">Tipo Refeição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="mealType" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-combo-box items="[[CBMealType]]" id="_LLMealType" name="_LLMealType" item-value-path="id" item-label-path="id" value="{{item.mealType}}" disabled>
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.id]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.mealType}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="120px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="mealType">Descrição Refeição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="mealType" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="[[_descriptionMeal(item.description)]]" id="DescriptionMeal" name="_LLGridUnitPrice" disabled> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    [[_descriptionMeal(item.mealType)]]
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="125px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codeRegion" />
+                                            </template>
+                                            <template>
+
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-combo-box items="[[CBRegionCodes]]" id="_CLGridRegion" name="_CLGridRegion" item-value-path="id" item-label-path="id" value="{{item.codeRegion}}" disabled="{{ _lockFields }}">
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.id]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.codeRegion}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="190px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codeFunctionalArea">Cód. Area Funcional</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codeFunctionalArea" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="_CLGridFunctionalArea" name="_CLGridFunctionalArea" item-value-path="id" item-label-path="id" value="{{item.functionAreaCode}}" disabled="{{ _lockFields }}">
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.id]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.functionAreaCode}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="200px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codeResponsabilityCenter" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLGridResponsabilityCenter" name="_CLGridResponsabilityCenter" item-value-path="id" item-label-path="id" value="{{item.responsabilityCenterCode}}" disabled>
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.id]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.responsabilityCenterCode}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <template is="dom-if" if="{{ !_permissions.detele}}">
+                                            <vaadin-grid-column>
+                                                <template class="header">
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <paper-button class="btnRemove" raised on-tap="_deleteRequisitionsLine">Eliminar</paper-button>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
                                         </template>
-                                    </vaadin-grid-column>
-                                </vaadin-grid>
-                            </div>
+                                    </vaadin-grid>
+                                </div>
 
-
-                            <div class="marginSpace">
-                                <template is="dom-if" if="{{ _lockFields }}">
+                                <template is="dom-if" if="{{ _permissions.update }}">
                                     <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateResquesitionLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                 </template>
+
+
                             </div>
-
-                        </div>
-                    </div>
-
+                     </iron-form>
                 </div>
-     
+
+            </div>
+
         </div>
 
-    
+        <paper-dialog id="dialog" class="dialgoBox">
+            <h2 class="dialogTitle">Requisições</h2>
+
+            <vaadin-grid aria-label="Modelos de Requisições" class="editDialogGrid" active-item="{{activeItem}}" id="projecModelsTable" items="[[resultModels]]">
+                <vaadin-grid-column width="10%">
+                    <template class="header">
+                        <vaadin-grid-sorter path="requisitionTemplateId">Nº </vaadin-grid-sorter>
+                        <vaadin-grid-filter path="requisitionTemplateId" />
+                    </template>
+                    <template>
+                        {{item.requisitionTemplateId}}  {{item.requisitionNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="30%">
+                    <template class="header">
+                        <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="description" />
+                    </template>
+                    <template>
+                        {{item.description}}{{item.projectNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="30%">
+                    <template class="header">
+                        <vaadin-grid-sorter path="codeRegion">Região</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="codeRegion" />
+                    </template>
+                    <template>
+                        [[_getRegionDescription(item.regionCode)]] [[_getRegionDescription(item.codeRegion)]]
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="30%">
+                    <template class="header">
+                        <vaadin-grid-sorter path="codeFunctionalArea">Área Funcional</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="codeFunctionalArea" />
+                    </template>
+                    <template>
+                        [[_getFunctionalAreaDescription(item.functionalAreaCode)]] [[_getFunctionalAreaDescription(item.codeFunctionalArea)]]
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="30%">
+                    <template class="header">
+                        <vaadin-grid-sorter path="codeResponsabilityCenter">Centro Responsabilidade</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="codeResponsabilityCenter" />
+                    </template>
+                    <template>
+                        [[_getResponsabilityCenterDescription(item.responsabilityCenterCode)]]
+                        [[_getResponsabilityCenterDescription(item.codeResponsabilityCenter)]]
+                    </template>
+                </vaadin-grid-column>
+
+            </vaadin-grid>
+
+            <div class="buttons">
+                <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_confirmTemplate" hidden="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+            </div>
+
+        </paper-dialog>
+
+
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -779,6 +880,14 @@ else
                         type: Boolean,
                         value: true
                     },
+                    _showLinesForm: {
+                        type: String,
+                        value: ""
+                    },
+                    _showLines: {
+                        type: String,
+                        value: "none"
+                    },
                     _lockFields: {
                         type: Boolean,
                         value: true
@@ -786,25 +895,35 @@ else
                     _SelectedLine: {
                         observer: '_lineSelected'
                     },
+                     activeItem: {
+                        observer: '_activeItemChanged'
+                    },
                     selected: {
                         type: Number,
                         value: 0
                     },
                 },
+               
                 ready: function () {
-
                     //GET PROJECT DATA
                     if("@ViewBag.RequestNo"!="")
-                        this.$.page_databound_ajax.body = JSON.stringify({ "RequisitionNo":  "@ViewBag.RequestNo" });
-
+                        this.$.page_databound_ajax.body = JSON.stringify({ "RequisitionNo": "@ViewBag.RequestNo" });
                     this.$.page_databound_ajax.generateRequest();
                     if ("@ViewBag.Approval" == "resgitar") {
-                        this.$.formLinesReq.style.display = 'none';
-                        this.$.ddmarginSpace.style.display = 'none';
+                        this._showLinesForm = 'none';
+                        this.$.ddmarginSpaceCabe.style.display = 'none';
+                    }
+                    else if ("@ViewBag.Approval" == "historico") {
+                        this._showLinesForm = 'none';
+                        this.$.ddsubMenu.style.display = 'none';
+                        this.$.ddmarginSpaceCabe.style.display = 'none';
                     }
                     else {
-                        this.$.ddmarginSpace2.style.display = 'none';
-                        this.$.ddmarginSpace3.style.display = 'none';
+                        if (this.create == true) {
+
+                            this._showLines = 'none';
+                        }
+                        this.$.ddsubMenu.style.display = 'none';
 
                     }
                     if("@ViewBag.RequestNo"!="")
@@ -813,44 +932,21 @@ else
                     this.$.contractLines_databound_ajax.generateRequest();
 
                 },
-                _openToast: function (message) {
-                    this.$.ToastMessageSuccess.text = message;
-                    this.$.ToastMessageSuccess.open();
-                },
-                _openToastError: function (message) {
-                    this.$.ToastMessageError.text = message;
-                    this.$.ToastMessageError.open();
-                },
-                _validateData: function (container) {
 
-                    var polymerDom = Polymer.dom(this.$[container]);
-                    var errors = 0;
-                    var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
-                    var formFields = polymerDom.querySelectorAll(formSelector);
-
-                    formFields.forEach(function (element) {
-                        if (!element.validate()) errors++;
-                    });
-
-                    if (errors > 0) {
-                        this._openToastError("Verifique os dados inseridos.");
-                        return false;
-                    }
-
-                    return true;
-                },
 
                 _createNew: function () {
                     window.location.href = "/Nutricao/RequisicoesSimplificadas/Detalhes";
                 },
-              
+
                 //CRUDS
                 _finishRequisition: function () {
-                    var erro=false;
-                    for (i = 0; i < this.dataLines.length; i++) {
-                        if (this.dataLines[i].quantityToRequire == 0) {
-                            erro = true;
-                            break;
+                    var erro = false;
+                    if (this.dataLines != undefined) {
+                        for (i = 0; i < this.dataLines.length; i++) {
+                            if (this.dataLines[i].quantityToRequire == 0) {
+                                erro = true;
+                                break;
+                            }
                         }
                     }
                     if (erro == false) {
@@ -862,12 +958,21 @@ else
                         this._openToastError("Preencha quantidade em uma ou mais linhas!");
                     }
                 },
-
-                _create: function () {
-                    this._executeRequest("/Nutricao/RequisicoesSimplificadas/CreateSimplifiedRequisition", this.result)
+                _confirmTemplate: function () {
+                    if (this.$.projecModelsTable.selectedItems != undefined) {
+                        var line;
+                        if (this.$.projecModelsTable.selectedItems[0].requisitionNo == undefined)
+                            line = { RequisitionNo : this.$.projecModelsTable.selectedItems[0].requisitionTemplateId };
+                        else
+                            line = { RequisitionNo : this.$.projecModelsTable.selectedItems[0].requisitionNo };
+                        this.$.page_databound_ajax2.body = JSON.stringify(line);
+                        this.$.page_databound_ajax2.generateRequest();
+                    }
+                    this.$.dialog.close();
                 },
                 _createContractLine: function () {
-                    if (this._validateData("formLinesReq")) {
+                    debugger;;
+                    if (this._validateData("formcontractLines")) {
 
                         var addline = {
                             requisitionNo: this.$.lRequestNo.value,
@@ -878,12 +983,15 @@ else
                             quantityToRequire: this.$._CLQuantityToRequire.value,
                             totalCost: this.$._CLTotalCost.value,
                             unitCost: this.$._CLUnitCost.value,
-                            //requisitionDate: this.$._CLRegistrationDate,
+                            requisitionDate: this.$._CLRegistrationDate.value,
                             projectNo: this.$._CLProjectNo.value,
                             mealType: this.$._CLMealType.value,
                             regionCode: this.$._CLRegionCode.value,
                             functionAreaCode: this.$._CLFunctionalArea.value,
-                            responsabilityCenterCode: this.$._CLCenterCodeResponsability.value
+                            responsabilityCenterCode: this.$._CLCenterCodeResponsability.value,
+                            quantityApproved: 0,
+                            quantityReceipt: 0,
+                            quantityToApprove:0
                         };
                         if (this.dataLines == null) {
                             this.dataLines = addline;
@@ -895,19 +1003,26 @@ else
                             this.$.LTotalCost.value = this.$.LTotalCost.value + addline.totalCost;
                         else
                             this.$.LTotalCost.value = addline.totalCost;
+
+
                         this.$.update_lines_requisition_ajax.url = "/Nutricao/RequisicoesSimplificadas/CreateLinesSimplifiedRequisition";
                         this.$.update_lines_requisition_ajax.body = JSON.stringify(addline);
                         this.$.update_lines_requisition_ajax.generateRequest();
                         this.$.grid_requisitionlines.clearCache();
+                       
+                    }
+                },
+                _create: function () {
+                    if (this._validateData("formContract")) {
+                        this._executeRequest("/Nutricao/RequisicoesSimplificadas/CreateSimplifiedRequisition", this.result)
                     }
                 },
                 _update: function () {
-                    debugger;;
-                    var a = this.$.LMealType.value;
+
                     this.$.update_lines_requisition_ajax.url = "/Nutricao/RequisicoesSimplificadas/UpdateSimplifiedRequisition";
                     this.$.update_lines_requisition_ajax.body = JSON.stringify(this.result);
                     this.$.update_lines_requisition_ajax.generateRequest();
-                    
+
                 },
                 _desaprovarRequisiApproval: function () {
                     this.$.register_requisitions_ajax.url = "/Nutricao/RequisicoesSimplificadas/DisapproveSimplifiedRequisition";
@@ -930,10 +1045,10 @@ else
                     this.$.register_requisitions_ajax.generateRequest();
                 },
                 _delete: function () {
-                    var result = this.result;
+                    var data = this.result;
                     var ajax_request = this.$.ajax_delete_project;
                     bootbox.confirm({
-                        message: "Tem a certeza que pretende remover a Requisição Simplificada " + this.result.requestNo + "?",
+                        message: "Tem a certeza que pretende remover a Requisição Simplificada " + data.requestNo + "?",
                         buttons: {
                             confirm: {
                                 label: 'Sim',
@@ -946,7 +1061,7 @@ else
                         },
                         callback: function (result) {
                             if (result) {
-                                ajax_request.body = JSON.stringify(result);
+                                ajax_request.body = JSON.stringify(data);
                                 ajax_request.generateRequest();
                             }
                         }
@@ -973,7 +1088,6 @@ else
                         },
                         callback: function (result) {
                             if (result) {
-
                                 ajax_request.body = JSON.stringify(dataline);
                                 ajax_request.generateRequest();
 
@@ -982,23 +1096,40 @@ else
                     });
 
                 },
-                _onChangeProduct: function (data) {
-                    if (data.model != null && this.CBProductos != undefined) {
-                        var sel = this.CBProductos.find(x => x.id == data.model.item.code);
-                        if (sel != undefined) {
-                            this.dataLines.find(x => x == this._SelectedLine).description = sel.value;
-                            this.dataLines.find(x => x == this._SelectedLine).measureUnitNo = sel.extra2;
-                            this.$.grid_requisitionlines.clearCache();
-                        }
-                    }
+                _copyModel: function (data) {
+                    this.$.get_models_ajax.url = "/Nutricao/ModelosReqSimplificada/GetAllReqTemplates";
+                    //this.$.get_models_ajax.body = JSON.stringify(this.dataLines);
+                    this.$.get_models_ajax.generateRequest();
                 },
+              
+                _copyHistory: function (data) {
+                    this.$.get_models_ajax.url = "/Nutricao/RequisicoesSimplificadas/GetSimplifiedRequisitions";
+                    this.$.get_models_ajax.body = JSON.stringify("historico");
+                    this.$.get_models_ajax.generateRequest();
+
+                },
+               
 
 
                 //Responses Processors
+                _responseGetModels: function (data) {
+                    this.$.dialog.open();
+                },
+                _responseContractLines: function () {
+
+                    var costTotal = 0;
+                    if (this.dataLines != undefined) {
+                        for (var i = 0; i < this.dataLines.length; i++) {
+                            costTotal = costTotal + this.dataLines[i].totalCost;
+                        }
+                    }
+                    this.$.LTotalCost.value = costTotal;
+                },
                 _responseProcessor: function (data) {
                     var self = this;
                     if (this.result.requisitionNo != "" && this.result.requisitionNo != null) {
                         this._isCreate = false
+                        this._showLines = '';
                     }
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("Update") !== -1 || data.detail.url.indexOf("Create") !== -1) {
@@ -1006,6 +1137,8 @@ else
                                 this._openToast(this.result.eMessage);
                             } else {
                                 this._openToastError(this.result.eMessage);
+                                this._isCreate = true;
+                                this._showLines = 'none';
                                 this.ready();
                             }
                         }
@@ -1013,30 +1146,38 @@ else
                         this._openToastError("Ocorreu um erro.")
                     }
                 },
+                _responseProcessor2: function (data) {
+                   this.$.contractLines_databound_ajax.body = JSON.stringify({ "RequisitionNo": this.result.requisitionNo });
+                   this.$.contractLines_databound_ajax.generateRequest();
+                   this.$.grid_requisitionlines.clearCache();
+                },
                 _responseProcessorLines: function (dataUpdate) {
+                    debugger;;
                     if (dataUpdate.detail.status === 200) {
-                        if (this.updateLines.eReasonCode == undefined)
-                        { 
-                            if (this.updateLines != undefined) {
-                                this.dataLines = this.updateLines;
-                                this.$.grid_requisitionlines.clearCache();
-                                
-                                this._openToast("Requisição Simplificada atualizada com sucesso.");
-
+                        if (this.updateLines.eReasonCode == 100) {
+                            if (this.updateLines.lineNo != undefined) {
+                                this.$._CLLocationCode.value = "";
+                                this.$._CLCode.value = "";
+                                this.$._CLDescription.value = "";
+                                this.$._CLMeasureUnitNo.value = "";
+                                this.$._CLQuantityToRequire.value = "";
+                                this.$._CLUnitCost.value = "";
+                                this.dataLines[this.dataLines.length - 1].lineNo = this.updateLines.lineNo;
                             }
-                            else {
-                                this._openToastError("Ocorreu um erro ao atualizadar a Requisição Simplificada.");
-                            }
+                            this._openToast(this.updateLines.eMessage);
+                            this.$.grid_requisitionlines.clearCache();
 
+                        } else if (this.updateLines.eReasonCode == 101) {
+                            this._openToastError(this.updateLines.eMessage);
                         }
-                        else{
-                            if (this.updateLines.eReasonCode == 100) {
-                                this._openToast(this.updateLines.eMessage);
-
-                            } else {
-                                this._openToastError(this.updateLines.eMessage);
-                            }
+                        else if (this.updateLines != null) {
+                            this._openToast("Requisição actualizada com sucesso");
+                          
                         }
+                        else {
+                            this._openToastError("Erro na actualização da requisição");
+                        }
+
 
                     } else {
                         this._openToastError("Ocorreu um erro.")
@@ -1045,11 +1186,22 @@ else
                 _responseProcessorRegister: function (data) {
                     if (data.detail.status === 200) {
                         if (this.requisitions.eReasonCode == 100) {
-                                this._openToast(this.requisitions.eMessage);
-                                window.location.href = "/Nutricao/RequisicoesSimplificadas/Index/?option=" + 1;
-                            } else {
-                                this._openToastError(this.requisitions.eMessage);
-                            }
+                            this._openToast(this.requisitions.eMessage);
+                            if ("@ViewBag.Approval" == "resgitar")
+                                setTimeout(
+                                    function () {
+                                        window.location.href = "/Nutricao/RequisicoesSimplificadas/Index/?option=" + 1;
+                                    }, 2500);
+                            else
+                                setTimeout(
+                                    function () {
+                                        window.location.href = "/Nutricao/RequisicoesSimplificadas/Index";
+                                    }, 2500);
+
+                        }
+                        else {
+                            this._openToastError(this.requisitions.eMessage);
+                         }
 
                     } else {
                         this._openToastError("Ocorreu um erro.")
@@ -1060,6 +1212,7 @@ else
                     if (data.detail.status === 200) {
                         this._openToast(this.deletedData.eMessage);
                         if (this.deletedData.eReasonCode == 100) {
+
                             setTimeout(
                                 function () {
                                     window.location.href = "/Nutricao/RequisicoesSimplificadas";
@@ -1074,6 +1227,7 @@ else
                     if (data.detail.status === 200) {
                         this._openToast(this.deletedData.eMessage);
                         if (this.deletedData.eReasonCode == 100) {
+                            this.$.LTotalCost.value = this.$.LTotalCost.value - this.deletedData.totalCost;
                             this.$.grid_requisitionlines.clearCache();
                             this._openToast(this.deletedData.eMessage);
                         } else if (this.deletedData.eReasonCode == 101) {
@@ -1081,15 +1235,56 @@ else
                         }
                     }
                 },
+
+
+
                 //Helpers
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _validateData: function (container) {
+
+                    var polymerDom = Polymer.dom(this.$[container]);
+                    var errors = 0;
+                    var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
+                    var formFields = polymerDom.querySelectorAll(formSelector);
+
+                    formFields.forEach(function (element) {
+                        if (!element.validate()) errors++;
+                    });
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
+                    return true;
+                },
                 _executeRequest: function (url, data) {
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
 
                 },
-
-
+                _onChangeProduct: function (data) {
+                    if (data.model != null && this.CBProductos != undefined) {
+                        var sel = this.CBProductos.find(x => x.id == data.model.item.code);
+                        if (sel != undefined) {
+                            this.dataLines.find(x => x == this._SelectedLine).description = sel.value;
+                            this.dataLines.find(x => x == this._SelectedLine).measureUnitNo = sel.extra2;
+                            this.$.grid_requisitionlines.clearCache();
+                        }
+                    }
+                },
+             
+                _activeItemChanged: function (item) {
+                    this.$.projecModelsTable.selectedItems = item ? [item] : [];
+                },
                 _lineSelected: function (item) {
                     if (item != null) {
                         var oSel = this.dataLines.find(x => x.selected);
@@ -1194,7 +1389,33 @@ else
 
                     }
                 },
-
+               _getRegionDescription: function (id) {
+                   if (id != undefined && this.CBRegionCodes != undefined) {
+                       var sel = this.CBRegionCodes.find(x => x.id == id);
+                       if (sel != undefined) {
+                           return sel.value;
+                       }
+                   }
+                   return "";
+               },
+               _getFunctionalAreaDescription: function (id) {
+                   if (id != undefined && this.CBFunctionalAreaCodes != undefined) {
+                       var sel = this.CBFunctionalAreaCodes.find(x => x.id == id);
+                       if (sel != undefined) {
+                           return sel.value;
+                       }
+                   }
+                   return "";
+               },
+               _getResponsabilityCenterDescription: function (id) {
+                   if (id != undefined && this.CBResponsabilityCenterCodes != undefined) {
+                       var sel = this.CBResponsabilityCenterCodes.find(x => x.id == id);
+                       if (sel != undefined) {
+                           return sel.value;
+                       }
+                   }
+                   return "";
+               },
                _responsabilityCenterCodeChanged: function () {
                     if (this.dataLines != null) {
                         var count = this.dataLines.length;
