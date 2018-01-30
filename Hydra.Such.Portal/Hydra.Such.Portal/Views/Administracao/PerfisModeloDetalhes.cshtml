@@ -66,7 +66,6 @@
                    on-response="_responseProcessor"
                    content-type="application/json; charset=utf-8"></iron-ajax>
 
-
         <iron-ajax url="/PopulateDropdowns/GetAreas"
                    last-response="{{AreasData}}"
                    auto
@@ -79,6 +78,14 @@
                    auto
                    method="post"
                    handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Administracao/DeleteAccess"
+                   id="ajax_delete"
+                   last-response="{{DeleteResponse}}"
+                   method="post"
+                   handle-as="json"
+                   on-response="_deleteResponse"
                    content-type="application/json"></iron-ajax>
 
         <h2 class="separator">Acessos Perfil</h2>
@@ -110,119 +117,119 @@
             <div class="col-lg-1 alignPoga"><vaadin-checkbox checked="{{chkUpdate}}"> Modificação</vaadin-checkbox></div>
             <div class="col-lg-1 alignPoga"><vaadin-checkbox checked="{{chkDelete}}"> Eliminação</vaadin-checkbox></div>
             <div class="col-lg-2 alignPoga"><paper-button class="btnSave" raised on-tap="_createAccessProfile">Criar</paper-button></div>
-            </div>
+        </div>
 
-                <vaadin-grid id="gridAccesses" aria-label="ProfileModelsTabel" items="{{ data.profileModelAccesses }}" class="grid">
-                    <vaadin-grid-column width="20%">
-                        <template class="header">
-                            Área
-                        </template>
+        <vaadin-grid id="gridAccesses" aria-label="ProfileModelsTabel" items="{{ data.profileModelAccesses }}" class="grid">
+            <vaadin-grid-column width="20%">
+                <template class="header">
+                    Área
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[AreasData]]" item-value-path="id" item-label-path="value" value="{{item.area}}">
                         <template>
-                            <vaadin-combo-box items="[[AreasData]]" item-value-path="id" item-label-path="value" value="{{item.area}}">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
 
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="20%">
-                        <template class="header">
-                            Funcionalidade
-                        </template>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="20%">
+                <template class="header">
+                    Funcionalidade
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[FeaturesData]]" item-value-path="id" item-label-path="value" value="{{item.feature}}">
                         <template>
-                            <vaadin-combo-box items="[[FeaturesData]]" item-value-path="id" item-label-path="value" value="{{item.feature}}">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.value]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
                         </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="12%">
-                        <template class="header">
-                            <center>
-                                Inserção
-                            </center>
-                        </template>
-                        <template>
-                            <center>
-                                <vaadin-checkbox checked="{{item.create}}"></vaadin-checkbox>
-                            </center>
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="12%">
-                        <template class="header">
-                            <center>
-                                Leitura
-                            </center>
-                        </template>
-                        <template>
-                            <center>
-                                <vaadin-checkbox checked="{{item.read}}"></vaadin-checkbox>
-                            </center>
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="12%">
-                        <template class="header">
-                            <center>
-                                Modificação
-                            </center>
-                        </template>
-                        <template>
-                            <center>
-                                <vaadin-checkbox checked="{{item.update}}"></vaadin-checkbox>
-                            </center>
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="12%">
-                        <template class="header">
-                            <center>
-                                Eliminação
-                            </center>
-                        </template>
-                        <template>
-                            <center>
-                                <vaadin-checkbox checked="{{item.delete}}"></vaadin-checkbox>
-                            </center>
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="12%">
-                        <template class="header">
-                        </template>
-                        <template>
-                            <center>
-                                <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile">Eliminar</paper-button>
-                            </center>
-                        </template>
-                    </vaadin-grid-column>
-                </vaadin-grid>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="12%">
+                <template class="header">
+                    <center>
+                        Inserção
+                    </center>
+                </template>
+                <template>
+                    <center>
+                        <vaadin-checkbox checked="{{item.create}}"></vaadin-checkbox>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="12%">
+                <template class="header">
+                    <center>
+                        Leitura
+                    </center>
+                </template>
+                <template>
+                    <center>
+                        <vaadin-checkbox checked="{{item.read}}"></vaadin-checkbox>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="12%">
+                <template class="header">
+                    <center>
+                        Modificação
+                    </center>
+                </template>
+                <template>
+                    <center>
+                        <vaadin-checkbox checked="{{item.update}}"></vaadin-checkbox>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="12%">
+                <template class="header">
+                    <center>
+                        Eliminação
+                    </center>
+                </template>
+                <template>
+                    <center>
+                        <vaadin-checkbox checked="{{item.delete}}"></vaadin-checkbox>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="12%">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile">Eliminar</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
 
-                <div class="marginSpace">
-                    @if (ViewBag.ProfileModelId == 0)
-            {
-                        <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
-                    }
-                    else
-                    {
-                        <paper-button class="btnEdit" raised on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
-                        <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                    }
-                </div>
+        <div class="marginSpace">
+            @if (ViewBag.ProfileModelId == 0)
+        {
+            <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
+    }
+    else
+    {
+        <paper-button class="btnEdit" raised on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
+        <paper-button class="btnRemove" raised on-tap="_delete"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+    }
+        </div>
 
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
 
-</template>
+    </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
@@ -367,11 +374,53 @@
                     }
 
                 },
-                _deleteAccessProfile: function (data) {
-                    var index = this.data.profileModelAccesses.indexOf(data.model.item);
-                    this.data.profileModelAccesses.splice(index, 1);
+                _deleteAccessProfile: function (e) {
+                    var index = this.data.profileModelAccesses.indexOf(e.model.item);
+                    var itemToDelete = e.model.item;//this.data.profileModelAccesses.splice(index, 1);
+                    var ajax_request = this.$.ajax_delete;
 
-                    this.$.gridAccesses.clearCache();
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o modelo de perfil?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (deleteItem) {
+                            if (deleteItem) {
+                                ajax_request.body = JSON.stringify(itemToDelete);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _deleteResponse: function (data) { 
+                    if (data.detail.status === 200) {
+                        if (this.DeleteResponse.eReasonCode == 1) {
+                            this.openToast(this.DeleteResponse.eMessage);
+
+                            const index = this.data.profileModelAccesses
+                                .findIndex(x => x.idProfile == this.DeleteResponse.idProfile &&
+                                    x.area == this.DeleteResponse.area &&
+                                    x.feature == this.DeleteResponse.feature);
+
+                            //const index = this.data.profileModelAccesses.indexOf(this.DeleteResponse);
+                            if (index !== -1) {
+                                this.data.profileModelAccesses.splice(index, 1);
+                                this.$.gridAccesses.clearCache();
+                            }
+                        } else {
+                            this.openToastError(this.DeleteResponse.eMessage);
+                        }
+                    }
+                    else { 
+                        this.openToastError("Ocorreu um erro ao processar o pedido.");
+                    }
                 },
                 _createNew: function (item) {
                     if (item != null) {

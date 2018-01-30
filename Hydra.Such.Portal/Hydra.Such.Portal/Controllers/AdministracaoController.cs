@@ -549,6 +549,32 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(data);
         }
+        
+        [HttpPost]
+        public JsonResult DeleteAccess([FromBody] AccessProfileModelView data)
+        {
+            if (data != null)
+            {
+                if (DBAccessProfiles.Delete(data.ParseToDB()))
+                {
+                    data.eReasonCode = 1;
+                    data.eMessage = "Registo eliminado com sucesso.";
+                }
+                else
+                {
+                    data.eReasonCode = 2;
+                    data.eMessage = "Ocorreu um erro ao eliminar o registo.";
+                }
+            }
+            else
+            {
+                data = new AccessProfileModelView();
+                data.eReasonCode = 2;
+                data.eMessage = "Ocorreu um erro ao eliminar o registo.";
+            }
+
+            return Json(data);
+        }
         #endregion
 
         public IActionResult Permicoes()
