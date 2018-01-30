@@ -117,7 +117,20 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
-
+        public static List<RequisiçõesSimplificadas> GetByCreateResponsiblePendente(string CreateResponsible)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.RequisiçõesSimplificadas.Where(x => x.ResponsávelCriação == CreateResponsible && x.Estado == 1).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         public static List<RequisiçõesSimplificadas> GetByApprovals(int approvalTrue)
         {
             try
@@ -139,7 +152,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             return new SimplifiedRequisitionViewModel()
             {
                 RequisitionNo = x.NºRequisição,
-                Status = x.Estado,
+                Status = x.Estado ,
                 RequisitionDate = x.DataHoraRequisição.HasValue ? x.DataHoraRequisição.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) : "",
                 RequisitionTime = x.DataHoraRequisição.HasValue ? x.DataHoraRequisição.Value.ToString("HH:mm", CultureInfo.InvariantCulture) : "",
                 RegistrationDate = x.DataRegisto.HasValue ? x.DataRegisto.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) : "",
@@ -148,6 +161,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
                 ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                 ProjectNo = x.NºProjeto,
+                MealType= x.TipoRefeição,
                 ApprovalDate = x.DataHoraAprovação.HasValue ? x.DataHoraAprovação.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) : "",
                 ApprovalTime = x.DataHoraAprovação.HasValue ? x.DataHoraAprovação.Value.ToString("HH:mm", CultureInfo.InvariantCulture) : "",
                 ShipDate = x.DataHoraEnvio.HasValue ? x.DataHoraEnvio.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) : "",
@@ -206,6 +220,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 CódigoÁreaFuncional = x.FunctionalAreaCode,
                 CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
                 NºProjeto = x.ProjectNo,
+                TipoRefeição= x.MealType,
                 DataHoraAprovação = x.ApprovalDate != "" && x.ApprovalDate != null ? DateTime.Parse(x.ApprovalDate) : (DateTime?)null,
                 DataHoraEnvio = x.ShipDate != "" && x.ShipDate != null ? DateTime.Parse(x.ShipDate) : (DateTime?)null,
                 DataHoraDisponibilização = x.AvailabilityDate != "" && x.AvailabilityDate != null ? DateTime.Parse(x.AvailabilityDate) : (DateTime?)null,

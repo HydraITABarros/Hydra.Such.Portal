@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewData["Title"] = "HistóricoCabeçalhoRequisicao";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/requisitions/requisitiondetails.html">
+<h1 class="title">Histórico de Requisições</h1>
+
+<x-requisitiondetails _requisitionid="@ViewBag.RequisitionId"
+                      _requisitionstatus="@ViewBag.ArchivedRequisitionEnumValue"
+                      _requisitionstatesenum='@Html.Raw(Json.Serialize(ViewBag.RequisitionStatesEnumString))'
+                      _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+</x-requisitiondetails>

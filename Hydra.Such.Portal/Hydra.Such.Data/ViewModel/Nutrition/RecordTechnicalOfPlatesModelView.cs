@@ -50,5 +50,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public bool? BasedLupine { get; set; }
         public bool? BasedMolluscs { get; set; }
         public bool? BasedSulfurDioxeAndSulphites { get; set; }
+        public string ImageToString { get; set; }
+
     }
 }

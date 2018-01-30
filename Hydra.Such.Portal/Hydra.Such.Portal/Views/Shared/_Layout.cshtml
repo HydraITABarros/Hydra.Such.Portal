@@ -131,6 +131,15 @@
                                 </ul>
                             </li>
                             <li>@Html.ActionLink("Administração", "Administracao", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Unidades Produtivas", "UnidadesProdutivas", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Cafetarias / Refeitórios", "CafetariasRefeitorios", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Localizações", "Localizacoes", "Nutricao", new { area = "Nutricao" }, null)</li>
+                            <li>@Html.ActionLink("Modelos Req. Simplificadas", "ModelosReqSimplificada", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Requisições Simplificadas", "RequisicoesSimplificadas", "Nutricao", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Requisições para Registar", "RequisicoesSimplificadas", "Nutricao", new { area = "", option = 1 }, null)</li>
+                            <li>@Html.ActionLink("Hist. Requisições para Registar", "RequisicoesSimplificadas", "Nutricao", new { area = "", option = 2 }, null)</li>
+                            <li>@Html.ActionLink("Fichas Tecnicas de Pratos", "FichasTecnicasPratos/Detalhes", "Nutricao")</li>
+
                         </ul>
 
 
@@ -288,8 +297,14 @@
                             </li>
                             @* zpgm.> *@
                             <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "Compras", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Req. Aprovadas", "GestaoRequisicoes/RequisicoesAprovadas", "Compras", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Gestão de Req.", "GestaoRequisicoes/Detalhes", "Compras", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Requisições Aprovadas", "GestaoRequisicoes/RequisicoesAprovadas", "Compras", new { area = "" }, null)</li>
+                            <li data-toggle="collapse" data-target="#Compras" class="collapsed active">
+                                <a href="#"> Gestão de Requisições <span class="arrow"></span></a>
+                                <ul>
+                                    <li>@Html.ActionLink("Requisições", "GestaoRequisicoes/Detalhes", "Compras", new { area = "" }, null)</li>
+                                    <li>@Html.ActionLink("Pontos de Situação", "GestaoRequisicoes/PontosSituacao", "Compras", new { area = "" }, null)</li>
+                                </ul>
+                            </li>
                             <li>@Html.ActionLink("Receção de Faturas", "RececaoFaturas", "Compras", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "Compras", new { area = "" }, null)</li>
                         </ul>

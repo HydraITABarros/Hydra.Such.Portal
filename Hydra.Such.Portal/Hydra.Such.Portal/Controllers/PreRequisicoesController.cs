@@ -9,11 +9,22 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic.Request;
 using Newtonsoft.Json.Linq;
+using System.IO;
+using Hydra.Such.Portal.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Hydra.Such.Portal.Controllers
 {
     public class PreRequisicoesController : Controller
     {
+        private readonly GeneralConfigurations _config;
+
+        public PreRequisicoesController(IOptions<GeneralConfigurations> appSettings)
+        {
+            _config = appSettings.Value;
+        }
+
+
         public IActionResult Index()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
@@ -65,6 +76,7 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
             if (UPerm != null && UPerm.Read.Value)
             {
+                
                 ViewBag.PreRequesitionNo = PreRequesitionNo ?? "";
                 ViewBag.UPermissions = UPerm;
                 return View();
@@ -625,21 +637,43 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             req.RequisitionNo = RequisitionNo;
                             Requisição createReq = DBRequest.ParseToDB(req);
+
                             DBRequest.Create(createReq);
                             if(createReq.NºRequisição != null)
                             {
-                                try
+                                //copy files
+                                var preReq = data.PreRequesitionsNo;
+                                List<Anexos> FilesLoaded = DBAttachments.GetById(preReq);
+                                foreach(var file in FilesLoaded)
                                 {
-                                    req.Lines.ForEach(x => x.RequestNo = RequisitionNo);
-                                    req.Lines.ForEach(x => DBRequestLine.Create(DBRequestLine.ParseToDB(x)));
+                                    try
+                                    {
+                                        string FileName = file.UrlAnexo;
+                                        string NewFileName = FileName.Substring(FileName.IndexOf('_'));
+                                        try
+                                        {
+                                            System.IO.File.Copy(_config.FileUploadFolder + FileName, _config.FileUploadFolder + createReq.NºRequisição + NewFileName);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            throw;
+                                        }
+
+                                        AttachmentsViewModel CopyFile = new AttachmentsViewModel();
+                                        CopyFile.DocNumber = createReq.NºRequisição;
+                                        CopyFile.CreateUser = User.Identity.Name;
+                                        CopyFile.DocType = 2;
+                                        CopyFile.Url = NewFileName;
+                                        DBAttachments.Create(DBAttachments.ParseToDB(CopyFile));
+                                    }
+                                    catch (Exception)
+                                    {
+                                        data.eReasonCode = 0;
+                                        data.eMessage = "Ocorreu um erro ao copiar os anexos.";
+                                        throw;
+                                    }
+                                    
                                 }
-                                catch (Exception ex)
-                                {
-                                    DBRequest.Delete(createReq);
-                                    throw;
-                                }
-                                
-                                
 
                                 //Update Last Numeration Used
                                 ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
@@ -649,9 +683,11 @@ namespace Hydra.Such.Portal.Controllers
 
                                 data.eReasonCode = 1;
                                 data.eMessage = "Requisições criadas com sucesso";
+                                
                             }
                             else
                             {
+                                DBRequest.Delete(createReq);
                                 data.eReasonCode = 0;
                                 data.eMessage = "Ocorreu um erro ao criar o requisição.";
                             }
@@ -696,6 +732,94 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
+        #endregion
+
+        #region Attachments
+        [HttpPost]
+        [Route("PreRequisicoes/FileUpload")]
+        [Route ("PreRequisicoes/FileUpload/{id}/{linha}")]
+        public JsonResult FileUpload(string id, int linha)
+        {
+            try
+            {
+                var files = Request.Form.Files;
+                string full_filename;
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        string filename = Path.GetFileName(file.FileName);
+                        full_filename = id + "_" + filename;
+                        var path = Path.Combine(_config.FileUploadFolder, full_filename);
+                        using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                        {
+                            file.CopyTo(dd);
+                            dd.Dispose();
+
+                            Anexos newfile = new Anexos();
+                            newfile.NºOrigem = id;
+                            newfile.UrlAnexo = full_filename;
+                            newfile.TipoOrigem = 1;
+                            newfile.DataHoraCriação = DateTime.Now;
+                            newfile.UtilizadorCriação = User.Identity.Name;
+
+                            DBAttachments.Create(newfile);
+                            if(newfile.NºLinha == 0)
+                            {
+                                System.IO.File.Delete(path);
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Json("");
+        }
+
+        [HttpPost]
+        public JsonResult LoadAttachments([FromBody] JObject requestParams)
+        {
+            string id = requestParams["id"].ToString();
+            //string line = requestParams["linha"].ToString();
+            //int lineNo = Int32.Parse(line);
+
+            List<Anexos> list = DBAttachments.GetById(id);
+            List<AttachmentsViewModel> attach = new List<AttachmentsViewModel>();
+            list.ForEach(x => attach.Add(DBAttachments.ParseToViewModel(x)));
+            return Json(attach);
+        }
+
+        [HttpGet]
+        public FileStreamResult DownloadFile(string id)
+        {
+            return new FileStreamResult(new FileStream(_config.FileUploadFolder + id, FileMode.Open), "application/xlsx");
+        }
+
+        
+        [HttpPost]
+        public JsonResult DeleteAttachments([FromBody] AttachmentsViewModel requestParams)
+        {
+            try
+            {
+                System.IO.File.Delete(_config.FileUploadFolder + requestParams.Url);
+                DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
+                requestParams.eReasonCode = 1;
+
+            }
+            catch (Exception ex)
+            {
+                requestParams.eReasonCode = 2;
+                return Json(requestParams);
+            }
+            return Json(requestParams);
+        }
         #endregion
     }
 }

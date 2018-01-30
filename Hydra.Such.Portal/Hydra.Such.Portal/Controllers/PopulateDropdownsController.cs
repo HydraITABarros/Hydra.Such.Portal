@@ -215,6 +215,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+       
         [HttpPost]
         public JsonResult GetFolhaDeHoraAjudaTipoCusto()
         {
@@ -228,7 +229,47 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.FeeUnits;
             return Json(result);
         }
+        [HttpPost]
+        public JsonResult NecessityDirectShoppingLines()
+        {
+            List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
+            try
+            {
+                result = DBNAV2017NecessityDirectShopping.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+                return Json(result);
+            }
+            catch (Exception e)
+            {
+                return Json(result);
+            }
+        }
+        [HttpPost]
+        public JsonResult getNecessityDirectShoppingLine([FromBody] string numb, string documentNO, int LineNo)
+        {
+            NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
+            try
+            {
+                List<NAVOpenOrderLinesViewModels> result = new List<NAVOpenOrderLinesViewModels>();
+                result = DBNAV2017NecessityDirectShopping.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
 
+                if (result != null && result.Count > 0 && !string.IsNullOrEmpty(documentNO) && !string.IsNullOrEmpty(numb) && LineNo > 0)
+                {
+                    foreach (NAVOpenOrderLinesViewModels item in result)
+                    {
+                        if (documentNO == item.DocumentNO && numb == item.Numb && LineNo == item.Line_No)
+                        {
+                            getorderline = item;
+                        }
+                    }
+                }
+                return Json(getorderline);
+            }
+            catch (Exception e)
+            {
+                return Json(getorderline);
+            }
+
+        }
 
         [HttpPost]
         public JsonResult OpenOrderLines([FromBody] DateTime? date)
@@ -236,11 +277,10 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVOpenOrderLinesViewModels> result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "").ToList();
             return Json(result);
         }
-
+        
         [HttpPost]
-        public JsonResult getOpenOrderLine([FromBody] string numb, string documentNO, DateTime? date)
+        public JsonResult getOpenOrderLine([FromBody] string numb, string documentNO, int LineNo, DateTime? date)
         {
-            int count = 0;
             NAVOpenOrderLinesViewModels getorderline = new NAVOpenOrderLinesViewModels();
             try
             {
@@ -248,31 +288,17 @@ namespace Hydra.Such.Portal.Controllers
                 result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "").ToList();
                 if (result != null && result.Count > 0 &&
                     !string.IsNullOrEmpty(documentNO) &&
-                    !string.IsNullOrEmpty(numb))
+                    !string.IsNullOrEmpty(numb)
+                    && LineNo > 0)
                 {
                     foreach (NAVOpenOrderLinesViewModels item in result)
                     {
-                        if (documentNO == item.DocumentNO && numb == item.Numb)
+                        if (documentNO == item.DocumentNO && numb == item.Numb && LineNo == item.Line_No)
                         {
                             getorderline = item;
                         }
                     }
                 }
-                if (result != null && result.Count > 0 &&
-                    string.IsNullOrEmpty(documentNO) &&
-                    !string.IsNullOrEmpty(numb))
-                {
-                    
-                    foreach (NAVOpenOrderLinesViewModels item in result)
-                    {
-                        if (numb == item.Numb)
-                        {
-                            count++;
-                            getorderline = item;
-                        }
-                    }
-                }
-                int t = count;
                 return Json(getorderline);
             }
             catch (Exception e)
@@ -556,6 +582,17 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = x.Code,
                 value = x.Name
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllAction()
+        {
+            List<DDMessageString> result = DBActionsConfection.GetAll().Select(x => new DDMessageString()
+            {
+                id = Convert.ToString(x.Código),
+                value = x.Descrição
             }).ToList();
             return Json(result);
         }
@@ -1312,10 +1349,12 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetUnitStockeeping()
         {
-            List<DDMessageString> result = DBStockkeepingUnit.GetAll().Select(x => new DDMessageString()
+            List<DDMessageRelated> result = DBStockkeepingUnit.GetAll().Select(x => new DDMessageRelated()
             {
                 id = x.NºProduto,
-                value = x.Descrição
+                value = x.Descrição,
+                extra= x.CustoUnitário.ToString(),
+                extra2=x.CódUnidadeMedidaProduto
             }).ToList();
 
             return Json(result);
@@ -1324,12 +1363,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProducts()
         {
-            List<DDMessageString> products = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
-            {
-                id = x.Code,
-                value = x.Name
-            }).ToList();
-
+            List<NAVProductsViewModel> products = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             return Json(products);
         }
 
@@ -1343,6 +1377,28 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
 
             return Json(products);
+        }
+
+        [HttpPost]
+        public JsonResult GetGroupsClassificationTechniques()
+        {
+            List<DDMessage> result = DBClassificationFilesTechniques.GetTypeFiles(1).Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetActionsConfection()
+        {
+            List<DDMessage> result = DBActionsConfection.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
         }
 
         [HttpPost]
@@ -1385,6 +1441,16 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetRecTechnicPlatesType()
+        {
+            List<DDMessageString> result = DBRecordTechnicalOfPlates.GetAll().Select(x => new DDMessageString()
+            {
+                id = x.NºPrato,
+                value = x.Descrição
+            }).ToList();
+            return Json(result);
+        }
+        [HttpPost]
         public IActionResult GetLinesRecordTechnicalOfPlatesCode([FromBody] string type)
         {
             List<DDMessageRelated> result = new List<DDMessageRelated>();
@@ -1419,5 +1485,8 @@ namespace Hydra.Such.Portal.Controllers
         public string id { get; set; }
         public string value { get; set; }
         public string extra { get; set; }
+        public string extra2 { get; set; }
     }
+
+   
 }

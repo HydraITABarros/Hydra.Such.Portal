@@ -9,24 +9,27 @@ using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Nutrition;
+using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Portal.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 
 namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 {
 
     public class RequisicoesSimplificadasController : Controller
     {
-        ProjetosController register = new ProjetosController();
+        ProjetosController register;
         private readonly NAVWSConfigurations configws;
         private ErrorHandler mensage = new ErrorHandler();
 
 
-        public RequisicoesSimplificadasController(IOptions<NAVWSConfigurations> NAVWSConfigs)
+        public RequisicoesSimplificadasController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
         {
             this.configws = NAVWSConfigs.Value;
+            register = new ProjetosController(appSettings, NAVWSConfigs);
         }
 
 
@@ -35,10 +38,15 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         {
             HttpContext.Session.Remove("aprovadoSession");
             ViewBag.RequisitionsApprovals = "false";
-            //‘Requisições para Registar’ com estado aprovado
+            //‘Requisições simplificadas para Registar’ com estado aprovado
             if (option == 1)
             {
-                ViewBag.RequisitionsApprovals = "aprovado";
+                ViewBag.Option = "resgitar";
+            }
+            //Histórico Requisições simplificadas
+            else if (option == 2)
+            {
+                ViewBag.Option = "historico";
             }
             return View();
         }
@@ -49,16 +57,22 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         {
             List<SimplifiedRequisitionViewModel> result;
 
-            //‘Requisições para Registar’ com estado aprovado
-            if (option == "aprovado")
+            //‘Requisições simplificadas para Registar’ com estado aprovado
+            if (option == "resgitar")
             {
                 result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetByApprovals(2));
+                HttpContext.Session.SetString("aprovadoSession", option);
+            }
+            //Histórico de Requisições simplificadas
+            else if (option == "historico")
+            {
+                result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetByApprovals(3));
                 HttpContext.Session.SetString("aprovadoSession", option);
             }
             //‘Requisições simplificadas’ com utilizador
             else
             {
-                result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetByCreateResponsible(User.Identity.Name));
+                result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetByCreateResponsiblePendente(User.Identity.Name));
             }
             return Json(result);
         }
@@ -67,17 +81,66 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [HttpPost]
         public JsonResult GetSimplifiedRequisitionLines([FromBody] SimplifiedRequisitionLineViewModel item)
         {
-            List<SimplifiedRequisitionLineViewModel> result = DBSimplifiedRequisitionLines.ParseToViewModel(DBSimplifiedRequisitionLines.GetById(item.RequisitionNo));
-            if (result != null)
+            List<SimplifiedRequisitionLineViewModel> result = new List<SimplifiedRequisitionLineViewModel>();
+            if (item != null)
             {
-                TiposRefeição typeMeal = DBMealTypes.GetById(result[0].MealType??0);
-                result.ForEach(x =>
-                    x.DescriptionMeal = typeMeal.Descrição
+                result = DBSimplifiedRequisitionLines.ParseToViewModel(DBSimplifiedRequisitionLines.GetById(item.RequisitionNo));
+                if (result.Count() != 0 && result[0].MealType > 0)
+                {
+                    TiposRefeição typeMeal = DBMealTypes.GetById(result[0].MealType ?? 0);
+                    result.ForEach(x =>
+                        x.DescriptionMeal = typeMeal.Descrição
 
-                );
+                    );
+                }
+
+                return Json(result);
             }
             return Json(result);
         }
+
+        [Area("Nutricao")]
+        [HttpPost]
+        public JsonResult GetSimplifiedRequisitionLinesModels([FromBody] JObject requestParams)
+        {
+            string requestNo = requestParams["requestNo"].ToString();
+            string requestNoNew = requestParams["requestNoNew"].ToString();
+            ConfigUtilizadores utilizador = DBUserConfigurations.GetById(User.Identity.Name);
+            List<SimplifiedRequisitionLineViewModel> result = new List<SimplifiedRequisitionLineViewModel>();
+            if (requestNo != null)
+            {
+                result = DBSimplifiedRequisitionLines.ParseToViewModel(DBSimplifiedRequisitionLines.GetById(requestNo));
+                result.ForEach(x => {
+                    x.RequisitionNo = requestNoNew;
+                    x.Status = 1;
+                    x.EmployeeNo = utilizador.EmployeeNo;                 
+                });
+            }
+            return Json(result);
+        } 
+
+        [Area("Nutricao")]
+        [HttpPost]
+        public JsonResult GetSimplifiedRequisitionLinesData([FromBody] SimplifiedRequisitionLineViewModel item)
+        {
+            List<SimplifiedRequisitionLineViewModel> result = new List<SimplifiedRequisitionLineViewModel>();
+    
+            if (item != null)
+            {
+                result = DBSimplifiedRequisitionLines.ParseToViewModel(DBSimplifiedRequisitionLines.GetById(item.RequisitionNo));
+                if (result.Count() != 0 && result[0].MealType > 0)
+                {
+                    TiposRefeição typeMeal = DBMealTypes.GetById(result[0].MealType ?? 0);
+                    result.ForEach(x => 
+                        x.DescriptionMeal = typeMeal.Descrição
+
+                    );
+                }
+            }
+            return Json(result);
+        }
+
+       
 
         [Area("Nutricao")]
         public IActionResult Detalhes(string id)
@@ -88,20 +151,29 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             {
               
                 ViewBag.Approval = HttpContext.Session.GetString("aprovadoSession") ?? "";
+                ViewBag.User = User.Identity.Name;
                 //Registar requisições aprovadas
-                if (ViewBag.Approval != "" && UPerm.Update == true)
+                if (ViewBag.Approval == "resgitar" )
                 {
+                    ViewBag.LockFields = true;
+                    UPerm.Create = false;
+                    ViewBag.Option = "resgitar";
+                }
+                //Histórico requisições aprovadas
+                else if (ViewBag.Approval == "historico")
+                {   
+                    ViewBag.LockFields = true;
                     UPerm.Update = false;
-                    
-                    @ViewBag.PermissionUpdate = true;
-
+                    UPerm.Create = false;
+                    UPerm.Delete = false;
+                    ViewBag.Option = "historico";
                 }
                 else
-                {
-                    @ViewBag.PermissionUpdate = UPerm.Update;
+                {                   
+                    ViewBag.LockFields = false;
                 }
 
-                ViewBag.RequestNo = id;
+                ViewBag.RequestNo = id ?? "";
                 ViewBag.UPermissions = UPerm;
                 return View();
             }
@@ -115,12 +187,47 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [HttpPost]
         public JsonResult GetSimplifiedRequisitionData([FromBody] SimplifiedRequisitionViewModel item)
         {
+            ConfigUtilizadores utilizador = DBUserConfigurations.GetById(User.Identity.Name);
             SimplifiedRequisitionViewModel result = new SimplifiedRequisitionViewModel();
+            result.Status = 1;
+            result.EmployeeNo = utilizador.EmployeeNo;
             if (item != null && !string.IsNullOrEmpty(item.RequisitionNo))
+            {
+
                 result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetById(item.RequisitionNo));
+            }
+            else
+            {
+                //Get Numeration
+                string entityId = "";
+                bool autoGenId = false;
+                Configuração conf = DBConfigurations.GetById(1);
+                int entityNumerationConfId = conf.NumeraçãoRequisiçõesSimplificada.Value;
+                autoGenId = true;
+                entityId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                result.RequisitionNo = entityId;
+
+            }
             return Json(result);
         }
+        [Area("Nutricao")]
+        [HttpPost]
 
+        public JsonResult GetSimplifiedRequisitionModel([FromBody] SimplifiedRequisitionViewModel item)
+        {
+            ConfigUtilizadores utilizador = DBUserConfigurations.GetById(User.Identity.Name);
+            SimplifiedRequisitionViewModel result = new SimplifiedRequisitionViewModel();
+        
+            if (item != null && !string.IsNullOrEmpty(item.RequisitionNo))
+            {
+
+                result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetById(item.RequisitionNo));           
+                result.Status = 1;
+                result.Finished = false;
+                result.EmployeeNo = utilizador.EmployeeNo;
+            }
+            return Json(result);
+        }
         // 100 - Sucesso
         // 101 - Ocorreu um erro desconhecido
         // 102 - 
@@ -128,16 +235,58 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         [HttpPost]
         public JsonResult CreateSimplifiedRequisition([FromBody] SimplifiedRequisitionViewModel item)
         {
-            SimplifiedRequisitionViewModel result = new SimplifiedRequisitionViewModel();
             if (item != null)
             {
-                result.CreateUser = User.Identity.Name;
-                result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.Create(DBSimplifiedRequisitions.ParseToDatabase(item)));
+                item.CreateUser = User.Identity.Name;
+                item.CreateResponsible = User.Identity.Name;
+
+                if (DBSimplifiedRequisitions.GetById(item.RequisitionNo) != null)
+                {
+                    item.eReasonCode = 101;
+                    item.eMessage = "O Nº "+ item.RequisitionNo+ " já existe!";
+                }
+                else
+                {
+                    if (DBSimplifiedRequisitions.Create(DBSimplifiedRequisitions.ParseToDatabase(item)) != null)
+                    {
+                        //Update Last Numeration Used
+                        Configuração conf = DBConfigurations.GetById(1);
+                        int entityNumerationConfId = conf.NumeraçãoRequisiçõesSimplificada.Value;
+                        ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                        ConfigNumerations.ÚltimoNºUsado = item.RequisitionNo;
+                        ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                        DBNumerationConfigurations.Update(ConfigNumerations);
+
+                        item.eReasonCode = 100;
+                        item.eMessage = "Requisição Simplificada criada com sucesso.";
+                    }
+                    else
+                    {
+                        item.eReasonCode = 101;
+                        item.eMessage = "Ocorreu um erro ao criar a Requisição Simplificada.";
+                    }
+                }
+            }
+            return Json(item);
+        }
+
+        [Area("Nutricao")]
+        [HttpPost]
+        public JsonResult CreateLinesSimplifiedRequisition([FromBody] SimplifiedRequisitionLineViewModel item)
+        {
+            UnidadeDeArmazenamento product = DBStockkeepingUnit.GetById(item.Code);
+            SimplifiedRequisitionLineViewModel result = new SimplifiedRequisitionLineViewModel();
+            if (item != null)
+            {
+              
+                item.CreateUser = User.Identity.Name;
+                result = DBSimplifiedRequisitionLines.ParseToViewModel(DBSimplifiedRequisitionLines.Create(DBSimplifiedRequisitionLines.ParseToDatabase(item)));
 
                 if (result != null)
-                {
+                {  
+
                     result.eReasonCode = 100;
-                    result.eMessage = "Requisição Simplificada criada com sucesso.";
+                    result.eMessage = "Linha de Requisição Simplificada criada com sucesso.";
                 }
                 else
                 {
@@ -148,32 +297,54 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             return Json(result);
         }
 
-        // 100 - Sucesso
-        // 101 - Ocorreu um erro desconhecido
-        // 102 - 
-        //[Area("Nutricao")]
-        //[HttpPost]
-        //public JsonResult CreateApprovalRequisition([FromBody] List<SimplifiedRequisitionLineViewModel> items)
-        //{
-        //    SimplifiedRequisitionViewModel result = new SimplifiedRequisitionViewModel();
-        //    if (item != null)
-        //    {
-        //        result.CreateUser = User.Identity.Name;
-        //        result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.Create(DBSimplifiedRequisitions.ParseToDatabase(item)));
 
-        //        if (result != null)
-        //        {
-        //            result.eReasonCode = 100;
-        //            result.eMessage = "Requisição Simplificada criada com sucesso.";
-        //        }
-        //        else
-        //        {
-        //            result.eReasonCode = 101;
-        //            result.eMessage = "Ocorreu um erro ao criar a Requisição Simplificada.";
-        //        }
-        //    }
-        //    return Json(result);
-        //}
+        [Area("Nutricao")]
+        [HttpPost]
+        public JsonResult FinishSimplifiedRequisition([FromBody] List<SimplifiedRequisitionLineViewModel> items)
+        {
+            if (items != null && items.Count>0)
+            {
+                mensage.eReasonCode = 100;
+                foreach (var item in items)
+                {
+                    UnidadeDeArmazenamento product = DBStockkeepingUnit.GetById(item.Code);
+                    if (product.Bloqueado == true)
+                    {
+                        mensage.eReasonCode = 101;
+                        mensage.eMessage = "A linha Nº:" + item.LineNo + " contem o produto " + item.Description + " bloqueado";
+                        break;
+                    }
+                    item.QuantityApproved = item.QuantityToRequire;
+                    item.Status = 2;
+                }
+                if (mensage.eReasonCode == 100)
+                {
+                    items.ForEach(x =>
+                    {
+                        x.QuantityApproved = x.QuantityToRequire;
+                        x.Status = 2;
+                        DBSimplifiedRequisitionLines.Update(DBSimplifiedRequisitionLines.ParseToDatabase(x));
+
+                    });
+
+                    SimplifiedRequisitionViewModel requisitionSimpli = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetById(items[0].RequisitionNo));
+                    requisitionSimpli.Status = 2;
+                    requisitionSimpli.Finished = true;
+                    DBSimplifiedRequisitions.Update(DBSimplifiedRequisitions.ParseToDatabase(requisitionSimpli));
+
+                    mensage.eReasonCode = 100;
+                    mensage.eMessage = "Requisição terminada com Sucesso";
+                }
+            }
+            else
+            {
+                mensage.eReasonCode = 101;
+                mensage.eMessage = "Nessecita de linhas de requisição ao terminar!!";
+            }
+            
+            return Json(mensage);           
+        }
+
         // 100 - Sucesso
         // 101 - Ocorreu um erro desconhecido
 
@@ -263,7 +434,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                     TGetNavLocationProduct.Wait();
                     if (TGetNavLocationProduct.IsCompletedSuccessfully)
                     {
-                        if (/*TGetNavLocationProduct.Result.return_value >0 && TGetNavLocationProduct.Result.return_value*/ 22 >= item.QuantityApproved)
+                        if (TGetNavLocationProduct.Result.return_value >0 && TGetNavLocationProduct.Result.return_value >= item.QuantityApproved)
                         {
                             //Update Simplified Requisition lines
                             item.QuantityReceipt = item.QuantityApproved;
@@ -328,7 +499,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             if (historyRequisition == true)
             {
                 //Register lines of diary project
-                ListDp = null;
+                ListDp.Clear();
                 items.ForEach(x => 
                 {
                     x.Status = 3;
@@ -430,6 +601,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                     CLocation.CódigoÁreaFuncional = item.FunctionalAreaCode;
                     CLocation.CódigoCentroResponsabilidade = item.ResponsabilityCenterCode;
                     CLocation.NºProjeto = item.ProjectNo;
+                    CLocation.TipoRefeição = item.MealType;
                     CLocation.DataHoraAprovação = item.ApprovalDate != "" && item.ApprovalDate != null ? DateTime.Parse(item.ApprovalDate) : (DateTime?)null;
                     CLocation.DataHoraEnvio = item.ShipDate != "" && item.ShipDate != null ? DateTime.Parse(item.ShipDate) : (DateTime?)null;
                     CLocation.DataHoraDisponibilização = item.AvailabilityDate != "" && item.AvailabilityDate != null ? DateTime.Parse(item.AvailabilityDate) : (DateTime?)null;
@@ -452,7 +624,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                     CLocation.Visadores = item.Visor;
                     CLocation.DataReceçãoLinhas = item.ReceiptLinesDate;
                     CLocation.RequisiçãoNutrição = item.NutritionRequisition;
-                    CLocation.DataReceçãoEsperada = item.ReceiptPreviewDate != "" && item.ReceiptPreviewDate != null ? DateTime.Parse(item.ReceiptPreviewDate) : (DateTime?)null;
+                    CLocation.DataReceçãoEsperada = string.IsNullOrEmpty(item.ReceiptPreviewDate) ? (DateTime?)null : DateTime.Parse(item.ReceiptPreviewDate);
                     CLocation.RequisiçãoModelo = item.ModelRequisition;
                     CLocation.DataHoraModificação = DateTime.Now;
                     CLocation.UtilizadorModificação = User.Identity.Name;
@@ -498,23 +670,32 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
                     if (result != null)
                     {
-                        result.eReasonCode = 100;
-                        result.eMessage = "Requisição Simplificada atualizada com sucesso.";
+                        List<LinhasRequisiçõesSimplificadas> lines =  DBSimplifiedRequisitionLines.GetById(CLocation.NºRequisição);
+                        lines.ForEach(x =>
+                             {
+                                 x.NºProjeto = CLocation.NºProjeto;
+                                 x.TipoRefeição = CLocation.TipoRefeição;
+                                 x.CódLocalização = CLocation.CódLocalização;
+                                 x.CódigoRegião = CLocation.CódigoRegião;
+                                 x.CódigoÁreaFuncional = CLocation.CódigoÁreaFuncional;
+                                 x.CódigoCentroResponsabilidade = CLocation.CódigoCentroResponsabilidade;
+                                 DBSimplifiedRequisitionLines.Update(x);
+                             });
+                      
+                        return Json(DBSimplifiedRequisitionLines.ParseToViewModel(lines));
                     }
                     else
                     {
-                        result.eReasonCode = 101;
-                        result.eMessage = "Ocorreu um erro ao atualizar a Requisição Simplificada.";
+                        return null;
                     }
                 }
             }
             catch (Exception)
             {
-                result.eReasonCode = 101;
-                result.eMessage = "Ocorreu um erro ao atualizar a Requisição Simplificada.";
+                return null;
             }
             
-            return Json(result);
+            return null;
         }
 
         // 100 - Sucesso
@@ -526,8 +707,11 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             SimplifiedRequisitionViewModel result = new SimplifiedRequisitionViewModel();
             if (item != null)
             {
-                RequisiçõesSimplificadas CLocation = DBSimplifiedRequisitions.GetById(item.RequisitionNo);
+                // Delete Lines Requisitions
+                List<LinhasRequisiçõesSimplificadas> CLinhas = DBSimplifiedRequisitionLines.GetById(item.RequisitionNo);
+                CLinhas.ForEach(x=> DBSimplifiedRequisitionLines.Delete(x));
 
+                RequisiçõesSimplificadas CLocation = DBSimplifiedRequisitions.GetById(item.RequisitionNo);
                 if (DBSimplifiedRequisitions.Delete(CLocation))
                 {
                     result.eReasonCode = 100;
@@ -554,17 +738,17 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
                 if (DBSimplifiedRequisitionLines.Delete(DBSimplifiedRequisitionLines.ParseToDatabase(data)))
                 {
-                    mensage.eReasonCode = 100;
-                    mensage.eMessage = "Linha Requisição Simplificada removida com sucesso.";
+                    data.eReasonCode = 100;
+                    data.eMessage = "Linha Requisição Simplificada removida com sucesso.";
                 }
                 else
                 {
-                    mensage.eReasonCode = 101;
-                    mensage.eMessage = "Ocorreu um erro ao remover a Linha Requisição Simplificada.";
+                    data.eReasonCode = 101;
+                    data.eMessage = "Ocorreu um erro ao remover a Linha Requisição Simplificada.";
                 }
 
             }
-            return Json(mensage);
+            return Json(data);
         }
     }
 }

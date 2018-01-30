@@ -94,7 +94,8 @@
         <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PSInfo}}" id="projectWasteData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_PurchaseNeeds"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Diário requisição Unid. Produtiva</paper-button>
+            <paper-button class="tablinks" on-tap="_PurchaseNeeds"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i>Produtos p/ Criação de Encomendas</paper-button>
+            <paper-button class="tablinks" on-tap="_PurchaseDirectNeeds"><i class="fa fa-get-pocket" aria-hidden="true"></i>Produtos p/ Criação de Encomendas de Compras Diretas</paper-button>
 
         </div><!--on-response="_gridListResponse"-->
         
@@ -571,7 +572,14 @@
                     } else {
                         this._openToastError("O Nº Unidade Produtiva está vazio");
                     }
-                   
+                },
+                _PurchaseDirectNeeds: function () {
+                    if (this.$.productivityUnitNo.value != undefined && this.$.productivityUnitNo.value != "") {
+                        window.location.href = "/Nutricao/NecessidadeCompras/NecessidadeCompraDireta/" +
+                            this.$.productivityUnitNo.value;
+                    } else {
+                        this._openToastError("O Nº Unidade Produtiva está vazio");
+                    }
                 },
                 _projectWasteChange: function (e) {
                     if (e.detail.value != "") {

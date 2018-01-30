@@ -70,6 +70,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<PercursosEAjudasCustoDespesasFolhaDeHoras> PercursosEAjudasCustoDespesasFolhaDeHoras { get; set; }
         public virtual DbSet<PerfisModelo> PerfisModelo { get; set; }
         public virtual DbSet<PerfisUtilizador> PerfisUtilizador { get; set; }
+        public virtual DbSet<PontosSituaçãoRq> PontosSituaçãoRq { get; set; }
         public virtual DbSet<PrecoCustoRecursoFh> PrecoCustoRecursoFh { get; set; }
         public virtual DbSet<PreçosFornecedor> PreçosFornecedor { get; set; }
         public virtual DbSet<PrecoVendaRecursoFh> PrecoVendaRecursoFh { get; set; }
@@ -745,6 +746,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NumeraçãoPropostas).HasColumnName("Numeração Propostas");
 
                 entity.Property(e => e.NumeraçãoPréRequisições).HasColumnName("Numeração Pré Requisições");
+
+                entity.Property(e => e.NumeraçãoRequisiçõesSimplificada).HasColumnName("Numeração Requisições Simplificada");
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
@@ -1763,6 +1766,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºUnidadeProdutiva).HasColumnName("Nº Unidade Produtiva");
 
+                entity.Property(e => e.Observações).HasColumnType("text");
+
                 entity.Property(e => e.QuantidadePorUnidMedida).HasColumnName("Quantidade por Unid. Medida");
 
                 entity.Property(e => e.TabelaPreçosFornecedor).HasColumnName("Tabela Preços Fornecedor");
@@ -2080,8 +2085,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Descrição).HasMaxLength(50);
 
                 entity.Property(e => e.Grupo).HasMaxLength(20);
-
-                entity.Property(e => e.Image).HasColumnType("image");
 
                 entity.Property(e => e.NomeFichaTécnica)
                     .HasColumnName("Nome Ficha Técnica")
@@ -4335,6 +4338,46 @@ namespace Hydra.Such.Data.Database
                     .HasConstraintName("FK_Perfis Utilizador_Config. Utilizadores");
             });
 
+            modelBuilder.Entity<PontosSituaçãoRq>(entity =>
+            {
+                entity.HasKey(e => new { e.NºRequisição, e.NºPedido });
+
+                entity.ToTable("Pontos Situação RQ");
+
+                entity.Property(e => e.NºRequisição)
+                    .HasColumnName("Nº Requisição")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NºPedido)
+                    .HasColumnName("Nº Pedido")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.ConfirmaçãoLeitura).HasColumnName("Confirmação Leitura");
+
+                entity.Property(e => e.DataPedido)
+                    .HasColumnName("Data Pedido")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataResposta)
+                    .HasColumnName("Data Resposta")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.PedidoDePontoSituação)
+                    .IsRequired()
+                    .HasColumnName("Pedido de Ponto Situação")
+                    .HasMaxLength(2000);
+
+                entity.Property(e => e.Resposta).HasMaxLength(2000);
+
+                entity.Property(e => e.UtilizadorPedido)
+                    .HasColumnName("Utilizador Pedido")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UtilizadorResposta)
+                    .HasColumnName("Utilizador Resposta")
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<PrecoCustoRecursoFh>(entity =>
             {
                 entity.HasKey(e => new { e.Code, e.CodTipoTrabalho, e.StartingDate });
@@ -5786,7 +5829,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataReceçãoEsperada)
                     .HasColumnName("Data Receção Esperada")
-                    .HasColumnType("date");
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.DataReceçãoLinhas).HasColumnName("Data Receção Linhas");
 
@@ -5833,6 +5876,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ResponsávelVisar)
                     .HasColumnName("Responsável Visar")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.TipoRefeição).HasColumnName("Tipo Refeição");
 
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")

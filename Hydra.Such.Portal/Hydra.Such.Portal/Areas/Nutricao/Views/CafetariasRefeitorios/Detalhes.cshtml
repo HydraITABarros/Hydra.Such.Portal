@@ -3,8 +3,6 @@
     ViewData["Title"] = "Detalhes Cafetaria / Cantina - Nutrição - Such";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-
 <link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
 <link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
@@ -13,9 +11,6 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-
-
-
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
@@ -25,6 +20,8 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
 <h1 class="title">Cafetaria / Refeitório</h1>
 
@@ -93,12 +90,12 @@
 
         @*EXTRAS*@
         @*<iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectBillingInfo" last-response="{{PBInfo}}" id="projectBillingData_Ajax" on-response="_projectBillingDataResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PKInfo}}" id="projectKitchenData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PWInfo}}" id="projectWasteData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PSInfo}}" id="projectWasteData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
+            <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PKInfo}}" id="projectKitchenData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+            <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PWInfo}}" id="projectWasteData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+            <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PSInfo}}" id="projectWasteData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>*@
 
-        
-        
+
+
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="row">
                 <div class="col-lg-12">
@@ -112,7 +109,7 @@
                         <paper-button class="" raised on-tap="_notImplemented"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Registo Nº Refeições</paper-button>
                     </template>
                     <template is="dom-if" if="{{ _permissions.read }}">
-                        <paper-button class="" raised on-tap="_notImplemented"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; Imprimir Folha de caixa</paper-button>
+                        <paper-button class="" raised on-tap="_openCashFlowReport"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; Imprimir Folha de caixa</paper-button>
                         <paper-button class="" raised on-tap="_notImplemented"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; Imprimir Consumos</paper-button>
                         <paper-button class="" raised on-tap="_notImplemented"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; Imprimir Registo de Refeições</paper-button>
                     </template>
@@ -255,7 +252,7 @@
                                         <vaadin-text-field value="{{data.totalMeals}}" id="totalMeals" name="totalMeals" label="Nº Refeições" disabled> </vaadin-text-field>
                                     </div>
                                     <div class="col-md-3 ">
-                                            
+
                                     </div>
                                 </div>
                             </div>
@@ -284,6 +281,12 @@
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
+        <paper-dialog id="rptDialog" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeRptDialog"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -429,7 +432,7 @@
                             if (this.data.eReasonCode == "1") {
                                 this._openToast(this.data.eMessage);
                                 this.$.item_databound.url = "/Nutricao/CafetariasRefeitorios/GetCoffeeShop";
-                            } else { 
+                            } else {
                                 this._openToastError(this.data.eMessage);
                             }
                         }
@@ -451,6 +454,15 @@
                         //debugger;;
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
+                },
+                _openCashFlowReport: function (e) {
+                    //window.open("@ViewBag.ReportServerURL" + "FolhaCaixa&CodCafetaria=" + this.data.code + "&CodUnidProd=" + this.data.productivityUnitNo, "_blank");
+                    this.$.rptContainer.src = "@ViewBag.ReportServerURL" + "FolhaCaixa&CodCafetaria=" + this.data.code + "&CodUnidProd=" + this.data.productivityUnitNo; //this._getPDFContent();
+                    this.$.rptDialog.open();
+                },
+                _closeRptDialog: function () {
+                    this.$.rptContainer.src = "about:blank";
+                    this.$.rptDialog.close();
                 },
             });
         });

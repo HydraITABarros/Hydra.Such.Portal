@@ -5,10 +5,11 @@
 }
 @*<link rel="import" href="~/elements/requisitions/requestlines.html">*@
 <link rel="import" href="~/elements/requisitions/requisitiondetails.html">
-<h1 class="title">Requisição Aprovada</h1>
+<h1 class="title">Requisição Validada</h1>
 
 <x-requisitiondetails _requisitionid="@ViewBag.RequisitionId"
                       _requisitionstatus="@ViewBag.ValidatedRequisitionEnumValue"
                       _requisitionstatesenum='@Html.Raw(Json.Serialize(ViewBag.RequisitionStatesEnumString))'
-                      _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+                      _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
+                      _reportserverurl="@ViewBag.ReportServerURL">
 </x-requisitiondetails>

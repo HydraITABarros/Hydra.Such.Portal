@@ -62,6 +62,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 ViewBag.Type = type;
                 ViewBag.Code = code;
                 ViewBag.ExplorationStartDate = explorationStartDate;
+                ViewBag.ReportServerURL = config.ReportServerURL;
 
                 return View();
             }

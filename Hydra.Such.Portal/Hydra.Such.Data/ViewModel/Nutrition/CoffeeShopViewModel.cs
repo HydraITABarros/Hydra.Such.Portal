@@ -25,8 +25,17 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string CreateUser { get; set; } = string.Empty;
         public DateTime? UpdateDate { get; set; }
 
+        /// <summary>
+        /// Loockup to NAV
+        /// </summary>
         public decimal? TotalRevenues { get; set; }
+        /// <summary>
+        /// Loockup to NAV
+        /// </summary>
         public decimal? TotalConsumption { get; set; }
-        public decimal? TotalMeals { get; set; }
+        /// <summary>
+        /// Loockup to NAV
+        /// </summary>
+        public decimal? NumberOfMeals { get; set; }
     }
 }
