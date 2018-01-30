@@ -114,7 +114,8 @@
                             <li>@Html.ActionLink("Histórico Requisições", "HistoricoResquisicoes", "Nutricao", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Mod. Req. Simplificadas", "ModelosReqSimplificada", "Nutricao", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Req. Simplificadas", "RequisicoesSimplificadas", "Nutricao", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Req. para Registar", "RequisicoesSimplificadas", "Nutricao", new { area = "", option = 1 }, null)</li>
+                            <li>@Html.ActionLink("Req. Simpli. para Registar", "RequisicoesSimplificadas", "Nutricao", new { area = "", option = 1 }, null)</li>
+                            <li>@Html.ActionLink("Hist. Req.  Simplificadas", "RequisicoesSimplificadas", "Nutricao", new { area = "", option = 2 }, null)</li>
                             <li>@Html.ActionLink("Movimento de Produtos", "MovimentoProdutos", "Nutricao", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Unidade Armazem", "UnidadeArmazenamento", "Nutricao", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Unidades Produtivas", "UnidadesProdutivas", "Nutricao", new { area = "" }, null)</li>
@@ -130,16 +131,8 @@
                                     <li>@Html.ActionLink("Histórico", "FolhaDeHoras_Historico", "Nutricao", new { area = "" }, null)</li>
                                 </ul>
                             </li>
-                            <li>@Html.ActionLink("Administração", "Administracao", "Nutricao", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Unidades Produtivas", "UnidadesProdutivas", "Nutricao", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Cafetarias / Refeitórios", "CafetariasRefeitorios", "Nutricao", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Localizações", "Localizacoes", "Nutricao", new { area = "Nutricao" }, null)</li>
-                            <li>@Html.ActionLink("Modelos Req. Simplificadas", "ModelosReqSimplificada", "Nutricao", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Requisições Simplificadas", "RequisicoesSimplificadas", "Nutricao", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Requisições para Registar", "RequisicoesSimplificadas", "Nutricao", new { area = "", option = 1 }, null)</li>
-                            <li>@Html.ActionLink("Hist. Requisições para Registar", "RequisicoesSimplificadas", "Nutricao", new { area = "", option = 2 }, null)</li>
                             <li>@Html.ActionLink("Fichas Tecnicas de Pratos", "FichasTecnicasPratos/Detalhes", "Nutricao")</li>
-
+                            <li>@Html.ActionLink("Administração", "Administracao", "Nutricao", new { area = "" }, null)</li>
                         </ul>
 
 
@@ -155,9 +148,8 @@
                             <li>@Html.ActionLink("Faturação Projetos", "Faturacao", "Projetos", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Diário Projetos", "DiarioProjeto", "Vendas", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "Vendas", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Requisições", "Resquisicoes", "Vendas", new { area = "" }, null)</li>
-                            <li>@Html.ActionLink("Histórico Requisições", "HistoricoResquisicoes", "Vendas", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Requisições", "Requisicoes", "Vendas", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Histórico Requisições", "HistoricoResquisicoes", "Vendas", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Contactos", "Index", "Contactos", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Administração", "Administracao", "Vendas", new { area = "" }, null)</li>
                         </ul>
@@ -176,6 +168,7 @@
                             <li>@Html.ActionLink("Pré-Requisição", "PreRequisicoesLista", "Apoio", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Requisições", "Resquisicoes", "Apoio", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Histórico Requisições", "HistoricoResquisicoes", "Apoio", new { area = "" }, null)</li>
+                            <li>@Html.ActionLink("Autorização Faturação", "AutorizacaoFaturacao", "Projetos", new { area = "" }, null)</li>
 
                             <li data-toggle="collapse" data-target="#FolhasDeHorasApoio" class="collapsed active">
                                 <a href="#"> Folha de Horas <span class="arrow"></span></a>
@@ -317,7 +310,7 @@
                             <li>@Html.ActionLink("Config. Numerações", "ConfiguracaoNumeracoes", "Administracao", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Perfis Modelo", "PerfisModelo", "Administracao", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Config. Utilizadores", "ConfiguracaoUtilizadores", "Administracao", new { area = "" }, null)</li>
-
+                            <li>@Html.ActionLink("Config. Ajudas de Custo", "ConfiguracaoUtConfiguracaoAjudaCustoilizadores", "Administracao", new { area = "" }, null)</li>
                             <li>@Html.ActionLink("Config. Recursos FH", "ConfiguracaoRecursosFolhaHoras", "Administracao", new { id = "Administracao" })</li>
                             <li>@Html.ActionLink("Config. Tipo Trabalho FH", "ConfiguracaoTipoTrabalhoFH", "Administracao", new { id = "Administracao" })</li>
                             <li>@Html.ActionLink("Config. Preço Venda Recursos FH", "ConfiguracaoPrecoVendaRecursoFH", "Administracao", new { id = "Administracao" })</li>
