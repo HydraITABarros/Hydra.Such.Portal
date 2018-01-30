@@ -941,7 +941,7 @@ else
                     }
 
                     this.$.page_databound_ajax.generateRequest();
-                    this.$.contractLines_databound_ajax.url = "/Nutricao/RequisicoesSimplificadas/GetSimplifiedRequisitionLines";
+                    this.$.contractLines_databound_ajax.url = "/Nutricao/RequisicoesSimplificadas/GetSimplifiedRequisitionLinesData";
                     this.$.contractLines_databound_ajax.generateRequest();
 
                 },
@@ -1127,7 +1127,7 @@ else
                 },
 
                 _copyHistory: function (data) {
-                    this.$.get_models_ajax.url = "/Nutricao/RequisicoesSimplificadas/GetSimplifiedRequisitions";
+                    this.$.get_models_ajax.url = "/Nutricao/RequisicoesSimplificadas/SimplifiedRequisitionsPage";
                     this.$.get_models_ajax.body = JSON.stringify("historico");
                     this.$.get_models_ajax.generateRequest();
 

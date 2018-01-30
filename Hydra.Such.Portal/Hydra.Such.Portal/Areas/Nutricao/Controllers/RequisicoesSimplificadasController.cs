@@ -52,8 +52,49 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         }
 
         [Area("Nutricao")]
+        public IActionResult Detalhes(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 40);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+
+                ViewBag.Approval = HttpContext.Session.GetString("aprovadoSession") ?? "";
+                ViewBag.User = User.Identity.Name;
+                //Registar requisições aprovadas
+                if (ViewBag.Approval == "resgitar")
+                {
+                    ViewBag.LockFields = true;
+                    UPerm.Create = false;
+                    ViewBag.Option = "resgitar";
+                }
+                //Histórico requisições aprovadas
+                else if (ViewBag.Approval == "historico")
+                {
+                    ViewBag.LockFields = true;
+                    UPerm.Update = false;
+                    UPerm.Create = false;
+                    UPerm.Delete = false;
+                    ViewBag.Option = "historico";
+                }
+                else
+                {
+                    ViewBag.LockFields = false;
+                }
+
+                ViewBag.RequestNo = id ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [Area("Nutricao")]
         [HttpPost]
-        public JsonResult GetSimplifiedRequisitions([FromBody] string option)
+        public JsonResult SimplifiedRequisitionsPage([FromBody] string option)
         {
             List<SimplifiedRequisitionViewModel> result;
 
@@ -77,28 +118,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             return Json(result);
         }
 
-        [Area("Nutricao")]
-        [HttpPost]
-        public JsonResult GetSimplifiedRequisitionLines([FromBody] SimplifiedRequisitionLineViewModel item)
-        {
-            List<SimplifiedRequisitionLineViewModel> result = new List<SimplifiedRequisitionLineViewModel>();
-            if (item != null)
-            {
-                result = DBSimplifiedRequisitionLines.ParseToViewModel(DBSimplifiedRequisitionLines.GetById(item.RequisitionNo));
-                if (result.Count() != 0 && result[0].MealType > 0)
-                {
-                    TiposRefeição typeMeal = DBMealTypes.GetById(result[0].MealType ?? 0);
-                    result.ForEach(x =>
-                        x.DescriptionMeal = typeMeal.Descrição
-
-                    );
-                }
-
-                return Json(result);
-            }
-            return Json(result);
-        }
-
+        #region Gets
         [Area("Nutricao")]
         [HttpPost]
         public JsonResult GetSimplifiedRequisitionLinesModels([FromBody] JObject requestParams)
@@ -139,50 +159,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             return Json(result);
         }
-
-       
-
-        [Area("Nutricao")]
-        public IActionResult Detalhes(string id)
-        {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 40);
-
-            if (UPerm != null && UPerm.Read.Value)
-            {
-              
-                ViewBag.Approval = HttpContext.Session.GetString("aprovadoSession") ?? "";
-                ViewBag.User = User.Identity.Name;
-                //Registar requisições aprovadas
-                if (ViewBag.Approval == "resgitar" )
-                {
-                    ViewBag.LockFields = true;
-                    UPerm.Create = false;
-                    ViewBag.Option = "resgitar";
-                }
-                //Histórico requisições aprovadas
-                else if (ViewBag.Approval == "historico")
-                {   
-                    ViewBag.LockFields = true;
-                    UPerm.Update = false;
-                    UPerm.Create = false;
-                    UPerm.Delete = false;
-                    ViewBag.Option = "historico";
-                }
-                else
-                {                   
-                    ViewBag.LockFields = false;
-                }
-
-                ViewBag.RequestNo = id ?? "";
-                ViewBag.UPermissions = UPerm;
-                return View();
-            }
-            else
-            {
-                return RedirectToAction("AccessDenied", "Error");
-            }
-        }
-
+        
         [Area("Nutricao")]
         [HttpPost]
         public JsonResult GetSimplifiedRequisitionData([FromBody] SimplifiedRequisitionViewModel item)
@@ -210,6 +187,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             return Json(result);
         }
+
         [Area("Nutricao")]
         [HttpPost]
 
@@ -228,6 +206,10 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             return Json(result);
         }
+
+        #endregion
+
+
         // 100 - Sucesso
         // 101 - Ocorreu um erro desconhecido
         // 102 - 
@@ -270,6 +252,8 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             return Json(item);
         }
 
+        // 100 - Sucesso
+        // 101 - Ocorreu um erro desconhecido
         [Area("Nutricao")]
         [HttpPost]
         public JsonResult CreateLinesSimplifiedRequisition([FromBody] SimplifiedRequisitionLineViewModel item)
@@ -297,6 +281,200 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             return Json(result);
         }
 
+        [Area("Nutricao")]
+        [HttpPost]
+        public JsonResult UpdateSimplifiedRequisitionLines([FromBody] List<SimplifiedRequisitionLineViewModel> items)
+        {
+            if (items != null)
+            {
+                items.ForEach(x =>
+                {
+                    DBSimplifiedRequisitionLines.Update(DBSimplifiedRequisitionLines.ParseToDatabase(x));
+
+                });
+                mensage.eReasonCode = 100;
+                mensage.eMessage = "Linhas de Requisição Simplificada actualizadas com sucesso.";
+            }
+            else
+            {
+                mensage.eReasonCode = 101;
+                mensage.eMessage = "Ocorreu um erro ao actualizar as Linhas de Requisição Simplificada.";
+            }
+
+            return Json(mensage);
+        }
+
+        [Area("Nutricao")]
+        [HttpPost]
+        public JsonResult UpdateSimplifiedRequisition([FromBody] SimplifiedRequisitionViewModel item)
+        {
+            SimplifiedRequisitionViewModel result = new SimplifiedRequisitionViewModel();
+
+            try
+            {
+                if (item != null)
+                {
+                    RequisiçõesSimplificadas CLocation = DBSimplifiedRequisitions.GetById(item.RequisitionNo);
+                    CLocation.Estado = item.Status;
+                    CLocation.DataHoraRequisição = item.RequisitionDate != "" && item.RequisitionDate != null ? DateTime.Parse(item.RequisitionDate) : (DateTime?)null;
+                    CLocation.DataRegisto = item.RegistrationDate != "" && item.RegistrationDate != null ? DateTime.Parse(item.RegistrationDate) : (DateTime?)null;
+                    CLocation.CódLocalização = item.LocationCode;
+                    CLocation.CódigoRegião = item.RegionCode;
+                    CLocation.CódigoÁreaFuncional = item.FunctionalAreaCode;
+                    CLocation.CódigoCentroResponsabilidade = item.ResponsabilityCenterCode;
+                    CLocation.NºProjeto = item.ProjectNo;
+                    CLocation.TipoRefeição = item.MealType;
+                    CLocation.DataHoraAprovação = item.ApprovalDate != "" && item.ApprovalDate != null ? DateTime.Parse(item.ApprovalDate) : (DateTime?)null;
+                    CLocation.DataHoraEnvio = item.ShipDate != "" && item.ShipDate != null ? DateTime.Parse(item.ShipDate) : (DateTime?)null;
+                    CLocation.DataHoraDisponibilização = item.AvailabilityDate != "" && item.AvailabilityDate != null ? DateTime.Parse(item.AvailabilityDate) : (DateTime?)null;
+                    CLocation.ResponsávelCriação = item.CreateResponsible;
+                    CLocation.ResponsávelAprovação = item.ApprovalResponsible;
+                    CLocation.ResponsávelEnvio = item.ShipResponsible;
+                    CLocation.ResponsávelReceção = item.ReceiptResponsible;
+                    CLocation.Imprimir = item.Print;
+                    CLocation.Anexo = item.Atach;
+                    CLocation.NºFuncionário = item.EmployeeNo;
+                    CLocation.Urgente = item.Urgent;
+                    CLocation.NºUnidadeProdutiva = item.ProductivityNo;
+                    CLocation.Observações = item.Observations;
+                    CLocation.Terminada = item.Finished;
+                    CLocation.ResponsávelVisar = item.AimResponsible;
+                    CLocation.DataHoraVisar = item.AimDate != "" && item.AimDate != null ? DateTime.Parse(item.AimDate) : (DateTime?)null;
+                    CLocation.Autorizada = item.Authorized;
+                    CLocation.ResponsávelAutorização = item.AuthorizedResponsible;
+                    CLocation.DataHoraAutorização = item.AuthorizedDate != "" && item.AuthorizedDate != null ? DateTime.Parse(item.AuthorizedDate) : (DateTime?)null;
+                    CLocation.Visadores = item.Visor;
+                    CLocation.DataReceçãoLinhas = item.ReceiptLinesDate;
+                    CLocation.RequisiçãoNutrição = item.NutritionRequisition;
+                    CLocation.DataReceçãoEsperada = string.IsNullOrEmpty(item.ReceiptPreviewDate) ? (DateTime?)null : DateTime.Parse(item.ReceiptPreviewDate);
+                    CLocation.RequisiçãoModelo = item.ModelRequisition;
+                    CLocation.DataHoraModificação = DateTime.Now;
+                    CLocation.UtilizadorModificação = User.Identity.Name;
+
+                    if (CLocation.DataHoraRequisição != null)
+                    {
+                        CLocation.DataHoraRequisição = CLocation.DataHoraRequisição.Value.Date;
+                        CLocation.DataHoraRequisição = CLocation.DataHoraRequisição.Value.Add(TimeSpan.Parse(item.RequisitionTime));
+                    }
+
+                    if (CLocation.DataHoraAprovação != null)
+                    {
+                        CLocation.DataHoraAprovação = CLocation.DataHoraAprovação.Value.Date;
+                        CLocation.DataHoraAprovação = CLocation.DataHoraAprovação.Value.Add(TimeSpan.Parse(item.ApprovalTime));
+                    }
+
+                    if (CLocation.DataHoraEnvio != null)
+                    {
+                        CLocation.DataHoraEnvio = CLocation.DataHoraEnvio.Value.Date;
+                        CLocation.DataHoraEnvio = CLocation.DataHoraEnvio.Value.Add(TimeSpan.Parse(item.ShipTime));
+                    }
+
+                    if (CLocation.DataHoraDisponibilização != null)
+                    {
+                        CLocation.DataHoraDisponibilização = CLocation.DataHoraDisponibilização.Value.Date;
+                        CLocation.DataHoraDisponibilização = CLocation.DataHoraDisponibilização.Value.Add(TimeSpan.Parse(item.AvailabilityTime));
+                    }
+
+                    if (CLocation.DataHoraVisar != null)
+                    {
+                        CLocation.DataHoraVisar = CLocation.DataHoraVisar.Value.Date;
+                        CLocation.DataHoraVisar = CLocation.DataHoraVisar.Value.Add(TimeSpan.Parse(item.AimTime));
+                    }
+
+                    if (CLocation.DataHoraAutorização != null)
+                    {
+                        CLocation.DataHoraAutorização = CLocation.DataHoraAutorização.Value.Date;
+                        CLocation.DataHoraAutorização = CLocation.DataHoraAutorização.Value.Add(TimeSpan.Parse(item.AuthorizedTime));
+                    }
+
+
+                    result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.Update(CLocation));
+
+                    if (result != null)
+                    {
+                        List<LinhasRequisiçõesSimplificadas> lines = DBSimplifiedRequisitionLines.GetById(CLocation.NºRequisição);
+                        lines.ForEach(x =>
+                        {
+                            x.NºProjeto = CLocation.NºProjeto;
+                            x.TipoRefeição = CLocation.TipoRefeição;
+                            x.CódLocalização = CLocation.CódLocalização;
+                            x.CódigoRegião = CLocation.CódigoRegião;
+                            x.CódigoÁreaFuncional = CLocation.CódigoÁreaFuncional;
+                            x.CódigoCentroResponsabilidade = CLocation.CódigoCentroResponsabilidade;
+                            DBSimplifiedRequisitionLines.Update(x);
+                        });
+
+                        return Json(DBSimplifiedRequisitionLines.ParseToViewModel(lines));
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return null;
+        }
+
+        // 100 - Sucesso
+        // 101 - Ocorreu um erro desconhecido
+        [Area("Nutricao")]
+        [HttpPost]
+        public JsonResult DeleteSimplifiedRequisition([FromBody] SimplifiedRequisitionViewModel item)
+        {
+            SimplifiedRequisitionViewModel result = new SimplifiedRequisitionViewModel();
+            if (item != null)
+            {
+                // Delete Lines Requisitions
+                List<LinhasRequisiçõesSimplificadas> CLinhas = DBSimplifiedRequisitionLines.GetById(item.RequisitionNo);
+                CLinhas.ForEach(x => DBSimplifiedRequisitionLines.Delete(x));
+
+                RequisiçõesSimplificadas CLocation = DBSimplifiedRequisitions.GetById(item.RequisitionNo);
+                if (DBSimplifiedRequisitions.Delete(CLocation))
+                {
+                    result.eReasonCode = 100;
+                    result.eMessage = "Requisição Simplificada removida com sucesso.";
+                }
+                else
+                {
+                    result.eReasonCode = 101;
+                    result.eMessage = "Ocorreu um erro ao remover a Requisição Simplificada.";
+                }
+            }
+            return Json(result);
+        }
+
+        // 100 - Sucesso
+        // 101 - Ocorreu um erro desconhecido
+        [Area("Nutricao")]
+        [HttpPost]
+        public JsonResult DeleteSimplifiedRequisitionLines([FromBody] SimplifiedRequisitionLineViewModel data)
+        {
+            //mensage
+            if (data != null)
+            {
+
+                if (DBSimplifiedRequisitionLines.Delete(DBSimplifiedRequisitionLines.ParseToDatabase(data)))
+                {
+                    data.eReasonCode = 100;
+                    data.eMessage = "Linha Requisição Simplificada removida com sucesso.";
+                }
+                else
+                {
+                    data.eReasonCode = 101;
+                    data.eMessage = "Ocorreu um erro ao remover a Linha Requisição Simplificada.";
+                }
+
+            }
+            return Json(data);
+        }
+       
+        // 100 - Sucesso
+        // 101 - Ocorreu um erro desconhecido
 
         [Area("Nutricao")]
         [HttpPost]
@@ -559,196 +737,8 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             return Json(requisitionSimpli);
         }
 
-        [Area("Nutricao")]
-        [HttpPost]
-        public JsonResult UpdateSimplifiedRequisitionLines([FromBody] List<SimplifiedRequisitionLineViewModel> items)
-        {
-            if (items != null)
-            {
-                items.ForEach(x =>
-                {
-                    DBSimplifiedRequisitionLines.Update(DBSimplifiedRequisitionLines.ParseToDatabase(x));
+      
 
-                });
-                mensage.eReasonCode = 100;
-                mensage.eMessage = "Linhas de Requisição Simplificada actualizadas com sucesso.";
-            }
-            else
-            {
-                mensage.eReasonCode = 101;
-                mensage.eMessage = "Ocorreu um erro ao actualizar as Linhas de Requisição Simplificada.";
-            }
-        
-           return Json(mensage);
-         }
-
-        [Area("Nutricao")]
-        [HttpPost]
-        public JsonResult UpdateSimplifiedRequisition([FromBody] SimplifiedRequisitionViewModel item)
-        {
-            SimplifiedRequisitionViewModel result = new SimplifiedRequisitionViewModel();
-
-            try
-            {
-                if (item != null)
-                {
-                    RequisiçõesSimplificadas CLocation = DBSimplifiedRequisitions.GetById(item.RequisitionNo);
-                    CLocation.Estado = item.Status;
-                    CLocation.DataHoraRequisição = item.RequisitionDate != "" && item.RequisitionDate != null ? DateTime.Parse(item.RequisitionDate) : (DateTime?)null;
-                    CLocation.DataRegisto = item.RegistrationDate != "" && item.RegistrationDate != null ? DateTime.Parse(item.RegistrationDate) : (DateTime?)null;
-                    CLocation.CódLocalização = item.LocationCode;
-                    CLocation.CódigoRegião = item.RegionCode;
-                    CLocation.CódigoÁreaFuncional = item.FunctionalAreaCode;
-                    CLocation.CódigoCentroResponsabilidade = item.ResponsabilityCenterCode;
-                    CLocation.NºProjeto = item.ProjectNo;
-                    CLocation.TipoRefeição = item.MealType;
-                    CLocation.DataHoraAprovação = item.ApprovalDate != "" && item.ApprovalDate != null ? DateTime.Parse(item.ApprovalDate) : (DateTime?)null;
-                    CLocation.DataHoraEnvio = item.ShipDate != "" && item.ShipDate != null ? DateTime.Parse(item.ShipDate) : (DateTime?)null;
-                    CLocation.DataHoraDisponibilização = item.AvailabilityDate != "" && item.AvailabilityDate != null ? DateTime.Parse(item.AvailabilityDate) : (DateTime?)null;
-                    CLocation.ResponsávelCriação = item.CreateResponsible;
-                    CLocation.ResponsávelAprovação = item.ApprovalResponsible;
-                    CLocation.ResponsávelEnvio = item.ShipResponsible;
-                    CLocation.ResponsávelReceção = item.ReceiptResponsible;
-                    CLocation.Imprimir = item.Print;
-                    CLocation.Anexo = item.Atach;
-                    CLocation.NºFuncionário = item.EmployeeNo;
-                    CLocation.Urgente = item.Urgent;
-                    CLocation.NºUnidadeProdutiva = item.ProductivityNo;
-                    CLocation.Observações = item.Observations;
-                    CLocation.Terminada = item.Finished;
-                    CLocation.ResponsávelVisar = item.AimResponsible;
-                    CLocation.DataHoraVisar = item.AimDate != "" && item.AimDate != null ? DateTime.Parse(item.AimDate) : (DateTime?)null;
-                    CLocation.Autorizada = item.Authorized;
-                    CLocation.ResponsávelAutorização = item.AuthorizedResponsible;
-                    CLocation.DataHoraAutorização = item.AuthorizedDate != "" && item.AuthorizedDate != null ? DateTime.Parse(item.AuthorizedDate) : (DateTime?)null;
-                    CLocation.Visadores = item.Visor;
-                    CLocation.DataReceçãoLinhas = item.ReceiptLinesDate;
-                    CLocation.RequisiçãoNutrição = item.NutritionRequisition;
-                    CLocation.DataReceçãoEsperada = string.IsNullOrEmpty(item.ReceiptPreviewDate) ? (DateTime?)null : DateTime.Parse(item.ReceiptPreviewDate);
-                    CLocation.RequisiçãoModelo = item.ModelRequisition;
-                    CLocation.DataHoraModificação = DateTime.Now;
-                    CLocation.UtilizadorModificação = User.Identity.Name;
-
-                    if (CLocation.DataHoraRequisição != null)
-                    {
-                        CLocation.DataHoraRequisição = CLocation.DataHoraRequisição.Value.Date;
-                        CLocation.DataHoraRequisição = CLocation.DataHoraRequisição.Value.Add(TimeSpan.Parse(item.RequisitionTime));
-                    }
-
-                    if (CLocation.DataHoraAprovação != null)
-                    {
-                        CLocation.DataHoraAprovação = CLocation.DataHoraAprovação.Value.Date;
-                        CLocation.DataHoraAprovação = CLocation.DataHoraAprovação.Value.Add(TimeSpan.Parse(item.ApprovalTime));
-                    }
-
-                    if (CLocation.DataHoraEnvio != null)
-                    {
-                        CLocation.DataHoraEnvio = CLocation.DataHoraEnvio.Value.Date;
-                        CLocation.DataHoraEnvio = CLocation.DataHoraEnvio.Value.Add(TimeSpan.Parse(item.ShipTime));
-                    }
-
-                    if (CLocation.DataHoraDisponibilização != null)
-                    {
-                        CLocation.DataHoraDisponibilização = CLocation.DataHoraDisponibilização.Value.Date;
-                        CLocation.DataHoraDisponibilização = CLocation.DataHoraDisponibilização.Value.Add(TimeSpan.Parse(item.AvailabilityTime));
-                    }
-
-                    if (CLocation.DataHoraVisar != null)
-                    {
-                        CLocation.DataHoraVisar = CLocation.DataHoraVisar.Value.Date;
-                        CLocation.DataHoraVisar = CLocation.DataHoraVisar.Value.Add(TimeSpan.Parse(item.AimTime));
-                    }
-
-                    if (CLocation.DataHoraAutorização != null)
-                    {
-                        CLocation.DataHoraAutorização = CLocation.DataHoraAutorização.Value.Date;
-                        CLocation.DataHoraAutorização = CLocation.DataHoraAutorização.Value.Add(TimeSpan.Parse(item.AuthorizedTime));
-                    }
-
-
-                    result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.Update(CLocation));
-
-                    if (result != null)
-                    {
-                        List<LinhasRequisiçõesSimplificadas> lines =  DBSimplifiedRequisitionLines.GetById(CLocation.NºRequisição);
-                        lines.ForEach(x =>
-                             {
-                                 x.NºProjeto = CLocation.NºProjeto;
-                                 x.TipoRefeição = CLocation.TipoRefeição;
-                                 x.CódLocalização = CLocation.CódLocalização;
-                                 x.CódigoRegião = CLocation.CódigoRegião;
-                                 x.CódigoÁreaFuncional = CLocation.CódigoÁreaFuncional;
-                                 x.CódigoCentroResponsabilidade = CLocation.CódigoCentroResponsabilidade;
-                                 DBSimplifiedRequisitionLines.Update(x);
-                             });
-                      
-                        return Json(DBSimplifiedRequisitionLines.ParseToViewModel(lines));
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-            
-            return null;
-        }
-
-        // 100 - Sucesso
-        // 101 - Ocorreu um erro desconhecido
-        [Area("Nutricao")]
-        [HttpPost]
-        public JsonResult DeleteSimplifiedRequisition([FromBody] SimplifiedRequisitionViewModel item)
-        {
-            SimplifiedRequisitionViewModel result = new SimplifiedRequisitionViewModel();
-            if (item != null)
-            {
-                // Delete Lines Requisitions
-                List<LinhasRequisiçõesSimplificadas> CLinhas = DBSimplifiedRequisitionLines.GetById(item.RequisitionNo);
-                CLinhas.ForEach(x=> DBSimplifiedRequisitionLines.Delete(x));
-
-                RequisiçõesSimplificadas CLocation = DBSimplifiedRequisitions.GetById(item.RequisitionNo);
-                if (DBSimplifiedRequisitions.Delete(CLocation))
-                {
-                    result.eReasonCode = 100;
-                    result.eMessage = "Requisição Simplificada removida com sucesso.";
-                }
-                else
-                {
-                    result.eReasonCode = 101;
-                    result.eMessage = "Ocorreu um erro ao remover a Requisição Simplificada.";
-                }
-            }
-            return Json(result);
-        }
-
-        // 100 - Sucesso
-        // 101 - Ocorreu um erro desconhecido
-        [Area("Nutricao")]
-        [HttpPost]
-        public JsonResult DeleteSimplifiedRequisitionLines([FromBody] SimplifiedRequisitionLineViewModel data)
-        {
-            //mensage
-            if (data != null)
-            {               
-
-                if (DBSimplifiedRequisitionLines.Delete(DBSimplifiedRequisitionLines.ParseToDatabase(data)))
-                {
-                    data.eReasonCode = 100;
-                    data.eMessage = "Linha Requisição Simplificada removida com sucesso.";
-                }
-                else
-                {
-                    data.eReasonCode = 101;
-                    data.eMessage = "Ocorreu um erro ao remover a Linha Requisição Simplificada.";
-                }
-
-            }
-            return Json(data);
-        }
+     
     }
 }
