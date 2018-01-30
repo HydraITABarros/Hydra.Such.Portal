@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewData["Title"] = "Compras - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="title">Compras -  Procedimentos CCP</h1>
+
+<link rel="import" href="/elements/submenu/subMenuItemView.html">
+
+<ul class="list-unstyled">
+    <x-submenu link="@Url.Action("PedidoAquisicao", "ProcedimentosCcps")" image="contracts.png" title="Pedido Aquisição"></x-submenu>
+    <x-submenu link="@Url.Action("PedidoSimplificado", "ProcedimentosCcps")" image="contract.png" title="Pedido Simplificado"></x-submenu>
+  
+</ul>
+

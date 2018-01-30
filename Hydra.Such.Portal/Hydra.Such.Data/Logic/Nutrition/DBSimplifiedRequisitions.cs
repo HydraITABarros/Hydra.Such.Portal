@@ -109,7 +109,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.RequisiçõesSimplificadas.Where(x => x.ResponsávelCriação == CreateResponsible && x.Estado!=3).ToList();
+                    return ctx.RequisiçõesSimplificadas.Where(x => x.ResponsávelCriação == CreateResponsible).ToList();
                 }
             }
             catch (Exception ex)
@@ -117,7 +117,20 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return null;
             }
         }
-
+        public static List<RequisiçõesSimplificadas> GetByCreateResponsiblePendente(string CreateResponsible)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.RequisiçõesSimplificadas.Where(x => x.ResponsávelCriação == CreateResponsible && x.Estado == 1).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         public static List<RequisiçõesSimplificadas> GetByApprovals(int approvalTrue)
         {
             try
@@ -176,7 +189,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 Visor = x.Visadores,
                 ReceiptLinesDate = x.DataReceçãoLinhas,
                 NutritionRequisition = x.RequisiçãoNutrição,
-                ReceiptPreviewDate = x.DataReceçãoEsperada.HasValue ? x.DataReceçãoEsperada.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) : "",
+                ReceiptPreviewDate = x.DataReceçãoEsperada.HasValue ? x.DataReceçãoEsperada.Value.ToString("yyyy-MM-dd") : "",
                 ModelRequisition = x.RequisiçãoModelo,
                 CreateDate = x.DataHoraCriação,
                 CreateUser = x.UtilizadorCriação,
@@ -230,7 +243,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 Visadores = x.Visor,
                 DataReceçãoLinhas = x.ReceiptLinesDate,
                 RequisiçãoNutrição = x.NutritionRequisition,
-                DataReceçãoEsperada = x.ReceiptPreviewDate != "" && x.ReceiptPreviewDate != null ? DateTime.Parse(x.ReceiptPreviewDate) : (DateTime?)null ,
+                DataReceçãoEsperada = x.ReceiptPreviewDate == ""  ? null : (DateTime?)DateTime.Parse(x.ReceiptPreviewDate),
                 RequisiçãoModelo = x.ModelRequisition,
                 DataHoraCriação = x.CreateDate,
                 UtilizadorCriação = x.CreateUser,

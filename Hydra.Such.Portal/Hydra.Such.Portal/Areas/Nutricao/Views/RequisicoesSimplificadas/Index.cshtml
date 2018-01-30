@@ -32,7 +32,7 @@
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{SimplifiedRequisitions}}" id="grid_datasource" url="/Nutricao/RequisicoesSimplificadas/GetSimplifiedRequisitions"></iron-ajax>
+        <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{SimplifiedRequisitions}}" id="grid_datasource" url="/Nutricao/RequisicoesSimplificadas/SimplifiedRequisitionsPage"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRequisitionsStatus" last-response="{{GetRequisitionsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <div class="marginSpace" id="ddmarginSpace">

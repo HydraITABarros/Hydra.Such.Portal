@@ -43,6 +43,39 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult GestaoRequisicoes_Index(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 6);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Id = id ?? "";
+                ViewBag.UPermissions = UPerm;
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult ProcedimentosCCP_Index(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 3, 6);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.id = id ?? "";
+                ViewBag.UPermissions = UPerm;
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
         #region Pré-Requisições
 
         public IActionResult PreRequisicoesLista()
