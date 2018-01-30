@@ -106,6 +106,12 @@ else
                    on-response="_responseProcessor2"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax last-response="{{dataLines}}"
+                   method="post"
+                   handle-as="json"
+                   id="updatemultiLine_ajax"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax last-response="{{requisitions}}"
                    method="post"
                    handle-as="json"
@@ -194,7 +200,7 @@ else
                                 <div>
                                     <div class="row">
                                         <div class="col-lg-3">
-                                            <vaadin-text-field value="{{_requestno}}" maxlength="20"  id="lRequestNo" name="lRequestNo" label="Nº" required error-message="Este campo é obrigatório" disabled> </vaadin-text-field>
+                                            <vaadin-text-field value="{{_requestno}}" maxlength="20" id="lRequestNo" name="lRequestNo" label="Nº" required error-message="Este campo é obrigatório" disabled> </vaadin-text-field>
                                         </div>
                                         <div class="col-lg-3">
                                             <vaadin-combo-box items="[[GetRequisitionsStatus]]" id="LStatus" selected="1" item-value-path="id" item-label-path="value" value="{{result.status}}" label="Estado" disabled>
@@ -270,7 +276,7 @@ else
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-lg-3 ">
-                                            <vaadin-date-picker label="Data Receção" id="LReceiptPreviewDate" name="LReceiptPreviewDate" value="20-1-2018" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                            <vaadin-date-picker label="Data Receção" id="LReceiptPreviewDate" name="LReceiptPreviewDate" value="{{result.receiptPreviewDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
                                         </div>
 
                                     </div>
@@ -412,7 +418,7 @@ else
 
 
                                 <div class="col-lg-2">
-                                    <vaadin-date-picker label="Data Registo" id="_CLRegistrationDate" name="_CLRegistrationDate" value="{{_LLRegistrationDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                    <vaadin-date-picker label="Data Registo" id="_CLRegistrationDate" name="_CLRegistrationDate" value="{{result.receiptPreviewDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                 </div>
 
                                 <div class="col-lg-2">
@@ -860,8 +866,8 @@ else
                 <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_confirmTemplate" hidden="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                 <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
             </div>
-    
-         
+
+
         </paper-dialog>
 
 
@@ -914,7 +920,6 @@ else
 
                 ready: function () {
                     //GET PROJECT DATA
-
                     if (this._requestno != "") {
                         this._isCreate = false;
                         this._showLines = '';
@@ -947,8 +952,8 @@ else
                 },
 
 
-                _createNew: function () {
-                    '<%Session["aprovadoSession"] = ""%>';
+                _createNew: function () {                 
+                    '<%Session["aprovadoSession"] = " new"%>';
                     window.location.href = "/Nutricao/RequisicoesSimplificadas/Detalhes";
                 },
 
@@ -1040,6 +1045,7 @@ else
                 _create: function () {
                     if (this._validateData("formContract")) {
                         this._executeRequest("/Nutricao/RequisicoesSimplificadas/CreateSimplifiedRequisition", this.result)
+                       
                     }
                 },
                 _update: function () {
@@ -1155,6 +1161,12 @@ else
                         this._requestno = this.result.requisitionNo;
                         if (data.detail.url.indexOf("Update") !== -1 || data.detail.url.indexOf("Create") !== -1) {
                             if (this.result.eReasonCode == 100) {
+                                if (this.dataLines != undefined) {
+                                    this.$.updatemultiLine_ajax.url = "/Nutricao/RequisicoesSimplificadas/CreateMultiLinesSimplifiedRequisition";
+                                    this.$.updatemultiLine_ajax.body = JSON.stringify(this.dataLines);
+                                    this.$.updatemultiLine_ajax.generateRequest();
+                                    this.$.grid_requisitionlines.clearCache();
+                                }
                                 this._openToast(this.result.eMessage);
                                 this._isCreate = false;
                                 this._showLines = '';
