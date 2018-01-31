@@ -118,6 +118,25 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             return Json(result);
         }
+        [Area("Nutricao")]
+        [HttpPost]
+        public JsonResult ValidateNumeration([FromBody] SimplifiedRequisitionViewModel data)
+        {
+            //Get Project Numeration
+            Configuração Cfg = DBConfigurations.GetById(1);
+            int ProjectNumerationConfigurationId = 0;
+            ProjectNumerationConfigurationId = Cfg.NumeraçãoRequisiçõesSimplificada.Value;
+
+            ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+
+            //Validate if ProjectNo is valid
+            if (!CfgNumeration.Automático.Value)
+            {
+                return Json("É obrigatório inserir o Nº Requisição.");
+            }
+
+            return Json("");
+        }
 
         #region Gets
         [Area("Nutricao")]
