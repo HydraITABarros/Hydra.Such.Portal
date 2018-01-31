@@ -123,7 +123,7 @@
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" last-response="{{CBPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetAllClients" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractStatus" last-response="{{CBStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractChangeStatus" last-response="{{CBChangeStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -246,7 +246,7 @@
                                             </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" on-value-changed="_clientChange">
+                                            <!--<vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" on-value-changed="_clientChange">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -255,7 +255,17 @@
                                                         </tr>
                                                     </table>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>-->
+
+                                            <such-selectbox id="mClients" value="{{data.contactNo}}" label="Nº Cliente"
+                                                            items="[[CBClients]]"
+                                                            text-path="name"
+                                                            value-path="no_"
+                                                            fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"country_RegionCode", "name":"Região"}]'
+                                                            required error-message="Este campo é obrigatório"
+                                                            disabled="{{ !_permissions.update }}"
+                                                            on-value-changed="_clientChange">
+                                            </such-selectbox>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
