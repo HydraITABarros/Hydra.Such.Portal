@@ -2442,31 +2442,32 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult GetApprovalGroupID([FromBody] int id)
+        {
+            ApprovalGroupViewModel result = DBApprovalGroups.ParseToViewModel(DBApprovalGroups.GetById(id));
+            return Json(result);
+        }
+
         public JsonResult CreateApprovalGroup([FromBody] ApprovalGroupViewModel data)
         {
-            string eReasonCode = "";
+            ApprovalGroupViewModel result;
             //Create new 
-            eReasonCode = DBApprovalGroups.Create(DBApprovalGroups.ParseToDatabase(data)) == null ? "101" : "";
-
-            if (String.IsNullOrEmpty(eReasonCode))
+            result = DBApprovalGroups.ParseToViewModel(DBApprovalGroups.Create(DBApprovalGroups.ParseToDatabase(data)));
+            if (result != null)
             {
-                return Json(data);
+                result.eReasonCode = 100;
             }
             else
-            {
-                return Json(eReasonCode);
-            }
-
+                result.eReasonCode = 101;
+            return Json(result);
         }
 
         [HttpPost]
-        public JsonResult UpdateApprovalGroup([FromBody] List<ApprovalGroupViewModel> data)
-        {
-            data.ForEach(x =>
-            {
-                DBApprovalGroups.Update(DBApprovalGroups.ParseToDatabase(x));
-            });
-            return Json(data);
+        public JsonResult UpdateApprovalGroup([FromBody] ApprovalGroupViewModel item)
+        {       
+            DBApprovalGroups.Update(DBApprovalGroups.ParseToDatabase(item));
+           
+            return Json(item);
         }
 
         public JsonResult DeleteApprovalGroup([FromBody] ApprovalGroupViewModel data)
@@ -2505,13 +2506,17 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = GetPermissions("Administracao");
             if (UPerm != null && UPerm.Read.Value)
             {
-                int IDGroup= Int32.Parse(id);
-                GruposAprovação group= DBApprovalGroups.GetById(IDGroup);
+                ViewBag.GroupApproval = "";
+                ViewBag.IDGroupApproval = "";
+                if (id != null)
+                {
+                    int IDGroup = Int32.Parse(id);
+                    ViewBag.IDGroupApproval = IDGroup;
+                }
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
                 ViewBag.UpdatePermissions = !UPerm.Update.Value;
                 ViewBag.DeletePermissions = !UPerm.Delete.Value;
-                ViewBag.GroupApproval = group.Descrição;
-                ViewBag.IDGroupApproval = group.Código;
+             
                 return View();
             }
             else

@@ -113,9 +113,29 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             //‘Requisições simplificadas’ com utilizador
             else
             {
+                HttpContext.Session.SetString("aprovadoSession", "");
                 result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetByCreateResponsiblePendente(User.Identity.Name));
             }
             return Json(result);
+        }
+        [Area("Nutricao")]
+        [HttpPost]
+        public JsonResult ValidateNumeration([FromBody] SimplifiedRequisitionViewModel data)
+        {
+            //Get Project Numeration
+            Configuração Cfg = DBConfigurations.GetById(1);
+            int ProjectNumerationConfigurationId = 0;
+            ProjectNumerationConfigurationId = Cfg.NumeraçãoRequisiçõesSimplificada.Value;
+
+            ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+
+            //Validate if ProjectNo is valid
+            if (!CfgNumeration.Automático.Value)
+            {
+                return Json("É obrigatório inserir o Nº Requisição.");
+            }
+
+            return Json("");
         }
 
         #region Gets
@@ -133,9 +153,11 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 result.ForEach(x => {
                     x.RequisitionNo = requestNoNew;
                     x.Status = 1;
+                    x.LineNo = 0;
                     x.EmployeeNo = utilizador.EmployeeNo;                 
                 });
             }
+            HttpContext.Session.Remove("aprovadoSession");
             return Json(result);
         } 
 
@@ -281,6 +303,24 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             return Json(result);
         }
 
+        // 100 - Sucesso
+        // 101 - Ocorreu um erro desconhecido
+        [Area("Nutricao")]
+        [HttpPost]
+        public JsonResult CreateMultiLinesSimplifiedRequisition([FromBody] List<SimplifiedRequisitionLineViewModel> item)
+        {
+            List<SimplifiedRequisitionLineViewModel> result = new List<SimplifiedRequisitionLineViewModel>();
+            if (item != null)
+            {
+                item.ForEach(x =>
+                {
+                    x.CreateUser = User.Identity.Name;
+                    result.Add(DBSimplifiedRequisitionLines.ParseToViewModel(DBSimplifiedRequisitionLines.Create(DBSimplifiedRequisitionLines.ParseToDatabase(x))));
+                });
+               
+            }
+            return Json(result);
+        }
         [Area("Nutricao")]
         [HttpPost]
         public JsonResult UpdateSimplifiedRequisitionLines([FromBody] List<SimplifiedRequisitionLineViewModel> items)

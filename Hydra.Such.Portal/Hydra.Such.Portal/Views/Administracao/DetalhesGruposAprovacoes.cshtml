@@ -35,7 +35,7 @@
 
 <h1 class="title">@ViewData["Title"]</h1>
 
-<x-detailsgroupapprovals></x-detailsgroupapprovals>
+<x-detailsgroupapprovals _requestno="@ViewBag.IDGroupApproval" ></x-detailsgroupapprovals>
 
 <dom-module id="x-detailsgroupapprovals">
     <template>
@@ -69,7 +69,29 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Administracao/GetApprovalGroupID"
+                   last-response="{{groupresult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax2"
+                   content-type="application/json">
+        </iron-ajax>
 
+        <iron-ajax url="/Administracao/UpdateApprovalGroup"
+                   last-response="{{groupresult}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_group"
+                   on-response="_updateResponseGroup"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax last-response="{{deleteResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_group"
+                   on-response="_deleteResponseGroup"
+                   content-type="application/json">
+        </iron-ajax>
         @*POPULATE Update*@
         <iron-ajax last-response="{{createResult}}"
                    method="post"
@@ -78,6 +100,7 @@
                    on-response="_updateResponse"
                    content-type="application/json">
         </iron-ajax>
+
         <iron-ajax last-response="{{deleteResult}}"
                    method="post"
                    handle-as="json"
@@ -93,54 +116,96 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <div class="row">
-            <div class="col-lg-2">
-                <h2 class="separator">Novo Registo :</h2>
-            </div>
-            <div class="col-lg-pull-1">
-                <h2 class="separator"> @ViewBag.GroupApproval</h2>
+        <div class="row break_frm">
+            <div class="col-md-12 col-lg-12">
+                <iron-form id="formContract">
+
+                    <div class="panel panel-default">                       
+                        <div class="panel-heading">Grupo</div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-3" style="display: {{ _showLines }};">
+                                    <vaadin-text-field value="{{groupresult.code}}" id="lRequestNo" name="lRequestNo" label="ID Grupo" disabled> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{groupresult.description}}" id="lgroupName" name="groupName" label="Nome Grupo" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="marginSpace" id="ddmarginSpaceCabe">
+                                    <template is="dom-if" if="{{ _isCreate }}">
+                                        <template is="dom-if" if="{{ !_permissionsCreate }}">
+                                            <paper-button raised id="btnCreate" class="btnSave" on-tap="_createGroup"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        </template>
+                                    </template>
+                                    <template is="dom-if" if="{{ !_isCreate }}">
+                                        <template is="dom-if" if="{{ !_permissionsUpdate }}">
+                                            <paper-button raised id="btnUpdate" class="btnSave" on-tap="_updateGroup"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                        </template>
+                                        <template is="dom-if" if="{{ !_permissionsDelete }}">
+                                            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteGroup"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                        </template>
+                                        <template is="dom-if" if="{{ !_permissionsDelete }}">
+                                            <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Novo</paper-button>
+                                        </template>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </iron-form>
             </div>
         </div>
+        <div class="row break_frm" style="display: {{ _showLines }};">
+            <div class="col-md-12 col-lg-12">
+                <iron-form id="formContract">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Utilizadores</div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <vaadin-combo-box items="[[UsersList]]" id="ddUser" item-value-path="id" item-label-path="value" value="{{ddUser}}" label="Utilizador Aprovação" disabled="{{ _permissionsCreate }}">
+                                        <template>
+                                            <table width="350px">
+                                                <tr>
+                                                    <td width="30%"> <b>[[item.value]]</b></td>
+                                                    <td width="70%">[[item.id]]</td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+                                <div class="col-lg-2 alignPoga">
+                                    <paper-button id="btnAddNew" class="btnSave" on-tap="_createApprovalGroupDetails" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                                </div>
+                            </div>
+                            <br />
 
-        <div class="row">
-            <div class="col-lg-4">
-                <vaadin-combo-box items="[[UsersList]]" id="ddUser" item-value-path="id" item-label-path="value" value="{{ddUser}}" label="Utilizador Aprovação" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <table width="350px">
-                            <tr>
-                                <td width="30%"> <b>[[item.value]]</b></td>
-                                <td width="70%">[[item.id]]</td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
-            <div class="col-lg-2 alignPoga">
-                <paper-button id="btnAddNew" class="btnSave" on-tap="_createApprovalGroupDetails" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                            <vaadin-grid id="gridDetailsGroupApprovals" aria-label="gridDetailsGroupApprovals" items="[[result]]" class="grid" multi-sort="true">
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="approvalUser">Utilizadores</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="approvalUser" />
+                                    </template>
+                                    <template>
+                                        <vaadin-text-field value="{{item.approvalUser}}" disabled></vaadin-text-field>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="10%" resizable>
+                                    <template class="header">
+                                    </template>
+                                    <template>
+                                        <center>
+                                            <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
+                                        </center>
+                                    </template>
+                                </vaadin-grid-column>
+                            </vaadin-grid>
+                        </div>
+                    </div>
+                </iron-form>
             </div>
         </div>
-        <br />
-
-        <vaadin-grid id="gridDetailsGroupApprovals" aria-label="gridDetailsGroupApprovals" items="[[result]]" class="grid" multi-sort="true">
-            <vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="approvalUser">Utilizador</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="approvalUser" />
-                </template>
-                <template>
-                    <vaadin-text-field value="{{item.approvalUser}}" disabled></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="10%" resizable>
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}">Eliminar</paper-button>
-                    </center>
-                </template>
-            </vaadin-grid-column>
-        </vaadin-grid>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -173,9 +238,29 @@
                         type: Boolean,
                         value: DeleteValue
                     },
+                    _requestno: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _showLines: {
+                        type: String,
+                        value: "none"
+                    },
                 },
                 ready: function () {
-                    this.$.page_databound_ajax.body = JSON.stringify(@ViewBag.IDGroupApproval);
+                    if (this._requestno != "") {
+                        this._isCreate = false;
+                        this._showLines = "";
+                        this.$.page_databound_ajax.body = JSON.stringify(this._requestno);
+                        this.$.page_databound_ajax2.body = JSON.stringify(this._requestno);
+                    }
+
+                    this.$.page_databound_ajax2.generateRequest();
                     this.$.page_databound_ajax.generateRequest();
                 },
                 openToast: function (message) {
@@ -186,10 +271,42 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
+                _create: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Administracao/DetalhesGruposAprovacoes";
+                    }
+                },
+                _createGroup: function (e) {
+                    var line = {
+                        description: this.$.lgroupName.value
+                    }
+                    this.$.ajax_group.url = "/Administracao/CreateApprovalGroup";
+                    this.$.ajax_group.body = JSON.stringify(line);
+                    this.$.ajax_group.generateRequest();
+                },
+                _updateGroup: function (e) {
+                      var line = {
+                           code: this.$.lRequestNo.value,
+                           description: this.$.lgroupName.value
+                      }
+                      this.$.ajax_group.url = "/Administracao/UpdateApprovalGroup";
+                      this.$.ajax_group.body = JSON.stringify(line);
+                      this.$.ajax_group.generateRequest();
+                },
+                _deleteGroup: function (e) {
+                    var line = {
+                        code: this.$.lRequestNo.value,
+                        description: this.$.lgroupName.value
+                    }
+                    this.$.ajax_delete_group.url = "/Administracao/DeleteApprovalGroup";
+                    this.$.ajax_delete_group.body = JSON.stringify(line);
+                    this.$.ajax_delete_group.generateRequest();
+                },
                 _createApprovalGroupDetails: function () {
+
                     if (this.$.ddUser.value != null && this.$.ddUser.value != "") {
                         var line = {
-                            approvalGroup: @ViewBag.IDGroupApproval,
+                            approvalGroup: this.$.lRequestNo.value,
                             approvalUser: this.$.ddUser.value
                         }
                         if (this.result == null) {
@@ -207,6 +324,22 @@
                         this.openToastError("A descrição não pode ser vazia");
                     }
                 },
+                _updateResponseGroup: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        if (this.groupresult.eReasonCode == 101) {
+                            this.openToastError('Erro ao Actualizar grupo');
+                        } else {
+                            this._isCreate = false;
+                            this._showLines = "";
+                            this._requestno = this.groupresult.code;
+                            this.openToast('Actualizado com sucesso!');
+                        }
+                    }
+                    else {
+                        this.openToastError('Ocorreu um erro ao atualizar o grupo.');
+                    }
+                },
                 _updateResponse: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
@@ -217,26 +350,42 @@
                         } else {
                             this.$.ddUser.value = "";
                             this.openToast('Atualizado com sucesso!');
-                            this.$.page_databound_ajax.body = JSON.stringify(@ViewBag.IDGroupApproval);
+                            this.$.page_databound_ajax.body = JSON.stringify(this._requestno);
                             this.$.page_databound_ajax.generateRequest();
+                            this.$.gridDetailsGroupApprovals.clearCache();
                         }
                     }
                     else {
                         this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
                     }
                 },
-                 _deleteResponse: function (e) {
+                  _deleteResponse: function (e) {
                     var self = this;
                     if (e.detail.status === 200) {
                         this.openToast('Eliminado com sucesso!');
-                        this.$.page_databound_ajax.body = JSON.stringify(@ViewBag.IDGroupApproval);
+                        this.$.page_databound_ajax.body = JSON.stringify(this._requestno);
                         this.$.page_databound_ajax.generateRequest();
-                        
+
                     }
                     else {
                         this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
                     }
                 },
+                  _deleteResponseGroup: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+                        this.openToast('Eliminado com sucesso!');
+                        setTimeout(
+                            function () {
+                                window.location.href = "/Administracao/GruposAprovacoes/Administracao";
+                            }, 2500);
+
+                    }
+                    else {
+                        this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
+                    }
+                  },
+
                 _cancel: function () {
                     this.$.page_databound_ajax.generateRequest();
                     this.$.gridDetailsGroupApprovals.clearCache();
