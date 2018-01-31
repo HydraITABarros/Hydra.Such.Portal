@@ -602,7 +602,18 @@ namespace Hydra.Such.Portal.Controllers
                 TimeSheetNumeration = Cfg.NumeraçãoFolhasDeHoras,
                 OportunitiesNumeration = Cfg.NumeraçãoOportunidades,
                 ProposalsNumeration = Cfg.NumeraçãoPropostas,
-                ContactsNumeration = Cfg.NumeraçãoContactos
+                ContactsNumeration = Cfg.NumeraçãoContactos,
+                DishesTechnicalSheetsNumeration = Cfg.NumeraçãoFichasTécnicasDePratos,
+                PreRequisitionNumeration = Cfg.NumeraçãoPréRequisições,
+                PurchasingProceduresNumeration = Cfg.NumeraçãoProcedimentoAquisição,
+                RequisitionNumeration = Cfg.NumeraçãoRequisições,
+                SimplifiedProceduresNumeration = Cfg.NumeraçãoProcedimentoSimplificado,
+                SimplifiedReqTemplatesNumeration = Cfg.NumeraçãoModReqSimplificadas,
+                SimplifiedRequisitionNumeration = Cfg.NumeraçãoRequisiçõesSimplificada,
+                DinnerEndTime = Cfg.FimHoraJantar,
+                DinnerStartTime = Cfg.InicioHoraJantar,
+                LunchEndTime = Cfg.FimHoraAlmoco,
+                LunchStartTime = Cfg.InicioHoraAlmoco
             };
             return Json(result);
         }
@@ -625,6 +636,18 @@ namespace Hydra.Such.Portal.Controllers
             configObj.NumeraçãoOportunidades = data.OportunitiesNumeration;
             configObj.NumeraçãoPropostas = data.ProposalsNumeration;
             configObj.NumeraçãoContactos = data.ContactsNumeration;
+            configObj.NumeraçãoFichasTécnicasDePratos = data.DishesTechnicalSheetsNumeration;
+            configObj.NumeraçãoPréRequisições = data.PreRequisitionNumeration;
+            configObj.NumeraçãoProcedimentoAquisição = data.PurchasingProceduresNumeration;
+            configObj.NumeraçãoRequisições = data.RequisitionNumeration;
+            configObj.NumeraçãoProcedimentoSimplificado = data.SimplifiedProceduresNumeration;
+            configObj.NumeraçãoModReqSimplificadas = data.SimplifiedReqTemplatesNumeration;
+            configObj.NumeraçãoRequisiçõesSimplificada = data.SimplifiedRequisitionNumeration;
+            configObj.FimHoraJantar = data.DinnerEndTime;
+            configObj.InicioHoraJantar = data.DinnerStartTime;
+            configObj.InicioHoraAlmoco = data.LunchStartTime;
+            configObj.FimHoraAlmoco = data.LunchEndTime;
+
             configObj.UtilizadorModificação = User.Identity.Name;
             //configObj.UtilizadorCriação = User.Identity.Name;
             //configObj.DataHoraCriação = DateTime.Now;
