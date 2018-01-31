@@ -763,7 +763,6 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetNAVShippingAddresses()
         {
-
             List<DDMessageString> result = DBNAV2017ShippingAddresses.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
             {
                 id = X.Code,
@@ -783,6 +782,13 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        //Retuns a list of NAVAddressesViewModel
+        public JsonResult GetNAVShippingAddressesByClientNoAsVM([FromBody] string ClientNo)
+        {
+            var result = DBNAV2017ShippingAddresses.GetByClientNo(ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult GetServiceObjects()
