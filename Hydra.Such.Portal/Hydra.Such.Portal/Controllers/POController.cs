@@ -363,7 +363,7 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.Area = 6;
-                ViewBag.PreRequesitionNo = PreRequesitionNo ?? "";
+                ViewBag.PreRequesitionNo = User.Identity.Name;
                 ViewBag.UPermissions = UPerm;
                 return View();
             }
