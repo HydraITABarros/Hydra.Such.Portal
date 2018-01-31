@@ -154,6 +154,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                     x.RequisitionNo = requestNoNew;
                     x.Status = 1;
                     x.LineNo = 0;
+                    x.RequisitionDate= DateTime.Now.ToString();
                     x.EmployeeNo = utilizador.EmployeeNo;                 
                 });
             }
@@ -225,6 +226,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 result.Status = 1;
                 result.Finished = false;
                 result.EmployeeNo = utilizador.EmployeeNo;
+                result.ReceiptPreviewDate=DateTime.Now.ToString();
             }
             return Json(result);
         }
@@ -243,6 +245,9 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             {
                 item.CreateUser = User.Identity.Name;
                 item.CreateResponsible = User.Identity.Name;
+                item.RequisitionDate = DateTime.Now.ToString();
+                item.RegistrationDate = DateTime.Now.ToString("dd/MM/yyyy");
+                item.RequisitionTime = DateTime.Now.ToString("HH:mm:ss");
 
                 if (DBSimplifiedRequisitions.GetById(item.RequisitionNo) != null)
                 {
@@ -251,6 +256,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 }
                 else
                 {
+
                     if (DBSimplifiedRequisitions.Create(DBSimplifiedRequisitions.ParseToDatabase(item)) != null)
                     {
                         //Update Last Numeration Used
@@ -352,6 +358,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
             try
             {
+                item.RegistrationDate = DateTime.Now.ToString("dd/MM/yyyy");
                 if (item != null)
                 {
                     RequisiçõesSimplificadas CLocation = DBSimplifiedRequisitions.GetById(item.RequisitionNo);
@@ -534,6 +541,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                     }
                     item.QuantityApproved = item.QuantityToRequire;
                     item.Status = 2;
+    
                 }
                 if (mensage.eReasonCode == 100)
                 {
@@ -548,6 +556,9 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                     SimplifiedRequisitionViewModel requisitionSimpli = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetById(items[0].RequisitionNo));
                     requisitionSimpli.Status = 2;
                     requisitionSimpli.Finished = true;
+                    requisitionSimpli.ApprovalResponsible = User.Identity.Name;
+                    requisitionSimpli.ApprovalDate = DateTime.Now.ToString();
+                    requisitionSimpli.ApprovalTime = DateTime.Now.ToString("HH:mm:ss");
                     DBSimplifiedRequisitions.Update(DBSimplifiedRequisitions.ParseToDatabase(requisitionSimpli));
 
                     mensage.eReasonCode = 100;
