@@ -35,7 +35,7 @@
 <link rel="import" href="~/lib/iron-input/iron-input.html" />
 <link rel="import" href="~/lib/vaadin-upload/vaadin-upload.html" />
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
-
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
@@ -56,6 +56,7 @@
         <iron-ajax url="/PopulateDropdowns/GetClassificationFilesTechniques" last-response="{{CboClassificationFilesTechniques}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLinesRecTechnicPlatesType" last-response="{{CbotLinesRecTecPlatesType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLinesRecordTechnicalOfPlatesCode" id="ajax_CboCode" last-response="{{CboCode}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllAction" id="action_ajax" auto last-response="{{CboAction}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetAllProceduresConfection" id="ajax_GridProcedConfec" last-response="{{GridProceduresConfection}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetImageRecTecPlates" id="ajax_Image" last-response="{{dataImage}}" on-response="_ImageResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetAllRecTecPlatesBYPlate" id="ajax_GetAllRecTecPlat" last-response="{{getAllRecTecPlatResult}}" on-response="_GetRecTecPlatResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -65,8 +66,105 @@
         <iron-ajax url="/Nutricao/FichasTecnicasPratos/CreateLinesRecordTechnicalOfPlates" id="createRecTecLines_ajax" last-response="{{Createdate}}" on-response="_CreateLinesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/FichasTecnicasPratos/UpdateLinesRecordTechnicalOfPlates" id="updateRecTecLines_ajax" last-response="{{updatedate}}" on-response="_UpdateLinesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/FichasTecnicasPratos/SaveImage" id="getsaveImg_ajax" last-response="{{Uploaddate}}" on-response="_UploadResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+       
 
+        
+    <style>
+        vaadin-combo-box {
+            margin-top: 0px !important;
+            width: 100% !important;
+        }
 
+        vaadin-date-picker {
+            margin-top: 0px !important;
+            width: 100% !important;
+        }
+
+        vaadin-text-field {
+            margin-top: 0px !important;
+            width: 100%;
+        }
+
+        paper-button {
+            margin-top: 10px;
+        }
+
+        .break_clear {
+            margin-top: 15px;
+            margin-right: 0px !important;
+            margin-left: 0px !important;
+        }
+
+        .break_frm {
+            margin-top: 15px;
+        }
+
+        .label_custom {
+            color: var(--valo-contrast-60pct) !important;
+            font-weight: 500 !important;
+            font-size: var(--valo-font-size-s) !important;
+            margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+            margin-bottom: var(--valo-space-xs) !important;
+            transition: color 0.4s !important;
+            line-height: 1 !important;
+            font-family: var(--valo-font-family) !important;
+        }
+
+        datetime-picker {
+            border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+            background-color: var(--valo-contrast-5pct);
+            color: var(--valo-contrast-60pct) !important;
+            width: 100%;
+        }
+
+        .marginSpace {
+            margin: 0px !important;
+        }
+
+        textarea {
+            background-color: #f5f5f5;
+            border: none;
+            border-radius: 3px 4px;
+            align-self: baseline;
+            font-weight: 500;
+        }
+
+        textarea:hover {
+            background-color: #eeeeee;
+        }
+
+        textarea:focus {
+            background-color: white;
+            border: none;
+            outline: 1px solid #eeeeee;
+            border-radius: 3px 4px;
+        }
+
+        datetime-picker {
+            --datetime-selected-background: #71BCC1 !important;
+            --datetime-background: #1f3133;
+            --datetime-color: #eeeeee;
+        }
+
+        paper-collapse-item {
+        --paper-item: {
+            padding: 0 0;
+        };
+         --paper-collapse-item-header: {
+             padding: 0 15px;
+             color: #333;
+             background-color: #f5f5f5;
+             border-bottom: solid #ddd 1px;
+             border-top-left-radius: 3px;
+             border-top-right-radius: 3px;
+
+         };
+          }
+
+          .panel-body {
+              padding-top: 0px !important;
+          }
+    </style>
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
             <paper-tab>Geral</paper-tab>
             <paper-tab>Classificação</paper-tab>
@@ -78,36 +176,28 @@
         <iron-pages selected="{{selected}}">
             <!--Geral-->
             <div>
-                <div class="row">
+                <div class="row break_clear">
                     <div class="col-lg-3">
                         <vaadin-text-field value="{{RecTecPlatValue}}" maxlength="20" id="plateNoid" name="plateNoName" label="Nº" disabled> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
                         <vaadin-text-field value="{{recTecNameValue}}" maxlength="20" id="recordTechnicalNameid" name="recTecName" label="Nome Ficha Técnica"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3">
-                        <vaadin-combo-box value="{{CodMeasureUnitValue}}" id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[CBOMeasureUnitheader]]" item-value-path="id" item-label-path="value" label="Cód. Unidade Medida">
-                            <template>
-                                <table width="200px">
-                                    <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
+                    <div class="col-lg-3" >
+                        <such-selectbox id="piCodeMeasurementUnit" value="{{CodMeasureUnitValue}}" label="Cód. Unidade Medida"
+                                        items="[[CBOMeasureUnitheader]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                        </such-selectbox>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box value="{{LocalizationsValue}}" items="[[CBLocationsheader]]" id="_CBLocalizations" item-value-path="id" item-label-path="value" label="Cod. Localização">
-                            <template>
-                                <table width="200px">
-                                    <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
+                        <such-selectbox id="_CBLocalizations" value="{{LocalizationsValue}}" label="Cod. Localização"
+                                        items="[[CBLocationsheader]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                        </such-selectbox>
                     </div>
                 </div>
                 <div class="row break_clear">
@@ -115,16 +205,12 @@
                         <vaadin-text-field value="{{TPreparationValue}}" maxlength="20" id="TimePreparationid" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" name="TimePreparationName" label="Tempo Preparação">  <div slot="suffix">min.</div></vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box value="{{CookingTechniqueValue}}" items="[[CBOCookingTechnique]]" id="_CookingTechnique" item-value-path="id" item-label-path="value" label="Técnica Culinária">
-                            <template>
-                                <table width="200px">
-                                    <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
+                        <such-selectbox id="_CookingTechnique" value="{{CookingTechniqueValue}}" label="Técnica Culinária"
+                                        items="[[CBOCookingTechnique]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                        </such-selectbox>
                     </div>
                     <div class="col-lg-3">
                         <vaadin-text-field value="{{GroupValue}}" maxlength="20" id="Groupid" name="GroupName" label="Grupo"> </vaadin-text-field>
@@ -150,30 +236,22 @@
             </div>
             <!--Classificação-->
             <div>
-                <div class="row">
+                <div class="row break_clear">
                     <div class="col-lg-3">
-                        <vaadin-combo-box value="{{ClassFt1Value}}" items="[[CboClassificationFilesTechniques]]" id="_ClassFilesTec1" item-value-path="id" item-label-path="value" label="Class.FT.1">
-                            <template>
-                                <table width="200px">
-                                    <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
+                        <such-selectbox id="_ClassFilesTec1" value="{{ClassFt1Value}}" label="Class.FT.1"
+                                        items="[[CboClassificationFilesTechniques]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                        </such-selectbox>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-combo-box value="{{ClassFt2Value}}" items="[[CboClassificationFilesTechniques]]" id="_ClassFilesTec2" item-value-path="id" item-label-path="value" label="Class.FT.2">
-                            <template>
-                                <table width="200px">
-                                    <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
+                        <such-selectbox id="_ClassFilesTec2" value="{{ClassFt2Value}}" label="Class.FT.2"
+                                        items="[[CboClassificationFilesTechniques]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                        </such-selectbox>
                     </div>
                     <div class="col-lg-3">
                         <vaadin-text-field value="{{ClassFt3Value}}" maxlength="20" id="ClassFt3id" name="ClassFt3Name" label="Class.FT.3"> </vaadin-text-field>
@@ -196,7 +274,7 @@
             </div>
             <!--Observações-->
             <div>
-                <div class="row">
+                <div class="row break_clear">
                     <div class="col-lg-12">
                         <such-textarea value="{{NotesValue}}" rows="6" id="Notes" name="Notes" label="Observações"> </such-textarea>
                     </div>
@@ -204,7 +282,7 @@
             </div>
             <!--Confeção-->
             <div>
-                <div class="row">
+                <div class="row break_clear">
                     <div class="col-lg-12">
                         <vaadin-grid id="gridConfection_request" aria-label="ProfileModelsTabel" items="[[GridProceduresConfection]]" class="grid" active-item="{{_SelectedLine}}">
                             <vaadin-grid-column width="160px" resizable hidden>
@@ -222,7 +300,7 @@
                                     <vaadin-grid-filter path="actionNo" />
                                 </template>
                                 <template>
-                                    {{item.actionNo}}
+                                    [[_parseActionCode(item.actionNo)]]
                                 </template>
                             </vaadin-grid-column>
                             <vaadin-grid-column width="160px" resizable>
@@ -250,7 +328,7 @@
             <!--Alergénios-->
             <div>
                 <div>
-                    <div class="row">
+                    <div class="row break_clear">
                         <div class="col-lg-3 alignPoga">
                             <vaadin-checkbox checked="{{WithGlutenChecked}}" id="WithGlutenId">Cereais que contêm glúten</vaadin-checkbox>
                         </div>
@@ -330,7 +408,7 @@
         </div>
         <div class="marginSpace" hidden="{{ _NotCreateOnly }}">
             <paper-button raised id="btnLocalMarketValidation" style="width: 250px !important;" on-tap="_update" hidden="{{ !_permissionsVal.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar Cabeçalho</paper-button>
-        </div>
+    </div><br />
         <div id="PreRequiLinesPanel" class="panel panel-default" hidden="{{ _NotCreateOnly }}">
             <div class="row">
                 <div class="col-md-12 col-lg-12">
@@ -369,16 +447,12 @@
                                     <vaadin-text-field value="{{LineQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Quantityid" name="QuantityName" label="Quantidade"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-combo-box id="UnitMeasureCodeid" name="UnitMeasureCodeid" items="[[CBOMeasureUnit]]" item-value-path="id" value="{{LineMeasureUnit}}" item-label-path="value" label="Cód. Unidade Medida">
-                                        <template>
-                                            <table width="200px">
-                                                <tr>
-                                                    <td width="40%">[[item.id]]</td>
-                                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>
+                                    <such-selectbox id="UnitMeasureCodeid" value="{{LineMeasureUnit}}" label="Cód. Unidade Medida"
+                                                    items="[[CBOMeasureUnit]]"
+                                                    text-path="value"
+                                                    value-path="id"
+                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                    </such-selectbox>
                                 </div>
                                 <div class="col-lg-3">
                                     <vaadin-text-field value="{{LineQuantityOfProduction}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="QuantityOfProductionid" name="QuantityOfProductionName" label="Quantidade de Produto"> </vaadin-text-field>
@@ -417,16 +491,12 @@
                                     <vaadin-text-field value="{{LineTimeCurrentCostPrice}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="TimeCurrentCostPriceid" name="TimeCurrentCostPriceName" label="TPreço Custo Atual"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-combo-box items="[[CBLocations]]" id="LocalizationCodeid" item-value-path="id" item-label-path="value" value="{{LineLocalizationCode}}" label="Cod. Localização">
-                                        <template>
-                                            <table width="200px">
-                                                <tr>
-                                                    <td width="40%">[[item.id]]</td>
-                                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>
+                                    <such-selectbox id="LocalizationCodeid" value="{{LineLocalizationCode}}" label="Cod. Localização"
+                                                    items="[[CBLocations]]"
+                                                    text-path="value"
+                                                    value-path="id"
+                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                    </such-selectbox>
                                 </div>
                                 <div class="col-lg-3">
                                     <vaadin-text-field value="{{LineProteinsByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="ProteinsByQuantityid" name="ProteinsByQuantityName" label="Proteínas por Quantidade"> </vaadin-text-field>
@@ -1603,6 +1673,16 @@
               
                 if (param != undefined && this.CBOMeasureUnit != undefined) {
                     var sel = this.CBOMeasureUnit.find(x => x.id == param);
+                    if (sel != undefined) {
+                        return sel.value;
+                    }
+                }
+                return "";
+            },
+            _parseActionCode: function (param) {
+                debugger;
+                if (param != undefined && this.CboAction != undefined) {
+                    var sel = this.CboAction.find(x => x.id == param);
                     if (sel != undefined) {
                         return sel.value;
                     }

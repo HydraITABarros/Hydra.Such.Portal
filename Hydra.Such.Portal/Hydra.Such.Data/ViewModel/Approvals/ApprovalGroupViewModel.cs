@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Approvals
 {
-    public class ApprovalGroupViewModel
+    public class ApprovalGroupViewModel : ErrorHandler
     {
         public int Code { get; set; }
         public string Description { get; set; }

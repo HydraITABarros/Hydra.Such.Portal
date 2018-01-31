@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewData["Title"] = "Compras - Such";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="title">Compras - Gestão de Requisições</h1>
+
+<link rel="import" href="/elements/submenu/subMenuItemView.html">
+
+<ul class="list-unstyled">
+    <x-submenu link="@Url.Action("GestaoRequisicoes/Detalhes", "Compras")" image="requirement.png" title="Requisições"></x-submenu>
+    <x-submenu link="@Url.Action("GestaoRequisicoes/PontosSituacao", "Compras")" image="folhadehoras.png" title="Pontos de Situação"></x-submenu>
+</ul>
+

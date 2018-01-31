@@ -14,11 +14,22 @@
     <x-submenu link="@Url.Action("Contratos", "Nutricao")" image="contract.png" title="Contratos"></x-submenu>
     <x-submenu link="@Url.Action("AvencaFixa", "Contratos")" image="avencafixa.png" title="Faturação Contratos Avença Fixa"></x-submenu>
     <x-submenu link="@Url.Action("Projetos", "Nutricao")" image="projects1.png" title="Projetos"></x-submenu>
+    <x-submenu link="@Url.Action("Faturacao", "Projetos")" image="project_billing.png" title="Faturação Projetos"></x-submenu>
     <x-submenu link="@Url.Action("DiarioProjeto", "Nutricao")" image="diarioprojetos.png" title="Diário Projetos"></x-submenu>
-    @*<x-submenu link="@Url.Action("Contratos", "Nutricao")" image="contracts1.png" title="Contratos"></x-submenu>
-    <x-submenu link="@Url.Action("Requisicoes", "Nutricao")" image="requirement2.png" title="Requisições"></x-submenu>
-    <x-submenu link="@Url.Action("FichasTecnicasPratos", "Nutricao")" image="sheet3.png" title="Fichas Técnicas de Pratos"></x-submenu>*@
+    <x-submenu link="@Url.Action("PreRequisicoesLista", "Nutricao")" image="pre_requirement.png" title="Pré-Requisições"></x-submenu>
+    <x-submenu link="@Url.Action("Resquisicoes", "Nutricao")" image="requirement.png" title="Requisições"></x-submenu>
+    <x-submenu link="@Url.Action("ModelosReqSimplificada", "Nutricao")" image="requirement4.png" title="Modelo Requisições Simplificadas"></x-submenu>
+    <x-submenu link="@Url.Action("RequisicoesSimplificadas",  "Nutricao")" image="requirement2.png" title="Requisições Simplificadas"></x-submenu>
+    <x-submenu link="@Url.Action("RequisicoesSimplificadas",  "Nutricao", new { area = "", option = 1 })" image="requirement3.png" title="Requisições Simpli. para Registar"></x-submenu>
+    <x-submenu link="@Url.Action("RequisicoesSimplificadas",  "Nutricao", new { area = "", option = 2 })" image="history_requirement.png" title="Histórico Requisições Simplificadas"></x-submenu>
+    <x-submenu link="@Url.Action("MovimentoProdutos", "Nutricao")" image="mercadorias.png" title="Movimentos de Produto"></x-submenu>
+    <x-submenu link="@Url.Action("UnidadeArmazenamento", "Nutricao")" image="box.png" title="Unidade Armazém"></x-submenu>
+    <x-submenu link="@Url.Action("UnidadesProdutivas", "Nutricao")" image="production.png" title="Unidades Produtivas"></x-submenu>
+    <x-submenu link="@Url.Action("CafetariasRefeitorios", "Nutricao")" image="icon_food.png" title="Cafetarias / Refeitórios"></x-submenu>
+    <x-submenu link="@Url.Action("Localizacoes", "Nutricao", new { Area = "" })" image="location.png" title="Localizações"></x-submenu>
+
     <x-submenu link="@Url.Action("FolhaDeHoras_Index", "Nutricao")" image="folhadehoras.png" title="Folhas De Horas"></x-submenu>
     <x-submenu link="@Url.Action("Administracao", "Nutricao")" image="auxiliary1.png" title="Administração"></x-submenu>
+    <x-submenu link="@Url.Action("FichasTecnicasPratos/Detalhes", "Nutricao")" image="nutricion.png" title="Fichas Técnicas de Pratos"></x-submenu>
 </ul>
 

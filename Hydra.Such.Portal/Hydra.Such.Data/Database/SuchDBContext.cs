@@ -747,6 +747,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NumeraçãoPréRequisições).HasColumnName("Numeração Pré Requisições");
 
+                entity.Property(e => e.NumeraçãoRequisiçõesSimplificada).HasColumnName("Numeração Requisições Simplificada");
+
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);

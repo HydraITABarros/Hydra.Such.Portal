@@ -11,9 +11,20 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
-
-<h1 class="title">Requisições Simplifcadas</h1>
-
+@{ 
+    if (ViewBag.Option == "historico")
+    {
+    <h1 class="title">Histórico Requisições Simplificadas</h1>
+    }
+    else if (ViewBag.Option == "resgitar")
+    {
+    <h1 class="title"> Requisições Simplificadas para Registar</h1>
+    }
+    else
+    {
+    <h1 class="title">Requisições Simplificadas </h1>
+    }
+}
 <x-simplifiedreq></x-simplifiedreq>
 <dom-module id="x-simplifiedreq">
     <template>
@@ -21,7 +32,7 @@
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{SimplifiedRequisitions}}" id="grid_datasource" url="/Nutricao/RequisicoesSimplificadas/GetSimplifiedRequisitions"></iron-ajax>
+        <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{SimplifiedRequisitions}}" id="grid_datasource" url="/Nutricao/RequisicoesSimplificadas/SimplifiedRequisitionsPage"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRequisitionsStatus" last-response="{{GetRequisitionsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <div class="marginSpace" id="ddmarginSpace">
@@ -138,6 +149,10 @@
                 ready: function () {
                     var option="@ViewBag.Option";
                     if (option =="resgitar") {
+                        this.$.ddmarginSpace.style.display = 'none';
+                        this.$.grid_datasource.body = JSON.stringify(option);
+                    }
+                    else if (option == "historico") {
                         this.$.ddmarginSpace.style.display = 'none';
                         this.$.grid_datasource.body = JSON.stringify(option);
                     }
