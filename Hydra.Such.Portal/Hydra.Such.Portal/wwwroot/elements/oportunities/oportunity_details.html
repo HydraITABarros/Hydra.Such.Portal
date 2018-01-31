@@ -22,6 +22,7 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 
 <link rel="import" href="/lib/iron-autogrow-textarea/iron-autogrow-textarea.html" />
 <dom-module id="x-oportunitydetails">
@@ -145,7 +146,7 @@
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRequestOrigin" last-response="{{CBRequestOrigin}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsStatus" last-response="{{CBProposalsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetContacts" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Contactos/GetContacts" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
 
 
@@ -235,20 +236,15 @@
                                             <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Âmbito do Serviço" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBContacts]]" id="contactNo" item-value-path="id" item-label-path="value" value="{{data.contactNo}}" label="Nº Contato" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
-                                                <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
+                                            <such-selectbox id="contactNo" value="{{data.contactNo}}" label="Nº Contato"
+                                                            items="[[CBContacts]]"
+                                                            text-path="name"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Cód. Contato"}, {"field":"name", "name":"Nome"}]'
+                                                            required error-message="Este campo é obrigatório"
+                                                            disabled="{{ !_permissions.update }}">
+                                            </such-selectbox>
                                         </div>
-                                        <!--<div class="col-lg-3">
-                                        <vaadin-text-field id="contactNo" name="contactNo" label="Nº Contacto" value="{{data.contactNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                    </div>-->
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" on-value-changed="_clientChange">
                                                 <template>

@@ -95,7 +95,6 @@
                    method="post"
                    handle-as="json"
                    id="address_ajax"
-                   on-response="_addressResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
         <template is="dom-if" if="{{ !_isCreate }}">
@@ -332,12 +331,13 @@
             <div>
                 <div class="row">
                     <div class="col-lg-3">
-                        <such-selectbox id="sbClientShippingAddresses" value="{{_shippingAddressCode}}" label="Cód. Endereço Envio"
+                        <such-selectbox id="sbClientShippingAddresses" value="{{data.shippingAddressCode}}" label="Cód. Endereço Envio"
                                         items="[[ClientShippingAddresses]]"
                                         text-path="name"
                                         value-path="code"
                                         fields='[{"field":"code", "name":"Cód. Endereço"}, {"field":"name", "name":"Descrição"}, {"field":"address", "name":"Endereço"}, {"field":"zipCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"contact", "name":"Contacto"}]'
-                                        disabled="{{ !_permissions.update }}">
+                                        disabled="{{ !_permissions.update }}"
+                                        on-value-changed="_getAddressByCode">
                         </such-selectbox>
                     </div>
                     <div class="col-lg-3">
@@ -465,15 +465,6 @@
                             type: Boolean,
                             value: false
                         },
-                        _shippingAddressCode: {
-                            type: String,
-                            notify: true,
-                            observer: '_shippingAddressChanged'
-                        },
-                    },
-                    _shippingAddressChanged: function (newValue) {
-                        this.data.shippingAddressCode = this._shippingAddressCode;
-                        this._getAddressByCode(newValue);
                     },
                     ready: function () {
                         //GET PROJECT DATA
@@ -577,7 +568,7 @@
                                     this.$.shippinhAddress_ajax.body = JSON.stringify(this.data.clientNo);
                                     this.$.shippinhAddress_ajax.generateRequest();
 
-                                    this._shippingAddressCode = this.data.shippingAddressCode;
+                                    //JP this._shippingAddressCode = this.data.shippingAddressCode;
                                 }
                             } else if (data.detail.url.indexOf("Create") !== -1) {
                                 this._createResponseProcessor();
@@ -630,21 +621,18 @@
                     },
 
                     //Address Functions
-                    _getAddressByCode: function (e) {
-                        this.$.address_ajax.body = JSON.stringify(e);//.detail.value);
-                        this.$.address_ajax.generateRequest();
-                    },
-                    _addressResponseProcessor: function (e) {
-                        var self = this;
-                        if (this.addressData != null) {
+                    _getAddressByCode: function (e) {                        
+                        var selItem = this._selectedAddress = this.ClientShippingAddresses.find(x => x.code == e.detail.value);
+                        if (selItem != null) {
                             //Fill Data
-                            this.$.ShippingName.value = this.addressData.name;
-                            this.$.ShippingAddress.value = this.addressData.address;
-                            this.$.ShippingPostalCode.value = this.addressData.zipCode;
-                            this.$.ShippingLocality.value = this.addressData.city;
-                            this.$.ShippingContact.value = this.addressData.contact;
+                            this.$.ShippingName.value = selItem.name;
+                            this.$.ShippingAddress.value = selItem.address;
+                            this.$.ShippingPostalCode.value = selItem.zipCode;
+                            this.$.ShippingLocality.value = selItem.city;
+                            this.$.ShippingContact.value = selItem.contact;
                         }
                         else {
+
                             this.$.ShippingName.value = "";
                             this.$.ShippingAddress.value = "";
                             this.$.ShippingPostalCode.value = "";
@@ -652,6 +640,7 @@
                             this.$.ShippingContact.value = "";
                         }
                     },
+
                     //Helpers
                     _executeRequest: function (url, data) {
                         this.$.page_databound_ajax.url = url;
@@ -673,10 +662,11 @@
                             this.$.projects_ajax.body = JSON.stringify(e.detail.value);
                             this.$.projects_ajax.generateRequest();
                             this.$.ContractNo.value = "";
-
+                            
                             this.$.shippinhAddress_ajax.body = JSON.stringify(e.detail.value);
                             this.$.shippinhAddress_ajax.generateRequest();
-                            this._shippingAddressCode = "";
+                            this.data.shippingAddressCode = "";
+                            this.$.sbClientShippingAddresses.value = "";
                             this.$.sbClientShippingAddresses.valueText = "";
                         }
                     },

@@ -920,6 +920,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllClientsComboGrid()
+        {
+            var result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetServices()
         {
             List<DDMessage> result = DBServices.GetAll().Select(x => new DDMessage()
