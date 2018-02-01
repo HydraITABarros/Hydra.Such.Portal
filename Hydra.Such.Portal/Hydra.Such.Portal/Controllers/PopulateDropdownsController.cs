@@ -116,7 +116,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = x.IdUtilizador,
                 value = x.Nome
-            }).ToList(); ;
+            }).ToList(); 
             return Json(result);
         }
 
@@ -127,7 +127,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = x.Código,
                 value = x.Descrição
-            }).ToList(); ;
+            }).ToList(); 
             return Json(result);
         }
 
@@ -589,9 +589,9 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAllAction()
         {
-            List<DDMessageString> result = DBActionsConfection.GetAll().Select(x => new DDMessageString()
+            List<DDMessage> result = DBActionsConfection.GetAll().Select(x => new DDMessage()
             {
-                id = Convert.ToString(x.Código),
+                id = x.Código,
                 value = x.Descrição
             }).ToList();
             return Json(result);
