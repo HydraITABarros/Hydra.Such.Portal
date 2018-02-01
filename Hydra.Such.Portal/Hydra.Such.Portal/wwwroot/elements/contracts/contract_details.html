@@ -438,7 +438,6 @@
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            "
                                             <vaadin-combo-box items="[[CBServiceObjects]]" id="mServiceObject" item-value-path="id" item-label-path="value" value="{{data.serviceObject}}" label="Objeto Serviço" disabled="{{ _lockFields }}">
                                                 <template>
                                                     <b>[[item.value]]</b>
@@ -659,7 +658,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.provisioningFee}}" id="mProvisioningFee" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" name="provisioningFee" label="Taxa Aprovisionamento" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.provisioningFee}}" id="mProvisioningFee" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" error-message="Valor inválido" name="provisioningFee" label="Taxa Aprovisionamento" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.mc}}" id="mc" name="mc" label="% MC" disabled="{{ _lockFields }}"> </vaadin-text-field>
@@ -667,7 +666,7 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.displacementFee}}" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" id="mDisplacementFee" name="mDisplacementFee" label="Taxa Deslocação" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.displacementFee}}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" error-message="Valor inválido" id="mDisplacementFee" name="mDisplacementFee" label="Taxa Deslocação" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBInvoicePeriods]]" id="mInvoicePeriods" item-value-path="id" item-label-path="value" value="{{data.invocePeriod}}" label="Período Fatura" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório">
@@ -909,7 +908,7 @@
                             </div>
 
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" label="Quantidade" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" on-value-changed="_ConvertDecimals" label="Quantidade" disabled="{{ _lockFields }}" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                             </div>
 
                             <div class="col-lg-2">
@@ -925,13 +924,13 @@
                             </div>
 
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$" />
+                                <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
                             </div>
                         </div>
 
                         <div class="row" style="display: {{ _showContractLinesForm }};">
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                             </div>
 
                             <div class="col-lg-2 alignPoga">
@@ -975,17 +974,17 @@
                             </div>
 
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periocidade" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periocidade" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                             </div>
                         </div>
 
                         <div class="row" style="display: {{ _showContractLinesForm }};">
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLInterventionHours}}" id="_CLInterventionHours" name="_CLInterventionHours" label="Nº Horas Intervenção" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$" ~ />
+                                <vaadin-text-field value="{{_CLInterventionHours}}" id="_CLInterventionHours" name="_CLInterventionHours" label="Nº Horas Intervenção" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
                             </div>
 
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$" />
+                                <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
                             </div>
 
                             <div class="col-lg-2">
@@ -1110,7 +1109,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.quantity}}" id="_CLGridQuantity" name="_CLGridQuantity" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.quantity}}" id="_CLGridQuantity" name="_CLGridQuantity" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                                         </template>
 
                                         <template is="dom-if" if="{{ !item.selected }}">
@@ -1147,7 +1146,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$"> <div slot="suffix">€</div></vaadin-text-field>
+                                            <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> <div slot="suffix">€</div></vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.unitPrice}} €
@@ -1161,7 +1160,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.lineDiscount}}" id="_CLGridDiscountLine" name="_CLGridDiscountLine" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.lineDiscount}}" id="_CLGridDiscountLine" name="_CLGridDiscountLine" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.lineDiscount}}%
@@ -1253,7 +1252,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.frequency}}" id="_CLGridFrequency" name="_CLGridFrequency" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.frequency}}" id="_CLGridFrequency" name="_CLGridFrequency" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.frequency}}
@@ -1267,7 +1266,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.interventionHours}}" id="_CLGridInterventionHours" name="_CLGridInterventionHours" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.interventionHours}}" id="_CLGridInterventionHours" name="_CLGridInterventionHours" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.interventionHours}}
@@ -1281,7 +1280,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.totalTechinicians}}" id="_CLGridTotalTechnicians" name="_CLGridTotalTechnicians" disabled="{{ _lockFields }}" pattern="^[1-9]\d*(\.\d+)?$"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.totalTechinicians}}" id="_CLGridTotalTechnicians" name="_CLGridTotalTechnicians" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.totalTechinicians}}
@@ -1656,6 +1655,9 @@
                     this._showAreas = this._areaid == 4;
 
                 },
+                _ConvertDecimals: function (e) {
+                    e.target.value = e.target.value.replace(",", ".");
+                },
                 _openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
@@ -1827,7 +1829,7 @@
                             if (this.data.eReasonCode == 1) {
 
 
-                                this._openToast("Contrato atualizado com sucesso.")
+                                this._openToast("Contrato atualizado com sucesso.");
                             } else {
                                 this._openToastError(this.data.eMessage);
                             }
@@ -1836,7 +1838,7 @@
                             this._openToast(this.data.eMessage);
                         }
                     } else {
-                        this._openToastError("Ocorreu um erro desconhecido.")
+                        this._openToastError("Ocorreu um erro desconhecido.");
                     }
                 },
                 _createResponseProcessor: function () {
@@ -1858,7 +1860,7 @@
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.validateResponse == "") {
-                            this._executeRequest("/Contratos/CreateContract", this.data)
+                            this._executeRequest("/Contratos/CreateContract", this.data);
                         } else {
                             this._openToastError("Ocorreu um erro desconhecido.");
                         }
@@ -2170,7 +2172,7 @@
                     return "";
                 },
                 _clFormatResponsible: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.CBEmployees != undefined) {
                         var sel = this.CBEmployees.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;

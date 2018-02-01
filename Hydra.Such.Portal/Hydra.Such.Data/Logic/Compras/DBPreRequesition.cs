@@ -25,6 +25,22 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
+        public static string GetByNoAndArea(string PreRequesitionNo, int area)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.PréRequisição.Where(x => x.NºPréRequisição == PreRequesitionNo).FirstOrDefault().NºPréRequisição;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<PréRequisição> GetAll(string User, int area)
         {
             try

@@ -740,13 +740,13 @@
             _calcTotals: function (e) {
                 switch (e.target.id) {
                 case "qtyID":
-                    this.qty = e.detail.value;
+                        this.qty = e.detail.value.replace(",", ".");
                     break;
                 case "unitCostId":
-                    this.unitCost = e.detail.value;
+                        this.unitCost = e.detail.value.replace(",", ".");
                     break;
                 case "amountId":
-                    this.amount = e.detail.value;
+                        this.amount = e.detail.value.replace(",", ".");
                     break;
                 default:
                     break;
@@ -766,12 +766,12 @@
 
                 switch (param.target.id) {
                 case "lineQuantity":
-                    var qnt = param.detail.value;
-                    this.data.find(x => x == this._SelectedLine).quantity = qnt;
+                    var qnt = param.target.value.replace(",", ".");
+                    param.target.value = param.target.value.replace(",", ".");
                     break;
                 case "lineUnitCost":
-                    var unitCost = param.detail.value;
-                    unitCost = this.data.find(x => x == this._SelectedLine).directUnitCost = unitCost;
+                    var unitCost = param.target.value.replace(",", ".");
+                    param.target.value = param.target.value.replace(",", ".");
                     break;
                 default:
                     break;
