@@ -30,32 +30,122 @@
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
-
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <dom-module id="x-projectdiary">
     <template>
 
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
+    <style>
+        vaadin-combo-box {
+            margin-top: 0px !important;
+            width: 100% !important;
+        }
 
-        <style>
-            input[readonly] {
-                border: 2px solid transparent;
-            }
+        vaadin-date-picker {
+            margin-top: 0px !important;
+            width: 100% !important;
+        }
 
-            input {
-                font: inherit;
-            }
-        </style>
+        vaadin-text-field {
+            margin-top: 0px !important;
+            width: 100%;
+        }
+
+        paper-button {
+            margin-top: 10px;
+        }
+
+        .break_clear {
+            margin-top: 15px;
+            margin-right: 0px !important;
+            margin-left: 0px !important;
+        }
+
+        .break_frm {
+            margin-top: 15px;
+        }
+
+        .label_custom {
+            color: var(--valo-contrast-60pct) !important;
+            font-weight: 500 !important;
+            font-size: var(--valo-font-size-s) !important;
+            margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+            margin-bottom: var(--valo-space-xs) !important;
+            transition: color 0.4s !important;
+            line-height: 1 !important;
+            font-family: var(--valo-font-family) !important;
+        }
+
+        datetime-picker {
+            border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+            background-color: var(--valo-contrast-5pct);
+            color: var(--valo-contrast-60pct) !important;
+            width: 100%;
+        }
+
+        .marginSpace {
+            margin: 0px !important;
+        }
+
+        textarea {
+            background-color: #f5f5f5;
+            border: none;
+            border-radius: 3px 4px;
+            align-self: baseline;
+            font-weight: 500;
+        }
+
+        textarea:hover {
+            background-color: #eeeeee;
+        }
+
+        textarea:focus {
+            background-color: white;
+            border: none;
+            outline: 1px solid #eeeeee;
+            border-radius: 3px 4px;
+        }
+
+        datetime-picker {
+            --datetime-selected-background: #71BCC1 !important;
+            --datetime-background: #1f3133;
+            --datetime-color: #eeeeee;
+        }
+
+        paper-collapse-item {
+        --paper-item: {
+            padding: 0 0;
+        };
+         --paper-collapse-item-header: {
+             padding: 0 15px;
+             color: #333;
+             background-color: #f5f5f5;
+             border-bottom: solid #ddd 1px;
+             border-top-left-radius: 3px;
+             border-top-right-radius: 3px;
+
+         };
+          }
+
+          .panel-body {
+              padding-top: 0px !important;
+          }
+        input[readonly] {
+            border: 2px solid transparent;
+        }
+        input {
+            font: inherit;
+        }
+    </style>
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
             <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
             <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
-
-
         </div><!--on-response="_gridListResponse"-->
         <iron-ajax url="/Projetos/GetProjectMovementsDp" last-response="{{resultMovements}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}"  auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{codeOptions}}" id="ajax_code_options" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -70,7 +160,6 @@
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContabGroup" last-response="{{ContabGroupData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Administracao/GetMealTypesData" last-response="{{MealTypesData}}" method="post" auto handle-as="json" content-type="application/json"></iron-ajax>
-
         <iron-ajax url="/PopulateDropdowns/GetServiceGroup" last-response="{{ServiceGroupData}}" id="ajax_ServiceGroup" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetClientService" last-response="{{ServiceClientData}}" id="ajax_SServiceClient" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -85,55 +174,44 @@
         <div>
             <div class="row">
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="projectList" name="projectList" items="[[response]]" on-value-changed="_projectChange" item-value-path="id" item-label-path="id" label="Nº Projeto" disabled="{{disabledProjectNo}}" value="{{projectNumber}}">
-                        <template>
-                            <table>
-                                <tr>
-                                    <td width="40%">[[item.id]]</td>
-                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    <such-selectbox id="projectList" name="projectList" value="{{projectNumber}}" label="Nº Projeto" on-value-changed="_projectChange" disabled="{{disabledProjectNo}}"
+                                    items="[[response]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="projectMovementList" name="projectMovementList" items="[[response2]]" item-value-path="id" item-label-path="value" label="Tipo Movimento" value="{{projectMovementNumber}}" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório">
-                        <template>
-                            <table width="200px">
-                                <tr>
-                                    <td width="40%">[[item.id]]</td>
-                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    <such-selectbox id="projectMovementList" name="projectMovementList" value="{{projectMovementNumber}}" label="Tipo Movimento" disabled="{{ !_permissions.create }}"
+                                    required error-message="Este campo é obrigatório"
+                                    items="[[response2]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="projectTypeList" name="projectTypeList" items="[[response3]]" on-value-changed="_projectTypeChange" item-value-path="id" item-label-path="value" label="Tipo" value="{{projectTypeNumber}}" disabled="{{ !_permissions.create }}">
-                        <template>
-                            <table width="200px">
-                                <tr>
-                                    <td width="40%">[[item.id]]</td>
-                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    <such-selectbox id="projectTypeList" name="projectTypeList" value="{{projectTypeNumber}}" label="Tipo" disabled="{{ !_permissions.create }}"
+                                    on-value-changed="_projectTypeChange"
+                                    items="[[response3]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piCode" name="piCode" items="[[codeOptions]]" item-value-path="id" on-value-changed="_codeChange" item-label-path="id" label="Código" value="{{codeNumber}}" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório">
-                        <template>
-                            <table width="300px">
-                                <tr>
-                                    <td width="20%"><b>[[item.id]]</b></td>
-                                    <td width="80%">[[item.value]]</td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    <such-selectbox id="piCode" name="piCode" value="{{codeNumber}}" label="Código" disabled="{{ !_permissions.create }}"
+                                    required
+                                    error-message="Este campo é obrigatório"
+                                    on-value-changed="_codeChange"
+                                    items="[[codeOptions]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-text-field id="piDescription" label="Descrição" value="{{description}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
@@ -141,81 +219,57 @@
             </div>
             <div class="row">
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piContabGroup" name="piContabGroup" items="[[ContabGroupData]]" item-value-path="id" value="{{codeProjectContabGroup}}" item-label-path="value" label="Grupo Contab" disabled="{{ !_permissions.create }}">
-                        <template>
-                            <table width="200px">
-                                <tr>
-                                    <td width="40%">[[item.id]]</td>
-                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    <such-selectbox id="piContabGroup" name="piContabGroup" value="{{codeProjectContabGroup}}" label="Grupo Contab" disabled="{{ !_permissions.create }}"
+                                    items="[[ContabGroupData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-text-field id="piQuantity" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" label="Quantidades" value="{{quantity}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" items="[[MeasureUnit]]" item-value-path="id" value="{{codeMeasurementUnit}}" item-label-path="value" label="Cód. Unidade Medida" disabled="{{ !_permissions.create }}">
-                        <template>
-                            <table width="200px">
-                                <tr>
-                                    <td width="40%">[[item.id]]</td>
-                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    <such-selectbox id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" value="{{codeMeasurementUnit}}" label="Cód. Unidade Medida" disabled="{{ !_permissions.create }}"
+                                    items="[[MeasureUnit]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piCodeLocation" name="piCodeLocation" items="[[Locations]]" item-value-path="id" value="{{codeLocation}}" item-label-path="value" label="Cód. Localização" disabled="{{ !_permissions.create }}">
-                        <template>
-                            <table width="200px">
-                                <tr>
-                                    <td width="40%">[[item.id]]</td>
-                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    <such-selectbox id="piCodeLocation" name="piCodeLocation" value="{{codeLocation}}" label="Cód. Localização" disabled="{{ !_permissions.create }}"
+                                    items="[[Locations]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piCodeRegion" name="piCodeRegion" items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.create }}">
-                        <template>
-                            <table width="180px">
-                                <tr>
-                                    <td width="20%">[[item.id]]</td>
-                                    <td width="80%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    <such-selectbox id="piCodeRegion" name="piCodeRegion" value="{{codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.create }}"
+                                    items="[[RegionData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piFuncArea" name="piFuncArea" items="[[FunctionalAreaCodeData]]" item-value-path="id" value="{{codeFuncArea}}" item-label-path="value" label="Cód. Área Funcional" disabled="{{ !_permissions.create }}">
-                        <template>
-                            <table width="200px">
-                                <tr>
-                                    <td width="40%">[[item.id]]</td>
-                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    <such-selectbox id="piFuncArea" name="piFuncArea" value="{{codeFuncArea}}" label="Cód. Área Funcional" disabled="{{ !_permissions.create }}"
+                                    items="[[FunctionalAreaCodeData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" items="[[ResponsabilityCenterData]]" value="{{codeResponsabilityCenter}}" item-value-path="id" item-label-path="value" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}">
-                        <template>
-                            <table width="200px">
-                                <tr>
-                                    <td width="40%">[[item.id]]</td>
-                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    <such-selectbox id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" value="{{codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}"
+                                    items="[[ResponsabilityCenterData]]"
+                                    text-path="value"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-text-field id="piUnitCost" label="Custo Unitário" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
@@ -232,6 +286,8 @@
                 <div class="col-lg-2">
                     <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitValueToInvoice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-lg-2">
                     <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
                 </div>
@@ -239,29 +295,20 @@
                     <vaadin-checkbox id="pcInvoice" checked="{{billable}}" disabled="{{ !_permissions.create }}"> Faturável</vaadin-checkbox>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="MealTypesCode" items="[[MealTypesData]]" item-value-path="code" item-label-path="description" value="{{ddMealTypes}}" label="Tipo Refeição" disabled="{{ !_permissions.create }}">
-                        <template>
-                            <table width="250px">
-                                <tr>
-                                    <td width="20%">[[item.code]]</td>
-                                    <td width="40%"> <b>[[item.description]]</b></td>
-                                    <td width="40%"> [[item.grupoContabProduto]]</td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    <such-selectbox id="MealTypesCode" name="piCodeResponsabilityCenter" value="{{ddMealTypes}}" label="Tipo Refeição" disabled="{{ !_permissions.create }}"
+                                    items="[[MealTypesData]]"
+                                    text-path="description"
+                                    value-path="code"
+                                    fields='[{"field":"code", "name":"Código"}, {"field":"description", "name":"Descrição"}, {"field":"grupoContabProduto", "name":"Grupo Contab. Produto"}]'>
+                    </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="ServiceGroupCod" items="[[ServiceGroupData]]" item-value-path="serviceCode" item-label-path="serviceDescription" value="{{ddServiceGroupCode}}" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}">
-                        <template>
-                            <table width="200px">
-                                <tr>
-                                    <td width="40%">[[item.serviceCode]]</td>
-                                    <td width="60%"> <b>[[item.serviceDescription]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    <such-selectbox id="ServiceGroupCod" name="piCodeResponsabilityCenter" value="{{ddMealTypes}}" label="Cód. Grupo Serviço" disabled="{{ !_permissions.create }}"
+                                    items="[[ServiceGroupData]]"
+                                    text-path="serviceDescription"
+                                    value-path="serviceCode"
+                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>
                 <div class="col-lg-2" disabled="{{ !_permissions.create }}">
                     <vaadin-text-field id="piResidueGuideNo" label="Nº Guia Resíduo" value="{{residueguide}}"></vaadin-text-field>
@@ -269,24 +316,22 @@
                 <div class="col-lg-2">
                     <vaadin-text-field id="piExternalGuideNo" label="Nº Guia Externa" value="{{externalguide}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-lg-2">
                     <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{date}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-combo-box id="ServiceClientCode" items="[[ServiceClientData]]" item-value-path="serviceCode" item-label-path="serviceDescription" value="{{ddServiceClientCode}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}">
-                        <template>
-                            <table width="200px">
-                                <tr>
-                                    <td width="40%">[[item.serviceCode]]</td>
-                                    <td width="60%"> <b>[[item.serviceDescription]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    <such-selectbox id="ServiceClientCode" name="piCodeResponsabilityCenter" value="{{ddServiceClientCode}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
+                                    items="[[ServiceClientData]]"
+                                    text-path="serviceDescription"
+                                    value-path="serviceCode"
+                                    fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
+                    </such-selectbox>
                 </div>
             </div>
             <div class="row" hidden="{{ !_permissions.create }}">
-                <div class="col-lg-2 alignPoga">
+                <div class="col-lg-2">
                     <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                 </div>
             </div>
@@ -1227,21 +1272,25 @@
                 },
 
                 observers: [
-                    '_onCacheLoaded(response2, response3, CBContractLineCodesGrid, ContabGroupData, MeasureUnit, Locations, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, MealTypesData, ServiceGroupData, ServiceClientData)'
+                    '_onCacheLoaded( CBResourceCode,CBCodeProducts,CBCGAccountCode,response2, response3, CBContractLineCodesGrid, ContabGroupData, MeasureUnit, Locations, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, MealTypesData, ServiceGroupData, ServiceClientData)'
                 ],
 
-                _onCacheLoaded: function (typemovement,
-                    type,
-                    code,
-                    contabgroup,
-                    unitcode,
-                    localcode,
-                    regioncode,
-                    funcareacode,
-                    respcentercode,
-                    mealtypescode,
-                    serviceGroupCod,
-                    serviceClientCode) {
+                _onCacheLoaded: function ( cBResourceCode,
+                        cBCodeProducts,
+                        cBcgAccountCode,
+                        typemovement,
+                        type,
+                        code,
+                        contabgroup,
+                        unitcode,
+                        localcode,
+                        regioncode,
+                        funcareacode,
+                        respcentercode,
+                        mealtypescode,
+                        serviceGroupCod,
+                        serviceClientCode
+                   ) {
 
                     if (!this.Flag) {
                         if (this.paramprojno != "") {
@@ -1319,7 +1368,6 @@
                         this._permissions.update = false;
                     }
                 },
-
                 openToastSuccess: function (message) {
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
@@ -1328,15 +1376,8 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
-                //_gridListResponse: function ()
-                //{
-                //    //if (this.resultMovements == null || this.resultMovements == undefined || this.resultMovements.length == 0)
-                //    //{
-                //    //    this.openToastError("Não existem movimentos associados a este projeto.");
-                //    //}
-
-                //},
                 _add() {
+                    debugger;
                     if (true)
                     //Validações
                     {
@@ -1688,7 +1729,7 @@
 
                 // PARSING FUNCTIONS -> GRID LINES
                 _parseMovementType: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.response2 != undefined) {
                         var sel = this.response2.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -1697,7 +1738,7 @@
                     return "";
                 },
                 _parseType: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.response3 != undefined) {
                         var sel = this.response3.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -1706,14 +1747,17 @@
                     return "";
                 },
                 _parseCode: function (param1, param2) {
+                    debugger;
                     if (param1 != undefined && param2 != undefined) {
                         var sel;
-                        if (param2 == 1) {
+                        if (param2 == 1 && this.CBResourceCode != undefined) {
                             sel = this.CBResourceCode.find(x => x.id == param1);
-                        } else if (param2 == 2) {
+                        } else if (param2 == 2 && this.CBCodeProducts != undefined) {
                             sel = this.CBCodeProducts.find(x => x.id == param1);
                         } else {
-                            sel = this.CBCGAccountCode.find(x => x.id == param1);
+                            if (this.CBCGAccountCode != undefined) {
+                                sel = this.CBCGAccountCode.find(x => x.id == param1);
+                            }
                         }
                         if (sel != undefined) {
                             return sel.id;
@@ -1722,7 +1766,7 @@
                     return "";
                 },
                 _parseContabGroup: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.ContabGroupData != undefined) {
                         var sel = this.ContabGroupData.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -1731,7 +1775,7 @@
                     return "";
                 },
                 _parseMeasurementUnit: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.MeasureUnit != undefined) {
                         var sel = this.MeasureUnit.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -1740,7 +1784,7 @@
                     return "";
                 },
                 _parseLocation: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.Locations != undefined) {
                         var sel = this.Locations.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -1749,7 +1793,7 @@
                     return "";
                 },
                 _parseRegion: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.RegionData != undefined) {
                         var sel = this.RegionData.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -1758,7 +1802,7 @@
                     return "";
                 },
                 _parseFuncArea: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.FunctionalAreaCodeData != undefined) {
                         var sel = this.FunctionalAreaCodeData.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -1767,7 +1811,7 @@
                     return "";
                 },
                 _parseResponsabilityCenter: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.ResponsabilityCenterData != undefined) {
                         var sel = this.ResponsabilityCenterData.find(x => x.id == param);
                         if (sel != undefined) {
                             return sel.value;
@@ -1776,7 +1820,7 @@
                     return "";
                 },
                 _parseMealType: function (param) {
-                    if (param != undefined) {
+                    if (param != undefined && this.MealTypesData != undefined) {
                         var sel = this.MealTypesData.find(x => x.code == param);
                         if (sel != undefined) {
                             return sel.description;
@@ -1800,7 +1844,12 @@
                             this.$.ajax_SServiceClient.params = { "allProjs": false };
                             this.$.ajax_SServiceClient.generateRequest();
                             if (param1 != undefined) {
-                                return array.find(x => x.serviceCode == param1).serviceDescription;
+                                var arrayfindcode = array.find(x => x.serviceCode == param1);
+                                if (arrayfindcode != undefined) {
+                                    return arrayfindcode.serviceDescription;
+                                } else {
+                                    return "";
+                                }
                             }
                         }
                     }
@@ -1808,9 +1857,10 @@
 
                 },
                 _parseServiceGroup: function (param1, param2) {
+                    debugger;
                     //refinar array c/ param2
                     //retornar valor c/ param1
-                    if (param2 != undefined) {
+                    if (param2 != undefined && this.ServiceGroupData != undefined) {
 
                         if (this.ServiceGroupData != null) {
                             var array = this.ServiceGroupData;
@@ -1822,7 +1872,13 @@
                             this.$.ajax_ServiceGroup.params = { "allProjs": false };
                             this.$.ajax_ServiceGroup.generateRequest();
                             if (param1 != undefined) {
-                                return array.find(x => x.serviceCode == param1).serviceDescription;
+                                var arrayfindcode = array.find(x => x.serviceCode == param1);
+                                if (arrayfindcode != undefined) {
+                                    return arrayfindcode.serviceDescription;
+                                } else {
+                                    return "";
+                                }
+                                
                             }
                         }
                     }
@@ -1836,16 +1892,16 @@
 
                     switch (param.target.id) {
                         case "lineQuantity":
-                            var qnt = param.detail.value;
-                            this.result.find(x => x == this._SelectedLine).quantity = qnt;
+                            var qnt = param.target.value.replace(",", ".");
+                            param.target.value = param.target.value.replace(",", ".");
                             break;
                         case "lineUnitCost":
-                            var unitCost = param.detail.value;
-                            unitCost = this.result.find(x => x == this._SelectedLine).unitCost = unitCost;
+                            var unitCost = aram.target.value.replace(",", ".");
+                            param.target.value = param.target.value.replace(",", ".");
                             break;
                         case "lineUnitPrice":
-                            var unitPrice = param.detail.value;
-                            this.result.find(x => x == this._SelectedLine).unitPrice = unitPrice;
+                            var unitPrice = aram.target.value.replace(",", ".");
+                            param.target.value = param.target.value.replace(",", ".");
                             break;
                         default:
                             break;
