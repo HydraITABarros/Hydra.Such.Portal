@@ -23,8 +23,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             _config = appSettings.Value;
         }
-
-
+        
         public IActionResult Index()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
@@ -186,6 +185,36 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region CRUD
+        
+        [HttpPost]
+        public JsonResult CreateNewForThisUser([FromBody] JObject requestParams)
+        {
+            int AreaNo = int.Parse(requestParams["areaid"].ToString());
+            string pPreRequisicao = DBPreRequesition.GetByNoAndArea(User.Identity.Name, AreaNo);
+            if(pPreRequisicao != null)
+            {
+                PreRequesitionsViewModel reqID = new PreRequesitionsViewModel();
+                reqID.PreRequesitionsNo = pPreRequisicao;
+                return Json(reqID);
+            }
+            else
+            {
+                PréRequisição createNew = new PréRequisição();
+                createNew.NºPréRequisição = User.Identity.Name;
+                createNew.Área = AreaNo;
+                createNew.UtilizadorCriação = User.Identity.Name;
+                createNew.DataHoraCriação = DateTime.Now;
+                DBPreRequesition.Create(createNew);
+
+                PreRequesitionsViewModel reqID = new PreRequesitionsViewModel();
+                reqID.PreRequesitionsNo = createNew.NºPréRequisição;
+
+                return Json(reqID);
+            } 
+            
+
+        }
+
         [HttpPost]
         public JsonResult CreatePreRequesition([FromBody] PreRequesitionsViewModel data)
         {
@@ -355,7 +384,7 @@ namespace Hydra.Such.Portal.Controllers
                     DBPreRequesition.DeleteByPreRequesitionNo(data.PreRequesitionsNo);
                     
                     result.eReasonCode = 1;
-                    result.eMessage = "Contrato eliminado com sucesso.";
+                    result.eMessage = "Pré-Requisição eliminada com sucesso.";
                     //}
 
                 }
@@ -363,7 +392,7 @@ namespace Hydra.Such.Portal.Controllers
             catch (Exception ex)
             {
                 result.eReasonCode = 2;
-                result.eMessage = "Ocorreu um erro ao eliminar o contrato.";
+                result.eMessage = "Ocorreu um erro ao eliminar a Pré-Requisição.";
             }
             return Json(result);
 
@@ -408,7 +437,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json("");
         }
         #endregion
-
+        
         #region Requesition Model Lines
         
         public IActionResult RequisiçõesModeloLista(string id)

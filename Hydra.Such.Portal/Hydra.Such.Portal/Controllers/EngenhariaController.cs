@@ -387,7 +387,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.UploadURL = _configup.FileUploadFolder;
                 ViewBag.Area = 1;
-                ViewBag.PreRequesitionNo = PreRequesitionNo ?? "";
+                ViewBag.PreRequesitionNo = User.Identity.Name;
                 ViewBag.UPermissions = UPerm;
                 return View();
             }

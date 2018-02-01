@@ -31,9 +31,9 @@ namespace Hydra.Such.Data.Logic
                             No_ = (string)temp.No_,
                             Name = (string)temp.Name,
                             VATRegistrationNo_ = (string)temp.VATRegistrationNo,
-                            //Address = (string)temp.Address,
-                            //PostCode = (string)temp.PostCode,
-                            //City = (string)temp.City,
+                            Address = (string)temp.Address,
+                            PostCode = (string)temp.PostalCode,
+                            Country_RegionCode = (string)temp.Country_RegionCode,
                             //Country_RegionCode = (string)temp.Country_RegionCode
                         });
                     }

@@ -549,6 +549,32 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(data);
         }
+        
+        [HttpPost]
+        public JsonResult DeleteAccess([FromBody] AccessProfileModelView data)
+        {
+            if (data != null)
+            {
+                if (DBAccessProfiles.Delete(data.ParseToDB()))
+                {
+                    data.eReasonCode = 1;
+                    data.eMessage = "Registo eliminado com sucesso.";
+                }
+                else
+                {
+                    data.eReasonCode = 2;
+                    data.eMessage = "Ocorreu um erro ao eliminar o registo.";
+                }
+            }
+            else
+            {
+                data = new AccessProfileModelView();
+                data.eReasonCode = 2;
+                data.eMessage = "Ocorreu um erro ao eliminar o registo.";
+            }
+
+            return Json(data);
+        }
         #endregion
 
         public IActionResult Permicoes()
@@ -576,7 +602,18 @@ namespace Hydra.Such.Portal.Controllers
                 TimeSheetNumeration = Cfg.NumeraçãoFolhasDeHoras,
                 OportunitiesNumeration = Cfg.NumeraçãoOportunidades,
                 ProposalsNumeration = Cfg.NumeraçãoPropostas,
-                ContactsNumeration = Cfg.NumeraçãoContactos
+                ContactsNumeration = Cfg.NumeraçãoContactos,
+                DishesTechnicalSheetsNumeration = Cfg.NumeraçãoFichasTécnicasDePratos,
+                PreRequisitionNumeration = Cfg.NumeraçãoPréRequisições,
+                PurchasingProceduresNumeration = Cfg.NumeraçãoProcedimentoAquisição,
+                RequisitionNumeration = Cfg.NumeraçãoRequisições,
+                SimplifiedProceduresNumeration = Cfg.NumeraçãoProcedimentoSimplificado,
+                SimplifiedReqTemplatesNumeration = Cfg.NumeraçãoModReqSimplificadas,
+                SimplifiedRequisitionNumeration = Cfg.NumeraçãoRequisiçõesSimplificada,
+                DinnerEndTime = Cfg.FimHoraJantar,
+                DinnerStartTime = Cfg.InicioHoraJantar,
+                LunchEndTime = Cfg.FimHoraAlmoco,
+                LunchStartTime = Cfg.InicioHoraAlmoco
             };
             return Json(result);
         }
@@ -599,6 +636,18 @@ namespace Hydra.Such.Portal.Controllers
             configObj.NumeraçãoOportunidades = data.OportunitiesNumeration;
             configObj.NumeraçãoPropostas = data.ProposalsNumeration;
             configObj.NumeraçãoContactos = data.ContactsNumeration;
+            configObj.NumeraçãoFichasTécnicasDePratos = data.DishesTechnicalSheetsNumeration;
+            configObj.NumeraçãoPréRequisições = data.PreRequisitionNumeration;
+            configObj.NumeraçãoProcedimentoAquisição = data.PurchasingProceduresNumeration;
+            configObj.NumeraçãoRequisições = data.RequisitionNumeration;
+            configObj.NumeraçãoProcedimentoSimplificado = data.SimplifiedProceduresNumeration;
+            configObj.NumeraçãoModReqSimplificadas = data.SimplifiedReqTemplatesNumeration;
+            configObj.NumeraçãoRequisiçõesSimplificada = data.SimplifiedRequisitionNumeration;
+            configObj.FimHoraJantar = data.DinnerEndTime;
+            configObj.InicioHoraJantar = data.DinnerStartTime;
+            configObj.InicioHoraAlmoco = data.LunchStartTime;
+            configObj.FimHoraAlmoco = data.LunchEndTime;
+
             configObj.UtilizadorModificação = User.Identity.Name;
             //configObj.UtilizadorCriação = User.Identity.Name;
             //configObj.DataHoraCriação = DateTime.Now;
@@ -2393,31 +2442,32 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult GetApprovalGroupID([FromBody] int id)
+        {
+            ApprovalGroupViewModel result = DBApprovalGroups.ParseToViewModel(DBApprovalGroups.GetById(id));
+            return Json(result);
+        }
+
         public JsonResult CreateApprovalGroup([FromBody] ApprovalGroupViewModel data)
         {
-            string eReasonCode = "";
+            ApprovalGroupViewModel result;
             //Create new 
-            eReasonCode = DBApprovalGroups.Create(DBApprovalGroups.ParseToDatabase(data)) == null ? "101" : "";
-
-            if (String.IsNullOrEmpty(eReasonCode))
+            result = DBApprovalGroups.ParseToViewModel(DBApprovalGroups.Create(DBApprovalGroups.ParseToDatabase(data)));
+            if (result != null)
             {
-                return Json(data);
+                result.eReasonCode = 100;
             }
             else
-            {
-                return Json(eReasonCode);
-            }
-
+                result.eReasonCode = 101;
+            return Json(result);
         }
 
         [HttpPost]
-        public JsonResult UpdateApprovalGroup([FromBody] List<ApprovalGroupViewModel> data)
-        {
-            data.ForEach(x =>
-            {
-                DBApprovalGroups.Update(DBApprovalGroups.ParseToDatabase(x));
-            });
-            return Json(data);
+        public JsonResult UpdateApprovalGroup([FromBody] ApprovalGroupViewModel item)
+        {       
+            DBApprovalGroups.Update(DBApprovalGroups.ParseToDatabase(item));
+           
+            return Json(item);
         }
 
         public JsonResult DeleteApprovalGroup([FromBody] ApprovalGroupViewModel data)
@@ -2456,13 +2506,17 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = GetPermissions("Administracao");
             if (UPerm != null && UPerm.Read.Value)
             {
-                int IDGroup= Int32.Parse(id);
-                GruposAprovação group= DBApprovalGroups.GetById(IDGroup);
+                ViewBag.GroupApproval = "";
+                ViewBag.IDGroupApproval = "";
+                if (id != null)
+                {
+                    int IDGroup = Int32.Parse(id);
+                    ViewBag.IDGroupApproval = IDGroup;
+                }
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
                 ViewBag.UpdatePermissions = !UPerm.Update.Value;
                 ViewBag.DeletePermissions = !UPerm.Delete.Value;
-                ViewBag.GroupApproval = group.Descrição;
-                ViewBag.IDGroupApproval = group.Código;
+             
                 return View();
             }
             else

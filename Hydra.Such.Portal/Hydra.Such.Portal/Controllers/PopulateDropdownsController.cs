@@ -763,7 +763,6 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetNAVShippingAddresses()
         {
-
             List<DDMessageString> result = DBNAV2017ShippingAddresses.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
             {
                 id = X.Code,
@@ -783,6 +782,13 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        //Retuns a list of NAVAddressesViewModel
+        public JsonResult GetNAVShippingAddressesByClientNoAsVM([FromBody] string ClientNo)
+        {
+            var result = DBNAV2017ShippingAddresses.GetByClientNo(ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult GetServiceObjects()
@@ -910,6 +916,13 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.No_,
                 value = x.Name
             }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllClientsComboGrid()
+        {
+            var result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             return Json(result);
         }
 
@@ -1322,6 +1335,14 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetNAVVendorComboGrid()
+        {
+            List<NAVVendorViewModel> result = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+            return Json(result);
+        }
+
 
         [HttpPost]
         public JsonResult GetMealTypes()
