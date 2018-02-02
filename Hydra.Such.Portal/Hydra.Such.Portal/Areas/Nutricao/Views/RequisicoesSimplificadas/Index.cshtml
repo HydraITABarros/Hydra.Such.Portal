@@ -11,10 +11,9 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
-@{ 
-    if (ViewBag.Option == "historico")
-    {
-    <h1 class="title">Histórico Requisições Simplificadas</h1>
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html"/>
+
+@{ if (ViewBag.Option == "historico") { <h1 class="title">Histórico Requisições Simplificadas</h1>
     }
     else if (ViewBag.Option == "resgitar")
     {
@@ -32,7 +31,7 @@
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{SimplifiedRequisitions}}" id="grid_datasource" on-response="_response"url="/Nutricao/RequisicoesSimplificadas/SimplifiedRequisitionsPage"></iron-ajax>
+        <iron-ajax method="post" handle-as="json" content-type="application/json" last-response="{{SimplifiedRequisitions}}" id="grid_datasource" url="/Nutricao/RequisicoesSimplificadas/SimplifiedRequisitionsPage"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRequisitionsStatus" last-response="{{GetRequisitionsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <div class="marginSpace" id="ddmarginSpace">
@@ -146,6 +145,7 @@
                         value: true
                     }
                 },
+
                 ready: function () {
                     var option="@ViewBag.Option";
                     if (option =="resgitar") {
@@ -157,9 +157,6 @@
                         this.$.grid_datasource.body = JSON.stringify(option);
                     }
                     this.$.grid_datasource.generateRequest();
-                },
-                _response: function (item) { 
-                    this.gridrequisitionsimple.clearCache();
                 },
                 _onRowSelected: function (item) {
                     if (item != null) {
