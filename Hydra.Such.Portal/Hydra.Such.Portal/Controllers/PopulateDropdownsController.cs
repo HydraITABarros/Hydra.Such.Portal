@@ -723,7 +723,8 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Code,
                 value = x.Name,
                 extra = x.MeasureUnit
-            }).ToList(); return Json(result);
+            }).ToList();
+            return Json(result);
         }
 
         [HttpPost]

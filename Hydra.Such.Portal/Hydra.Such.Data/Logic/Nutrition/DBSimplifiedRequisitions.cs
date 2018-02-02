@@ -243,7 +243,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 Visadores = x.Visor,
                 DataReceçãoLinhas = x.ReceiptLinesDate,
                 RequisiçãoNutrição = x.NutritionRequisition,
-                DataReceçãoEsperada = x.ReceiptPreviewDate == ""  ? null : (DateTime?)DateTime.Parse(x.ReceiptPreviewDate),
+                DataReceçãoEsperada = x.ReceiptPreviewDate != "" && x.ReceiptPreviewDate != null ? DateTime.Parse(x.ReceiptPreviewDate) : (DateTime?)null,
                 RequisiçãoModelo = x.ModelRequisition,
                 DataHoraCriação = x.CreateDate,
                 UtilizadorCriação = x.CreateUser,

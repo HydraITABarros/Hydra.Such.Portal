@@ -154,6 +154,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                     x.RequisitionNo = requestNoNew;
                     x.Status = 1;
                     x.LineNo = 0;
+                    x.QuantityApproved = 0;
                     x.RequisitionDate= DateTime.Now.ToString();
                     x.EmployeeNo = utilizador.EmployeeNo;                 
                 });
@@ -225,6 +226,14 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetById(item.RequisitionNo));           
                 result.Status = 1;
                 result.Finished = false;
+                result.CreateResponsible = null;
+                result.CreateDate = null;
+                result.RequisitionDate = null;
+                result.RequisitionTime = null;
+                result.RegistrationDate = null;
+                result.ApprovalResponsible = null;
+                result.ApprovalDate = null;
+                result.ApprovalTime = null;
                 result.EmployeeNo = utilizador.EmployeeNo;
                 result.ReceiptPreviewDate=DateTime.Now.ToString();
             }

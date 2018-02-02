@@ -223,6 +223,7 @@ else
                                         <div class="col-lg-3">
                                             <vaadin-combo-box items="[[CBLocations]]" id="LocationCode" item-value-path="id" item-label-path="value" value="{{result.locationCode}}" label="Cód. Localização" disabled="{{ !_permissions.update }}" on-value-changed="_locationCodeChanged">
                                                 <template>
+                                                    <b>[[item.id]]</b>
                                                     <b>[[item.value]]</b>
                                                 </template>
                                             </vaadin-combo-box>
@@ -573,7 +574,7 @@ else
                                             </vaadin-grid-column>
                                             <vaadin-grid-column width="120px">
                                                 <template class="header">
-                                                    <vaadin-grid-sorter path="quantityToRequire">Quantidade a Requerer</vaadin-grid-sorter>
+                                                    <vaadin-grid-sorter path="quantityToRequire">Qtd. a Requerer</vaadin-grid-sorter>
                                                     <vaadin-grid-filter path="quantityToRequire" />
                                                 </template>
                                                 <template>
@@ -587,7 +588,7 @@ else
                                             </vaadin-grid-column>
                                             <vaadin-grid-column width="120px">
                                                 <template class="header">
-                                                    <vaadin-grid-sorter path="quantityToApprove">Quantidade a Aprovar</vaadin-grid-sorter>
+                                                    <vaadin-grid-sorter path="quantityToApprove">Qtd. a Aprovar</vaadin-grid-sorter>
                                                     <vaadin-grid-filter path="quantityToApprove" />
                                                 </template>
                                                 <template>
@@ -601,7 +602,7 @@ else
                                             </vaadin-grid-column>
                                             <vaadin-grid-column width="120px">
                                                 <template class="header">
-                                                    <vaadin-grid-sorter path="quantityApproved">Quantidade Aprovada</vaadin-grid-sorter>
+                                                    <vaadin-grid-sorter path="quantityApproved">Qtd. Aprovada</vaadin-grid-sorter>
                                                     <vaadin-grid-filter path="quantityApproved" />
                                                 </template>
                                                 <template>
@@ -615,7 +616,7 @@ else
                                             </vaadin-grid-column>
                                             <vaadin-grid-column width="120px">
                                                 <template class="header">
-                                                    <vaadin-grid-sorter path="quantityReceipt">Quantidade Registada</vaadin-grid-sorter>
+                                                    <vaadin-grid-sorter path="quantityReceipt">Qtd. Registada</vaadin-grid-sorter>
                                                     <vaadin-grid-filter path="quantityReceipt" />
                                                 </template>
                                                 <template>
@@ -835,16 +836,25 @@ else
                         {{item.requisitionTemplateId}}  {{item.requisitionNo}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="30%">
+                <vaadin-grid-column width="10%">
                     <template class="header">
-                        <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                        <vaadin-grid-sorter path="description">Data</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="description" />
+                    </template>
+                    <template>
+                        {{item.registrationDate}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="20%">
+                    <template class="header">
+                        <vaadin-grid-sorter path="description">NºProjecto</vaadin-grid-sorter>
                         <vaadin-grid-filter path="description" />
                     </template>
                     <template>
                         {{item.description}}{{item.projectNo}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="30%">
+                <vaadin-grid-column width="20%">
                     <template class="header">
                         <vaadin-grid-sorter path="codeRegion">Região</vaadin-grid-sorter>
                         <vaadin-grid-filter path="codeRegion" />
@@ -853,7 +863,7 @@ else
                         [[_getRegionDescription(item.regionCode)]] [[_getRegionDescription(item.codeRegion)]]
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="30%">
+                <vaadin-grid-column width="20%">
                     <template class="header">
                         <vaadin-grid-sorter path="codeFunctionalArea">Área Funcional</vaadin-grid-sorter>
                         <vaadin-grid-filter path="codeFunctionalArea" />
@@ -862,7 +872,7 @@ else
                         [[_getFunctionalAreaDescription(item.functionalAreaCode)]] [[_getFunctionalAreaDescription(item.codeFunctionalArea)]]
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="30%">
+                <vaadin-grid-column width="20%">
                     <template class="header">
                         <vaadin-grid-sorter path="codeResponsabilityCenter">Centro Responsabilidade</vaadin-grid-sorter>
                         <vaadin-grid-filter path="codeResponsabilityCenter" />
@@ -932,6 +942,7 @@ else
 
 
                 ready: function () {
+                   
                     //GET PROJECT DATA
                     if (this._requestno != "") {
                         this._isCreate = false;

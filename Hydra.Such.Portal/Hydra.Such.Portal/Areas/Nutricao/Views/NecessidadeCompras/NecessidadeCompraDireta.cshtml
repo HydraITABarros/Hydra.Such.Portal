@@ -760,26 +760,29 @@
             },
             //calculate the total value form the grid
             _lineCalcTotals: function (param) {
-
-                var qnt = this.data.find(x => x == this._SelectedLine).quantity;
-                var unitCost = this.data.find(x => x == this._SelectedLine).directUnitCost;
-
-                switch (param.target.id) {
-                case "lineQuantity":
-                    var qnt = param.target.value.replace(",", ".");
-                    param.target.value = param.target.value.replace(",", ".");
-                    break;
-                case "lineUnitCost":
-                    var unitCost = param.target.value.replace(",", ".");
-                    param.target.value = param.target.value.replace(",", ".");
-                    break;
-                default:
-                    break;
+                if (this.data != null) {
+                    var res = this.data.find(x => x == this._SelectedLine);
+                    if (res != null) {
+                        var qnt = res.quantity;
+                        var unitCost = res.directUnitCost;
+                        switch (param.target.id) {
+                        case "lineQuantity":
+                            qnt = param.target.value.replace(",", ".");
+                            res.quantity = qnt;
+                            break;
+                        case "lineUnitCost":
+                            unitCost = param.target.value.replace(",", ".");
+                            res.unitCost = unitCost;
+                            break;
+                        default:
+                            break;
+                        }
+                        if (qnt != "" && qnt != null && unitCost != "" && unitCost != null) {
+                            res.totalValue = qnt * unitCost;
+                        }
+                        this.$.gridneedshopping.clearCache();
+                    }
                 }
-                if (qnt != "" && qnt != null && unitCost != "" && unitCost != null) {
-                    this.data.find(x => x == this._SelectedLine).totalValue = qnt * unitCost;
-                }
-                this.$.gridneedshopping.clearCache();
             },
             _prodUnitChange: function (e) {
                 if (e.detail.value != null && e.detail.value != "") {
