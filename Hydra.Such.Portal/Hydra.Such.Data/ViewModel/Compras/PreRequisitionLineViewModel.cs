@@ -40,7 +40,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string CustomerNo { get; set; }
         public string OpenOrderNo { get; set; }
         public int? OpenOrderLineNo { get; set; }
-
+        public decimal? TotalCost { get; set; }
         //EXTRAS
         public bool Selected { get; set; }
     }

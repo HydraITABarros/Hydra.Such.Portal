@@ -159,7 +159,7 @@
                                     </table>
                                 </template>
                             </vaadin-combo-box>-->
-                            <such-selectbox id="projectNo" value="{{data.clientNo}}" label="Cliente" on-value-changed="_clientChanged"
+                            <such-selectbox id="ProjectClient" value="{{data.clientNo}}" label="Cliente" on-value-changed="_clientChanged"
                                                             items="[[LProjectClients]]"
                                                             text-path="name"
                                                             value-path="no_"
@@ -498,6 +498,7 @@
                         this.$.ToastMessageError.open();
                     },
                     _validateData: function () {
+                        debugger;
                         if (this.$.Description.validate() &
                             this.$.ProjectClient.validate() &
                             this.$.ProjectLeader.validate() &
