@@ -447,7 +447,7 @@
                         </vaadin-combo-box>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
-                        [[ _parseCode(item.code, item.type) ]]
+                        [[ item.code ]]
                     </template>
                 </template>
             </vaadin-grid-column>
