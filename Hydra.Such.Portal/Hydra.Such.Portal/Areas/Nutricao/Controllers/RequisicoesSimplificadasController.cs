@@ -48,6 +48,10 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             {
                 ViewBag.Option = "historico";
             }
+            else
+            {
+                ViewBag.Option = "";
+            }
             return View();
         }
 
@@ -80,8 +84,9 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 else
                 {
                     ViewBag.LockFields = false;
+                    ViewBag.Option = "";
                 }
-
+                HttpContext.Session.Remove("aprovadoSession");
                 ViewBag.RequestNo = id ?? "";
                 ViewBag.UPermissions = UPerm;
                 return View();
@@ -118,6 +123,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             return Json(result);
         }
+
         [Area("Nutricao")]
         [HttpPost]
         public JsonResult ValidateNumeration([FromBody] SimplifiedRequisitionViewModel data)
@@ -214,7 +220,6 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
         [Area("Nutricao")]
         [HttpPost]
-
         public JsonResult GetSimplifiedRequisitionModel([FromBody] SimplifiedRequisitionViewModel item)
         {
             ConfigUtilizadores utilizador = DBUserConfigurations.GetById(User.Identity.Name);
@@ -301,6 +306,8 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             {
               
                 item.CreateUser = User.Identity.Name;
+                item.CreateDate = DateTime.Now;
+                
                 result = DBSimplifiedRequisitionLines.ParseToViewModel(DBSimplifiedRequisitionLines.Create(DBSimplifiedRequisitionLines.ParseToDatabase(item)));
 
                 if (result != null)
@@ -336,6 +343,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             return Json(result);
         }
+
         [Area("Nutricao")]
         [HttpPost]
         public JsonResult UpdateSimplifiedRequisitionLines([FromBody] List<SimplifiedRequisitionLineViewModel> items)
@@ -344,6 +352,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             {
                 items.ForEach(x =>
                 {
+                    x.UpdateUser = User.Identity.Name;
                     DBSimplifiedRequisitionLines.Update(DBSimplifiedRequisitionLines.ParseToDatabase(x));
 
                 });
