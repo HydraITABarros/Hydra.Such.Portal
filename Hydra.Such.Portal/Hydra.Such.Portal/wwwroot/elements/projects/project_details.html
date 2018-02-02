@@ -629,7 +629,7 @@
 
                     //Address Functions
                     _getAddressByCode: function (e) {                        
-                        var selItem = this._selectedAddress = this.ClientShippingAddresses.find(x => x.code == e.detail.value);
+                        var selItem = this.ClientShippingAddresses != null ? this.ClientShippingAddresses.find(x => x.code == e.detail.value) : null;
                         if (selItem != null) {
                             //Fill Data
                             this.$.ShippingName.value = selItem.name;
@@ -665,7 +665,6 @@
 
                     //Client Change
                     _clientChanged: function (e) {
-                        debugger;
                         if (e.detail.value != "") {
                             this.$.projects_ajax.body = JSON.stringify(e.detail.value);
                             this.$.projects_ajax.generateRequest();
