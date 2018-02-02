@@ -131,7 +131,7 @@
                     <vaadin-text-field id="description" name="description" value="{{diary.description}}" label="Descrição"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" value="{{diary.value}}" label="Valor"></vaadin-text-field>
+                    <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" error-message="Valor inválido" value="{{diary.value}}" label="Valor"></vaadin-text-field>
                 </div>
 
             </div>
@@ -208,7 +208,7 @@
                     <vaadin-grid-filter path="value" />
                 </template>
                 <template>
-                    <vaadin-text-field id="valueGrid" name="valueGrid" pattern="^[1-9]\d*(\.\d+)?$" value="{{item.value}}"></vaadin-text-field>
+                    <vaadin-text-field id="valueGrid" name="valueGrid" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" value="{{item.value}}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <template is="dom-if" if="{{ _permissions.delete }}">
@@ -327,7 +327,9 @@
                 this._openToastError("Ocorreu um erro desconhecido.");
             }
         },
-
+        _ConvertDecimals: function (e) {
+            e.target.value = e.target.value.replace(",", ".");
+        },
         _registerDiaryLines: function () {
             this.$.register_databound_ajax.body = JSON.stringify(this.result);
             this.$.register_databound_ajax.generateRequest();

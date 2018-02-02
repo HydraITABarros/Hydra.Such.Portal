@@ -218,7 +218,7 @@
                 </such-selectbox>
             </div>
             <div class="col-md-3">
-                <vaadin-text-field id="qtyID" name="qtyName"  pattern="^[0-9]\d*(\.\d+)?$"  label="Quantidade" class="alignRight" value="{{qty}}" on-value-changed="_calcTotals"></vaadin-text-field>
+                <vaadin-text-field id="qtyID" name="qtyName"  pattern="^[0-9]\d*(\.\d+)?$"   label="Quantidade" class="alignRight" value="{{qty}}" on-value-changed="_calcTotals"></vaadin-text-field>
             </div>
             <div class="col-md-3">
                 <vaadin-text-field id="QtyforMeasId" name="QtyforMeasName" label="Quantidade por Unid. Medida " class="alignRight" value="{{QtyforMeas}}" disabled></vaadin-text-field>
@@ -1143,13 +1143,13 @@
             _calcTotals: function (e) {
                 switch (e.target.id) {
                 case "qtyID":
-                        this.qty = e.detail.value;
+                        this.qty = e.detail.value.replace(",", ".");
                     break;
                 case "unitCostId":
-                        this.unitCost = e.detail.value;
+                        this.unitCost = e.detail.value.replace(",", ".");
                     break;
                 case "amountId":
-                        this.amount = e.detail.value;
+                        this.amount = e.detail.value.replace(",", ".");
                     break;
                     default:
                         break;
@@ -1163,26 +1163,29 @@
             },
             //calculate the total value form the grid
             _lineCalcTotals: function (param) {
-                
-                var qnt = this.data.find(x => x == this._SelectedLine).quantity;
-                var unitCost = this.data.find(x => x == this._SelectedLine).directUnitCost;
-
-                switch (param.target.id) {
-                case "lineQuantity":
-                    var qnt = param.detail.value;
-                    this.data.find(x => x == this._SelectedLine).quantity = qnt;
-                    break;
-                case "lineUnitCost":
-                    var unitCost = param.detail.value;
-                    unitCost = this.data.find(x => x == this._SelectedLine).directUnitCost = unitCost;
-                    break;
-                default:
-                    break;
+                if (this.data != null) {
+                    var res = this.data.find(x => x == this._SelectedLine);
+                    if (res != null) {
+                        var qnt = res.quantity;
+                        var unitCost = res.directUnitCost;
+                        switch (param.target.id) {
+                        case "lineQuantity":
+                            qnt = param.target.value.replace(",", ".");
+                            res.quantity = qnt;
+                            break;
+                        case "lineUnitCost":
+                            unitCost = param.target.value.replace(",", ".");
+                            res.unitCost = unitCost;
+                            break;
+                        default:
+                            break;
+                        }
+                        if (qnt != "" && qnt != null && unitCost != "" && unitCost != null) {
+                            res.totalValue = qnt * unitCost;
+                        }
+                        this.$.gridneedshopping.clearCache();
+                    }
                 }
-                if (qnt != "" && qnt != null && unitCost != "" && unitCost != null) {
-                    this.data.find(x => x == this._SelectedLine).totalValue = qnt * unitCost;
-                }
-                this.$.gridneedshopping.clearCache();
             },
             _prodUnitChange: function (e) {
                 if (e.detail.value != null && e.detail.value != "") {
