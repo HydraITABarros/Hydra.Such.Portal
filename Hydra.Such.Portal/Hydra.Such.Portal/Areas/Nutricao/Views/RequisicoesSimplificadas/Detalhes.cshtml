@@ -88,7 +88,6 @@ else
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{CBMeasureUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRequisitionsStatus" last-response="{{GetRequisitionsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!-- PROJECT CRUDS -->
-        <iron-ajax id="validateNumeration_ajax" url="/Nutricao/RequisicoesSimplificadas/ValidateNumeration" last-response="{{numValidationResponse}}" on-response="_onNumValidationResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Nutricao/RequisicoesSimplificadas/GetSimplifiedRequisitionData"
                    last-response="{{result}}"
@@ -721,7 +720,7 @@ else
                                                 </template>
                                                 <template>
                                                     <template is="dom-if" if="{{ item.selected }}">
-                                                        <vaadin-text-field value="[[_descriptionMeal(item.description)]]" id="DescriptionMeal" name="_LLGridUnitPrice" disabled> </vaadin-text-field>
+                                                        <vaadin-text-field value="[[_descriptionMeal(item.mealType)]]" id="DescriptionMeal" name="_LLGridUnitPrice" disabled> </vaadin-text-field>
                                                     </template>
                                                     <template is="dom-if" if="{{ !item.selected }}">
                                                         [[_descriptionMeal(item.mealType)]]
@@ -736,7 +735,7 @@ else
                                                 <template>
 
                                                     <template is="dom-if" if="{{ item.selected }}">
-                                                        <vaadin-combo-box items="[[CBRegionCodes]]" id="_CLGridRegion" name="_CLGridRegion" item-value-path="id" item-label-path="id" value="{{item.codeRegion}}" disabled="{{ _lockFields }}">
+                                                        <vaadin-combo-box items="[[CBRegionCodes]]" id="_CLGridRegion" name="_CLGridRegion" item-value-path="id" item-label-path="id" value="{{item.regionCode}}" disabled="{{ _lockFields }}">
                                                             <template>
                                                                 <paper-icon-item>
                                                                     <paper-item-body two-line>
@@ -747,7 +746,7 @@ else
                                                         </vaadin-combo-box>
                                                     </template>
                                                     <template is="dom-if" if="{{ !item.selected }}">
-                                                        {{item.codeRegion}}
+                                                        {{item.regionCode}}
                                                     </template>
                                                 </template>
                                             </vaadin-grid-column>
@@ -1045,8 +1044,9 @@ else
                             responsabilityCenterCode: this.$._CLCenterCodeResponsability.value,
                             quantityApproved: 0,
                             quantityReceipt: 0,
-                            quantityToApprove:0
+                            quantityToApprove: 0
                         };
+
                         if (this.dataLines == null) {
                             this.dataLines = addline;
                         }
