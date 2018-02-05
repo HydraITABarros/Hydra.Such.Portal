@@ -177,12 +177,14 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null)
                 {
                     //Get Project Numeration
+                    bool autoGenId = false;
                     Configuração Configs = DBConfigurations.GetById(1);
                     int ProjectNumerationConfigurationId = Configs.NumeraçãoProjetos.Value;
                     string projNoAuto = "";
                     if (data.ProjectNo == "" || data.ProjectNo == null)
                     {
-                        projNoAuto = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ProjectNo == "" || data.ProjectNo == null));
+                        autoGenId = true;
+                        projNoAuto = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, autoGenId);
                         data.ProjectNo = projNoAuto;
                     }
 
@@ -258,10 +260,13 @@ namespace Hydra.Such.Portal.Controllers
                             else
                             {
                                 //Update Last Numeration Used
-                                ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
-                                ConfigNumerations.ÚltimoNºUsado = data.ProjectNo;
-                                DBNumerationConfigurations.Update(ConfigNumerations);
-
+                                if (autoGenId)
+                                {
+                                    ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+                                    ConfigNumerations.ÚltimoNºUsado = data.ProjectNo;
+                                    ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                                    DBNumerationConfigurations.Update(ConfigNumerations);
+                                }
                                 data.eReasonCode = 1;
                             }
                         }
