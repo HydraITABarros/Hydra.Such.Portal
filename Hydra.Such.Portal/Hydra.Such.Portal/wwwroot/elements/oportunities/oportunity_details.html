@@ -25,9 +25,9 @@
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 
 <link rel="import" href="/lib/iron-autogrow-textarea/iron-autogrow-textarea.html" />
+
 <dom-module id="x-oportunitydetails">
     <template>
-
 
         <!-- STYLES -->
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -111,12 +111,6 @@
             }
         </style>
 
-        </style>
-
-
-
-
-
 
         <!-- DROPDOWNS POPULATE -->
         <iron-ajax url="/PopulateDropdowns/GetFeeUnits" last-response="{{CBFeeUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -131,7 +125,6 @@
         <iron-ajax url="/PopulateDropdowns/GetContractBillingTypes" last-response="{{CBBillingTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractMaintenanceTypes" last-response="{{CBMaintenanceTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractInvoicePeriods" last-response="{{CBInvoicePeriods}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddressesByClientNo" last-response="{{CBShippingAddresses}}" id="shippingAddresses_ajax" method="post" handle-as="json" content-type="application/json" id="shippinhAddress_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractInvoiceGroups" last-response="{{CBInvoiceGroups}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractLineTypes" last-response="{{CBContractLineTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -148,7 +141,9 @@
         <iron-ajax url="/PopulateDropdowns/GetProposalsStatus" last-response="{{CBProposalsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Contactos/GetContacts" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
-
+        
+        <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddressesByClientNoAsVM" last-response="{{ClientShippingAddresses}}" method="post" handle-as="json" content-type="application/json" id="shippingAddresses_ajax"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetNAVShippingAddressesByClientNo" last-response="{{CBShippingAddresses}}" id="shippingAddresses_ajax" method="post" handle-as="json" content-type="application/json" id="shippinhAddress_ajax"></iron-ajax>-->
 
         <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" last-response="{{numeration}}" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -246,25 +241,25 @@
                                             </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <!--<vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" on-value-changed="_clientChange">
-                                                <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>-->
+                                            <!--<vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" on-value-changed="_clientChanged">
+                                            <template>
+                                                <table width="180px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>-->
 
-                                            <such-selectbox id="mClients" value="{{data.contactNo}}" label="Nº Cliente"
+                                            <such-selectbox id="mClients" value="{{data.clientNo}}" label="Nº Cliente"
                                                             items="[[CBClients]]"
                                                             text-path="name"
                                                             value-path="no_"
                                                             fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"country_RegionCode", "name":"Região"}]'
                                                             required error-message="Este campo é obrigatório"
                                                             disabled="{{ !_permissions.update }}"
-                                                            on-value-changed="_clientChange">
+                                                            on-value-changed="_clientChanged">
                                             </such-selectbox>
                                         </div>
                                     </div>
@@ -627,15 +622,14 @@
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBShippingAddresses]]" id="codeShippingAddress" item-value-path="id" item-label-path="value" value="{{data.codeShippingAddress}}" label="Cód. Endereço Envio" on-value-changed="_getAddressByCode" disabled="{{ !_permissions.update }}">
-                                                <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
-                                                </template>
-                                            </vaadin-combo-box>
+                                            <such-selectbox id="sbClientShippingAddresses" value="{{data.codeShippingAddress}}" label="Cód. Endereço Envio"
+                                                            items="[[ClientShippingAddresses]]"
+                                                            text-path="name"
+                                                            value-path="code"
+                                                            fields='[{"field":"code", "name":"Cód. Endereço"}, {"field":"name", "name":"Descrição"}, {"field":"address", "name":"Endereço"}, {"field":"zipCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"contact", "name":"Contacto"}]'
+                                                            disabled="{{ !_permissions.update }}"
+                                                            on-value-changed="_getAddressByCode">
+                                            </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.shippingName}}" id="ShippingName" name="ShippingName" label="Envio-a Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
@@ -686,7 +680,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.provisioningFee}}" id="mProvisioningFee" auto-validate pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals" on-value-changed="_ConvertDecimals"  error-message="Valor inválido" name="provisioningFee" label="Taxa Aprovisionamento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.provisioningFee}}" id="mProvisioningFee" auto-validate pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals" on-value-changed="_ConvertDecimals" error-message="Valor inválido" name="provisioningFee" label="Taxa Aprovisionamento" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.mc}}" id="mc" name="mc" label="% MC" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
@@ -694,7 +688,7 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.displacementFee}}" auto-validate pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"  error-message="Valor inválido" id="mDisplacementFee" name="mDisplacementFee" label="Taxa Deslocação" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.displacementFee}}" auto-validate pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals" error-message="Valor inválido" id="mDisplacementFee" name="mDisplacementFee" label="Taxa Deslocação" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBInvoicePeriods]]" id="mInvoicePeriods" item-value-path="id" item-label-path="value" value="{{data.invocePeriod}}" label="Período Fatura" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
@@ -915,14 +909,14 @@
                             </div>
 
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"  />
+                                <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals" />
                             </div>
                         </div>
 
 
                         <div class="row">
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.][0-9]+)?"  on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
                             </div>
 
                             <div class="col-lg-2 alignPoga">
@@ -966,7 +960,7 @@
                             </div>
 
                             <div class="col-lg-2">
-                                <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periocidade" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals" > </vaadin-text-field>
+                                <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periocidade" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
                             </div>
 
                         </div>
@@ -1069,11 +1063,17 @@
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-combo-box items="[[CBContractLineCodesGrid]]" id="_CLGridCode" name="_CLGridCode" item-value-path="id" item-label-path="id" value="{{item.code}}" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineCodeGridChange">
                                                 <template>
-                                                    <paper-icon-item>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                    <!--<paper-icon-item>
                                                         <paper-item-body two-line>
                                                             <div>[[item.id]]</div>
                                                         </paper-item-body>
-                                                    </paper-icon-item>
+                                                    </paper-icon-item>-->
                                                 </template>
                                             </vaadin-combo-box>
                                         </template>
@@ -1154,7 +1154,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.lineDiscount}}" id="_CLGridDiscountLine" name="_CLGridDiscountLine" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.][0-9]+)?"on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.lineDiscount}}" id="_CLGridDiscountLine" name="_CLGridDiscountLine" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.lineDiscount}}%
@@ -1633,7 +1633,6 @@
                     }
 
                     this._showAreas = this._areaid == 4;
-
                 },
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -1647,9 +1646,13 @@
                     e.target.value = e.target.value.replace(",", ".");
                 },
                 _validateData: function () {
+                    //Validate function of such-element doesn't work. Ensure validation message
+                    this.$.mClients.validate();
+                    this.$.contactNo.validate();
+
                     if (this.$.contractNo.validate() &
                         this.$.Description.validate() &
-                        this.$.mClients.validate() &
+                        //this.$.mClients.validate() & //validate doesn't work
                         this.$.mFeeUnits.validate() &
                         this.$.mCodeRegion.validate() &
                         this.$.mFunctionalArea.validate() &
@@ -1672,7 +1675,7 @@
                         this.$.ShippingLocality.validate() &
                         this.$.ShippingName.validate() &
                         this.$.shippingZipCode.validate() &
-                        this.$.contactNo.validate() &
+                        //this.$.contactNo.validate() & //validate doesn't work
                         this.$.mBillingTypes.validate() &
                         this.$.mMaintenanceTypes.validate() &
                         this.$.mProvisioningFee.validate() &
@@ -1682,18 +1685,26 @@
                         this.$.mTotalProposalValue.validate() 
 
                     ) {
-                        return true;
+                        //Validate function of such-element doesn't work.
+                        if ((this.$.mClients.value != "" && this.$.mClients.value != undefined) &
+                            (this.$.contactNo.value != "" && this.$.contactNo.value != undefined)) {
+                            return true;
+                        }
                     }
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
                 _createNewContract: function () {
-                    window.location.href = "../DetalhesOportunidade";
+                    window.location.href = "../DetalhesOportunidade/";
                 },
-                _clientChange: function (e) {
-                    this.$.codeShippingAddress.value = "";
+                _clientChanged: function (e) {
                     this.$.shippingAddresses_ajax.body = JSON.stringify(e.detail.value);
                     this.$.shippingAddresses_ajax.generateRequest();
+
+                    this.data.shippingAddressCode = "";
+                    this.$.sbClientShippingAddresses.value = "";
+                    this.$.sbClientShippingAddresses.valueText = "";
+
                 },
 
                 //CRUDS
@@ -1869,18 +1880,19 @@
 
                 //Address Functions
                 _getAddressByCode: function (e) {
-                    this.$.address_ajax.body = JSON.stringify(e.detail.value);
-                    this.$.address_ajax.generateRequest();
-                },
-                _addressResponseProcessor: function (e) {
-                    var self = this;
-                    if (this.addressData != null) {
+                    var selItem = this.ClientShippingAddresses != null ? this.ClientShippingAddresses.find(x => x.code == e.detail.value) : null;
+                    if (selItem != null) {
                         //Fill Data
-                        this.$.ShippingName.value = this.addressData.name;
-                        this.$.ShippingAddress.value = this.addressData.address;
-                        this.$.shippingZipCode.value = this.addressData.zipCode;
-                        this.$.ShippingLocality.value = this.addressData.city;
-                        //this.$.contactNo.value = this.addressData.contact;
+                        this.$.ShippingName.value = selItem.name;
+                        this.$.ShippingAddress.value = selItem.address;
+                        this.$.shippingZipCode.value = selItem.zipCode;
+                        this.$.ShippingLocality.value = selItem.city;
+                    }
+                    else {
+                        this.$.ShippingName.value = "";
+                        this.$.ShippingAddress.value = "";
+                        this.$.shippingZipCode.value = "";
+                        this.$.ShippingLocality.value = "";
                     }
                 },
 

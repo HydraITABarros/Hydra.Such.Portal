@@ -572,7 +572,7 @@
                                                 <hr />
                                                 <template is="dom-if" if="{{ _permissions.update }}">
 
-                                                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                                    <paper-button raised id="btnUpdate" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                                 </template>
                                                 <template is="dom-if" if="{{ _permissions.delete }}">
                                                     <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
@@ -590,8 +590,8 @@
                     <div class="panel-heading">Linhas Pré-Requisição</div>
                     <div class="row break_clear">
                         <!--<div class="col-lg-2">
-        <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-    </div>-->
+                        <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    </div>-->
                         <div class="col-lg-2">
                             <vaadin-combo-box items="[[CBLocations]]" id="_CBLocations" item-value-path="id" item-label-path="value" value="{{_LocalCode}}" label="Cód. Localização" disabled="{{ !_permissions.update }}">
                                 <template>
@@ -629,7 +629,7 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
-                        
+
                         <div class="col-lg-2">
                             <vaadin-text-field value="{{_QuantityToRequire}}" id="_QuantityToRequire" name="_QuantityToRequire" label="Qt. a Requerer" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
                         </div>
@@ -658,17 +658,17 @@
                             </vaadin-combo-box>
                         </div>
                         <!--<div class="col-lg-2">
-                            <vaadin-combo-box items="[[CBVendor]]" id="_CBVendor" item-value-path="id" item-label-path="value" value="{{_CBVendor}}" label="Nº Fornecedor" disabled="{{ !_permissions.update }}">
-                                <template>
-                                    <table width="200px">
-                                        <tr>
-                                            <td width="40%">[[item.id]]</td>
-                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>-->
+                        <vaadin-combo-box items="[[CBVendor]]" id="_CBVendor" item-value-path="id" item-label-path="value" value="{{_CBVendor}}" label="Nº Fornecedor" disabled="{{ !_permissions.update }}">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>-->
                         <div class="col-sm-2">
                             <such-selectbox id="_CBVendor" value="{{_CBVendor}}" label="Nº Fornecedor"
                                             items="[[CBVendor]]"
@@ -825,16 +825,16 @@
                                 <template>
                                     <template is="dom-if" if="{{ item.selected }}">
 
-                                            <vaadin-combo-box items="[[LCBMeasuresUnit]]" id="_CLGridUnitMeasureCode" name="_CLGridUnitMeasureCode" item-value-path="id" item-label-path="id" value="{{item.unitMeasureCode}}" disabled="{{ !_permissions.update }}">
-                                                <template>
-                                                    <table width="200px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
+                                        <vaadin-combo-box items="[[LCBMeasuresUnit]]" id="_CLGridUnitMeasureCode" name="_CLGridUnitMeasureCode" item-value-path="id" item-label-path="id" value="{{item.unitMeasureCode}}" disabled="{{ !_permissions.update }}">
+                                            <template>
+                                                <table width="200px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
                                     </template>
                                     <template is="dom-if" if="{{ !item.selected }}">
                                         {{item.unitMeasureCode}}
@@ -848,7 +848,7 @@
                                 </template>
                                 <template>
                                     <template is="dom-if" if="{{ item.selected }}">
-                                        <vaadin-text-field value="{{item.quantityToRequire}}" id="_CLGridQuantityToRequire" name="_CLGridQuantityToRequire" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{item.quantityToRequire}}" id="_CLGridQuantityToRequire" name="_CLGridQuantityToRequire" on-blur="_CalculateTotalCostLine" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </template>
                                     <template is="dom-if" if="{{ !item.selected }}">
                                         {{item.quantityToRequire}}
@@ -862,10 +862,24 @@
                                 </template>
                                 <template>
                                     <template is="dom-if" if="{{ item.selected }}">
-                                        <vaadin-text-field value="{{item.unitCost}}" id="_CLGridUnitCost" name="_CLGridUnitCost" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{item.unitCost}}" id="_CLGridUnitCost" name="_CLGridUnitCost" disabled="{{ !_permissions.update }}" on-blur="_CalculateTotalCostLine"> </vaadin-text-field>
                                     </template>
                                     <template is="dom-if" if="{{ !item.selected }}">
                                         {{item.unitCost}}
+                                    </template>
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="200px" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="totalCost" />
+                                </template>
+                                <template>
+                                    <template is="dom-if" if="{{ item.selected }}">
+                                        <vaadin-text-field value="{{item.totalCost}}" id="_CLGridTotalCost" name="_CLGridTotalCost" disabled> </vaadin-text-field>
+                                    </template>
+                                    <template is="dom-if" if="{{ !item.selected }}">
+                                        {{item.totalCost}}
                                     </template>
                                 </template>
                             </vaadin-grid-column>
@@ -936,11 +950,11 @@
                                 <template>
 
                                     <template is="dom-if" if="{{ item.selected }}">
-                                        <vaadin-combo-box items="[[CBVendor]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="id" item-label-path="value" value="{{item.supplierNo}}" disabled="{{ !_permissions.update }}">
+                                        <vaadin-combo-box items="[[CBVendor]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" disabled="{{ !_permissions.update }}">
                                             <template>
                                                 <paper-icon-item>
                                                     <paper-item-body two-line>
-                                                        <div>[[item.value]]</div>
+                                                        <div>[[item.name]]</div>
                                                     </paper-item-body>
                                                 </paper-icon-item>
                                             </template>
@@ -1018,24 +1032,6 @@
                                     </template>
                                 </template>
                             </vaadin-grid-column>
-                            <!--<vaadin-grid-column width="110px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="openOrderNo" />
-                            </template>
-                            <template>
-                                {{item.openOrderNo}}
-                            </template>
-                        </vaadin-grid-column>
-                        <vaadin-grid-column width="110px" resizable>
-                            <template class="header">
-                                <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
-                                <vaadin-grid-filter path="openOrderLineNo" />
-                            </template>
-                            <template>
-                                {{item.openOrderLineNo}}
-                            </template>
-                        </vaadin-grid-column>-->
                             <vaadin-grid-column width="200px" resizable>
                                 <template class="header">
                                     <vaadin-grid-sorter path="openOrderNo">Nº Encomenda Aberto</vaadin-grid-sorter>
@@ -1099,7 +1095,9 @@
                     </div>
                     <div class="marginSpace">
                         <template is="dom-if" if="{{ _permissions.update }}">
-                            <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+                            <paper-button raised id="btnSumLines" class="btnSave" on-tap="_sumLines"><i class="fa fa-calculator" aria-hidden="true"></i>&nbsp; Total</paper-button>
                         </template>
                     </div>
                     <br />
@@ -1187,72 +1185,82 @@
                 </vaadin-grid-column>
             </vaadin-grid>
             <div class="buttons">
-                <paper-button dialog-dismiss>Cancelar</paper-button>
+                <paper-button class="btnRemove" dialog-dismiss>Cancelar</paper-button>
             </div>
         </paper-dialog>
 
-        <!-- Paper Dialog Anexos-->
-        <!--<paper-dialog id="dialogAttach" style="width:70%">
-        <h2>Anexos</h2>
-        <div>
-            <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
 
-            </vaadin-upload>
-            <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
-                <vaadin-grid-column width="120px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="docType">Tipo Origem</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="docType" />
-                    </template>
-                    <template>
-                        {{item.docType}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="docNumber">Nº Origem</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="docNumber" />
-                    </template>
-                    <template>
-                        {{item.docNumber}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="docLineNo">Nº Linha</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="docLineNo" />
-                    </template>
-                    <template>
-                        {{item.docLineNo}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="80%" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="url" />
-                    </template>
-                    <template>
-                        {{item.url}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="20%" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="createDateTime" />
-                    </template>
-                    <template>
-                        {{item.createDateTime}}
-                    </template>
-                </vaadin-grid-column>
-            </vaadin-grid>
-        </div>
-        <div class="buttons">
-            <paper-button dialog-dismiss>Cancelar</paper-button>
-        </div>
-    </paper-dialog>-->
+        <!-- Paper Dialog Total Linhas-->
+        <paper-dialog id="dialogTotal" style="height:120px; width:300px">
+            <div>
+                <h2>Valor Total: <b>{{_TotalLine}} €</b></h2>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
+            </div>
+        </paper-dialog>
+            <!-- Paper Dialog Anexos-->
+            <!--<paper-dialog id="dialogAttach" style="width:70%">
+            <h2>Anexos</h2>
+            <div>
+                <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
 
-        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+                </vaadin-upload>
+                <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                    <vaadin-grid-column width="120px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="docType">Tipo Origem</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="docType" />
+                        </template>
+                        <template>
+                            {{item.docType}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="docNumber">Nº Origem</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="docNumber" />
+                        </template>
+                        <template>
+                            {{item.docNumber}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="docLineNo">Nº Linha</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="docLineNo" />
+                        </template>
+                        <template>
+                            {{item.docLineNo}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="80%" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="url" />
+                        </template>
+                        <template>
+                            {{item.url}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="20%" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="createDateTime" />
+                        </template>
+                        <template>
+                            {{item.createDateTime}}
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+            </div>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancelar</paper-button>
+            </div>
+        </paper-dialog>-->
+
+            <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+            <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
    <script>
@@ -1292,7 +1300,12 @@
                     _CBItems: {
                         observer: '_setProductData'
                     },
-                    
+
+                    _TotalLine: {
+                        type: Number,
+                        value: 0
+                    },
+
                     _showPreReqLines: {
                         type: String,
                         notify: true,
@@ -1619,6 +1632,27 @@
                 },
 
                 //Grid
+                _cancel: function () {
+                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
+                    this.$.prereqLines_databound_ajax.generateRequest();
+                    this.$.grid_prereqlines.clearCache();
+                },
+
+                _sumLines: function () {
+                    debugger;
+                    var count = 0;
+                    if (this.dataLines.lines != null) {
+                        for (var i = 0; i < this.dataLines.lines.length; i++) {
+                            count += this.dataLines.lines[i].totalCost;
+                            this._TotalLine = count;
+                            this.$.dialogTotal.open();
+                        }
+                    } else {
+                        this._openToast("Não tem Linhas inseridas.");
+                    }
+                    
+                },
+
                 _clFormatSupplierProductCode: function (param) {
                     if (param != undefined && this.CBItems != undefined) {
                         var sel = this.CBItems.find(x => x.code == param);
@@ -1639,6 +1673,13 @@
                 //    return "";
                 //},
 
+                _CalculateTotalCostLine: function (e) {
+                    debugger;
+                    var line = this.dataLines.lines.find(x => x == this._SelectedLine);
+                    line.totalCost = line.quantityToRequire * line.unitCost;
+
+                    this.$.grid_prereqlines.clearCache();
+                },
                 _setProductData: function (e) {
                     debugger;
                     var item = this.CBItems.find(x => x.code == e);
@@ -1648,11 +1689,15 @@
 
                 _GridItemChange: function (e, _selected) {
                     debugger;
-                    var itemNo = e.model.item.supplierProductCode
-                    var object = this.CBItems.find(x => x.code == itemNo);
+                    if (this.dataLines != null && this.dataLines.lines != null) {
+                        var line = this.dataLines.lines.find(x => x == this._SelectedLine);
+                        var itemNo = e.model.item.supplierProductCode
+                        var object = this.CBItems.find(x => x.code == itemNo);
+                        line.description = object.name;
+
+                       this.$.grid_prereqlines.clearCache();
+                    }
                     
-                    var line = this.dataLines.lines.find(x => x == this._SelectedLine);
-                    line.description = object.name;
                     //this.$._CLGridDescription.value = object.name;
                     //this.$._CLGridUnitMeasureCode.value = object.measureUnit; 
                 },
@@ -1669,9 +1714,9 @@
 
                 _clFormatsupplierNo: function (param) {
                     if (param != undefined && this.CBVendor != undefined) {
-                        var sel = this.CBVendor.find(x => x.id == param);
+                        var sel = this.CBVendor.find(x => x.no_ == param);
                         if (sel != undefined) {
-                            return sel.value;
+                            return sel.name;
                         }
                     }
                     return "";

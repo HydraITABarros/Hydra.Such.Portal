@@ -237,8 +237,10 @@ namespace Hydra.Such.Portal.Controllers
                         default:
                             break;
                     }
-
-                    data.ContractNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ContractNo == "" || data.ContractNo == null));
+                    if (data.ContractNo == "" || data.ContractNo == null)
+                    {
+                        data.ContractNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, true);
+                    }
 
                     if (data.ContractNo != null)
                     {
@@ -831,12 +833,12 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (AreaId == 4)
                 {
-                    ContractsList = DBContracts.GetAllByContractType(2);
+                    ContractsList = DBContracts.GetAllByContractType(1);
                     ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
                 }
                 else
                 {
-                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 2);
+                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 1);
                     ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
                 }
             }

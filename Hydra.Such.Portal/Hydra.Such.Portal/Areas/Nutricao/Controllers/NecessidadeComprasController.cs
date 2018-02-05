@@ -530,15 +530,15 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             int rLinesNotCreated = 0;
             if (data != null && data.Count > 0)
             {
+                //Get Numeration
+                Configuração conf = DBConfigurations.GetById(1);
+                int entityNumerationConfId = conf.NumeraçãoRequisições.Value;
+
                 foreach (DailyRequisitionProductiveUnitViewModel NecShopDirect in data)
                 {
                     Requisição resultRq = new Requisição();
                     LinhasRequisição resultRqLines = new LinhasRequisição();
-
-                    //Get Contract Numeration
-                    Configuração Configs = DBConfigurations.GetById(1);
-                    int ProjectNumerationConfigurationId = 0;
-                    ProjectNumerationConfigurationId = Configs.NumeraçãoRequisições.Value;
+                    
                     try
                     {
                         if (NecShopDirect.Quantity > 0 && NecShopDirect.LineNo > 0)
@@ -548,78 +548,88 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                             {
                                 // CREATE requisition
                                 resultRq.NºRequisição =
-                                    DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId,
-                                        (resultRq.NºRequisição == "" || resultRq.NºRequisição == null));
-                                resultRq.CódigoÁreaFuncional = ProductivityUnitDB.CódigoÁreaFuncional;
-                                resultRq.CódigoCentroResponsabilidade = ProductivityUnitDB.CódigoCentroResponsabilidade;
-                                resultRq.CódigoRegião = ProductivityUnitDB.CódigoRegião;
-                                resultRq.CódigoLocalização = NecShopDirect.LocalCode;
-                                resultRq.UnidadeProdutivaAlimentação = Convert.ToString(ProductivityUnitDB.NºUnidadeProdutiva);
-                                resultRq.RequisiçãoNutrição = true;
-                                resultRq.DataReceção = string.IsNullOrEmpty(NecShopDirect.ExpectedReceptionDate)
-                                    ? (DateTime?)null
-                                    : DateTime.Parse(NecShopDirect.ExpectedReceptionDate);
-                                resultRq.Aprovadores = User.Identity.Name;
-                                resultRq.UtilizadorCriação = User.Identity.Name;
-                                resultRq.DataHoraCriação = DateTime.Now;
-                                resultRq.Estado = (int)RequisitionStates.Pending;
-                                resultRq = DBRequest.Create(resultRq);
-                                if (resultRq == null)
+                                    DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, true);
+
+                                if (resultRq.NºRequisição != null)
                                 {
-                                    result.eReasonCode = 3;
-                                    result.eMessage = "Ocorreu um erro ao criar a Requisição.";
+                                    resultRq.CódigoÁreaFuncional = ProductivityUnitDB.CódigoÁreaFuncional;
+                                    resultRq.CódigoCentroResponsabilidade = ProductivityUnitDB.CódigoCentroResponsabilidade;
+                                    resultRq.CódigoRegião = ProductivityUnitDB.CódigoRegião;
+                                    resultRq.CódigoLocalização = NecShopDirect.LocalCode;
+                                    resultRq.UnidadeProdutivaAlimentação = Convert.ToString(ProductivityUnitDB.NºUnidadeProdutiva);
+                                    resultRq.RequisiçãoNutrição = true;
+                                    resultRq.DataReceção = string.IsNullOrEmpty(NecShopDirect.ExpectedReceptionDate)
+                                        ? (DateTime?)null
+                                        : DateTime.Parse(NecShopDirect.ExpectedReceptionDate);
+                                    resultRq.Aprovadores = User.Identity.Name;
+                                    resultRq.UtilizadorCriação = User.Identity.Name;
+                                    resultRq.DataHoraCriação = DateTime.Now;
+                                    resultRq.Estado = (int)RequisitionStates.Pending;
+                                    resultRq = DBRequest.Create(resultRq);
+                                    if (resultRq == null)
+                                    {
+                                        result.eReasonCode = 3;
+                                        result.eMessage = "Ocorreu um erro ao criar a Requisição.";
+                                    }
+                                    else
+                                    {
+                                        //Update Last Numeration Used)
+                                        ConfiguraçãoNumerações configNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                                        if (configNumerations != null)
+                                        {
+                                            configNumerations.ÚltimoNºUsado = resultRq.NºRequisição;
+                                            configNumerations.UtilizadorModificação = User.Identity.Name;
+                                            DBNumerationConfigurations.Update(configNumerations);
+                                        }
+                                        result.eReasonCode = 1;
+                                    }
+                                    if (resultRq.NºRequisição != null)
+                                    {
+                                        // CREATE requisition Lines
+                                        try
+                                        {
+                                            if (ProductivityUnitDB != null)
+                                            {
+                                                resultRqLines.NºRequisição = resultRq.NºRequisição;
+                                                resultRqLines.Tipo = 2;
+                                                resultRqLines.Código = NecShopDirect.ProductNo;
+                                                resultRqLines.Descrição = NecShopDirect.Description;
+                                                resultRqLines.CódigoUnidadeMedida = NecShopDirect.UnitMeasureCode;
+                                                resultRqLines.QtdPorUnidadeDeMedida = NecShopDirect.QuantitybyUnitMeasure;
+                                                resultRqLines.CódigoLocalização = NecShopDirect.LocalCode;
+                                                resultRqLines.QuantidadeARequerer = NecShopDirect.Quantity;
+                                                resultRqLines.CustoUnitário = NecShopDirect.DirectUnitCost;
+                                                resultRqLines.NºFornecedor = NecShopDirect.SupplierNo;
+                                                resultRqLines.DataReceçãoEsperada =
+                                                    string.IsNullOrEmpty(NecShopDirect.ExpectedReceptionDate)
+                                                        ? (DateTime?)null
+                                                        : DateTime.Parse(NecShopDirect.ExpectedReceptionDate);
+                                                resultRqLines.CódigoProdutoFornecedor = NecShopDirect.SupplierProductCode;
+                                                resultRqLines.NºEncomendaAberto = NecShopDirect.OpenOrderNo;
+                                                resultRqLines.NºLinhaEncomendaAberto = Convert.ToInt32(NecShopDirect.OrderLineOpenNo);
+                                                resultRqLines.CódigoÁreaFuncional = ProductivityUnitDB.CódigoÁreaFuncional;
+                                                resultRqLines.CódigoCentroResponsabilidade =
+                                                    ProductivityUnitDB.CódigoCentroResponsabilidade;
+                                                resultRqLines.CódigoRegião = ProductivityUnitDB.CódigoRegião;
+                                                resultRqLines.UtilizadorCriação = User.Identity.Name;
+                                                resultRqLines = DBRequestLine.Create(resultRqLines);
+                                                if (resultRqLines == null)
+                                                {
+                                                    rLinesNotCreated++;
+                                                }
+                                            }
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            result.eReasonCode = 4;
+                                            result.eMessage = "Ocorreu um erro ao criar as linhas de requisição";
+                                        }
+                                    }
                                 }
                                 else
                                 {
-                                    //Update Last Numeration Used
-                                    ConfiguraçãoNumerações ConfigNumerations =
-                                        DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
-                                    ConfigNumerations.ÚltimoNºUsado = resultRq.NºRequisição;
-                                    ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                                    DBNumerationConfigurations.Update(ConfigNumerations);
-                                    result.eReasonCode = 1;
-                                }
-                                if (resultRq.NºRequisição != null)
-                                {
-                                    // CREATE requisition Lines
-                                    try
-                                    {
-                                        if (ProductivityUnitDB != null)
-                                        {
-                                            resultRqLines.NºRequisição = resultRq.NºRequisição;
-                                            resultRqLines.Tipo = 2;
-                                            resultRqLines.Código = NecShopDirect.ProductNo;
-                                            resultRqLines.Descrição = NecShopDirect.Description;
-                                            resultRqLines.CódigoUnidadeMedida = NecShopDirect.UnitMeasureCode;
-                                            resultRqLines.QtdPorUnidadeDeMedida = NecShopDirect.QuantitybyUnitMeasure;
-                                            resultRqLines.CódigoLocalização = NecShopDirect.LocalCode;
-                                            resultRqLines.QuantidadeARequerer = NecShopDirect.Quantity;
-                                            resultRqLines.CustoUnitário = NecShopDirect.DirectUnitCost;
-                                            resultRqLines.NºFornecedor = NecShopDirect.SupplierNo;
-                                            resultRqLines.DataReceçãoEsperada =
-                                                string.IsNullOrEmpty(NecShopDirect.ExpectedReceptionDate)
-                                                    ? (DateTime?)null
-                                                    : DateTime.Parse(NecShopDirect.ExpectedReceptionDate);
-                                            resultRqLines.CódigoProdutoFornecedor = NecShopDirect.SupplierProductCode;
-                                            resultRqLines.NºEncomendaAberto = NecShopDirect.OpenOrderNo;
-                                            resultRqLines.NºLinhaEncomendaAberto = Convert.ToInt32(NecShopDirect.OrderLineOpenNo);
-                                            resultRqLines.CódigoÁreaFuncional = ProductivityUnitDB.CódigoÁreaFuncional;
-                                            resultRqLines.CódigoCentroResponsabilidade =
-                                                ProductivityUnitDB.CódigoCentroResponsabilidade;
-                                            resultRqLines.CódigoRegião = ProductivityUnitDB.CódigoRegião;
-                                            resultRqLines.UtilizadorCriação = User.Identity.Name;
-                                            resultRqLines = DBRequestLine.Create(resultRqLines);
-                                            if (resultRqLines == null)
-                                            {
-                                                rLinesNotCreated++;
-                                            }
-                                        }
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        result.eReasonCode = 4;
-                                        result.eMessage = "Ocorreu um erro ao criar as linhas de requisição";
-                                    }
+                                    result.eReasonCode = 5;
+                                    result.eMessage = "Não foi possivel gerar a numeração.";
                                 }
                             }
                         }
@@ -627,8 +637,9 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                     catch (Exception e)
                     {
                         result.eReasonCode = 5;
-                        result.eMessage = "Ocorreu um erro ao gerar a requisição";
+                        result.eMessage = "O numero da requisição não é válido.";
                     }
+
                 }
             }
             else
@@ -833,15 +844,14 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             int rLinesNotCreated = 0;
             if (data != null && data.Count>0)
             {
+                //Get Numeration
+                Configuração conf = DBConfigurations.GetById(1);
+                int entityNumerationConfId = conf.NumeraçãoRequisições.Value;
+
                 foreach (DailyRequisitionProductiveUnitViewModel NecShopDirect in data)
                 {
                     Requisição resultRq = new Requisição();
                     LinhasRequisição resultRqLines = new LinhasRequisição();
-
-                    //Get Contract Numeration
-                    Configuração Configs = DBConfigurations.GetById(1);
-                    int ProjectNumerationConfigurationId = 0;
-                    ProjectNumerationConfigurationId = Configs.NumeraçãoRequisições.Value;
 
                     try
                     {
@@ -851,39 +861,41 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                             if (ProductivityUnitDB != null)
                             {
                                 // CREATE requisition
-                                resultRq.NºRequisição = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId,(resultRq.NºRequisição == "" || resultRq.NºRequisição == null));
-                                resultRq.CódigoÁreaFuncional = ProductivityUnitDB.CódigoÁreaFuncional;
-                                resultRq.CódigoCentroResponsabilidade = ProductivityUnitDB.CódigoCentroResponsabilidade;
-                                resultRq.CódigoRegião = ProductivityUnitDB.CódigoRegião;
-                                resultRq.Aprovadores = User.Identity.Name;
-                                resultRq.CódigoLocalização = NecShopDirect.LocalCode;
-                                resultRq.UnidadeProdutivaAlimentação = Convert.ToString(ProductivityUnitDB.NºUnidadeProdutiva);
-                                resultRq.RequisiçãoNutrição = true;
-                                resultRq.CompraADinheiro = true;
-                                resultRq.Observações = NecShopDirect.Observation;
-                                resultRq.DataReceção = string.IsNullOrEmpty(NecShopDirect.ExpectedReceptionDate) ? (DateTime?)null : DateTime.Parse(NecShopDirect.ExpectedReceptionDate);
-                                resultRq.UtilizadorCriação = User.Identity.Name;
-                                resultRq.DataHoraCriação = DateTime.Now;
-                                resultRq.Estado = (int)RequisitionStates.Pending;
-                                resultRq = DBRequest.Create(resultRq);
-                                if (resultRq == null)
-                                {
-                                    result.eReasonCode = 3;
-                                    result.eMessage = "Ocorreu um erro ao criar a Requisição.";
-                                }
-                                else
-                                {
-                                    //Update Last Numeration Used
-                                    ConfiguraçãoNumerações ConfigNumerations =
-                                        DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
-                                    ConfigNumerations.ÚltimoNºUsado = resultRq.NºRequisição;
-                                    ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                                    DBNumerationConfigurations.Update(ConfigNumerations);
-                                    result.eReasonCode = 1;
-                                }
+                                resultRq.NºRequisição = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, true);
                                 if (resultRq.NºRequisição != null)
                                 {
-                                    // CREATE requisition Lines
+
+                                    resultRq.CódigoÁreaFuncional = ProductivityUnitDB.CódigoÁreaFuncional;
+                                    resultRq.CódigoCentroResponsabilidade = ProductivityUnitDB.CódigoCentroResponsabilidade;
+                                    resultRq.CódigoRegião = ProductivityUnitDB.CódigoRegião;
+                                    resultRq.Aprovadores = User.Identity.Name;
+                                    resultRq.CódigoLocalização = NecShopDirect.LocalCode;
+                                    resultRq.UnidadeProdutivaAlimentação = Convert.ToString(ProductivityUnitDB.NºUnidadeProdutiva);
+                                    resultRq.RequisiçãoNutrição = true;
+                                    resultRq.CompraADinheiro = true;
+                                    resultRq.Observações = NecShopDirect.Observation;
+                                    resultRq.DataReceção = string.IsNullOrEmpty(NecShopDirect.ExpectedReceptionDate) ? (DateTime?)null : DateTime.Parse(NecShopDirect.ExpectedReceptionDate);
+                                    resultRq.UtilizadorCriação = User.Identity.Name;
+                                    resultRq.DataHoraCriação = DateTime.Now;
+                                    resultRq.Estado = (int)RequisitionStates.Pending;
+                                    resultRq = DBRequest.Create(resultRq);
+                                    if (resultRq == null)
+                                    {
+                                        result.eReasonCode = 3;
+                                        result.eMessage = "Ocorreu um erro ao criar a Requisição.";
+                                    }
+                                    else
+                                    {
+                                        //Update Last Numeration Used
+                                        ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                                        ConfigNumerations.ÚltimoNºUsado = resultRq.NºRequisição;
+                                        ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                                        DBNumerationConfigurations.Update(ConfigNumerations);
+                                        result.eReasonCode = 1;
+                                    }
+                                    if (resultRq.NºRequisição != null)
+                                    {
+                                        // CREATE requisition Lines
                                         try
                                         {
                                             if (ProductivityUnitDB != null)
@@ -917,6 +929,12 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                                             result.eReasonCode = 4;
                                             result.eMessage = "Ocorreu um erro ao criar as linhas de requisição";
                                         }
+                                    }
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 5;
+                                    result.eMessage = "Não foi possivel gerar a numeração.";
                                 }
                             }
                         }
