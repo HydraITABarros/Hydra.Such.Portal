@@ -1,8 +1,5 @@
-﻿
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+﻿<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
@@ -18,8 +15,6 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
@@ -31,121 +26,128 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+
 <dom-module id="x-projectdiary">
     <template>
 
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
-    <style>
-        vaadin-combo-box {
-            margin-top: 0px !important;
-            width: 100% !important;
-        }
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
 
-        vaadin-date-picker {
-            margin-top: 0px !important;
-            width: 100% !important;
-        }
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
 
-        vaadin-text-field {
-            margin-top: 0px !important;
-            width: 100%;
-        }
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
 
-        paper-button {
-            margin-top: 10px;
-        }
+            paper-button {
+                margin-top: 10px;
+            }
 
-        .break_clear {
-            margin-top: 15px;
-            margin-right: 0px !important;
-            margin-left: 0px !important;
-        }
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
 
-        .break_frm {
-            margin-top: 15px;
-        }
+            .break_frm {
+                margin-top: 15px;
+            }
 
-        .label_custom {
-            color: var(--valo-contrast-60pct) !important;
-            font-weight: 500 !important;
-            font-size: var(--valo-font-size-s) !important;
-            margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
-            margin-bottom: var(--valo-space-xs) !important;
-            transition: color 0.4s !important;
-            line-height: 1 !important;
-            font-family: var(--valo-font-family) !important;
-        }
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
 
-        datetime-picker {
-            border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
-            background-color: var(--valo-contrast-5pct);
-            color: var(--valo-contrast-60pct) !important;
-            width: 100%;
-        }
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
 
-        .marginSpace {
-            margin: 0px !important;
-        }
+            .marginSpace {
+                margin: 0px !important;
+            }
 
-        textarea {
-            background-color: #f5f5f5;
-            border: none;
-            border-radius: 3px 4px;
-            align-self: baseline;
-            font-weight: 500;
-        }
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
 
-        textarea:hover {
-            background-color: #eeeeee;
-        }
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
 
-        textarea:focus {
-            background-color: white;
-            border: none;
-            outline: 1px solid #eeeeee;
-            border-radius: 3px 4px;
-        }
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
 
-        datetime-picker {
-            --datetime-selected-background: #71BCC1 !important;
-            --datetime-background: #1f3133;
-            --datetime-color: #eeeeee;
-        }
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
 
-        paper-collapse-item {
-        --paper-item: {
-            padding: 0 0;
-        };
-         --paper-collapse-item-header: {
-             padding: 0 15px;
-             color: #333;
-             background-color: #f5f5f5;
-             border-bottom: solid #ddd 1px;
-             border-top-left-radius: 3px;
-             border-top-right-radius: 3px;
+            paper-collapse-item {
+                --paper-item: {
+                padding: 0 0;
+            };
+                --paper-collapse-item-header: {
+                 padding: 0 15px;
+                 color: #333;
+                 background-color: #f5f5f5;
+                 border-bottom: solid #ddd 1px;
+                 border-top-left-radius: 3px;
+                 border-top-right-radius: 3px;
 
-         };
-          }
+             };
+            }
 
-          .panel-body {
-              padding-top: 0px !important;
-          }
-        input[readonly] {
-            border: 2px solid transparent;
-        }
-        input {
-            font: inherit;
-        }
-    </style>
+            .panel-body {
+                padding-top: 0px !important;
+            }
+
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            input {
+                font: inherit;
+            }
+        </style>
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_registerDiary"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
             <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
             <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
         </div><!--on-response="_gridListResponse"-->
         <iron-ajax url="/Projetos/GetProjectMovementsDp" last-response="{{resultMovements}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}"  auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{codeOptions}}" id="ajax_code_options" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -1275,24 +1277,25 @@
                     '_onCacheLoaded( CBResourceCode,CBCodeProducts,CBCGAccountCode,response2, response3, CBContractLineCodesGrid, ContabGroupData, MeasureUnit, Locations, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, MealTypesData, ServiceGroupData, ServiceClientData)'
                 ],
 
-                _onCacheLoaded: function ( cBResourceCode,
-                        cBCodeProducts,
-                        cBcgAccountCode,
-                        typemovement,
-                        type,
-                        code,
-                        contabgroup,
-                        unitcode,
-                        localcode,
-                        regioncode,
-                        funcareacode,
-                        respcentercode,
-                        mealtypescode,
-                        serviceGroupCod,
-                        serviceClientCode
-                   ) {
+                _onCacheLoaded: function (cBResourceCode,
+                    cBCodeProducts,
+                    cBcgAccountCode,
+                    typemovement,
+                    type,
+                    code,
+                    contabgroup,
+                    unitcode,
+                    localcode,
+                    regioncode,
+                    funcareacode,
+                    respcentercode,
+                    mealtypescode,
+                    serviceGroupCod,
+                    serviceClientCode
+                ) {
 
                     if (!this.Flag) {
+                        debugger;
                         if (this.paramprojno != "") {
                             this.$.ajax_getall.body = JSON.stringify(this.paramprojno);
                             this.$.ajax_getall.generateRequest();
@@ -1304,7 +1307,6 @@
                         this.Flag = true;
                     }
                 },
-
                 ready: function () {
                     if (this.paramprojno != "") {
 
@@ -1573,7 +1575,8 @@
                     }
                 },
                 _updateRegisterResponse: function (e) {
-                    if (this.data == null || this.data.length == 0) {
+                    debugger;
+                    if (this.data == null || this.data.length <= 0) {
                         this.openToastError("Não existe linhas de Diário para Registar.");
                     } else {
 
@@ -1597,6 +1600,7 @@
 
                 _getMovements: function () {
                     //Request
+                    debugger;
                     if (this.$.projectList.value != null && this.$.projectList.value != "") {
                         this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
                         this.$.ajax_movementLines.generateRequest();
@@ -1615,51 +1619,18 @@
 
                 },
                 _movementLinesResponse: function (e) {
-                    if (this.movementLines.length > 0) {
-                        //this.movementLines.forEach(function(e) {
-                        if (e.detail.status === 200) {
+                    debugger;;
+                    if (e.detail.status === 200) {
+                        if (this.movementLines.eReasonCode === 1) {
                             this.$.ajax_getall.generateRequest();
                             this.$.projectDiaryProject.clearCache();
-                            this.openToastSuccess("Linhas do Diário registadas com sucesso.");
+                            this.openToastSuccess(this.movementLines.eMessage);
+                        } else {
+                            this.openToastError(this.movementLines.eMessage);
                         }
-                        else {
-                            this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
-                        }
-                        //this.openToastSuccess("Linhas do Diário registadas com sucesso.");
-
-                        //this.result.unshift({
-                        //    projectNo: e.projectNumber,
-                        //    date: e.date,
-                        //    movementType: e.projectMovementNumber,
-                        //    type: e.projectTypeNumber,
-                        //    code: e.codeNumber,
-                        //    description: e.description,
-                        //    quantity: 0,
-                        //    measurementUnitCode: e.codeMeasurementUnit,
-                        //    locationCode: e.codeLocation,
-                        //    projectContabGroup: e.codeProjectContabGroup,
-                        //    regionCode: e.codeRegion,
-                        //    functionalAreaCode: e.codeFuncArea,
-                        //    responsabilityCenterCode: e.codeResponsabilityCenter,
-                        //    unitCost: e.unitCost,
-                        //    totalCost: e.totalCost,
-                        //    unitPrice: e.unitPrice,
-                        //    totalPrice: e.totalPrice,
-                        //    unitValueToInvoice: e.unitValueToInvoice,
-                        //    billable: e.billable,
-                        //    invoiceToClientNo: e.invoiceClientNo,
-                        //    mealType: e.ddMealTypes,
-                        //    serviceGroupCode: e.ddServiceGroupCode,
-                        //    residueGuideNo: e.residueguide,
-                        //    ExternalGuideNo: e.externalguide,
-                        //    consumptionDate: e.consumptionDate,
-                        //    serviceClientCode: e.ddServiceClientCode
-                        //});
-                        //});
-                        //this.$.projectDiaryProject.clearCache();
-                        //this.openToastSuccess("Movimentos adicionados com sucesso.");
-                    } else {
-                        this.openToastError("O projeto selecionado não tem movimentos.");
+                    }
+                    else {
+                        this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
                     }
                 },
 
@@ -1875,7 +1846,7 @@
                                 } else {
                                     return "";
                                 }
-                                
+
                             }
                         }
                     }
@@ -1883,7 +1854,6 @@
                 },
 
                 _lineCalcTotals: function (param) {
-                    debugger;
                     if (this.result != null) {
                         var res = this.result.find(x => x == this._SelectedLine);
                         if (res != null) {
@@ -1891,20 +1861,20 @@
                             var unitCost = res.unitCost;
                             var unitPrice = res.unitPrice;
                             switch (param.target.id) {
-                            case "lineQuantity":
-                                qnt = param.target.value.replace(",", ".");
-                                res.quantity = qnt;
-                                break;
-                            case "lineUnitCost":
-                                unitCost = param.target.value.replace(",", ".");
-                                res.unitCost = unitCost;
-                                break;
-                            case "lineUnitPrice":
-                                unitPrice = param.target.value.replace(",", ".");
-                                res.unitPrice = unitPrice;
-                                break;
-                            default:
-                                break;
+                                case "lineQuantity":
+                                    qnt = param.target.value.replace(",", ".");
+                                    res.quantity = qnt;
+                                    break;
+                                case "lineUnitCost":
+                                    unitCost = param.target.value.replace(",", ".");
+                                    res.unitCost = unitCost;
+                                    break;
+                                case "lineUnitPrice":
+                                    unitPrice = param.target.value.replace(",", ".");
+                                    res.unitPrice = unitPrice;
+                                    break;
+                                default:
+                                    break;
                             }
 
                             if (qnt != "" && qnt != null && unitCost != "" && unitCost != null) {
@@ -1913,13 +1883,12 @@
                             if (qnt != "" && qnt != null && unitPrice != "" && unitPrice != null) {
                                 res.totalPrice = qnt * unitPrice;
                             }
-                            this.$.projectDiaryProject.clearCache(); 
+                            this.$.projectDiaryProject.clearCache();
                         }
                     }
                 },
 
                 _lineSelected: function (item) {
-
                     if (item != null) {
                         var oSel = this.result.find(x => x.selected);
                         if (oSel != undefined) {
@@ -1928,7 +1897,6 @@
                         var sel = this.result.find(x => x == item);
                         if (sel != undefined) {
                             this.result.find(x => x == item).selected = true;
-
                             this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
                             this.$.contractlinecodesgrid_ajax.generateRequest();
                             this.$.projectDiaryProject.clearCache();
@@ -1942,6 +1910,39 @@
                     }
                 }
             });
+
+            //Polymer.Base.async(function () {
+            //    // Set up the parser library for Finnish locale
+            //    Sugar.Date.setLocale('pt');
+            //    debugger;
+            //    var datepicker = Polymer.dom(this.root).querySelector('#dpDate');//document.querySelector('vaadin-date-picker#dpDate');
+            //    datepicker.i18n = {
+            //        week: 'Semana',
+            //        calendar: 'Calendário',
+            //        clear: 'Limpar',
+            //        today: 'Hoje',
+            //        cancel: 'Cancelar',
+            //        firstDayOfWeek: 1,
+            //        monthNames:
+            //        'janeiro_fevereiro_março_abril_maio_junho_julho_agosto_setembro_outubro_novembro_dezembro'.split('_'),
+            //        weekdays: 'domingo_segunda_terça_quarta_quinta_sexta_sabado'.split('_'),
+            //        weekdaysShort: 'su_ma_ti_ke_to_pe_la'.split('_'),
+            //        formatDate: function (date) {
+            //            return Sugar.Date.format(date, '{short}');
+            //        },
+            //        formatTitle: function (monthName, fullYear) {
+            //            return monthName + ' ' + fullYear;
+            //        },
+            //        parseDate: function (dateString) {
+            //            var matches = datepicker.i18n.monthNames.filter(function (monthName) {
+            //                return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
+            //            });
+            //            dateString = matches.length === 1 ? matches[0] : dateString;
+            //            // Parse the date
+            //            return Sugar.Date.create(dateString);
+            //        }
+            //    };
+            //});
         });
     </script>
 </dom-module>

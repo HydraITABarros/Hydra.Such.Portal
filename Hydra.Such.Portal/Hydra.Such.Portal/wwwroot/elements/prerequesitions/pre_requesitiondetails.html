@@ -143,9 +143,12 @@
         <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProducts" last-response="{{CBItems}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{CBPurchaseHeader}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" auto id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto id="measuresunit_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
+
+        <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{CBPurchaseHeader}}" id="purchaseheader_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" auto id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -1199,68 +1202,68 @@
                 <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
             </div>
         </paper-dialog>
-            <!-- Paper Dialog Anexos-->
-            <!--<paper-dialog id="dialogAttach" style="width:70%">
-            <h2>Anexos</h2>
-            <div>
-                <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
+        <!-- Paper Dialog Anexos-->
+        <!--<paper-dialog id="dialogAttach" style="width:70%">
+        <h2>Anexos</h2>
+        <div>
+            <vaadin-upload id="UploadRequest" target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}" method="POST" headers="{'Accept': 'application/json'}" timeout=15000>
 
-                </vaadin-upload>
-                <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
-                    <vaadin-grid-column width="120px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="docType">Tipo Origem</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="docType" />
-                        </template>
-                        <template>
-                            {{item.docType}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="110px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="docNumber">Nº Origem</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="docNumber" />
-                        </template>
-                        <template>
-                            {{item.docNumber}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="110px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="docLineNo">Nº Linha</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="docLineNo" />
-                        </template>
-                        <template>
-                            {{item.docLineNo}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="80%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="url" />
-                        </template>
-                        <template>
-                            {{item.url}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column width="20%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="createDateTime" />
-                        </template>
-                        <template>
-                            {{item.createDateTime}}
-                        </template>
-                    </vaadin-grid-column>
-                </vaadin-grid>
-            </div>
-            <div class="buttons">
-                <paper-button dialog-dismiss>Cancelar</paper-button>
-            </div>
-        </paper-dialog>-->
+            </vaadin-upload>
+            <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                <vaadin-grid-column width="120px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="docType">Tipo Origem</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="docType" />
+                    </template>
+                    <template>
+                        {{item.docType}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="docNumber">Nº Origem</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="docNumber" />
+                    </template>
+                    <template>
+                        {{item.docNumber}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="docLineNo">Nº Linha</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="docLineNo" />
+                    </template>
+                    <template>
+                        {{item.docLineNo}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="80%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="url" />
+                    </template>
+                    <template>
+                        {{item.url}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="20%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="createDateTime" />
+                    </template>
+                    <template>
+                        {{item.createDateTime}}
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+        </div>
+        <div class="buttons">
+            <paper-button dialog-dismiss>Cancelar</paper-button>
+        </div>
+    </paper-dialog>-->
 
-            <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-            <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
    <script>
@@ -1299,6 +1302,12 @@
 
                     _CBItems: {
                         observer: '_setProductData'
+                    },
+
+                    _CLResponsabilityCenterCode: {
+                        type: String,
+                        notify: true,
+                        observer: '_set_CLResponsabilityCenterCode_PurchaseHeader'
                     },
 
                     _TotalLine: {
@@ -1360,6 +1369,16 @@
                     }
                     this.Flag = true;
                 },
+
+                //_set_CLResponsabilityCenterCode_PurchaseHeader: function (e) {
+                //    debugger;
+                //     if(!(this.$._CLResponsabilityCenterCode.value == "" || this.$._CLResponsabilityCenterCode.value == null)) {
+                //        debugger;
+                //        this.$.purchaseheader_ajax.body = JSON.stringify({ "id": this.$._CLResponsabilityCenterCode.value });
+                //        this.$.purchaseheader_ajax.generateRequest();
+                //    }
+                //},
+               
 
                 _deleteFiles: function (e) {
                     var index = this.dataLines.lines.indexOf(e.model.item);
@@ -1554,6 +1573,13 @@
                             } else {
                                 this._openToastError(this.data.eMessage);
                             }
+                        }
+
+                        debugger;
+                        if (!(this.$._CLResponsabilityCenterCode.value == "" || this.$._CLResponsabilityCenterCode.value == null)) {
+                            debugger;
+                            this.$.purchaseheader_ajax.body = JSON.stringify(this.$._CLResponsabilityCenterCode.value);
+                            this.$.purchaseheader_ajax.generateRequest();
                         }
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")

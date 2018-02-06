@@ -7,6 +7,7 @@ using Hydra.Such.Data.ViewModel.Projects;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic.Contracts;
 using Hydra.Such.Data.Logic.Project;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Data.ViewModel;
@@ -1054,44 +1055,69 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetMovements([FromBody] string projectNo)
         {
-            //Get Contract from Project
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 1;
+            result.eMessage = "Os movimentos foram obtidos com sucesso";
             List<DiárioDeProjeto> dp = new List<DiárioDeProjeto>();
-            if (projectNo != null && projectNo != "")
+            if (!String.IsNullOrEmpty(projectNo))
             {
-                dp = DBProjectMovements.GetRegisteredDiary(projectNo).Select(x => new DiárioDeProjeto()
+                Projetos proj = DBProjects.GetById(projectNo);
+                if (proj != null && !String.IsNullOrEmpty(proj.NºContrato))
                 {
-                    NºProjeto = x.NºProjeto,
-                    Data = x.Data,
-                    TipoMovimento = x.TipoMovimento,
-                    Tipo = x.Tipo,
-                    Código = x.Código,
-                    Descrição = x.Descrição,
-                    Quantidade = x.Quantidade,
-                    CódUnidadeMedida = x.CódUnidadeMedida,
-                    CódLocalização = x.CódLocalização,
-                    GrupoContabProjeto = x.GrupoContabProjeto,
-                    CódigoRegião = x.CódigoRegião,
-                    CódigoÁreaFuncional = x.CódigoÁreaFuncional,
-                    CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
-                    Utilizador = x.Utilizador,
-                    CustoUnitário = x.CustoUnitário,
-                    CustoTotal = x.CustoTotal,
-                    PreçoUnitário = x.PreçoUnitário,
-                    PreçoTotal = x.PreçoTotal,
-                    FaturaANºCliente = x.FaturaANºCliente,
-                    Faturável = x.Faturável,
-                    Registado = false,
-                    DataConsumo = x.DataConsumo.ToString() == "" || x.DataConsumo.ToString() == String.Empty ? (DateTime?)null : DateTime.Parse(x.DataConsumo.ToString()),
-
-                }).ToList();
-
-                foreach (var item in dp)
-                {
-                    DBProjectDiary.Create(item);
+                    Contratos lcontracts = DBContracts.GetActualContract(proj.NºContrato, proj.NºCliente);
+                    if (lcontracts != null)
+                    {
+                        dp = DBContractLines.GetAllByActiveContract(lcontracts.NºContrato, lcontracts.NºVersão).Select(
+                            x => new DiárioDeProjeto()
+                            {
+                                NºProjeto = projectNo,
+                                Tipo = x.Tipo,
+                                Código = x.Código,
+                                Descrição = x.Descrição,
+                                Quantidade = 0,
+                                CódUnidadeMedida = x.CódUnidadeMedida,
+                                CódigoRegião = x.CódigoRegião,
+                                CódigoÁreaFuncional = x.CódigoÁreaFuncional,
+                                CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
+                                Utilizador = User.Identity.Name,
+                                PreçoUnitário = x.PreçoUnitário,
+                                Faturável = x.Faturável,
+                                Registado = false
+                            }).ToList();
+                        if (dp.Count == 0)
+                        {
+                            result.eReasonCode = 4;
+                            result.eMessage = "Este projeto não tem contrato com linhas associadas";
+                        }     
+                        foreach (var item in dp)
+                        {
+                            
+                                DiárioDeProjeto dpValidation = new DiárioDeProjeto();
+                                item.UtilizadorCriação = User.Identity.Name;
+                                item.DataHoraCriação = DateTime.Now;
+                                dpValidation = DBProjectDiary.Create(item);
+                                if (dpValidation == null)
+                                {
+                                    result.eReasonCode = 5;
+                                    result.eMessage = "Occorreu um erro ao obter os movimentos";
+                                }                                                    
+                        }
+                       
+                    }
                 }
-                return Json(dp);
+                else
+                {
+                    result.eReasonCode = 3;
+                    result.eMessage = "Este projeto não tem contrato";
+                }
             }
-            return Json(false);
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Não foi selecionado nenhum projeto";
+            }
+           
+            return Json(result);
         }
 
         public class ProjectInfo
