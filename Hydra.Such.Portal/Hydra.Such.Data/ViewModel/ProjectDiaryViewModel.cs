@@ -88,8 +88,9 @@ namespace Hydra.Such.Data.ViewModel
         public string EmployeeNo { get; set; }
         public decimal QuantityReturned { get; set; }
         public string Coin { get; set; }
-        
 
+        public int eReasonCode { get; set; }
+        public string eMessage { get; set; }
 
 
     }
