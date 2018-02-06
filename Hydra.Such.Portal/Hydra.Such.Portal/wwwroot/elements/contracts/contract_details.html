@@ -7,13 +7,8 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-
-
-
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
@@ -22,6 +17,11 @@
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+    <!--link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html"-->
 
 <dom-module id="x-contractdetails">
     <template>
@@ -503,8 +503,8 @@
                                                                     <vaadin-grid-filter path="startDate" />
                                                                 </template>
                                                                 <template>
-                                                                    <input type="date" id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFields }}">
-                                                                    <!--<vaadin-date-picker id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
+                                                                    <!--<input type="date" id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFields }}">-->
+                                                                    <vaadin-date-picker id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
                                                             <vaadin-grid-column>
@@ -513,9 +513,8 @@
                                                                     <vaadin-grid-filter path="endDate" />
                                                                 </template>
                                                                 <template>
-                                                                    <input type="date" id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFields }}">
-
-                                                                    <!--<vaadin-date-picker id="_CRGridEndDate" name="_CRGridEndDate" value="{{item.endDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
+                                                                    <!--<input type="date" id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFields }}">-->
+                                                                    <vaadin-date-picker id="_CRGridEndDate" name="_CRGridEndDate" value="{{item.endDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
                                                             <vaadin-grid-column>
@@ -533,9 +532,8 @@
                                                                     <vaadin-grid-filter path="requisitionDate" />
                                                                 </template>
                                                                 <template>
-                                                                    <input type="date" id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ _lockFields }}">
-
-                                                                    <!--<vaadin-date-picker id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
+                                                                    <!--<input type="date" id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ _lockFields }}">-->
+                                                                    <vaadin-date-picker id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
                                                             <vaadin-grid-column>
@@ -589,8 +587,8 @@
                                                                     <vaadin-grid-filter path="lastInvoiceDate" />
                                                                 </template>
                                                                 <template>
-                                                                    <input type="date" id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ _lockFields }}">
-                                                                    <!--<vaadin-date-picker id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
+                                                                    <!--<input type="date" id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ _lockFields }}">-->
+                                                                    <vaadin-date-picker id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
                                                             <vaadin-grid-column>
@@ -1294,9 +1292,8 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <input type="date" id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ _lockFields }}">
-
-                                            <!--<vaadin-date-picker id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
+                                            <!--<input type="date" id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ _lockFields }}">-->
+                                            <vaadin-date-picker id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.versionStartDate}}
@@ -1310,9 +1307,8 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <input type="date" id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionEndDate}}" disabled="{{ _lockFields }}">
-
-                                            <!--<vaadin-date-picker id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionEndDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
+                                            <!--<input type="date" id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionEndDate}}" disabled="{{ _lockFields }}">-->
+                                            <vaadin-date-picker id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionEndDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.versionEndDate}}
@@ -1819,7 +1815,7 @@
 
                                 this.$.navData_ajax.body = JSON.stringify(this.data);
                                 this.$.navData_ajax.generateRequest();
-                                
+
                             }
                         }
                         else if (data.detail.url.indexOf("Create") !== -1) {
