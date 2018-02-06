@@ -12,16 +12,20 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
+using Hydra.Such.Data.ViewModel.ProjectView;
+using Hydra.Such.Data.Logic.Project;
 
 namespace Hydra.Such.Portal.Controllers
 {
     public class PreRequisicoesController : Controller
     {
         private readonly GeneralConfigurations _config;
+        private readonly NAVConfigurations _configNAV;
 
-        public PreRequisicoesController(IOptions<GeneralConfigurations> appSettings)
+        public PreRequisicoesController(IOptions<GeneralConfigurations> appSettings, IOptions<NAVConfigurations> appSettingsNAV)
         {
             _config = appSettings.Value;
+            _configNAV = appSettingsNAV.Value;
         }
         
         public IActionResult Index()
@@ -411,6 +415,13 @@ namespace Hydra.Such.Portal.Controllers
             PlacesViewModel PlacesData = DBPlaces.ParseToViewModel(DBPlaces.GetById(placeId));
             return Json(PlacesData);
         }
+
+        public JsonResult GetPurchaseHeader([FromBody] string respcenter)
+        {
+            int DimValueID = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, 3, User.Identity.Name).FirstOrDefault().DimValueID;
+            return Json("");
+        }
+        
         #endregion
 
         #region Numeração Pré-Requisição

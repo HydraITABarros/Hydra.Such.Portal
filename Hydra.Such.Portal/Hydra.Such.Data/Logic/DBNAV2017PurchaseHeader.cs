@@ -18,7 +18,7 @@ namespace Hydra.Such.Data.Logic
                 {
                     var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
-                        new SqlParameter("@CompanyName", NAVCompanyName)
+                        new SqlParameter("@CompanyName", NAVCompanyName),
                     };
 
                     IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017CabecalhoEncomendasAberto @DBName, @CompanyName", parameters);

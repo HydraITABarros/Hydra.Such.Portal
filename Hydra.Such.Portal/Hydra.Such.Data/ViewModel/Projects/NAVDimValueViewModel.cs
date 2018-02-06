@@ -8,5 +8,6 @@ namespace Hydra.Such.Data.ViewModel.ProjectView
     {
         public string Code { get; set; }
         public string Name { get; set; }
+        public int DimValueID { get; set; }
     }
 }
