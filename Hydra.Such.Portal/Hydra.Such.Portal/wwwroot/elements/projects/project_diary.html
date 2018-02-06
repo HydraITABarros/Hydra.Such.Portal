@@ -1897,7 +1897,6 @@
                         var sel = this.result.find(x => x == item);
                         if (sel != undefined) {
                             this.result.find(x => x == item).selected = true;
-
                             this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
                             this.$.contractlinecodesgrid_ajax.generateRequest();
                             this.$.projectDiaryProject.clearCache();

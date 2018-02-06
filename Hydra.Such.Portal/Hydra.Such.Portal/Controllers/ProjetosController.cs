@@ -1055,7 +1055,6 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetMovements([FromBody] string projectNo)
         {
-            int FaturávelCount = 0;
             ErrorHandler result = new ErrorHandler();
             result.eReasonCode = 1;
             result.eMessage = "Os movimentos foram obtidos com sucesso";
@@ -1092,8 +1091,7 @@ namespace Hydra.Such.Portal.Controllers
                         }     
                         foreach (var item in dp)
                         {
-                            if (item.Faturável == true)
-                            {
+                            
                                 DiárioDeProjeto dpValidation = new DiárioDeProjeto();
                                 item.UtilizadorCriação = User.Identity.Name;
                                 item.DataHoraCriação = DateTime.Now;
@@ -1102,19 +1100,9 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     result.eReasonCode = 5;
                                     result.eMessage = "Occorreu um erro ao obter os movimentos";
-                                }
-                            }
-                            else
-                            {
-                                FaturávelCount++;
-                            }
-                           
+                                }                                                    
                         }
-                        if (FaturávelCount == dp.Count)
-                        {
-                            result.eReasonCode = 6;
-                            result.eMessage = "As Linhas de contrato deste projeto não são faturaveis";
-                        }
+                       
                     }
                 }
                 else
