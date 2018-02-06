@@ -77,6 +77,8 @@ namespace Hydra.Such.Portal
 
             // ABARROS -> Activate Session Variables
             services.AddSession(s => s.IdleTimeout = TimeSpan.FromMinutes(30));
+
+            Data.Database.SuchDBContext.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
