@@ -712,7 +712,8 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Code,
                 value = x.Name,
                 extra = ""
-            }).ToList(); return Json(result);
+            }).Take(5).ToList();
+            return Json(result);
         }
 
         [HttpPost]
@@ -723,7 +724,7 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Code,
                 value = x.Name,
                 extra = x.MeasureUnit
-            }).ToList();
+            }).Take(5).ToList();
             return Json(result);
         }
 
@@ -735,7 +736,7 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Code,
                 value = x.Name,
                 extra = x.MeasureUnit
-            }).ToList();
+            }).Take(5).ToList();
             return Json(result);
         }
         #endregion

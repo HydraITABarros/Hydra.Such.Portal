@@ -1063,11 +1063,17 @@
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <vaadin-combo-box items="[[CBContractLineCodesGrid]]" id="_CLGridCode" name="_CLGridCode" item-value-path="id" item-label-path="id" value="{{item.code}}" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineCodeGridChange">
                                                 <template>
-                                                    <paper-icon-item>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                    <!--<paper-icon-item>
                                                         <paper-item-body two-line>
                                                             <div>[[item.id]]</div>
                                                         </paper-item-body>
-                                                    </paper-icon-item>
+                                                    </paper-icon-item>-->
                                                 </template>
                                             </vaadin-combo-box>
                                         </template>

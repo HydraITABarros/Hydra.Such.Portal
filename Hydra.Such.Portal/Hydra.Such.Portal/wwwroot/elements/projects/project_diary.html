@@ -447,7 +447,7 @@
                         </vaadin-combo-box>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
-                        [[ _parseCode(item.code, item.type) ]]
+                        [[ item.code ]]
                     </template>
                 </template>
             </vaadin-grid-column>
@@ -1293,6 +1293,7 @@
                    ) {
 
                     if (!this.Flag) {
+                        debugger;
                         if (this.paramprojno != "") {
                             this.$.ajax_getall.body = JSON.stringify(this.paramprojno);
                             this.$.ajax_getall.generateRequest();
@@ -1573,7 +1574,8 @@
                     }
                 },
                 _updateRegisterResponse: function (e) {
-                    if (this.data == null || this.data.length == 0) {
+                    debugger;
+                    if (this.data == null || this.data.length <= 0) {
                         this.openToastError("Não existe linhas de Diário para Registar.");
                     } else {
 
@@ -1597,6 +1599,7 @@
 
                 _getMovements: function () {
                     //Request
+                    debugger;
                     if (this.$.projectList.value != null && this.$.projectList.value != "") {
                         this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
                         this.$.ajax_movementLines.generateRequest();
@@ -1615,51 +1618,18 @@
 
                 },
                 _movementLinesResponse: function (e) {
-                    if (this.movementLines.length > 0) {
-                        //this.movementLines.forEach(function(e) {
-                        if (e.detail.status === 200) {
+                    debugger;;
+                    if (e.detail.status === 200) {
+                        if (this.movementLines.eReasonCode === 1) {
                             this.$.ajax_getall.generateRequest();
                             this.$.projectDiaryProject.clearCache();
-                            this.openToastSuccess("Linhas do Diário registadas com sucesso.");
+                            this.openToastSuccess(this.movementLines.eMessage);
+                        } else {
+                            this.openToastError(this.movementLines.eMessage);
                         }
-                        else {
-                            this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
-                        }
-                        //this.openToastSuccess("Linhas do Diário registadas com sucesso.");
-
-                        //this.result.unshift({
-                        //    projectNo: e.projectNumber,
-                        //    date: e.date,
-                        //    movementType: e.projectMovementNumber,
-                        //    type: e.projectTypeNumber,
-                        //    code: e.codeNumber,
-                        //    description: e.description,
-                        //    quantity: 0,
-                        //    measurementUnitCode: e.codeMeasurementUnit,
-                        //    locationCode: e.codeLocation,
-                        //    projectContabGroup: e.codeProjectContabGroup,
-                        //    regionCode: e.codeRegion,
-                        //    functionalAreaCode: e.codeFuncArea,
-                        //    responsabilityCenterCode: e.codeResponsabilityCenter,
-                        //    unitCost: e.unitCost,
-                        //    totalCost: e.totalCost,
-                        //    unitPrice: e.unitPrice,
-                        //    totalPrice: e.totalPrice,
-                        //    unitValueToInvoice: e.unitValueToInvoice,
-                        //    billable: e.billable,
-                        //    invoiceToClientNo: e.invoiceClientNo,
-                        //    mealType: e.ddMealTypes,
-                        //    serviceGroupCode: e.ddServiceGroupCode,
-                        //    residueGuideNo: e.residueguide,
-                        //    ExternalGuideNo: e.externalguide,
-                        //    consumptionDate: e.consumptionDate,
-                        //    serviceClientCode: e.ddServiceClientCode
-                        //});
-                        //});
-                        //this.$.projectDiaryProject.clearCache();
-                        //this.openToastSuccess("Movimentos adicionados com sucesso.");
-                    } else {
-                        this.openToastError("O projeto selecionado não tem movimentos.");
+                    }
+                    else {
+                        this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
                     }
                 },
 
@@ -1883,7 +1853,6 @@
                 },
 
                 _lineCalcTotals: function (param) {
-                    debugger;
                     if (this.result != null) {
                         var res = this.result.find(x => x == this._SelectedLine);
                         if (res != null) {
@@ -1928,7 +1897,6 @@
                         var sel = this.result.find(x => x == item);
                         if (sel != undefined) {
                             this.result.find(x => x == item).selected = true;
-
                             this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
                             this.$.contractlinecodesgrid_ajax.generateRequest();
                             this.$.projectDiaryProject.clearCache();

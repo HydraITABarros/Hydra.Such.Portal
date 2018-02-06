@@ -203,31 +203,49 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         {
             if (data != null)
             {
-                Configuração Configs = DBConfigurations.GetById(1);
-                int NumerationConfigurationId = 0;
-                NumerationConfigurationId = Configs.NumeraçãoFichasTécnicasDePratos.Value;
-                data.PlateNo = DBNumerationConfigurations.GetNextNumeration(NumerationConfigurationId,
-                    (data.PlateNo == "" || data.PlateNo == null));
-                data.CreateUser = User.Identity.Name;
-                var createdItem = DBRecordTechnicalOfPlates.Create(data.ParseToDB());
-                if (createdItem != null)
-                {
+                //Get Numeration
+                bool autoGenId = false;
+                Configuração conf = DBConfigurations.GetById(1);
+                int entityNumerationConfId = conf.NumeraçãoFichasTécnicasDePratos.Value;
 
-                    data = createdItem.ParseToViewModel();
-                    //Update Last Numeration Used
-                    ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(NumerationConfigurationId);
-                    ConfigNumerations.ÚltimoNºUsado = data.PlateNo;
-                    ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                    DBNumerationConfigurations.Update(ConfigNumerations);
-                    data.eReasonCode = 1;
-                    data.eMessage = "Registo criado com sucesso.";
+                if (data.PlateNo == "" || data.PlateNo == null)
+                {
+                    autoGenId = true;
+                    data.PlateNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                }
+                if (data.PlateNo != null)
+                {
+                    data.CreateUser = User.Identity.Name;
+                    var createdItem = DBRecordTechnicalOfPlates.Create(data.ParseToDB());
+                    if (createdItem != null)
+                    {
+
+                        data = createdItem.ParseToViewModel();
+
+                        //Update Last Numeration Used
+                        if (autoGenId)
+                        {
+                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                            ConfigNumerations.ÚltimoNºUsado = data.PlateNo;
+                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                            DBNumerationConfigurations.Update(ConfigNumerations);
+                        }
+
+                        data.eReasonCode = 1;
+                        data.eMessage = "Registo criado com sucesso.";
+                    }
+                    else
+                    {
+
+                        data = new RecordTechnicalOfPlatesModelView();
+                        data.eReasonCode = 2;
+                        data.eMessage = "Ocorreu um erro ao editar o registo.";
+                    }
                 }
                 else
                 {
-
-                    data = new RecordTechnicalOfPlatesModelView();
                     data.eReasonCode = 2;
-                    data.eMessage = "Ocorreu um erro ao editar o registo.";
+                    data.eMessage = "A numeração configurada não é compativel com a inserida.";
                 }
             }
             else

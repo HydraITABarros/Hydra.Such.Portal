@@ -73,6 +73,24 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
+        public static Contratos GetActualContract(string ContractNo, string ClientNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Contratos.Where(x => x.TipoContrato == 3 && x.Arquivado == true && 
+                    x.NºContrato == ContractNo && x.NºCliente == ClientNo).
+                    OrderByDescending(x => x.NºVersão).
+                    FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
 
         public static Contratos Create(Contratos ObjectToCreate)
         {

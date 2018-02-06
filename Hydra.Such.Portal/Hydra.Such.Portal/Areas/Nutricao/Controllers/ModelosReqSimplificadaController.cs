@@ -118,12 +118,14 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 if (item != null)
                 {
                     //Get Numeration
+                    bool autoGenId = false;
                     Configuração conf = DBConfigurations.GetById(1);
                     int entityNumerationConfId = conf.NumeraçãoModReqSimplificadas.Value;
 
                     if (item.RequisitionTemplateId == "" || item.RequisitionTemplateId == null)
                     {
-                        item.RequisitionTemplateId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, true);
+                        autoGenId = true;
+                        item.RequisitionTemplateId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
                     }
                     if (item.RequisitionTemplateId != null)
                     {
@@ -132,12 +134,13 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                         if (createdItem != null)
                         {
                             item = createdItem.ParseToViewModel();
-
-                            ConfiguraçãoNumerações configNum = DBNumerationConfigurations.GetById(entityNumerationConfId);
-                            configNum.ÚltimoNºUsado = item.RequisitionTemplateId;
-                            configNum.UtilizadorModificação = User.Identity.Name;
-                            DBNumerationConfigurations.Update(configNum);
-
+                            if (autoGenId)
+                            {
+                                ConfiguraçãoNumerações configNum = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                                configNum.ÚltimoNºUsado = item.RequisitionTemplateId;
+                                configNum.UtilizadorModificação = User.Identity.Name;
+                                DBNumerationConfigurations.Update(configNum);
+                            }
                             item.eReasonCode = 1;
                             item.eMessage = "Registo criado com sucesso.";
                         }

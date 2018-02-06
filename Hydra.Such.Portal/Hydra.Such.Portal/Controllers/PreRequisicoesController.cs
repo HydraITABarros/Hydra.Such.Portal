@@ -226,14 +226,16 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
-                    //Get Contract Numeration
-                    Configuração Configs = DBConfigurations.GetById(1);
-                    int ProjectNumerationConfigurationId = 0;
-                    ProjectNumerationConfigurationId = Configs.NumeraçãoPréRequisições.Value;
+                    //Get Numeration
+                    bool autoGenId = false;
+                    Configuração conf = DBConfigurations.GetById(1);
+                    int entityNumerationConfId = conf.NumeraçãoPréRequisições.Value;
 
-
-                    data.PreRequesitionsNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.PreRequesitionsNo == "" || data.PreRequesitionsNo == null));
-
+                    if (data.PreRequesitionsNo == "" || data.PreRequesitionsNo == null)
+                    {
+                        autoGenId = true;
+                        data.PreRequesitionsNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                    }
                     if (data.PreRequesitionsNo != null)
                     {
                         PréRequisição pPreRequisicao = DBPreRequesition.ParseToDB(data);
@@ -251,12 +253,13 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
-                            //Update Last Numeration Used
-                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
-                            ConfigNumerations.ÚltimoNºUsado = data.PreRequesitionsNo;
-                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                            DBNumerationConfigurations.Update(ConfigNumerations);
-
+                            ConfiguraçãoNumerações configNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                            if (configNumerations != null && autoGenId)
+                            {
+                                configNumerations.ÚltimoNºUsado = data.PreRequesitionsNo;
+                                configNumerations.UtilizadorModificação = User.Identity.Name;
+                                DBNumerationConfigurations.Update(configNumerations);
+                            }
                             data.eReasonCode = 1;
                         }
                     }

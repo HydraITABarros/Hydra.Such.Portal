@@ -102,18 +102,15 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
-                string entityId = "";
-                bool autoGenId = false;
-
                 //Get Numeration
+                bool autoGenId = false;
                 Configuração conf = DBConfigurations.GetById(1);
                 int entityNumerationConfId = conf.NumeraçãoContactos.Value;
                 
                 if (item.Id == "" || item.Id == null)
                 {
                     autoGenId = true;
-                    entityId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
-                    item.Id = entityId;
+                    item.Id = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
                 }
 
                 if (item.Id != null)
@@ -158,6 +155,7 @@ namespace Hydra.Such.Portal.Controllers
                                 if (configNumerations != null && autoGenId)
                                 {
                                     configNumerations.ÚltimoNºUsado = item.Id;
+                                    configNumerations.UtilizadorModificação = User.Identity.Name;
                                     DBNumerationConfigurations.Update(configNumerations);
                                 }
                                 item.eReasonCode = 1;
