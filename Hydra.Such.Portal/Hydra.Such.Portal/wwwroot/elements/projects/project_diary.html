@@ -184,7 +184,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                    <vaadin-date-picker label="Data" id="dpDate" name="dpDate" value="{{date}}" disabled="{{ !_permissions.create }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
                     <such-selectbox id="projectMovementList" name="projectMovementList" value="{{projectMovementNumber}}" label="Tipo Movimento" disabled="{{ !_permissions.create }}"
@@ -321,7 +321,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-2">
-                    <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{date}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                    <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
                     <such-selectbox id="ServiceClientCode" name="piCodeResponsabilityCenter" value="{{ddServiceClientCode}}" label="Cód. Serviço Cliente" disabled="{{ !_permissions.create }}"
@@ -1295,7 +1295,6 @@
                 ) {
 
                     if (!this.Flag) {
-                        debugger;
                         if (this.paramprojno != "") {
                             this.$.ajax_getall.body = JSON.stringify(this.paramprojno);
                             this.$.ajax_getall.generateRequest();
@@ -1527,12 +1526,20 @@
                     if (e.detail.value) {
                         this.$.ajax_related.body = JSON.stringify(e.detail.value);
                         this.$.ajax_related.generateRequest();
+
+                        this.$.grid_databound_ajax.body = JSON.stringify(e.detail.value);
+                        this.$.grid_databound_ajax.params = { "allProjs": false };    
+
                     } else {
                         this.$.piDescription = "";
                         this.$.piCodeRegion = "";
                         this.$.piFuncArea = "";
                         this.$.piCodeResponsabilityCenter = "";
+
+                        this.$.grid_databound_ajax.body = JSON.stringify("");
+                        this.$.grid_databound_ajax.params = { "allProjs": true };
                     }
+                    this.$.grid_databound_ajax.generateRequest();
                 },
 
                 _projectTypeChange: function (e) {
@@ -1575,7 +1582,6 @@
                     }
                 },
                 _updateRegisterResponse: function (e) {
-                    debugger;
                     if (this.data == null || this.data.length <= 0) {
                         this.openToastError("Não existe linhas de Diário para Registar.");
                     } else {
@@ -1600,7 +1606,6 @@
 
                 _getMovements: function () {
                     //Request
-                    debugger;
                     if (this.$.projectList.value != null && this.$.projectList.value != "") {
                         this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
                         this.$.ajax_movementLines.generateRequest();
@@ -1619,7 +1624,6 @@
 
                 },
                 _movementLinesResponse: function (e) {
-                    debugger;;
                     if (e.detail.status === 200) {
                         if (this.movementLines.eReasonCode === 1) {
                             this.$.ajax_getall.generateRequest();
