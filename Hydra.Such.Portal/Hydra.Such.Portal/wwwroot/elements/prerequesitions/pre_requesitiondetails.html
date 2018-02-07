@@ -1,6 +1,6 @@
 ﻿
 <link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
-<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" / >
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
 <link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
@@ -147,7 +147,8 @@
 
 
 
-        <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{CBPurchaseHeader}}" id="purchaseheader_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PreRequisicoes/GetPurchaseHeader" last-response="{{CBPurchaseHeader}}" id="purchaseheader_ajax" on-response="_purchaseheaderresponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PreRequisicoes/GetPurchaseHeader" last-response="{{GridCBPurchaseHeader}}" id="gridpurchaseheader_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" auto id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -709,7 +710,7 @@
                     </div>
                     <div class="row break_clear">
                         <div class="col-lg-2">
-                            <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
+                            <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLResponsabilityCenterCode" item-value-path="id" item-label-path="value" on-change="_RespChange" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="200px">
                                         <tr>
@@ -1020,7 +1021,7 @@
                                 </template>
                                 <template>
                                     <template is="dom-if" if="{{ item.selected }}">
-                                        <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLGridResponsabilityCenter" name="_CLGridResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{item.centerResponsibilityCode}}" disabled="{{ !_permissions.update }}">
+                                        <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLGridResponsabilityCenter" on-change="_GridRespCenterChange" name="_CLGridResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{item.centerResponsibilityCode}}" disabled="{{ !_permissions.update }}">
                                             <template>
                                                 <paper-icon-item>
                                                     <paper-item-body two-line>
@@ -1042,7 +1043,7 @@
                                 </template>
                                 <template>
                                     <template is="dom-if" if="{{ item.selected }}">
-                                        <vaadin-combo-box items="[[CBPurchaseHeader]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
+                                        <vaadin-combo-box items="[[GridCBPurchaseHeader]]" id="_CBGridPurchaseHeader" item-value-path="id" item-label-path="id" value="{{item.openOrderNo}}" on-change="_PopulatePurchaseLinesGrid" disabled="{{ !_permissions.update }}">
                                             <template>
                                                 <table width="200px">
                                                     <tr>
@@ -1053,7 +1054,7 @@
                                         </vaadin-combo-box>
                                     </template>
                                     <template is="dom-if" if="{{ !item.selected }}">
-                                        [[ _clFormatOpenOrderNo(item.openOrderNo) ]]
+                                        [[item.openOrderNo ]]
                                     </template>
                                 </template>
                             </vaadin-grid-column>
@@ -1689,6 +1690,24 @@
                     return "";
                 },
 
+                _RespChange: function (e) {
+                    debugger;
+                    if (!(this.$._CLResponsabilityCenterCode.value == "" || this.$._CLResponsabilityCenterCode.value == null)) {
+                        debugger;
+                        this.$.purchaseheader_ajax.body = JSON.stringify(this.$._CLResponsabilityCenterCode.value );
+                        this.$.purchaseheader_ajax.generateRequest();
+                    }
+                },
+
+                _purchaseheaderresponse: function (e) {
+                    debugger;
+                    if (this.CBPurchaseHeader.length == 0) {
+                        this.$._CBPurchaseHeader.value = "";
+                        this.$._CBPurchaseLine.value = "";
+                    }
+                },
+
+
                 //_clFormatProjectNo: function (param) {
                 //    if (param != undefined && this.CBJobNo != undefined) {
                 //        var sel = this.CBJobNo.find(x => x.id == param);
@@ -1727,6 +1746,24 @@
                     //this.$._CLGridDescription.value = object.name;
                     //this.$._CLGridUnitMeasureCode.value = object.measureUnit; 
                 },
+
+                _GridRespCenterChange: function (e) {
+                    debugger;
+                    if (this.dataLines != null && this.dataLines.lines != null) {
+                        var line = this.dataLines.lines.find(x => x == this._SelectedLine);
+                        var itemNo = e.model.item.centerResponsibilityCode;
+                        line.openOrderNo = "";
+                        this.CBPurchaseLineGrid = "";
+                        line.openOrderLineNo = "";
+                        
+
+                        this.$.gridpurchaseheader_ajax.body = JSON.stringify(itemNo);
+                        this.$.gridpurchaseheader_ajax.generateRequest();
+
+                        this.$.grid_prereqlines.clearCache();
+                    }
+                },
+
 
                 _clFormatvehicle: function (param) {
                     if (param != undefined && this.CBVehicle != undefined) {
@@ -1884,8 +1921,12 @@
                             this.$.purchaselinesgrid_ajax.generateRequest();
 
                             this.$.grid_prereqlines.clearCache();
-
-
+                            debugger;
+                            if (!(item.centerResponsibilityCode == "" || item.centerResponsibilityCode == null)) {
+                                debugger;
+                                this.$.gridpurchaseheader_ajax.body = JSON.stringify(item.centerResponsibilityCode);
+                                this.$.gridpurchaseheader_ajax.generateRequest();
+                            }
                         }
                     }
                 },

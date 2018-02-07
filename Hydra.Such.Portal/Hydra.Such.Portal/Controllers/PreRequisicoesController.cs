@@ -421,8 +421,17 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetPurchaseHeader([FromBody] string respcenter)
         {
-            int DimValueID = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, 3, User.Identity.Name).FirstOrDefault().DimValueID;
-            return Json("");
+            int DimValueID = DBNAV2017DimensionValues.GetById(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, 3, User.Identity.Name, respcenter).FirstOrDefault().DimValueID;
+            List<DDMessageString> result = DBNAV2017EncomendaAberto.GetByDimValue(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, DimValueID).Select(x => new DDMessageString()
+            {
+                id = x.Code
+            }).GroupBy(x => new {
+                x.id
+            }).Select(x => new DDMessageString {
+               id = x.Key.id
+            }).ToList();
+
+            return Json(result);
         }
         
         #endregion

@@ -21,10 +21,11 @@ namespace Hydra.Such.Data.Logic.Project
                     var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
-                        new SqlParameter("@TipoDim", NAVDimType)
+                        new SqlParameter("@TipoDim", NAVDimType),
+                        new SqlParameter("@RespCenter", "")
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ValoresDimensao @DBName, @CompanyName, @TipoDim", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ValoresDimensao @DBName, @CompanyName, @TipoDim, @RespCenter", parameters);
 
                     foreach (dynamic temp in data)
                     {
@@ -55,10 +56,11 @@ namespace Hydra.Such.Data.Logic.Project
                     var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
-                        new SqlParameter("@TipoDim", NAVDimType)
+                        new SqlParameter("@TipoDim", NAVDimType),
+                        new SqlParameter("@RespCenter", "")
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ValoresDimensao @DBName, @CompanyName, @TipoDim", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ValoresDimensao @DBName, @CompanyName, @TipoDim, @RespCenter", parameters);
 
                     foreach (dynamic temp in data)
                     {
@@ -96,7 +98,7 @@ namespace Hydra.Such.Data.Logic.Project
             }
         }
 
-        public static List<NAVDimValueViewModel> GetById(string NAVDatabaseName, string NAVCompanyName, int NAVDimType, string UserId)
+        public static List<NAVDimValueViewModel> GetById(string NAVDatabaseName, string NAVCompanyName, int NAVDimType, string UserId, string RespCenter)
         {
             try
             {
@@ -106,10 +108,11 @@ namespace Hydra.Such.Data.Logic.Project
                     var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
-                        new SqlParameter("@TipoDim", NAVDimType)
+                        new SqlParameter("@TipoDim", NAVDimType),
+                        new SqlParameter("@RespCenter", RespCenter)
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ValoresDimensao @DBName, @CompanyName, @TipoDim", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ValoresDimensao @DBName, @CompanyName, @TipoDim, @RespCenter", parameters);
 
                     foreach (dynamic temp in data)
                     {
