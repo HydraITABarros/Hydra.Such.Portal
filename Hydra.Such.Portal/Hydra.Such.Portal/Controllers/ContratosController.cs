@@ -220,6 +220,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null)
                 {
                     //Get Contract Numeration
+                    bool autoGenId = false;
                     Configuração Configs = DBConfigurations.GetById(1);
                     int ProjectNumerationConfigurationId = 0;
 
@@ -239,7 +240,8 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     if (data.ContractNo == "" || data.ContractNo == null)
                     {
-                        data.ContractNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, true);
+                        autoGenId = true;
+                        data.ContractNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, autoGenId);
                     }
 
                     if (data.ContractNo != null)
@@ -273,13 +275,14 @@ namespace Hydra.Such.Portal.Controllers
                                 r.CreateUser = User.Identity.Name;
                                 DBContractInvoiceText.Create(DBContractInvoiceText.ParseToDB(r));
                             });
-
-                            //Update Last Numeration Used
-                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
-                            ConfigNumerations.ÚltimoNºUsado = data.ContractNo;
-                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                            DBNumerationConfigurations.Update(ConfigNumerations);
-
+                            if (autoGenId)
+                            {
+                                //Update Last Numeration Used
+                                ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+                                ConfigNumerations.ÚltimoNºUsado = data.ContractNo;
+                                ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                                DBNumerationConfigurations.Update(ConfigNumerations);
+                            }
                             data.eReasonCode = 1;
                         }
                     }
