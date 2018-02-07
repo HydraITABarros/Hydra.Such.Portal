@@ -220,6 +220,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null)
                 {
                     //Get Contract Numeration
+                    bool autoGenId = false;
                     Configuração Configs = DBConfigurations.GetById(1);
                     int ProjectNumerationConfigurationId = 0;
 
@@ -237,8 +238,11 @@ namespace Hydra.Such.Portal.Controllers
                         default:
                             break;
                     }
-
-                    data.ContractNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.ContractNo == "" || data.ContractNo == null));
+                    if (data.ContractNo == "" || data.ContractNo == null)
+                    {
+                        autoGenId = true;
+                        data.ContractNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, autoGenId);
+                    }
 
                     if (data.ContractNo != null)
                     {
@@ -271,13 +275,14 @@ namespace Hydra.Such.Portal.Controllers
                                 r.CreateUser = User.Identity.Name;
                                 DBContractInvoiceText.Create(DBContractInvoiceText.ParseToDB(r));
                             });
-
-                            //Update Last Numeration Used
-                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
-                            ConfigNumerations.ÚltimoNºUsado = data.ContractNo;
-                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                            DBNumerationConfigurations.Update(ConfigNumerations);
-
+                            if (autoGenId)
+                            {
+                                //Update Last Numeration Used
+                                ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+                                ConfigNumerations.ÚltimoNºUsado = data.ContractNo;
+                                ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                                DBNumerationConfigurations.Update(ConfigNumerations);
+                            }
                             data.eReasonCode = 1;
                         }
                     }
@@ -831,12 +836,12 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (AreaId == 4)
                 {
-                    ContractsList = DBContracts.GetAllByContractType(2);
+                    ContractsList = DBContracts.GetAllByContractType(1);
                     ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
                 }
                 else
                 {
-                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 2);
+                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 1);
                     ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
                 }
             }

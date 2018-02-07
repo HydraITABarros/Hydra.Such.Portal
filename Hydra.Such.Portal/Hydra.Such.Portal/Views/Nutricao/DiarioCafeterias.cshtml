@@ -13,16 +13,16 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
-
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
 <link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
-
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+<!--link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html"-->
 
 <x-coffeeshopdiary _areaid="3" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-coffeeshopdiary>
 
@@ -131,7 +131,7 @@
                     <vaadin-text-field id="description" name="description" value="{{diary.description}}" label="Descrição"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido" value="{{diary.value}}" label="Valor"></vaadin-text-field>
+                    <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" error-message="Valor inválido" value="{{diary.value}}" label="Valor"></vaadin-text-field>
                 </div>
 
             </div>
@@ -173,7 +173,8 @@
                     <vaadin-grid-filter path="registryDate" />
                 </template>
                 <template>
-                    <input type="date" id="registryDateGrid" name="registryDateGrid" max="{{diary.dateToday}}" value="{{item.registryDate}}">
+                    <!--input type="date" id="registryDateGrid" name="registryDateGrid" max="{{diary.dateToday}}" value="{{item.registryDate}}"-->
+                    <vaadin-date-picker id="registryDateGrid" name="registryDateGrid" max="{{diary.dateToday}}" value="{{item.registryDate}}"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="200px">
@@ -208,21 +209,21 @@
                     <vaadin-grid-filter path="value" />
                 </template>
                 <template>
-                    <vaadin-text-field id="valueGrid" name="valueGrid" pattern="^[1-9]\d*(\.\d+)?$" value="{{item.value}}"></vaadin-text-field>
+                    <vaadin-text-field id="valueGrid" name="valueGrid" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" value="{{item.value}}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
             <template is="dom-if" if="{{ _permissions.delete }}">
-            <vaadin-grid-column width="10%" resizable>
-                <template class="header">
-                </template>
-                <template>
-                    <center>
-                        <template is="dom-if" if="{{ _permissions.delete }}">
-                            <paper-button class="btnRemove" raised on-tap="_deleteDiaryLine">Eliminar</paper-button>
-                        </template>
-                    </center>
-                </template>
-            </vaadin-grid-column>
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <template is="dom-if" if="{{ _permissions.delete }}">
+                                <paper-button class="btnRemove" raised on-tap="_deleteDiaryLine">Eliminar</paper-button>
+                            </template>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
             </template>
         </vaadin-grid>
 
@@ -239,9 +240,9 @@
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
-</template>
+    </template>
 
-<script>
+    <script>
     document.addEventListener('WebComponentsReady', function () {
     Polymer({
         is: 'x-coffeeshopdiary',
@@ -327,7 +328,9 @@
                 this._openToastError("Ocorreu um erro desconhecido.");
             }
         },
-
+        _ConvertDecimals: function (e) {
+            e.target.value = e.target.value.replace(",", ".");
+        },
         _registerDiaryLines: function () {
             this.$.register_databound_ajax.body = JSON.stringify(this.result);
             this.$.register_databound_ajax.generateRequest();
@@ -360,5 +363,5 @@
         }
         });
     });
-</script>
+    </script>
 </dom-module>

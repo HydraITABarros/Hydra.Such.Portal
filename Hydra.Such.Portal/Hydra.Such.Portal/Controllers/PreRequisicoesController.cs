@@ -12,19 +12,22 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
+using Hydra.Such.Data.ViewModel.ProjectView;
+using Hydra.Such.Data.Logic.Project;
 
 namespace Hydra.Such.Portal.Controllers
 {
     public class PreRequisicoesController : Controller
     {
         private readonly GeneralConfigurations _config;
+        private readonly NAVConfigurations _configNAV;
 
-        public PreRequisicoesController(IOptions<GeneralConfigurations> appSettings)
+        public PreRequisicoesController(IOptions<GeneralConfigurations> appSettings, IOptions<NAVConfigurations> appSettingsNAV)
         {
             _config = appSettings.Value;
+            _configNAV = appSettingsNAV.Value;
         }
-
-
+        
         public IActionResult Index()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 10, 3);
@@ -186,6 +189,36 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region CRUD
+        
+        [HttpPost]
+        public JsonResult CreateNewForThisUser([FromBody] JObject requestParams)
+        {
+            int AreaNo = int.Parse(requestParams["areaid"].ToString());
+            string pPreRequisicao = DBPreRequesition.GetByNoAndArea(User.Identity.Name, AreaNo);
+            if(pPreRequisicao != null)
+            {
+                PreRequesitionsViewModel reqID = new PreRequesitionsViewModel();
+                reqID.PreRequesitionsNo = pPreRequisicao;
+                return Json(reqID);
+            }
+            else
+            {
+                PréRequisição createNew = new PréRequisição();
+                createNew.NºPréRequisição = User.Identity.Name;
+                createNew.Área = AreaNo;
+                createNew.UtilizadorCriação = User.Identity.Name;
+                createNew.DataHoraCriação = DateTime.Now;
+                DBPreRequesition.Create(createNew);
+
+                PreRequesitionsViewModel reqID = new PreRequesitionsViewModel();
+                reqID.PreRequesitionsNo = createNew.NºPréRequisição;
+
+                return Json(reqID);
+            } 
+            
+
+        }
+
         [HttpPost]
         public JsonResult CreatePreRequesition([FromBody] PreRequesitionsViewModel data)
         {
@@ -193,14 +226,16 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
-                    //Get Contract Numeration
-                    Configuração Configs = DBConfigurations.GetById(1);
-                    int ProjectNumerationConfigurationId = 0;
-                    ProjectNumerationConfigurationId = Configs.NumeraçãoPréRequisições.Value;
+                    //Get Numeration
+                    bool autoGenId = false;
+                    Configuração conf = DBConfigurations.GetById(1);
+                    int entityNumerationConfId = conf.NumeraçãoPréRequisições.Value;
 
-
-                    data.PreRequesitionsNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, (data.PreRequesitionsNo == "" || data.PreRequesitionsNo == null));
-
+                    if (data.PreRequesitionsNo == "" || data.PreRequesitionsNo == null)
+                    {
+                        autoGenId = true;
+                        data.PreRequesitionsNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                    }
                     if (data.PreRequesitionsNo != null)
                     {
                         PréRequisição pPreRequisicao = DBPreRequesition.ParseToDB(data);
@@ -218,12 +253,13 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
-                            //Update Last Numeration Used
-                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
-                            ConfigNumerations.ÚltimoNºUsado = data.PreRequesitionsNo;
-                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                            DBNumerationConfigurations.Update(ConfigNumerations);
-
+                            ConfiguraçãoNumerações configNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                            if (configNumerations != null && autoGenId)
+                            {
+                                configNumerations.ÚltimoNºUsado = data.PreRequesitionsNo;
+                                configNumerations.UtilizadorModificação = User.Identity.Name;
+                                DBNumerationConfigurations.Update(configNumerations);
+                            }
                             data.eReasonCode = 1;
                         }
                     }
@@ -355,7 +391,7 @@ namespace Hydra.Such.Portal.Controllers
                     DBPreRequesition.DeleteByPreRequesitionNo(data.PreRequesitionsNo);
                     
                     result.eReasonCode = 1;
-                    result.eMessage = "Contrato eliminado com sucesso.";
+                    result.eMessage = "Pré-Requisição eliminada com sucesso.";
                     //}
 
                 }
@@ -363,7 +399,7 @@ namespace Hydra.Such.Portal.Controllers
             catch (Exception ex)
             {
                 result.eReasonCode = 2;
-                result.eMessage = "Ocorreu um erro ao eliminar o contrato.";
+                result.eMessage = "Ocorreu um erro ao eliminar a Pré-Requisição.";
             }
             return Json(result);
 
@@ -382,6 +418,22 @@ namespace Hydra.Such.Portal.Controllers
             PlacesViewModel PlacesData = DBPlaces.ParseToViewModel(DBPlaces.GetById(placeId));
             return Json(PlacesData);
         }
+
+        public JsonResult GetPurchaseHeader([FromBody] string respcenter)
+        {
+            int DimValueID = DBNAV2017DimensionValues.GetById(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, 3, User.Identity.Name, respcenter).FirstOrDefault().DimValueID;
+            List<DDMessageString> result = DBNAV2017EncomendaAberto.GetByDimValue(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, DimValueID).Select(x => new DDMessageString()
+            {
+                id = x.Code
+            }).GroupBy(x => new {
+                x.id
+            }).Select(x => new DDMessageString {
+               id = x.Key.id
+            }).ToList();
+
+            return Json(result);
+        }
+        
         #endregion
 
         #region Numeração Pré-Requisição
@@ -408,7 +460,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json("");
         }
         #endregion
-
+        
         #region Requesition Model Lines
         
         public IActionResult RequisiçõesModeloLista(string id)

@@ -117,28 +117,30 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             {
                 if (item != null)
                 {
-                    string entityId = "";
-                    bool autoGenId = false;
-
                     //Get Numeration
+                    bool autoGenId = false;
                     Configuração conf = DBConfigurations.GetById(1);
                     int entityNumerationConfId = conf.NumeraçãoModReqSimplificadas.Value;
 
                     if (item.RequisitionTemplateId == "" || item.RequisitionTemplateId == null)
                     {
                         autoGenId = true;
-                        entityId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
-                        item.RequisitionTemplateId = entityId;
+                        item.RequisitionTemplateId = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
                     }
                     if (item.RequisitionTemplateId != null)
                     {
-                        item.CreateUser = User.Identity.Name;
-
+                        item.CreateUser = User.Identity.Name; 
                         var createdItem = DBSimplifiedReqTemplates.Create(item.ParseToDB());
-
                         if (createdItem != null)
                         {
                             item = createdItem.ParseToViewModel();
+                            if (autoGenId)
+                            {
+                                ConfiguraçãoNumerações configNum = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                                configNum.ÚltimoNºUsado = item.RequisitionTemplateId;
+                                configNum.UtilizadorModificação = User.Identity.Name;
+                                DBNumerationConfigurations.Update(configNum);
+                            }
                             item.eReasonCode = 1;
                             item.eMessage = "Registo criado com sucesso.";
                         }

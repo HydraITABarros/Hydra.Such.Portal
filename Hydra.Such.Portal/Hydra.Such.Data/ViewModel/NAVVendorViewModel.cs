@@ -8,5 +8,8 @@ namespace Hydra.Such.Data.ViewModel
     {
         public string No_ { get; set; }
         public string Name { get; set; }
+        public string Address { get; set; }
+        public string VATRegistrationNo { get; set; }
+        public string PostCode { get; set; }
     }
 }

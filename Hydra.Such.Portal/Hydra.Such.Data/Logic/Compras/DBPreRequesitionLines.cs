@@ -172,7 +172,8 @@ namespace Hydra.Such.Data.Logic.Compras
                 CustomerNo = x.NºCliente,
                 OpenOrderNo = x.NºEncomendaAberto,
                 OpenOrderLineNo = x.NºLinhaEncomendaAberto,
-                Selected = false
+                Selected = false,
+                TotalCost = x.CustoUnitário * x.QuantidadeARequerer
             };
         }
 

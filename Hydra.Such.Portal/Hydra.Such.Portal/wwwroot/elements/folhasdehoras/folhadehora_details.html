@@ -641,7 +641,7 @@
                                 <vaadin-grid-filter path="custoUnitario" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabPercursoCustoUnitario" value="{{item.custoUnitario}}" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" style="text-align:right;">
+                                <vaadin-text-field id="GridtabPercursoCustoUnitario" name="tabPercursoCustoUnitario" value="{{item.custoUnitario}}" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -653,7 +653,7 @@
                                 <vaadin-grid-filter path="custoTotal" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabPercursoCustoTotal" value="{{item.custoTotal}}" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" style="text-align:right;">
+                                <vaadin-text-field id="GridtabPercursoCustoTotal" name="tabPercursoCustoTotal" value="{{item.custoTotal}}" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -707,12 +707,12 @@
                                     <vaadin-text-field id="ajudaQuantidade" label="Quantidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="ajudaCustoUnitario" label="Custo Unitário" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" style="text-align:right;">
+                                    <vaadin-text-field id="ajudaCustoUnitario" label="Custo Unitário" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                         <div slot="suffix">€</div>
                                     </vaadin-text-field>
                                 </div>
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="ajudaPrecoUnitario" label="Preço Unitário" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" style="text-align:right;">
+                                    <vaadin-text-field id="ajudaPrecoUnitario" label="Preço Unitário" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                         <div slot="suffix">€</div>
                                     </vaadin-text-field>
                                 </div>
@@ -796,7 +796,7 @@
                                 <vaadin-grid-filter path="custoUnitario" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabAjudaCustoUnitario" value="{{item.custoUnitario}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" style="text-align:right;">
+                                <vaadin-text-field id="GridtabAjudaCustoUnitario" name="tabAjudaCustoUnitario" value="{{item.custoUnitario}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -808,7 +808,7 @@
                                 <vaadin-grid-filter path="custoTotal" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabAjudaCustoTotal" value="{{item.custoTotal}}" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" disabled="true" style="text-align:right;">
+                                <vaadin-text-field id="GridtabAjudaCustoTotal" name="tabAjudaCustoTotal" value="{{item.custoTotal}}" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" disabled="true" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -820,7 +820,7 @@
                                 <vaadin-grid-filter path="precoUnitario" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabAjudaPrecoUnitario" value="{{item.precoUnitario}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" style="text-align:right;">
+                                <vaadin-text-field id="GridtabAjudaPrecoUnitario" name="tabAjudaPrecoUnitario" value="{{item.precoUnitario}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -832,7 +832,7 @@
                                 <vaadin-grid-filter path="precoVenda" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabAjudaPrecoVenda" value="{{item.precoVenda}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" maxlength="18" pattern="[0-9]+([\.,][0-9]+)?" style="text-align:right;">
+                                <vaadin-text-field id="GridtabAjudaPrecoVenda" name="tabAjudaPrecoVenda" value="{{item.precoVenda}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -1077,7 +1077,7 @@
                                 <vaadin-grid-filter path="custoUnitarioDireto" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabMaoDeObraCustoUnitarioDireto" value="{{item.custoUnitarioDireto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.,][0-9]+)?" maxlength="18" style="text-align:right;">
+                                <vaadin-text-field id="GridtabMaoDeObraCustoUnitarioDireto" name="tabMaoDeObraCustoUnitarioDireto" value="{{item.custoUnitarioDireto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" maxlength="18" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -1107,7 +1107,7 @@
                                 <vaadin-grid-filter path="precoTotal" />
                             </template>
                             <template>
-                                <vaadin-text-field name="tabMaoDeObraPrecoTotal" value="{{item.precoTotal}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.,][0-9]+)?" maxlength="18" style="text-align:right;">
+                                <vaadin-text-field id="GridtabMaoDeObraPrecoTotal" name="tabMaoDeObraPrecoTotal" value="{{item.precoTotal}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" maxlength="18" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -1519,7 +1519,9 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
-
+                _ConvertDecimals: function (e) {
+                    e.target.value = e.target.value.replace(",", ".");
+                },
                 //FOLHA DE HORAS
                 _updateFH: function () {
                     //debugger;

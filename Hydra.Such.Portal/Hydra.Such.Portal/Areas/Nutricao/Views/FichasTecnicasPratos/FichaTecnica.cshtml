@@ -3,6 +3,8 @@
     ViewData["Title"] = "FichaTecnica";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
 <link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
 <link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
@@ -48,8 +50,8 @@
         <link rel="stylesheet" href="/css/main.css" />
 
 
-    <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocationsheader}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-    <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{CBOMeasureUnitheader}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocationsheader}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{CBOMeasureUnitheader}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{CBOMeasureUnit}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCookingTechnique" last-response="{{CBOCookingTechnique}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -57,6 +59,8 @@
         <iron-ajax url="/PopulateDropdowns/GetLinesRecTechnicPlatesType" last-response="{{CbotLinesRecTecPlatesType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLinesRecordTechnicalOfPlatesCode" id="ajax_CboCode" last-response="{{CboCode}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllAction" id="action_ajax" auto last-response="{{CboAction}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllAction" id="actionGrid_ajax" auto last-response="{{CboActionGrid}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetAllProceduresConfection" id="ajax_GridProcedConfec" last-response="{{GridProceduresConfection}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetImageRecTecPlates" id="ajax_Image" last-response="{{dataImage}}" on-response="_ImageResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/FichasTecnicasPratos/GetAllRecTecPlatesBYPlate" id="ajax_GetAllRecTecPlat" last-response="{{getAllRecTecPlatResult}}" on-response="_GetRecTecPlatResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -66,105 +70,108 @@
         <iron-ajax url="/Nutricao/FichasTecnicasPratos/CreateLinesRecordTechnicalOfPlates" id="createRecTecLines_ajax" last-response="{{Createdate}}" on-response="_CreateLinesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/FichasTecnicasPratos/UpdateLinesRecordTechnicalOfPlates" id="updateRecTecLines_ajax" last-response="{{updatedate}}" on-response="_UpdateLinesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/FichasTecnicasPratos/SaveImage" id="getsaveImg_ajax" last-response="{{Uploaddate}}" on-response="_UploadResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-       
+        <iron-ajax url="/Nutricao/FichasTecnicasPratos/CreateConfection" id="createConf_ajax" last-response="{{createConf}}" on-response="_createConfResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/FichasTecnicasPratos/UpdateConfection" id="updateConf_ajax" last-response="{{updateConf}}" on-response="_updateConfResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        
-    <style>
-        vaadin-combo-box {
-            margin-top: 0px !important;
-            width: 100% !important;
-        }
 
-        vaadin-date-picker {
-            margin-top: 0px !important;
-            width: 100% !important;
-        }
 
-        vaadin-text-field {
-            margin-top: 0px !important;
-            width: 100%;
-        }
 
-        paper-button {
-            margin-top: 10px;
-        }
+        <style>
+                    vaadin-combo-box {
+                        margin-top: 0px !important;
+                        width: 100% !important;
+                    }
 
-        .break_clear {
-            margin-top: 15px;
-            margin-right: 0px !important;
-            margin-left: 0px !important;
-        }
+                    vaadin-date-picker {
+                        margin-top: 0px !important;
+                        width: 100% !important;
+                    }
 
-        .break_frm {
-            margin-top: 15px;
-        }
+                    vaadin-text-field {
+                        margin-top: 0px !important;
+                        width: 100%;
+                    }
 
-        .label_custom {
-            color: var(--valo-contrast-60pct) !important;
-            font-weight: 500 !important;
-            font-size: var(--valo-font-size-s) !important;
-            margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
-            margin-bottom: var(--valo-space-xs) !important;
-            transition: color 0.4s !important;
-            line-height: 1 !important;
-            font-family: var(--valo-font-family) !important;
-        }
+                    paper-button {
+                        margin-top: 10px;
+                    }
 
-        datetime-picker {
-            border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
-            background-color: var(--valo-contrast-5pct);
-            color: var(--valo-contrast-60pct) !important;
-            width: 100%;
-        }
+                    .break_clear {
+                        margin-top: 15px;
+                        margin-right: 0px !important;
+                        margin-left: 0px !important;
+                    }
 
-        .marginSpace {
-            margin: 0px !important;
-        }
+                    .break_frm {
+                        margin-top: 15px;
+                    }
 
-        textarea {
-            background-color: #f5f5f5;
-            border: none;
-            border-radius: 3px 4px;
-            align-self: baseline;
-            font-weight: 500;
-        }
+                    .label_custom {
+                        color: var(--valo-contrast-60pct) !important;
+                        font-weight: 500 !important;
+                        font-size: var(--valo-font-size-s) !important;
+                        margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                        margin-bottom: var(--valo-space-xs) !important;
+                        transition: color 0.4s !important;
+                        line-height: 1 !important;
+                        font-family: var(--valo-font-family) !important;
+                    }
 
-        textarea:hover {
-            background-color: #eeeeee;
-        }
+                    datetime-picker {
+                        border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                        background-color: var(--valo-contrast-5pct);
+                        color: var(--valo-contrast-60pct) !important;
+                        width: 100%;
+                    }
 
-        textarea:focus {
-            background-color: white;
-            border: none;
-            outline: 1px solid #eeeeee;
-            border-radius: 3px 4px;
-        }
+                    .marginSpace {
+                        margin: 0px !important;
+                    }
 
-        datetime-picker {
-            --datetime-selected-background: #71BCC1 !important;
-            --datetime-background: #1f3133;
-            --datetime-color: #eeeeee;
-        }
+                    textarea {
+                        background-color: #f5f5f5;
+                        border: none;
+                        border-radius: 3px 4px;
+                        align-self: baseline;
+                        font-weight: 500;
+                    }
 
-        paper-collapse-item {
-        --paper-item: {
-            padding: 0 0;
-        };
-         --paper-collapse-item-header: {
-             padding: 0 15px;
-             color: #333;
-             background-color: #f5f5f5;
-             border-bottom: solid #ddd 1px;
-             border-top-left-radius: 3px;
-             border-top-right-radius: 3px;
+                        textarea:hover {
+                            background-color: #eeeeee;
+                        }
 
-         };
-          }
+                        textarea:focus {
+                            background-color: white;
+                            border: none;
+                            outline: 1px solid #eeeeee;
+                            border-radius: 3px 4px;
+                        }
 
-          .panel-body {
-              padding-top: 0px !important;
-          }
-    </style>
+                    datetime-picker {
+                        --datetime-selected-background: #71BCC1 !important;
+                        --datetime-background: #1f3133;
+                        --datetime-color: #eeeeee;
+                    }
+
+                    paper-collapse-item {
+                        --paper-item: {
+                padding: 0 0;
+            };
+                        --paper-collapse-item-header: {
+                 padding: 0 15px;
+                 color: #333;
+                 background-color: #f5f5f5;
+                 border-bottom: solid #ddd 1px;
+                 border-top-left-radius: 3px;
+                 border-top-right-radius: 3px;
+
+             };
+                    }
+
+                    .panel-body {
+                        padding-top: 0px !important;
+                    }
+        </style>
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
             <paper-tab>Geral</paper-tab>
             <paper-tab>Classificação</paper-tab>
@@ -183,7 +190,7 @@
                     <div class="col-lg-3">
                         <vaadin-text-field value="{{recTecNameValue}}" maxlength="20" id="recordTechnicalNameid" name="recTecName" label="Nome Ficha Técnica"> </vaadin-text-field>
                     </div>
-                    <div class="col-lg-3" >
+                    <div class="col-lg-3">
                         <such-selectbox id="piCodeMeasurementUnit" value="{{CodMeasureUnitValue}}" label="Cód. Unidade Medida"
                                         items="[[CBOMeasureUnitheader]]"
                                         text-path="value"
@@ -202,7 +209,7 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{TPreparationValue}}" maxlength="20" id="TimePreparationid" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" name="TimePreparationName" label="Tempo Preparação">  <div slot="suffix">min.</div></vaadin-text-field>
+                        <vaadin-text-field value="{{TPreparationValue}}" on-value-changed="_ConvertDecimals" maxlength="20" id="TimePreparationid" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="TimePreparationName" label="Tempo Preparação">  <div slot="suffix">min.</div></vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
                         <such-selectbox id="_CookingTechnique" value="{{CookingTechniqueValue}}" label="Técnica Culinária"
@@ -221,16 +228,16 @@
                 </div>
                 <div class="row break_clear">
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{DosesNoValue}}" maxlength="20" id="DosesNoId" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" name="DosesNoName" label="Número de doses"> </vaadin-text-field>
+                        <vaadin-text-field value="{{DosesNoValue}}" maxlength="20" on-value-changed="_ConvertDecimals" id="DosesNoId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="DosesNoName" label="Número de doses"> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{PreparTempValue}}" maxlength="20" id="PreparationTemperatureId" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" name="PreparationTemperatureName" label="Temperatura Preparação"> <div slot="suffix">°C</div> </vaadin-text-field>
+                        <vaadin-text-field value="{{PreparTempValue}}" maxlength="20" on-value-changed="_ConvertDecimals" id="PreparationTemperatureId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="PreparationTemperatureName" label="Temperatura Preparação"> <div slot="suffix">°C</div> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{FinalTempConfectValue}}" maxlength="20" id="FinalTemperatureConfectionId" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" name="FinalTemperatureConfectionName" label="Temperatura final Confeção"><div slot="suffix">°C</div> </vaadin-text-field>
+                        <vaadin-text-field value="{{FinalTempConfectValue}}" maxlength="20" on-value-changed="_ConvertDecimals" id="FinalTemperatureConfectionId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="FinalTemperatureConfectionName" label="Temperatura final Confeção"><div slot="suffix">°C</div> </vaadin-text-field>
                     </div>
                     <div class="col-lg-3">
-                        <vaadin-text-field value="{{ServeTempValue}}" maxlength="20" id="ServeTemperatureId" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" name="ServeTemperatureName" label="Temperatura a Servir"><div slot="suffix">°C</div> </vaadin-text-field>
+                        <vaadin-text-field value="{{ServeTempValue}}" maxlength="20" on-value-changed="_ConvertDecimals" id="ServeTemperatureId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="ServeTemperatureName" label="Temperatura a Servir"><div slot="suffix">°C</div> </vaadin-text-field>
                     </div>
                 </div>
             </div>
@@ -282,9 +289,28 @@
             </div>
             <!--Confeção-->
             <div>
+                <div class="row break_clear" hidden="{{ _NotCreateOnly }}">
+                    <div class="col-lg-4">
+                        <such-selectbox id="_CboAction" value="" label="Ação"
+                                        items="[[CboAction]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                        </such-selectbox>
+                    </div>
+                    <div class="col-lg-4">
+                        <vaadin-text-field value="{{recTecNameValue}}" maxlength="20" id="descconfid" name="decconfName" label="Descrição"> </vaadin-text-field>
+                    </div>
+                    <div class="col-lg-4">
+                        <vaadin-text-field id="OrderNoid" name="OrderName" pattern="^[0-9]+$" label="No. Ordem" class="alignRight" value=""></vaadin-text-field>
+                    </div>
+                    <div class="col-lg-12  " hidden="{{ !_permissionsVal.create }}">
+                        <paper-button class="btnSave" on-tap="_addConfection"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                    </div>
+                </div>
                 <div class="row break_clear">
                     <div class="col-lg-12">
-                        <vaadin-grid id="gridConfection_request" aria-label="ProfileModelsTabel" items="[[GridProceduresConfection]]" class="grid" active-item="{{_SelectedLine}}">
+                        <vaadin-grid id="gridConfection_request" aria-label="ProfileModelsTabel" items="[[GridProceduresConfection]]" class="grid" active-item="{{_SelectedConfectionLine}}">
                             <vaadin-grid-column width="160px" resizable hidden>
                                 <template class="header">
                                     <vaadin-grid-sorter path="TechnicalSheetNo">No. Ficha Técnica </vaadin-grid-sorter>
@@ -294,34 +320,73 @@
                                     {{item.TechnicalSheetNo}}
                                 </template>
                             </vaadin-grid-column>
-                            <vaadin-grid-column width="160px" resizable>
+                            <vaadin-grid-column width="200px" resizable>
                                 <template class="header">
                                     <vaadin-grid-sorter path="actionNo">Ação</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="actionNo" />
                                 </template>
                                 <template>
-                                    [[_parseActionCode(item.actionNo)]]
+                                    <template is="dom-if" if="{{ item.selected }}">
+                                        <vaadin-combo-box items="[[CboActionGrid]]" id="CboActionGridid" item-value-path="id" item-label-path="value" value="{{item.actionNo}}">
+                                            <template>
+                                                <table width="200px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </template>
+                                    <template is="dom-if" if="{{ !item.selected }}">
+                                        [[_parseActionCode(item.actionNo)]]
+                                    </template>
                                 </template>
                             </vaadin-grid-column>
-                            <vaadin-grid-column width="160px" resizable>
+                            <vaadin-grid-column width="200px" resizable>
                                 <template class="header">
                                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="description" />
                                 </template>
                                 <template>
-                                    {{item.description}}
+                                    <template is="dom-if" if="{{ item.selected }}">
+                                        <vaadin-text-field value="{{item.description}}" maxlength="20" id="Griddescconfid" name="DescriptionName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                    </template>
+                                    <template is="dom-if" if="{{ !item.selected }}">
+                                        {{item.description}}
+                                    </template>
                                 </template>
                             </vaadin-grid-column>
-                            <vaadin-grid-column width="160px" resizable>
+                            <vaadin-grid-column width="200px" resizable>
                                 <template class="header">
                                     <vaadin-grid-sorter path="orderNo">No. Ordem</vaadin-grid-sorter>
                                     <vaadin-grid-filter path="orderNo" />
                                 </template>
                                 <template>
-                                    {{item.orderNo}}
+                                    <template is="dom-if" if="{{ item.selected }}">
+                                        <vaadin-text-field id="GridOrderNoid" name="OrderName" pattern="^[0-9]+$" class="alignRight" value="{{item.orderNo}}"></vaadin-text-field>
+                                    </template>
+                                    <template is="dom-if" if="{{ !item.selected }}">
+                                        {{item.orderNo}}
+                                    </template>
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column with="100px" hidden="{{ !_permissionsVal.delete }}">
+                                <template class="header">
+                                </template>
+                                <template>
+                                    <center>
+                                        <paper-button class="btnRemove" raised on-tap="_deleteConf">Eliminar</paper-button>
+                                    </center>
                                 </template>
                             </vaadin-grid-column>
                         </vaadin-grid>
+                    </div>
+                </div>
+                <div class="row break_clear">
+                    <div class="col-lg-12" hidden="{{ !_permissionsVal.update }}">
+                        <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_updateconfLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_confcancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
                     </div>
                 </div>
             </div>
@@ -389,9 +454,9 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12 col-lg-12">
-                        
+
                         <form method="post" enctype="multipart/form-data">
-                            <input type="file" id="files" name="files"/>
+                            <input type="file" id="files" name="files" />
                             <button class="btn btn-primary start" type="button" id="upload" value="Upload Selected Files" on-tap="_Upload">
                                 <i class="glyphicon glyphicon-upload"></i>
                                 <span>Start upload</span>
@@ -401,14 +466,17 @@
                 </div>
             </div>
         </iron-pages>
-        <div class="row" hidden="{{ !_NotCreateOnly }}">
+        <div class="row  break_clear" hidden="{{ !_NotCreateOnly }}">
             <div class="col-lg-2 alignPoga" hidden="{{ !_permissionsVal.create }}">
                 <paper-button class="btnSave" on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </div>
         </div>
-        <div class="marginSpace" hidden="{{ _NotCreateOnly }}">
-            <paper-button raised id="btnLocalMarketValidation" style="width: 250px !important;" on-tap="_update" hidden="{{ !_permissionsVal.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar Cabeçalho</paper-button>
-    </div><br />
+        <div class="row break_clear" hidden="{{ _NotCreateOnly }}">
+            <div class="col-lg-12" hidden="{{ !_permissionsVal.update }}">
+                <paper-button raised id="btnLocalMarketValidation" style="width: 250px !important;" on-tap="_update" hidden="{{ !_permissionsVal.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar Cabeçalho</paper-button>
+            </div>
+        </div>
+        <br />
         <div id="PreRequiLinesPanel" class="panel panel-default" hidden="{{ _NotCreateOnly }}">
             <div class="row">
                 <div class="col-md-12 col-lg-12">
@@ -417,34 +485,34 @@
                         <div class="panel-body">
                             <div class="row">
                                 @*<div class="col-lg-3">
-                                    <vaadin-combo-box items="[[CbotLinesRecTecPlatesType]]" id="LineTypeid" on-value-changed="_LineTypeChange" item-value-path="id" item-label-path="value" value="{{LineType}}" label="Tipo">
-                                        <template>
-                                            <table width="200px">
-                                                <tr>
-                                                    <td width="40%">[[item.id]]</td>
-                                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>
-                                </div>*@
+                                        <vaadin-combo-box items="[[CbotLinesRecTecPlatesType]]" id="LineTypeid" on-value-changed="_LineTypeChange" item-value-path="id" item-label-path="value" value="{{LineType}}" label="Tipo">
+                                            <template>
+                                                <table width="200px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>*@
                                 @*<div class="col-lg-3">
-                                    <vaadin-combo-box items="[[CboCode]]" id="Codeid" on-value-changed="_CodeChange" item-value-path="id" item-label-path="id" value="{{LineCode}}" label="Código">
-                                        <template>
-                                            <table width="200px">
-                                                <tr>
-                                                    <td width="40%">[[item.id]]</td>
-                                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>
-                                </div>*@
+                                        <vaadin-combo-box items="[[CboCode]]" id="Codeid" on-value-changed="_CodeChange" item-value-path="id" item-label-path="id" value="{{LineCode}}" label="Código">
+                                            <template>
+                                                <table width="200px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>*@
                                 <div class="col-lg-3">
                                     <vaadin-text-field value="{{LineDescription}}" maxlength="20" id="Descriptionid" name="DescriptionName" label="Descrição"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Quantityid" name="QuantityName" label="Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Quantityid" name="QuantityName" label="Quantidade"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
                                     <such-selectbox id="UnitMeasureCodeid" value="{{LineMeasureUnit}}" label="Cód. Unidade Medida"
@@ -455,40 +523,40 @@
                                     </such-selectbox>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineQuantityOfProduction}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="QuantityOfProductionid" name="QuantityOfProductionName" label="Quantidade de Produto"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineQuantityOfProduction}}" on-value-changed="_ConvertDecimals" maxlength="20" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="QuantityOfProductionid" name="QuantityOfProductionName" label="Quantidade de Produto"> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineEnergetic}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="EnergeticValueid" name="EnergeticValueName" label="Valor Energético"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineEnergetic}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValueid" name="EnergeticValueName" label="Valor Energético"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineProteins}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Proteinsid" name="ProteinsName" label="Proteínas"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineProteins}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Proteinsid" name="ProteinsName" label="Proteínas"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineHydratesOfCarbont}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="HydratesOfCarbontid" name="HydratesOfCarbontName" label="Hidratos de Carbono"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineHydratesOfCarbont}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="HydratesOfCarbontid" name="HydratesOfCarbontName" label="Hidratos de Carbono"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineLipids}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Lipidsid" name="LipidsName" label="Lípidos"> </vaadin-text-field>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineFibers}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Fibersid" name="FibersName" label="Fibras"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineExpectedCostPrice}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="ExpectedCostPriceid" name="ExpectedCostPriceName" label="Preço Custo Esperado"> <div slot="suffix">€</div></vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineCurrentCostPrice}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="CurrentCostPriceid" name="CurrentCostPriceName" label="Preço Custo Atual"> <div slot="suffix">€</div></vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineTimeExpectedCostPrice}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="TimeExpectedCostPriceid" name="TimeExpectedCostPriceName" label="TPreço Custo Esperado"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineLipids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Lipidsid" name="LipidsName" label="Lípidos"> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineTimeCurrentCostPrice}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="TimeCurrentCostPriceid" name="TimeCurrentCostPriceName" label="TPreço Custo Atual"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineFibers}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Fibersid" name="FibersName" label="Fibras"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ExpectedCostPriceid" name="ExpectedCostPriceName" label="Preço Custo Esperado"> <div slot="suffix">€</div></vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CurrentCostPriceid" name="CurrentCostPriceName" label="Preço Custo Atual"> <div slot="suffix">€</div></vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineTimeExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeExpectedCostPriceid" name="TimeExpectedCostPriceName" label="TPreço Custo Esperado"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineTimeCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeCurrentCostPriceid" name="TimeCurrentCostPriceName" label="TPreço Custo Atual"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
                                     <such-selectbox id="LocalizationCodeid" value="{{LineLocalizationCode}}" label="Cod. Localização"
@@ -499,89 +567,89 @@
                                     </such-selectbox>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineProteinsByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="ProteinsByQuantityid" name="ProteinsByQuantityName" label="Proteínas por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineProteinsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ProteinsByQuantityid" name="ProteinsByQuantityName" label="Proteínas por Quantidade"> </vaadin-text-field>
                                 </div>
 
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineGlicansByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="GlicansByQuantityid" name="GlicansByQuantityName" label="Glícidos por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineGlicansByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GlicansByQuantityid" name="GlicansByQuantityName" label="Glícidos por Quantidade"> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineLipidsByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="LipidsByQuantityid" name="LipidsByQuantityName" label="Lípidos por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineLipidsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="LipidsByQuantityid" name="LipidsByQuantityName" label="Lípidos por Quantidade"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineFibersByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="FibersByQuantityid" name="FibersByQuantityName" label="Fibras por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineFibersByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="FibersByQuantityid" name="FibersByQuantityName" label="Fibras por Quantidade"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineEnergeticValue2}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="EnergeticValue2id" name="EnergeticValue2Name" label="Valor Energético 2"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineEnergeticValue2}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValue2id" name="EnergeticValue2Name" label="Valor Energético 2"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineVitaminA}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="VitaminAid" name="VitaminAName" label="Vitamina A"> </vaadin-text-field>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineVitaminD}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="VitaminDid" name="VitaminDName" label="Vitamina D"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineCholesterol}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Cholesterolid" name="CholesterolName" label="Colesterol"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSodium}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Sodiumid" name="SodiumName" label="Sódio"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LinePotassium}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Potassiumid" name="PotassiumName" label="Potássio"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineVitaminA}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAid" name="VitaminAName" label="Vitamina A"> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineCalcium}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Calciumid" name="CalciumName" label="Cálcio"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineVitaminD}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDid" name="VitaminDName" label="Vitamina D"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineIron}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Ironid" name="IronName" label="Ferro"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineCholesterol}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Cholesterolid" name="CholesterolName" label="Colesterol"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineEdivel}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Edivelid" name="EdivelName" label="Edivel"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineSodium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sodiumid" name="SodiumName" label="Sódio"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineVitaminAByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="VitaminAByQuantityid" name="VitaminAByQuantityName" label="Vitamina A por Quantidade"> </vaadin-text-field>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineVitaminDByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="VitaminDByQuantityid" name="VitaminDByQuantityName" label="Vitamina D por Quantidade"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineCholesterolByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="CholesterolByQuantityid" name="CholesterolByQuantityName" label="Colesterol por Quantidade"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSodiumByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="SodiumByQuantityid" name="SodiumByQuantityName" label="Sódio por Quantidade"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LinePotassiumByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="PotassiumByQuantityid" name="PotassiumByQuantityName" label="Potásio por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LinePotassium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Potassiumid" name="PotassiumName" label="Potássio"> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineIronByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="IronByQuantityid" name="IronByQuantityName" label="Ferro por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineCalcium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Calciumid" name="CalciumName" label="Cálcio"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineCalciumByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="CalciumByQuantityid" name="CalciumByQuantityName" label="Cálcio por Quantidade"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineIron}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Ironid" name="IronName" label="Ferro"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSaturatedFattyAcids}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="SaturatedFattyAcidsid" name="SaturatedFattyAcidsName" label="Ácidos Gordos Saturados"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineEdivel}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Edivelid" name="EdivelName" label="Edivel"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSugarcane}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Sugarcaneid" name="TSugarcaneName" label="Açucares"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineVitaminAByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAByQuantityid" name="VitaminAByQuantityName" label="Vitamina A por Quantidade"> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{Linesalt}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="saltid" name="saltName" label="Sal"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineVitaminDByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDByQuantityid" name="VitaminDByQuantityName" label="Vitamina D por Quantidade"> </vaadin-text-field>
                                 </div>
                                 <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineQuantityPlates}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="QuantityPlatesid" name="QuantityPlatesName" label="Quantidade Prato"> </vaadin-text-field>
+                                    <vaadin-text-field value="{{LineCholesterolByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CholesterolByQuantityid" name="CholesterolByQuantityName" label="Colesterol por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineSodiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SodiumByQuantityid" name="SodiumByQuantityName" label="Sódio por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LinePotassiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="PotassiumByQuantityid" name="PotassiumByQuantityName" label="Potásio por Quantidade"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineIronByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="IronByQuantityid" name="IronByQuantityName" label="Ferro por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineCalciumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CalciumByQuantityid" name="CalciumByQuantityName" label="Cálcio por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineSaturatedFattyAcids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SaturatedFattyAcidsid" name="SaturatedFattyAcidsName" label="Ácidos Gordos Saturados"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineSugarcane}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sugarcaneid" name="TSugarcaneName" label="Açucares"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{Linesalt}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="saltid" name="saltName" label="Sal"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineQuantityPlates}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="QuantityPlatesid" name="QuantityPlatesName" label="Quantidade Prato"> </vaadin-text-field>
                                 </div>
                             </div>
                             <div class="row">
@@ -598,51 +666,51 @@
                                 <div class="col-lg-12">
                                     <vaadin-grid id="GridRecTecOfPlatesLines" aria-label="ProfileModelsTabel" items="[[data]]" class="grid" active-item="{{_SelectedLine}}">
                                         @*<vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="type">Tipo </vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="type" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-combo-box items="[[CbotLinesRecTecPlatesType]]" id="LineTypeid" item-value-path="id" item-label-path="value" value="{{item.type}}">
-                                                        <template>
-                                                            <table width="200px">
-                                                                <tr>
-                                                                    <td width="40%">[[item.id]]</td>
-                                                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                                                </tr>
-                                                            </table>
-                                                        </template>
-                                                    </vaadin-combo-box>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="type">Tipo </vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="type" />
                                                 </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.type}}
+                                                <template>
+                                                    <template is="dom-if" if="{{ item.selected }}">
+                                                        <vaadin-combo-box items="[[CbotLinesRecTecPlatesType]]" id="LineTypeid" item-value-path="id" item-label-path="value" value="{{item.type}}">
+                                                            <template>
+                                                                <table width="200px">
+                                                                    <tr>
+                                                                        <td width="40%">[[item.id]]</td>
+                                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                                    </tr>
+                                                                </table>
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </template>
+                                                    <template is="dom-if" if="{{ !item.selected }}">
+                                                        {{item.type}}
+                                                    </template>
                                                 </template>
-                                            </template>
-                                        </vaadin-grid-column>*@
+                                            </vaadin-grid-column>*@
                                         @*<vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="code">Código </vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="code" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-combo-box items="[[CboCode]]" id="Codeid" item-value-path="id" item-label-path="id" value="{{item.code}}">
-                                                        <template>
-                                                            <table width="200px">
-                                                                <tr>
-                                                                    <td width="40%">[[item.id]]</td>
-                                                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                                                </tr>
-                                                            </table>
-                                                        </template>
-                                                    </vaadin-combo-box>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="code">Código </vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="code" />
                                                 </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.code}}
+                                                <template>
+                                                    <template is="dom-if" if="{{ item.selected }}">
+                                                        <vaadin-combo-box items="[[CboCode]]" id="Codeid" item-value-path="id" item-label-path="id" value="{{item.code}}">
+                                                            <template>
+                                                                <table width="200px">
+                                                                    <tr>
+                                                                        <td width="40%">[[item.id]]</td>
+                                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                                    </tr>
+                                                                </table>
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </template>
+                                                    <template is="dom-if" if="{{ !item.selected }}">
+                                                        {{item.code}}
+                                                    </template>
                                                 </template>
-                                            </template>
-                                        </vaadin-grid-column>*@
+                                            </vaadin-grid-column>*@
                                         <vaadin-grid-column width="160px" resizable>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="description">Descrição </vaadin-grid-sorter>
@@ -664,7 +732,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.quantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Quantityid" name="QuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.quantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridQuantityid" name="QuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.quantity}}
@@ -701,7 +769,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.quantityOfProduction}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="QuantityOfProductionid" name="QuantityOfProductionName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.quantityOfProduction}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridQuantityOfProductionid" name="QuantityOfProductionName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.quantityOfProduction}}
@@ -715,7 +783,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.energeticValue}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="EnergeticValueid" name="EnergeticValueName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.energeticValue}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridEnergeticValueid" name="EnergeticValueName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.energeticValue}}
@@ -729,7 +797,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.proteins}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Proteinsid" name="ProteinsName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.proteins}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridProteinsid" name="ProteinsName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.proteins}}
@@ -743,7 +811,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.hydratesOfCarbon}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="HydratesOfCarbontid" name="HydratesOfCarbontName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.hydratesOfCarbon}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridHydratesOfCarbontid" name="HydratesOfCarbontName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.hydratesOfCarbon}}
@@ -757,7 +825,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.lipids}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Lipidsid" name="LipidsName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.lipids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridLipidsid" name="LipidsName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.lipids}}
@@ -771,7 +839,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.fibers}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Fibersid" name="FibersName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.fibers}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridFibersid" name="FibersName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.fibers}}
@@ -785,7 +853,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.expectedCostPrice}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="ExpectedCostPriceid" name="ExpectedCostPriceName" disabled="{{ !_permissionsVal.update }}"> <div slot="suffix">€</div></vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.expectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridExpectedCostPriceid" name="ExpectedCostPriceName" disabled="{{ !_permissionsVal.update }}"> <div slot="suffix">€</div></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.expectedCostPrice}}
@@ -799,7 +867,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.currentCostPrice}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="CurrentCostPriceid" name="CurrentCostPriceName" disabled="{{ !_permissionsVal.update }}"> <div slot="suffix">€</div></vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.currentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridCurrentCostPriceid" name="CurrentCostPriceName" disabled="{{ !_permissionsVal.update }}"> <div slot="suffix">€</div></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.currentCostPrice}}
@@ -813,7 +881,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.timeExpectedCostPrice}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="TimeExpectedCostPriceid" name="TimeExpectedCostPriceName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.timeExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridTimeExpectedCostPriceid" name="TimeExpectedCostPriceName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.timeExpectedCostPrice}}
@@ -827,7 +895,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.timeCurrentCostPrice}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="TimeCurrentCostPriceid" name="TimeCurrentCostPriceName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.timeCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridTimeCurrentCostPriceid" name="TimeCurrentCostPriceName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.timeCurrentCostPrice}}
@@ -853,7 +921,6 @@
                                                     </vaadin-combo-box>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.}}
                                                     [[_parselocalization(item.localizationCode)]]
                                                 </template>
                                             </template>
@@ -865,7 +932,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.proteinsByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="ProteinsByQuantityid" name="ProteinsByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.proteinsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridProteinsByQuantityid" name="ProteinsByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.proteinsByQuantity}}
@@ -879,7 +946,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.glicansByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="GlicansByQuantityid" name="GlicansByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.glicansByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridGlicansByQuantityid" name="GlicansByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.glicansByQuantity}}
@@ -893,7 +960,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.lipidsByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="LipidsByQuantityid" name="LipidsByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.lipidsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridLipidsByQuantityid" name="LipidsByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.lipidsByQuantity}}
@@ -907,7 +974,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.fibersByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="FibersByQuantityid" name="FibersByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.fibersByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridFibersByQuantityid" name="FibersByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.fibersByQuantity}}
@@ -921,7 +988,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.energeticValue2}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="EnergeticValue2id" name="EnergeticValue2Name" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.energeticValue2}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridEnergeticValue2id" name="EnergeticValue2Name" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.energeticValue2}}
@@ -935,7 +1002,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.vitaminA}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="VitaminAid" name="VitaminAName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.vitaminA}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridVitaminAid" name="VitaminAName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.vitaminA}}
@@ -949,7 +1016,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.vitaminD}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="VitaminDid" name="VitaminDName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.vitaminD}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridVitaminDid" name="VitaminDName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.vitaminD}}
@@ -963,7 +1030,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.cholesterol}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Cholesterolid" name="CholesterolName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.cholesterol}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridCholesterolid" name="CholesterolName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.cholesterol}}
@@ -977,7 +1044,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.sodium}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Sodiumid" name="SodiumName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.sodium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridSodiumid" name="SodiumName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.sodium}}
@@ -991,7 +1058,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.potassium}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Potassiumid" name="PotassiumName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.potassium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridPotassiumid" name="PotassiumName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.potassium}}
@@ -1005,7 +1072,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.calcium}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Calciumid" name="CalciumName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.calcium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridCalciumid" name="CalciumName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.calcium}}
@@ -1019,7 +1086,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.iron}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Ironid" name="IronName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.iron}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridIronid" name="IronName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.iron}}
@@ -1033,7 +1100,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.edivel}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Edivelid" name="EdivelName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.edivel}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridEdivelid" name="EdivelName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.edivel}}
@@ -1047,7 +1114,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.vitaminAByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="VitaminAByQuantityid" name="VitaminAByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.vitaminAByQuantity}}" on-value-changed="_ConvertDecimals" maxlength="20" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridVitaminAByQuantityid" name="VitaminAByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.vitaminAByQuantity}}
@@ -1061,7 +1128,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.vitaminDByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="VitaminDByQuantityid" name="VitaminDByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.vitaminDByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridVitaminDByQuantityid" name="VitaminDByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.vitaminDByQuantity}}
@@ -1075,7 +1142,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.cholesterolByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="CholesterolByQuantityid" name="CholesterolByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.cholesterolByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridCholesterolByQuantityid" name="CholesterolByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.cholesterolByQuantity}}
@@ -1089,7 +1156,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.sodiumByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="SodiumByQuantityid" name="SodiumByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.sodiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridSodiumByQuantityid" name="SodiumByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.sodiumByQuantity}}
@@ -1103,7 +1170,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.potassiumByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="PotassiumByQuantityid" name="PotassiumByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.potassiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridPotassiumByQuantityid" name="PotassiumByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.potassiumByQuantity}}
@@ -1117,7 +1184,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.ironByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="IronByQuantityid" name="IronByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.ironByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridIronByQuantityid" name="IronByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.ironByQuantity}}
@@ -1131,7 +1198,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.calciumByQuantity}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="CalciumByQuantityid" name="CalciumByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.calciumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridCalciumByQuantityid" name="CalciumByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.calciumByQuantity}}
@@ -1145,7 +1212,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.saturatedFattyAcids}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="SaturatedFattyAcidsid" name="SaturatedFattyAcidsName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.saturatedFattyAcids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridSaturatedFattyAcidsid" name="SaturatedFattyAcidsName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.saturatedFattyAcids}}
@@ -1159,7 +1226,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.sugarCane}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="Sugarcaneid" name="TSugarcaneName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.sugarCane}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridSugarcaneid" name="TSugarcaneName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.sugarCane}}
@@ -1173,7 +1240,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.salt}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="saltid" name="saltName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.salt}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Gridsaltid" name="saltName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.salt}}
@@ -1187,7 +1254,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.quantityPlates}}" maxlength="20" pattern="^[0-9]\d*(\.\d+)?$" class="alignRight" id="QuantityPlatesid" name="QuantityPlatesName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.quantityPlates}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridQuantityPlatesid" name="QuantityPlatesName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.quantityPlates}}
@@ -1244,6 +1311,9 @@
                 },
                 _SelectedLine: {
                     observer: '_lineSelected'
+                },
+                _SelectedConfectionLine: {
+                    observer: '_ConflineSelected'
                 },
                 _NotCreateOnly: {
                     type: Boolean,
@@ -1615,9 +1685,9 @@
                 },
             },
             observers: [
-                '_onCacheLoaded(CBOMeasureUnit,CBLocations)'
+                '_onCacheLoaded(CBOMeasureUnit,CBLocations,CboActionGrid)'
             ],
-            _onCacheLoaded: function (CBOMeasureUnit, CBLocations) {
+            _onCacheLoaded: function (CBOMeasureUnit, CBLocations, CboActionGrid) {
                 if (!this.Flag) {
                     var RecTecPlatId = @Html.Raw(Json.Serialize(ViewBag.RecTecPlatesId));
                     this._permissionsVal = @Html.Raw(Json.Serialize(@ViewBag.UPermissions));
@@ -1634,6 +1704,9 @@
                     }
                     this.Flag = true;
                 }
+            },
+            _ConvertDecimals: function (e) {
+                e.target.value = e.target.value.replace(",", ".");
             },
             _CreateResponse: function (e) {
                 if (e.detail.status === 200) {
@@ -1660,7 +1733,7 @@
                 }
             },
             _parselocalization: function (param) {
-               
+
                 if (param != undefined && this.CBLocations != undefined) {
                     var sel = this.CBLocations.find(x => x.id == param);
                     if (sel != undefined) {
@@ -1670,7 +1743,7 @@
                 return "";
             },
             _parseMeasure: function (param) {
-              
+
                 if (param != undefined && this.CBOMeasureUnit != undefined) {
                     var sel = this.CBOMeasureUnit.find(x => x.id == param);
                     if (sel != undefined) {
@@ -1680,7 +1753,6 @@
                 return "";
             },
             _parseActionCode: function (param) {
-                debugger;
                 if (param != undefined && this.CboAction != undefined) {
                     var sel = this.CboAction.find(x => x.id == param);
                     if (sel != undefined) {
@@ -1820,10 +1892,27 @@
                 this.$.updateRecTecLines_ajax.generateRequest();
                 this.$.GridRecTecOfPlatesLines.clearCache();
             },
+            _updateconfLines() {
+                this.$.updateConf_ajax.body = JSON.stringify(this.GridProceduresConfection);
+                this.$.updateConf_ajax.params = { "plateNo": this.RecTecPlatValue };
+                this.$.updateConf_ajax.generateRequest();
+                this.$.gridConfection_request.clearCache();
+            },
             _cancel: function () {
                 this.$.getallgrid_ajax.body = JSON.stringify(this.RecTecPlatValue);
                 this.$.getallgrid_ajax.generateRequest();
                 this.$.GridRecTecOfPlatesLines.clearCache();
+            },
+            _addConfection() {
+                var createConf = {
+                    technicalSheetNo: this.RecTecPlatValue,
+                    actionNo: this.$._CboAction.value,
+                    description: this.$.descconfid.value,
+                    orderNo: this.$.OrderNoid.value
+                };
+                this.$.createConf_ajax.body = JSON.stringify(createConf);
+                this.$.createConf_ajax.generateRequest();
+                this.$.gridConfection_request.clearCache();
             },
             _addlines() {
                 var createRecTecLines = {
@@ -1920,6 +2009,19 @@
                 this.$.createRecTec_ajax.body = JSON.stringify(newRecTec);
                 this.$.createRecTec_ajax.generateRequest();
             },
+            _ConflineSelected: function (item) {
+                if (item != null) {
+                    var oSel = this.GridProceduresConfection.find(x => x.selected);
+                    if (oSel != undefined) {
+                        oSel.selected = false;
+                    }
+                    var sel = this.GridProceduresConfection.find(x => x == item);
+                    if (sel != undefined) {
+                        this.GridProceduresConfection.find(x => x == item).selected = true;
+                        this.$.gridConfection_request.clearCache();
+                    }
+                }
+            },
             _lineSelected: function (item) {
                 if (item != null) {
                     var oSel = this.data.find(x => x.selected);
@@ -1948,6 +2050,36 @@
                     this._openToastError("Ocorreu um erro ao Editado o registo.");
                 }
             },
+            _updateConfResponse: function (e) {
+                if (e.detail.status === 200) {
+                    if (this.updateConf.eReasonCode === 1) {
+                        this._openToast(this.updateConf.eMessage);
+                        this.$.ajax_GridProcedConfec.body = JSON.stringify(this.RecTecPlatValue);
+                        this.$.ajax_GridProcedConfec.generateRequest();
+                        this.$.gridConfection_request.clearCache();
+                    } else {
+                        this._openToastError(this.updateConf.eMessage);
+                    }
+                }
+                else {
+                    this._openToastError("Ocorreu um erro ao editar o registo.");
+                }
+            },
+            _createConfResponse: function (e) {
+                if (e.detail.status === 200) {
+                    if (this.createConf.eReasonCode === 1) {
+                        this._openToast(this.createConf.eMessage);
+                        this.$.ajax_GridProcedConfec.body = JSON.stringify(this.RecTecPlatValue);
+                        this.$.ajax_GridProcedConfec.generateRequest();
+                        this.$.gridConfection_request.clearCache();
+                    } else {
+                        this._openToastError(this.createConf.eMessage);
+                    }
+                }
+                else {
+                    this._openToastError("Ocorreu um erro ao Criar o registo.");
+                }
+            },
             _CreateLinesResponse: function (e) {
                 if (e.detail.status === 200) {
                     if (this.Createdate.eReasonCode === 1) {
@@ -1971,6 +2103,15 @@
                 this.$.updateRecTecLines_ajax.body = JSON.stringify(this.data);
                 this.$.updateRecTecLines_ajax.params = { "plateNo": this.RecTecPlatValue };
                 this.$.updateRecTecLines_ajax.generateRequest();
+                this.$.gridneedshopping.clearCache();
+            },
+            _deleteConf: function (e) {
+                var index = this.GridProceduresConfection.indexOf(e.model.item);
+                this.GridProceduresConfection.splice(index, 1);
+                // Save to DB
+                this.$.updateConf_ajax.body = JSON.stringify(this.GridProceduresConfection);
+                this.$.updateConf_ajax.params = { "plateNo": this.RecTecPlatValue };
+                this.$.updateConf_ajax.generateRequest();
                 this.$.gridneedshopping.clearCache();
             },
             _GetRecTecPlatResponse: function (getAllRecTecPlatResult) {

@@ -135,7 +135,7 @@ namespace Hydra.Such.Data.Logic.Request
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.LinhasRequisição.Where(x=> x.NºRequisição == requisicao && x.MercadoLocal!=null  && x.CriarConsultaMercado != null && x.EnviarPréCompra!= null && x.EnviadoPréCompra != null ).ToList();
+                    return ctx.LinhasRequisição.Where(x=> x.NºRequisição == requisicao).ToList();
                 }
             }
             catch (Exception ex)

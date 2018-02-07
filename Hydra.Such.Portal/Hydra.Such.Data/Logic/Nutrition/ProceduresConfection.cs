@@ -82,7 +82,20 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return false;
             }
         }
-
+        public static List<ProcedimentosDeConfeção> GetAllbyActionNoAndPlateNo(int actionNo, string PlateNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ProcedimentosDeConfeção.Where(x => x.CódigoAção == actionNo && x.NºPrato == PlateNo).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         public static List<ProcedimentosDeConfeção> GetAllbyPlateNo(string PlateNo)
         {

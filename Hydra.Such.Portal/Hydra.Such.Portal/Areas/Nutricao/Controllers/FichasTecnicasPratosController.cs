@@ -102,7 +102,99 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             return Json(result);
         }
         #endregion
+        [HttpPost]
+        [Area("Nutricao")]
+        public JsonResult UpdateConfection([FromBody] List<ProceduresConfectionViewModel> data, string plateNo)
+        {
+            ErrorHandler result = new ErrorHandler();
+            if (data != null)
+            {
+                List<ProcedimentosDeConfeção> previousList;
+                // Get All
+                previousList = ProceduresConfection.GetAllbyPlateNo(plateNo);
+                foreach (ProcedimentosDeConfeção line in previousList)
+                {
+                    if (!data.Any(x => x.TechnicalSheetNo == line.NºPrato && x.actionNo == line.CódigoAção))
+                    {
+                        ProceduresConfection.Delete(line);
+                    }
+                }
+                //Update
+                try
+                {
+                    data.ForEach(x =>
+                    {
+                        List<ProcedimentosDeConfeção> dpObject = ProceduresConfection.GetAllbyActionNoAndPlateNo(x.actionNo, x.TechnicalSheetNo);
+                        if (dpObject.Count > 0)
+                        {
+                            ProcedimentosDeConfeção newdp = dpObject.FirstOrDefault();
+                            newdp.NºPrato = x.TechnicalSheetNo;
+                            newdp.Descrição = x.description;
+                            newdp.CódigoAção = x.actionNo;
+                            newdp.NºOrdem = x.orderNo;
+                            newdp.DataHoraCriação = x.CreateDateTime;
+                            newdp.UtilizadorCriação = x.CreateUser;
+                            newdp.DataHoraModificação = DateTime.Now;
+                            newdp.UtilizadorModificação = User.Identity.Name;
+                            newdp = ProceduresConfection.Update(newdp);
+                            if (newdp != null)
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage =
+                                    "Registo editado com sucesso.";
+                            }
+                            else
+                            {
+                                result.eReasonCode = 2;
+                                result.eMessage = "Ocorreu um erro ao editar o registo.";
+                            }
+                        }
+                    });
 
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Ocorreu um erro: a linha não pode ser nula.";
+            }
+            return Json(result);
+        }
+
+
+        [HttpPost]
+        [Area("Nutricao")]
+        public JsonResult CreateConfection([FromBody] ProceduresConfectionViewModel data)
+        {
+            ErrorHandler result = new ErrorHandler();
+            if (data != null)
+            {
+                data.CreateUser = User.Identity.Name;
+                data.CreateDateTime = DateTime.Now;
+                var createdItem = ProceduresConfection.Create(data.ParseToDatabase());
+                if (createdItem != null)
+                {
+                    result.eReasonCode = 1;
+                    result.eMessage = "Registo criado com sucesso.";
+                }
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Ocorreu um erro ao criar o registo.";
+                }
+            }
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Ocorreu um erro: a linha não pode ser nula.";
+            }
+            return Json(result);
+        }
         #region CREATE/UPDATE Record Technical Of Plates
         // Create Record Technical Of Plates Row
         [HttpPost]
@@ -111,31 +203,49 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         {
             if (data != null)
             {
-                Configuração Configs = DBConfigurations.GetById(1);
-                int NumerationConfigurationId = 0;
-                NumerationConfigurationId = Configs.NumeraçãoFichasTécnicasDePratos.Value;
-                data.PlateNo = DBNumerationConfigurations.GetNextNumeration(NumerationConfigurationId,
-                    (data.PlateNo == "" || data.PlateNo == null));
-                data.CreateUser = User.Identity.Name;
-                var createdItem = DBRecordTechnicalOfPlates.Create(data.ParseToDB());
-                if (createdItem != null)
-                {
+                //Get Numeration
+                bool autoGenId = false;
+                Configuração conf = DBConfigurations.GetById(1);
+                int entityNumerationConfId = conf.NumeraçãoFichasTécnicasDePratos.Value;
 
-                    data = createdItem.ParseToViewModel();
-                    //Update Last Numeration Used
-                    ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(NumerationConfigurationId);
-                    ConfigNumerations.ÚltimoNºUsado = data.PlateNo;
-                    ConfigNumerations.UtilizadorModificação = User.Identity.Name;
-                    DBNumerationConfigurations.Update(ConfigNumerations);
-                    data.eReasonCode = 1;
-                    data.eMessage = "Registo criado com sucesso.";
+                if (data.PlateNo == "" || data.PlateNo == null)
+                {
+                    autoGenId = true;
+                    data.PlateNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId);
+                }
+                if (data.PlateNo != null)
+                {
+                    data.CreateUser = User.Identity.Name;
+                    var createdItem = DBRecordTechnicalOfPlates.Create(data.ParseToDB());
+                    if (createdItem != null)
+                    {
+
+                        data = createdItem.ParseToViewModel();
+
+                        //Update Last Numeration Used
+                        if (autoGenId)
+                        {
+                            ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                            ConfigNumerations.ÚltimoNºUsado = data.PlateNo;
+                            ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                            DBNumerationConfigurations.Update(ConfigNumerations);
+                        }
+
+                        data.eReasonCode = 1;
+                        data.eMessage = "Registo criado com sucesso.";
+                    }
+                    else
+                    {
+
+                        data = new RecordTechnicalOfPlatesModelView();
+                        data.eReasonCode = 2;
+                        data.eMessage = "Ocorreu um erro ao editar o registo.";
+                    }
                 }
                 else
                 {
-
-                    data = new RecordTechnicalOfPlatesModelView();
                     data.eReasonCode = 2;
-                    data.eMessage = "Ocorreu um erro ao criar o registo.";
+                    data.eMessage = "A numeração configurada não é compativel com a inserida.";
                 }
             }
             else

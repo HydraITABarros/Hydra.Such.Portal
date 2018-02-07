@@ -28,7 +28,10 @@ namespace Hydra.Such.Data.Logic
                         result.Add(new NAVVendorViewModel()
                         {
                             No_ = (string)temp.No_,
-                            Name = (string)temp.Name
+                            Name = (string)temp.Name,
+                            Address = (string)temp.Address,
+                            VATRegistrationNo = (string)temp.VATRegistrationNo,
+                            PostCode = (string)temp.PostCode
                         });
                     }
                 }
