@@ -233,11 +233,11 @@ namespace Hydra.Such.Data.Logic.Project
                 {
                     if (AllProjs)
                     {
-                        return ctx.MovimentosDeProjeto.Where(x => x.Utilizador == user && x.Registado == true).ToList();
+                        return ctx.MovimentosDeProjeto.ToList();//.Where(x => x.Utilizador == user && x.Registado == true)
                     }
                     else
                     {
-                        return ctx.MovimentosDeProjeto.Where(x => x.NºProjeto == ProjectNo && x.Utilizador == user && x.Registado == true).ToList();
+                        return ctx.MovimentosDeProjeto.Where(x => x.NºProjeto == ProjectNo).ToList();// && x.Utilizador == user && x.Registado == true
                     }
 
                 }
