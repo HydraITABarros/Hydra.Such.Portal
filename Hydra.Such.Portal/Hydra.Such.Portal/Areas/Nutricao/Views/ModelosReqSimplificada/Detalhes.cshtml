@@ -270,7 +270,7 @@
                             </vaadin-combo-box>
                         </div>
                         <div class="col-md-3 ">
-                            <vaadin-combo-box items="[[CBFunctionalAreas]]" id="lineCodeFunctionalArea" item-value-path="id" item-label-path="value" value="" label="Cód. Area Funcional" disabled="{{ !_permissions.update }}">
+                            <vaadin-combo-box items="[[CBFunctionalAreas]]" id="lineCodeFunctionalArea" item-value-path="id" item-label-path="value" value="[[data.codeFunctionalArea]]" label="Cód. Area Funcional" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="180px">
                                         <tr>
