@@ -13,9 +13,6 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-
-
-
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
@@ -25,6 +22,7 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 
 <h1 class="title">Modelo de Requisição Simplificada</h1>
 
@@ -87,6 +85,7 @@
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenters}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjects" last-response="{{sbProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBWarehouses}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetMeasureUnits" last-response="{{CBUnitsOfMeasure}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -201,17 +200,14 @@
                 <div>
                     <div class="row break_clear">
                         <div class="col-md-3 ">
-                            <vaadin-combo-box items='[[CBProducts]]' id="lineProductId" item-value-path="id" item-label-path="value" value="" label="Produto" disabled="{{ !_permissions.update }}"
-                                              on-value-changed="_onProductChanged">
-                                <template>
-                                    <table width="180px">
-                                        <tr>
-                                            <td width="40%">[[item.id]]</td>
-                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
+                            <such-selectbox id="lineProductId" value="" label="Produto"
+                                            items="[[CBProducts]]"
+                                            text-path="id"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Cód. Produto"}, {"field":"value", "name":"Descrição"}, {"field":"extra", "name":"Unidade Medida"}]'
+                                            disabled="{{ !_permissions.update }}"
+                                            on-value-changed="_onProductChanged" required error-message="Este campo é obrigatório">
+                            </such-selectbox>
                         </div>
                         <div class="col-md-3 ">
                             <vaadin-text-field value="" id="lineProductDescription" name="lineProductDescription" label="Descrição Produto" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
@@ -237,8 +233,7 @@
                             <vaadin-text-field id="lineUnitValue" name="lineUnitValue" label="Valor Unitário" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" error-message="Valor inválido"> </vaadin-text-field>
                         </div>
                         <div class="col-md-3 ">
-                            <vaadin-combo-box items='[[CBMealTypes]]' id="lineMealType" item-value-path="id" item-label-path="value" value="" label="Tipo de Refeição" disabled="{{ !_permissions.update }}"
-                                              on-value-changed="_onMealTypeChanged">
+                            <vaadin-combo-box items='[[CBMealTypes]]' id="lineMealType" item-value-path="id" item-label-path="value" value="" label="Tipo de Refeição" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="180px">
                                         <tr>
@@ -250,19 +245,15 @@
                             </vaadin-combo-box>
                         </div>
                         <div class="col-md-3 ">
-                            <vaadin-text-field id="lineMealTypeDescription" name="lineMealTypeDescription" label="Descrição Tipo de Refeição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                            <such-selectbox id="lineProjectId" name="lineProjectId" label="Nº Projeto" disabled="{{ !_permissions.update }}"
+                                            items="[[sbProjects]]"
+                                            text-path="nºProjeto"
+                                            value-path="nºProjeto"
+                                            fields='[{"field":"nºProjeto", "name":"Código"}, {"field":"descrição", "name":"Descrição"}, {"field":"nºCliente", "name":"Nº Cliente"}]'>
+                            </such-selectbox>
                         </div>
                         <div class="col-md-3 ">
-                            <vaadin-combo-box items='[[CBProjects]]' id="lineProjectId" item-value-path="id" item-label-path="value" value="" label="Projeto" disabled="{{ !_permissions.update }}">
-                                <template>
-                                    <table width="180px">
-                                        <tr>
-                                            <td width="40%">[[item.id]]</td>
-                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
+                            
                         </div>
                     </div>
                     <div class="row break_clear">
@@ -779,13 +770,14 @@
                         this.$.gridTemplateLines.clearCache();
 
                         this.$.lineProductId.value = "";
+                        this.$.lineProductId.valueText = "";
+                        this.$.lineProjectId.value = "";
+                        this.$.lineProjectId.valueText = "";
                         this.$.lineProductDescription.value = "";
                         this.$.lineUnitOfMeasure.value = "";
                         this.$.lineQuantity.value = "";
                         this.$.lineUnitValue.value = "";
-                        this.$.lineMealType.value = "";
-                        this.$.lineMealTypeDescription.value = "";
-                        this.$.lineProjectId.value = "";
+                        this.$.lineMealType.value = "";                      
                         this.$.lineCodeRegion.value = "";
                         this.$.lineCodeFunctionalArea.value = "";
                         this.$.lineCodeResponsabilityCenter.value = "";
@@ -935,15 +927,6 @@
                             this.data.lines.find(x => x == this._SelectedLine).productDescription = product.value;
                             this.data.lines.find(x => x == this._SelectedLine).codeMeasureUnit = product.extra;
                             this.$.gridTemplateLines.clearCache();
-                        }
-                    }
-                },
-                _onMealTypeChanged : function(e) {
-                    if (e.detail.value != null && e.detail.value != "") {
-                        var mealTypes = $.grep(this.CBMealTypes, function (x) { return x.id == e.detail.value; });
-                        if (mealTypes != null && mealTypes.length > 0) {
-                            var mealType = mealTypes[0];
-                            this.$.lineMealTypeDescription.value = mealType.value;
                         }
                     }
                 },
