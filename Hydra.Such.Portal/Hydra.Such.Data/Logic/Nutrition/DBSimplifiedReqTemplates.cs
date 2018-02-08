@@ -116,7 +116,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return new SimplifiedReqTemplateViewModel()
                 {
                     RequisitionTemplateId = item.NºRequisição,
-                    Description = "Não implementado",//item.Descrição
+                    Description = item.Observações,
 
                     LocationCode = item.CódLocalização,
                     CodeRegion = item.CódigoRegião,
@@ -149,7 +149,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 return new RequisiçõesSimplificadas()
                 {
                     NºRequisição = item.RequisitionTemplateId,
-                    //Descrição = item.Description,
+                    Observações = item.Description,
                     CódigoRegião = item.CodeRegion,
                     CódigoÁreaFuncional = item.CodeFunctionalArea,
                     CódLocalização = item.LocationCode,

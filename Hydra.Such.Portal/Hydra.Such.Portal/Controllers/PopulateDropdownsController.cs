@@ -828,6 +828,14 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetProjects()
+        {
+            var result = DBProjects.GetAll();
+            return Json(result);
+        }
+
         [HttpPost]
         public JsonResult GetProdUnits()
         {

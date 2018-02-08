@@ -112,7 +112,7 @@
                                         <vaadin-text-field id="requisitionTemplateId" name="requisitionTemplateId" label="Nº do Modelo" value="{{data.requisitionTemplateId}}" disabled="{{ !_isCreate }}"></vaadin-text-field>
                                     </div>
                                     <div class="col-md-3 ">
-                                        <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                        <vaadin-text-field value="{{data.description}}" maxlength="50" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
                                     <div class="col-md-3 ">
                                         @*<vaadin-text-field id="code" name="code" label="Código" value="{{data.code}}" disabled="true"></vaadin-text-field>*@
