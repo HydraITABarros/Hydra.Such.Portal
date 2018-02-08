@@ -67,6 +67,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<NotasProcedimentosCcp> NotasProcedimentosCcp { get; set; }
         public virtual DbSet<ObjetosDeServiço> ObjetosDeServiço { get; set; }
         public virtual DbSet<OrigemDestinoFh> OrigemDestinoFh { get; set; }
+        public virtual DbSet<DistanciaFh> DistanciaFh { get; set; }
         public virtual DbSet<PercursosEAjudasCustoDespesasFolhaDeHoras> PercursosEAjudasCustoDespesasFolhaDeHoras { get; set; }
         public virtual DbSet<PerfisModelo> PerfisModelo { get; set; }
         public virtual DbSet<PerfisUtilizador> PerfisUtilizador { get; set; }
@@ -4209,6 +4210,41 @@ namespace Hydra.Such.Data.Database
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.Descrição).HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<DistanciaFh>(entity =>
+            {
+                entity.HasKey(e => new { e.CódigoOrigem, e.CódigoDestino });
+
+                entity.ToTable("Distancia_FH");
+
+                entity.Property(e => e.CódigoOrigem)
+                    .HasColumnName("Código_Origem")
+                    .HasMaxLength(20)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.CódigoDestino)
+                    .HasColumnName("Código_Destino")
+                    .HasMaxLength(20)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Distância).HasColumnName("Distância");
+
+                entity.Property(e => e.CriadoPor)
+                    .HasColumnName("Criado Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.AlteradoPor)
+                    .HasColumnName("Alterado Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraÚltimaAlteração)
+                    .HasColumnName("Data/Hora Última Alteração")
+                    .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<PercursosEAjudasCustoDespesasFolhaDeHoras>(entity =>

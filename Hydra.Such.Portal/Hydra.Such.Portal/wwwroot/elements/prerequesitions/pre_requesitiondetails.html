@@ -794,12 +794,12 @@
 
 
                                         <!--<such-selectbox id="_CLGridSupplierProductCode" value="{{item.supplierProductCode}}"
-                                        items="[[CBItems]]"
-                                        text-path="code"
-                                        value-path="code"
-                                        fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
-                                        disabled="{{ !_permissions.update }}">
-                                    </such-selectbox>-->
+                    items="[[CBItems]]"
+                    text-path="code"
+                    value-path="code"
+                    fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                    disabled="{{ !_permissions.update }}">
+                </such-selectbox>-->
                                     </template>
                                     <template is="dom-if" if="{{ !item.selected }}">
                                         {{item.supplierProductCode}}
@@ -952,7 +952,6 @@
                                     <vaadin-grid-filter path="supplierNo" />
                                 </template>
                                 <template>
-
                                     <template is="dom-if" if="{{ item.selected }}">
                                         <vaadin-combo-box items="[[CBVendor]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" disabled="{{ !_permissions.update }}">
                                             <template>
@@ -975,7 +974,6 @@
                                     <vaadin-grid-filter path="regionCode" />
                                 </template>
                                 <template>
-
                                     <template is="dom-if" if="{{ item.selected }}">
                                         <vaadin-combo-box items="[[LProjectRegionCodes]]" id="_CLGridRegion" name="_CLGridRegion" item-value-path="id" item-label-path="value" value="{{item.regionCode}}" disabled="{{ !_permissions.update }}">
                                             <template>
@@ -1058,7 +1056,6 @@
                                     </template>
                                 </template>
                             </vaadin-grid-column>
-
                             <vaadin-grid-column width="200px" resizable>
                                 <template class="header">
                                     <vaadin-grid-sorter path="openOrderLineNo">Nº Linha Encomenda Aberto</vaadin-grid-sorter>
@@ -1082,7 +1079,6 @@
                                     </template>
                                 </template>
                             </vaadin-grid-column>
-
                             <vaadin-grid-column width="10%">
                                 <template class="header">
                                 </template>
@@ -1380,7 +1376,6 @@
                 //    }
                 //},
                
-
                 _deleteFiles: function (e) {
                     var index = this.dataLines.lines.indexOf(e.model.item);
                     this.dataLines.lines.splice(index, 1);
@@ -1534,11 +1529,10 @@
                     }
                 },
                 _responseProcessor: function (data) {
-                    
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetPreRequesitionDetails") !== -1) {
-                            var id = this.data.requesitionType;
-                            if (id != "" && id > 0) {
+                            var id = this.data.preRequesitionsNo;
+                            if (id != "") {
                                 this._showPreReqLines = "";
 
                                 if (this._permissions.update) {
@@ -1575,10 +1569,7 @@
                                 this._openToastError(this.data.eMessage);
                             }
                         }
-
-                        debugger;
                         if (!(this.$._CLResponsabilityCenterCode.value == "" || this.$._CLResponsabilityCenterCode.value == null)) {
-                            debugger;
                             this.$.purchaseheader_ajax.body = JSON.stringify(this.$._CLResponsabilityCenterCode.value);
                             this.$.purchaseheader_ajax.generateRequest();
                         }
@@ -1666,7 +1657,6 @@
                 },
 
                 _sumLines: function () {
-                    debugger;
                     var count = 0;
                     if (this.dataLines.lines != null) {
                         for (var i = 0; i < this.dataLines.lines.length; i++) {
@@ -1691,16 +1681,13 @@
                 },
 
                 _RespChange: function (e) {
-                    debugger;
                     if (!(this.$._CLResponsabilityCenterCode.value == "" || this.$._CLResponsabilityCenterCode.value == null)) {
-                        debugger;
                         this.$.purchaseheader_ajax.body = JSON.stringify(this.$._CLResponsabilityCenterCode.value );
                         this.$.purchaseheader_ajax.generateRequest();
                     }
                 },
 
                 _purchaseheaderresponse: function (e) {
-                    debugger;
                     if (this.CBPurchaseHeader.length == 0) {
                         this.$._CBPurchaseHeader.value = "";
                         this.$._CBPurchaseLine.value = "";
@@ -1719,21 +1706,21 @@
                 //},
 
                 _CalculateTotalCostLine: function (e) {
-                    debugger;
                     var line = this.dataLines.lines.find(x => x == this._SelectedLine);
                     line.totalCost = line.quantityToRequire * line.unitCost;
 
                     this.$.grid_prereqlines.clearCache();
                 },
+
                 _setProductData: function (e) {
-                    debugger;
                     var item = this.CBItems.find(x => x.code == e);
-                    this.$._Description.value = item.name;
-                    //this.$._UnitMeasureCode.value = item.measureUnit;
+                    if (item != null) {
+                        this.$._Description.value = item.name;
+                        this.$._UnitMeasureCode.value = item.measureUnit;
+                    }
                 },
 
                 _GridItemChange: function (e, _selected) {
-                    debugger;
                     if (this.dataLines != null && this.dataLines.lines != null) {
                         var line = this.dataLines.lines.find(x => x == this._SelectedLine);
                         var itemNo = e.model.item.supplierProductCode
@@ -1748,7 +1735,6 @@
                 },
 
                 _GridRespCenterChange: function (e) {
-                    debugger;
                     if (this.dataLines != null && this.dataLines.lines != null) {
                         var line = this.dataLines.lines.find(x => x == this._SelectedLine);
                         var itemNo = e.model.item.centerResponsibilityCode;
@@ -1845,7 +1831,10 @@
 
                 //Pre Requesition Lines
                 _createPreReqLine: function () {
-                    
+                    var totalCost = this._QuantityToRequire * this._UnitCost;
+                    if (isNaN(totalCost)) {
+                        totalCost = 0;
+                    }
                     this.dataLines.lines.unshift({
                         preRequisitionLineNo: this.data.preRequesitionsNo,
                         localCode: this._LocalCode,
@@ -1862,8 +1851,8 @@
                         functionalAreaCode: this.data.functionalAreaCode,
                         centerResponsibilityCode: this.data.responsabilityCenterCode,
                         openOrderNo: this._CBPurchaseHeader,
-                        openOrderLineNo: this._CBPurchaseLine
-
+                        openOrderLineNo: this._CBPurchaseLine,
+                        totalCost: totalCost > 0 ? totalCost : "",
                     });
                     this.$.grid_prereqlines.clearCache();
 
@@ -1921,9 +1910,7 @@
                             this.$.purchaselinesgrid_ajax.generateRequest();
 
                             this.$.grid_prereqlines.clearCache();
-                            debugger;
                             if (!(item.centerResponsibilityCode == "" || item.centerResponsibilityCode == null)) {
-                                debugger;
                                 this.$.gridpurchaseheader_ajax.body = JSON.stringify(item.centerResponsibilityCode);
                                 this.$.gridpurchaseheader_ajax.generateRequest();
                             }
@@ -1940,6 +1927,20 @@
                             }
                             else {
                                 this._openToast(this.dataLines.eMessage);
+                                this.$._CBLocations.value = "";
+                                this.$._Description.value = "";
+                                this.$._UnitMeasureCode.value = "";
+                                this.$._QuantityToRequire.value = "";
+                                this.$._UnitCost.value = "";
+                                this.$._MaintenanceOrderLineNo.value = "";
+                                this.$._CBPurchaseHeader.value = "";
+                                this.$._CBPurchaseLine.value = "";
+                                this.$._CBItems.value = "";
+                                this.$._CBItems.valueText = "";
+                                this.$._ProjectNo.value = "";
+                                this.$._ProjectNo.valueText = ""; 
+                                this.$._CBVendor.value = "";
+                                this.$._CBVendor.valueText = "";
                             }
                         }
                     }

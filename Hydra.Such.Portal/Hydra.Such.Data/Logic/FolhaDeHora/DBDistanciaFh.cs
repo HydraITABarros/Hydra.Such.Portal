@@ -107,31 +107,31 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
         //    }
         //}
 
-        //public static decimal GetDistanciaPrevista(string Origem, string Destino)
-        //{
-        //    try
-        //    {
-        //        using (var ctx = new SuchDBContext())
-        //        {
-        //            DistanciaFh distancia;
+        public static decimal GetDistanciaPrevista(string Origem, string Destino)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    DistanciaFh distancia;
 
-        //            distancia = ctx.DistanciaFh.FirstOrDefault(x => x.CódigoOrigem == Origem && x.CódigoDestino == Destino);
+                    distancia = ctx.DistanciaFh.FirstOrDefault(x => x.CódigoOrigem == Origem && x.CódigoDestino == Destino);
 
-        //            if (distancia == null)
-        //                distancia = ctx.DistanciaFh.FirstOrDefault(x => x.CódigoOrigem == Destino && x.CódigoDestino == Origem);
+                    if (distancia == null)
+                        distancia = ctx.DistanciaFh.FirstOrDefault(x => x.CódigoOrigem == Destino && x.CódigoDestino == Origem);
 
-        //            if (distancia != null)
-        //                return Convert.ToDecimal(distancia.Distância);
-        //            else
-        //                return 0;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
+                    if (distancia != null)
+                        return Convert.ToDecimal(distancia.Distância);
+                    else
+                        return 0;
+                }
+            }
+            catch (Exception ex)
+            {
 
-        //        return 0;
-        //    }
-        //}
+                return 0;
+            }
+        }
 
         public static DistanciaFh ParseToDB(DistanciaFHViewModel x)
         {

@@ -494,20 +494,23 @@ namespace Hydra.Such.Portal.Controllers
             {
                 string idEmployeePortal;
 
-                idEmployeePortal = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == idEmployee).SingleOrDefault().IdUtilizador;
-
-                AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado == idEmployeePortal).SingleOrDefault();
-
-                if (Autorizacao != null)
+                List<ConfigUtilizadores> ConfUtili = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == idEmployee).ToList();
+                if (ConfUtili.Count > 0)
                 {
-                    FH.Responsavel1No = Autorizacao.NoResponsavel1;
-                    FH.Responsavel2No = Autorizacao.NoResponsavel2;
-                    FH.Responsavel3No = Autorizacao.NoResponsavel3;
-                    FH.Validadores = Autorizacao.NoResponsavel1 + " - " + Autorizacao.NoResponsavel2 + " - " + Autorizacao.NoResponsavel3;
-                    FH.IntegradoresEmRH = Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3;
-                    FH.IntegradoresEmRHKM = Autorizacao.ValidadorRhkm1 + " - " + Autorizacao.ValidadorRhkm2;
-                };
+                    idEmployeePortal = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == idEmployee).SingleOrDefault().IdUtilizador;
 
+                    AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado == idEmployeePortal).SingleOrDefault();
+
+                    if (Autorizacao != null)
+                    {
+                        FH.Responsavel1No = Autorizacao.NoResponsavel1;
+                        FH.Responsavel2No = Autorizacao.NoResponsavel2;
+                        FH.Responsavel3No = Autorizacao.NoResponsavel3;
+                        FH.Validadores = Autorizacao.NoResponsavel1 + " - " + Autorizacao.NoResponsavel2 + " - " + Autorizacao.NoResponsavel3;
+                        FH.IntegradoresEmRH = Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3;
+                        FH.IntegradoresEmRHKM = Autorizacao.ValidadorRhkm1 + " - " + Autorizacao.ValidadorRhkm2;
+                    };
+                }
                 FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault().Name;
                     //DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault().Name;
             }
@@ -811,8 +814,8 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
                     Percurso1.DataDespesa = data.DataDespesa;
                     Percurso1.Observacao = data.Observacao;
-                    //Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    //Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
                     Percurso1.UtilizadorCriacao = User.Identity.Name;
@@ -834,8 +837,8 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso2.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
                     Percurso2.DataDespesa = data.DataDespesa;
                     Percurso2.Observacao = data.Observacao;
-                    //Percurso2.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    //Percurso2.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    Percurso2.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    Percurso2.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso2.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso2.CustoTotal = Percurso2.Distancia * Percurso2.CustoUnitario;
                     Percurso2.UtilizadorCriacao = User.Identity.Name;
@@ -863,8 +866,8 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
                     Percurso1.DataDespesa = data.DataDespesa;
                     Percurso1.Observacao = data.Observacao;
-                    //Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    //Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
                     Percurso1.UtilizadorCriacao = User.Identity.Name;
@@ -915,7 +918,7 @@ namespace Hydra.Such.Portal.Controllers
                             DataDespesa = x.DataDespesa,
                             Observacao = x.Observacao,
                             Distancia = x.Distancia,
-                            //DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(x.CodOrigem, x.CodDestino),
+                            DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(x.CodOrigem, x.CodDestino),
                             CustoUnitario = x.CustoUnitario,
                             CustoTotal = x.Distancia * x.CustoUnitario,
                             UtilizadorCriacao = x.UtilizadorCriacao,
@@ -950,7 +953,7 @@ namespace Hydra.Such.Portal.Controllers
                 Percurso.DataDespesa = data.DataDespesa;
                 Percurso.Observacao = data.Observacao;
                 Percurso.Distancia = data.Distancia;
-                //Percurso.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                Percurso.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                 Percurso.CustoUnitario = data.CustoUnitario;
                 Percurso.CustoTotal = data.Distancia * data.CustoUnitario;
                 Percurso.UtilizadorModificacao = User.Identity.Name;
@@ -1195,28 +1198,37 @@ namespace Hydra.Such.Portal.Controllers
                     (x.TipoCusto != 1)
                     ).ToList();
 
-                NoDias = Convert.ToInt32((Convert.ToDateTime(data.DataChegadaTexto) - Convert.ToDateTime(data.DataPartidaTexto)).TotalDays);
-
                 if (AjudaCusto != null)
                 {
+                    NoDias = Convert.ToInt32((Convert.ToDateTime(data.DataChegadaTexto) - Convert.ToDateTime(data.DataPartidaTexto)).TotalDays);
+                    NoDias = NoDias + 1;
+
                     AjudaCusto.ForEach(x =>
                     {
                         if (x.CodigoRefCusto == 1) //ALMOCO
-                    {
+                        {
                             if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida)
-                                NoDias = NoDias + 1;
+                                NoDias = NoDias;
+                            else
+                                NoDias = NoDias - 1;
 
                             if ((TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada) || data.DataPartidaTexto != data.DataChegadaTexto)
-                                NoDias = NoDias + 1;
+                                NoDias = NoDias;
+                            else
+                                NoDias = NoDias - 1;
                         }
 
                         if (x.CodigoRefCusto == 2) //JANTAR
-                    {
+                        {
                             if ((TimeSpan.Parse(data.HoraPartidaTexto) >= x.LimiteHoraPartida) || data.DataPartidaTexto != data.DataChegadaTexto)
-                                NoDias = NoDias + 1;
+                                NoDias = NoDias;
+                            else
+                                NoDias = NoDias - 1;
 
                             if (TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada)
-                                NoDias = NoDias + 1;
+                                NoDias = NoDias;
+                            else
+                                NoDias = NoDias - 1;
                         }
 
                         noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.FolhaDeHorasNo);
