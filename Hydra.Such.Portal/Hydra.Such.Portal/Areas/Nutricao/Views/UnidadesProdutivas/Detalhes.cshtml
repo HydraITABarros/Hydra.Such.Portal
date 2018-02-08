@@ -120,7 +120,7 @@
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="productivityUnitNo" name="productivityUnitNo" label="Nº Unidade Produtiva" value="{{data.productivityUnitNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                            <vaadin-text-field id="productivityUnitNo" name="productivityUnitNo" label="Nº Unidade Produtiva" value="{{data.productivityUnitNo}}" disabled="true"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
@@ -533,6 +533,12 @@
                         totalSales: this.$.BPTotalSales.value
                     });
                     this.$.grid_BillingProjectsGrid.clearCache();
+
+
+                    this.$.BPTotalSales.value = "";
+                    this.$.BPClientName.value = "";
+                    this.$.BPClientNo.value = "";
+                    this.$.BPProjectNo.value = "";
                 },
                 _getProjectBillingData: function (e) {
                     debugger;;
