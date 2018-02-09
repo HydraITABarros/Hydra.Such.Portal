@@ -1041,10 +1041,15 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 requisitionId = requestParams["requisitionId"].ToString();
             }
+            
             ErrorHandler result = new ErrorHandler();
             if (!string.IsNullOrEmpty(requisitionId))
             {
-                result = ApprovalMovementsManager.StartApprovalMovement(1, 1, 1000, requisitionId, User.Identity.Name);
+                Requisição CReq = DBRequest.GetById(requisitionId);
+                if (CReq != null)
+                {
+                    result = ApprovalMovementsManager.StartApprovalMovement(1, 1,CReq.CódigoÁreaFuncional,CReq.CódigoCentroResponsabilidade,CReq.CódigoRegião, 1000, requisitionId, User.Identity.Name);
+                }
             }
             else
             {

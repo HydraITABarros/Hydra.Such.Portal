@@ -104,13 +104,13 @@ namespace Hydra.Such.Data.Logic.Approvals
         #endregion
 
 
-        public static List<ConfiguraçãoAprovações> GetByTypeAreaValueDate(int type, int area, decimal value,DateTime fDate)
+        public static List<ConfiguraçãoAprovações> GetByTypeAreaValueDateAndDimensions(int type, int area, string functionalArea, string responsabiltyCenter, string region, decimal value,DateTime fDate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<ConfiguraçãoAprovações> result = ctx.ConfiguraçãoAprovações.Where(x => x.Tipo == type && x.CódigoÁrea == area && (x.ValorAprovação >= value || x.ValorAprovação == 0) && (x.DataInicial <= fDate && x.DataFinal >= fDate)).ToList();
+                    List<ConfiguraçãoAprovações> result = ctx.ConfiguraçãoAprovações.Where(x => x.Tipo == type && x.Área == area && x.CódigoÁreaFuncional == functionalArea && x.CódigoCentroResponsabilidade == x.CódigoCentroResponsabilidade && x.CódigoRegião == region && (x.ValorAprovação >= value || x.ValorAprovação == 0) && (x.DataInicial <= fDate && x.DataFinal >= fDate)).ToList();
                     return result;
                 }
             }
@@ -136,7 +136,8 @@ namespace Hydra.Such.Data.Logic.Approvals
                 {
                     Id = x.Id,
                     Type = x.Tipo,
-                    Area = x.CódigoÁrea,
+                    Area = x.Área,
+                    FunctionalArea = x.CódigoÁreaFuncional,
                     Region = x.CódigoRegião,
                     ResponsabilityCenter = x.CódigoCentroResponsabilidade,
                     Level = x.NívelAprovação,
@@ -168,7 +169,8 @@ namespace Hydra.Such.Data.Logic.Approvals
             {
                 Id = x.Id,
                 Tipo = x.Type,
-                CódigoÁrea = x.Area,
+                Área = x.Area,
+                CódigoÁreaFuncional = x.FunctionalArea,
                 CódigoRegião = x.Region,
                 CódigoCentroResponsabilidade = x.ResponsabilityCenter,
                 NívelAprovação = x.Level,

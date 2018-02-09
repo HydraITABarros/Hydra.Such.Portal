@@ -802,9 +802,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Código Região")
                     .HasMaxLength(20);
 
-                //entity.Property(e => e.CódigoÁreaFuncional)
-                //    .HasColumnName("Código Área Funcional")
-                //    .HasMaxLength(20);
+                entity.Property(e => e.CódigoÁreaFuncional)
+                    .HasColumnName("Código Área Funcional")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.DataFinal)
                     .HasColumnName("Data Final")
@@ -1142,10 +1142,6 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataHoraEntregaProposta)
-                    .HasColumnName("Data/Hora Entrega Proposta")
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.DataHoraErrosEOmissões)
