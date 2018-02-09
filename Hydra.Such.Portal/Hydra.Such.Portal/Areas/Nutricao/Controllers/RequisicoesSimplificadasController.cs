@@ -228,7 +228,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             if (item != null && !string.IsNullOrEmpty(item.RequisitionNo))
             {
 
-                result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedRequisitions.GetById(item.RequisitionNo));           
+                result = DBSimplifiedRequisitions.ParseToViewModel(DBSimplifiedReqTemplates.GetById(item.RequisitionNo));           
                 result.Status = 1;
                 result.Finished = false;
                 result.CreateResponsible = null;
