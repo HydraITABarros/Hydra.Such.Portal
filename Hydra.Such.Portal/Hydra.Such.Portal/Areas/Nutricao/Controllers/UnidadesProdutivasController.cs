@@ -97,6 +97,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             else
             {
+                result.ProductivityUnitNo = new int();
                 result.BillingProjects = new List<DBProjectBillingViewModel>();
                 result.CoffeeShops = new List<CoffeeShopViewModel>();
             }

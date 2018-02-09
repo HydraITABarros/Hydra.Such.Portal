@@ -346,7 +346,7 @@
 
         <script>
             var TotalPendingApprovals = '@HttpContextAccessor.HttpContext.Session.GetString("totalPendingApprovals")';
-            if (TotalPendingApprovals != "0") {
+            if (TotalPendingApprovals != "0" && TotalPendingApprovals != undefined) {
                 $('#pendingApprovalsLink').text('Aprovações Pendentes (' + TotalPendingApprovals + ')');
             } else {
                 $('#approvalPendingShow').hide();

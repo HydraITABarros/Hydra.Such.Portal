@@ -62,6 +62,7 @@
                     <paper-button class="btnSave" raised on-tap="_create">Criar Novo</paper-button>
                     <paper-button class="btnCreate" id="showLost" raised on-tap="_showLosts">{{_showLostMessage}}</paper-button>
                     <paper-button class="btnCreate" id="showAborted" raised on-tap="_showAborted">{{_showAbortedMessage}}</paper-button>
+                    <paper-button class="btnCreate" id="showHistory" raised on-tap="_showHistory">{{_showHistoryMessage}}</paper-button>
                 </div>
             </template>
         </template>
@@ -224,6 +225,10 @@
                         type: String,
                         value: "Exibir Canceladas"
                     },
+                    _showHistoryMessage: {
+                        type: String,
+                        value: "Exibir Histórico"
+                    },
                     _showLevel: {
                         type: Number,
                         value: 1
@@ -301,16 +306,35 @@
                         this._setButtonTexts();
                     }
                 },
+                _showHistory: function (item) {
+                    if (item != null) {
+                        if (this._showLevel == 4) {
+                            this._showLevel = 1;
+                        } else {
+                            this._showLevel = 4;
+                        }
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
+                        this.$.grid_databound_ajax.generateRequest();
+                        this._setButtonTexts();
+                    }
+                },
                 _setButtonTexts: function () {
                     if (this._showLevel == 1) {
                         this._showAbortedMessage = "Exibir Canceladas";
                         this._showLostMessage = "Exibir Perdidas";
+                        this._showHistoryMessage = "Exibir Histórico";
                     } else if (this._showLevel == 2) {
                         this._showAbortedMessage = "Vista Normal";
                         this._showLostMessage = "Exibir Perdidas";
+                        this._showHistoryMessage = "Exibir Histórico";
+                    } else if (this._showLevel == 4) {
+                        this._showAbortedMessage = "Exibir Canceladas";
+                        this._showLostMessage = "Exibir Perdidas";
+                        this._showHistoryMessage = "Vista Normal";
                     } else {
                         this._showAbortedMessage = "Exibir Canceladas";
                         this._showLostMessage = "Vista Normal";
+                        this._showHistoryMessage = "Exibir Histórico";
                     }
                 },
             });
