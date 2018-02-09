@@ -156,7 +156,7 @@
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRequestOrigin" last-response="{{CBRequestOrigin}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsStatus" last-response="{{CBProposalsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/Contactos/GetContacts" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetCustomerContacts" last-response="{{CBContacts}}" id="contacts_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddressesByClientNoAsVM" last-response="{{ClientShippingAddresses}}" method="post" handle-as="json" content-type="application/json" id="shippingAddresses_ajax"></iron-ajax>
@@ -248,27 +248,6 @@
                                             <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Âmbito do Serviço" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <such-selectbox id="contactNo" value="{{data.contactNo}}" label="Nº Contato"
-                                                            items="[[CBContacts]]"
-                                                            text-path="name"
-                                                            value-path="id"
-                                                            fields='[{"field":"id", "name":"Cód. Contato"}, {"field":"name", "name":"Nome"}]'
-                                                            required error-message="Este campo é obrigatório"
-                                                            disabled="{{ !_permissions.update }}">
-                                            </such-selectbox>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <!--<vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" on-value-changed="_clientChanged">
-                                                <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>-->
-
                                             <such-selectbox id="mClients" value="{{data.clientNo}}" label="Nº Cliente"
                                                             items="[[CBClients]]"
                                                             text-path="name"
@@ -277,6 +256,16 @@
                                                             required error-message="Este campo é obrigatório"
                                                             disabled="{{ !_permissions.update }}"
                                                             on-value-changed="_clientChanged">
+                                            </such-selectbox>
+                                        </div>
+                                        <div class="col-md-3 ">
+                                            <such-selectbox id="contactNo" value="{{data.contactNo}}" label="Nº Contato"
+                                                            items="[[CBContacts]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Cód. Contato"}, {"field":"value", "name":"Nome"}]'
+                                                            required error-message="Este campo é obrigatório"
+                                                            disabled="{{ !_permissions.update }}">
                                             </such-selectbox>
                                         </div>
                                     </div>
@@ -1719,11 +1708,17 @@
                 _clientChanged: function (e) {
                     this.$.shippingAddresses_ajax.body = JSON.stringify(e.detail.value);
                     this.$.shippingAddresses_ajax.generateRequest();
+                    
+                    this.$.contacts_ajax.body = JSON.stringify(e.detail.value);
+                    this.$.contacts_ajax.generateRequest();
 
                     this.data.shippingAddressCode = "";
                     this.$.sbClientShippingAddresses.value = "";
                     this.$.sbClientShippingAddresses.valueText = "";
 
+                    this.data.contactNo = "";
+                    this.$.contactNo.value = "";
+                    this.$.contactNo.valueText = "";
                 },
 
                 //CRUDS
@@ -1798,6 +1793,9 @@
                     } else {
                         this.$.shippingAddresses_ajax.body = JSON.stringify(this.data.codeShippingAddress);
                         this.$.shippingAddresses_ajax.generateRequest();
+
+                        this.$.contacts_ajax.body = JSON.stringify(this.data.clientNo);
+                        this.$.contacts_ajax.generateRequest();
 
                         this._showContractLines = "";
                         this._CLRegion = this.data.codeRegion;
