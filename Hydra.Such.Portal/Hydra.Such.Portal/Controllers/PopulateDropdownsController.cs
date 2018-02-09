@@ -382,6 +382,19 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
             return Json(result);
         }
+        
+        [HttpPost]
+        public JsonResult GetCustomerContacts([FromBody] string customerNo)
+        {
+            List<DDMessageString> result = DBNAV2017Contacts.GetCustomerContacts(_config.NAVDatabaseName, _config.NAVCompanyName, customerNo)
+                .Select(x => new DDMessageString()
+                {
+                    id = x.No_,
+                    value = x.Name
+                })
+                .ToList();
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult GetContractStatus()
