@@ -41,6 +41,10 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
 <h1 class="title">Cabeçalho Ficha Técnica</h1>
 <x-recordtechnical></x-recordtechnical>
 <dom-module id="x-recordtechnical">
@@ -77,87 +81,87 @@
 
 
         <style>
-                    vaadin-combo-box {
-                        margin-top: 0px !important;
-                        width: 100% !important;
-                    }
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
 
-                    vaadin-date-picker {
-                        margin-top: 0px !important;
-                        width: 100% !important;
-                    }
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
 
-                    vaadin-text-field {
-                        margin-top: 0px !important;
-                        width: 100%;
-                    }
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
 
-                    paper-button {
-                        margin-top: 10px;
-                    }
+            paper-button {
+                margin-top: 10px;
+            }
 
-                    .break_clear {
-                        margin-top: 15px;
-                        margin-right: 0px !important;
-                        margin-left: 0px !important;
-                    }
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
 
-                    .break_frm {
-                        margin-top: 15px;
-                    }
+            .break_frm {
+                margin-top: 15px;
+            }
 
-                    .label_custom {
-                        color: var(--valo-contrast-60pct) !important;
-                        font-weight: 500 !important;
-                        font-size: var(--valo-font-size-s) !important;
-                        margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
-                        margin-bottom: var(--valo-space-xs) !important;
-                        transition: color 0.4s !important;
-                        line-height: 1 !important;
-                        font-family: var(--valo-font-family) !important;
-                    }
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
 
-                    datetime-picker {
-                        border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
-                        background-color: var(--valo-contrast-5pct);
-                        color: var(--valo-contrast-60pct) !important;
-                        width: 100%;
-                    }
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
 
-                    .marginSpace {
-                        margin: 0px !important;
-                    }
+            .marginSpace {
+                margin: 0px !important;
+            }
 
-                    textarea {
-                        background-color: #f5f5f5;
-                        border: none;
-                        border-radius: 3px 4px;
-                        align-self: baseline;
-                        font-weight: 500;
-                    }
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
 
-                        textarea:hover {
-                            background-color: #eeeeee;
-                        }
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
 
-                        textarea:focus {
-                            background-color: white;
-                            border: none;
-                            outline: 1px solid #eeeeee;
-                            border-radius: 3px 4px;
-                        }
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
 
-                    datetime-picker {
-                        --datetime-selected-background: #71BCC1 !important;
-                        --datetime-background: #1f3133;
-                        --datetime-color: #eeeeee;
-                    }
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
 
-                    paper-collapse-item {
-                        --paper-item: {
+            paper-collapse-item {
+                --paper-item: {
                 padding: 0 0;
             };
-                        --paper-collapse-item-header: {
+                --paper-collapse-item-header: {
                  padding: 0 15px;
                  color: #333;
                  background-color: #f5f5f5;
@@ -166,11 +170,27 @@
                  border-top-right-radius: 3px;
 
              };
-                    }
+            }
 
-                    .panel-body {
-                        padding-top: 0px !important;
-                    }
+            .panel-body {
+                padding-top: 0px !important;
+            }
+
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+            }
         </style>
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
             <paper-tab>Geral</paper-tab>
@@ -289,25 +309,30 @@
             </div>
             <!--Confeção-->
             <div>
-                <div class="row break_clear" hidden="{{ _NotCreateOnly }}">
-                    <div class="col-lg-4">
-                        <such-selectbox id="_CboAction" value="" label="Ação"
-                                        items="[[CboAction]]"
-                                        text-path="value"
-                                        value-path="id"
-                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-4">
-                        <vaadin-text-field value="{{recTecNameValue}}" maxlength="20" id="descconfid" name="decconfName" label="Descrição"> </vaadin-text-field>
-                    </div>
-                    <div class="col-lg-4">
-                        <vaadin-text-field id="OrderNoid" name="OrderName" pattern="^[0-9]+$" label="No. Ordem" class="alignRight" value=""></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-12  " hidden="{{ !_permissionsVal.create }}">
-                        <paper-button class="btnSave" on-tap="_addConfection"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                    </div>
-                </div>
+                <paper-collapse-group>
+                    <paper-collapse-item class="panel-heading" header="Criar" closed>
+                        <div class="row break_clear" hidden="{{ _NotCreateOnly }}">
+                            <div class="col-lg-4">
+                                <such-selectbox id="_CboAction" value="" label="Ação"
+                                                items="[[CboAction]]"
+                                                text-path="value"
+                                                value-path="id"
+                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                </such-selectbox>
+                            </div>
+                            <div class="col-lg-4">
+                                <vaadin-text-field value="{{recTecNameValue}}" maxlength="20" id="descconfid" name="decconfName" label="Descrição"> </vaadin-text-field>
+                            </div>
+                            <div class="col-lg-4">
+                                <vaadin-text-field id="OrderNoid" name="OrderName" pattern="^[0-9]+$" label="No. Ordem" class="alignRight" value=""></vaadin-text-field>
+                            </div>
+                            <div class="col-lg-12  " hidden="{{ !_permissionsVal.create }}">
+                                <paper-button class="btnSave" on-tap="_addConfection"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                            </div>
+                        </div>
+                    </paper-collapse-item>
+                </paper-collapse-group>
+
                 <div class="row break_clear">
                     <div class="col-lg-12">
                         <vaadin-grid id="gridConfection_request" aria-label="ProfileModelsTabel" items="[[GridProceduresConfection]]" class="grid" active-item="{{_SelectedConfectionLine}}">
@@ -483,234 +508,239 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">Linhas Fichas Técnicas</div>
                         <div class="panel-body">
-                            <div class="row">
-                                @*<div class="col-lg-3">
-                                        <vaadin-combo-box items="[[CbotLinesRecTecPlatesType]]" id="LineTypeid" on-value-changed="_LineTypeChange" item-value-path="id" item-label-path="value" value="{{LineType}}" label="Tipo">
-                                            <template>
-                                                <table width="200px">
-                                                    <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>*@
-                                @*<div class="col-lg-3">
-                                        <vaadin-combo-box items="[[CboCode]]" id="Codeid" on-value-changed="_CodeChange" item-value-path="id" item-label-path="id" value="{{LineCode}}" label="Código">
-                                            <template>
-                                                <table width="200px">
-                                                    <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>*@
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineDescription}}" maxlength="20" id="Descriptionid" name="DescriptionName" label="Descrição"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Quantityid" name="QuantityName" label="Quantidade"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <such-selectbox id="UnitMeasureCodeid" value="{{LineMeasureUnit}}" label="Cód. Unidade Medida"
-                                                    items="[[CBOMeasureUnit]]"
-                                                    text-path="value"
-                                                    value-path="id"
-                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                                    </such-selectbox>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineQuantityOfProduction}}" on-value-changed="_ConvertDecimals" maxlength="20" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="QuantityOfProductionid" name="QuantityOfProductionName" label="Quantidade de Produto"> </vaadin-text-field>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineEnergetic}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValueid" name="EnergeticValueName" label="Valor Energético"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineProteins}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Proteinsid" name="ProteinsName" label="Proteínas"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineHydratesOfCarbont}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="HydratesOfCarbontid" name="HydratesOfCarbontName" label="Hidratos de Carbono"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineLipids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Lipidsid" name="LipidsName" label="Lípidos"> </vaadin-text-field>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineFibers}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Fibersid" name="FibersName" label="Fibras"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ExpectedCostPriceid" name="ExpectedCostPriceName" label="Preço Custo Esperado"> <div slot="suffix">€</div></vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CurrentCostPriceid" name="CurrentCostPriceName" label="Preço Custo Atual"> <div slot="suffix">€</div></vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineTimeExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeExpectedCostPriceid" name="TimeExpectedCostPriceName" label="TPreço Custo Esperado"> </vaadin-text-field>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineTimeCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeCurrentCostPriceid" name="TimeCurrentCostPriceName" label="TPreço Custo Atual"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <such-selectbox id="LocalizationCodeid" value="{{LineLocalizationCode}}" label="Cod. Localização"
-                                                    items="[[CBLocations]]"
-                                                    text-path="value"
-                                                    value-path="id"
-                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                                    </such-selectbox>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineProteinsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ProteinsByQuantityid" name="ProteinsByQuantityName" label="Proteínas por Quantidade"> </vaadin-text-field>
-                                </div>
 
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineGlicansByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GlicansByQuantityid" name="GlicansByQuantityName" label="Glícidos por Quantidade"> </vaadin-text-field>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineLipidsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="LipidsByQuantityid" name="LipidsByQuantityName" label="Lípidos por Quantidade"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineFibersByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="FibersByQuantityid" name="FibersByQuantityName" label="Fibras por Quantidade"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineEnergeticValue2}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValue2id" name="EnergeticValue2Name" label="Valor Energético 2"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineVitaminA}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAid" name="VitaminAName" label="Vitamina A"> </vaadin-text-field>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineVitaminD}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDid" name="VitaminDName" label="Vitamina D"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineCholesterol}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Cholesterolid" name="CholesterolName" label="Colesterol"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSodium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sodiumid" name="SodiumName" label="Sódio"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LinePotassium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Potassiumid" name="PotassiumName" label="Potássio"> </vaadin-text-field>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineCalcium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Calciumid" name="CalciumName" label="Cálcio"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineIron}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Ironid" name="IronName" label="Ferro"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineEdivel}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Edivelid" name="EdivelName" label="Edivel"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineVitaminAByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAByQuantityid" name="VitaminAByQuantityName" label="Vitamina A por Quantidade"> </vaadin-text-field>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineVitaminDByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDByQuantityid" name="VitaminDByQuantityName" label="Vitamina D por Quantidade"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineCholesterolByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CholesterolByQuantityid" name="CholesterolByQuantityName" label="Colesterol por Quantidade"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSodiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SodiumByQuantityid" name="SodiumByQuantityName" label="Sódio por Quantidade"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LinePotassiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="PotassiumByQuantityid" name="PotassiumByQuantityName" label="Potásio por Quantidade"> </vaadin-text-field>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineIronByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="IronByQuantityid" name="IronByQuantityName" label="Ferro por Quantidade"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineCalciumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CalciumByQuantityid" name="CalciumByQuantityName" label="Cálcio por Quantidade"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSaturatedFattyAcids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SaturatedFattyAcidsid" name="SaturatedFattyAcidsName" label="Ácidos Gordos Saturados"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineSugarcane}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sugarcaneid" name="TSugarcaneName" label="Açucares"> </vaadin-text-field>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{Linesalt}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="saltid" name="saltName" label="Sal"> </vaadin-text-field>
-                                </div>
-                                <div class="col-lg-3">
-                                    <vaadin-text-field value="{{LineQuantityPlates}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="QuantityPlatesid" name="QuantityPlatesName" label="Quantidade Prato"> </vaadin-text-field>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <such-textarea rows="5" value="{{LinePreparation}}" id="Preparationid" name="PreparationName" label="Preparação"> </such-textarea>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-2 alignPoga" hidden="{{ !_permissionsVal.create }}">
-                                    <paper-button class="btnSave" on-tap="_addlines"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                </div>
-                            </div><br />
+                            <paper-collapse-group>
+                                <paper-collapse-item class="panel-heading" header="Linhas" closed>
+                                    <div class="row">
+                                        @*<div class="col-lg-3">
+                        <vaadin-combo-box items="[[CbotLinesRecTecPlatesType]]" id="LineTypeid" on-value-changed="_LineTypeChange" item-value-path="id" item-label-path="value" value="{{LineType}}" label="Tipo">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>*@
+                                        @*<div class="col-lg-3">
+                        <vaadin-combo-box items="[[CboCode]]" id="Codeid" on-value-changed="_CodeChange" item-value-path="id" item-label-path="id" value="{{LineCode}}" label="Código">
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="40%">[[item.id]]</td>
+                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>*@
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineDescription}}" maxlength="20" id="Descriptionid" name="DescriptionName" label="Descrição"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Quantityid" name="QuantityName" label="Quantidade"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <such-selectbox id="UnitMeasureCodeid" value="{{LineMeasureUnit}}" label="Cód. Unidade Medida"
+                                                            items="[[CBOMeasureUnit]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                            </such-selectbox>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineQuantityOfProduction}}" on-value-changed="_ConvertDecimals" maxlength="20" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="QuantityOfProductionid" name="QuantityOfProductionName" label="Quantidade de Produto"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineEnergetic}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValueid" name="EnergeticValueName" label="Valor Energético"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineProteins}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Proteinsid" name="ProteinsName" label="Proteínas"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineHydratesOfCarbont}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="HydratesOfCarbontid" name="HydratesOfCarbontName" label="Hidratos de Carbono"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineLipids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Lipidsid" name="LipidsName" label="Lípidos"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineFibers}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Fibersid" name="FibersName" label="Fibras"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ExpectedCostPriceid" name="ExpectedCostPriceName" label="Preço Custo Esperado"> <div slot="suffix">€</div></vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CurrentCostPriceid" name="CurrentCostPriceName" label="Preço Custo Atual"> <div slot="suffix">€</div></vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineTimeExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeExpectedCostPriceid" name="TimeExpectedCostPriceName" label="TPreço Custo Esperado"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineTimeCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeCurrentCostPriceid" name="TimeCurrentCostPriceName" label="TPreço Custo Atual"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <such-selectbox id="LocalizationCodeid" value="{{LineLocalizationCode}}" label="Cod. Localização"
+                                                            items="[[CBLocations]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                            </such-selectbox>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineProteinsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ProteinsByQuantityid" name="ProteinsByQuantityName" label="Proteínas por Quantidade"> </vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineGlicansByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GlicansByQuantityid" name="GlicansByQuantityName" label="Glícidos por Quantidade"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineLipidsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="LipidsByQuantityid" name="LipidsByQuantityName" label="Lípidos por Quantidade"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineFibersByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="FibersByQuantityid" name="FibersByQuantityName" label="Fibras por Quantidade"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineEnergeticValue2}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValue2id" name="EnergeticValue2Name" label="Valor Energético 2"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineVitaminA}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAid" name="VitaminAName" label="Vitamina A"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineVitaminD}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDid" name="VitaminDName" label="Vitamina D"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineCholesterol}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Cholesterolid" name="CholesterolName" label="Colesterol"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineSodium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sodiumid" name="SodiumName" label="Sódio"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LinePotassium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Potassiumid" name="PotassiumName" label="Potássio"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineCalcium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Calciumid" name="CalciumName" label="Cálcio"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineIron}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Ironid" name="IronName" label="Ferro"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineEdivel}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Edivelid" name="EdivelName" label="Edivel"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineVitaminAByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAByQuantityid" name="VitaminAByQuantityName" label="Vitamina A por Quantidade"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineVitaminDByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDByQuantityid" name="VitaminDByQuantityName" label="Vitamina D por Quantidade"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineCholesterolByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CholesterolByQuantityid" name="CholesterolByQuantityName" label="Colesterol por Quantidade"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineSodiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SodiumByQuantityid" name="SodiumByQuantityName" label="Sódio por Quantidade"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LinePotassiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="PotassiumByQuantityid" name="PotassiumByQuantityName" label="Potásio por Quantidade"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineIronByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="IronByQuantityid" name="IronByQuantityName" label="Ferro por Quantidade"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineCalciumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CalciumByQuantityid" name="CalciumByQuantityName" label="Cálcio por Quantidade"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineSaturatedFattyAcids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SaturatedFattyAcidsid" name="SaturatedFattyAcidsName" label="Ácidos Gordos Saturados"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineSugarcane}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sugarcaneid" name="TSugarcaneName" label="Açucares"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{Linesalt}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="saltid" name="saltName" label="Sal"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <vaadin-text-field value="{{LineQuantityPlates}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="QuantityPlatesid" name="QuantityPlatesName" label="Quantidade Prato"> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <such-textarea rows="5" value="{{LinePreparation}}" id="Preparationid" name="PreparationName" label="Preparação"> </such-textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-2 alignPoga" hidden="{{ !_permissionsVal.create }}">
+                                            <paper-button class="btnSave" on-tap="_addlines"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        </div>
+                                    </div><br />
+                                </paper-collapse-item>
+                            </paper-collapse-group>
                             <div class="row">
                                 <div class="col-lg-12">
                                     <vaadin-grid id="GridRecTecOfPlatesLines" aria-label="ProfileModelsTabel" items="[[data]]" class="grid" active-item="{{_SelectedLine}}">
                                         @*<vaadin-grid-column width="160px" resizable>
-                                                <template class="header">
-                                                    <vaadin-grid-sorter path="type">Tipo </vaadin-grid-sorter>
-                                                    <vaadin-grid-filter path="type" />
-                                                </template>
-                                                <template>
-                                                    <template is="dom-if" if="{{ item.selected }}">
-                                                        <vaadin-combo-box items="[[CbotLinesRecTecPlatesType]]" id="LineTypeid" item-value-path="id" item-label-path="value" value="{{item.type}}">
-                                                            <template>
-                                                                <table width="200px">
-                                                                    <tr>
-                                                                        <td width="40%">[[item.id]]</td>
-                                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                                    </tr>
-                                                                </table>
-                                                            </template>
-                                                        </vaadin-combo-box>
-                                                    </template>
-                                                    <template is="dom-if" if="{{ !item.selected }}">
-                                                        {{item.type}}
-                                                    </template>
-                                                </template>
-                                            </vaadin-grid-column>*@
+                        <template class="header">
+                            <vaadin-grid-sorter path="type">Tipo </vaadin-grid-sorter>
+                            <vaadin-grid-filter path="type" />
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-combo-box items="[[CbotLinesRecTecPlatesType]]" id="LineTypeid" item-value-path="id" item-label-path="value" value="{{item.type}}">
+                                    <template>
+                                        <table width="200px">
+                                            <tr>
+                                                <td width="40%">[[item.id]]</td>
+                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.type}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>*@
                                         @*<vaadin-grid-column width="160px" resizable>
-                                                <template class="header">
-                                                    <vaadin-grid-sorter path="code">Código </vaadin-grid-sorter>
-                                                    <vaadin-grid-filter path="code" />
-                                                </template>
-                                                <template>
-                                                    <template is="dom-if" if="{{ item.selected }}">
-                                                        <vaadin-combo-box items="[[CboCode]]" id="Codeid" item-value-path="id" item-label-path="id" value="{{item.code}}">
-                                                            <template>
-                                                                <table width="200px">
-                                                                    <tr>
-                                                                        <td width="40%">[[item.id]]</td>
-                                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                                    </tr>
-                                                                </table>
-                                                            </template>
-                                                        </vaadin-combo-box>
-                                                    </template>
-                                                    <template is="dom-if" if="{{ !item.selected }}">
-                                                        {{item.code}}
-                                                    </template>
-                                                </template>
-                                            </vaadin-grid-column>*@
+                        <template class="header">
+                            <vaadin-grid-sorter path="code">Código </vaadin-grid-sorter>
+                            <vaadin-grid-filter path="code" />
+                        </template>
+                        <template>
+                            <template is="dom-if" if="{{ item.selected }}">
+                                <vaadin-combo-box items="[[CboCode]]" id="Codeid" item-value-path="id" item-label-path="id" value="{{item.code}}">
+                                    <template>
+                                        <table width="200px">
+                                            <tr>
+                                                <td width="40%">[[item.id]]</td>
+                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                            </tr>
+                                        </table>
+                                    </template>
+                                </vaadin-combo-box>
+                            </template>
+                            <template is="dom-if" if="{{ !item.selected }}">
+                                {{item.code}}
+                            </template>
+                        </template>
+                    </vaadin-grid-column>*@
                                         <vaadin-grid-column width="160px" resizable>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="description">Descrição </vaadin-grid-sorter>
