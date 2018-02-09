@@ -9,6 +9,8 @@ namespace Hydra.Such.Data.ViewModel.Approvals
         public int Id { get; set; }
         public int? Type { get; set; }
         public int? Area { get; set; }
+        public int? ResponsabilityCenter { get; set; }
+        public int? Region { get; set; }
         public int? Level { get; set; }
         public decimal? ApprovalValue { get; set; }
         public string ApprovalUser { get; set; }

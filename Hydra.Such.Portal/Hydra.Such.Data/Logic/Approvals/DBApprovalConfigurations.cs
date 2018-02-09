@@ -110,7 +110,7 @@ namespace Hydra.Such.Data.Logic.Approvals
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<ConfiguraçãoAprovações> result = ctx.ConfiguraçãoAprovações.Where(x => x.Tipo == type && x.Área == area && (x.ValorAprovação >= value || x.ValorAprovação == 0) && (x.DataInicial <= fDate && x.DataFinal >= fDate)).ToList();
+                    List<ConfiguraçãoAprovações> result = ctx.ConfiguraçãoAprovações.Where(x => x.Tipo == type && x.CódigoÁrea == area && (x.ValorAprovação >= value || x.ValorAprovação == 0) && (x.DataInicial <= fDate && x.DataFinal >= fDate)).ToList();
                     return result;
                 }
             }
@@ -136,7 +136,9 @@ namespace Hydra.Such.Data.Logic.Approvals
                 {
                     Id = x.Id,
                     Type = x.Tipo,
-                    Area = x.Área,
+                    Area = x.CódigoÁrea,
+                    Region = x.CódigoRegião,
+                    ResponsabilityCenter = x.CódigoCentroResponsabilidade,
                     Level = x.NívelAprovação,
                     ApprovalValue = x.ValorAprovação,
                     ApprovalUser = x.UtilizadorAprovação,
@@ -166,7 +168,9 @@ namespace Hydra.Such.Data.Logic.Approvals
             {
                 Id = x.Id,
                 Tipo = x.Type,
-                Área = x.Area,
+                CódigoÁrea = x.Area,
+                CódigoRegião = x.Region,
+                CódigoCentroResponsabilidade = x.ResponsabilityCenter,
                 NívelAprovação = x.Level,
                 ValorAprovação = x.ApprovalValue,
                 UtilizadorAprovação = x.ApprovalUser,

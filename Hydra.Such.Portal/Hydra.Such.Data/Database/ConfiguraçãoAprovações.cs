@@ -7,7 +7,9 @@ namespace Hydra.Such.Data.Database
     {
         public int Id { get; set; }
         public int? Tipo { get; set; }
-        public int? Área { get; set; }
+        public int? CódigoÁrea { get; set; }
+        public int? CódigoRegião { get; set; }
+        public int? CódigoCentroResponsabilidade { get; set; }
         public int? NívelAprovação { get; set; }
         public decimal? ValorAprovação { get; set; }
         public string UtilizadorAprovação { get; set; }
