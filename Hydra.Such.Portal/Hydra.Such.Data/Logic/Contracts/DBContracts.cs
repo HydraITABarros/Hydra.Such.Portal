@@ -312,6 +312,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 DataHoraErrosEOmissões = x.ErrorsOmissionsDate != null ? DateTime.Parse(x.ErrorsOmissionsDate) : (DateTime?)null,
                 DataHoraRelatórioFinal = x.FinalReportDate != null ? DateTime.Parse(x.FinalReportDate) : (DateTime?)null,
                 DataHoraHabilitaçãoDocumental = x.DocumentationHabilitationDate != null ? DateTime.Parse(x.DocumentationHabilitationDate) : (DateTime?)null,
+                DataHoraEntregaProposta = x.ProposalDelivery != null ? DateTime.Parse(x.ProposalDelivery) : (DateTime?)null,
                 NºComprimissoObrigatório = x.CompulsoryCompulsoryNo,
                 DataHoraCriação = x.CreateDate != null ? DateTime.Parse(x.CreateDate) : (DateTime?)null,
                 DataHoraModificação = x.UpdateDate != null ? DateTime.Parse(x.UpdateDate) : (DateTime?)null,
@@ -355,7 +356,13 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 result.AudiênciaPrévia = result.AudiênciaPrévia.Value.Date;
                 result.AudiênciaPrévia = result.AudiênciaPrévia.Value.Add(TimeSpan.Parse(x.PreviousHearingTime));
-                Console.WriteLine(result.DataHoraHabilitaçãoDocumental.Value.ToString());
+                Console.WriteLine(result.AudiênciaPrévia.Value.ToString());
+            }
+
+            if (result.DataHoraEntregaProposta != null)
+            {
+                result.DataHoraEntregaProposta = result.DataHoraEntregaProposta.Value.Date;
+                result.DataHoraEntregaProposta = result.DataHoraEntregaProposta.Value.Add(TimeSpan.Parse(x.ProposalDeliveryTime));
             }
 
             return result;
@@ -458,6 +465,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 BaseValueProcedure = x.ValorBaseProcedimento,
                 PreviousHearing = x.AudiênciaPrévia.HasValue ? x.AudiênciaPrévia.Value.ToString("yyyy-MM-dd") : "",
                 PreviousHearingTime = x.AudiênciaPrévia.HasValue ? x.AudiênciaPrévia.Value.ToString("HH:mm") : "",
+                ProposalDelivery = x.DataHoraEntregaProposta.HasValue ? x.DataHoraEntregaProposta.Value.ToString("yyyy-MM-dd") : "",
+                ProposalDeliveryTime = x.DataHoraEntregaProposta.HasValue ? x.DataHoraEntregaProposta.Value.ToString("HH:mm") : "",
             };
 
             result.ClientName = DBNAV2017Clients.GetClientNameByNo(x.NºCliente, NAVDatabaseName, NAVCompanyName);

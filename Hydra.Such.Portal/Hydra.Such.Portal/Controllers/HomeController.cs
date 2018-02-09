@@ -30,7 +30,8 @@ namespace Hydra.Such.Portal.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            int totalPendingApprovals = DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Count;
+            var items = DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1);
+            int totalPendingApprovals = items != null ? items.Count : 0;
             this.session.SetString("totalPendingApprovals", totalPendingApprovals.ToString());
             return View();
         }
