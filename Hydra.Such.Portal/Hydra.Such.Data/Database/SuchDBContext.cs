@@ -110,8 +110,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-       
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -796,11 +794,17 @@ namespace Hydra.Such.Data.Database
             {
                 entity.ToTable("Configuração Aprovações");
 
-                entity.Property(e => e.CódigoCentroResponsabilidade).HasColumnName("Código Centro Responsabilidade");
+                entity.Property(e => e.CódigoCentroResponsabilidade)
+                    .HasColumnName("Código Centro Responsabilidade")
+                    .HasMaxLength(20);
 
-                entity.Property(e => e.CódigoRegião).HasColumnName("Código Região");
+                entity.Property(e => e.CódigoRegião)
+                    .HasColumnName("Código Região")
+                    .HasMaxLength(20);
 
-                entity.Property(e => e.CódigoÁrea).HasColumnName("Código Área");
+                entity.Property(e => e.CódigoÁreaFuncional)
+                    .HasColumnName("Código Área Funcional")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.DataFinal)
                     .HasColumnName("Data Final")
@@ -3722,11 +3726,17 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºMovimento).HasColumnName("Nº Movimento");
 
-                entity.Property(e => e.CódigoCentroResponsabilidade).HasColumnName("Código Centro Responsabilidade");
+                entity.Property(e => e.CódigoCentroResponsabilidade)
+                    .HasColumnName("Código Centro Responsabilidade")
+                    .HasMaxLength(20);
 
-                entity.Property(e => e.CódigoRegião).HasColumnName("Código Região");
+                entity.Property(e => e.CódigoRegião)
+                    .HasColumnName("Código Região")
+                    .HasMaxLength(20);
 
-                entity.Property(e => e.CódigoÁrea).HasColumnName("Código Área");
+                entity.Property(e => e.CódigoÁreaFuncional)
+                    .HasColumnName("Código Área Funcional")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.DataHoraAprovação)
                     .HasColumnName("Data/Hora Aprovação")

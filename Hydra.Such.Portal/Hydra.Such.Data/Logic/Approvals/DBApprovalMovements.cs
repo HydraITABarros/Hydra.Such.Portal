@@ -108,7 +108,8 @@ namespace Hydra.Such.Data.Logic.Approvals
             {
                 MovementNo = x.NºMovimento,
                 Type = x.Tipo,
-                Area = x.CódigoÁrea,
+                Area = x.Área,
+                FunctionalArea = x.CódigoÁreaFuncional,
                 ResponsabilityCenter = x.CódigoCentroResponsabilidade,
                 Region = x.CódigoRegião,
                 Number = x.Número,
@@ -140,7 +141,8 @@ namespace Hydra.Such.Data.Logic.Approvals
             {
                 NºMovimento = x.MovementNo,
                 Tipo = x.Type,
-                CódigoÁrea = x.Area,
+                Área = x.Area,
+                CódigoÁreaFuncional = x.FunctionalArea,
                 CódigoCentroResponsabilidade = x.ResponsabilityCenter,
                 CódigoRegião = x.Region,
                 Número = x.Number,
