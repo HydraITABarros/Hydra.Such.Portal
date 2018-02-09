@@ -58,14 +58,15 @@
                    on-response="_responseDeleteProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <template is="dom-if" if="{{ _permissions.create }}">
-            <template is="dom-if" if="{{ !_disabledCreate }}">
-                <div class="marginSpace">
+        <div class="marginSpace">
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <template is="dom-if" if="{{ !_disabledCreate }}">
                     <paper-button class="btnSave" raised on-tap="_create">Criar Novo</paper-button>
-                </div>
+                </template>
             </template>
-        </template>
-
+            <paper-button class="" raised on-tap="_showHistoryButton">{{_showHistory}}</paper-button>
+            <!--<paper-button class="btnShowHistory" id="btnShowHistory" raised on-tap="_showHistory">{{_showHistory}}</paper-button>-->
+        </div>
         <vaadin-grid aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="120px">
                 <template class="header">
@@ -206,6 +207,10 @@
                         type: String,
                         value: false
                     },
+                    _showHistory: {
+                        type: String,
+                        value: "Exibir Histórico"
+                    },
                     _disabledCreate: {
                         type: Boolean,
                         value: false
@@ -226,7 +231,7 @@
                         this._disabledCreate = true;
                     }
                     
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno});
                     this.$.grid_databound_ajax.generateRequest();
                 },
 
@@ -244,7 +249,21 @@
                         }
                     }
                 },
+                _showHistoryButton: function (item) {
+                    if (item != null) {
+                        debugger;;
+                        this._archived = this._archived == 1 ? 0 : 1;
 
+                        if (this._archived == 1) {
+                            this._showHistory = "Exibir todas";
+                        } else {
+                            this._showHistory = "Exibir histórico";
+                        }
+
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno });
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+                },
                 _openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
