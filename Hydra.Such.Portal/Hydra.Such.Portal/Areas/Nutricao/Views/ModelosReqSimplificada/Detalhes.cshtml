@@ -258,7 +258,7 @@
                     </div>
                     <div class="row break_clear">
                         <div class="col-md-3 ">
-                            <vaadin-combo-box items="[[CBRegions]]" id="lineCodeRegion" item-value-path="id" item-label-path="value" value="" label="Cód. Região" disabled="{{ !_permissions.update }}">
+                            <vaadin-combo-box items="[[CBRegions]]" id="lineCodeRegion" item-value-path="id" item-label-path="value" value="[[data.codeRegion]]" label="Cód. Região" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="180px">
                                         <tr>
@@ -282,7 +282,7 @@
                             </vaadin-combo-box>
                         </div>
                         <div class="col-md-3 ">
-                            <vaadin-combo-box items="[[CBResponsabilityCenters]]" id="lineCodeResponsabilityCenter" item-value-path="id" item-label-path="value" value="" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
+                            <vaadin-combo-box items="[[CBResponsabilityCenters]]" id="lineCodeResponsabilityCenter" item-value-path="id" item-label-path="value" value="[[data.codeResponsabilityCenter]]" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <table width="180px">
                                         <tr>
@@ -340,7 +340,7 @@
                                 </vaadin-combo-box>
                             </template>
                             <template is="dom-if" if="{{ !item.selected }}">
-                                [[_getProductDescription(item.productId)]]
+                                [[item.productId]]
                             </template>
                         </template>
                     </vaadin-grid-column>
@@ -360,8 +360,8 @@
                     </vaadin-grid-column>
                     <vaadin-grid-column width="30%">
                         <template class="header">
-                            <vaadin-grid-sorter path="UnitOfMeasure">Unidade de Medida</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="UnitOfMeasure" />
+                            <vaadin-grid-sorter path="unitOfMeasure">Unidade de Medida</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="unitOfMeasure" />
                         </template>
                         <template>
                             <template is="dom-if" if="{{ item.selected }}">
@@ -738,12 +738,10 @@
                             }
                         }
                     } else {
-                        debugger;;
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
                 },
                 _createReqTemplateLine: function () {
-                    debugger;
                     if (this._validateUserInputForLine()) {
 
                         var newReqTemplateLine = {
@@ -778,9 +776,9 @@
                         this.$.lineQuantity.value = "";
                         this.$.lineUnitValue.value = "";
                         this.$.lineMealType.value = "";                      
-                        this.$.lineCodeRegion.value = "";
-                        this.$.lineCodeFunctionalArea.value = "";
-                        this.$.lineCodeResponsabilityCenter.value = "";
+                        this.$.lineCodeRegion.value = this.data.codeRegion;
+                        this.$.lineCodeFunctionalArea.value = this.data.codeFunctionalArea;
+                        this.$.lineCodeResponsabilityCenter.value = this.data.codeResponsabilityCenter;
                     }
                     else {
                         this._openToastError(this.AddReqTemplateLineResponse.eMessage);
@@ -925,7 +923,7 @@
                             var product = products[0];
                             this.data.lines.find(x => x == this._SelectedLine).productId = product.id;
                             this.data.lines.find(x => x == this._SelectedLine).productDescription = product.value;
-                            this.data.lines.find(x => x == this._SelectedLine).codeMeasureUnit = product.extra;
+                            this.data.lines.find(x => x == this._SelectedLine).unitOfMeasure = product.extra;
                             this.$.gridTemplateLines.clearCache();
                         }
                     }
