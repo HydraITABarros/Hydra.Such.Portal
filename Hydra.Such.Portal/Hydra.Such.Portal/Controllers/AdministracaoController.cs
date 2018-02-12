@@ -2396,6 +2396,9 @@ namespace Hydra.Such.Portal.Controllers
                     GrupoAprovação = x.ApprovalGroup,
                     UtilizadorAprovação = x.ApprovalUser,
                     Área = x.Area,
+                    CódigoÁreaFuncional = x.FunctionalArea,
+                    CódigoCentroResponsabilidade = x.ResponsabilityCenter,
+                    CódigoRegião = x.Region,
                     DataInicial = string.IsNullOrEmpty(x.StartDate) ? (DateTime?)null : DateTime.Parse(x.StartDate),
                     DataFinal = string.IsNullOrEmpty(x.EndDate) ? (DateTime?)null : DateTime.Parse(x.EndDate)
                 };
@@ -2404,6 +2407,9 @@ namespace Hydra.Such.Portal.Controllers
                     aprovConfig.Id = x.Id;
                     aprovConfig.UtilizadorCriação = x.CreateUser;
                     aprovConfig.DataHoraCriação = x.CreateDate;
+                    aprovConfig.CódigoÁreaFuncional = x.FunctionalArea;
+                    aprovConfig.CódigoCentroResponsabilidade = x.ResponsabilityCenter;
+                    aprovConfig.CódigoRegião = x.Region;
                     aprovConfig.DataHoraModificação = DateTime.Now;
                     aprovConfig.UtilizadorModificação = User.Identity.Name;
                     DBApprovalConfigurations.Update(aprovConfig);

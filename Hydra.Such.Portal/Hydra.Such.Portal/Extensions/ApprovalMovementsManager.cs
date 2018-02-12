@@ -14,7 +14,7 @@ namespace Hydra.Such.Portal.Extensions
         //100 - Fluxo Iniciado com suceso
         //101 - Não existem configurações de numerações compativeis
         //102 - Erro desconhecido
-        public static ErrorHandler StartApprovalMovement(int type, int area, decimal value, string number, string requestUser)
+        public static ErrorHandler StartApprovalMovement(int type, int area, string functionalArea, string responsabilityCenter, string region, decimal value, string number, string requestUser)
         {
             try
             {
@@ -24,7 +24,7 @@ namespace Hydra.Such.Portal.Extensions
                 };
 
                 //Get Compatible ApprovalConfigurations
-                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDate(type, area, value, DateTime.Now);
+                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(type, area,functionalArea,responsabilityCenter,region, value, DateTime.Now);
                 int lowLevel = ApprovalConfigurations.Where(x => x.NívelAprovação.HasValue).OrderBy(x => x.NívelAprovação.Value).Select(x => x.NívelAprovação.Value).FirstOrDefault();
                 ApprovalConfigurations.RemoveAll(x => x.NívelAprovação != lowLevel);
 
@@ -35,6 +35,9 @@ namespace Hydra.Such.Portal.Extensions
                     {
                         Type = type,
                         Area = area,
+                        ResponsabilityCenter = responsabilityCenter,
+                        FunctionalArea = functionalArea,
+                        Region = region,
                         Number = number,
                         RequestUser = requestUser,
                         Value = value,
@@ -135,7 +138,7 @@ namespace Hydra.Such.Portal.Extensions
                 DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, ApproveUser);
 
                 //Get Next Level Configuration
-                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDate(ApprovalMovement.Type.Value, ApprovalMovement.Area.Value, ApprovalMovement.Value.Value, DateTime.Now);
+                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(ApprovalMovement.Type.Value, ApprovalMovement.Area.Value, ApprovalMovement.FunctionalArea, ApprovalMovement.ResponsabilityCenter, ApprovalMovement.Region, ApprovalMovement.Value.Value, DateTime.Now);
                 ApprovalConfigurations.RemoveAll(x => !x.NívelAprovação.HasValue || x.NívelAprovação <= ApprovalMovement.Level);
 
                 if (ApprovalConfigurations.Count > 0)

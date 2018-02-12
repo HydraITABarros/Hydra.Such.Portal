@@ -97,6 +97,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             }
             else
             {
+                result.ProductivityUnitNo = new int();
                 result.BillingProjects = new List<DBProjectBillingViewModel>();
                 result.CoffeeShops = new List<CoffeeShopViewModel>();
             }
@@ -180,7 +181,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 data.eReasonCode = 2;
                 data.eMessage = "Ocorreu um erro ao criar a Unidade Produtiva.";

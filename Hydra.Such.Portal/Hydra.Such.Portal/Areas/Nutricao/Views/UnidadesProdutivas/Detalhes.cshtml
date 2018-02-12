@@ -22,10 +22,13 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
 <h1 class="title">Unidades Produtivas</h1>
 
-<x-productivityunitdetails  _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-productivityunitdetails>
+<x-productivityunitdetails _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-productivityunitdetails>
 <dom-module id="x-productivityunitdetails">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -65,6 +68,21 @@
             .marginSpace {
                 margin: 0px !important;
             }
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+            }
         </style>
 
         @*POPULATE GRID*@
@@ -98,7 +116,7 @@
             <paper-button class="tablinks" on-tap="_PurchaseDirectNeeds"><i class="fa fa-get-pocket" aria-hidden="true"></i>Produtos p/ Criação de Encomendas de Compras Diretas</paper-button>
 
         </div><!--on-response="_gridListResponse"-->
-        
+
         <div class="marginSpace">
             <paper-button class="btnSave" raised on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
         </div>
@@ -120,7 +138,7 @@
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="productivityUnitNo" name="productivityUnitNo" label="Nº Unidade Produtiva" value="{{data.productivityUnitNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                            <vaadin-text-field id="productivityUnitNo" name="productivityUnitNo" label="Nº Unidade Produtiva" value="{{data.productivityUnitNo}}" disabled="true"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
@@ -170,7 +188,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBRegions]]" id="mCodeRegion" item-value-path="id" item-label-path="value" value="{{data.codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.update }}" >
+                                            <vaadin-combo-box items="[[CBRegions]]" id="mCodeRegion" item-value-path="id" item-label-path="value" value="{{data.codeRegion}}" label="Cód. Região" disabled="{{ !_permissions.update }}">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -208,7 +226,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBProjects]]" id="projectKitchen" item-value-path="id" item-label-path="value" value="{{data.projectKitchen}}" label="Projeto Cozinha" disabled="{{ !_permissions.update }}"  on-value-changed="_projectKitchenChange">
+                                            <vaadin-combo-box items="[[CBProjects]]" id="projectKitchen" item-value-path="id" item-label-path="value" value="{{data.projectKitchen}}" label="Projeto Cozinha" disabled="{{ !_permissions.update }}" on-value-changed="_projectKitchenChange">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -267,32 +285,36 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading">Projetos de Faturação</div>
                                             <div class="panel-body">
-                                                    <div class="row">
-                                                        <div class="col-lg-3">
-                                                            <vaadin-combo-box items="[[CBProjects]]" id="BPProjectNo" name="BPProjectNo" item-value-path="id" item-label-path="value" label="Projeto" disabled="{{ !_permissions.update }}" on-value-changed="_getProjectBillingData">
-                                                                <template>
-                                                                    <paper-icon-item>
-                                                                        <paper-item-body two-line>
-                                                                            <div>[[item.value]]</div>
-                                                                        </paper-item-body>
-                                                                    </paper-icon-item>
-                                                                </template>
-                                                            </vaadin-combo-box>
-                                                        </div>
-                                                        <div class="col-lg-3">
-                                                            <vaadin-text-field id="BPClientNo" name="BPClientNo" label="Cód. Cliente" disabled> </vaadin-text-field>
-                                                        </div>
-                                                        <div class="col-lg-3">
-                                                            <vaadin-text-field id="BPClientName" name="BPClientName" label="Cliente" disabled> </vaadin-text-field>
-                                                        </div>
-                                                        <div class="col-lg-2">
-                                                            <vaadin-text-field id="BPTotalSales" name="BPTotalSales" label="Total de Vendas" disabled> </vaadin-text-field>
-                                                        </div>
-                                                        <div class="col-lg-1">
-                                                            <paper-button class="btnSave" raised on-tap="_createBillingProject">Criar</paper-button>
-                                                        </div>
-                                                    </div>
 
+                                                <paper-collapse-group>
+                                                    <paper-collapse-item class="panel-heading" header="Criar" closed>
+                                                        <div class="row">
+                                                            <div class="col-lg-3">
+                                                                <vaadin-combo-box items="[[CBProjects]]" id="BPProjectNo" name="BPProjectNo" item-value-path="id" item-label-path="value" label="Projeto" disabled="{{ !_permissions.update }}" on-value-changed="_getProjectBillingData">
+                                                                    <template>
+                                                                        <paper-icon-item>
+                                                                            <paper-item-body two-line>
+                                                                                <div>[[item.value]]</div>
+                                                                            </paper-item-body>
+                                                                        </paper-icon-item>
+                                                                    </template>
+                                                                </vaadin-combo-box>
+                                                            </div>
+                                                            <div class="col-lg-3">
+                                                                <vaadin-text-field id="BPClientNo" name="BPClientNo" label="Cód. Cliente" disabled> </vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-lg-3">
+                                                                <vaadin-text-field id="BPClientName" name="BPClientName" label="Cliente" disabled> </vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-lg-2">
+                                                                <vaadin-text-field id="BPTotalSales" name="BPTotalSales" label="Total de Vendas" disabled> </vaadin-text-field>
+                                                            </div>
+                                                            <div class="col-lg-1">
+                                                                <paper-button class="btnSave" raised on-tap="_createBillingProject">Criar</paper-button>
+                                                            </div>
+                                                        </div>
+                                                    </paper-collapse-item>
+                                                </paper-collapse-group>
                                                 <!-- VAADIN GRID  Projetos de Faturação -->
                                                 <vaadin-grid aria-label="BillingProjectsGrid" id="grid_BillingProjectsGrid" items="[[data.billingProjects]]" class="grid" multi-sort="true" disabled="{{ !_permissions.update }}">
                                                     <vaadin-grid-column>
@@ -310,7 +332,7 @@
                                                                         </tr>
                                                                     </table>
                                                                 </template>
-                                                            </vaadin-combo-box>                                                        
+                                                            </vaadin-combo-box>
                                                         </template>
                                                     </vaadin-grid-column>
                                                     <vaadin-grid-column>
@@ -533,6 +555,12 @@
                         totalSales: this.$.BPTotalSales.value
                     });
                     this.$.grid_BillingProjectsGrid.clearCache();
+
+
+                    this.$.BPTotalSales.value = "";
+                    this.$.BPClientName.value = "";
+                    this.$.BPClientNo.value = "";
+                    this.$.BPProjectNo.value = "";
                 },
                 _getProjectBillingData: function (e) {
                     debugger;;

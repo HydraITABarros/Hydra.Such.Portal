@@ -34,6 +34,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<DiárioDesperdíciosAlimentares> DiárioDesperdíciosAlimentares { get; set; }
         public virtual DbSet<DiárioMovimentosViaturas> DiárioMovimentosViaturas { get; set; }
         public virtual DbSet<DiárioRequisiçãoUnidProdutiva> DiárioRequisiçãoUnidProdutiva { get; set; }
+        public virtual DbSet<DistanciaFh> DistanciaFh { get; set; }
         public virtual DbSet<DistribuiçãoCustoFolhaDeHoras> DistribuiçãoCustoFolhaDeHoras { get; set; }
         public virtual DbSet<ElementosJuri> ElementosJuri { get; set; }
         public virtual DbSet<EmailsAprovações> EmailsAprovações { get; set; }
@@ -67,7 +68,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<NotasProcedimentosCcp> NotasProcedimentosCcp { get; set; }
         public virtual DbSet<ObjetosDeServiço> ObjetosDeServiço { get; set; }
         public virtual DbSet<OrigemDestinoFh> OrigemDestinoFh { get; set; }
-        public virtual DbSet<DistanciaFh> DistanciaFh { get; set; }
         public virtual DbSet<PercursosEAjudasCustoDespesasFolhaDeHoras> PercursosEAjudasCustoDespesasFolhaDeHoras { get; set; }
         public virtual DbSet<PerfisModelo> PerfisModelo { get; set; }
         public virtual DbSet<PerfisUtilizador> PerfisUtilizador { get; set; }
@@ -110,16 +110,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-        // Unable to generate entity type for table 'dbo.Distancia_FH'. Please see the warning messages.
-
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;");
-//            }
-//        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -805,6 +795,18 @@ namespace Hydra.Such.Data.Database
             {
                 entity.ToTable("Configuração Aprovações");
 
+                entity.Property(e => e.CódigoCentroResponsabilidade)
+                    .HasColumnName("Código Centro Responsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódigoRegião)
+                    .HasColumnName("Código Região")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódigoÁreaFuncional)
+                    .HasColumnName("Código Área Funcional")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.DataFinal)
                     .HasColumnName("Data Final")
                     .HasColumnType("datetime");
@@ -1141,6 +1143,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraEntregaProposta)
+                    .HasColumnName("Data/Hora Entrega Proposta")
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.DataHoraErrosEOmissões)
@@ -1792,6 +1798,39 @@ namespace Hydra.Such.Data.Database
                     .WithMany(p => p.DiárioRequisiçãoUnidProdutiva)
                     .HasForeignKey(d => d.TipoRefeição)
                     .HasConstraintName("FK_Diário Requisição Unid. Produtiva_Tipos Refeição");
+            });
+
+            modelBuilder.Entity<DistanciaFh>(entity =>
+            {
+                entity.HasKey(e => new { e.CódigoOrigem, e.CódigoDestino });
+
+                entity.ToTable("Distancia_FH");
+
+                entity.Property(e => e.CódigoOrigem)
+                    .HasColumnName("Código_Origem")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódigoDestino)
+                    .HasColumnName("Código_Destino")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.AlteradoPor)
+                    .HasColumnName("Alterado Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CriadoPor)
+                    .HasColumnName("Criado Por")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraÚltimaAlteração)
+                    .HasColumnName("Data/Hora Última Alteração")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Distância).HasColumnType("decimal(, 20)");
             });
 
             modelBuilder.Entity<DistribuiçãoCustoFolhaDeHoras>(entity =>
@@ -3692,6 +3731,18 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºMovimento).HasColumnName("Nº Movimento");
 
+                entity.Property(e => e.CódigoCentroResponsabilidade)
+                    .HasColumnName("Código Centro Responsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódigoRegião)
+                    .HasColumnName("Código Região")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CódigoÁreaFuncional)
+                    .HasColumnName("Código Área Funcional")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.DataHoraAprovação)
                     .HasColumnName("Data/Hora Aprovação")
                     .HasColumnType("datetime");
@@ -4210,41 +4261,6 @@ namespace Hydra.Such.Data.Database
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.Descrição).HasMaxLength(200);
-            });
-
-            modelBuilder.Entity<DistanciaFh>(entity =>
-            {
-                entity.HasKey(e => new { e.CódigoOrigem, e.CódigoDestino });
-
-                entity.ToTable("Distancia_FH");
-
-                entity.Property(e => e.CódigoOrigem)
-                    .HasColumnName("Código_Origem")
-                    .HasMaxLength(20)
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.CódigoDestino)
-                    .HasColumnName("Código_Destino")
-                    .HasMaxLength(20)
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Distância).HasColumnName("Distância");
-
-                entity.Property(e => e.CriadoPor)
-                    .HasColumnName("Criado Por")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.DataHoraCriação)
-                    .HasColumnName("Data/Hora Criação")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.AlteradoPor)
-                    .HasColumnName("Alterado Por")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.DataHoraÚltimaAlteração)
-                    .HasColumnName("Data/Hora Última Alteração")
-                    .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<PercursosEAjudasCustoDespesasFolhaDeHoras>(entity =>

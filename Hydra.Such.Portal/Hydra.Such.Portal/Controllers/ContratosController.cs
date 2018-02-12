@@ -393,6 +393,9 @@ namespace Hydra.Such.Portal.Controllers
                             ContratoDB.AudiênciaPrévia = data.PreviousHearing == ""
                                 ? null
                                 : (DateTime?)DateTime.Parse(data.PreviousHearing);
+                            ContratoDB.DataHoraEntregaProposta = data.ProposalDelivery == ""
+                                ? null
+                                : (DateTime?)DateTime.Parse(data.ProposalDelivery);
 
                             if (ContratoDB.AudiênciaPrévia != null)
                             {
@@ -436,6 +439,15 @@ namespace Hydra.Such.Portal.Controllers
                                 if (data.DocumentationHabilitationTime != null)
                                 {
                                     ContratoDB.DataHoraHabilitaçãoDocumental = ContratoDB.DataHoraHabilitaçãoDocumental.Value.Add(TimeSpan.Parse(data.DocumentationHabilitationTime));
+                                }
+                            }
+
+                            if (ContratoDB.DataHoraEntregaProposta != null)
+                            {
+                                ContratoDB.DataHoraEntregaProposta = ContratoDB.DataHoraEntregaProposta.Value.Date;
+                                if (data.ProposalDeliveryTime != null)
+                                {
+                                    ContratoDB.DataHoraEntregaProposta = ContratoDB.DataHoraEntregaProposta.Value.Add(TimeSpan.Parse(data.ProposalDeliveryTime));
                                 }
                             }
 
@@ -832,22 +844,33 @@ namespace Hydra.Such.Portal.Controllers
 
             List<Contratos> ContractsList = null;
 
-            if (Archived == 0 || ContractNo == "")
+            if (Archived == 0 )
             {
                 if (AreaId == 4)
                 {
                     ContractsList = DBContracts.GetAllByContractType(1);
                     ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+                    ContractsList.RemoveAll(x => x.Estado == 9);
                 }
                 else
                 {
                     ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 1);
                     ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+                    ContractsList.RemoveAll(x => x.Estado == 9);
                 }
             }
             else
             {
-                ContractsList = DBContracts.GetByNo(ContractNo, true);
+                if (AreaId == 4)
+                {
+                    ContractsList = DBContracts.GetAllByContractType(1);
+                    ContractsList.RemoveAll(x => x.Estado != 9);
+                }
+                else
+                {
+                    ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 1);
+                    ContractsList.RemoveAll(x => x.Estado != 9);
+                }
             }
 
             List<ContractViewModel> result = new List<ContractViewModel>();
@@ -1150,15 +1173,19 @@ namespace Hydra.Such.Portal.Controllers
 
             if (showLevel == 1)
             {
-                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value == 4 || x.Estado.Value == 5);
+                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value == 4 || x.Estado.Value == 5 || x.Estado.Value == 9);
             }
             else if (showLevel == 2)
             {
-                ContractsList.RemoveAll(x => !(x.Estado.HasValue && x.Estado.Value == 5));
+                ContractsList.RemoveAll(x => !(x.Estado.HasValue && x.Estado.Value == 5) || x.Estado.Value == 9);
+            }
+            else if (showLevel == 4)
+            {
+                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value != 9);
             }
             else
             {
-                ContractsList.RemoveAll(x => !(x.Estado.HasValue && x.Estado.Value == 4));
+                ContractsList.RemoveAll(x => !(x.Estado.HasValue && x.Estado.Value == 4) || x.Estado.Value == 9);
             }
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));

@@ -13,6 +13,9 @@ namespace Hydra.Such.Data.Database
         public int NºMovimento { get; set; }
         public int? Tipo { get; set; }
         public int? Área { get; set; }
+        public string CódigoÁreaFuncional { get; set; }
+        public string CódigoRegião { get; set; }
+        public string CódigoCentroResponsabilidade { get; set; }
         public string Número { get; set; }
         public string UtilizadorSolicitou { get; set; }
         public decimal? Valor { get; set; }
