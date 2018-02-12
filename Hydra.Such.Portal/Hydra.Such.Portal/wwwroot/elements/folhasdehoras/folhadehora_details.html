@@ -400,7 +400,7 @@
                                             disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             </such-selectbox>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-6">
                             <vaadin-combo-box items="[[LFolhaDeHoraEmployees]]" id="empregadoNo" item-value-path="id" item-label-path="value" value="{{data.empregadoNo}}" on-value-changed="_codeChange" label="Nº Empregado" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                 <template>
                                     <paper-icon-item>
@@ -411,9 +411,9 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
-                        <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.empregadoNome}}" id="empregadoNome" name="empregadoNome" label="Nome Empregado" disabled="true"></vaadin-text-field>
-                        </div>
+                        <!--<div class="col-sm-3">
+                        <vaadin-text-field type="text" value="{{data.empregadoNome}}" id="empregadoNome" name="empregadoNome" label="Nome Empregado" disabled="true"></vaadin-text-field>
+                    </div>-->
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
@@ -1113,9 +1113,9 @@
                             </template>
                         </vaadin-grid-column>
 
-                        
 
-                          <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
+
+                        <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
                         <vaadin-grid-column width="100px">
                             <template class="header">
                             </template>
@@ -1264,10 +1264,10 @@
 
                         <!--</template>-->
                         <!--<template is="dom-if" if="{{ _permissions.update }}">
-                            <div class="col-sm-1 alignPoga">
-                                <paper-button class="btnSave" raised on-tap="_updatePresenca">Guardar</paper-button>
-                            </div>
-                        </template>-->
+                        <div class="col-sm-1 alignPoga">
+                            <paper-button class="btnSave" raised on-tap="_updatePresenca">Guardar</paper-button>
+                        </div>
+                    </template>-->
                 </div>
             </div>
 
@@ -1304,34 +1304,60 @@
                     <div class="row break_clear">
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" disabled="{{ !_permissions.update }}" label="Código Região" required error-message="Este campo é obrigatório">
-                                <template>
+                                <!--<template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
                                             <div>[[item.value]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
+                                </template>-->
+                                <template>
+                                    <table width="300px">
+                                        <tr>
+                                            <td width="15%">[[item.id]]</td>
+                                            <td width="85%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                                 </template>
+
                             </vaadin-combo-box>
                         </div>
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraFunctionalAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" disabled="{{ !_permissions.update }}" label="Código Área Funcional" required error-message="Este campo é obrigatório">
-                                <template>
+                                <!--<template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
                                             <div>[[item.value]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
+                                </template>-->
+                                <template>
+                                    <table width="400px">
+                                        <tr>
+                                            <td width="20%">[[item.id]]</td>
+                                            <td width="80%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                                 </template>
+
                             </vaadin-combo-box>
                         </div>
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" disabled="{{ !_permissions.update }}" label="Código Centro Respon." required error-message="Este campo é obrigatório">
-                                <template>
+                                <!--<template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
                                             <div>[[item.value]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
+                                </template>-->
+                                <template>
+                                    <table width="350px">
+                                        <tr>
+                                            <td width="10%">[[item.id]]</td>
+                                            <td width="90%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
                                 </template>
                             </vaadin-combo-box>
                         </div>
@@ -1522,51 +1548,226 @@
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
                 },
-                //FOLHA DE HORAS
-                _updateFH: function () {
-                    //debugger;
+
+                _validateFolhaHoras: function () {
+                    debugger;
                     if (this.$.projetoNo.value != "") {
                         if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
                             if (this.$.dataPartidaTexto.validate() & this.$.dataPartidaTexto.value != "") {
                                 if (this.$.horaPartidaTexto.validate() & this.$.horaPartidaTexto.value != "") {
                                     if (this.$.dataChegadaTexto.validate() & this.$.dataChegadaTexto.value != "") {
                                         if (this.$.horaChegadaTexto.validate() & this.$.horaChegadaTexto.value != "") {
-                                            if (this.$.tipoDeslocacao.value == 1) {
-                                                if (this.$.matricula.validate() & this.$.matricula.value != "") {
-                                                    this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
-                                                    this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                            if (this.$.tipoDeslocacao.validate() & this.$.tipoDeslocacao.value != "") {
+                                                if (this.$.codigoTipoKms.validate() & this.$.codigoTipoKms.value != "") {
+                                                    if (this.$.codigoRegiao.validate() & this.$.codigoRegiao.value != "") {
+                                                        if (this.$.codigoAreaFuncional.validate() & this.$.codigoAreaFuncional.value != "") {
+                                                            if (this.$.codigoCentroResponsabilidade.validate() & this.$.codigoCentroResponsabilidade.value != "") {
+                                                                return true;
+                                                            }
+                                                            else {
+                                                                this._showErrorMessage("Falta preencher o campo Código Centro Respon..");
+                                                                return false;
+                                                            }
+                                                        }
+                                                        else {
+                                                            this._showErrorMessage("Falta preencher o campo Código Área Funcional.");
+                                                            return false;
+                                                        }
+                                                    }
+                                                    else {
+                                                        this._showErrorMessage("Falta preencher o campo Código Região.");
+                                                        return false;
+                                                    }
                                                 }
                                                 else {
-                                                    this._showErrorMessage('É obrigatório preencher o campo Matrícula.');
+                                                    this._showErrorMessage("Falta preencher o campo Cód. Tipo Kms.");
+                                                    return false;
                                                 }
                                             }
                                             else {
-                                                this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
-                                                this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                                this._showErrorMessage("Falta preencher o campo Tipo Deslocação.");
+                                                return false;
                                             }
                                         }
                                         else {
-                                            this._showErrorMessage('É obrigatório preencher o campo Hora Fim.');
+                                            this._showErrorMessage("Falta preencher o campo Hora Fim.");
+                                            return false;
                                         }
                                     }
                                     else {
-                                        this._showErrorMessage('É obrigatório preencher o campo Data Fim.');
+                                        this._showErrorMessage("Falta preencher o campo Data Fim.");
+                                        return false;
                                     }
                                 }
                                 else {
-                                    this._showErrorMessage('É obrigatório preencher o campo Hora Início.');
+                                    this._showErrorMessage("Falta preencher o campo Hora Inicio.");
+                                    return false;
                                 }
                             }
                             else {
-                                this._showErrorMessage('É obrigatório preencher o campo Data Início.');
+                                this._showErrorMessage("Falta preencher o campo Data Inicio.");
+                                return false;
                             }
                         }
                         else {
-                            this._showErrorMessage('É obrigatório preencher o campo Nº Empregado.');
+                            this._showErrorMessage("Falta preencher o campo Nº Empregado.");
+                            return false;
                         }
                     }
                     else {
-                        this._showErrorMessage('É obrigatório preencher o campo Nº Ordem/projecto.');
+                        this._showErrorMessage("Falta preencher o campo Nº Ordem/Projecto.");
+                        return false;
+                    }
+                },
+
+                _validatePercurso: function () {
+                    if (this.$.percursoOrigem.validate() & this.$.percursoOrigem.value != "") {
+                        if (this.$.percursoDestino.validate() & this.$.percursoDestino.value != "") {
+                            if (this.$.percursoDataViagem.validate() & this.$.percursoDataViagem.value != "") {
+                                return true;
+                            }
+                            else {
+                                this._showErrorMessage("Falta preencher o campo Data Despesa.");
+                                return false;
+                            }
+                        }
+                        else {
+                            this._showErrorMessage("Falta preencher o campo Código Destino.");
+                            return false;
+                        }
+                    }
+                    else {
+                        this._showErrorMessage("Falta preencher o campo Código Origem.");
+                        return false;
+                    }
+                },
+
+                _validateAjuda: function () {
+                    if (this.$.ajudaTipoCusto.validate() & this.$.ajudaTipoCusto.value != "") {
+                        if (this.$.ajudaCodigoTipoCusto.validate() & this.$.ajudaCodigoTipoCusto.value != "") {
+                            if (this.$.ajudaQuantidade.validate() & this.$.ajudaQuantidade.value != "") {
+                                if (this.$.ajudaCustoUnitario.validate() & this.$.ajudaCustoUnitario.value != "") {
+                                    if (this.$.ajudaPrecoUnitario.validate() & this.$.ajudaPrecoUnitario.value != "") {
+                                        if (this.$.ajudaDataDespesa.validate() & this.$.ajudaDataDespesa.value != "") {
+                                            return true;
+                                        }
+                                        else {
+                                            this._showErrorMessage("Falta preencher o campo Data Despesa.");
+                                            return false;
+                                        }
+                                    }
+                                    else {
+                                        this._showErrorMessage("Falta preencher o campo Preço Unitário.");
+                                        return false;
+                                    }
+                                }
+                                else {
+                                    this._showErrorMessage("Falta preencher o campo Custo Unitário.");
+                                    return false;
+                                }
+                            }
+                            else {
+                                this._showErrorMessage("Falta preencher o campo Quantidade.");
+                                return false;
+                            }
+                        }
+                        else {
+                            this._showErrorMessage("Falta preencher o campo Cód Tipo Custo.");
+                            return false;
+                        }
+                    }
+                    else {
+                        this._showErrorMessage("Falta preencher o campo Tipo Custo.");
+                        return false;
+                    }
+                },
+
+                _validateMaoDeObra: function () {
+                    if (this.$.maoDeObraDate.validate() & this.$.maoDeObraDate.value != "") {
+                        if (this.$.maoDeObraProjetoNo.value != "") {
+                            if (this.$.maoDeObraCodigoTipoTrabalho.validate() & this.$.maoDeObraCodigoTipoTrabalho.value != "") {
+                                if (this.$.maoDeObraHoraInicio.validate() & this.$.maoDeObraHoraInicio.value != "") {
+                                    if (this.$.maoDeObraHoraFim.validate() & this.$.maoDeObraHoraFim.value != "") {
+                                        return true;
+                                    }
+                                    else {
+                                        this._showErrorMessage("Falta preencher o campo Hora de Fim.");
+                                        return false;
+                                    }
+                                }
+                                else {
+                                    this._showErrorMessage("Falta preencher o campo Hora de Início.");
+                                    return false;
+                                }
+                            }
+                            else {
+                                this._showErrorMessage("Falta preencher o campo Tipo Trabalho.");
+                                return false;
+                            }
+                        }
+                        else {
+                            this._showErrorMessage("Falta preencher o campo Nº Obra.");
+                            return false;
+                        }
+                    }
+                    else {
+                        this._showErrorMessage("Falta preencher o campo Data.");
+                        return false;
+                    }
+                },
+
+                _validatePresenca: function () {
+                    if (this.$.presencaDataTexto.validate() & this.$.presencaDataTexto.value != "") {
+                        if (this.$.presencaHora1Entrada.validate() & this.$.presencaHora1Entrada.value != "") {
+                            if (this.$.presencaHora1Saida.validate() & this.$.presencaHora1Saida.value != "") {
+                                if (this.$.presencaHora2Entrada.validate() & this.$.presencaHora2Entrada.value != "") {
+                                    if (this.$.presencaHora2Saida.validate() & this.$.presencaHora2Saida.value != "") {
+                                        return true;
+                                    }
+                                    else {
+                                        this._showErrorMessage("Falta preencher o campo 2ª Saída.");
+                                        return false;
+                                    }
+                                }
+                                else {
+                                    this._showErrorMessage("Falta preencher o campo 2ª Entrada.");
+                                    return false;
+                                }
+                            }
+                            else {
+                                this._showErrorMessage("Falta preencher o campo 1ª Saída.");
+                                return false;
+                            }
+                        }
+                        else {
+                            this._showErrorMessage("Falta preencher o campo 1ª Entrada.");
+                            return false;
+                        }
+                    }
+                    else {
+                        this._showErrorMessage("Falta preencher o campo Data.");
+                        return false;
+                    }
+                },
+
+
+                //FOLHA DE HORAS
+                _updateFH: function () {
+                    //debugger;
+                    if (this._validateFolhaHoras()) {
+                        if (this.$.tipoDeslocacao.value == 1) {
+                            if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                                this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                                this.$.page_updatefolhadehoras_ajax.generateRequest();
+                            }
+                            else {
+                                this._showErrorMessage("Falta preencher o campo Matrícula.");
+                            }
+                        }
+                        else {
+                            this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                            this.$.page_updatefolhadehoras_ajax.generateRequest();
+                        }
                     }
                 },
 
@@ -1598,50 +1799,68 @@
 
                 _validarFolhaDeHoras: function () {
                     //debugger;
-                    if (this.$.projetoNo.value != "") {
-                        if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
+                    if (this._validateFolhaHoras()) {
+                        if (this.$.tipoDeslocacao.value == 1) {
+                            if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                                this.$.validarfolhadehoras_ajax.body = JSON.stringify(this.data);
+                                this.$.validarfolhadehoras_ajax.generateRequest();
+                            }
+                            else {
+                                this._showErrorMessage("Falta preencher o campo Matrícula.");
+                            }
+                        }
+                        else {
                             this.$.validarfolhadehoras_ajax.body = JSON.stringify(this.data);
                             this.$.validarfolhadehoras_ajax.generateRequest();
                         }
-                        else {
-                            this._showErrorMessage('É necessário preencher o campo Nº Empregado.');
-                        }
-                    }
-                    else {
-                        this._showErrorMessage('É necessário preencher o campo Nº Ordem/Projecto.');
                     }
                 },
 
-
                 _integrarEmRH: function () {
-                    //debugger;
-                    if (this.$.projetoNo.value != "") {
-                        if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
-                            this.$.integraremrhfolhadehoras_ajax.body = JSON.stringify(this.data);
-                            this.$.integraremrhfolhadehoras_ajax.generateRequest();
+                    debugger;
+                    if (this._validateFolhaHoras()) {
+                        if (this.$.integradorEmRH.value == null) {
+                            if (this.$.tipoDeslocacao.value == 1) {
+                                if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                                    this.$.integraremrhfolhadehoras_ajax.body = JSON.stringify(this.data);
+                                    this.$.integraremrhfolhadehoras_ajax.generateRequest();
+                                }
+                                else {
+                                    this._showErrorMessage("Falta preencher o campo Matrícula.");
+                                }
+                            }
+                            else {
+                                this.$.integraremrhfolhadehoras_ajax.body = JSON.stringify(this.data);
+                                this.$.integraremrhfolhadehoras_ajax.generateRequest();
+                            }
                         }
                         else {
-                            this._showErrorMessage('É necessário preencher o campo Nº Empregado.');
+                            this._showErrorMessage("A Integração da Ajuda de Custo já foi feita.");
                         }
-                    }
-                    else {
-                        this._showErrorMessage('É necessário preencher o campo Nº Ordem/Projecto.');
                     }
                 },
 
                 _integrarEmRHKM: function () {
                     //debugger;
-                    if (this.$.projetoNo.value != "") {
-                        if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
-                            this.$.integraremrhkmfolhadehoras_ajax.body = JSON.stringify(this.data);
-                            this.$.integraremrhkmfolhadehoras_ajax.generateRequest();
+                    if (this._validateFolhaHoras()) {
+                        if (this.$.integradorEmRHKM.value == null) {
+                            if (this.$.tipoDeslocacao.value == 1) {
+                                if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                                    this.$.integraremrhkmfolhadehoras_ajax.body = JSON.stringify(this.data);
+                                    this.$.integraremrhkmfolhadehoras_ajax.generateRequest();
+                                }
+                                else {
+                                    this._showErrorMessage("Falta preencher o campo Matrícula.");
+                                }
+                            }
+                            else {
+                                this.$.integraremrhkmfolhadehoras_ajax.body = JSON.stringify(this.data);
+                                this.$.integraremrhkmfolhadehoras_ajax.generateRequest();
+                            }
                         }
                         else {
-                            this._showErrorMessage('É necessário preencher o campo Nº Empregado.');
+                            this._showErrorMessage("A Integração dos KMs já foi feita.");
                         }
-                    }
-                    else {
-                        this._showErrorMessage('É necessário preencher o campo Nº Ordem/Projecto.');
                     }
                 },
 
@@ -1877,27 +2096,21 @@
                 //AJUDAS DE CUSTO
                 _calcularAjudasCusto: function () {
                     //debugger;
-                    if (this.$.dataPartidaTexto.value == "" | this.$.dataPartidaTexto.validate() == false) {
-                        _showErrorMessage('É necessário primeiro preencher corretamente o campo Data Inicio.');
-                    }
-                    else {
-                        if (this.$.horaPartidaTexto.value == "" | this.$.horaPartidaTexto.validate() == false) {
-                            _showErrorMessage('É necessário primeiro preencher corretamente o campo Hora Inicio.');
-                        }
-                        else {
-                            if (this.$.dataChegadaTexto.value == "" | this.$.dataChegadaTexto.validate() == false) {
-                                _showErrorMessage('É necessário primeiro preencher corretamente o campo Data Fim.');
+                    if (this._validateFolhaHoras()) {
+                        if (this.$.tipoDeslocacao.value == 1) {
+                            if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                                this.$.page_calcularajudascusto_ajax.body = JSON.stringify(this.data);
+                                this.$.page_calcularajudascusto_ajax.generateRequest();
+                                this.$.tabAjuda.clearCache();
                             }
                             else {
-                                if (this.$.horaChegadaTexto.value == "" | this.$.horaChegadaTexto.validate() == false) {
-                                    _showErrorMessage('É necessário primeiro preencher corretamente o campo Hora Fim.');
-                                }
-                                else {
-                                    this.$.page_calcularajudascusto_ajax.body = JSON.stringify(this.data);
-                                    this.$.page_calcularajudascusto_ajax.generateRequest();
-                                    this.$.tabAjuda.clearCache();
-                                }
+                                this._showErrorMessage("Falta preencher o campo Matrícula.");
                             }
+                        }
+                        else {
+                            this.$.page_calcularajudascusto_ajax.body = JSON.stringify(this.data);
+                            this.$.page_calcularajudascusto_ajax.generateRequest();
+                            this.$.tabAjuda.clearCache();
                         }
                     }
                 },
@@ -2356,7 +2569,7 @@
                                 }
                                 else {
                                     if (this.integrarEmRHFolhaDeHoras == 6) {
-                                        this._showErrorMessage('Preencha todos os campos obrigatórios.');
+                                        this._showErrorMessage('Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura do SUCH.');
                                     }
                                     else {
                                         if (this.integrarEmRHFolhaDeHoras == 7) {
@@ -2397,7 +2610,7 @@
                                 }
                                 else {
                                     if (this.integrarEmRHKMFolhaDeHoras == 6) {
-                                        this._showErrorMessage('Preencha todos os campos obrigatórios.');
+                                        this._showErrorMessage('Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura do SUCH.');
                                     }
                                     else {
                                         if (this.integrarEmRHKMFolhaDeHoras == 7) {
@@ -2803,6 +3016,12 @@
                         $(_self.$.btn_validarFolhaDeHoras).addClass('disabled');
                         $(_self.$.btn_createPercurso).addClass('disabled');
                         $(_self.$.btn_createAjuda).addClass('disabled');
+                        if (_self.$.integradorEmRH.value != null) {
+                            $(_self.$.btn_integrarEmRH).addClass('disabled');
+                        }
+                        if (_self.$.integradorEmRHKM.value != null) {
+                            $(_self.$.btn_integrarEmRHKM).addClass('disabled');
+                        }
                     };
                     if (data.estado == 2) { //REGISTADO
                         $(_self.$.btn_calcularAjudasCusto).addClass('disabled');
@@ -2819,6 +3038,45 @@
 
                     //CAMPOS
                     if (data.estado == 1) { //VALIDADO
+                        _self.$.projetoNo.disabled = true;
+                        _self.$.empregadoNo.disabled = true;
+                        _self.$.dataPartidaTexto.disabled = true;
+                        _self.$.horaPartidaTexto.disabled = true;
+                        _self.$.dataChegadaTexto.disabled = true;
+                        _self.$.horaChegadaTexto.disabled = true;
+                        _self.$.tipoDeslocacao.disabled = true;
+                        _self.$.codigoTipoKms.disabled = true;
+                        _self.$.matricula.disabled = true;
+                        _self.$.deslocacaoForaConcelho.disabled = true;
+                        _self.$.terminada.disabled = true;
+                        _self.$.percursoOrigem.disabled = true;
+                        _self.$.percursoDestino.disabled = true;
+                        _self.$.percursoDataViagem.disabled = true;
+                        _self.$.ajudaTipoCusto.disabled = true;
+                        _self.$.ajudaCodigoTipoCusto.disabled = true;
+                        _self.$.ajudaQuantidade.disabled = true;
+                        _self.$.ajudaCustoUnitario.disabled = true;
+                        _self.$.ajudaPrecoUnitario.disabled = true;
+                        _self.$.ajudaDataDespesa.disabled = true;
+                        _self.$.ajudaJustificacao.disabled = true;
+                        _self.$.maoDeObraDate.disabled = true;
+                        _self.$.maoDeObraProjetoNo.disabled = true;
+                        _self.$.maoDeObraCodigoTipoTrabalho.disabled = true;
+                        _self.$.maoDeObraHoraInicio.disabled = true;
+                        _self.$.maoDeObraHorarioAlmoco.disabled = true;
+                        _self.$.maoDeObraHoraFim.disabled = true;
+                        _self.$.maoDeObraHorarioJantar.disabled = true;
+                        _self.$.presencaDataTexto.disabled = true;
+                        _self.$.presencaHora1Entrada.disabled = true;
+                        _self.$.presencaHora1Saida.disabled = true;
+                        _self.$.presencaHora2Entrada.disabled = true;
+                        _self.$.presencaHora2Saida.disabled = true;
+                        _self.$.presencaObservacoes.disabled = true;
+                        _self.$.codigoRegiao.disabled = true;
+                        _self.$.codigoAreaFuncional.disabled = true;
+                        _self.$.codigoCentroResponsabilidade.disabled = true;
+                        _self.$.observacoes.disabled = true;
+
                         _self.$.percursoOrigem.disabled = true;
                         _self.$.percursoDestino.disabled = true;
                         _self.$.percursoDataViagem.disabled = true;
@@ -2872,10 +3130,10 @@
                     };
 
                     //TABELAS
-                    if (data.estado == 1) { //VALIDADO
-                        $(_self.$.tabPercurso).addClass('disabled');
-                        $(_self.$.tabAjuda).addClass('disabled');
-                    };
+                    //if (data.estado == 1) { //VALIDADO
+                    //    $(_self.$.tabPercurso).addClass('disabled');
+                    //    $(_self.$.tabAjuda).addClass('disabled');
+                    //};
                     if (data.estado == 2) { //REGISTADO
                         $(_self.$.tabPercurso).addClass('disabled');
                         $(_self.$.tabAjuda).addClass('disabled');
