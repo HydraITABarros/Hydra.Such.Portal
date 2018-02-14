@@ -51,15 +51,15 @@ namespace Hydra.Such.Data.NAV
             ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
-            try
-            {
+            //try
+            //{
                 WSContacts.Create_Result result = await ws_Client.CreateAsync(navCreate);
                 return result;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw;
+            //}
 
         }
     }
