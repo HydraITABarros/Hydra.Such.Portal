@@ -266,12 +266,12 @@
                    on-response="_responseReqValidatorProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PreRequisicoes/CreateRequisicions"
-                   last-response="{{createdreq}}"
+        <iron-ajax url="/PreRequisicoes/CreateRequesition"
+                   last-response="{{CreateReqResponse}}"
                    method="post"
                    handle-as="json"
                    id="page_create_requisition_ajax"
-                   on-response="_response_requisicion_created"
+                   on-response="_createRequesitionResponse"
                    content-type="application/json"></iron-ajax>
 
         <!--//-------------------------------------------------------------//-->
@@ -692,7 +692,7 @@
                                     </such-selectbox>
                                 </div>
                                 <div class="col-lg-2">
-                                    <vaadin-combo-box items="[[LProjectRegionCodes]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="{{data.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}">
+                                    <vaadin-combo-box items="[[LProjectRegionCodes]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="[[data.regionCode]]" label="Cód. Região" disabled="{{ !_permissions.update }}">
                                         <template>
                                             <table width="200px">
                                                 <tr>
@@ -704,7 +704,7 @@
                                     </vaadin-combo-box>
                                 </div>
                                 <div class="col-lg-2">
-                                    <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="_CLFunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}">
+                                    <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="_CLFunctionalAreaCode" name="_CLFunctionalAreaCode" item-value-path="id" item-label-path="value" value="[[data.functionalAreaCode]]" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}">
                                         <template>
                                             <table width="200px">
                                                 <tr>
@@ -719,7 +719,7 @@
                             </div>
                             <div class="row break_clear">
                                 <div class="col-lg-2">
-                                    <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLResponsabilityCenterCode" item-value-path="id" item-label-path="value" on-change="_RespChange" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
+                                    <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLResponsabilityCenterCode" name="_CLResponsabilityCenterCode" item-value-path="id" item-label-path="value" on-change="_RespChange" value="[[data.responsabilityCenterCode]]" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}">
                                         <template>
                                             <table width="200px">
                                                 <tr>
@@ -1533,7 +1533,10 @@
 
                     if (data.detail.status === 200) {
                         if (this.validateReqResponse == "") {
-                            this._executeRequest("/PreRequisicoes/CreateRequesition", this.data)
+                            //this._executeRequest("/PreRequisicoes/CreateRequesition", this.data)
+                            this.$.page_create_requisition_ajax.body = JSON.stringify(this.data);
+                            this.$.page_create_requisition_ajax.generateRequest();
+
                         } else {
                             this._openToastError(this.validateReqResponse);
                         }
@@ -1572,14 +1575,16 @@
                                 this._openToastError(this.data.eMessage);
                             }
                         }
-                        if (data.detail.url.indexOf("CreateRequesition") !== -1) {
-                            if (this.data.eReasonCode == 1) {
-                                this._openToast(this.data.eMessage);
+                        //if (data.detail.url.indexOf("CreateRequesition") !== -1) {
+                        //    if (this.data.eReasonCode == 1) {
+                        //        this._openToast(this.data.eMessage);
+                        //        this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
+                        //        this.$.prereqLines_databound_ajax.generateRequest();
 
-                            } else {
-                                this._openToastError(this.data.eMessage);
-                            }
-                        }
+                        //    } else {
+                        //        this._openToastError(this.data.eMessage);
+                        //    }
+                        //}
                         if (!(this.$._CLResponsabilityCenterCode.value == "" || this.$._CLResponsabilityCenterCode.value == null)) {
                             this.$.purchaseheader_ajax.body = JSON.stringify(this.$._CLResponsabilityCenterCode.value);
                             this.$.purchaseheader_ajax.generateRequest();
@@ -1930,6 +1935,7 @@
                 },
 
                 _clResponseProcessor: function (data) {
+                    debugger;;
                     if (data.detail.status === 200) {
                         if (!(data.detail.url.indexOf("GetPreReqLines") !== -1)) {
                             if (this.dataLines.eReasonCode != 1) {
@@ -1952,6 +1958,11 @@
                                 this.$._ProjectNo.valueText = "";
                                 this.$._CBVendor.value = "";
                                 this.$._CBVendor.valueText = "";
+                                if (this.data != null) {
+                                    this.$._CLRegion.value = this.data.regionCode;
+                                    this.$._CLFunctionalAreaCode.value = this.data.functionalAreaCode;
+                                    this.$._CLResponsabilityCenterCode.value = this.data.responsabilityCenterCode;
+                                }
                             }
                         }
                     }
@@ -1997,7 +2008,17 @@
 
                 _pendingreq: function (e) {
                     window.location.href = "RequisicoesPendentes/";
-                }
+                },
+                _createRequesitionResponse: function (e) {
+                    if (this.CreateReqResponse.eReasonCode == "1") {
+                        this._openToast(this.CreateReqResponse.eMessage);
+                        this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
+                        this.$.prereqLines_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._openToastError(this.AddReqTemplateLineResponse.eMessage);
+                    }
+                },
             });
         });
     </script>

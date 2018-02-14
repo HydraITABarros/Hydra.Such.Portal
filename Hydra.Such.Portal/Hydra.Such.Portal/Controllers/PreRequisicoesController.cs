@@ -119,7 +119,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                if (data != null)
+                if (data != null && data.Lines != null)
                 {
                     List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequisitionNo);
                     List<LinhasPréRequisição> CLToDelete = PreRequesitionLines.Where(y => !data.Lines.Any(x => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha)).ToList();
@@ -679,8 +679,11 @@ namespace Hydra.Such.Portal.Controllers
                                 OpenOrderLineNo = line.OpenOrderLineNo,
                             }).ToList()
                         }).ToList();
-                    
-                    foreach(var req in newlist)
+
+                    int totalItems = 0;
+                    string createdReqIds = ": ";
+
+                    foreach (var req in newlist)
                     {
                         //Get Contract Numeration
                         Configuração Configs = DBConfigurations.GetById(1);
@@ -736,6 +739,11 @@ namespace Hydra.Such.Portal.Controllers
                                 ConfigNumerations.UtilizadorModificação = User.Identity.Name;
                                 DBNumerationConfigurations.Update(ConfigNumerations);
 
+                                //count successful items for later validation
+                                totalItems++;
+                                createdReqIds += RequisitionNo + "; ";
+
+
                                 data.eReasonCode = 1;
                                 data.eMessage = "Requisições criadas com sucesso";
                                 
@@ -752,6 +760,12 @@ namespace Hydra.Such.Portal.Controllers
                             data.eReasonCode = 0;
                             data.eMessage = "A numeração configurada não é compativel com a inserida.";
                         }
+                    }
+                    if (totalItems == newlist.Count)
+                    {
+                        //if all items have been created delete pre-requisition lines
+                        DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
+                        data.eMessage += createdReqIds;
                     }
                 }
             }
