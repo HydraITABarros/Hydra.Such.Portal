@@ -22,6 +22,7 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
@@ -99,7 +100,7 @@
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenters}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetAllClients" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBWarehouses}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNutritionCoffeShopTypes" last-response="{{CBCoffeShopTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -144,16 +145,13 @@
                                             <vaadin-text-field value="{{data.description}}" id="Description" name="Description" label="Descrição" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}">
-                                                <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
+                                            <such-selectbox id="mClients" value="{{data.clientNo}}" label="Nº Cliente"
+                                                            items="[[CBClients]]"
+                                                            text-path="name"
+                                                            value-path="no_"
+                                                            fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"country_RegionCode", "name":"Região"}]'
+                                                            disabled="{{ !_permissions.update }}">
+                                            </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-date-picker label="Data Inicio Exploração" id="startDateExploration" name="startDateExploration" value="{{data.startDateExploration}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
@@ -226,7 +224,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBProjects]]" id="projectKitchen" item-value-path="id" item-label-path="value" value="{{data.projectKitchen}}" label="Projeto Cozinha" disabled="{{ !_permissions.update }}" on-value-changed="_projectKitchenChange">
+                                            @*<vaadin-combo-box items="[[CBProjects]]" id="projectKitchen" item-value-path="id" item-label-path="value" value="{{data.projectKitchen}}" label="Projeto Cozinha" disabled="{{ !_permissions.update }}" on-value-changed="_projectKitchenChange">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -235,7 +233,15 @@
                                                         </tr>
                                                     </table>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>*@
+                                            <such-selectbox id="projectKitchen" value="{{data.projectKitchen}}" label="Projeto Cozinha"
+                                                            items="[[CBProjects]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Cód."}, {"field":"value", "name":"Descrição"}]'
+                                                            disabled="{{ !_permissions.update }}"
+                                                            on-value-changed="_projectKitchenChange">
+                                            </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.projectKitchenTotalMovs}}" id="projectKitchenTotalMovs" name="projectKitchenTotalMovs" label="Mov. Projeto Cozinha" disabled> </vaadin-text-field>
@@ -244,7 +250,7 @@
 
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBProjects]]" id="projectWaste" item-value-path="id" item-label-path="value" value="{{data.projectWaste}}" label="Projeto Desperdicios" disabled="{{ !_permissions.update }}" on-value-changed="_projectWasteChange">
+                                            @*<vaadin-combo-box items="[[CBProjects]]" id="projectWaste" item-value-path="id" item-label-path="value" value="{{data.projectWaste}}" label="Projeto Desperdicios" disabled="{{ !_permissions.update }}" on-value-changed="_projectWasteChange">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -253,13 +259,21 @@
                                                         </tr>
                                                     </table>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>*@
+                                            <such-selectbox id="projectWaste" value="{{data.projectWaste}}" label="Projeto Desperdicios"
+                                                            items="[[CBProjects]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Cód."}, {"field":"value", "name":"Descrição"}]'
+                                                            disabled="{{ !_permissions.update }}"
+                                                            on-value-changed="_projectWasteChange">
+                                            </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.projectWasteTotalMovs}}" id="projectWasteTotalMovs" name="projectWasteTotalMovs" label="Mov. Projeto Desperdicios" disabled> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBProjects]]" id="projectSubsidiaries" item-value-path="id" item-label-path="value" value="{{data.projectSubsidiaries}}" label="Projeto Mat. Subsidiárias" disabled="{{ !_permissions.update }}" on-value-changed="_projectSubsidiariesChange">
+                                            @*<vaadin-combo-box items="[[CBProjects]]" id="projectSubsidiaries" item-value-path="id" item-label-path="value" value="{{data.projectSubsidiaries}}" label="Projeto Mat. Subsidiárias" disabled="{{ !_permissions.update }}" on-value-changed="_projectSubsidiariesChange">
                                                 <template>
                                                     <table width="180px">
                                                         <tr>
@@ -268,7 +282,15 @@
                                                         </tr>
                                                     </table>
                                                 </template>
-                                            </vaadin-combo-box>
+                                            </vaadin-combo-box>*@
+                                            <such-selectbox id="projectSubsidiaries" value="{{data.projectSubsidiaries}}" label="Projeto Mat. Subsidiárias"
+                                                            items="[[CBProjects]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Cód."}, {"field":"value", "name":"Descrição"}]'
+                                                            disabled="{{ !_permissions.update }}"
+                                                            on-value-changed="_projectSubsidiariesChange">
+                                            </such-selectbox>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.projectSubsidiariesTotalMovs}}" id="projectSubsidiariesTotalMovs" name="projectSubsidiariesTotalMovs" label="Mov. Projeto Subsidiárias" disabled> </vaadin-text-field>
@@ -510,7 +532,6 @@
                 ready: function () {
                     this.$.grid_databound.body = JSON.stringify(@ViewBag.ProductivityUnityNo);
                     this.$.grid_databound.generateRequest();
-
                 },
 
                 //CRUDS
@@ -580,17 +601,17 @@
                 //CHANGE PROJECTS
                 _projectKitchenChange: function (e) {
                     if (e.detail.value != "") {
-                         $.ajax({
-                              url: '/UnidadesProdutivas/GetProjectData',
-                              type: 'POST',
-                              success: function (result) {
-                                  debugger;;
-                              },
-                              data: {
-                                  data: data
-                              },
-                              async: true
-                         });
+                         //$.ajax({
+                         //     url: '/UnidadesProdutivas/GetProjectData',
+                         //     type: 'POST',
+                         //     success: function (result) {
+                         //         debugger;;
+                         //     },
+                         //     data: {
+                         //         data: data
+                         //     },
+                         //     async: true
+                         //});
                     }
                 },
                 _PurchaseNeeds: function () {
