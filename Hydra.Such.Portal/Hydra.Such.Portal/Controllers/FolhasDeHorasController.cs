@@ -512,7 +512,7 @@ namespace Hydra.Such.Portal.Controllers
                     };
                 }
                 FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault().Name;
-                    //DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault().Name;
+                //DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).SingleOrDefault().Name;
             }
             return Json(FH);
         }
@@ -1231,32 +1231,36 @@ namespace Hydra.Such.Portal.Controllers
                                 NoDias = NoDias - 1;
                         }
 
-                        noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.FolhaDeHorasNo);
+                        if (NoDias > 0)
+                        {
 
-                        LinhasFolhaHoras Ajuda = new LinhasFolhaHoras();
+                            noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.FolhaDeHorasNo);
 
-                        Ajuda.NoFolhaHoras = data.FolhaDeHorasNo;
-                        Ajuda.NoLinha = noLinha;
-                        Ajuda.CodTipoCusto = x.CodigoTipoCusto.Trim();
-                        Ajuda.TipoCusto = x.TipoCusto;
-                        Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == x.TipoCusto).FirstOrDefault().Value;
-                        Ajuda.Quantidade = Convert.ToDecimal(NoDias);
-                        Ajuda.CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                        Ajuda.PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
-                        Ajuda.CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                        Ajuda.PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
-                        Ajuda.DataDespesa = Convert.ToDateTime(data.DataPartidaTexto + " " + data.HoraPartidaTexto);
-                        Ajuda.CalculoAutomatico = true;
-                        Ajuda.CodRegiao = data.CodigoRegiao == "" ? null : data.CodigoRegiao;
-                        Ajuda.CodArea = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional;
-                        Ajuda.CodCresp = data.CodigoCentroResponsabilidade == null ? null : data.CodigoCentroResponsabilidade;
-                        Ajuda.RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().RubricaSalarial;
-                        Ajuda.UtilizadorCriacao = User.Identity.Name;
-                        Ajuda.DataHoraCriacao = DateTime.Now;
-                        Ajuda.UtilizadorModificacao = User.Identity.Name;
-                        Ajuda.DataHoraModificacao = DateTime.Now;
+                            LinhasFolhaHoras Ajuda = new LinhasFolhaHoras();
 
-                        var dbCreateResult = DBLinhasFolhaHoras.CreateAjuda(Ajuda);
+                            Ajuda.NoFolhaHoras = data.FolhaDeHorasNo;
+                            Ajuda.NoLinha = noLinha;
+                            Ajuda.CodTipoCusto = x.CodigoTipoCusto.Trim();
+                            Ajuda.TipoCusto = x.TipoCusto;
+                            Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == x.TipoCusto).FirstOrDefault().Value;
+                            Ajuda.Quantidade = Convert.ToDecimal(NoDias);
+                            Ajuda.CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                            Ajuda.PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                            Ajuda.CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                            Ajuda.PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                            Ajuda.DataDespesa = Convert.ToDateTime(data.DataPartidaTexto + " " + data.HoraPartidaTexto);
+                            Ajuda.CalculoAutomatico = true;
+                            Ajuda.CodRegiao = data.CodigoRegiao == "" ? null : data.CodigoRegiao;
+                            Ajuda.CodArea = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional;
+                            Ajuda.CodCresp = data.CodigoCentroResponsabilidade == null ? null : data.CodigoCentroResponsabilidade;
+                            Ajuda.RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().RubricaSalarial;
+                            Ajuda.UtilizadorCriacao = User.Identity.Name;
+                            Ajuda.DataHoraCriacao = DateTime.Now;
+                            Ajuda.UtilizadorModificacao = User.Identity.Name;
+                            Ajuda.DataHoraModificacao = DateTime.Now;
+
+                            var dbCreateResult = DBLinhasFolhaHoras.CreateAjuda(Ajuda);
+                        }                        
                     });
                 }
 

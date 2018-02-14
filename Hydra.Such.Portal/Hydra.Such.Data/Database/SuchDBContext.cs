@@ -110,6 +110,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -1142,6 +1143,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHoraEntregaProposta)
+                    .HasColumnName("Data/Hora Entrega Proposta")
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.DataHoraErrosEOmissões)

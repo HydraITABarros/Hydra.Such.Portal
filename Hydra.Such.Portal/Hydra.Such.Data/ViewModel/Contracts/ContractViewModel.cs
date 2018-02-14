@@ -97,6 +97,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public decimal? TotalValue { get; set; }
         public string ClarificationLimite { get; set; }
         public string ProposalDelivery { get; set; }
+        public string ProposalDeliveryTime { get; set; }
         public string LastReport { get; set; }
         public string NextInvoicePeriod { get; set; }
         public decimal? BaseValueProcedure { get; set; }

@@ -393,6 +393,9 @@ namespace Hydra.Such.Portal.Controllers
                             ContratoDB.AudiênciaPrévia = data.PreviousHearing == ""
                                 ? null
                                 : (DateTime?)DateTime.Parse(data.PreviousHearing);
+                            ContratoDB.DataHoraEntregaProposta = data.ProposalDelivery == ""
+                                ? null
+                                : (DateTime?)DateTime.Parse(data.ProposalDelivery);
 
                             if (ContratoDB.AudiênciaPrévia != null)
                             {
@@ -436,6 +439,15 @@ namespace Hydra.Such.Portal.Controllers
                                 if (data.DocumentationHabilitationTime != null)
                                 {
                                     ContratoDB.DataHoraHabilitaçãoDocumental = ContratoDB.DataHoraHabilitaçãoDocumental.Value.Add(TimeSpan.Parse(data.DocumentationHabilitationTime));
+                                }
+                            }
+
+                            if (ContratoDB.DataHoraEntregaProposta != null)
+                            {
+                                ContratoDB.DataHoraEntregaProposta = ContratoDB.DataHoraEntregaProposta.Value.Date;
+                                if (data.ProposalDeliveryTime != null)
+                                {
+                                    ContratoDB.DataHoraEntregaProposta = ContratoDB.DataHoraEntregaProposta.Value.Add(TimeSpan.Parse(data.ProposalDeliveryTime));
                                 }
                             }
 
