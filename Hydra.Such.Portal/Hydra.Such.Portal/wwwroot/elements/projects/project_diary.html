@@ -582,10 +582,10 @@
                     <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box items="[[FunctionalAreaCodeData]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{item.functionalAreaCode}}">
                             <template>
-                                <table width="200px">
+                                <table width="500px">
                                     <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                        <td width="10%">[[item.id]]</td>
+                                        <td width="90%"> <b>[[item.value]]</b></td>
                                     </tr>
                                 </table>
                             </template>
@@ -605,10 +605,10 @@
                     <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-combo-box items="[[ResponsabilityCenterData]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
                             <template>
-                                <table width="200px">
+                                <table width="550px">
                                     <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"> <b>[[item.value]]</b></td>
                                     </tr>
                                 </table>
                             </template>
@@ -977,11 +977,12 @@
                     <template>
                         <vaadin-combo-box items="[[RegionData]]" item-value-path="id" disabled item-label-path="value" value="{{item.regionCode}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="300px">
+                                    <tr>
+                                        <td width="10%">[[item.id]]</td>
+                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </template>
@@ -994,11 +995,12 @@
                     <template>
                         <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" disabled value="{{item.functionalAreaCode}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="500px">
+                                    <tr>
+                                        <td width="10%">[[item.id]]</td>
+                                        <td width="90%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </template>
@@ -1011,11 +1013,12 @@
                     <template>
                         <vaadin-combo-box items="[[ResponsabilityCenterData]]" disabled item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
                             <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
+                                <table width="550px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"> <b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
                             </template>
                         </vaadin-combo-box>
                     </template>

@@ -62,7 +62,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 8,
-                Value = "Internacionalizações"
+                Value = "Internacional"
             },
             new EnumData()
             {

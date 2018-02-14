@@ -271,10 +271,10 @@
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{data.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
-                                <table width="200px">
+                                <table width="500px">
                                     <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                        <td width="10%">[[item.id]]</td>
+                                        <td width="90%"> <b>[[item.value]]</b></td>
                                     </tr>
                                 </table>
                             </template>
@@ -283,10 +283,10 @@
                     <div class="col-lg-3">
                         <vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{data.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                             <template>
-                                <table width="200px">
+                                <table width="550px">
                                     <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"> <b>[[item.value]]</b></td>
                                     </tr>
                                 </table>
                             </template>

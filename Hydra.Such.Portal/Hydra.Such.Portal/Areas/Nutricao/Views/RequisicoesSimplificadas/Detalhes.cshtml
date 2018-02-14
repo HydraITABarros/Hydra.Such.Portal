@@ -281,10 +281,10 @@ else
                                         <div class="col-lg-3">
                                             <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="FunctionalAreaCode" item-value-path="id" item-label-path="value" value="{{result.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ !_permissions.create }}" on-value-changed="_areaCodeChanged">
                                                 <template>
-                                                    <table width="200px">
+                                                    <table width="500px">
                                                         <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                            <td width="10%">[[item.id]]</td>
+                                                            <td width="90%"> <b>[[item.value]]</b></td>
                                                         </tr>
                                                     </table>
                                                 </template>
@@ -293,10 +293,10 @@ else
                                         <div class="col-lg-3">
                                             <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="ResponsabilityCenterCode" item-value-path="id" item-label-path="value" value="{{result.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{ !_permissions.create }}" on-value-changed="_responsabilityCenterCodeChanged">
                                                 <template>
-                                                    <table width="200px">
+                                                    <table width="550px">
                                                         <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                            <td width="20%">[[item.id]]</td>
+                                                            <td width="80%"> <b>[[item.value]]</b></td>
                                                         </tr>
                                                     </table>
                                                 </template>
@@ -460,10 +460,10 @@ else
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="_CLFunctionalArea" name="_CLFunctionalArea" item-value-path="id" item-label-path="value" value="{{result.functionalAreaCode}}" label="Cód. Área Funcional" disabled="{{ _lockFields }}">
                                             <template>
-                                                <table width="200px">
+                                                <table width="500px">
                                                     <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                        <td width="10%">[[item.id]]</td>
+                                                        <td width="90%"> <b>[[item.value]]</b></td>
                                                     </tr>
                                                 </table>
                                             </template>
@@ -474,10 +474,10 @@ else
                                     <div class="col-lg-3">
                                         <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLCenterCodeResponsability" item-value-path="id" item-label-path="value" value="{{result.responsabilityCenterCode}}" label="Cód. Centro Responsabilidade" disabled="{{_lockFields }}">
                                             <template>
-                                                <table width="200px">
+                                                <table width="550px">
                                                     <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                        <td width="20%">[[item.id]]</td>
+                                                        <td width="80%"> <b>[[item.value]]</b></td>
                                                     </tr>
                                                 </table>
                                             </template>
@@ -750,11 +750,12 @@ else
                                                 <template is="dom-if" if="{{ item.selected }}">
                                                     <vaadin-combo-box items="[[CBRegionCodes]]" id="_CLGridRegion" name="_CLGridRegion" item-value-path="id" item-label-path="id" value="{{item.regionCode}}" disabled="{{ _lockFields }}">
                                                         <template>
-                                                            <paper-icon-item>
-                                                                <paper-item-body two-line>
-                                                                    <div>[[item.id]]</div>
-                                                                </paper-item-body>
-                                                            </paper-icon-item>
+                                                            <table width="300px">
+                                                                <tr>
+                                                                    <td width="10%">[[item.id]]</td>
+                                                                    <td width="90%"> <b>[[item.value]]</b></td>
+                                                                </tr>
+                                                            </table>
                                                         </template>
                                                     </vaadin-combo-box>
                                                 </template>
@@ -772,11 +773,12 @@ else
                                                 <template is="dom-if" if="{{ item.selected }}">
                                                     <vaadin-combo-box items="[[CBFunctionalAreaCodes]]" id="_CLGridFunctionalArea" name="_CLGridFunctionalArea" item-value-path="id" item-label-path="id" value="{{item.functionAreaCode}}" disabled="{{ _lockFields }}">
                                                         <template>
-                                                            <paper-icon-item>
-                                                                <paper-item-body two-line>
-                                                                    <div>[[item.id]]</div>
-                                                                </paper-item-body>
-                                                            </paper-icon-item>
+                                                            <table width="500px">
+                                                                <tr>
+                                                                    <td width="10%">[[item.id]]</td>
+                                                                    <td width="90%"> <b>[[item.value]]</b></td>
+                                                                </tr>
+                                                            </table>
                                                         </template>
                                                     </vaadin-combo-box>
                                                 </template>
@@ -794,11 +796,12 @@ else
                                                 <template is="dom-if" if="{{ item.selected }}">
                                                     <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLGridResponsabilityCenter" name="_CLGridResponsabilityCenter" item-value-path="id" item-label-path="id" value="{{item.responsabilityCenterCode}}" disabled>
                                                         <template>
-                                                            <paper-icon-item>
-                                                                <paper-item-body two-line>
-                                                                    <div>[[item.id]]</div>
-                                                                </paper-item-body>
-                                                            </paper-icon-item>
+                                                            <table width="550px">
+                                                                <tr>
+                                                                    <td width="20%">[[item.id]]</td>
+                                                                    <td width="80%"> <b>[[item.value]]</b></td>
+                                                                </tr>
+                                                            </table>
                                                         </template>
                                                     </vaadin-combo-box>
                                                 </template>
