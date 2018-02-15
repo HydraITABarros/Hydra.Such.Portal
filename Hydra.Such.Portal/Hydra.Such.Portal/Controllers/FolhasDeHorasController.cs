@@ -222,6 +222,12 @@ namespace Hydra.Such.Portal.Controllers
                     };
 
                     FH.Área = area;
+
+                    FH.NºEmpregado = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+                    FH.CódigoRegião = DBUserConfigurations.GetById(User.Identity.Name).RegiaoPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).RegiaoPorDefeito;
+                    FH.CódigoÁreaFuncional = DBUserConfigurations.GetById(User.Identity.Name).AreaPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).AreaPorDefeito;
+                    FH.CódigoCentroResponsabilidade = DBUserConfigurations.GetById(User.Identity.Name).CentroRespPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).CentroRespPorDefeito;
+
                     FH.CódigoTipoKmS = "KM";
                     FH.Estado = 0;
                     FH.Validado = false;
@@ -498,6 +504,13 @@ namespace Hydra.Such.Portal.Controllers
                 if (ConfUtili.Count > 0)
                 {
                     idEmployeePortal = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == idEmployee).SingleOrDefault().IdUtilizador;
+
+                    if (idEmployeePortal != null)
+                    {
+                        FH.CodigoRegiao = DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiaoPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiaoPorDefeito;
+                        FH.CodigoAreaFuncional = DBUserConfigurations.GetByEmployeeNo(idEmployee).AreaPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).AreaPorDefeito;
+                        FH.CodigoCentroResponsabilidade = DBUserConfigurations.GetByEmployeeNo(idEmployee).CentroRespPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).CentroRespPorDefeito;
+                    }
 
                     AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado == idEmployeePortal).SingleOrDefault();
 
@@ -1260,7 +1273,7 @@ namespace Hydra.Such.Portal.Controllers
                             Ajuda.DataHoraModificacao = DateTime.Now;
 
                             var dbCreateResult = DBLinhasFolhaHoras.CreateAjuda(Ajuda);
-                        }                        
+                        }
                     });
                 }
 
@@ -1423,7 +1436,7 @@ namespace Hydra.Such.Portal.Controllers
                             HorasTotal = HorasTotal.Subtract(H_Almoco);
                         }
                     }
-                    
+
                     if (data.HorarioJantar == true)
                     {
                         if (Hora_De_Fim >= Convert.ToDateTime(Conf_H_Jantar_Fim) && Hora_De_Inicio < Convert.ToDateTime(Conf_H_Jantar_Ini))
@@ -1993,8 +2006,8 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         result = 0;
                                     };
-                                    }
                                 }
+                            }
                         }
                     }
                 }

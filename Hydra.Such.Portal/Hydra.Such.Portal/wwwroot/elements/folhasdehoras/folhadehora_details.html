@@ -412,8 +412,8 @@
                             </vaadin-combo-box>
                         </div>
                         <!--<div class="col-sm-3">
-                        <vaadin-text-field type="text" value="{{data.empregadoNome}}" id="empregadoNome" name="empregadoNome" label="Nome Empregado" disabled="true"></vaadin-text-field>
-                    </div>-->
+                            <vaadin-text-field type="text" value="{{data.empregadoNome}}" id="empregadoNome" name="empregadoNome" label="Nome Empregado" disabled="true"></vaadin-text-field>
+                        </div>-->
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
@@ -1264,10 +1264,10 @@
 
                         <!--</template>-->
                         <!--<template is="dom-if" if="{{ _permissions.update }}">
-                        <div class="col-sm-1 alignPoga">
-                            <paper-button class="btnSave" raised on-tap="_updatePresenca">Guardar</paper-button>
-                        </div>
-                    </template>-->
+                            <div class="col-sm-1 alignPoga">
+                                <paper-button class="btnSave" raised on-tap="_updatePresenca">Guardar</paper-button>
+                            </div>
+                        </template>-->
                 </div>
             </div>
 
@@ -1550,7 +1550,7 @@
                 },
 
                 _validateFolhaHoras: function () {
-                    debugger;
+                    //debugger;
                     if (this.$.projetoNo.value != "") {
                         if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
                             if (this.$.dataPartidaTexto.validate() & this.$.dataPartidaTexto.value != "") {
@@ -1817,7 +1817,7 @@
                 },
 
                 _integrarEmRH: function () {
-                    debugger;
+                    //debugger;
                     if (this._validateFolhaHoras()) {
                         if (this.$.integradorEmRH.value == null) {
                             if (this.$.tipoDeslocacao.value == 1) {
@@ -2435,7 +2435,6 @@
                 //RESPONSES PROCESSORS
                 _responseProcessor: function (data) {
                     //debugger;
-                    //NÃO ESTÁ A CHEGAR AQUI
                     var self = this;
 
                     if (data.detail.status === 200) {
@@ -2444,10 +2443,7 @@
                                 this._isCreate = true;
                             }
 
-                            //debugger;
                             self._setFieldsEditability(self.data);
-                            //debugger;
-
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             this._createResponseProcessor();
                         } else if (data.detail.url.indexOf("Update") !== -1) {
@@ -2926,8 +2922,14 @@
 
                 _getEmpoyeeNAVResponse: function (e) {
                     //debugger;
+
+                    this.$.codigoRegiao.value = this.getEmpoyeeNAV.codigoRegiao;
+                    this.$.codigoAreaFuncional.value = this.getEmpoyeeNAV.codigoAreaFuncional;
+                    this.$.codigoCentroResponsabilidade.value = this.getEmpoyeeNAV.codigoCentroResponsabilidade;
+
                     if (this.getEmpoyeeNAV.empregadoNome != null) {
                         this.$.empregadoNome.value = this.getEmpoyeeNAV.empregadoNome;
+
 
                         if (this.getEmpoyeeNAV.validadores == null | this.getEmpoyeeNAV.validadores == "") {
                             this.$.validadores.value = "";
