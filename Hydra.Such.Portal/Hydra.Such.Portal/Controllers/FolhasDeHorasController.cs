@@ -228,6 +228,18 @@ namespace Hydra.Such.Portal.Controllers
                     FH.CódigoÁreaFuncional = DBUserConfigurations.GetById(User.Identity.Name).AreaPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).AreaPorDefeito;
                     FH.CódigoCentroResponsabilidade = DBUserConfigurations.GetById(User.Identity.Name).CentroRespPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).CentroRespPorDefeito;
 
+                    AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado == User.Identity.Name).SingleOrDefault();
+
+                    if (Autorizacao != null)
+                    {
+                        FH.NºResponsável1 = Autorizacao.NoResponsavel1;
+                        FH.NºResponsável2 = Autorizacao.NoResponsavel2;
+                        FH.NºResponsável3 = Autorizacao.NoResponsavel3;
+                        FH.Validadores = Autorizacao.NoResponsavel1 + " - " + Autorizacao.NoResponsavel2 + " - " + Autorizacao.NoResponsavel3;
+                        FH.IntegradoresEmRh = Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3;
+                        FH.IntegradoresEmRhkm = Autorizacao.ValidadorRhkm1 + " - " + Autorizacao.ValidadorRhkm2;
+                    };
+
                     FH.CódigoTipoKmS = "KM";
                     FH.Estado = 0;
                     FH.Validado = false;
