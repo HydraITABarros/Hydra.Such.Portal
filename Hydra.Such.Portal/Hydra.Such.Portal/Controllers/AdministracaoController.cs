@@ -22,12 +22,19 @@ using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.Logic.Compras;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.Approvals;
+using Microsoft.Extensions.Options;
 
 namespace Hydra.Such.Portal.Controllers
 {
     [Authorize]
     public class AdministracaoController : Controller
     {
+        private readonly NAVConfigurations _config;
+        public AdministracaoController(IOptions<NAVConfigurations> appSettings)
+        {
+            _config = appSettings.Value;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -43,6 +50,17 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetListUsers()
         {
             List<ConfigUtilizadores> result = DBUserConfigurations.GetAll();
+
+            if (result != null)
+            {
+                result.ForEach(Utilizador =>
+                {
+                    Utilizador.RegiaoPorDefeito = Utilizador.RegiaoPorDefeito == null ? "" : DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name, Utilizador.RegiaoPorDefeito).FirstOrDefault().Name;
+                    Utilizador.AreaPorDefeito = Utilizador.AreaPorDefeito == null ? "" : DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name, Utilizador.AreaPorDefeito).FirstOrDefault().Name;
+                    Utilizador.CentroRespPorDefeito = Utilizador.CentroRespPorDefeito == null ? "" : DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name, Utilizador.CentroRespPorDefeito).FirstOrDefault().Name;
+                });
+            };
+
             return Json(result);
         }
 
@@ -70,6 +88,9 @@ namespace Hydra.Such.Portal.Controllers
                 result.Name = CU.Nome;
                 result.Active = CU.Ativo;
                 result.Administrator = CU.Administrador;
+                result.Regiao = CU.RegiaoPorDefeito;
+                result.Area = CU.AreaPorDefeito;
+                result.Cresp = CU.CentroRespPorDefeito;
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -103,6 +124,9 @@ namespace Hydra.Such.Portal.Controllers
                 Nome = data.Name,
                 Administrador = data.Administrator,
                 Ativo = data.Active,
+                RegiaoPorDefeito = data.Regiao,
+                AreaPorDefeito = data.Area,
+                CentroRespPorDefeito = data.Cresp,
                 UtilizadorCriação = User.Identity.Name,
             });
 
@@ -153,6 +177,9 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.Nome = data.Name;
                 userConfig.Ativo = data.Active;
                 userConfig.Administrador = data.Administrator;
+                userConfig.RegiaoPorDefeito = data.Regiao;
+                userConfig.AreaPorDefeito = data.Area;
+                userConfig.CentroRespPorDefeito = data.Cresp;
                 userConfig.DataHoraModificação = DateTime.Now;
                 userConfig.UtilizadorModificação = User.Identity.Name;
                 DBUserConfigurations.Update(userConfig);

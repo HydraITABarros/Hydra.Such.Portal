@@ -1400,13 +1400,43 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     //CALCULAR PRECO TOTAL
+                    DateTime Hora_De_Inicio = Convert.ToDateTime(data.HoraInicio);
+                    DateTime Hora_De_Fim = Convert.ToDateTime(data.HoraFim);
+
+                    Configuração Conf = DBConfigurations.GetById(1);
+                    TimeSpan Conf_H_Almoco_Ini = (TimeSpan)Conf.InicioHoraAlmoco;
+                    TimeSpan Conf_H_Almoco_Fim = (TimeSpan)Conf.FimHoraAlmoco;
+                    TimeSpan Conf_H_Jantar_Ini = (TimeSpan)Conf.InicioHoraJantar;
+                    TimeSpan Conf_H_Jantar_Fim = (TimeSpan)Conf.FimHoraJantar;
+
+                    TimeSpan H_Almoco = Conf_H_Almoco_Fim.Subtract(Conf_H_Almoco_Ini);
+                    TimeSpan H_Jantar = Conf_H_Jantar_Fim.Subtract(Conf_H_Jantar_Ini);
+
+                    double Num_Horas_Aux = (Hora_De_Fim - Hora_De_Inicio).TotalHours;
                     TimeSpan HorasTotal = TimeSpan.Parse(data.HoraFim) - TimeSpan.Parse(data.HoraInicio);
+
+                    if (data.HorarioAlmoco == true)
+                    {
+                        if (Hora_De_Fim >= Convert.ToDateTime(Conf_H_Almoco_Fim) && Hora_De_Inicio < Convert.ToDateTime(Conf_H_Almoco_Ini))
+                        {
+                            Num_Horas_Aux = Num_Horas_Aux - H_Almoco.TotalHours;
+                            HorasTotal = HorasTotal.Subtract(H_Almoco);
+                        }
+                    }
+                    
+                    if (data.HorarioJantar == true)
+                    {
+                        if (Hora_De_Fim >= Convert.ToDateTime(Conf_H_Jantar_Fim) && Hora_De_Inicio < Convert.ToDateTime(Conf_H_Jantar_Ini))
+                        {
+                            Num_Horas_Aux = Num_Horas_Aux - H_Jantar.TotalHours;
+                            HorasTotal = HorasTotal.Subtract(H_Jantar);
+                        }
+                    }
+
                     MaoDeObra.NºDeHoras = HorasTotal;
 
                     decimal HorasMinutosDecimal = Convert.ToDecimal(HorasTotal.TotalMinutes / 60);
                     MaoDeObra.PreçoTotal = HorasMinutosDecimal * Convert.ToDecimal(MaoDeObra.PreçoDeVenda);
-
-
 
                     MaoDeObra.NºFolhaDeHoras = data.FolhaDeHorasNo;
                     MaoDeObra.Date = data.Date;
@@ -1874,13 +1904,13 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if ((data.Validado == null ? false : (bool)data.Validado) || (int)data.Estado != 0)
                     {
-                        result = 5;
+                        result = 5; //Não Pode validar pois já se encontra validada
                     }
                     else
                     {
                         if (!data.Validadores.ToLower().Contains(User.Identity.Name.ToLower()))
                         {
-                            result = 1;
+                            result = 1; //Não tem permissões para validar
                         }
                         else
                         {
