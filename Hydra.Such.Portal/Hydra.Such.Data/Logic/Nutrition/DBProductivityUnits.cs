@@ -52,6 +52,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     //Add Profile User
                     ObjectToCreate.DataHoraCriação = DateTime.Now;
                     ctx.UnidadesProdutivas.Add(ObjectToCreate);
+                    ctx.SaveChanges();
                 }
                 return ObjectToCreate;
             }
