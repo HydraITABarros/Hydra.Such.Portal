@@ -222,6 +222,24 @@ namespace Hydra.Such.Portal.Controllers
                     };
 
                     FH.Área = area;
+
+                    FH.NºEmpregado = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+                    FH.CódigoRegião = DBUserConfigurations.GetById(User.Identity.Name).RegiaoPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).RegiaoPorDefeito;
+                    FH.CódigoÁreaFuncional = DBUserConfigurations.GetById(User.Identity.Name).AreaPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).AreaPorDefeito;
+                    FH.CódigoCentroResponsabilidade = DBUserConfigurations.GetById(User.Identity.Name).CentroRespPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).CentroRespPorDefeito;
+
+                    AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado == User.Identity.Name).SingleOrDefault();
+
+                    if (Autorizacao != null)
+                    {
+                        FH.NºResponsável1 = Autorizacao.NoResponsavel1;
+                        FH.NºResponsável2 = Autorizacao.NoResponsavel2;
+                        FH.NºResponsável3 = Autorizacao.NoResponsavel3;
+                        FH.Validadores = Autorizacao.NoResponsavel1 + " - " + Autorizacao.NoResponsavel2 + " - " + Autorizacao.NoResponsavel3;
+                        FH.IntegradoresEmRh = Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3;
+                        FH.IntegradoresEmRhkm = Autorizacao.ValidadorRhkm1 + " - " + Autorizacao.ValidadorRhkm2;
+                    };
+
                     FH.CódigoTipoKmS = "KM";
                     FH.Estado = 0;
                     FH.Validado = false;
@@ -498,6 +516,13 @@ namespace Hydra.Such.Portal.Controllers
                 if (ConfUtili.Count > 0)
                 {
                     idEmployeePortal = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == idEmployee).SingleOrDefault().IdUtilizador;
+
+                    if (idEmployeePortal != null)
+                    {
+                        FH.CodigoRegiao = DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiaoPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiaoPorDefeito;
+                        FH.CodigoAreaFuncional = DBUserConfigurations.GetByEmployeeNo(idEmployee).AreaPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).AreaPorDefeito;
+                        FH.CodigoCentroResponsabilidade = DBUserConfigurations.GetByEmployeeNo(idEmployee).CentroRespPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).CentroRespPorDefeito;
+                    }
 
                     AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado == idEmployeePortal).SingleOrDefault();
 
@@ -1260,7 +1285,7 @@ namespace Hydra.Such.Portal.Controllers
                             Ajuda.DataHoraModificacao = DateTime.Now;
 
                             var dbCreateResult = DBLinhasFolhaHoras.CreateAjuda(Ajuda);
-                        }                        
+                        }
                     });
                 }
 
@@ -1400,13 +1425,43 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     //CALCULAR PRECO TOTAL
+                    DateTime Hora_De_Inicio = Convert.ToDateTime(data.HoraInicio);
+                    DateTime Hora_De_Fim = Convert.ToDateTime(data.HoraFim);
+
+                    Configuração Conf = DBConfigurations.GetById(1);
+                    TimeSpan Conf_H_Almoco_Ini = (TimeSpan)Conf.InicioHoraAlmoco;
+                    TimeSpan Conf_H_Almoco_Fim = (TimeSpan)Conf.FimHoraAlmoco;
+                    TimeSpan Conf_H_Jantar_Ini = (TimeSpan)Conf.InicioHoraJantar;
+                    TimeSpan Conf_H_Jantar_Fim = (TimeSpan)Conf.FimHoraJantar;
+
+                    TimeSpan H_Almoco = Conf_H_Almoco_Fim.Subtract(Conf_H_Almoco_Ini);
+                    TimeSpan H_Jantar = Conf_H_Jantar_Fim.Subtract(Conf_H_Jantar_Ini);
+
+                    double Num_Horas_Aux = (Hora_De_Fim - Hora_De_Inicio).TotalHours;
                     TimeSpan HorasTotal = TimeSpan.Parse(data.HoraFim) - TimeSpan.Parse(data.HoraInicio);
+
+                    if (data.HorarioAlmoco == true)
+                    {
+                        if (Hora_De_Fim >= Convert.ToDateTime(Conf_H_Almoco_Fim) && Hora_De_Inicio < Convert.ToDateTime(Conf_H_Almoco_Ini))
+                        {
+                            Num_Horas_Aux = Num_Horas_Aux - H_Almoco.TotalHours;
+                            HorasTotal = HorasTotal.Subtract(H_Almoco);
+                        }
+                    }
+
+                    if (data.HorarioJantar == true)
+                    {
+                        if (Hora_De_Fim >= Convert.ToDateTime(Conf_H_Jantar_Fim) && Hora_De_Inicio < Convert.ToDateTime(Conf_H_Jantar_Ini))
+                        {
+                            Num_Horas_Aux = Num_Horas_Aux - H_Jantar.TotalHours;
+                            HorasTotal = HorasTotal.Subtract(H_Jantar);
+                        }
+                    }
+
                     MaoDeObra.NºDeHoras = HorasTotal;
 
                     decimal HorasMinutosDecimal = Convert.ToDecimal(HorasTotal.TotalMinutes / 60);
                     MaoDeObra.PreçoTotal = HorasMinutosDecimal * Convert.ToDecimal(MaoDeObra.PreçoDeVenda);
-
-
 
                     MaoDeObra.NºFolhaDeHoras = data.FolhaDeHorasNo;
                     MaoDeObra.Date = data.Date;
@@ -1874,13 +1929,13 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if ((data.Validado == null ? false : (bool)data.Validado) || (int)data.Estado != 0)
                     {
-                        result = 5;
+                        result = 5; //Não Pode validar pois já se encontra validada
                     }
                     else
                     {
                         if (!data.Validadores.ToLower().Contains(User.Identity.Name.ToLower()))
                         {
-                            result = 1;
+                            result = 1; //Não tem permissões para validar
                         }
                         else
                         {
@@ -1963,8 +2018,8 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         result = 0;
                                     };
-                                    }
                                 }
+                            }
                         }
                     }
                 }
