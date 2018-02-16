@@ -36,6 +36,7 @@ namespace Hydra.Such.Data.ViewModel
         public decimal? UnitValueToInvoice { get; set; }
         public string Currency { get; set; }
         public bool Billed { get; set; }
+        public string FolhaHoras { get; set; }
         //public string RequisitionNo { get; set; }
         //public int? RequisitionLineNo { get; set; }
         //public string Driver { get; set; }

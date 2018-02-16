@@ -52,10 +52,12 @@
     <DataSet Include="ReportRequisicao.rsd" />
   </ItemGroup>
   <ItemGroup>
+    <DataSource Include="eSUCH.rds" />
     <DataSource Include="eSuchDS.rds" />
   </ItemGroup>
   <ItemGroup>
     <Report Include="FolhaCaixa.rdl" />
+    <Report Include="FolhaHora.rdl" />
     <Report Include="RequisitionReport.rdl" />
     <Report Include="Requisições.rdl" />
   </ItemGroup>

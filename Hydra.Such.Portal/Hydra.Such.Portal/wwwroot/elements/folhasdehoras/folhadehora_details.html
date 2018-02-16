@@ -2573,7 +2573,7 @@
                                         }
                                         else {
                                             if (this.integrarEmRHFolhaDeHoras == 8) {
-                                                this._showErrorMessage('Primeiro terá que Validar a Folha de Horas.');
+                                                this._showErrorMessage('A Folha de Horas tem que estar no estado Validado');
                                             }
                                             else {
                                                 this._showErrorMessage('Ocorreu um erro ao Integrada em RH na Folha De Horas.');
@@ -2606,7 +2606,7 @@
                                 }
                                 else {
                                     if (this.integrarEmRHKMFolhaDeHoras == 6) {
-                                        this._showErrorMessage('Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura do SUCH.');
+                                        this._showErrorMessage('Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura Própria.');
                                     }
                                     else {
                                         if (this.integrarEmRHKMFolhaDeHoras == 7) {
@@ -3004,7 +3004,8 @@
 
                 _goBack: function (e) {
                     //debugger;
-                    window.location = "../";
+                    //window.location = "../";
+                    window.history.back();
                 },
 
 
