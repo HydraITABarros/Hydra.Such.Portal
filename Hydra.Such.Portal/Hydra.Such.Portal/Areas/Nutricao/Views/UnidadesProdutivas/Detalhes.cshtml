@@ -108,6 +108,8 @@
 
         @*EXTRAS*@
         <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectBillingInfo" last-response="{{PBInfo}}" id="projectBillingData_Ajax" on-response="_projectBillingDataResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectBillingInfo" last-response="{{PBInfoGrid}}" id="projectBillingData_AjaxGrid" on-response="_projectBillingDataResponseGrid" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PKInfo}}" id="projectKitchenData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PWInfo}}" id="projectWasteData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Nutricao/UnidadesProdutivas/GetProjectTotalMovsInfo" last-response="{{PSInfo}}" id="projectWasteData_Ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -224,16 +226,6 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            @*<vaadin-combo-box items="[[CBProjects]]" id="projectKitchen" item-value-path="id" item-label-path="value" value="{{data.projectKitchen}}" label="Projeto Cozinha" disabled="{{ !_permissions.update }}" on-value-changed="_projectKitchenChange">
-                                                <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>*@
                                             <such-selectbox id="projectKitchen" value="{{data.projectKitchen}}" label="Projeto Cozinha"
                                                             items="[[CBProjects]]"
                                                             text-path="value"
@@ -250,16 +242,6 @@
 
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            @*<vaadin-combo-box items="[[CBProjects]]" id="projectWaste" item-value-path="id" item-label-path="value" value="{{data.projectWaste}}" label="Projeto Desperdicios" disabled="{{ !_permissions.update }}" on-value-changed="_projectWasteChange">
-                                                <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>*@
                                             <such-selectbox id="projectWaste" value="{{data.projectWaste}}" label="Projeto Desperdicios"
                                                             items="[[CBProjects]]"
                                                             text-path="value"
@@ -273,16 +255,6 @@
                                             <vaadin-text-field value="{{data.projectWasteTotalMovs}}" id="projectWasteTotalMovs" name="projectWasteTotalMovs" label="Mov. Projeto Desperdicios" disabled> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            @*<vaadin-combo-box items="[[CBProjects]]" id="projectSubsidiaries" item-value-path="id" item-label-path="value" value="{{data.projectSubsidiaries}}" label="Projeto Mat. Subsidiárias" disabled="{{ !_permissions.update }}" on-value-changed="_projectSubsidiariesChange">
-                                                <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>*@
                                             <such-selectbox id="projectSubsidiaries" value="{{data.projectSubsidiaries}}" label="Projeto Mat. Subsidiárias"
                                                             items="[[CBProjects]]"
                                                             text-path="value"
@@ -314,11 +286,12 @@
                                                             <div class="col-lg-3">
                                                                 <vaadin-combo-box items="[[CBProjects]]" id="BPProjectNo" name="BPProjectNo" item-value-path="id" item-label-path="value" label="Projeto" disabled="{{ !_permissions.update }}" on-value-changed="_getProjectBillingData">
                                                                     <template>
-                                                                        <paper-icon-item>
-                                                                            <paper-item-body two-line>
-                                                                                <div>[[item.value]]</div>
-                                                                            </paper-item-body>
-                                                                        </paper-icon-item>
+                                                                        <table width="300px">
+                                                                            <tr>
+                                                                                <td width="30%">[[item.id]]</td>
+                                                                                <td width="70%"> <b>[[item.value]]</b></td>
+                                                                            </tr>
+                                                                        </table>
                                                                     </template>
                                                                 </vaadin-combo-box>
                                                             </div>
@@ -338,23 +311,28 @@
                                                     </paper-collapse-item>
                                                 </paper-collapse-group>
                                                 <!-- VAADIN GRID  Projetos de Faturação -->
-                                                <vaadin-grid aria-label="BillingProjectsGrid" id="grid_BillingProjectsGrid" items="[[data.billingProjects]]" class="grid" multi-sort="true" disabled="{{ !_permissions.update }}">
+                                                <vaadin-grid aria-label="BillingProjectsGrid" id="grid_BillingProjectsGrid" items="[[data.billingProjects]]" class="grid" multi-sort="true" disabled="{{ !_permissions.update }}" active-item="{{_SelectedLine}}">
                                                     <vaadin-grid-column>
                                                         <template class="header">
                                                             <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
                                                             <vaadin-grid-filter path="projectNo" />
                                                         </template>
                                                         <template>
-                                                            <vaadin-combo-box items="[[CBProjects]]" id="BPGridProjectNo" item-value-path="id" item-label-path="value" label="Projeto" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}">
-                                                                <template>
-                                                                    <table width="180px">
-                                                                        <tr>
-                                                                            <td width="40%">[[item.id]]</td>
-                                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                                        </tr>
-                                                                    </table>
-                                                                </template>
-                                                            </vaadin-combo-box>
+                                                            <template is="dom-if" if="{{ item.selected }}">
+                                                                <vaadin-combo-box items="[[CBProjects]]" id="BPProjectNoGrid" name="BPProjectNoGrid"  item-value-path="id" item-label-path="value" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-value-changed="_getProjectBillingDataGrid">
+                                                                    <template>
+                                                                        <table width="300px">
+                                                                            <tr>
+                                                                                <td width="30%">[[item.id]]</td>
+                                                                                <td width="70%"> <b>[[item.value]]</b></td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </template>
+                                                                </vaadin-combo-box>
+                                                            </template>
+                                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                                {{item.projectNo}}
+                                                            </template>
                                                         </template>
                                                     </vaadin-grid-column>
                                                     <vaadin-grid-column>
@@ -363,7 +341,12 @@
                                                             <vaadin-grid-filter path="clientNo" />
                                                         </template>
                                                         <template>
-                                                            <vaadin-text-field id="BPGridClientNo" name="BPClientNo" disabled value="{{item.clientNo}}">  </vaadin-text-field>
+                                                            <template is="dom-if" if="{{ item.selected }}">
+                                                                <vaadin-text-field id="BPGridClientNo" name="BPClientNo" disabled value="{{item.clientNo}}">  </vaadin-text-field>
+                                                            </template>
+                                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                                {{item.clientNo}}
+                                                            </template>
                                                         </template>
                                                     </vaadin-grid-column>
                                                     <vaadin-grid-column>
@@ -372,7 +355,12 @@
                                                             <vaadin-grid-filter path="clientName" />
                                                         </template>
                                                         <template>
-                                                            <vaadin-text-field id="BPGridClientName" name="BPClientName" disabled value="{{item.clientName}}">  </vaadin-text-field>
+                                                            <template is="dom-if" if="{{ item.selected }}">
+                                                                <vaadin-text-field id="BPGridClientName" name="BPClientName" disabled value="{{item.clientName}}">  </vaadin-text-field>
+                                                            </template>
+                                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                                {{item.clientName}}
+                                                            </template>
                                                         </template>
                                                     </vaadin-grid-column>
                                                     <vaadin-grid-column>
@@ -381,7 +369,12 @@
                                                             <vaadin-grid-filter path="totalSales" />
                                                         </template>
                                                         <template>
-                                                            <vaadin-text-field id="BPGridTotalSales" name="BPTotalSales" label="Total de Vendas" disabled="{{ !_permissions.update }}" value="{{item.totalSales}}">  </vaadin-text-field>
+                                                            <template is="dom-if" if="{{ item.selected }}">
+                                                                <vaadin-text-field id="BPGridTotalSales" name="BPTotalSales" disabled value="{{item.totalSales}}">  </vaadin-text-field>
+                                                            </template>
+                                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                                {{item.totalSales}}
+                                                            </template>
                                                         </template>
                                                     </vaadin-grid-column>
                                                     <vaadin-grid-column>
@@ -510,6 +503,9 @@
                         type: Boolean,
                         value: true
                     },
+                    _SelectedLine: {
+                        observer: '_lineSelected'
+                    },
                 },
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -527,7 +523,20 @@
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
+                _lineSelected: function (item) {
+                    if (item != null) {
+                        var oSel = this.data.billingProjects.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
 
+                        var sel = this.data.billingProjects.find(x => x == item);
+                        if (sel != undefined) {
+                            this.data.billingProjects.find(x => x == item).selected = true;
+                        }
+                        this.$.grid_BillingProjectsGrid.clearCache();
+                    }
+                },
 
                 ready: function () {
                     this.$.grid_databound.body = JSON.stringify(@ViewBag.ProductivityUnityNo);
@@ -548,8 +557,9 @@
                     var self = this;
 
                     //Set create mode
-                    if (!(this.data.productivityUnitNo == "" || this.data.productivityUnitNo == null)) {
-                        this._isCreate = true;
+                    debugger;;
+                    if (this.data.productivityUnitNo != "" && this.data.productivityUnitNo != null) {
+                        this._isCreate = false;
                     }
 
                     if (data.detail.status === 200) {
@@ -584,7 +594,6 @@
                     this.$.BPProjectNo.value = "";
                 },
                 _getProjectBillingData: function (e) {
-                    debugger;;
                     if (e.detail.value != "") {
                         this.$.projectBillingData_Ajax.body = JSON.stringify(this.$.BPProjectNo.value);
                         this.$.projectBillingData_Ajax.generateRequest();
@@ -595,6 +604,29 @@
                         this.$.BPClientNo.value = this.PBInfo.clientNo;
                         this.$.BPClientName.value = this.PBInfo.clientName;
                         this.$.BPTotalSales.value = this.PBInfo.totalSales;
+                    }
+                },
+                _getProjectBillingDataGrid: function (e) {
+                    if (e.detail.value != "") {
+                        this.$.projectBillingData_AjaxGrid.body = JSON.stringify(e.detail.value);
+                        this.$.projectBillingData_AjaxGrid.generateRequest();
+                    }
+                },
+                _projectBillingDataResponseGrid: function (e) {
+                    if (e.detail.status === 200) {
+
+                        var line = this.data.billingProjects.find(x => x == this._SelectedLine);
+                        //var itemNo = e.model.item.supplierProductCode
+                        //var object = this.CBItems.find(x => x.code == itemNo);
+                        line.clientNo = this.PBInfoGrid.clientNo;
+                        line.clientName = this.PBInfoGrid.clientName;
+                        line.totalSales = this.PBInfoGrid.totalSales;
+                        this.$.grid_BillingProjectsGrid.clearCache();
+
+                        debugger;;
+                        //this.$.BPGridClientNo.value = this.PBInfoGrid.clientNo;
+                        //this.$.BPGridClientName.value = this.PBInfoGrid.clientName;
+                        //this.$.BPGridTotalSales.value = this.PBInfoGrid.totalSales;
                     }
                 },
 
@@ -639,6 +671,11 @@
                     if (e.detail.value != "") {
 
                     }
+                },
+                _update: function () {
+                    this.$.grid_databound.url = "/Nutricao/UnidadesProdutivas/UpdateUnidadeProdutiva";
+                    this.$.grid_databound.body = JSON.stringify(this.result);
+                    this.$.grid_databound.generateRequest();
                 },
             });
         });

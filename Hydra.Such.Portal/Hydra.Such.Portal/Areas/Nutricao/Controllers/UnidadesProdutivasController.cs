@@ -167,6 +167,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                                 x.Active = true;
                                 x.ProductivityUnitNo = CObject.NºUnidadeProdutiva;
                                 x.CreateUser = User.Identity.Name;
+                                x.Selected = false;
                                 CreatedPBillings.Add(DBProjectBilling.ParseToViewModel(DBProjectBilling.Create(DBProjectBilling.ParseToDB(x))));
                             });
                         }
@@ -190,8 +191,40 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         }
 
 
-
         
-        #endregion  
+        [Area("Nutricao")]
+        [HttpPost]
+        public JsonResult UpdateUnidadeProdutiva([FromBody] ProductivityUnitViewModel item)
+        {
+            ProductivityUnitViewModel result = new ProductivityUnitViewModel();
+
+            try
+            {
+                if (item != null)
+                {
+                    UnidadesProdutivas CProductivityUnit = DBProductivityUnits.GetById(item.ProductivityUnitNo);
+                    CProductivityUnit.Descrição = item.Description;
+                    CProductivityUnit.NºCliente = item.ClientNo;
+                    CProductivityUnit.DataInícioExploração = item.StartDateExploration != "" && item.StartDateExploration != null ? DateTime.Parse(item.StartDateExploration) : (DateTime?)null;
+                    CProductivityUnit.DataFimExploração = item.EndDateExploration != "" && item.EndDateExploration != null ? DateTime.Parse(item.EndDateExploration) : (DateTime?)null;
+                    CProductivityUnit.Armazém = item.Warehouse;
+                    CProductivityUnit.ArmazémFornecedor = item.WarehouseSupplier;
+                    CProductivityUnit.CódigoRegião = item.CodeRegion;
+                    CProductivityUnit.CódigoÁreaFuncional = item.CodeFunctionalArea;
+                    CProductivityUnit.CódigoCentroResponsabilidade = item.CodeResponsabilityCenter;
+                    CProductivityUnit.ProjetoCozinha = item.ProjectKitchen;
+                    CProductivityUnit.ProjetoDesperdícios = item.ProjectWaste;
+                    CProductivityUnit.ProjetoMatSubsidiárias = item.ProjectSubsidiaries;
+                    DBProductivityUnits.Update(CProductivityUnit);
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return null;
+        }
+        #endregion
     }
 }
