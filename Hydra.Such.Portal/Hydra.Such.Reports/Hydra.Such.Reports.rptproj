@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Report Include="FolhaCaixa.rdl" />
+    <Report Include="FolhaHora.rdl" />
     <Report Include="RequisitionReport.rdl" />
     <Report Include="Requisições.rdl" />
   </ItemGroup>

@@ -689,7 +689,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(dp);
         }
 
-        public JsonResult UpdateProjectDiaryRequisition( List<ProjectDiaryViewModel> dp, string projectNo, string userName)
+        public JsonResult UpdateProjectDiaryRequisition(List<ProjectDiaryViewModel> dp, string projectNo, string userName)
         {
             List<DiárioDeProjeto> previousList;
             if (projectNo == null || projectNo == "")
@@ -806,7 +806,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             catch (Exception e)
             {
-                throw ;
+                throw;
             }
 
 
@@ -967,7 +967,7 @@ namespace Hydra.Such.Portal.Controllers
                             DBProjectMovements.Create(ProjectMovement);
                         }
 
-                        
+
                     }
                 });
             }
@@ -976,7 +976,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(dp);
         }
 
-        public JsonResult RegisterDiaryLinesRequisition( List<ProjectDiaryViewModel> dp, string userName)
+        public JsonResult RegisterDiaryLinesRequisition(List<ProjectDiaryViewModel> dp, string userName)
         {
             //Guid transactID = Guid.NewGuid();
 
@@ -1088,21 +1088,21 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             result.eReasonCode = 4;
                             result.eMessage = "Este projeto não tem contrato com linhas associadas";
-                        }     
+                        }
                         foreach (var item in dp)
                         {
-                            
-                                DiárioDeProjeto dpValidation = new DiárioDeProjeto();
-                                item.UtilizadorCriação = User.Identity.Name;
-                                item.DataHoraCriação = DateTime.Now;
-                                dpValidation = DBProjectDiary.Create(item);
-                                if (dpValidation == null)
-                                {
-                                    result.eReasonCode = 5;
-                                    result.eMessage = "Occorreu um erro ao obter os movimentos";
-                                }                                                    
+
+                            DiárioDeProjeto dpValidation = new DiárioDeProjeto();
+                            item.UtilizadorCriação = User.Identity.Name;
+                            item.DataHoraCriação = DateTime.Now;
+                            dpValidation = DBProjectDiary.Create(item);
+                            if (dpValidation == null)
+                            {
+                                result.eReasonCode = 5;
+                                result.eMessage = "Occorreu um erro ao obter os movimentos";
+                            }
                         }
-                       
+
                     }
                 }
                 else
@@ -1116,7 +1116,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.eReasonCode = 2;
                 result.eMessage = "Não foi selecionado nenhum projeto";
             }
-           
+
             return Json(result);
         }
 
@@ -1180,7 +1180,8 @@ namespace Hydra.Such.Portal.Controllers
                 UnitPrice = x.PreçoUnitário,
                 TotalPrice = x.PreçoTotal,
                 Billable = x.Faturável,
-                Registered = x.Registado
+                Registered = x.Registado,
+                FolhaHoras = x.NºDocumento
             }).ToList();
 
             return Json(dp);
@@ -1305,7 +1306,7 @@ namespace Hydra.Such.Portal.Controllers
             }
 
         }
-        
+
         private class InvoiceMessages
         {
             public bool Iserror { get; set; }
@@ -1317,16 +1318,16 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                if(data != null)
+                if (data != null)
                 {
-                    foreach(var updatedata in data)
+                    foreach (var updatedata in data)
                     {
                         MovimentosDeProjeto lines = DBProjectMovements.GetByLineNo(updatedata.LineNo).FirstOrDefault();
                         lines.FaturaçãoAutorizada = true;
                         lines.DataAutorizaçãoFaturação = DateTime.Now;
                         DBProjectMovements.Update(lines);
                     }
-                    
+
                     return Json(data);
                 }
             }
@@ -1384,7 +1385,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CreateInvoiceLines([FromBody] List<SPInvoiceListViewModel> data)
         {
-            if(data != null)
+            if (data != null)
             {
                 List<SPInvoiceListViewModel> groupedbyclient = data.GroupBy(x => new
                 {
@@ -1400,11 +1401,11 @@ namespace Hydra.Such.Portal.Controllers
                     CommitmentNumber = x.Key.CommitmentNumber,
                     ClientRequest = x.Key.ClientRequest,
                     ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.Key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName)
-                    
+
                 }).ToList();
 
 
-                if(groupedbyclient != null)
+                if (groupedbyclient != null)
                 {
                     foreach (var header in groupedbyclient)
                     {
@@ -1416,7 +1417,7 @@ namespace Hydra.Such.Portal.Controllers
                             string HeaderNo = TCreatePreInvoice.Result.WSPreInvoice.No;
 
                             List<SPInvoiceListViewModel> linesList = new List<SPInvoiceListViewModel>();
-                            
+
                             foreach (var lines in data)
                             {
                                 if (lines.InvoiceToClientNo == header.InvoiceToClientNo && lines.Date == header.Date && lines.CommitmentNumber == header.CommitmentNumber && lines.ClientRequest == header.ClientRequest)

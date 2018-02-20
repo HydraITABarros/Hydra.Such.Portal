@@ -25,6 +25,22 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static ConfigUtilizadores GetByEmployeeNo(string EmployeeNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ConfigUtilizadores.Where(x => x.EmployeeNo == EmployeeNo).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<ConfigUtilizadores> GetAll()
         {
             try

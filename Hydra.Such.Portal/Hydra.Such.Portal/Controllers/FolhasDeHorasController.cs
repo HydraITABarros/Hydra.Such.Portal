@@ -198,6 +198,9 @@ namespace Hydra.Such.Portal.Controllers
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
 
+            ViewBag.reportServerURL = _config.ReportServerURL;
+            ViewBag.userLogin = User.Identity.Name.ToString();
+
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -222,6 +225,24 @@ namespace Hydra.Such.Portal.Controllers
                     };
 
                     FH.Área = area;
+
+                    FH.NºEmpregado = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+                    FH.CódigoRegião = DBUserConfigurations.GetById(User.Identity.Name).RegiaoPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).RegiaoPorDefeito;
+                    FH.CódigoÁreaFuncional = DBUserConfigurations.GetById(User.Identity.Name).AreaPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).AreaPorDefeito;
+                    FH.CódigoCentroResponsabilidade = DBUserConfigurations.GetById(User.Identity.Name).CentroRespPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).CentroRespPorDefeito;
+
+                    AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado.ToLower() == User.Identity.Name.ToLower()).SingleOrDefault();
+
+                    if (Autorizacao != null)
+                    {
+                        FH.NºResponsável1 = Autorizacao.NoResponsavel1;
+                        FH.NºResponsável2 = Autorizacao.NoResponsavel2;
+                        FH.NºResponsável3 = Autorizacao.NoResponsavel3;
+                        FH.Validadores = Autorizacao.NoResponsavel1 + " - " + Autorizacao.NoResponsavel2 + " - " + Autorizacao.NoResponsavel3;
+                        FH.IntegradoresEmRh = Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3;
+                        FH.IntegradoresEmRhkm = Autorizacao.ValidadorRhkm1 + " - " + Autorizacao.ValidadorRhkm2;
+                    };
+
                     FH.CódigoTipoKmS = "KM";
                     FH.Estado = 0;
                     FH.Validado = false;
@@ -494,12 +515,19 @@ namespace Hydra.Such.Portal.Controllers
             {
                 string idEmployeePortal;
 
-                List<ConfigUtilizadores> ConfUtili = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == idEmployee).ToList();
+                List<ConfigUtilizadores> ConfUtili = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == null ? "" == idEmployee.ToLower() : x.EmployeeNo.ToLower() == idEmployee.ToLower()).ToList();
                 if (ConfUtili.Count > 0)
                 {
-                    idEmployeePortal = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == idEmployee).SingleOrDefault().IdUtilizador;
+                    idEmployeePortal = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == null ? "" == idEmployee.ToLower() : x.EmployeeNo.ToLower() == idEmployee.ToLower()).SingleOrDefault().IdUtilizador;
 
-                    AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado == idEmployeePortal).SingleOrDefault();
+                    if (idEmployeePortal != null)
+                    {
+                        FH.CodigoRegiao = DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiaoPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiaoPorDefeito;
+                        FH.CodigoAreaFuncional = DBUserConfigurations.GetByEmployeeNo(idEmployee).AreaPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).AreaPorDefeito;
+                        FH.CodigoCentroResponsabilidade = DBUserConfigurations.GetByEmployeeNo(idEmployee).CentroRespPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).CentroRespPorDefeito;
+                    }
+
+                    AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado.ToLower() == idEmployeePortal.ToLower()).SingleOrDefault();
 
                     if (Autorizacao != null)
                     {
@@ -642,7 +670,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (data.ProjetoNo != "")
                 {
-                    NAVProjectsViewModel navProject = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No == data.ProjetoNo).SingleOrDefault();
+                    NAVProjectsViewModel navProject = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.No.ToLower() == data.ProjetoNo.ToLower()).SingleOrDefault();
                     if (navProject != null)
                     {
                         ProjetoDescricao = navProject.Description;
@@ -818,6 +846,7 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
+                    Percurso1.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
                     Percurso1.UtilizadorCriacao = User.Identity.Name;
                     Percurso1.DataHoraCriacao = DateTime.Now;
                     Percurso1.UtilizadorModificacao = User.Identity.Name;
@@ -841,6 +870,7 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso2.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso2.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso2.CustoTotal = Percurso2.Distancia * Percurso2.CustoUnitario;
+                    Percurso2.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
                     Percurso2.UtilizadorCriacao = User.Identity.Name;
                     Percurso2.DataHoraCriacao = DateTime.Now;
                     Percurso2.UtilizadorModificacao = User.Identity.Name;
@@ -870,6 +900,7 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
+                    Percurso1.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
                     Percurso1.UtilizadorCriacao = User.Identity.Name;
                     Percurso1.DataHoraCriacao = DateTime.Now;
                     Percurso1.UtilizadorModificacao = User.Identity.Name;
@@ -1183,7 +1214,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 //APAGAR TODOS OS REGISTOS DAS LINHAS DE FOLHAS DE HORAS ONDE Calculo_Automatico = true
 
-                List<LinhasFolhaHoras> LinhasFH = DBLinhasFolhaHoras.GetAjudaByFolhaHoraNo(data.FolhaDeHorasNo).Where(x => (x.NoFolhaHoras == data.FolhaDeHorasNo) && (x.CalculoAutomatico == true)).ToList();
+                List<LinhasFolhaHoras> LinhasFH = DBLinhasFolhaHoras.GetAjudaByFolhaHoraNo(data.FolhaDeHorasNo).Where(x => (x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower()) && (x.CalculoAutomatico == true)).ToList();
                 if (LinhasFH != null)
                 {
                     LinhasFH.ForEach(x =>
@@ -1200,35 +1231,60 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (AjudaCusto != null)
                 {
-                    NoDias = Convert.ToInt32((Convert.ToDateTime(data.DataChegadaTexto) - Convert.ToDateTime(data.DataPartidaTexto)).TotalDays);
-                    NoDias = NoDias + 1;
+                    //NoDias = Convert.ToInt32((Convert.ToDateTime(data.DataChegadaTexto) - Convert.ToDateTime(data.DataPartidaTexto)).TotalDays);
+                    //NoDias = NoDias + 1;
 
                     AjudaCusto.ForEach(x =>
                     {
-                        if (x.CodigoRefCusto == 1) //ALMOCO
-                        {
-                            if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida)
-                                NoDias = NoDias;
-                            else
-                                NoDias = NoDias - 1;
+                        NoDias = Convert.ToInt32((Convert.ToDateTime(data.DataChegadaTexto) - Convert.ToDateTime(data.DataPartidaTexto)).TotalDays);
+                        NoDias = NoDias + 1;
 
-                            if ((TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada) || data.DataPartidaTexto != data.DataChegadaTexto)
-                                NoDias = NoDias;
-                            else
-                                NoDias = NoDias - 1;
+                        if (Convert.ToDateTime(data.DataPartidaTexto) == Convert.ToDateTime(data.DataChegadaTexto))
+                        {
+
+                            if (x.CodigoRefCusto == 1) //ALMOCO
+                            {
+                                if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida && TimeSpan.Parse(data.HoraChegadaTexto) > x.LimiteHoraPartida)
+                                    NoDias = NoDias;
+                                else
+                                    NoDias = NoDias - 1;
+                            }
+
+                            if (x.CodigoRefCusto == 2) //JANTAR
+                            {
+                                if (TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada && TimeSpan.Parse(data.HoraPartidaTexto) < x.LimiteHoraChegada)
+                                    NoDias = NoDias;
+                                else
+                                    NoDias = NoDias - 1;
+                            }
                         }
-
-                        if (x.CodigoRefCusto == 2) //JANTAR
+                        else
                         {
-                            if ((TimeSpan.Parse(data.HoraPartidaTexto) >= x.LimiteHoraPartida) || data.DataPartidaTexto != data.DataChegadaTexto)
-                                NoDias = NoDias;
-                            else
-                                NoDias = NoDias - 1;
+                            if (x.CodigoRefCusto == 1) //ALMOCO
+                            {
+                                if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida)
+                                    NoDias = NoDias;
+                                else
+                                    NoDias = NoDias - 1;
 
-                            if (TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada)
-                                NoDias = NoDias;
-                            else
-                                NoDias = NoDias - 1;
+                                if ((TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada) || data.DataPartidaTexto != data.DataChegadaTexto)
+                                    NoDias = NoDias;
+                                else
+                                    NoDias = NoDias - 1;
+                            }
+
+                            if (x.CodigoRefCusto == 2) //JANTAR
+                            {
+                                if ((TimeSpan.Parse(data.HoraPartidaTexto) >= x.LimiteHoraPartida) || data.DataPartidaTexto != data.DataChegadaTexto)
+                                    NoDias = NoDias;
+                                else
+                                    NoDias = NoDias - 1;
+
+                                if (TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada)
+                                    NoDias = NoDias;
+                                else
+                                    NoDias = NoDias - 1;
+                            }
                         }
 
                         if (NoDias > 0)
@@ -1245,22 +1301,22 @@ namespace Hydra.Such.Portal.Controllers
                             Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == x.TipoCusto).FirstOrDefault().Value;
                             Ajuda.Quantidade = Convert.ToDecimal(NoDias);
                             Ajuda.CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                            Ajuda.PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
-                            Ajuda.CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                            Ajuda.PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                            Ajuda.PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                            Ajuda.CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                            Ajuda.PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
                             Ajuda.DataDespesa = Convert.ToDateTime(data.DataPartidaTexto + " " + data.HoraPartidaTexto);
                             Ajuda.CalculoAutomatico = true;
                             Ajuda.CodRegiao = data.CodigoRegiao == "" ? null : data.CodigoRegiao;
                             Ajuda.CodArea = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional;
                             Ajuda.CodCresp = data.CodigoCentroResponsabilidade == null ? null : data.CodigoCentroResponsabilidade;
-                            Ajuda.RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().RubricaSalarial;
+                            Ajuda.RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.Trim().ToLower()).FirstOrDefault().RubricaSalarial;
                             Ajuda.UtilizadorCriacao = User.Identity.Name;
                             Ajuda.DataHoraCriacao = DateTime.Now;
                             Ajuda.UtilizadorModificacao = User.Identity.Name;
                             Ajuda.DataHoraModificacao = DateTime.Now;
 
                             var dbCreateResult = DBLinhasFolhaHoras.CreateAjuda(Ajuda);
-                        }                        
+                        }
                     });
                 }
 
@@ -1384,7 +1440,7 @@ namespace Hydra.Such.Portal.Controllers
                     MaoDeObra.CodigoCentroResponsabilidade = null;
 
                     //TABELA RHRECURSOSFH
-                    RhRecursosFh Recurso = DBRHRecursosFH.GetAll().Where(x => x.NoEmpregado == data.EmpregadoNo).SingleOrDefault();
+                    RhRecursosFh Recurso = DBRHRecursosFH.GetAll().Where(x => x.NoEmpregado.ToLower() == data.EmpregadoNo.ToLower()).SingleOrDefault();
                     if (Recurso != null)
                     {
                         MaoDeObra.NºRecurso = Recurso.Recurso;
@@ -1392,7 +1448,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     //TABELA PRECOVENDARECURSOFH
-                    PrecoVendaRecursoFh PrecoVendaRecurso = DBPrecoVendaRecursoFH.GetAll().Where(x => x.Code == MaoDeObra.NºRecurso && x.CodTipoTrabalho == data.CodigoTipoTrabalho.ToString() && Convert.ToDateTime(x.StartingDate) <= DateTime.Now && Convert.ToDateTime(x.EndingDate) >= DateTime.Now).SingleOrDefault();
+                    PrecoVendaRecursoFh PrecoVendaRecurso = DBPrecoVendaRecursoFH.GetAll().Where(x => x.Code.ToLower() == MaoDeObra.NºRecurso.ToLower() && x.CodTipoTrabalho.ToLower() == data.CodigoTipoTrabalho.ToString().ToLower() && Convert.ToDateTime(x.StartingDate) <= DateTime.Now && Convert.ToDateTime(x.EndingDate) >= DateTime.Now).SingleOrDefault();
                     if (PrecoVendaRecurso != null)
                     {
                         MaoDeObra.PreçoDeVenda = PrecoVendaRecurso.PrecoUnitario;
@@ -1400,13 +1456,43 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     //CALCULAR PRECO TOTAL
+                    DateTime Hora_De_Inicio = Convert.ToDateTime(data.HoraInicio);
+                    DateTime Hora_De_Fim = Convert.ToDateTime(data.HoraFim);
+
+                    Configuração Conf = DBConfigurations.GetById(1);
+                    TimeSpan Conf_H_Almoco_Ini = (TimeSpan)Conf.InicioHoraAlmoco;
+                    TimeSpan Conf_H_Almoco_Fim = (TimeSpan)Conf.FimHoraAlmoco;
+                    TimeSpan Conf_H_Jantar_Ini = (TimeSpan)Conf.InicioHoraJantar;
+                    TimeSpan Conf_H_Jantar_Fim = (TimeSpan)Conf.FimHoraJantar;
+
+                    TimeSpan H_Almoco = Conf_H_Almoco_Fim.Subtract(Conf_H_Almoco_Ini);
+                    TimeSpan H_Jantar = Conf_H_Jantar_Fim.Subtract(Conf_H_Jantar_Ini);
+
+                    double Num_Horas_Aux = (Hora_De_Fim - Hora_De_Inicio).TotalHours;
                     TimeSpan HorasTotal = TimeSpan.Parse(data.HoraFim) - TimeSpan.Parse(data.HoraInicio);
+
+                    if (data.HorarioAlmoco == true)
+                    {
+                        if (Hora_De_Fim >= Convert.ToDateTime(Conf_H_Almoco_Fim) && Hora_De_Inicio < Convert.ToDateTime(Conf_H_Almoco_Ini))
+                        {
+                            Num_Horas_Aux = Num_Horas_Aux - H_Almoco.TotalHours;
+                            HorasTotal = HorasTotal.Subtract(H_Almoco);
+                        }
+                    }
+
+                    if (data.HorarioJantar == true)
+                    {
+                        if (Hora_De_Fim >= Convert.ToDateTime(Conf_H_Jantar_Fim) && Hora_De_Inicio < Convert.ToDateTime(Conf_H_Jantar_Ini))
+                        {
+                            Num_Horas_Aux = Num_Horas_Aux - H_Jantar.TotalHours;
+                            HorasTotal = HorasTotal.Subtract(H_Jantar);
+                        }
+                    }
+
                     MaoDeObra.NºDeHoras = HorasTotal;
 
                     decimal HorasMinutosDecimal = Convert.ToDecimal(HorasTotal.TotalMinutes / 60);
                     MaoDeObra.PreçoTotal = HorasMinutosDecimal * Convert.ToDecimal(MaoDeObra.PreçoDeVenda);
-
-
 
                     MaoDeObra.NºFolhaDeHoras = data.FolhaDeHorasNo;
                     MaoDeObra.Date = data.Date;
@@ -1548,7 +1634,7 @@ namespace Hydra.Such.Portal.Controllers
                     MaoDeObra.CodigoCentroResponsabilidade = null;
 
                     //TABELA RHRECURSOSFH
-                    RhRecursosFh Recurso = DBRHRecursosFH.GetAll().Where(x => x.NoEmpregado == data.EmpregadoNo).SingleOrDefault();
+                    RhRecursosFh Recurso = DBRHRecursosFH.GetAll().Where(x => x.NoEmpregado.ToLower() == data.EmpregadoNo.ToLower()).SingleOrDefault();
                     if (Recurso != null)
                     {
                         MaoDeObra.NºRecurso = Recurso.Recurso;
@@ -1556,7 +1642,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     //TABELA PRECOVENDARECURSOFH
-                    PrecoVendaRecursoFh PrecoVendaRecurso = DBPrecoVendaRecursoFH.GetAll().Where(x => x.Code == MaoDeObra.NºRecurso && x.CodTipoTrabalho == data.CodigoTipoTrabalho.ToString() && Convert.ToDateTime(x.StartingDate) <= DateTime.Now && Convert.ToDateTime(x.EndingDate) >= DateTime.Now).SingleOrDefault();
+                    PrecoVendaRecursoFh PrecoVendaRecurso = DBPrecoVendaRecursoFH.GetAll().Where(x => x.Code.ToLower() == MaoDeObra.NºRecurso.ToLower() && x.CodTipoTrabalho.ToLower() == data.CodigoTipoTrabalho.ToString().ToLower() && Convert.ToDateTime(x.StartingDate) <= DateTime.Now && Convert.ToDateTime(x.EndingDate) >= DateTime.Now).SingleOrDefault();
                     if (PrecoVendaRecurso != null)
                     {
                         MaoDeObra.PreçoDeVenda = PrecoVendaRecurso.PrecoUnitario;
@@ -1790,7 +1876,7 @@ namespace Hydra.Such.Portal.Controllers
             bool result = false;
             try
             {
-                PresençasFolhaDeHoras Presenca = DBPresencasFolhaDeHoras.GetAll().Where(x => x.NºFolhaDeHoras == data.FolhaDeHorasNo && x.Data == data.Data).SingleOrDefault();
+                PresençasFolhaDeHoras Presenca = DBPresencasFolhaDeHoras.GetAll().Where(x => x.NºFolhaDeHoras.ToLower() == data.FolhaDeHorasNo.ToLower() && x.Data == data.Data).SingleOrDefault();
 
                 if (Presenca != null)
                 {
@@ -1874,13 +1960,13 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if ((data.Validado == null ? false : (bool)data.Validado) || (int)data.Estado != 0)
                     {
-                        result = 5;
+                        result = 5; //Não Pode validar pois já se encontra validada
                     }
                     else
                     {
                         if (!data.Validadores.ToLower().Contains(User.Identity.Name.ToLower()))
                         {
-                            result = 1;
+                            result = 1; //Não tem permissões para validar
                         }
                         else
                         {
@@ -1900,7 +1986,7 @@ namespace Hydra.Such.Portal.Controllers
                                     int Estado = (int)data.Estado;
                                     int NoRegistos = 0;
 
-                                    NoRegistos = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == data.FolhaDeHorasNo && x.TipoCusto == 2).Count();
+                                    NoRegistos = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower() && x.TipoCusto == 2).Count();
 
                                     if (TipoDeslocação != "2" && NoRegistos == 0)
                                         Estado = 2; // 2 = Registado
@@ -1963,8 +2049,8 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         result = 0;
                                     };
-                                    }
                                 }
+                            }
                         }
                     }
                 }
@@ -2102,7 +2188,7 @@ namespace Hydra.Such.Portal.Controllers
             int result = 0;
             try
             {
-                if (string.IsNullOrEmpty(data.FolhaDeHorasNo) || string.IsNullOrEmpty(data.EmpregadoNo) || string.IsNullOrEmpty(data.ProjetoNo) || data.TipoDeslocacao == 2) //2 = "Viatura Própria"
+                if (string.IsNullOrEmpty(data.FolhaDeHorasNo) || string.IsNullOrEmpty(data.EmpregadoNo) || string.IsNullOrEmpty(data.ProjetoNo) || data.TipoDeslocacao != 2) //2 = "Viatura Própria"
                 {
                     result = 6;
                 }
@@ -2143,7 +2229,7 @@ namespace Hydra.Such.Portal.Controllers
                                         int NoRegistos = 0;
                                         int Estado = (int)data.Estado;
 
-                                        NoRegistos = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == data.FolhaDeHorasNo && x.TipoCusto == 2).Count();
+                                        NoRegistos = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower() && x.TipoCusto == 2).Count();
 
                                         if (IntegradoEmRh || NoRegistos == 0)
                                             Estado = 2; // 2 = Registado
