@@ -24,6 +24,9 @@ namespace Hydra.Such.Data.Database
         public string ProcedimentosEmailEnvioParaCa { get; set; }
         public string ProcedimentosEmailEnvioParaArea { get; set; }
         public string ProcedimentosEmailEnvioParaArea2 { get; set; }
+        public string RegiãoPorDefeito { get; set; }
+        public string AreaPorDefeito { get; set; }
+        public string CentroRespPorDefeito { get; set; }
 
         public ICollection<AcessosDimensões> AcessosDimensões { get; set; }
         public ICollection<AcessosUtilizador> AcessosUtilizador { get; set; }

@@ -996,6 +996,10 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                         createTransferShipResult.Base64FileContent = result.ResultValue;
                         createTransferShipResult.eReasonCode = 1;
                     }
+                    else
+                    {
+                        createTransferShipResult.eMessages.Add(new TraceInformation(TraceType.Error, result.ErrorMessage));
+                    }
                 }
             }
             catch { }
