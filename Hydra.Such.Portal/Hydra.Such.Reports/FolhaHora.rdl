@@ -3,16 +3,16 @@
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
-    <DataSource Name="eSUCH">
-      <DataSourceReference>eSUCH</DataSourceReference>
+    <DataSource Name="eSuchDS">
+      <DataSourceReference>eSuchDS</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
-      <rd:DataSourceID>fe95b7d7-fcfe-426f-a85c-070b9face966</rd:DataSourceID>
+      <rd:DataSourceID>3fd95b8d-7655-4920-a89d-c6473cefde11</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
     <DataSet Name="CABECALHO">
       <Query>
-        <DataSourceName>eSUCH</DataSourceName>
+        <DataSourceName>eSuchDS</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@FH">
             <Value>=Parameters!FH.Value</Value>
@@ -27,6 +27,10 @@
       <Fields>
         <Field Name="Utilizador">
           <DataField>Utilizador</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="DataHoje">
+          <DataField>DataHoje</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="NumberFH">
@@ -85,7 +89,7 @@
     </DataSet>
     <DataSet Name="LINHAS">
       <Query>
-        <DataSourceName>eSUCH</DataSourceName>
+        <DataSourceName>eSuchDS</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@FH">
             <Value>=Parameters!FH.Value</Value>
@@ -6105,10 +6109,11 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=Globals!ExecutionTime.Date.ToLongDateString()</Value>
+                      <Value>=First(Fields!DataHoje.Value, "CABECALHO")</Value>
                       <Style>
                         <FontFamily>Arial</FontFamily>
                         <FontSize>7pt</FontSize>
+                        <Format>d' de 'MMMM' de 'yyyy</Format>
                       </Style>
                     </TextRun>
                   </TextRuns>
@@ -6270,21 +6275,13 @@
   <ReportParameters>
     <ReportParameter Name="FH">
       <DataType>String</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>FH00002</Value>
-        </Values>
-      </DefaultValue>
       <Prompt>FH</Prompt>
+      <Hidden>true</Hidden>
     </ReportParameter>
     <ReportParameter Name="Utilizador">
       <DataType>String</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>ARomao@such.pt</Value>
-        </Values>
-      </DefaultValue>
       <Prompt>Utilizador</Prompt>
+      <Hidden>true</Hidden>
     </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>

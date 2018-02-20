@@ -52,7 +52,6 @@
     <DataSet Include="ReportRequisicao.rsd" />
   </ItemGroup>
   <ItemGroup>
-    <DataSource Include="eSUCH.rds" />
     <DataSource Include="eSuchDS.rds" />
   </ItemGroup>
   <ItemGroup>

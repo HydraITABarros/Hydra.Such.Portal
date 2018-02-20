@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<RptDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="eSUCH">
-  <ConnectionProperties>
-    <Extension>SQL</Extension>
-    <ConnectString>Data Source=10.101.1.10\sqlnavdev;Initial Catalog=PlataformaOperacionalSUCH</ConnectString>
-  </ConnectionProperties>
-  <DataSourceID>dd6aafa2-3931-44bb-a226-852699d9dba8</DataSourceID>
-</RptDataSource>

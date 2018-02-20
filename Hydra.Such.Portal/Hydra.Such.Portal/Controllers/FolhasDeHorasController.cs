@@ -198,6 +198,9 @@ namespace Hydra.Such.Portal.Controllers
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
 
+            ViewBag.reportServerURL = _config.ReportServerURL;
+            ViewBag.userLogin = User.Identity.Name.ToString();
+
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
