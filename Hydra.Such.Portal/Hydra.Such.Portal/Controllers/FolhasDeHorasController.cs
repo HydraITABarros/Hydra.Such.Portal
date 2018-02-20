@@ -1228,35 +1228,60 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (AjudaCusto != null)
                 {
-                    NoDias = Convert.ToInt32((Convert.ToDateTime(data.DataChegadaTexto) - Convert.ToDateTime(data.DataPartidaTexto)).TotalDays);
-                    NoDias = NoDias + 1;
+                    //NoDias = Convert.ToInt32((Convert.ToDateTime(data.DataChegadaTexto) - Convert.ToDateTime(data.DataPartidaTexto)).TotalDays);
+                    //NoDias = NoDias + 1;
 
                     AjudaCusto.ForEach(x =>
                     {
-                        if (x.CodigoRefCusto == 1) //ALMOCO
-                        {
-                            if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida)
-                                NoDias = NoDias;
-                            else
-                                NoDias = NoDias - 1;
+                        NoDias = Convert.ToInt32((Convert.ToDateTime(data.DataChegadaTexto) - Convert.ToDateTime(data.DataPartidaTexto)).TotalDays);
+                        NoDias = NoDias + 1;
 
-                            if ((TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada) || data.DataPartidaTexto != data.DataChegadaTexto)
-                                NoDias = NoDias;
-                            else
-                                NoDias = NoDias - 1;
+                        if (Convert.ToDateTime(data.DataPartidaTexto) == Convert.ToDateTime(data.DataChegadaTexto))
+                        {
+
+                            if (x.CodigoRefCusto == 1) //ALMOCO
+                            {
+                                if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida && TimeSpan.Parse(data.HoraChegadaTexto) > x.LimiteHoraPartida)
+                                    NoDias = NoDias;
+                                else
+                                    NoDias = NoDias - 1;
+                            }
+
+                            if (x.CodigoRefCusto == 2) //JANTAR
+                            {
+                                if (TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada && TimeSpan.Parse(data.HoraPartidaTexto) < x.LimiteHoraChegada)
+                                    NoDias = NoDias;
+                                else
+                                    NoDias = NoDias - 1;
+                            }
                         }
-
-                        if (x.CodigoRefCusto == 2) //JANTAR
+                        else
                         {
-                            if ((TimeSpan.Parse(data.HoraPartidaTexto) >= x.LimiteHoraPartida) || data.DataPartidaTexto != data.DataChegadaTexto)
-                                NoDias = NoDias;
-                            else
-                                NoDias = NoDias - 1;
+                            if (x.CodigoRefCusto == 1) //ALMOCO
+                            {
+                                if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida)
+                                    NoDias = NoDias;
+                                else
+                                    NoDias = NoDias - 1;
 
-                            if (TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada)
-                                NoDias = NoDias;
-                            else
-                                NoDias = NoDias - 1;
+                                if ((TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada) || data.DataPartidaTexto != data.DataChegadaTexto)
+                                    NoDias = NoDias;
+                                else
+                                    NoDias = NoDias - 1;
+                            }
+
+                            if (x.CodigoRefCusto == 2) //JANTAR
+                            {
+                                if ((TimeSpan.Parse(data.HoraPartidaTexto) >= x.LimiteHoraPartida) || data.DataPartidaTexto != data.DataChegadaTexto)
+                                    NoDias = NoDias;
+                                else
+                                    NoDias = NoDias - 1;
+
+                                if (TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada)
+                                    NoDias = NoDias;
+                                else
+                                    NoDias = NoDias - 1;
+                            }
                         }
 
                         if (NoDias > 0)

@@ -373,7 +373,7 @@
             <paper-button id="btn_validarFolhaDeHoras" class="tablinks" on-tap="_validarFolhaDeHoras" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
             <paper-button id="btn_integrarEmRH" class="tablinks" on-tap="_integrarEmRH" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar Aj. Custo</paper-button>
             <paper-button id="btn_integrarEmRHKM" class="tablinks" on-tap="_integrarEmRHKM" disabled="{{ !_permissions.create }}"><i class="fa fa-check-square" aria-hidden="true"></i> Integrar KM's</paper-button>
-            <!--<paper-button id="btn_imprimirFH" class="tablinks" on-tap="_openRptDialog" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Folha de Horas</paper-button>-->
+            <paper-button id="btn_imprimirFH" class="tablinks" on-tap="_printFH" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Folha de Horas</paper-button>
             <!--</template>-->
         </div>
 
@@ -413,8 +413,8 @@
                             </vaadin-combo-box>
                         </div>
                         <!--<div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.empregadoNome}}" id="empregadoNome" name="empregadoNome" label="Nome Empregado" disabled="true"></vaadin-text-field>
-                        </div>-->
+                        <vaadin-text-field type="text" value="{{data.empregadoNome}}" id="empregadoNome" name="empregadoNome" label="Nome Empregado" disabled="true"></vaadin-text-field>
+                    </div>-->
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
@@ -857,7 +857,6 @@
                             </template>
                             <template>
                                 <vaadin-text-field name="tabAjudaJustificacao" value="{{item.observacao}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" style="text-align:left;"></vaadin-text-field>
-                                di
                             </template>
                         </vaadin-grid-column>
 
@@ -1264,17 +1263,17 @@
                             </template>
                             <template>
                                 <paper-button class="btnRemove" raised on-tap="_deletePresenca" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
-                                 <
+                                <
                             </template>
-                             <
+                            <
                         </vaadin-grid-column>
 
                         <!--</template>-->
                         <!--<template is="dom-if" if="{{ _permissions.update }}">
-                            <div class="col-sm-1 alignPoga">
-                                <paper-button class="btnSave" raised on-tap="_updatePresenca">Guardar</paper-button>
-                            </div>
-                        </template>-->
+                        <div class="col-sm-1 alignPoga">
+                            <paper-button class="btnSave" raised on-tap="_updatePresenca">Guardar</paper-button>
+                        </div>
+                    </template>-->
                 </div>
             </div>
 
@@ -1312,12 +1311,12 @@
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" disabled="{{ !_permissions.update }}" label="Código Região" required error-message="Este campo é obrigatório">
                                 <!--<template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>-->
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>-->
                                 <template>
                                     <table width="300px">
                                         <tr>
@@ -1332,12 +1331,12 @@
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraFunctionalAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" disabled="{{ !_permissions.update }}" label="Código Área Funcional" required error-message="Este campo é obrigatório">
                                 <!--<template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>-->
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>-->
                                 <template>
                                     <table width="400px">
                                         <tr>
@@ -1352,12 +1351,12 @@
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" disabled="{{ !_permissions.update }}" label="Código Centro Respon." required error-message="Este campo é obrigatório">
                                 <!--<template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>-->
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>-->
                                 <template>
                                     <table width="350px">
                                         <tr>
@@ -3160,9 +3159,14 @@
                     };
                 },
 
-                _openRptDialog: function (e) {
-                    this.$.rptContainer.src = "FH=" + this.data.folhaDeHorasNo + "&Utilizador=" + "ARomao@such.pt";
-                    this.$.rptDialog.open();
+                _printFH: function () {
+                    if (this._reportserverurl != undefined) {
+                        this.$.rptContainer.src = this._reportserverurl + "FH=" + this.data.folhaDeHorasNo + "&Utilizador=" + "ARomao@such.pt";
+                        this.$.rptDialog.open();
+                    }
+                    else {
+                        this._showErrorMessage("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                    }
                 },
 
                 _closeRptDialog: function () {

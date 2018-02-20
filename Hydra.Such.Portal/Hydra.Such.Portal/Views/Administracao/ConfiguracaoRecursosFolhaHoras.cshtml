@@ -189,7 +189,7 @@
                     <vaadin-grid-filter path="codigoRecurso" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[LCodigoRecurso]]" item-value-path="id" item-label-path="value" value="{{item.codigoRecurso}}" disabled>
+                    <vaadin-combo-box items="[[LCodigoRecurso]]" item-value-path="id" item-label-path="id" value="{{item.codigoRecurso}}" disabled>
                         <template>
                             <table width="220px"><tr><td width="30%">[[item.id]] </td><td width="70%"> <b>[[item.value]]</b></td></tr></table>
                         </template>
