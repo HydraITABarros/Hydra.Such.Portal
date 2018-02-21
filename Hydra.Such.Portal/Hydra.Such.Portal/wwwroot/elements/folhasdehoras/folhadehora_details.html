@@ -147,6 +147,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHorasValidacao"
+                   last-response="{{FolhaDeHorasUpdatedValidacao}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatefolhadehorasvalidacao_ajax"
+                   on-response="_updatefolhadehorasvalidacaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/FolhasDeHoras/UpdateFolhaDeHoras"
                    last-response="{{FolhaDeHorasUpdated}}"
                    method="post"
@@ -404,7 +413,7 @@
                             </such-selectbox>
                         </div>
                         <div class="col-sm-6">
-                            <vaadin-combo-box items="[[LFolhaDeHoraEmployees]]" id="empregadoNo" item-value-path="id" item-label-path="value" value="{{data.empregadoNo}}" on-value-changed="_codeChange" label="Nº Empregado" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                            <vaadin-combo-box items="[[LFolhaDeHoraEmployees]]" id="empregadoNo" item-value-path="id" item-label-path="value" value="{{data.empregadoNo}}" on-value-changed="_codeChange" label="Nº Empregado - Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -415,8 +424,8 @@
                             </vaadin-combo-box>
                         </div>
                         <!--<div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.empregadoNome}}" id="empregadoNome" name="empregadoNome" label="Nome Empregado" disabled="true"></vaadin-text-field>
-                        </div>-->
+                        <vaadin-text-field type="text" value="{{data.empregadoNome}}" id="empregadoNome" name="empregadoNome" label="Nome Empregado" disabled="true"></vaadin-text-field>
+                    </div>-->
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
@@ -469,7 +478,7 @@
                         <div class="col-sm-3 alignPoga">
                             <vaadin-checkbox checked="{{data.deslocacaoForaConcelho}}" id="deslocacaoForaConcelho" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">Desloc. fora do concelho</vaadin-checkbox>
                             <vaadin-checkbox checked="{{data.deslocacaoPlaneada}}" disabled="true" hidden>Deslocação Planeada</vaadin-checkbox>
-                            <vaadin-checkbox checked="{{data.terminada}}" id="terminada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">amTerminado</vaadin-checkbox>
+                            <vaadin-checkbox checked="{{data.terminada}}" id="terminada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>
                         </div>
                     </div>
 
@@ -491,7 +500,7 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-4">
-                                    <vaadin-combo-box id="percursoOrigem" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Código Origem" on-value-changed="_DataInicio" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                    <vaadin-combo-box id="percursoOrigem" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Origem" on-value-changed="_DataInicio" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
@@ -502,7 +511,7 @@
                                     </vaadin-combo-box>
                                 </div>
                                 <div class="col-sm-4">
-                                    <vaadin-combo-box id="percursoDestino" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Código Destino" on-value-changed="_DataInicio" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                    <vaadin-combo-box id="percursoDestino" items="[[LFolhaDeHoraPercursoOrigemDestino]]" item-value-path="id" item-label-path="value" label="Destino" on-value-changed="_DataInicio" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         <template>
                                             <paper-icon-item>
                                                 <paper-item-body two-line>
@@ -659,7 +668,6 @@
                                 <vaadin-text-field id="GridtabPercursoCustoTotal" name="tabPercursoCustoTotal" value="{{item.custoTotal}}" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
-                                di
                             </template>
                         </vaadin-grid-column>
 
@@ -942,7 +950,6 @@
                                 </div>
                                 <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                                 <div class="col-sm-1 alignPoga">
-                                    pe
                                     <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}">Criar</paper-button>
                                 </div>
                                 <!--</template>-->
@@ -979,7 +986,7 @@
                                 <vaadin-grid-filter path="projetoNo" />
                             </template>
                             <template>
-                                <vaadin-combo-box items="[[LFolhaDeHoraProjectNo]]" id="tabMaoDeObraProjetoNo" name="tabMaoDeObraProjetoNo" item-value-path="id" item-label-path="value" value="{{item.projetoNo}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
+                                <vaadin-combo-box items="[[LFolhaDeHoraNavProjectNo]]" id="tabMaoDeObraProjetoNo" name="tabMaoDeObraProjetoNo" item-value-path="no" item-label-path="no" value="{{item.projetoNo}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
                                     <template>
                                         <paper-icon-item>
                                             <paper-item-body two-line>
@@ -1116,7 +1123,6 @@
                                 <vaadin-text-field id="GridtabMaoDeObraPrecoTotal" name="tabMaoDeObraPrecoTotal" value="{{item.precoTotal}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" maxlength="18" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
-                                te
                             </template>
                         </vaadin-grid-column>
 
@@ -1181,7 +1187,6 @@
 
                                 <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                                 <div class="col-sm-1 alignPoga">
-                                    pe
                                     <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}">Criar</paper-button>
                                 </div>
                                 <!--</template>-->
@@ -1277,10 +1282,10 @@
 
                         <!--</template>-->
                         <!--<template is="dom-if" if="{{ _permissions.update }}">
-                            <div class="col-sm-1 alignPoga">
-                                <paper-button class="btnSave" raised on-tap="_updatePresenca">Guardar</paper-button>
-                            </div>
-                        </template>-->
+                        <div class="col-sm-1 alignPoga">
+                            <paper-button class="btnSave" raised on-tap="_updatePresenca">Guardar</paper-button>
+                        </div>
+                    </template>-->
                 </div>
             </div>
 
@@ -1318,12 +1323,12 @@
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" disabled="{{ !_permissions.update }}" label="Código Região" required error-message="Este campo é obrigatório">
                                 <!--<template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>-->
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>-->
                                 <template>
                                     <table width="300px">
                                         <tr>
@@ -1338,12 +1343,12 @@
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraFunctionalAreaCodes]]" id="codigoAreaFuncional" item-value-path="id" item-label-path="value" value="{{data.codigoAreaFuncional}}" disabled="{{ !_permissions.update }}" label="Código Área Funcional" required error-message="Este campo é obrigatório">
                                 <!--<template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>-->
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>-->
                                 <template>
                                     <table width="400px">
                                         <tr>
@@ -1358,12 +1363,12 @@
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraResponsabilityCenterCodes]]" id="codigoCentroResponsabilidade" item-value-path="id" item-label-path="value" value="{{data.codigoCentroResponsabilidade}}" disabled="{{ !_permissions.update }}" label="Código Centro Respon." required error-message="Este campo é obrigatório">
                                 <!--<template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>-->
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>-->
                                 <template>
                                     <table width="350px">
                                         <tr>
@@ -1449,6 +1454,7 @@
                         </div>
                         <div class="col-sm-3">
                             <vaadin-text-field type="text" value="{{data.numTotalKM}}" id="userModification" name="userModification" disabled="true" label="Nº Total KM"></vaadin-text-field>
+                            <div slot="suffix">KM</div>
                         </div>
                     </div>
                     <div class="row break_clear">
@@ -1781,16 +1787,16 @@
                     if (this._validateFolhaHoras()) {
                         if (this.$.tipoDeslocacao.value == 1) {
                             if (this.$.matricula.validate() & this.$.matricula.value != "") {
-                                this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
-                                this.$.page_updatefolhadehoras_ajax.generateRequest();
+                                this.$.page_updatefolhadehorasvalidacao_ajax.body = JSON.stringify(this.data);
+                                this.$.page_updatefolhadehorasvalidacao_ajax.generateRequest();
                             }
                             else {
                                 this._showErrorMessage("Falta preencher o campo Matrícula.");
                             }
                         }
                         else {
-                            this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
-                            this.$.page_updatefolhadehoras_ajax.generateRequest();
+                            this.$.page_updatefolhadehorasvalidacao_ajax.body = JSON.stringify(this.data);
+                            this.$.page_updatefolhadehorasvalidacao_ajax.generateRequest();
                         }
                     }
                 },
@@ -2154,6 +2160,9 @@
                                                 date: this.$.maoDeObraDate.value,
                                                 projetoNo: this.$.maoDeObraProjetoNo.value,
                                                 empregadoNo: this.$.empregadoNo.value,
+                                                codigoRegiao: this.$.codigoRegiao.value,
+                                                codigoArea: this.$.codigoAreaFuncional.value,
+                                                codigoCentroResponsabilidade: this.$.codigoCentroResponsabilidade.value,
                                                 codigoTipoTrabalho: this.$.maoDeObraCodigoTipoTrabalho.value,
                                                 horaInicio: this.$.maoDeObraHoraInicio.value,
                                                 horarioAlmoco: (this.$.maoDeObraHorarioAlmoco.value == "on" ? true : false),
@@ -2517,19 +2526,86 @@
                 },
 
                 //FOLHA DE HORAS
+                _updatefolhadehorasvalidacaoResponse: function (e) {
+                    //debugger;
+                    var ajax_request = this.$.page_updatefolhadehoras_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    var tipoDeslocacao = this.$.tipoDeslocacao.value;
+                    var matricula = this.$.matricula.value
+
+                    if (this.FolhaDeHorasUpdatedValidacao == 0) {
+                        bootbox.confirm({
+                            message: "Já existe uma Folha de Horas para este Empregado neste período de tempo, deseja continuar (Sim/Não)?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    if (tipoDeslocacao == 1) {
+                                        if (matricula != "") {
+                                            ajax_request.generateRequest();
+                                        }
+                                        else {
+                                            this._showErrorMessage("Falta preencher o campo Matrícula.");
+                                        }
+                                    }
+                                    else {
+                                        ajax_request.generateRequest();
+                                    }
+                                }
+                            }
+                        });  
+                    }
+
+                    if (this.FolhaDeHorasUpdatedValidacao == 1) {
+                        if (this.$.tipoDeslocacao.value == 1) {
+                            if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                                this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                                this.$.page_updatefolhadehoras_ajax.generateRequest();
+                            }
+                            else {
+                                this._showErrorMessage("Falta preencher o campo Matrícula.");
+                            }
+                        }
+                        else {
+                            this.$.page_updatefolhadehoras_ajax.body = JSON.stringify(this.data);
+                            this.$.page_updatefolhadehoras_ajax.generateRequest();
+                        }
+                    }
+                },
+
                 _updatefolhadehorasResponse: function (e) {
                     //debugger;
                     var self = this;
 
-                    if (this.FolhaDeHorasUpdated) {
+                    if (this.FolhaDeHorasUpdated == 0) {
                         this._showMessage('Folha de Horas actualizada com sucesso.');
 
                     } else {
-                        this._showErrorMessage('Ocorreu um erro ao actualizar a Folha De Horas.');
-                        setTimeout(
-                            function () {
-                                window.location.replace("/");
-                            }, 2500);
+                        if (this.FolhaDeHorasUpdated == 1) {
+                            this._showErrorMessage('Já existe uma Folha de Horas nesse período de tempo para empregado em questão.');
+                        }
+
+                        if (this.FolhaDeHorasUpdated == 2) {
+                            this._showErrorMessage('Ocorreu um erro ao actualizar a Folha De Horas.');
+                        }
+
+                        if (this.FolhaDeHorasUpdated == 99) {
+                            this._showErrorMessage('Ocorreu um erro.');
+                        }
+
+                        //setTimeout(
+                        //    function () {
+                        //        window.location.replace("/");
+                        //    }, 2500);
                     }
                 },
 
@@ -2802,6 +2878,9 @@
 
                         if (this.MaoDeObraHoraInicioFim == 5) {
                             this._showErrorMessage('A Hora de Início tem que ser inferior á Hora de Fim.');
+                        }
+                        if (this.MaoDeObraCreated == 99) {
+                            this._showErrorMessage('Ocorreu um erro na criação da Mão de Obra.');
                         }
                     }
                 },

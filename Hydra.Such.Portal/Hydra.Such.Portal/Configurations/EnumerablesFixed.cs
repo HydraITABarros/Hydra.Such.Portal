@@ -1089,17 +1089,17 @@ namespace Hydra.Such.Portal.Configurations
             new EnumDataString()
             {
                 Id = "KM",
-                Value = "Kilometros"
+                Value = "Kilómetros"
             },
             new EnumDataString()
             {
                 Id = "KMC",
-                Value = "Kilometros (Coimbra)"
+                Value = "Kilómetros (Coimbra)"
             },
             new EnumDataString()
             {
                 Id = "KMP",
-                Value = "Kilometros (Porto)"
+                Value = "Kilómetros (Porto)"
             }
         };
 
