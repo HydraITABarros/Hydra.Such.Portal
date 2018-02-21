@@ -227,7 +227,7 @@ namespace Hydra.Such.Portal.Controllers
                     FH.Área = area;
 
                     FH.NºEmpregado = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
-                    FH.CódigoRegião = DBUserConfigurations.GetById(User.Identity.Name).RegiaoPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).RegiaoPorDefeito;
+                    FH.CódigoRegião = DBUserConfigurations.GetById(User.Identity.Name).RegiãoPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).RegiãoPorDefeito;
                     FH.CódigoÁreaFuncional = DBUserConfigurations.GetById(User.Identity.Name).AreaPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).AreaPorDefeito;
                     FH.CódigoCentroResponsabilidade = DBUserConfigurations.GetById(User.Identity.Name).CentroRespPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).CentroRespPorDefeito;
 
@@ -522,7 +522,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (idEmployeePortal != null)
                     {
-                        FH.CodigoRegiao = DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiaoPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiaoPorDefeito;
+                        FH.CodigoRegiao = DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiãoPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).RegiãoPorDefeito;
                         FH.CodigoAreaFuncional = DBUserConfigurations.GetByEmployeeNo(idEmployee).AreaPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).AreaPorDefeito;
                         FH.CodigoCentroResponsabilidade = DBUserConfigurations.GetByEmployeeNo(idEmployee).CentroRespPorDefeito == null ? "" : DBUserConfigurations.GetByEmployeeNo(idEmployee).CentroRespPorDefeito;
                     }
