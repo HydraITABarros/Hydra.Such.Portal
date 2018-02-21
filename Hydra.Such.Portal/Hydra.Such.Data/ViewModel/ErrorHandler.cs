@@ -29,7 +29,7 @@ namespace Hydra.Such.Data.ViewModel
     }
 
     public enum TraceType
-    { Error, Success /*, Warning, Information*/}
+    { Error, Success, Exception/*, Warning, Information*/}
 
     public class FileActionResult : ErrorHandler
     {

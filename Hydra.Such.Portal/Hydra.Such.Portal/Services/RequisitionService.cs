@@ -261,9 +261,10 @@ namespace Hydra.Such.Portal.Services
                                 }
                             }
                         }
-                        catch
+                        catch(Exception ex)
                         {
                             requisition.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao criar encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
+                            requisition.eMessages.Add(new TraceInformation(TraceType.Exception, purchOrder.SupplierId + " " + ex.Message));
                         }
                     });
 
@@ -463,7 +464,7 @@ namespace Hydra.Such.Portal.Services
             if (createPurchaseHeaderTask.IsCompletedSuccessfully)
             {
                 createPrePurchOrderResult.ResultValue = createPurchaseHeaderTask.Result.WSPurchInvHeaderInterm.No;
-
+                
                 Task<WSPurchaseInvLine.CreateMultiple_Result> createPurchaseLinesTask = NAVPurchaseLineService.CreateMultipleAsync(purchOrder, configws);
                 createPurchaseLinesTask.Wait();
                 if (createPurchaseLinesTask.IsCompletedSuccessfully)

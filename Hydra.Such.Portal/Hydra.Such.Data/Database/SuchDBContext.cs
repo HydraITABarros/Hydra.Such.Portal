@@ -1005,6 +1005,14 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50)
                     .ValueGeneratedNever();
 
+                entity.Property(e => e.AreaPorDefeito)
+                    .HasColumnName("Area por defeito")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CentroRespPorDefeito)
+                    .HasColumnName("Centro Resp por defeito")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")
                     .HasColumnType("datetime");
@@ -1025,16 +1033,8 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("ProcedimentosEmailEnvioParaCA")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.RegiaoPorDefeito)
+                entity.Property(e => e.RegiãoPorDefeito)
                     .HasColumnName("Região por defeito")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.AreaPorDefeito)
-                    .HasColumnName("Area por defeito")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.CentroRespPorDefeito)
-                    .HasColumnName("Centro Resp por defeito")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.UtilizadorCriação)
@@ -1288,6 +1288,10 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.PróximoPeríodoFact)
                     .HasColumnName("Próximo Período Fact.")
                     .HasMaxLength(30);
+
+                entity.Property(e => e.RazãoArquivo)
+                    .HasColumnName("Razão Arquivo")
+                    .HasMaxLength(2000);
 
                 entity.Property(e => e.Referência1ºContrato)
                     .HasColumnName("Referência 1º Contrato")
