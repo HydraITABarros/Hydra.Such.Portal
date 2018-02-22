@@ -1089,17 +1089,17 @@ namespace Hydra.Such.Portal.Configurations
             new EnumDataString()
             {
                 Id = "KM",
-                Value = "Kilometros"
+                Value = "Kilómetros"
             },
             new EnumDataString()
             {
                 Id = "KMC",
-                Value = "Kilometros (Coimbra)"
+                Value = "Kilómetros (Coimbra)"
             },
             new EnumDataString()
             {
                 Id = "KMP",
-                Value = "Kilometros (Porto)"
+                Value = "Kilómetros (Porto)"
             }
         };
 
@@ -1730,7 +1730,7 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Coimbra"
             },
         };
-      
+
 
         public static readonly List<EnumData> ApprovalTypes = new List<EnumData>()
         {
@@ -1826,7 +1826,7 @@ namespace Hydra.Such.Portal.Configurations
                 return enumData;
             }
         }
-        
+
     }
 
     public class EnumDataString

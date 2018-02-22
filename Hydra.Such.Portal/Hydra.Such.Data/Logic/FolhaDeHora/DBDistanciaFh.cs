@@ -12,100 +12,100 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
     {
         #region CRUD
 
-        //public static DistanciaFh GetById(string id)
-        //{
-        //    try
-        //    {
-        //        using (var ctx = new SuchDBContext())
-        //        {
-        //            DistanciaFh Distancia = ctx.DistanciaFh.FirstOrDefault(x => x.CódigoOrigem == id);
+        public static DistanciaFh GetById(string id)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    DistanciaFh Distancia = ctx.DistanciaFh.FirstOrDefault(x => x.CódigoOrigem == id);
 
-        //            if (Distancia == null)
-        //                return ctx.DistanciaFh.FirstOrDefault(x => x.CódigoDestino == id);
-        //            else
-        //                return Distancia;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
+                    if (Distancia == null)
+                        return ctx.DistanciaFh.FirstOrDefault(x => x.CódigoDestino == id);
+                    else
+                        return Distancia;
+                }
+            }
+            catch (Exception ex)
+            {
 
-        //        return null;
-        //    }
-        //}
+                return null;
+            }
+        }
 
-        //public static List<DistanciaFh> GetAll()
-        //{
-        //    try
-        //    {
-        //        using (var ctx = new SuchDBContext())
-        //        {
-        //            return ctx.DistanciaFh.ToList();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return null;
-        //    }
-        //}
+        public static List<DistanciaFh> GetAll()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.DistanciaFh.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
-        //public static DistanciaFh Create(DistanciaFh ObjectToCreate)
-        //{
-        //    try
-        //    {
-        //        using (var ctx = new SuchDBContext())
-        //        {
-        //            ObjectToCreate.DataHoraCriação = DateTime.Now;
-        //            ctx.DistanciaFh.Add(ObjectToCreate);
-        //            ctx.SaveChanges();
-        //        }
+        public static DistanciaFh Create(DistanciaFh ObjectToCreate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ObjectToCreate.DataHoraCriação = DateTime.Now;
+                    ctx.DistanciaFh.Add(ObjectToCreate);
+                    ctx.SaveChanges();
+                }
 
-        //        return ObjectToCreate;
-        //    }
-        //    catch (Exception ex)
-        //    {
+                return ObjectToCreate;
+            }
+            catch (Exception ex)
+            {
 
-        //        return null;
-        //    }
-        //}
+                return null;
+            }
+        }
 
-        //public static DistanciaFh Update(DistanciaFh ObjectToUpdate)
-        //{
-        //    try
-        //    {
-        //        using (var ctx = new SuchDBContext())
-        //        {
-        //            ObjectToUpdate.DataHoraÚltimaAlteração = DateTime.Now;
-        //            ctx.DistanciaFh.Update(ObjectToUpdate);
-        //            ctx.SaveChanges();
-        //        }
+        public static DistanciaFh Update(DistanciaFh ObjectToUpdate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ObjectToUpdate.DataHoraÚltimaAlteração = DateTime.Now;
+                    ctx.DistanciaFh.Update(ObjectToUpdate);
+                    ctx.SaveChanges();
+                }
 
-        //        return ObjectToUpdate;
-        //    }
-        //    catch (Exception ex)
-        //    {
+                return ObjectToUpdate;
+            }
+            catch (Exception ex)
+            {
 
-        //        return null;
-        //    }
-        //}
+                return null;
+            }
+        }
 
-        //public static bool Delete(DistanciaFh ObjectToDelete)
-        //{
-        //    try
-        //    {
-        //        using (var ctx = new SuchDBContext())
-        //        {
-        //            ctx.DistanciaFh.Remove(ObjectToDelete);
-        //            ctx.SaveChanges();
-        //        }
+        public static bool Delete(DistanciaFh ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.DistanciaFh.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
 
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
+                return true;
+            }
+            catch (Exception ex)
+            {
 
-        //        return false;
-        //    }
-        //}
+                return false;
+            }
+        }
 
         public static decimal GetDistanciaPrevista(string Origem, string Destino)
         {

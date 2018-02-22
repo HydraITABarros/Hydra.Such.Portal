@@ -74,7 +74,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        
+
         [HttpPost]
         public JsonResult GetProposalsFetchUnit()
         {
@@ -101,7 +101,7 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.RequisitionsStatus;
             return Json(result);
         }
-        
+
         [HttpPost]
         public JsonResult GetProjectCategories()
         {
@@ -116,7 +116,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = x.IdUtilizador,
                 value = x.Nome
-            }).ToList(); 
+            }).ToList();
             return Json(result);
         }
 
@@ -127,7 +127,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = x.Código,
                 value = x.Descrição
-            }).ToList(); 
+            }).ToList();
             return Json(result);
         }
 
@@ -215,7 +215,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-       
+
         [HttpPost]
         public JsonResult GetFolhaDeHoraAjudaTipoCusto()
         {
@@ -277,7 +277,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVOpenOrderLinesViewModels> result = DBNAV2017OpenOrderLines.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, date, "").ToList();
             return Json(result);
         }
-        
+
         [HttpPost]
         public JsonResult getOpenOrderLine([FromBody] string numb, string documentNO, int LineNo, DateTime? date)
         {
@@ -320,7 +320,7 @@ namespace Hydra.Such.Portal.Controllers
                     id = x.Line_No,
                     value = x.Description
                 }).ToList(); ;
-                
+
                 return Json(result);
             }
             catch (Exception e)
@@ -356,7 +356,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<DDMessageString> result = Configurations.EnumerablesFixed.RequisitionStatesEnumData.Select(x => new DDMessageString()
             {
-                id =Convert.ToString(x.Id),
+                id = Convert.ToString(x.Id),
                 value = x.Value
             }).ToList();
             return Json(result);
@@ -382,7 +382,7 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
             return Json(result);
         }
-        
+
         [HttpPost]
         public JsonResult GetCustomerContacts([FromBody] string customerNo)
         {
@@ -412,7 +412,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
 
-        
+
         [HttpPost]
         public JsonResult GetContractPaymentTerms()
         {
@@ -752,6 +752,18 @@ namespace Hydra.Such.Portal.Controllers
             }).Take(5).ToList();
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetResourcesCodeFH()
+        {
+            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
+            {
+                id = x.Code,
+                value = x.Name,
+                extra = x.MeasureUnit
+            }).ToList();
+            return Json(result);
+        }
         #endregion
 
 
@@ -856,7 +868,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = Convert.ToString(x.ProductivityUnitNo),
                 value = x.Description
-            }).ToList(); 
+            }).ToList();
             return Json(result);
         }
 
@@ -1397,8 +1409,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = x.NºProduto,
                 value = x.Descrição,
-                extra= x.CustoUnitário.ToString(),
-                extra2=x.CódUnidadeMedidaProduto
+                extra = x.CustoUnitário.ToString(),
+                extra2 = x.CódUnidadeMedidaProduto
             }).ToList();
 
             return Json(result);
@@ -1446,7 +1458,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetStockkeepingUnit( string product)
+        public JsonResult GetStockkeepingUnit(string product)
         {
             List<NAVStockKeepingUnitViewModel> StockkeepingUnit = DBNAV2017StockKeepingUnit.GetByProductsNo(_config.NAVDatabaseName, _config.NAVCompanyName, product).ToList();
 
@@ -1501,7 +1513,7 @@ namespace Hydra.Such.Portal.Controllers
             switch (type)
             {
                 case "1":
-                    result = DBRecordTechnicalOfPlates.GetAll().Select(x => new DDMessageRelated() { id= x.NºPrato, value = x.Descrição}).ToList();
+                    result = DBRecordTechnicalOfPlates.GetAll().Select(x => new DDMessageRelated() { id = x.NºPrato, value = x.Descrição }).ToList();
                     break;
                 case "2":
                     result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated() { id = x.Code, value = x.Name }).ToList();
@@ -1532,5 +1544,5 @@ namespace Hydra.Such.Portal.Controllers
         public string extra2 { get; set; }
     }
 
-   
+
 }

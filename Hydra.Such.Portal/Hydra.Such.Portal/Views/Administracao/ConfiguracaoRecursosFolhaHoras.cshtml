@@ -3,39 +3,42 @@
     ViewData["Title"] = "Configuração Recursos Folha de Horas";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@*grid*@
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html">
-@*textfield*@
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
-<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
+
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-context-menu/vaadin-context-menu.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-item/vaadin-item.html" />
+<link rel="import" href="/lib/vaadin-list-box/vaadin-list-box.html" />
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button.html">
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button-group.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 
+<link rel="import" href="/lib/neon-animation/web-animations.html">
 
-@*combobox*@
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
-<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html" />
-@*toast*@
-<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
-@*layout*@
-<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
-<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
-@*mixin*@
-<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-@*button*@
-<link rel="import" href="~/lib/paper-button/paper-button.html" />
-@*ironform*@
-<link rel="import" href="~/lib/iron-form/iron-form.html" />
-@*paperinput*@
-<link rel="import" href="~/lib/paper-input/paper-input.html" />
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
 <h1 class="title">Configuração Recursos Folha de Horas</h1>
 <x-group-cont-product></x-group-cont-product>
@@ -60,6 +63,21 @@
 
             paper-input {
                 max-width: 450px !important;
+            }
+
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+                };
             }
         </style>
         @*POPULATE GRID*@
@@ -96,7 +114,7 @@
                    id="ajax_delete"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetResourcesCode"
+        <iron-ajax url="/PopulateDropdowns/GetResourcesCodeFH"
                    last-response="{{LCodigoRecurso}}"
                    auto
                    method="post"
@@ -110,40 +128,42 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
-        <div class="row">
-            <div class="col-lg-2">
-                <h2 class="separator">Novo Registo</h2>
-            </div>
-        </div>
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
+                <div class="panel-body">
 
-        <div class="row" id="configuracaoRecursosFolhaHoras">
+                    <div class="row" id="configuracaoRecursosFolhaHoras">
 
-            <div class="col-lg-3">
-                <vaadin-combo-box id="tipo" items="[[LtipoCusto]]" item-value-path="id" item-label-path="value" value="{{tipo}}" labe label="Tipo" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <table width="220px"><tr><td width="100%"> <b>[[item.value]]</b></td></tr></table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
+                        <div class="col-lg-3">
+                            <vaadin-combo-box id="tipo" items="[[LtipoCusto]]" item-value-path="id" item-label-path="value" value="{{tipo}}" label="Tipo" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <table width="220px"><tr><td width="100%"> <b>[[item.value]]</b></td></tr></table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
 
-            <div class="col-lg-3">
-                <vaadin-combo-box id="codigoRecurso" items="[[LCodigoRecurso]]" item-value-path="id" item-label-path="value" value="{{codigoRecurso}}" label="Código Recurso" disabled="{{ _permissionsCreate }}">
-                    <template>
-                        <table width="220px"><tr><td width="30%">[[item.id]] </td><td width="70%"> <b>[[item.value]]</b></td></tr></table>
-                    </template>
-                </vaadin-combo-box>
-            </div>
+                        <div class="col-lg-3">
+                            <vaadin-combo-box id="codigoRecurso" items="[[LCodigoRecurso]]" item-value-path="id" item-label-path="value" value="{{codigoRecurso}}" label="Código Recurso" disabled="{{ _permissionsCreate }}">
+                                <template>
+                                    <table width="220px"><tr><td width="30%">[[item.id]] </td><td width="70%"> <b>[[item.value]]</b></td></tr></table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
 
-            <div class="col-lg-3"><vaadin-text-field id="descricao" value="{{descricao}}" label="Descrição" maxlength="200" disabled></vaadin-text-field></div>
-            <div class="col-lg-3"><vaadin-text-field id="unidMedida" value="{{unidMedida}}" label="Unidade de Medida" maxlength="20" disabled></vaadin-text-field></div>
+                        <div class="col-lg-3"><vaadin-text-field id="descricao" value="{{descricao}}" label="Descrição" maxlength="200" disabled></vaadin-text-field></div>
+                        <div class="col-lg-3"><vaadin-text-field id="unidMedida" value="{{unidMedida}}" label="Unidade de Medida" maxlength="20" disabled></vaadin-text-field></div>
 
-            <div class="col-lg-3"><vaadin-text-field id="precoUnitarioCusto" value="{{precoUnitarioCusto}}" label="Preço Unitário Custo" type="number" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
-            <div class="col-lg-3"><vaadin-text-field id="precoUnitarioVenda" value="{{precoUnitarioVenda}}" label="Preço Unitário Venda" type="number" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+                        <div class="col-lg-3"><vaadin-text-field id="precoUnitarioCusto" value="{{precoUnitarioCusto}}" label="Preço Unitário Custo" type="number" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+                        <div class="col-lg-3"><vaadin-text-field id="precoUnitarioVenda" value="{{precoUnitarioVenda}}" label="Preço Unitário Venda" type="number" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
 
-            <div class="col-lg-3"><vaadin-text-field id="rubricaSalarial" value="{{rubricaSalarial}}" label="Rúbrica Salarial" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+                        <div class="col-lg-3"><vaadin-text-field id="rubricaSalarial" value="{{rubricaSalarial}}" label="Rúbrica Salarial" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
 
-            <div class="col-lg-2 alignPoga"><paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button></div>
-        </div>
+                        <div class="col-lg-2 alignPoga"><paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button></div>
+                    </div>
+
+                </div>
+            </paper-collapse-item>
+        </paper-collapse-group>
 
         <br />
 
@@ -165,12 +185,11 @@
 
             <vaadin-grid-column resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="codigoRecursoText">Código Recurso</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoRecursoText" />
+                    <vaadin-grid-sorter path="codigoRecurso">Código Recurso</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoRecurso" />
                 </template>
                 <template>
-
-                    <vaadin-combo-box items="[[LCodigoRecurso]]" item-value-path="id" item-label-path="value" value="{{item.codigoRecurso}}" disabled>
+                    <vaadin-combo-box items="[[LCodigoRecurso]]" item-value-path="id" item-label-path="id" value="{{item.codigoRecurso}}" disabled>
                         <template>
                             <table width="220px"><tr><td width="30%">[[item.id]] </td><td width="70%"> <b>[[item.value]]</b></td></tr></table>
                         </template>
@@ -184,7 +203,7 @@
                     <vaadin-grid-filter path="descricao" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.descricao}}"></vaadin-text-field>
+                    <vaadin-text-field value="{{item.descricao}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -194,7 +213,7 @@
                     <vaadin-grid-filter path="unidMedida" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.unidMedida}}"></vaadin-text-field>
+                    <vaadin-text-field value="{{item.unidMedida}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -302,6 +321,11 @@
                     _openToastError: function (message) {
                         this.$.ToastError.text = message;
                         this.$.ToastError.open();
+                    },
+                    _tipoChange: function (e) {
+                        //debugger;
+                        this.$.getTipo_ajax.body = JSON.stringify(e.detail.value);
+                        this.$.getTipo_ajax.generateRequest();
                     },
                     _validateData: function (container) {
 
@@ -427,7 +451,8 @@
                         }
                     },
                     _goBack: function (e) {
-                        window.location = "../";
+                        //window.location = "../";
+                        window.history.back();
                     }
                 });
             });

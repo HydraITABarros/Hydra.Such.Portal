@@ -967,7 +967,7 @@
                 <template is="dom-if" if="{{ _isError(item.type) }}">
                     <div>&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true">{{ item.message }}</i></div>
                 </template>
-                <template is="dom-if" if="{{ !_isError(item.type) }}">
+                <template is="dom-if" if="{{ _isSuccess(item.type) }}">
                     <div>&nbsp;<i class="fa fa-check" aria-hidden="true">{{ item.message }}</i></div>
                 </template>
             </template>
@@ -1056,6 +1056,9 @@
                         if (!this._hasErrors)
                             this._hasErrors = type == 0;
                         return type == 0;
+                    },
+                    _isSuccess: function (type) {
+                        return type == 1;
                     },
                     _checkForErrors: function () {
                         var errors = this.Requisition.eMessages.find(x => x.type == 0);

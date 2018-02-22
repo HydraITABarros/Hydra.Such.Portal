@@ -90,6 +90,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string CreateUser { get; set; }
         public string UpdateUser { get; set; }
         public bool? Filed { get; set; }
+        public string ArchiveReason { get; set; }
         public int? RequestOrigin { get; set; }
         public string RequestOriginDescription { get; set; }
         public string SentData { get; set; }
