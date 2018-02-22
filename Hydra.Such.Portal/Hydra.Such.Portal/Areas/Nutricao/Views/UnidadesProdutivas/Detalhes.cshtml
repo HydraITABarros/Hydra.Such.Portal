@@ -95,6 +95,14 @@
                    on-response="_responseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Nutricao/UnidadesProdutivas/DeleteProductivityUnit"
+                   last-response="{{deletedData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete"
+                   on-response="_deleteResponse"
+                   content-type="application/json"></iron-ajax>
+
 
         @*POPULATE DROPDOWNS*@
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{CBResponsabilityCenters}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -319,7 +327,7 @@
                                                         </template>
                                                         <template>
                                                             <template is="dom-if" if="{{ item.selected }}">
-                                                                <vaadin-combo-box items="[[CBProjects]]" id="BPProjectNoGrid" name="BPProjectNoGrid"  item-value-path="id" item-label-path="value" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-value-changed="_getProjectBillingDataGrid">
+                                                                <vaadin-combo-box items="[[CBProjects]]" id="BPProjectNoGrid" name="BPProjectNoGrid" item-value-path="id" item-label-path="value" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-value-changed="_getProjectBillingDataGrid">
                                                                     <template>
                                                                         <table width="300px">
                                                                             <tr>
@@ -470,7 +478,6 @@
                                     <template is="dom-if" if="{{ !_isCreate }}">
                                         <template is="dom-if" if="{{ _permissions.update }}">
                                             <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                            <paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>
                                         </template>
                                     </template>
                                     <template is="dom-if" if="{{ _permissions.delete }}">
@@ -557,7 +564,6 @@
                     var self = this;
 
                     //Set create mode
-                    debugger;;
                     if (this.data.productivityUnitNo != "" && this.data.productivityUnitNo != null) {
                         this._isCreate = false;
                     }
@@ -566,9 +572,17 @@
                         if (data.detail.url.indexOf("Get") !== -1) {
 
                         } else if (data.detail.url.indexOf("Create") !== -1) {
-
+                            if (this.data.eReasonCode == 1) {
+                                this._openToast("Unidade Produtiva criada com sucesso.");
+                            } else {
+                                this._openToastError(this.data.eMessage);
+                            }
                         } else if (data.detail.url.indexOf("Update") !== -1) {
-
+                            if (this.data.eReasonCode == 1) {
+                                this._openToast("Unidade Produtiva Atualizada com sucesso.");
+                            } else {
+                                this._openToastError(this.data.eMessage);
+                            }
                         }
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")
@@ -673,9 +687,48 @@
                     }
                 },
                 _update: function () {
-                    this.$.grid_databound.url = "/Nutricao/UnidadesProdutivas/UpdateUnidadeProdutiva";
-                    this.$.grid_databound.body = JSON.stringify(this.result);
+                    this.$.grid_databound.url = "/Nutricao/UnidadesProdutivas/UpdateProductivityUnit";
+                    this.$.grid_databound.body = JSON.stringify(this.data);
                     this.$.grid_databound.generateRequest();
+                },
+                _delete: function () {
+                    var data = this.data;
+                    var ajax_request = this.$.ajax_delete;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover a Unidade Produtiva?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(data);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _deleteResponse: function (data) {
+                    var self = this;
+                    
+                    if (data.detail.status === 200) {
+                        if (this.deletedData.eReasonCode == 1) {
+                            this._openToast("Unidade Produtiva removida com sucesso.");
+                            setTimeout(function () {
+                                window.location.href = "../";
+                            }, 2000);
+                        } else {
+                            this._openToastError(this.deletedData.eMessage);
+                        }
+                    } else {
+                        this._openToastError("Ocorreu um erro desconhecido.")
+                    }
                 },
             });
         });

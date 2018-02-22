@@ -421,7 +421,7 @@
 
         <div class="marginSpace">
             <template is="dom-if" if="{{ _isCreate }}">
-                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar-teste</paper-button>
+                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </template>
             <template is="dom-if" if="{{ !_isCreate }}">
                 <template is="dom-if" if="{{ _permissions.update }}">
@@ -498,9 +498,8 @@
                         this.$.ToastMessageError.open();
                     },
                     _validateData: function () {
-                        debugger;
+                        this.$.ProjectClient.validate();
                         if (this.$.Description.validate() &
-                            this.$.ProjectClient.validate() &
                             this.$.ProjectLeader.validate() &
                             this.$.ProjectResponsible.validate() &
                             this.$.ContractNo.validate() &
@@ -508,7 +507,10 @@
                             this.$.RegionCode.validate() &
                             this.$.FunctionalAreaCode.validate() &
                             this.$.ResponsabilityCenterCode.validate()) {
-                            return true;
+
+                            if (this.$.ProjectClient.value != "" && this.$.ProjectClient.value != undefined) {
+                                return true;
+                            } 
                         }
                         this._openToastError("Verifique os dados inseridos.");
                         return false;

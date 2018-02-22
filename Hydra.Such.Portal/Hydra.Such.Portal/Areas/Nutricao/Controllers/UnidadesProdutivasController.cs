@@ -190,40 +190,112 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
             return Json(data);
         }
 
+        [HttpPost]
+        [Area("Nutricao")]
+        public JsonResult UpdateProductivityUnit([FromBody] ProductivityUnitViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    data.CreateUser = User.Identity.Name;
+                    UnidadesProdutivas CObject = DBProductivityUnits.ParseToDb(data);
+                    CObject = DBProductivityUnits.GetById(CObject.NºUnidadeProdutiva);
 
-        
+                    if (CObject != null)
+                    {
+                        CObject.Descrição = data.Description;
+                        CObject.Estado = data.Status;
+                        CObject.NºCliente = data.ClientNo;
+                        CObject.CódigoRegião = data.CodeRegion;
+                        CObject.CódigoCentroResponsabilidade = data.CodeResponsabilityCenter;
+                        CObject.CódigoÁreaFuncional = data.CodeFunctionalArea;
+                        CObject.DataInícioExploração = data.StartDateExploration != "" && data.StartDateExploration != null ? DateTime.Parse(data.StartDateExploration) : (DateTime?)null;
+                        CObject.DataFimExploração = data.EndDateExploration != "" && data.EndDateExploration != null ? DateTime.Parse(data.EndDateExploration) : (DateTime?)null;
+                        CObject.Armazém = data.Warehouse;
+                        CObject.ArmazémFornecedor = data.WarehouseSupplier;
+                        CObject.ProjetoCozinha = data.ProjectKitchen;
+                        CObject.ProjetoDesperdícios = data.ProjectWaste;
+                        CObject.ProjetoDespMatPrimas = data.ProjectWasteFeedstock;
+                        CObject.ProjetoMatSubsidiárias = data.ProjectSubsidiaries;
+                        CObject.DataHoraModificação = DateTime.Now;
+                        CObject.UtilizadorModificação = User.Identity.Name;
+                        DBProductivityUnits.Update(CObject);
+
+
+                        //Get Project Billing Projets
+                        List<ProjetosFaturação> ExistingPBillings = DBProjectBilling.GetByNUnidadeProdutiva(CObject.NºUnidadeProdutiva);
+
+                        List<DBProjectBillingViewModel> PBillingsToCreate = data.BillingProjects.Where(pb => !ExistingPBillings.Any(x => x.NºUnidadeProdutiva == pb.ProductivityUnitNo && x.NºProjeto == pb.ProjectNo)).ToList();
+                        List<ProjetosFaturação> PBillingsToDelete = ExistingPBillings.Where(x => !data.BillingProjects.Any(pb => x.NºUnidadeProdutiva == pb.ProductivityUnitNo && x.NºProjeto == pb.ProjectNo)).ToList();
+
+                        //Create Billing Projects
+                        PBillingsToCreate.ForEach(x =>
+                        {
+                            x.Active = true;
+                            x.ProductivityUnitNo = CObject.NºUnidadeProdutiva;
+                            x.CreateUser = User.Identity.Name;
+                            x.Selected = false;
+                            DBProjectBilling.Create(DBProjectBilling.ParseToDB(x));
+                        });
+
+                        PBillingsToDelete.ForEach(x =>
+                        {
+                            DBProjectBilling.Delete(x);
+                        });
+
+                        ExistingPBillings.ForEach(x =>
+                        {
+                            DBProjectBillingViewModel PBToUpdate = data.BillingProjects.Where(pb => x.NºUnidadeProdutiva == pb.ProductivityUnitNo && x.NºProjeto == pb.ProjectNo).FirstOrDefault();
+                            x.NºProjeto = PBToUpdate.ProjectNo;
+                            x.UtilizadorModificação = User.Identity.Name;
+                            x.DataHoraModificação = DateTime.Now;
+                            DBProjectBilling.Update(x);
+                        });
+
+                        data = DBProductivityUnits.ParseToViewModel(CObject);
+                        data.eReasonCode = 1;
+                    }
+                    else
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Ocorreu um erro ao atualizar os dados na base de dados.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 2;
+                data.eMessage = "Ocorreu um erro ao atualizar a Unidade Produtiva.";
+            }
+            return Json(data);
+        }
+
         [Area("Nutricao")]
         [HttpPost]
-        public JsonResult UpdateUnidadeProdutiva([FromBody] ProductivityUnitViewModel item)
+        public JsonResult DeleteProductivityUnit([FromBody] ProductivityUnitViewModel item)
         {
-            ProductivityUnitViewModel result = new ProductivityUnitViewModel();
+            ErrorHandler result = new ErrorHandler();
 
             try
             {
                 if (item != null)
                 {
-                    UnidadesProdutivas CProductivityUnit = DBProductivityUnits.GetById(item.ProductivityUnitNo);
-                    CProductivityUnit.Descrição = item.Description;
-                    CProductivityUnit.NºCliente = item.ClientNo;
-                    CProductivityUnit.DataInícioExploração = item.StartDateExploration != "" && item.StartDateExploration != null ? DateTime.Parse(item.StartDateExploration) : (DateTime?)null;
-                    CProductivityUnit.DataFimExploração = item.EndDateExploration != "" && item.EndDateExploration != null ? DateTime.Parse(item.EndDateExploration) : (DateTime?)null;
-                    CProductivityUnit.Armazém = item.Warehouse;
-                    CProductivityUnit.ArmazémFornecedor = item.WarehouseSupplier;
-                    CProductivityUnit.CódigoRegião = item.CodeRegion;
-                    CProductivityUnit.CódigoÁreaFuncional = item.CodeFunctionalArea;
-                    CProductivityUnit.CódigoCentroResponsabilidade = item.CodeResponsabilityCenter;
-                    CProductivityUnit.ProjetoCozinha = item.ProjectKitchen;
-                    CProductivityUnit.ProjetoDesperdícios = item.ProjectWaste;
-                    CProductivityUnit.ProjetoMatSubsidiárias = item.ProjectSubsidiaries;
-                    DBProductivityUnits.Update(CProductivityUnit);
+                    List<ProjetosFaturação> ExistingPBillings = DBProjectBilling.GetByNUnidadeProdutiva(item.ProductivityUnitNo);
+                    ExistingPBillings.ForEach(x => DBProjectBilling.Delete(DBProjectBilling.GetById(x.NºUnidadeProdutiva, x.NºProjeto)));
+                    
+                    DBProductivityUnits.Delete(DBProductivityUnits.ParseToDb(item));
+                    result.eReasonCode = 1;
+                    result.eMessage = "Unidade Produtiva removida com sucesso.";
                 }
             }
             catch (Exception)
             {
-                return null;
+                result.eReasonCode = 2;
+                result.eMessage = "Ocorreu um erro ao remover a unidade produtiva.";
             }
 
-            return null;
+            return Json(result);
         }
         #endregion
     }
