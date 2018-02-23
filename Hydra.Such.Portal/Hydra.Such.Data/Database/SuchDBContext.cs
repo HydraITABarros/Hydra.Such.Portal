@@ -4821,13 +4821,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Data).HasColumnType("date");
 
-                entity.Property(e => e.DataHoraCriação)
-                    .HasColumnName("Data/Hora Criação")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataHoraModificação)
-                    .HasColumnName("Data/Hora Modificação")
-                    .HasColumnType("datetime");
+                entity.Property(e => e.NoEmpregado)
+                    .HasColumnName("No Empregado")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.Hora1ªEntrada).HasColumnName("Hora 1ª Entrada");
 
@@ -4839,13 +4835,30 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Observacoes).HasMaxLength(200);
 
+                entity.Property(e => e.Validado).HasColumnName("Validado");
+
+                entity.Property(e => e.IntegradoTR).HasColumnName("IntegradoTR");
+
+                entity.Property(e => e.DataIntTR)
+                    .HasColumnName("DataIntTR")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.UtilizadorCriação)
                     .HasColumnName("Utilizador Criação")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.DataHoraCriação)
+                    .HasColumnName("Data/Hora Criação")
+                    .HasColumnType("datetime");
+
+
                 entity.Property(e => e.UtilizadorModificação)
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraModificação)
+                    .HasColumnName("Data/Hora Modificação")
+                    .HasColumnType("datetime");
 
                 entity.HasOne(d => d.NºFolhaDeHorasNavigation)
                     .WithMany(p => p.PresençasFolhaDeHoras)

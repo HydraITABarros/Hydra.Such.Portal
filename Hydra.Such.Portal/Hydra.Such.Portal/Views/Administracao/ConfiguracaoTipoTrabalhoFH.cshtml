@@ -115,6 +115,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/PrecoVendaRecurso_CodeTipoTrabalho_FH"
+                   last-response="{{LCodeTipoTrabalho}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetTipoHoraFH"
                    last-response="{{LTipoHora}}"
                    auto
@@ -128,12 +136,23 @@
                 <div class="panel-body">
 
                     <div class="row" id="configuracaoTipoTrabalho">
-                        <div class="col-sm-2">
+                        @*<div class="col-sm-2">
                             <vaadin-text-field id="codigo" value="{{codigo}}" label="Código" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório" maxlength="10"></vaadin-text-field>
+                        </div>*@
+                        <div class="col-sm-2">
+                            <vaadin-combo-box items="[[LCodeTipoTrabalho]]" id="codTipoTrabalho" item-value-path="id" item-label-path="value" label="Código - Tipo Trabalho" value="{{codTipoTrabalho}}" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field id="descricao" value="{{descricao}}" label="Descrição" disabled="{{ _permissionsCreate }}" maxlength="30"></vaadin-text-field>
+                            <vaadin-text-field id="descricao" value="{{descricao}}" label="Descrição" disabled="true" maxlength="30"></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-2">
@@ -183,7 +202,7 @@
                     <vaadin-grid-filter path="descricao" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.descricao}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                    <vaadin-text-field value="{{item.descricao}}" disabled="true"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -200,7 +219,9 @@
             <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="horaViagem">Hora Viagem</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="horaViagem" />
+                    <vaadin-grid-filter path="horaViagem" value="[[_filterActive]]">
+                        <vaadin-checkbox checked="{{_filterActive}}"></vaadin-checkbox>
+                    </vaadin-grid-filter>
                 </template>
                 <template>
                     @*<vaadin-text-field value="{{item.horaViagem}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>*@
@@ -228,44 +249,44 @@
             </vaadin-grid-column>
 
             @*<vaadin-grid-column resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="criadoPor">Criado Por</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="criadoPor" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.utilizadorCriacao}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
+                <template class="header">
+                    <vaadin-grid-sorter path="criadoPor">Criado Por</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="criadoPor" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.utilizadorCriacao}}" disabled="true"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
 
-                <vaadin-grid-column resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="dataHoraCriacao">Data/Hora Criação</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="dataHoraCriacao" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="dataHoraCriacao">Data/Hora Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataHoraCriacao" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled="true"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
 
-                <vaadin-grid-column resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="alteradoPor">Alterado Por</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="alteradoPor" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.utilizadorModificacao}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="alteradoPor">Alterado Por</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="alteradoPor" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.utilizadorModificacao}}" disabled="true"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
 
-                <vaadin-grid-column resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="dataHoraUltimaAlteracao">Data/Hora Última Alteração</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="dataHoraUltimaAlteracao" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.dataHoraModificacao}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>*@
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="dataHoraUltimaAlteracao">Data/Hora Última Alteração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataHoraUltimaAlteracao" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.dataHoraModificacao}}" disabled="true"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>*@
 
             <vaadin-grid-column>
                 <template class="header">
@@ -324,6 +345,11 @@
                         value: DeleteValue
                     },
 
+                    _filterActive: {
+                        type: Boolean,
+                        value: false
+                    },
+
                     ddgroupcontprod: {
                         type: String,
                         notify: true,
@@ -332,7 +358,12 @@
                 },
 
                 ready: function () {
+                    var _self = this;
                     this.$.ajax_GetAll.generateRequest();
+
+                    this.$.codTipoTrabalho.addEventListener('value-changed', function () {
+                        _self.$.descricao.value = _self.$.codTipoTrabalho.__data.selectedItem.extra;
+                    });;
                 },
 
                 openToast: function (message) {
@@ -346,7 +377,7 @@
                 },
 
                 _validateData: function (container) {
-                    debugger;
+                    //debugger;
 
                     var polymerDom = Polymer.dom(this.$[container]);
                     var errors = 0;
@@ -366,15 +397,15 @@
                 },
 
                 _create: function () {
-                    debugger;
+                    //debugger;
                     if (this._validateData("configuracaoTipoTrabalho")) {
-
+                        //debugger;
                         this.$.ajax_create.body = JSON.stringify(
                             {
-                                codigo: this.$.codigo.value,
+                                codigo: this.$.codTipoTrabalho.value,
                                 descricao: this.$.descricao.value,
                                 codUnidadeMedida: this.$.codUnidadeMedida.value,
-                                horaViagem: this.$.horaViagem.checked,
+                                horaViagem: (this.$.horaViagem.value == "on" ? true : false), /*this.$.horaViagem.checked,*/
                                 tipoHora: this.$.tipoHora.value
                             }
                         );
@@ -439,20 +470,27 @@
                 },
 
                 _createResponse: function (e) {
+                    debugger;
                     var self = this;
-                    if (e.detail.status === 200) {
 
-                        this.$.codigo.value = "";
-                        this.$.descricao.value = "";
-                        this.$.codUnidadeMedida.value = "";
-                        this.$.horaViagem.checked = false;
-                        this.$.tipoHora.value = "";
-
-                        this.$.ajax_GetAll.generateRequest();
-                        this.openToast("Tabela atualizada.");
+                    if (this.createResult == 0) {
+                        this.openToast("Já existe esse Tipo de Trabalho na tabela.");
                     }
                     else {
-                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        if (e.detail.status === 200) {
+
+                            this.$.codTipoTrabalho.value = "";
+                            this.$.descricao.value = "";
+                            this.$.codUnidadeMedida.value = "";
+                            this.$.horaViagem.checked = false;
+                            this.$.tipoHora.value = "";
+
+                            this.$.ajax_GetAll.generateRequest();
+                            this.openToast("Tabela atualizada.");
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        }
                     }
                 },
 

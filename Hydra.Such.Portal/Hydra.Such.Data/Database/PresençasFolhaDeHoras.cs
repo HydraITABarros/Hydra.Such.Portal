@@ -7,11 +7,15 @@ namespace Hydra.Such.Data.Database
     {
         public string NºFolhaDeHoras { get; set; }
         public DateTime Data { get; set; }
+        public string NoEmpregado { get; set; }
         public TimeSpan? Hora1ªEntrada { get; set; }
         public TimeSpan? Hora1ªSaída { get; set; }
         public TimeSpan? Hora2ªEntrada { get; set; }
         public TimeSpan? Hora2ªSaída { get; set; }
         public string Observacoes { get; set; }
+        public int? Validado { get; set; }
+        public int? IntegradoTR { get; set; }
+        public DateTime? DataIntTR { get; set; }
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public string UtilizadorModificação { get; set; }

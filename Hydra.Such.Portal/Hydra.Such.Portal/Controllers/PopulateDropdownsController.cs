@@ -759,7 +759,7 @@ namespace Hydra.Such.Portal.Controllers
             List<DDMessageRelated> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
             {
                 id = x.Code,
-                value = x.Name,
+                value = x.Code + " - " + x.Name,
                 extra = x.MeasureUnit
             }).ToList();
             return Json(result);
@@ -1331,6 +1331,31 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = x.Codigo,
                 value = x.Descricao
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult PrecoVendaRecurso_CodeTipoTrabalho_FH()
+        {
+            List<DDMessageRelated> result = DBTipoTrabalhoFH.GetAll().Select(x => new DDMessageRelated()
+            {
+                id = x.Codigo,
+                value = x.Codigo + " - " + x.Descricao,
+                extra = x.Descricao
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult PrecoVendaRecurso_Code_FH()
+        {
+            List<DDMessageString> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Code + " - " + x.Name
             }).ToList();
 
             return Json(result);

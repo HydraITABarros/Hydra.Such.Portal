@@ -114,7 +114,7 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/PrecoVendaRecurso_Code"
+        <iron-ajax url="/PopulateDropdowns/PrecoVendaRecurso_Code_FH"
                    last-response="{{LResourceCode}}"
                    auto
                    method="post"
@@ -122,7 +122,7 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/PrecoVendaRecurso_CodeTipoTrabalho"
+        <iron-ajax url="/PopulateDropdowns/PrecoVendaRecurso_CodeTipoTrabalho_FH"
                    last-response="{{LCodeTipoTrabalho}}"
                    auto
                    method="post"
@@ -146,7 +146,7 @@
 
                     <div class="row" id="configuracaoPrecoVendaRecurso">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LResourceCode]]" id="code" item-value-path="id" item-label-path="value" label="Fam. Recurso - Código" value="{{tipoHora}}" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
+                            <vaadin-combo-box items="[[LResourceCode]]" id="code" item-value-path="id" item-label-path="value" label="Código - Fam. Recurso" value="{{tipoHora}}" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -162,7 +162,7 @@
                             </div>*@
 
                         <div class="col-sm-2">
-                            <vaadin-combo-box items="[[LCodeTipoTrabalho]]" id="codTipoTrabalho" item-value-path="id" item-label-path="value" label="Tipo Trabalho" value="{{codTipoTrabalho}}" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
+                            <vaadin-combo-box items="[[LCodeTipoTrabalho]]" id="codTipoTrabalho" item-value-path="id" item-label-path="value" label="Código - Tipo Trabalho" value="{{codTipoTrabalho}}" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -207,12 +207,12 @@
         <vaadin-grid id="gridPrecoVendaRecursoFH" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="code">Fam. Recurso - Código</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="code" />
+                    <vaadin-grid-sorter path="descricao">Código - Fam. Recurso</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricao" />
                 </template>
                 <template>
-                    @*<vaadin-text-field value="{{item.code}}" disabled="true"></vaadin-text-field>*@
-                    <vaadin-combo-box items="[[LResourceCode]]" item-value-path="id" item-label-path="value" value="{{item.code}}" disabled>
+                    <vaadin-text-field value="{{item.descricao}}" disabled="true"></vaadin-text-field>
+                    @*<vaadin-combo-box items="[[LResourceCode]]" item-value-path="id" item-label-path="value" value="{{item.code}}" disabled>
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -220,28 +220,18 @@
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
-                    </vaadin-combo-box>
+                    </vaadin-combo-box>*@
                 </template>
             </vaadin-grid-column>
 
-            @*<vaadin-grid-column resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="descricao" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.descricao}}" disabled="true"></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>*@
-
             <vaadin-grid-column resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="codTipoTrabalho">Tipo Trabalho</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codTipoTrabalho" />
+                    <vaadin-grid-sorter path="codTipoTrabalhoTexto">Código - Tipo Trabalho</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codTipoTrabalhoTexto" />
                 </template>
                 <template>
-                    @*<vaadin-text-field value="{{item.codTipoTrabalho}}" disabled="true"></vaadin-text-field>*@
-                    <vaadin-combo-box items="[[LCodeTipoTrabalho]]" item-value-path="id" item-label-path="value" value="{{item.codTipoTrabalho}}" disabled>
+                    <vaadin-text-field value="{{item.codTipoTrabalhoTexto}}" disabled="true"></vaadin-text-field>
+                    @*<vaadin-combo-box items="[[LCodeTipoTrabalho]]" item-value-path="id" item-label-path="value" value="{{item.codTipoTrabalho}}" disabled>
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -249,7 +239,7 @@
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
-                    </vaadin-combo-box>
+                    </vaadin-combo-box>*@
                 </template>
             </vaadin-grid-column>
 
@@ -292,7 +282,7 @@
                 </template>
                 <template>
                     @*<vaadin-text-field value="{{item.endingDate}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>*@
-                    <vaadin-date-picker value="{{item.endingDateTexto}}" disabled="{{ _permissionsUpdate }}"></vaadin-date-picker>
+                    <vaadin-date-picker value="{{item.endingDateTexto}}" disabled="true"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
 
@@ -506,21 +496,28 @@
                 },
 
                 _createResponse: function (e) {
+                    debugger;
                     var self = this;
-                    if (e.detail.status === 200) {
 
-                        this.$.code.value = "";
-                        this.$.codTipoTrabalho.value = "";
-                        this.$.precoUnitario.value = "";
-                        this.$.custoUnitario.value = "";
-                        this.$.startingDate.value = "";
-                        this.$.endingDate.value = "";
-
-                        this.$.ajax_GetAll.generateRequest();
-                        this.openToast("Tabela atualizada.");
+                    if (this.createResult == 0) {
+                        this.openToast("Já existe este tipo de Registo na Tabela.");
                     }
                     else {
-                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        if (e.detail.status === 200) {
+
+                            this.$.code.value = "";
+                            this.$.codTipoTrabalho.value = "";
+                            this.$.precoUnitario.value = "";
+                            this.$.custoUnitario.value = "";
+                            this.$.startingDate.value = "";
+                            this.$.endingDate.value = "";
+
+                            this.$.ajax_GetAll.generateRequest();
+                            this.openToast("Tabela atualizada.");
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        }
                     }
                 },
 
