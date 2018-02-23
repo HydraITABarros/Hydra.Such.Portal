@@ -17,5 +17,8 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string ClientNo { get; set; }
         public string ClientName { get; set; }
         public decimal TotalSales { get; set; }
+
+        //EXTRAS
+        public bool Selected { get; set; }
     }
 }
