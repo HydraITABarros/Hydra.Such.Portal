@@ -254,6 +254,16 @@
                    auto method="post" handle-as="json"
                    content-type="application/json">
         </iron-ajax>
+
+        <!-- NR 20180223 -->
+        <iron-ajax url="/PopulateDropdowns/GetTipoLinhasProdutosCCP"
+                   last-response="{{CBTipo}}"
+                   auto method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+
         <iron-ajax url="/ProcedimentosCcps/GetUsersWhoAreElementosJuri"
                    last-response="{{LUsers}}"
                    auto method="post"
@@ -665,7 +675,7 @@
                                         <div class="col-sm-12">
                                             <div class="row">
                                                 <div class="col-sm-4">
-                                                    <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" id="precoMaisBaixo" item-label-path="stringValue" value="{{data.precoMaisBaixo}}" label="Preço mais baixo?">
+                                                    <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" id="precoMaisBaixo" item-label-path="stringValue" value="{{data.precoMaisBaixo}}" on-value-changed="_nrmudasimnao" label="Preço mais baixo?">
                                                         <template>
                                                             <paper-icon-item>
                                                                 <paper-item-body two-line>
@@ -691,7 +701,7 @@
                                         <div class="col-sm-12">
                                             <div class="row">
                                                 <div class="col-sm-4">
-                                                    <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" id="propostaEconMaisVantajosa" item-label-path="stringValue" value="{{data.propostaEconMaisVantajosa}}" label="Proposta economicamente mais vantajosa?">
+                                                    <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" id="propostaEconMaisVantajosa" item-label-path="stringValue" value="{{data.propostaEconMaisVantajosa}}" on-value-changed="_nrmudasimnaoinvertida" label="Proposta economicamente mais vantajosa?">
                                                         <template>
                                                             <paper-icon-item>
                                                                 <paper-item-body two-line>
@@ -800,7 +810,7 @@
                                     <div class="row break_clear">
 
                                         <div class="col-sm-6">
-                                            <vaadin-text-field rows="5" value="{{data.fornecedoresSugeridos}}" id="fornecedoresSugeridos" name="fornecedoresSugeridos" label="fornecedores Sugeridos"> </vaadin-text-field>
+                                            <vaadin-text-field rows="5" value="{{data.fornecedoresSugeridos}}" id="fornecedoresSugeridos" name="fornecedoresSugeridos" label="Fornecedores Sugeridos"> </vaadin-text-field>
                                         </div>
 
                                         <div class="col-sm-6">
@@ -831,103 +841,163 @@
                                 </div>
                             </paper-collapse-item>
                             <paper-collapse-item header="Linhas Produtos / Serviços">
-                                <!-- Tab Unidade Produtiva - Linhas Produtos Servicos-->
-                                <div class="col-xs-12 mb-15">
-                                    <div class="break_clear">
-                                        <vaadin-grid id="gridProdutosServicos" aria-label="gridProdutosServicos" items="{{data.produtosServicos}}" class="grid">
-                                            <vaadin-grid-column width="10%">
-                                                <template class="header">
-                                                    Tipo
-                                                </template>
-                                                <template>
-                                                    <vaadin-text-field type="text" value="{{ item.tipo }}"></vaadin-text-field>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="10%">
-                                                <template class="header">
-                                                    Cod. Localização
-                                                </template>
-                                                <template>
-                                                    <vaadin-text-field type="text" value="{{ item.codigoLocalizacao }}"></vaadin-text-field>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="8%">
-                                                <template class="header">
-                                                    <center>
-                                                        Nº
-                                                    </center>
-                                                </template>
-                                                <template>
-                                                    <center>
-                                                        <vaadin-checkbox checked="{{item.no}}"></vaadin-checkbox>
-                                                    </center>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="8%">
-                                                <template class="header">
-                                                    <center>
-                                                        Descrição
-                                                    </center>
-                                                </template>
-                                                <template>
-                                                    <center>
-                                                        <vaadin-checkbox checked="{{item.descricao}}"></vaadin-checkbox>
-                                                    </center>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="6%">
-                                                <template class="header">
-                                                    <center>
-                                                        Descrição 2
-                                                    </center>
-                                                </template>
-                                                <template>
-                                                    <center>
-                                                        <vaadin-checkbox checked="{{item.descricao2}}"></vaadin-checkbox>
-                                                    </center>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="8%">
-                                                <template class="header">
-                                                    <center>
-                                                        Cod. Unidade
-                                                    </center>
-                                                </template>
-                                                <template>
-                                                    <center>
-                                                        <vaadin-checkbox checked="{{item.codigoUnidade}}"></vaadin-checkbox>
-                                                    </center>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="20%">
-                                                <template class="header">
-                                                    Qtd. a Requerer
-                                                </template>
-                                                <template>
-                                                    <vaadin-text-field type="text" value="{{ item.quantidadeRequerer }}"></vaadin-text-field>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="20%">
-                                                <template class="header">
-                                                    Custo Unitário
-                                                </template>
-                                                <template>
-                                                    <vaadin-text-field type="text" value="{{ item.custoUnitario }}"></vaadin-text-field>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="10%">
-                                                <template class="header">
-                                                </template>
-                                                <template>
-                                                    <!--<center>-->
-                                                    <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                                    <!--</center>-->
-                                                </template>
-                                            </vaadin-grid-column>
-                                        </vaadin-grid>
+                                <!-- NR 20180223 - Colocar campos para inserir novas linhas -->
+                                <div class="panel-body">
+                                    <div class="row break_clear">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-2">
+                                                    <vaadin-combo-box items="[[CBTipo]]" item-value-path="id" item-label-path="value" required id="linhaTipo" label="Tipo">
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.value]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <vaadin-text-field type="text" value="{{ item.codigoLocalizacao }}" label="Cód. Localização"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <vaadin-text-field type="text" value="{{ item.no }}" label="Nº"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <vaadin-text-field type="text" value="{{ item.descricao }}" label="Descrição"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <vaadin-text-field type="text" value="{{ item.descricao2 }}" label="Descrição 2"></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-2">
+                                                    <vaadin-text-field type="text" value="{{ item.codigoUnidade }}" label="Cod. Unidade"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <vaadin-text-field id="linhaQuantidadeRequerer" label="Qtd. a Requerer" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <vaadin-text-field id="linhaCustoUnitario" label="Custo Unitário" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                                        <div slot="suffix">€</div>
+                                                    </vaadin-text-field>
+                                                </div>
+                                                <div class="col-sm-1">
+                                                    <br />
+                                                    <paper-button class="btnSave" id="btnCriarLinhaProdutosServicos" raised on-tap="_createLinhaProdutosServicos"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="clearfix"></div>
+
+                                    <!-- Tab Unidade Produtiva - Linhas Produtos Servicos-->
+                                    <div class="col-xs-12 mb-15">
+                                        <div class="break_clear">
+                                            <vaadin-grid id="gridProdutosServicos" aria-label="gridProdutosServicos" items="{{data.produtosServicos}}" class="grid">
+                                                <vaadin-grid-column width="10%">
+                                                    <template class="header">
+                                                        Tipo
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field type="text" value="{{ item.tipo }}"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="10%">
+                                                    <template class="header">
+                                                        Cod. Localização
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field type="text" value="{{ item.codigoLocalizacao }}"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="8%">
+                                                    <template class="header">
+                                                        <center>
+                                                            Nº
+                                                        </center>
+                                                    </template>
+                                                    <template>
+                                                        <center>
+                                                            <vaadin-checkbox checked="{{item.no}}"></vaadin-checkbox>
+                                                        </center>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="8%">
+                                                    <template class="header">
+                                                        <center>
+                                                            Descrição
+                                                        </center>
+                                                    </template>
+                                                    <template>
+                                                        <center>
+                                                            <vaadin-checkbox checked="{{item.descricao}}"></vaadin-checkbox>
+                                                        </center>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="6%">
+                                                    <template class="header">
+                                                        <center>
+                                                            Descrição 2
+                                                        </center>
+                                                    </template>
+                                                    <template>
+                                                        <center>
+                                                            <vaadin-checkbox checked="{{item.descricao2}}"></vaadin-checkbox>
+                                                        </center>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="8%">
+                                                    <template class="header">
+                                                        <center>
+                                                            Cod. Unidade
+                                                        </center>
+                                                    </template>
+                                                    <template>
+                                                        <center>
+                                                            <vaadin-checkbox checked="{{item.codigoUnidade}}"></vaadin-checkbox>
+                                                        </center>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="20%">
+                                                    <template class="header">
+                                                        Qtd. a Requerer
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field type="text" value="{{ item.quantidadeRequerer }}"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="20%">
+                                                    <template class="header">
+                                                        Custo Unitário
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field type="text" value="{{ item.custoUnitario }}"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="10%">
+                                                    <template class="header">
+                                                    </template>
+                                                    <template>
+                                                        <!--<center>-->
+                                                        <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                                        <!--</center>-->
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
                                 </div>
+
+
+
+
+
+
+
+
+
+                                
                             </paper-collapse-item>
                         </paper-collapse-group>
                     </div>
@@ -979,9 +1049,11 @@
                                         </div>
                                         <div class="clearfix"></div>
                                         <div class="clearfix"></div>
+
                                         <div class="col-lg-6">
                                             <!--Context menu-->
                                             <br />
+
                                             <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
                                                 <template>
                                                     <style>
@@ -2149,17 +2221,40 @@
 
 
                 ready: function () {
-                    debugger;;
+                    //debugger;;
                     this.$.ajax_userpermissions.body = this.data;
                     this.$.ajax_userpermissions.generateRequest();
-                    debugger;;
+                    //debugger;;
 
+                    //NR 20180223
+                    this.$.precoMaisBaixo.addEventListener('value-changed', function () {
+                        //if (this.$.precoMaisBaixo.value == true) {
+                        //    this.$.propostaEconMaisVantajosa.value = false;
+                        //}
+                        //else {
+                        //    this.$.propostaEconMaisVantajosa.value = true;
+                        //}
+                    });;
+
+                    this.$.propostaEconMaisVantajosa.addEventListener('value-changed', function () {
+                        //if (this.$.propostaEconMaisVantajosa.value == true) {
+                        //    this.$.precoMaisBaixo.value = false;
+                        //}
+                        //else {
+                        //    this.$.precoMaisBaixo.value = true;
+                        //}
+                    });;
                 },
 
                 _openToast: function (message) {
                     ////debugger;;
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
+                },
+
+                //NR 20180223
+                _ConvertDecimals: function (e) {
+                    e.target.value = e.target.value.replace(",", ".");
                 },
 
                 _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
@@ -2271,10 +2366,10 @@
                                 return;
                             }
 
-                            debugger;;
+                            //debugger;;
                             self._setFieldsEditability(self.data);
 
-                            debugger;;
+                            //debugger;;
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             self._createResponseProcessor();
                         } else if (data.detail.url.indexOf("Update") !== -1) {
@@ -2330,11 +2425,11 @@
                     }
 
                     if (this.userAllowed) {
-                        debugger;;
+                        //debugger;;
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
                         this.$.page_databound_ajax.generateRequest();
 
-                        debugger;;
+                        //debugger;;
                         // set user permissions
                         for (var i in this.UserAccesses) {
                             switch (this.UserAccesses[i]) {
@@ -2618,6 +2713,36 @@
                     } else {
                         this._openToast(ProcedimentoConfirmed.eMessage);
                     }
+                },
+
+                //NR 20180223
+                _nrmudasimnao: function (e) {
+                    //debugger;
+                    if (this.$.precoMaisBaixo.value == true) {
+                        this.$.propostaEconMaisVantajosa.value = false;
+                    } else if (this.$.precoMaisBaixo.value == false) {
+                        this.$.propostaEconMaisVantajosa.value = true;
+                    } else {
+                        this.$.propostaEconMaisVantajosa.value = this.$.propostaEconMaisVantajosa.value;
+                    }
+                },
+                _nrmudasimnaoinvertida: function (e) {
+                    //debugger;
+                    if (this.$.propostaEconMaisVantajosa.value == true) {
+                        this.$.precoMaisBaixo.value = false;
+                    } else if (this.$.propostaEconMaisVantajosa.value == false) {
+                        this.$.precoMaisBaixo.value = true;
+                    } else {
+                        this.$.precoMaisBaixo.value = this.$.precoMaisBaixo.value;
+                    }
+                },
+                _createLinhaProdutosServicos: function () {
+                    debugger;;
+
+                },
+                _createLinhaProdutosServicosResponse: function (e) {
+                    debugger;;
+
                 },
 
                 // Imobilizado return to area
