@@ -1,6 +1,8 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 
@@ -10,14 +12,31 @@ namespace Hydra.Such.Data.Logic.Compras
     {
         #region CRUD
 
-        public static List<TiposRequisições> GetAll()
+        public static List<NAVRequisitionTypeViewModel> GetAll(string NAVDatabaseName, string NAVCompanyName)
         {
             try
             {
-                using (var ctx = new SuchDBContext())
+                List<NAVRequisitionTypeViewModel> result = new List<NAVRequisitionTypeViewModel>();
+                using (var ctx = new SuchDBContextExtention())
                 {
-                    return ctx.TiposRequisições.ToList();
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017TiposRequisicoes @DBName, @CompanyName", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAVRequisitionTypeViewModel()
+                        {
+                            Code = (string)temp.Tipo,
+                            Description = (string)temp.Description,
+                        });
+                    }
                 }
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -25,54 +44,31 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static TiposRequisições Create(TiposRequisições ObjectToCreate)
+        public static NAVRequisitionTypeViewModel GetById(string code, string NAVDatabaseName, string NAVCompanyName)
         {
             try
             {
-                using (var ctx = new SuchDBContext())
+                List<NAVRequisitionTypeViewModel> result = new List<NAVRequisitionTypeViewModel>();
+                using (var ctx = new SuchDBContextExtention())
                 {
-                    ObjectToCreate.DataHoraCriação = DateTime.Now;
-                    ctx.TiposRequisições.Add(ObjectToCreate);
-                    ctx.SaveChanges();
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017TiposRequisicoes @DBName, @CompanyName", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAVRequisitionTypeViewModel()
+                        {
+                            Code = (string)temp.Tipo,
+                            Description = (string)temp.Description,
+                        });
+                    }
                 }
 
-                return ObjectToCreate;
-            }
-            catch (Exception ex)
-            {
-
-                return null;
-            }
-        }
-
-        public static TiposRequisições Update(TiposRequisições ObjectToUpdate)
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    ObjectToUpdate.DataHoraModificação = DateTime.Now;
-                    ctx.TiposRequisições.Update(ObjectToUpdate);
-                    ctx.SaveChanges();
-                }
-
-                return ObjectToUpdate;
-            }
-            catch (Exception ex)
-            {
-
-                return null;
-            }
-        }
-
-        public static TiposRequisições GetById(int id)
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    return ctx.TiposRequisições.FirstOrDefault(x => x.Código == id);
-                }
+                return result.Where(x => x.Code == code).FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -81,24 +77,65 @@ namespace Hydra.Such.Data.Logic.Compras
             }
         }
 
-        public static bool Delete(TiposRequisições ObjectToDelete)
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    ctx.TiposRequisições.Remove(ObjectToDelete);
-                    ctx.SaveChanges();
-                }
+        //public static TiposRequisições Create(TiposRequisições ObjectToCreate)
+        //{
+        //    try
+        //    {
+        //        using (var ctx = new SuchDBContext())
+        //        {
+        //            ObjectToCreate.DataHoraCriação = DateTime.Now;
+        //            ctx.TiposRequisições.Add(ObjectToCreate);
+        //            ctx.SaveChanges();
+        //        }
 
-                return true;
-            }
-            catch (Exception ex)
-            {
+        //        return ObjectToCreate;
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                return false;
-            }
-        }
+        //        return null;
+        //    }
+        //}
+
+        //public static TiposRequisições Update(TiposRequisições ObjectToUpdate)
+        //{
+        //    try
+        //    {
+        //        using (var ctx = new SuchDBContext())
+        //        {
+        //            ObjectToUpdate.DataHoraModificação = DateTime.Now;
+        //            ctx.TiposRequisições.Update(ObjectToUpdate);
+        //            ctx.SaveChanges();
+        //        }
+
+        //        return ObjectToUpdate;
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        return null;
+        //    }
+        //}
+
+
+        //public static bool Delete(TiposRequisições ObjectToDelete)
+        //{
+        //    try
+        //    {
+        //        using (var ctx = new SuchDBContext())
+        //        {
+        //            ctx.TiposRequisições.Remove(ObjectToDelete);
+        //            ctx.SaveChanges();
+        //        }
+
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        return false;
+        //    }
+        //}
         #endregion
     }
 }

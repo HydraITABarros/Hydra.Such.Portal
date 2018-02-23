@@ -2358,45 +2358,44 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetRequisitionTypes()
         {
-            List<RequesitionTypeViewModel> result = DBRequesitionType.GetAll().Select(x => new RequesitionTypeViewModel()
+            List<RequesitionTypeViewModel> result = DBRequesitionType.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new RequesitionTypeViewModel()
             {
-                Code = x.Código,
-                Description = x.Descrição,
-                Fleet = x.Frota
+                Code = x.Code,
+                Description = x.Description
             }).ToList();
             return Json(result);
         }
 
-        [HttpPost]
-        public JsonResult UpdateRequesitionTypes([FromBody] List<RequesitionTypeViewModel> data)
-        {
-            List<TiposRequisições> results = DBRequesitionType.GetAll();
-            results.RemoveAll(x => data.Any(u => u.Code == x.Código));
-            results.ForEach(x => DBRequesitionType.Delete(x));
-            data.ForEach(x =>
-            {
-                TiposRequisições TR = new TiposRequisições()
-                {
-                    Descrição = x.Description
-                };
-                if (x.Code > 0)
-                {
-                    TR.Código = x.Code;
-                    TR.Frota = x.Fleet;
-                    TR.DataHoraModificação = DateTime.Now;
-                    TR.UtilizadorModificação = User.Identity.Name;
-                    DBRequesitionType.Update(TR);
-                }
-                else
-                {
-                    TR.DataHoraCriação = DateTime.Now;
-                    TR.UtilizadorCriação = User.Identity.Name;
-                    TR.Frota = x.Fleet;
-                    DBRequesitionType.Create(TR);
-                }
-            });
-            return Json(data);
-        }
+        //[HttpPost]
+        //public JsonResult UpdateRequesitionTypes([FromBody] List<RequesitionTypeViewModel> data)
+        //{
+        //    List<NAVRequisitionTypeViewModel> results = DBRequesitionType.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName);
+        //    results.RemoveAll(x => data.Any(u => u.Code == x.Code));
+        //    results.ForEach(x => DBRequesitionType.Delete(x));
+        //    data.ForEach(x =>
+        //    {
+        //        TiposRequisições TR = new TiposRequisições()
+        //        {
+        //            Descrição = x.Description
+        //        };
+        //        if (x.Code > 0)
+        //        {
+        //            TR.Código = x.Code;
+        //            TR.Frota = x.Fleet;
+        //            TR.DataHoraModificação = DateTime.Now;
+        //            TR.UtilizadorModificação = User.Identity.Name;
+        //            DBRequesitionType.Update(TR);
+        //        }
+        //        else
+        //        {
+        //            TR.DataHoraCriação = DateTime.Now;
+        //            TR.UtilizadorCriação = User.Identity.Name;
+        //            TR.Frota = x.Fleet;
+        //            DBRequesitionType.Create(TR);
+        //        }
+        //    });
+        //    return Json(data);
+        //}
         #endregion
 
         #region Configurações Aprovações

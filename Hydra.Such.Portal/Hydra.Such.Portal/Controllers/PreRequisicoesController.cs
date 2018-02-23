@@ -409,11 +409,11 @@ namespace Hydra.Such.Portal.Controllers
         #region Populate CB
         public JsonResult CBVehicleFleetBool([FromBody] int id)
         {
-            bool FleetBool = false;
-            var item = DBRequesitionType.GetById(id);
-            if (item != null)
-                FleetBool = item.Frota.HasValue ? item.Frota.Value : false;
-            return Json(FleetBool);
+            //bool FleetBool = false;
+            //var item = DBRequesitionType.GetById(id);
+            //if (item != null)
+            //    FleetBool = item.Frota.HasValue ? item.Frota.Value : false;
+            return Json(true);
         }
 
         public JsonResult GetPlaceData([FromBody] int placeId)

@@ -1339,10 +1339,10 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult TipoRequisicoesLista()
         {
-            List<DDMessage> result = DBRequesitionType.GetAll().Select(x => new DDMessage()
+            List<DDMessageString> result = DBRequesitionType.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
             {
-                id = x.Código,
-                value = x.Descrição
+                id = x.Code,
+                value = x.Description
             }).ToList();
 
             return Json(result);

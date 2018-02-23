@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hydra.Such.Data.ViewModel.Compras
+namespace Hydra.Such.Data.ViewModel
 {
-    public class RequesitionTypeViewModel
+    public class NAVRequisitionTypeViewModel
     {
         public string Code { get; set; }
         public string Description { get; set; }
