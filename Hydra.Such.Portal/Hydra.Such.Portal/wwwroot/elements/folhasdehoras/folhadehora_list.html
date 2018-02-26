@@ -199,39 +199,29 @@
 
             <vaadin-grid-column resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="deslocacaoForaConcelho">Desloc. Fora do Concelho</vaadin-grid-sorter>
-                    <!--<vaadin-grid-filter path="deslocacaoForaConcelhoTexto" />-->
-                    <vaadin-grid-filter path="deslocacaoForaConcelho" value="[[_filterDeslForaConcelho]]">
+                    <vaadin-grid-sorter path="deslocacaoForaConcelhoTexto">Desloc. Fora do Concelho</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="deslocacaoForaConcelhoTexto" />
+                    <!--<vaadin-grid-filter path="deslocacaoForaConcelho" value="[[_filterDeslForaConcelho]]">
                         <vaadin-checkbox checked="{{_filterDeslForaConcelho}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
+                    </vaadin-grid-filter>-->
                 </template>
                 <template>
-                    <!--{{item.deslocacaoForaConcelhoTexto}}-->
-                    <vaadin-checkbox checked="{{item.deslocacaoForaConcelho}}" disabled="true"></vaadin-checkbox>
+                    {{item.deslocacaoForaConcelhoTexto}}
+                    <!--<vaadin-checkbox checked="{{item.deslocacaoForaConcelho}}" disabled="true"></vaadin-checkbox>-->
                 </template>
             </vaadin-grid-column>
 
-            <!--<vaadin-grid-column resizable>
-        <template class="header">
-            <vaadin-grid-sorter path="deslocacaoPlaneadaTexto">Deslocação Planeada</vaadin-grid-sorter>
-            <vaadin-grid-filter path="deslocacaoPlaneadaTexto" />
-        </template>
-        <template>
-            {{item.deslocacaoPlaneadaTexto}}
-        </template>
-    </vaadin-grid-column>-->
-
             <vaadin-grid-column resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="terminada">Terminado</vaadin-grid-sorter>
-                    <!--<vaadin-grid-filter path="terminadaTexto" />-->
-                    <vaadin-grid-filter path="terminada" value="[[_filterTerminado]]">
+                    <vaadin-grid-sorter path="terminadaTexto">Terminado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="terminadaTexto" />
+                    <!--<vaadin-grid-filter path="terminada" value="[[_filterTerminado]]">
                         <vaadin-checkbox checked="{{_filterTerminado}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
+                    </vaadin-grid-filter>-->
                 </template>
                 <template>
-                    <!--{{item.terminadaTexto}}-->
-                    <vaadin-checkbox checked="{{item.terminada}}" disabled="true"></vaadin-checkbox>
+                    {{item.terminadaTexto}}
+                    <!--<vaadin-checkbox checked="{{item.terminada}}" disabled="true"></vaadin-checkbox>-->
                 </template>
             </vaadin-grid-column>
 
@@ -337,13 +327,15 @@
 
             <vaadin-grid-column resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="validado">Validado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validado" value="[[_filterValidado]]">
+                    <vaadin-grid-sorter path="validadoTexto">Validado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="validadoTexto" />
+                    <!--<vaadin-grid-filter path="validado" value="[[_filterValidado]]">
                         <vaadin-checkbox checked="{{_filterValidado}}"></vaadin-checkbox>
-                    </vaadin-grid-filter>
+                    </vaadin-grid-filter>-->
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.validado}}" disabled="true"></vaadin-checkbox>
+                    <!--<vaadin-checkbox checked="{{item.validado}}" disabled="true"></vaadin-checkbox>-->
+                    {{item.validadoTexto}}
                 </template>
             </vaadin-grid-column>
 
