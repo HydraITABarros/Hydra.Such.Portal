@@ -10,8 +10,6 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
-
-
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
@@ -26,7 +24,6 @@
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
-
 
 <dom-module id="x-proposalsdetails">
     <template>
@@ -94,8 +91,31 @@
 
                 };
             }
-        </style>
 
+
+            .dropdownMenu {
+                position: relative;
+                display: inline-block;
+            }
+            .dropdownMenu-content {
+                display: none;
+                position: absolute;
+                background-color: #f1f1f1;
+                min-width: 160px;
+                overflow: auto;
+                box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                z-index: 1;
+            }
+            .dropbtnItem {
+                font-family: -apple-system, BlinkMacSystemFont, Roboto, Segoe UI, Ubuntu, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+            }
+            .dropbtnItem:hover {
+                background-color: #ddd;
+            }
+            .showMenuItems {
+                display: block;
+            }
+        </style>
 
         <!-- DROPDOWNS POPULATE -->
         <iron-ajax url="/PopulateDropdowns/GetFeeUnits" last-response="{{CBFeeUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -181,6 +201,13 @@
                    id="grid_databound_ajax_proposals_details"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/SetProposalStatus"
+                   last-response="{{StateChangedProposal}}"
+                   method="post"
+                   handle-as="json"
+                   id="setProposalStatus_ajax"
+                   on-response="_proposalStateChangeResponse"
+                   content-type="application/json"></iron-ajax>
         <!-- Paper Dialog -->
         <paper-dialog id="dialog_proposals" class="dialgoBox" modal>
             <h2 class="dialogTitle">Propostas</h2>
@@ -300,15 +327,22 @@
             </div>
         </paper-dialog>
 
-
-        <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
-            <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
-            <paper-button class="tablinks" on-tap="_updateToContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
-            <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ !_showContractLines }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
-
-        </div>
-
+        <template is="dom-if" if="{{ !_isCreate }}">
+            <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
+                <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
+                <paper-button class="tablinks" on-tap="_updateToContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
+                <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ !_showContractLines }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
+                <div class="dropdownMenu">
+                    <paper-button class="tablinks" on-tap="_showStatusDropDown" id="statusMenu"><i class="fa fa-chevron-down" aria-hidden="true"></i> Alterar Estado</paper-button>
+                    <div id="StatusDropDownContent" class="dropdownMenu-content">
+                        <template is="dom-repeat" items="[[CBProposalsStatus]]">
+                            <paper-button class="dropbtnItem" on-tap="_changeStatus" style="width: 250px;">[[ item.value ]]</paper-button>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
         <div class="row">
             <div class="col-lg-12">
                 <paper-button raised id="btnContractAdd" hidden="{{ _showContractLines }}" class="" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
@@ -326,8 +360,6 @@
                 </div>
             </div>
         </template>
-
-
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -367,7 +399,10 @@
                                         <!--<div class="col-lg-3">
                                         <vaadin-text-field id="contactNo" name="contactNo" label="Nº Contacto" value="{{data.contactNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                     </div>-->
+
                                         <div class="col-md-3 ">
+
+
                                             <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" on-value-changed="_clientChange">
                                                 <template>
                                                     <table width="180px">
@@ -410,7 +445,7 @@
                                             <vaadin-date-picker label="Data Expiração Prevista" id="DueDate" name="DueDate" value="{{data.dueDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBProposalsStatus]]" id="mStatus" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box items="[[CBProposalsStatus]]" id="mStatus" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled>
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -1174,6 +1209,7 @@
                                         </template>
 
                                         <!--<f =-->
+
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.versionStartDate}}
                                         </template>
@@ -1192,6 +1228,9 @@
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <input type="date" id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}">
+
+
+
 
                                             <!--<vaadin-date-picker id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionEndDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>-->
 
@@ -1309,7 +1348,7 @@
                 <vaadin-date-picker label="Data de Envio" id="dtpCustomerShipmentDate" name="dtpCustomerShipmentDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
             </div>
             <div class="buttons">
-                <paper-button raised class="btnEdit" on-tap="_update">Guardar</paper-button>
+                <paper-button raised class="btnEdit" on-tap="_setProposalStatus">Guardar</paper-button>
                 <paper-button raised class="btnRemove" on-tap="_closeCustomerShipDateDlg">Cancelar</paper-button>
             </div>
         </paper-dialog>
@@ -1319,22 +1358,15 @@
                 <such-textarea rows="5" id="archiveReason" name="archiveReason" label="Razão Arquivo" required error-message="Este campo é obrigatório" maxlength="2000"> </such-textarea>
             </div>
             <div class="buttons">
-                <paper-button raised class="btnEdit" on-tap="_update">Guardar</paper-button>
+                <paper-button raised class="btnEdit" on-tap="_setProposalStatus">Guardar</paper-button>
                 <paper-button raised class="btnRemove" on-tap="_closeArchiveReasonDialog">Cancelar</paper-button>
             </div>
         </paper-dialog>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
-
-
-
     </template>
-
-
     <script>
-
-
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-proposalsdetails',
@@ -1532,6 +1564,10 @@
                         type: Number,
                         value: -1
                     },
+                    _newStatus: {
+                        type: Number,
+                        value: -1
+                    },
                     _revised: {
                         type: Boolean,
                         value: false
@@ -1543,6 +1579,111 @@
                         type: Boolean,
                         value: false
                     },
+                    _openStatusMenuFlag: {
+                        type: Number,
+                        value: 0,
+                    }
+                },
+                listeners: {
+                    'tap': 'onStatusChangeMenuTap'
+                },
+                _showStatusDropDown: function () {
+                    var statusDropDown = this.$$('#StatusDropDownContent');;
+                    if (statusDropDown != null) {
+                        statusDropDown.classList.toggle("showMenuItems");
+                        this._openStatusMenuFlag = 1;
+                    }
+                },
+
+                _proposalStateChange: function () {
+
+                },
+                _proposalStateChangeResponse: function () {
+                    if (this.StateChangedProposal.eReasonCode == 1) {
+                        this._openToast("Proposta atualizada com sucesso.");
+                        var contractNo = this.StateChangedProposal.contractNo;
+                        var versionNo = this.StateChangedProposal.versionNo;
+
+                        setTimeout(
+                            function () {
+                                window.location.href = "../DetalhesProposta/" + contractNo + "?version=" + versionNo;
+                            }, 1500);
+                    } else {
+                        this._openToastError(this.StateChangedProposal.eMessage);
+                    }
+                },
+
+                _setProposalStatus: function () {
+                    if (this._newStatus < 1) {
+                        this._openToastError("Não é possivel alterar o estado. Atualize a página e tente novemante.");
+                        return;
+                    }
+                    var custShipDate = '';
+                    var archiveReason = '';
+                    if (this._oldStatus != this._newStatus) {
+                        switch (this._newStatus) {
+                            case 2: //Alterada para enviada
+                                /*
+                                    O Campo Origem do Pedido Descrição tem que estar preenchido
+                                    Tem que existir pelo menos uma linha preenchida
+                                    Preencher ‘Data Envio’ com data indicada pelo utilizador.Deve ser criado um mecanismo tipo ‘PopUp’ para indicação dessa data.
+                                */
+                                if (this.data.orderOrigin == "" || this.data.ordOrderSource == "") {
+                                    this._openToastError("Para alterar a proposta para o estado aberta os campos Origem do Pedido e Origem do pedido descrição devem estar preenchidos.");
+                                    return false;
+                                }
+                                if (this.dataLines.lines.length == 0) {
+                                    this._openToastError("É obrigatório possuir linhas para alterar o estado da proposta para enviada.");
+                                    return false;
+                                }
+                                if (this.$.dtpCustomerShipmentDate.validate()) {
+                                    custShipDate = this.$.dtpCustomerShipmentDate.value;
+                                    this.$.dlgCustomerShipmentDate.close();
+                                }
+                                else {
+                                    this.$.dlgCustomerShipmentDate.open();
+                                    return false;
+                                }
+                                break;
+                            case 4: //Alterada para Perdida
+                            case 5: //Alterada para Cancelada
+                            case 10://Alterada para Não Respondida
+                                /*
+                                    Preencher a razão do Arquivo
+                                */
+                                if (this.$.archiveReason.validate()) {
+                                    archiveReason = this.$.archiveReason.value;
+                                    this.$.dlgArchiveReason.close();
+                                }
+                                else {
+                                    this.$.dlgArchiveReason.open();
+                                    return false;
+                                }
+                                break;
+                        }
+                        this.data.customerShipmentDate = custShipDate;
+                        this.data.archiveReason = archiveReason;
+                        this.data.status = this._newStatus;
+                        this.$.setProposalStatus_ajax.body = JSON.stringify(this.data);
+                        this.$.setProposalStatus_ajax.generateRequest();
+
+                        //this._executeRequest("/Contratos/UpdateContract", this.data);
+                    }
+                    else {
+                        this._openToastError("A proposta já está no estado selecionado.");
+                    }
+                },
+                _changeStatus: function (e) {
+                    this._newStatus = e.model.item.id;
+                    this._setProposalStatus();
+                },
+                onStatusChangeMenuTap: function (e) {
+                    var elem = e.srcElement;
+                    var statusDropDown = this.$$('#StatusDropDownContent');
+                    if (elem._openStatusMenuFlag > 1 && statusDropDown.classList.contains('showMenuItems')) {
+                        statusDropDown.classList.remove('showMenuItems');
+                    }
+                    elem._openStatusMenuFlag++;
                 },
                 ready: function () {
                     //GET CONTRACT DATA
@@ -1556,7 +1697,6 @@
                     }
 
                     this._showAreas = this._areaid == 4;
-
                 },
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
@@ -1609,7 +1749,7 @@
                     return false;
                 },
                 _createNewContract: function () {
-                    window.location.href = "../DetalhesProposta";
+                    window.location.href = "../DetalhesProposta/";
                 },
                 _closeCustomerShipDateDlg: function () {
                     this.$.dtpCustomerShipmentDate.value = "";
@@ -1620,16 +1760,17 @@
                     this.$.dlgArchiveReason.close();
                 },
                 _showArchiveReason: function () {
+                    var items = [4, 5, 10];//Perdida, Cancelada, Não Respondida
                     var hidden = true;
-                    if(this.data != null)
-                        hidden = !(this.data.status in [4, 5, 10]);
-
+                    if (this.data != null)
+                        hidden = items.indexOf(this.data.status) > -1 ? false : true;
                     this.$.txtArchiveReason.hidden = hidden;
                 },
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
                         this.data.contractType = 2;
+                        this.data.status = 1;
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
                         this.$.page_validator_ajax.generateRequest();
                     }
@@ -1643,8 +1784,8 @@
                                 case 2: //Alterada para enviada
                                     /*
                                         O Campo Origem do Pedido Descrição tem que estar preenchido
-                                    	Tem que existir pelo menos uma linha preenchida
-                                    	Preencher ‘Data Envio’ com data indicada pelo utilizador.Deve ser criado um mecanismo tipo ‘PopUp’ para indicação dessa data.
+                                        Tem que existir pelo menos uma linha preenchida
+                                        Preencher ‘Data Envio’ com data indicada pelo utilizador.Deve ser criado um mecanismo tipo ‘PopUp’ para indicação dessa data.
                                     */
                                     if (this.data.orderOrigin == "" || this.data.ordOrderSource == "") {
                                         this._openToastError("Para alterar a proposta para o estado aberta os campos Origem do Pedido e Origem do pedido descrição devem estar preenchidos.");
@@ -1768,7 +1909,7 @@
                     if (this.data.filed) {
                         this._permissions.update = false;
                     }
-                    
+
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetContractDetails") !== -1) {
                             if (this.data.contractNo != "") {
@@ -1787,7 +1928,7 @@
                                 this._openToast("Proposta atualizada com sucesso.");
                                 var contractNo = this.data.contractNo;
                                 var versionNo = this.data.versionNo;
-                                
+
                                 setTimeout(
                                     function () {
                                         window.location.href = "../DetalhesProposta/" + contractNo + "?version=" + versionNo;
@@ -1830,7 +1971,7 @@
                         this._openToast(this.data.eMessage);
                     }
                 },
-                                
+
 
                 _responseValidatorProcessor: function (data) {
                     var self = this;
@@ -2252,6 +2393,7 @@
                 },
             });
         });
+
     </script>
 
 </dom-module>

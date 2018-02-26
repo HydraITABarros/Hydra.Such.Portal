@@ -200,10 +200,7 @@ namespace Hydra.Such.Portal.Controllers
                 else
                 {
                     if (data.ContractType == 1)
-                    {
-                        result.Status = 9;
-                    }
-
+                        result.Status = 1;
                     result.ClientRequisitions = new List<ContractClientRequisitionViewModel>();
                     result.InvoiceTexts = new List<ContractInvoiceTextViewModel>();
                 }
@@ -312,243 +309,236 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (data.ContractNo != null)
                     {
-                        if (data.ContractType == 2)
-                        {
-                            ProposalsService serv = new ProposalsService(User.Identity.Name);
-                            data = serv.UpdateContract(data);
-                        }
-                        else
-                        {
-                            //Contratos cContract = DBContracts.ParseToDB(data);
-                            Contratos ContratoDB = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
+                        //Contratos cContract = DBContracts.ParseToDB(data);
+                        Contratos ContratoDB = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
 
-                            if (ContratoDB != null)
+
+                        if (ContratoDB != null)
+                        {
+                            #region old
+                            ////Update Fields
+                            //ContratoDB.UnidadePrestação = data.ProvisionUnit;
+                            //ContratoDB.CódigoCentroResponsabilidade = data.CodeResponsabilityCenter;
+                            //ContratoDB.CódTermosPagamento = data.CodePaymentTerms;
+                            //ContratoDB.Descrição = data.Description;
+                            //ContratoDB.NºCliente = data.ClientNo;
+                            //ContratoDB.CódigoRegião = data.CodeRegion;
+                            //ContratoDB.CódigoÁreaFuncional = data.CodeFunctionalArea;
+                            //ContratoDB.Notas = data.Notes;
+                            //ContratoDB.ObjetoServiço = data.ServiceObject;
+                            //ContratoDB.DataInício1ºContrato = data.StartDateFirstContract == ""
+                            //    ? null
+                            //    : (DateTime?)DateTime.Parse(data.StartDateFirstContract);
+                            //ContratoDB.NºRequisiçãoDoCliente = data.ClientRequisitionNo;
+                            //ContratoDB.NºCompromisso = data.PromiseNo;
+                            //ContratoDB.DataInicial = data.StartData == ""
+                            //    ? null
+                            //    : (DateTime?)DateTime.Parse(data.StartData);
+                            //ContratoDB.Estado = data.Status;
+                            //ContratoDB.DataReceçãoRequisição = data.ReceiptDateRequisition == ""
+                            //    ? null
+                            //    : (DateTime?)DateTime.Parse(data.ReceiptDateRequisition);
+                            //ContratoDB.NºVersão = data.VersionNo;
+                            //ContratoDB.DataExpiração = data.DueDate == ""
+                            //    ? null
+                            //    : (DateTime?)DateTime.Parse(data.DueDate);
+                            //ContratoDB.EstadoAlteração = data.ChangeStatus;
+                            //ContratoDB.CódEndereçoEnvio = data.CodeShippingAddress;
+                            //ContratoDB.EnvioAEndereço = data.ShippingAddress;
+                            //ContratoDB.EnvioALocalidade = data.ShippingLocality;
+                            //ContratoDB.EnvioACódPostal = data.ShippingZipCode;
+                            //ContratoDB.EnvioANome = data.ShippingName;
+                            //ContratoDB.TipoFaturação = data.BillingType;
+                            //ContratoDB.Mc = data.Mc;
+                            //ContratoDB.ContratoAvençaFixa = data.FixedVowsAgreement;
+                            //ContratoDB.JuntarFaturas = data.BatchInvoices;
+                            //ContratoDB.TipoContratoManut = data.MaintenanceContractType;
+                            //ContratoDB.TaxaDeslocação = data.DisplacementFee;
+                            //ContratoDB.ContratoAvençaVariável = data.VariableAvengeAgrement;
+                            //ContratoDB.LinhasContratoEmFact = data.ContractLinesInBilling;
+                            //ContratoDB.TaxaAprovisionamento = data.ProvisioningFee;
+                            //ContratoDB.PeríodoFatura = data.InvocePeriod;
+                            //ContratoDB.UtilizadorModificação = User.Identity.Name;
+                            //ContratoDB.OrigemDoPedido = data.OrderOrigin;
+                            //ContratoDB.DescOrigemDoPedido = data.OrdOrderSource;
+                            //ContratoDB.DataEnvioCliente = data.CustomerShipmentDate == ""
+                            //    ? null
+                            //    : (DateTime?)DateTime.Parse(data.CustomerShipmentDate);
+                            //ContratoDB.DataAlteraçãoProposta = data.ProposalChangeDate == ""
+                            //    ? null
+                            //    : (DateTime?)DateTime.Parse(data.ProposalChangeDate);
+                            //ContratoDB.NumeraçãoInterna = data.InternalNumeration;
+                            //ContratoDB.ValorTotalProposta = data.TotalProposalValue;
+                            //ContratoDB.DataHoraLimiteEsclarecimentos = data.LimitClarificationDate == ""
+                            //    ? null
+                            //    : (DateTime?)DateTime.Parse(data.LimitClarificationDate);
+
+                            //ContratoDB.DataHoraErrosEOmissões = data.ErrorsOmissionsDate == ""
+                            //    ? null
+                            //    : (DateTime?)DateTime.Parse(data.ErrorsOmissionsDate);
+
+                            //ContratoDB.DataHoraRelatórioFinal = data.FinalReportDate == ""
+                            //    ? null
+                            //    : (DateTime?)DateTime.Parse(data.FinalReportDate);
+                            //ContratoDB.DataHoraHabilitaçãoDocumental = data.DocumentationHabilitationDate == ""
+                            //    ? null
+                            //    : (DateTime?)DateTime.Parse(data.DocumentationHabilitationDate);
+                            //ContratoDB.PróximaDataFatura = data.NextInvoiceDate == ""
+                            //    ? null
+                            //    : (DateTime?)DateTime.Parse(data.NextInvoiceDate);
+                            //ContratoDB.PróximoPeríodoFact = data.NextBillingPeriod;
+                            //ContratoDB.NºContato = data.ContactNo;
+                            //ContratoDB.ValorBaseProcedimento = data.BaseValueProcedure;
+                            //ContratoDB.AudiênciaPrévia = data.PreviousHearing == ""
+                            //    ? null
+                            //    : (DateTime?)DateTime.Parse(data.PreviousHearing);
+                            //ContratoDB.DataHoraEntregaProposta = data.ProposalDelivery == ""
+                            //    ? null
+                            //    : (DateTime?)DateTime.Parse(data.ProposalDelivery);
+
+                            //if (ContratoDB.AudiênciaPrévia != null)
+                            //{
+                            //    ContratoDB.AudiênciaPrévia = ContratoDB.AudiênciaPrévia.Value.Date;
+                            //    if (data.PreviousHearingTime != null)
+                            //    {
+                            //        ContratoDB.AudiênciaPrévia = ContratoDB.AudiênciaPrévia.Value.Add(TimeSpan.Parse(data.PreviousHearingTime));
+                            //    }
+                            //}
+
+                            //if (ContratoDB.DataHoraLimiteEsclarecimentos != null)
+                            //{
+                            //    ContratoDB.DataHoraLimiteEsclarecimentos = ContratoDB.DataHoraLimiteEsclarecimentos.Value.Date;
+                            //    if (data.LimitClarificationTime != null)
+                            //    {
+                            //        ContratoDB.DataHoraLimiteEsclarecimentos = ContratoDB.DataHoraLimiteEsclarecimentos.Value.Add(TimeSpan.Parse(data.LimitClarificationTime));
+                            //    }
+                            //}
+
+                            //if (ContratoDB.DataHoraErrosEOmissões != null)
+                            //{
+                            //    ContratoDB.DataHoraErrosEOmissões = ContratoDB.DataHoraErrosEOmissões.Value.Date;
+                            //    if (data.ErrorsOmissionsTime != null)
+                            //    {
+                            //        ContratoDB.DataHoraErrosEOmissões = ContratoDB.DataHoraErrosEOmissões.Value.Add(TimeSpan.Parse(data.ErrorsOmissionsTime));
+                            //    }
+                            //}
+
+                            //if (ContratoDB.DataHoraRelatórioFinal != null)
+                            //{
+                            //    ContratoDB.DataHoraRelatórioFinal = ContratoDB.DataHoraRelatórioFinal.Value.Date;
+                            //    if (data.FinalReportTime != null)
+                            //    {
+                            //        ContratoDB.DataHoraRelatórioFinal = ContratoDB.DataHoraRelatórioFinal.Value.Add(TimeSpan.Parse(data.FinalReportTime));
+                            //    }
+                            //}
+
+                            //if (ContratoDB.DataHoraHabilitaçãoDocumental != null)
+                            //{
+                            //    ContratoDB.DataHoraHabilitaçãoDocumental = ContratoDB.DataHoraHabilitaçãoDocumental.Value.Date;
+                            //    if (data.DocumentationHabilitationTime != null)
+                            //    {
+                            //        ContratoDB.DataHoraHabilitaçãoDocumental = ContratoDB.DataHoraHabilitaçãoDocumental.Value.Add(TimeSpan.Parse(data.DocumentationHabilitationTime));
+                            //    }
+                            //}
+
+                            //if (ContratoDB.DataHoraEntregaProposta != null)
+                            //{
+                            //    ContratoDB.DataHoraEntregaProposta = ContratoDB.DataHoraEntregaProposta.Value.Date;
+                            //    if (data.ProposalDeliveryTime != null)
+                            //    {
+                            //        ContratoDB.DataHoraEntregaProposta = ContratoDB.DataHoraEntregaProposta.Value.Add(TimeSpan.Parse(data.ProposalDeliveryTime));
+                            //    }
+                            //}
+
+                            //ContratoDB.ReferênciaContrato = data.ContractReference;
+                            //ContratoDB.DataInícioContrato = data.ContractStartDate != "" && data.ContractStartDate != null ? DateTime.Parse(data.ContractStartDate) : (DateTime?)null;
+                            //ContratoDB.DataFimContrato = data.ContractEndDate != "" && data.ContractEndDate != null ? DateTime.Parse(data.ContractEndDate) : (DateTime?)null;
+                            //ContratoDB.DescriçãoDuraçãoContrato = data.ContractDurationDescription;
+                            //ContratoDB.RescisãoPrazoAviso = data.TerminationTermNotice;
+                            //ContratoDB.CondiçõesParaRenovação = data.RenovationConditions;
+                            //ContratoDB.CondiçõesRenovaçãoOutra = data.RenovationConditionsAnother;
+                            //ContratoDB.CondiçõesPagamento = data.PaymentTerms;
+                            //ContratoDB.CondiçõesPagamentoOutra = data.PaymentTermsAnother;
+                            //ContratoDB.AssinadoPeloCliente = data.CustomerSigned;
+                            //ContratoDB.Juros = data.Interests;
+                            //ContratoDB.DataDaAssinatura = data.SignatureDate != "" && data.SignatureDate != null ? DateTime.Parse(data.SignatureDate) : (DateTime?)null;
+                            //ContratoDB.DataEnvioCliente = data.CustomerShipmentDate !=  "" && data.CustomerShipmentDate != null ? DateTime.Parse(data.CustomerShipmentDate) : (DateTime?)null;
+                            #endregion
+                            ContratoDB = DBContracts.ParseToDB(data);
+                            ContratoDB = DBContracts.Update(ContratoDB);
+
+                            //Create/Update Contract Client Requests
+                            List<RequisiçõesClienteContrato> RCC =
+                                DBContractClientRequisition.GetByContract(ContratoDB.NºContrato);
+                            List<RequisiçõesClienteContrato> RCCToDelete = RCC
+                                .Where(x => !data.ClientRequisitions.Any(
+                                    y => x.NºRequisiçãoCliente == x.NºRequisiçãoCliente &&
+                                         x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo &&
+                                         x.DataInícioCompromisso == DateTime.Parse(y.StartDate))).ToList();
+
+                            data.ClientRequisitions.ForEach(y =>
                             {
-                                #region old
-                                ////Update Fields
-                                //ContratoDB.UnidadePrestação = data.ProvisionUnit;
-                                //ContratoDB.CódigoCentroResponsabilidade = data.CodeResponsabilityCenter;
-                                //ContratoDB.CódTermosPagamento = data.CodePaymentTerms;
-                                //ContratoDB.Descrição = data.Description;
-                                //ContratoDB.NºCliente = data.ClientNo;
-                                //ContratoDB.CódigoRegião = data.CodeRegion;
-                                //ContratoDB.CódigoÁreaFuncional = data.CodeFunctionalArea;
-                                //ContratoDB.Notas = data.Notes;
-                                //ContratoDB.ObjetoServiço = data.ServiceObject;
-                                //ContratoDB.DataInício1ºContrato = data.StartDateFirstContract == ""
-                                //    ? null
-                                //    : (DateTime?)DateTime.Parse(data.StartDateFirstContract);
-                                //ContratoDB.NºRequisiçãoDoCliente = data.ClientRequisitionNo;
-                                //ContratoDB.NºCompromisso = data.PromiseNo;
-                                //ContratoDB.DataInicial = data.StartData == ""
-                                //    ? null
-                                //    : (DateTime?)DateTime.Parse(data.StartData);
-                                //ContratoDB.Estado = data.Status;
-                                //ContratoDB.DataReceçãoRequisição = data.ReceiptDateRequisition == ""
-                                //    ? null
-                                //    : (DateTime?)DateTime.Parse(data.ReceiptDateRequisition);
-                                //ContratoDB.NºVersão = data.VersionNo;
-                                //ContratoDB.DataExpiração = data.DueDate == ""
-                                //    ? null
-                                //    : (DateTime?)DateTime.Parse(data.DueDate);
-                                //ContratoDB.EstadoAlteração = data.ChangeStatus;
-                                //ContratoDB.CódEndereçoEnvio = data.CodeShippingAddress;
-                                //ContratoDB.EnvioAEndereço = data.ShippingAddress;
-                                //ContratoDB.EnvioALocalidade = data.ShippingLocality;
-                                //ContratoDB.EnvioACódPostal = data.ShippingZipCode;
-                                //ContratoDB.EnvioANome = data.ShippingName;
-                                //ContratoDB.TipoFaturação = data.BillingType;
-                                //ContratoDB.Mc = data.Mc;
-                                //ContratoDB.ContratoAvençaFixa = data.FixedVowsAgreement;
-                                //ContratoDB.JuntarFaturas = data.BatchInvoices;
-                                //ContratoDB.TipoContratoManut = data.MaintenanceContractType;
-                                //ContratoDB.TaxaDeslocação = data.DisplacementFee;
-                                //ContratoDB.ContratoAvençaVariável = data.VariableAvengeAgrement;
-                                //ContratoDB.LinhasContratoEmFact = data.ContractLinesInBilling;
-                                //ContratoDB.TaxaAprovisionamento = data.ProvisioningFee;
-                                //ContratoDB.PeríodoFatura = data.InvocePeriod;
-                                //ContratoDB.UtilizadorModificação = User.Identity.Name;
-                                //ContratoDB.OrigemDoPedido = data.OrderOrigin;
-                                //ContratoDB.DescOrigemDoPedido = data.OrdOrderSource;
-                                //ContratoDB.DataEnvioCliente = data.CustomerShipmentDate == ""
-                                //    ? null
-                                //    : (DateTime?)DateTime.Parse(data.CustomerShipmentDate);
-                                //ContratoDB.DataAlteraçãoProposta = data.ProposalChangeDate == ""
-                                //    ? null
-                                //    : (DateTime?)DateTime.Parse(data.ProposalChangeDate);
-                                //ContratoDB.NumeraçãoInterna = data.InternalNumeration;
-                                //ContratoDB.ValorTotalProposta = data.TotalProposalValue;
-                                //ContratoDB.DataHoraLimiteEsclarecimentos = data.LimitClarificationDate == ""
-                                //    ? null
-                                //    : (DateTime?)DateTime.Parse(data.LimitClarificationDate);
-
-                                //ContratoDB.DataHoraErrosEOmissões = data.ErrorsOmissionsDate == ""
-                                //    ? null
-                                //    : (DateTime?)DateTime.Parse(data.ErrorsOmissionsDate);
-
-                                //ContratoDB.DataHoraRelatórioFinal = data.FinalReportDate == ""
-                                //    ? null
-                                //    : (DateTime?)DateTime.Parse(data.FinalReportDate);
-                                //ContratoDB.DataHoraHabilitaçãoDocumental = data.DocumentationHabilitationDate == ""
-                                //    ? null
-                                //    : (DateTime?)DateTime.Parse(data.DocumentationHabilitationDate);
-                                //ContratoDB.PróximaDataFatura = data.NextInvoiceDate == ""
-                                //    ? null
-                                //    : (DateTime?)DateTime.Parse(data.NextInvoiceDate);
-                                //ContratoDB.PróximoPeríodoFact = data.NextBillingPeriod;
-                                //ContratoDB.NºContato = data.ContactNo;
-                                //ContratoDB.ValorBaseProcedimento = data.BaseValueProcedure;
-                                //ContratoDB.AudiênciaPrévia = data.PreviousHearing == ""
-                                //    ? null
-                                //    : (DateTime?)DateTime.Parse(data.PreviousHearing);
-                                //ContratoDB.DataHoraEntregaProposta = data.ProposalDelivery == ""
-                                //    ? null
-                                //    : (DateTime?)DateTime.Parse(data.ProposalDelivery);
-
-                                //if (ContratoDB.AudiênciaPrévia != null)
-                                //{
-                                //    ContratoDB.AudiênciaPrévia = ContratoDB.AudiênciaPrévia.Value.Date;
-                                //    if (data.PreviousHearingTime != null)
-                                //    {
-                                //        ContratoDB.AudiênciaPrévia = ContratoDB.AudiênciaPrévia.Value.Add(TimeSpan.Parse(data.PreviousHearingTime));
-                                //    }
-                                //}
-
-                                //if (ContratoDB.DataHoraLimiteEsclarecimentos != null)
-                                //{
-                                //    ContratoDB.DataHoraLimiteEsclarecimentos = ContratoDB.DataHoraLimiteEsclarecimentos.Value.Date;
-                                //    if (data.LimitClarificationTime != null)
-                                //    {
-                                //        ContratoDB.DataHoraLimiteEsclarecimentos = ContratoDB.DataHoraLimiteEsclarecimentos.Value.Add(TimeSpan.Parse(data.LimitClarificationTime));
-                                //    }
-                                //}
-
-                                //if (ContratoDB.DataHoraErrosEOmissões != null)
-                                //{
-                                //    ContratoDB.DataHoraErrosEOmissões = ContratoDB.DataHoraErrosEOmissões.Value.Date;
-                                //    if (data.ErrorsOmissionsTime != null)
-                                //    {
-                                //        ContratoDB.DataHoraErrosEOmissões = ContratoDB.DataHoraErrosEOmissões.Value.Add(TimeSpan.Parse(data.ErrorsOmissionsTime));
-                                //    }
-                                //}
-
-                                //if (ContratoDB.DataHoraRelatórioFinal != null)
-                                //{
-                                //    ContratoDB.DataHoraRelatórioFinal = ContratoDB.DataHoraRelatórioFinal.Value.Date;
-                                //    if (data.FinalReportTime != null)
-                                //    {
-                                //        ContratoDB.DataHoraRelatórioFinal = ContratoDB.DataHoraRelatórioFinal.Value.Add(TimeSpan.Parse(data.FinalReportTime));
-                                //    }
-                                //}
-
-                                //if (ContratoDB.DataHoraHabilitaçãoDocumental != null)
-                                //{
-                                //    ContratoDB.DataHoraHabilitaçãoDocumental = ContratoDB.DataHoraHabilitaçãoDocumental.Value.Date;
-                                //    if (data.DocumentationHabilitationTime != null)
-                                //    {
-                                //        ContratoDB.DataHoraHabilitaçãoDocumental = ContratoDB.DataHoraHabilitaçãoDocumental.Value.Add(TimeSpan.Parse(data.DocumentationHabilitationTime));
-                                //    }
-                                //}
-
-                                //if (ContratoDB.DataHoraEntregaProposta != null)
-                                //{
-                                //    ContratoDB.DataHoraEntregaProposta = ContratoDB.DataHoraEntregaProposta.Value.Date;
-                                //    if (data.ProposalDeliveryTime != null)
-                                //    {
-                                //        ContratoDB.DataHoraEntregaProposta = ContratoDB.DataHoraEntregaProposta.Value.Add(TimeSpan.Parse(data.ProposalDeliveryTime));
-                                //    }
-                                //}
-
-                                //ContratoDB.ReferênciaContrato = data.ContractReference;
-                                //ContratoDB.DataInícioContrato = data.ContractStartDate != "" && data.ContractStartDate != null ? DateTime.Parse(data.ContractStartDate) : (DateTime?)null;
-                                //ContratoDB.DataFimContrato = data.ContractEndDate != "" && data.ContractEndDate != null ? DateTime.Parse(data.ContractEndDate) : (DateTime?)null;
-                                //ContratoDB.DescriçãoDuraçãoContrato = data.ContractDurationDescription;
-                                //ContratoDB.RescisãoPrazoAviso = data.TerminationTermNotice;
-                                //ContratoDB.CondiçõesParaRenovação = data.RenovationConditions;
-                                //ContratoDB.CondiçõesRenovaçãoOutra = data.RenovationConditionsAnother;
-                                //ContratoDB.CondiçõesPagamento = data.PaymentTerms;
-                                //ContratoDB.CondiçõesPagamentoOutra = data.PaymentTermsAnother;
-                                //ContratoDB.AssinadoPeloCliente = data.CustomerSigned;
-                                //ContratoDB.Juros = data.Interests;
-                                //ContratoDB.DataDaAssinatura = data.SignatureDate != "" && data.SignatureDate != null ? DateTime.Parse(data.SignatureDate) : (DateTime?)null;
-                                //ContratoDB.DataEnvioCliente = data.CustomerShipmentDate !=  "" && data.CustomerShipmentDate != null ? DateTime.Parse(data.CustomerShipmentDate) : (DateTime?)null;
-                                #endregion
-                                ContratoDB = DBContracts.ParseToDB(data);
-                                ContratoDB = DBContracts.Update(ContratoDB);
-
-                                //Create/Update Contract Client Requests
-                                List<RequisiçõesClienteContrato> RCC =
-                                    DBContractClientRequisition.GetByContract(ContratoDB.NºContrato);
-                                List<RequisiçõesClienteContrato> RCCToDelete = RCC
-                                    .Where(x => !data.ClientRequisitions.Any(
-                                        y => x.NºRequisiçãoCliente == x.NºRequisiçãoCliente &&
-                                             x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo &&
-                                             x.DataInícioCompromisso == DateTime.Parse(y.StartDate))).ToList();
-
-                                data.ClientRequisitions.ForEach(y =>
+                                RequisiçõesClienteContrato RCCO =
+                                    RCC.Where(x => x.NºRequisiçãoCliente == x.NºRequisiçãoCliente &&
+                                                   x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo &&
+                                                   x.DataInícioCompromisso == DateTime.Parse(y.StartDate))
+                                        .FirstOrDefault();
+                                if (RCCO != null)
                                 {
-                                    RequisiçõesClienteContrato RCCO =
-                                        RCC.Where(x => x.NºRequisiçãoCliente == x.NºRequisiçãoCliente &&
-                                                       x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo &&
-                                                       x.DataInícioCompromisso == DateTime.Parse(y.StartDate))
-                                            .FirstOrDefault();
-                                    if (RCCO != null)
-                                    {
-                                        RCCO.NºContrato = y.ContractNo;
-                                        RCCO.GrupoFatura = y.InvoiceGroup;
-                                        RCCO.NºProjeto = y.ProjectNo;
-                                        RCCO.DataInícioCompromisso = DateTime.Parse(y.StartDate);
-                                        RCCO.DataFimCompromisso = y.EndDate != "" ? DateTime.Parse(y.EndDate) : (DateTime?)null;
-                                        RCCO.NºRequisiçãoCliente = y.ClientRequisitionNo;
-                                        RCCO.DataRequisição = y.RequisitionDate != "" ? DateTime.Parse(y.RequisitionDate) : (DateTime?)null;
-                                        RCCO.NºCompromisso = y.PromiseNo;
-                                        RCCO.DataÚltimaFatura = y.LastInvoiceDate != "" ? DateTime.Parse(y.LastInvoiceDate) : (DateTime?)null;
-                                        RCCO.NºFatura = y.InvoiceNo;
-                                        RCCO.ValorFatura = y.InvoiceValue;
-                                        RCCO.UtilizadorModificação = User.Identity.Name;
-                                        DBContractClientRequisition.Update(RCCO);
-                                    }
-                                    else
-                                    {
-                                        y.CreateUser = User.Identity.Name;
-                                        DBContractClientRequisition.Create(DBContractClientRequisition.ParseToDB(y));
-                                    }
-                                });
-
-                                //Delete Contract Client Requests
-                                RCCToDelete.ForEach(x => DBContractClientRequisition.Delete(x));
-
-                                //Create/Update Contract Invoice Texts
-                                List<TextoFaturaContrato> CIT = DBContractInvoiceText.GetByContract(ContratoDB.NºContrato);
-                                List<TextoFaturaContrato> CITToDelete =
-                                    CIT.Where(x => !data.InvoiceTexts.Any(
-                                        y => x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo &&
-                                             x.NºContrato == y.ContractNo)).ToList();
-
-                                data.InvoiceTexts.ForEach(y =>
+                                    RCCO.NºContrato = y.ContractNo;
+                                    RCCO.GrupoFatura = y.InvoiceGroup;
+                                    RCCO.NºProjeto = y.ProjectNo;
+                                    RCCO.DataInícioCompromisso = DateTime.Parse(y.StartDate);
+                                    RCCO.DataFimCompromisso = y.EndDate != "" ? DateTime.Parse(y.EndDate) : (DateTime?)null;
+                                    RCCO.NºRequisiçãoCliente = y.ClientRequisitionNo;
+                                    RCCO.DataRequisição = y.RequisitionDate != "" ? DateTime.Parse(y.RequisitionDate) : (DateTime?)null;
+                                    RCCO.NºCompromisso = y.PromiseNo;
+                                    RCCO.DataÚltimaFatura = y.LastInvoiceDate != "" ? DateTime.Parse(y.LastInvoiceDate) : (DateTime?)null;
+                                    RCCO.NºFatura = y.InvoiceNo;
+                                    RCCO.ValorFatura = y.InvoiceValue;
+                                    RCCO.UtilizadorModificação = User.Identity.Name;
+                                    DBContractClientRequisition.Update(RCCO);
+                                }
+                                else
                                 {
-                                    TextoFaturaContrato CITO = CIT
-                                        .Where(x => x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo &&
-                                                    x.NºContrato == y.ContractNo).FirstOrDefault();
-                                    if (CITO != null)
-                                    {
-                                        CITO.NºContrato = y.ContractNo;
-                                        CITO.GrupoFatura = y.InvoiceGroup;
-                                        CITO.NºProjeto = y.ProjectNo;
-                                        CITO.TextoFatura = y.InvoiceText;
-                                        CITO.UtilizadorModificação = User.Identity.Name;
-                                        DBContractInvoiceText.Update(CITO);
-                                    }
-                                    else
-                                    {
-                                        y.CreateUser = User.Identity.Name;
-                                        DBContractInvoiceText.Create(DBContractInvoiceText.ParseToDB(y));
-                                    }
-                                });
+                                    y.CreateUser = User.Identity.Name;
+                                    DBContractClientRequisition.Create(DBContractClientRequisition.ParseToDB(y));
+                                }
+                            });
 
-                                //Delete Contract Invoice Texts
-                                CITToDelete.ForEach(x => DBContractInvoiceText.Delete(x));
-                            }
+                            //Delete Contract Client Requests
+                            RCCToDelete.ForEach(x => DBContractClientRequisition.Delete(x));
+
+                            //Create/Update Contract Invoice Texts
+                            List<TextoFaturaContrato> CIT = DBContractInvoiceText.GetByContract(ContratoDB.NºContrato);
+                            List<TextoFaturaContrato> CITToDelete =
+                                CIT.Where(x => !data.InvoiceTexts.Any(
+                                    y => x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo &&
+                                         x.NºContrato == y.ContractNo)).ToList();
+
+                            data.InvoiceTexts.ForEach(y =>
+                            {
+                                TextoFaturaContrato CITO = CIT
+                                    .Where(x => x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo &&
+                                                x.NºContrato == y.ContractNo).FirstOrDefault();
+                                if (CITO != null)
+                                {
+                                    CITO.NºContrato = y.ContractNo;
+                                    CITO.GrupoFatura = y.InvoiceGroup;
+                                    CITO.NºProjeto = y.ProjectNo;
+                                    CITO.TextoFatura = y.InvoiceText;
+                                    CITO.UtilizadorModificação = User.Identity.Name;
+                                    DBContractInvoiceText.Update(CITO);
+                                }
+                                else
+                                {
+                                    y.CreateUser = User.Identity.Name;
+                                    DBContractInvoiceText.Create(DBContractInvoiceText.ParseToDB(y));
+                                }
+                            });
+
+                            //Delete Contract Invoice Texts
+                            CITToDelete.ForEach(x => DBContractInvoiceText.Delete(x));
                         }
                         data.eReasonCode = 1;
                         data.eMessage = "Contrato atualizado com sucesso.";
@@ -561,19 +551,18 @@ namespace Hydra.Such.Portal.Controllers
                 data.eMessage = "Ocorreu um erro ao atualizar o contrato.";
             }
             return Json(data);
-
         }
 
-        //[HttpPost]
-        //public JsonResult UpdateContract([FromBody] ContractViewModel ContratoDB)
-        //{
-        //    if (ContratoDB != null)
-        //    {
-        //        ProposalsService serv = new ProposalsService(User.Identity.Name);
-        //        ContratoDB = serv.UpdateContract(ContratoDB);
-        //    }
-        //    return Json(ContratoDB);
-        //}
+        [HttpPost]
+        public JsonResult SetProposalStatus([FromBody] ContractViewModel item)
+        {
+            if (item != null)
+            {
+                ProposalsService serv = new ProposalsService(User.Identity.Name);
+                item = serv.SetStatus(item);
+            }
+            return Json(item);
+        }
 
         [HttpPost]
         public JsonResult DeleteContract([FromBody] ContractViewModel data)
@@ -870,13 +859,13 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     ContractsList = DBContracts.GetAllByContractType(1);
                     ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
-                    ContractsList.RemoveAll(x => x.Estado == 9);
+                    //ContractsList.RemoveAll(x => x.Estado == 9);
                 }
                 else
                 {
                     ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 1);
                     ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
-                    ContractsList.RemoveAll(x => x.Estado == 9);
+                    //ContractsList.RemoveAll(x => x.Estado == 9);
                 }
             }
             else
@@ -884,12 +873,12 @@ namespace Hydra.Such.Portal.Controllers
                 if (AreaId == 4)
                 {
                     ContractsList = DBContracts.GetAllByContractType(1);
-                    ContractsList.RemoveAll(x => x.Estado != 9);
+                    //ContractsList.RemoveAll(x => x.Estado != 9);
                 }
                 else
                 {
                     ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 1);
-                    ContractsList.RemoveAll(x => x.Estado != 9);
+                    //ContractsList.RemoveAll(x => x.Estado != 9);
                 }
             }
 
