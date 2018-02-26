@@ -352,6 +352,56 @@ namespace Hydra.Such.Portal.Controllers
             return Json(DBProcedimentosCCP.__DeleteElementoJuri(data.NoProcedimento, data.NoLinha));
         }
 
+        //NR 20180226
+        [HttpPost]
+        public JsonResult CreateLinhaProdutoServico([FromBody] LinhasPEncomendaProcedimentosCcp data)
+        {
+            bool result = false;
+            try
+            {
+                //int noLinha;
+                //noLinha = DBProcedimentosCCP.GetMaxByLinhaParaEncomenda(data.NºProcedimento);
+
+                LinhasPEncomendaProcedimentosCcp LinhaProdutoServico = new LinhasPEncomendaProcedimentosCcp();
+                LinhaProdutoServico.CustoUnitário = data.CustoUnitário;
+                LinhaProdutoServico.Código = data.Código;
+                LinhaProdutoServico.CódigoCentroResponsabilidade = data.CódigoCentroResponsabilidade;
+                LinhaProdutoServico.CódigoRegião = data.CódigoRegião;
+                LinhaProdutoServico.CódigoÁreaFuncional = data.CódigoÁreaFuncional;
+                LinhaProdutoServico.CódLocalização = data.CódLocalização;
+                LinhaProdutoServico.CódUnidadeMedida = data.CódUnidadeMedida;
+                LinhaProdutoServico.CustoUnitário = data.CustoUnitário;
+                LinhaProdutoServico.DataHoraCriação = DateTime.Now;
+                LinhaProdutoServico.DataHoraModificação = data.DataHoraModificação;
+                LinhaProdutoServico.Descrição = data.Descrição;
+                LinhaProdutoServico.Nº = data.Nº;
+                //LinhaProdutoServico.NºLinha = noLinha;
+                LinhaProdutoServico.NºLinhaRequisição = data.NºLinhaRequisição;
+                LinhaProdutoServico.NºProcedimento = data.NºProcedimento;
+                LinhaProdutoServico.NºProcedimentoNavigation = data.NºProcedimentoNavigation;
+                LinhaProdutoServico.NºProjeto = data.NºProjeto;
+                LinhaProdutoServico.NºRequisição = data.NºRequisição;
+                LinhaProdutoServico.NºRequisiçãoNavigation = data.NºRequisiçãoNavigation;
+                LinhaProdutoServico.QuantARequerer = data.QuantARequerer;
+                LinhaProdutoServico.Tipo = data.Tipo;
+                LinhaProdutoServico.UtilizadorCriação = User.Identity.Name;
+                LinhaProdutoServico.UtilizadorModificação = data.UtilizadorModificação;
+
+                var dbCreateResult = DBProcedimentosCCP.CreateLinhaProdutoServico(LinhaProdutoServico);
+
+                if (dbCreateResult != null)
+                    result = true;
+                else
+                    result = false;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
+        
 
         #region Get the FluxoTrabalhoListaControlo propertie according with the view where it should be displayed
         public void GetChecklists(ProcedimentoCCPView data)
