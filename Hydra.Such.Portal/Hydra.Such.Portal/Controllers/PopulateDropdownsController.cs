@@ -1546,6 +1546,17 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(result);
         }
+
+
+
+        // NR 20180223 Procedimentos CCP 
+        [HttpPost]
+        public JsonResult GetTipoLinhasProdutosCCP()
+        {
+            List<EnumData> Tipo = EnumerablesFixed.TipoLinhasProdutosCCP;
+
+            return Json(Tipo);
+        }
     }
 
 
