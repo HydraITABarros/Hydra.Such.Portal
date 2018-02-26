@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Authorization;
 using Hydra.Such.Data.Logic.Project;
 using System.Data.SqlClient;
 
-
 namespace Hydra.Such.Portal.Controllers
 {
     [Authorize]
