@@ -9,11 +9,15 @@ namespace Hydra.Such.Data.ViewModel.FH
         public string FolhaDeHorasNo { get; set; }
         public DateTime? Data { get; set; }
         public string DataTexto { get; set; }
+        public string NoEmpregado { get; set; }
         public string Hora1Entrada { get; set; }
         public string Hora1Saida { get; set; }
         public string Hora2Entrada { get; set; }
         public string Hora2Saida { get; set; }
         public string Observacoes { get; set; }
+        public int? Validado { get; set; }
+        public int? IntegradoTR { get; set; }
+        public DateTime? DataIntTR { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataHoraCriacao { get; set; }
         public string DataHoraCriacaoTexto { get; set; }
