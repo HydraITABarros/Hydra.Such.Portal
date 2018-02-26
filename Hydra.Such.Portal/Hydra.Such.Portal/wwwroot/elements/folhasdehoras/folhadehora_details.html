@@ -522,7 +522,7 @@
                                     </vaadin-combo-box>
                                 </div>
                                 <div class="col-sm-3">
-                                    <vaadin-date-picker id="percursoDataViagem" label="Data Despesa" name="PercursoDataViagemTexto" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataViagemTexto}}"></vaadin-date-picker>
+                                    <vaadin-date-picker id="percursoDataViagem" label="Data Viagem" on-blur="_PercursoDataValidar" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataViagemTexto}}"></vaadin-date-picker>
                                 </div>
                                 <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                                 <div class="col-sm-1 alignPoga">
@@ -607,7 +607,7 @@
 
                         <vaadin-grid-column width="150px">
                             <template class="header">
-                                <vaadin-grid-sorter path="dataDespesaTexto" style="text-align:center;">Data Despesa</vaadin-grid-sorter>
+                                <vaadin-grid-sorter path="dataDespesaTexto" style="text-align:center;">Data Viagem</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="dataDespesaTexto" />
                             </template>
                             <template>
@@ -718,7 +718,7 @@
                                     </vaadin-combo-box>
                                 </div>
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="ajudaQuantidade" label="Quantidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
+                                    <vaadin-text-field id="ajudaQuantidade" label="Quantidade" type="number" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-1">
                                     <vaadin-text-field id="ajudaCustoUnitario" label="Custo Unitário" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
@@ -731,7 +731,7 @@
                                     </vaadin-text-field>
                                 </div>
                                 <div class="col-sm-2">
-                                    <vaadin-date-picker id="ajudaDataDespesa" label="Data Despesa" name="ajudaDataDespesa" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}"></vaadin-date-picker>
+                                    <vaadin-date-picker id="ajudaDataDespesa" label="Data Despesa" on-blur="_AjudaDataValidar" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-2" style="text-align:right">
                                     <vaadin-text-field id="ajudaJustificacao" label="Justificação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="200" style="text-align:left;"></vaadin-text-field>
@@ -918,7 +918,7 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
-                                    <vaadin-date-picker id="maoDeObraDate" name="maoDeObraDate" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" on-blur="_MaoDeObraData" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                    <vaadin-date-picker id="maoDeObraDate" name="maoDeObraDate" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="10" on-blur="_MaoDeObraDataValidar" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-2">
                                     <such-selectbox id="maoDeObraProjetoNo" label="Nº Obra"
@@ -941,13 +941,13 @@
                                     </vaadin-combo-box>
                                 </div>
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="maoDeObraHoraInicio" label="Hora de Início" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="maoDeObraHoraInicio" label="Hora de Início" on-blur="_MaoDeObraHoraInicioValidar" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-1 alignPoga">
                                     <vaadin-checkbox id="maoDeObraHorarioAlmoco" checked="{{chkAlmoco}}" disabled="{{ !_permissions.update }}">Almoço</vaadin-checkbox>
                                 </div>
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="maoDeObraHoraFim" label="Hora de Fim" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="maoDeObraHoraFim" label="Hora de Fim" on-blur="_MaoDeObraHoraFimValidar" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-1 alignPoga">
                                     <vaadin-checkbox id="maoDeObraHorarioJantar" checked="{{chkJantar}}" disabled="{{ !_permissions.update }}">Jantar</vaadin-checkbox>
@@ -1135,6 +1135,7 @@
 
                         <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
                         <vaadin-grid-column width="100px">
+                            h=
                             he
                             <template class="header">
                             </template>
@@ -1172,19 +1173,19 @@
                         <div class="panel-body">
                             <div class="row break_clear">
                                 <div class="col-sm-2">
-                                    <vaadin-date-picker id="presencaDataTexto" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_PresencaData" maxlength="10" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                    <vaadin-date-picker id="presencaDataTexto" label="Data" value="" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_PresencaDataValidar" maxlength="10" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora1Entrada" label="1ª Entrada" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="presencaHora1Entrada" label="1ª Entrada" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_presencaHora1EntradaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora1Saida" label="1ª Saída" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="presencaHora1Saida" label="1ª Saída" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_presencaHora1SaidaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora2Entrada" label="2ª Entrada" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="presencaHora2Entrada" label="2ª Entrada" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_presencaHora2EntradaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-1">
-                                    <vaadin-text-field id="presencaHora2Saida" label="2ª Saída" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    <vaadin-text-field id="presencaHora2Saida" label="2ª Saída" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_presencaHora2SaidaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-5" style="text-align:right;">
                                     <vaadin-text-field id="presencaObservacoes" label="Observações" maxlength="200" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" style="text-align:left;"></vaadin-text-field>
@@ -1278,7 +1279,6 @@
                             </template>
                             <template>
                                 <paper-button class="btnRemove" raised on-tap="_deletePresenca" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
-                                on
                             </template>
                         </vaadin-grid-column>
 
@@ -1468,7 +1468,7 @@
 
 
 
-                    <!--<template is="dom-if" if="{{ _permissions.update }}">-->
+                      <!--<template is="dom-if" if="{{ _permissions.update }}">-->
                     <div class="col-sm-1 alignPoga">
                         <paper-button id="btn_updateFH2" class="btnSave" raised on-tap="_updateFH" disabled="{{ !_permissions.update }}">Gravar</paper-button>
                     </div>
@@ -1908,15 +1908,20 @@
                                 if (this.$.percursoOrigem.validate() & this.$.percursoOrigem.value != "") {
                                     if (this.$.percursoDestino.validate() & this.$.percursoDestino.value != "") {
                                         if (this.$.percursoDataViagem.validate() & this.$.percursoDataViagem.value != "") {
-                                            this.$.page_createpercurso_ajax.body = JSON.stringify({
-                                                noFolhaHoras: this.$.folhaDeHorasNo.value,
-                                                codTipoCusto: this.$.codigoTipoKms.value,
-                                                codOrigem: this.$.percursoOrigem.value,
-                                                codDestino: this.$.percursoDestino.value,
-                                                dataDespesa: this.$.percursoDataViagem.value
-                                            });
-                                            this.$.page_createpercurso_ajax.generateRequest();
-                                            this.$.tabPercurso.clearCache();
+                                            if (this._PercursoDataValidar()) {
+                                                this.$.page_createpercurso_ajax.body = JSON.stringify({
+                                                    noFolhaHoras: this.$.folhaDeHorasNo.value,
+                                                    codTipoCusto: this.$.codigoTipoKms.value,
+                                                    codOrigem: this.$.percursoOrigem.value,
+                                                    codDestino: this.$.percursoDestino.value,
+                                                    dataDespesa: this.$.percursoDataViagem.value
+                                                });
+                                                this.$.page_createpercurso_ajax.generateRequest();
+                                                this.$.tabPercurso.clearCache();
+                                            }
+                                            else {
+                                                this._showErrorMessage('O campo Data Viagem tem que estar contido no período de tempo do Cabeçalho.');
+                                            }
                                         }
                                         else {
                                             this._showErrorMessage('É obrigatório preencher o campo Data Despesa.');
@@ -2001,6 +2006,31 @@
                     this.$.tabAjuda.clearCache();
                 },
 
+                _PercursoDataValidar: function () {
+                    //debugger;
+                    if (this.$.percursoDataViagem.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "") {
+                        if (this.$.percursoDataViagem.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate()) {
+                            var myDataPartida = new Date(this.$.dataPartidaTexto.value);
+                            var myDataChegada = new Date(this.$.dataChegadaTexto.value);
+                            var myDataPercurso = new Date(this.$.percursoDataViagem.value);
+
+                            if (myDataPercurso < myDataPartida) {
+                                this._showErrorMessage('O campo Data Viagem tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataPercurso > myDataChegada) {
+                                this._showErrorMessage('O campo Data Viagem tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
+
 
                 //AJUDA
                 _createAjuda: function () {
@@ -2014,18 +2044,23 @@
                                             if (this.$.ajudaPrecoUnitario.validate() & this.$.ajudaPrecoUnitario.value != "") {
                                                 if (this.$.ajudaDataDespesa.validate() & this.$.ajudaDataDespesa.value != "") {
                                                     if (this.$.ajudaJustificacao.validate() & this.$.ajudaJustificacao.value != "") {
-                                                        this.$.page_createajuda_ajax.body = JSON.stringify({
-                                                            noFolhaHoras: this.$.folhaDeHorasNo.value,
-                                                            tipoCusto: parseInt(this.$.ajudaTipoCusto.value),
-                                                            codTipoCusto: this.$.ajudaCodigoTipoCusto.value,
-                                                            quantidade: parseFloat(this.$.ajudaQuantidade.value),
-                                                            custoUnitario: parseFloat(this.$.ajudaCustoUnitario.value),
-                                                            precoUnitario: parseFloat(this.$.ajudaPrecoUnitario.value),
-                                                            dataDespesa: this.$.ajudaDataDespesa.value,
-                                                            observacao: this.$.ajudaJustificacao.value
-                                                        });
-                                                        this.$.page_createajuda_ajax.generateRequest();
-                                                        this.$.tabAjuda.clearCache();
+                                                        if (this._AjudaDataValidar()) {
+                                                            this.$.page_createajuda_ajax.body = JSON.stringify({
+                                                                noFolhaHoras: this.$.folhaDeHorasNo.value,
+                                                                tipoCusto: parseInt(this.$.ajudaTipoCusto.value),
+                                                                codTipoCusto: this.$.ajudaCodigoTipoCusto.value,
+                                                                quantidade: parseFloat(this.$.ajudaQuantidade.value),
+                                                                custoUnitario: parseFloat(this.$.ajudaCustoUnitario.value),
+                                                                precoUnitario: parseFloat(this.$.ajudaPrecoUnitario.value),
+                                                                dataDespesa: this.$.ajudaDataDespesa.value,
+                                                                observacao: this.$.ajudaJustificacao.value
+                                                            });
+                                                            this.$.page_createajuda_ajax.generateRequest();
+                                                            this.$.tabAjuda.clearCache();
+                                                        }
+                                                        else {
+                                                            this._showErrorMessage('O campo Data Despesa tem que estar contido no período de tempo do Cabeçalho.');
+                                                        }
                                                     }
                                                     else {
                                                         this._showErrorMessage('É obrigatório preencher o campo Justificação.');
@@ -2125,6 +2160,31 @@
                     this.$.tabAjuda.clearCache();
                 },
 
+                _AjudaDataValidar: function () {
+                    //debugger;
+                    if (this.$.ajudaDataDespesa.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "") {
+                        if (this.$.ajudaDataDespesa.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate()) {
+                            var myDataPartida = new Date(this.$.dataPartidaTexto.value);
+                            var myDataChegada = new Date(this.$.dataChegadaTexto.value);
+                            var myDataAjuda = new Date(this.$.ajudaDataDespesa.value);
+
+                            if (myDataAjuda < myDataPartida) {
+                                this._showErrorMessage('O campo Data Despesa tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataAjuda > myDataChegada) {
+                                this._showErrorMessage('O campo Data Despesa tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
+
 
                 //AJUDAS DE CUSTO
                 _calcularAjudasCusto: function () {
@@ -2151,29 +2211,34 @@
 
                 //MAODEOBRA
                 _createMaoDeObra: function () {
-                    //debugger;
+                    debugger;
                     if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
                         if (this.$.maoDeObraDate.validate() & this.$.maoDeObraDate.value != "") {
                             if (this.$.maoDeObraProjetoNo.value != "") {
                                 if (this.$.maoDeObraCodigoTipoTrabalho.validate() & this.$.maoDeObraCodigoTipoTrabalho.value != "") {
                                     if (this.$.maoDeObraHoraInicio.validate() & this.$.maoDeObraHoraInicio.value != "") {
                                         if (this.$.maoDeObraHoraFim.validate() & this.$.maoDeObraHoraFim.value != "") {
-                                            this.$.page_createmaodeobra_ajax.body = JSON.stringify({
-                                                folhaDeHorasNo: this.$.folhaDeHorasNo.value,
-                                                date: this.$.maoDeObraDate.value,
-                                                projetoNo: this.$.maoDeObraProjetoNo.value,
-                                                empregadoNo: this.$.empregadoNo.value,
-                                                codigoRegiao: this.$.codigoRegiao.value,
-                                                codigoArea: this.$.codigoAreaFuncional.value,
-                                                codigoCentroResponsabilidade: this.$.codigoCentroResponsabilidade.value,
-                                                codigoTipoTrabalho: this.$.maoDeObraCodigoTipoTrabalho.value,
-                                                horaInicio: this.$.maoDeObraHoraInicio.value,
-                                                horarioAlmoco: (this.$.maoDeObraHorarioAlmoco.value == "on" ? true : false),
-                                                horaFim: this.$.maoDeObraHoraFim.value,
-                                                horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false)
-                                            });
-                                            this.$.page_createmaodeobra_ajax.generateRequest();
-                                            this.$.tabMaoDeObra.clearCache();
+                                            if (this._MaoDeObraDataValidar() & this._MaoDeObraHoraInicioValidar() & this._MaoDeObraHoraFimValidar()) {
+                                                this.$.page_createmaodeobra_ajax.body = JSON.stringify({
+                                                    folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                                                    date: this.$.maoDeObraDate.value,
+                                                    projetoNo: this.$.maoDeObraProjetoNo.value,
+                                                    empregadoNo: this.$.empregadoNo.value,
+                                                    codigoRegiao: this.$.codigoRegiao.value,
+                                                    codigoArea: this.$.codigoAreaFuncional.value,
+                                                    codigoCentroResponsabilidade: this.$.codigoCentroResponsabilidade.value,
+                                                    codigoTipoTrabalho: this.$.maoDeObraCodigoTipoTrabalho.value,
+                                                    horaInicio: this.$.maoDeObraHoraInicio.value,
+                                                    horarioAlmoco: (this.$.maoDeObraHorarioAlmoco.value == "on" ? true : false),
+                                                    horaFim: this.$.maoDeObraHoraFim.value,
+                                                    horarioJantar: (this.$.maoDeObraHorarioJantar.value == "on" ? true : false)
+                                                });
+                                                this.$.page_createmaodeobra_ajax.generateRequest();
+                                                this.$.tabMaoDeObra.clearCache();
+                                            }
+                                            else {
+                                                this._showErrorMessage('Os campos Data e Hora tem que estar contido no período de tempo do Cabeçalho.');
+                                            }
                                         }
                                         else {
                                             this._showErrorMessage('É obrigatório preencher o campo Hora de Fim.');
@@ -2288,6 +2353,104 @@
                     }
                 },
 
+                _MaoDeObraDataValidar: function () {
+                    //debugger;
+                    if (this.$.maoDeObraDate.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "") {
+                        if (this.$.maoDeObraDate.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate()) {
+                            var myDataPartida = new Date(this.$.dataPartidaTexto.value);
+                            var myDataChegada = new Date(this.$.dataChegadaTexto.value);
+                            var myDataMaoDeObra = new Date(this.$.maoDeObraDate.value);
+
+                            if (myDataMaoDeObra < myDataPartida) {
+                                this._showErrorMessage('O campo Data tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataMaoDeObra > myDataChegada) {
+                                this._showErrorMessage('O campo Data tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            if (this.$.maoDeObraProjetoNo.value == undefined) {
+                                this.$.maoDeObraProjetoNo.value = this.$.projetoNo.value;
+                            }
+                            if (this.$.maoDeObraCodigoTipoTrabalho.value == "") {
+                                this.$.maoDeObraCodigoTipoTrabalho.value = "";
+                            }
+                            if (this.$.maoDeObraHoraInicio.value == "") {
+                                this.$.maoDeObraHoraInicio.value = this.$.horaPartidaTexto.value;;
+                            }
+                            if (this.$.maoDeObraHorarioAlmoco.value == undefined) {
+                                this.$.maoDeObraHorarioAlmoco.value = "on";
+                            }
+                            if (this.$.maoDeObraHoraFim.value == "") {
+                                this.$.maoDeObraHoraFim.value = this.$.horaChegadaTexto.value;;
+                            }
+                            if (this.$.maoDeObraHorarioJantar.value == undefined) {
+                                this.$.maoDeObraHorarioJantar.value = "on"
+                            }
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
+                _MaoDeObraHoraInicioValidar: function () {
+                    debugger;
+                    if (this.$.maoDeObraDate.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
+                        this.$.maoDeObraHoraInicio.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
+
+                        if (this.$.maoDeObraDate.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
+                            this.$.maoDeObraHoraInicio.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
+
+                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                            var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraInicio.value);
+
+                            if (myDataTimeMaoDeObra < myDataTimePartida) {
+                                this._showErrorMessage('O campo Hora de Início tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataTimeMaoDeObra > myDataTimeChegada) {
+                                this._showErrorMessage('O campo Hora de Fim tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
+                _MaoDeObraHoraFimValidar: function () {
+                    debugger;
+                    if (this.$.maoDeObraDate.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
+                        this.$.maoDeObraHoraFim.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
+
+                        if (this.$.maoDeObraDate.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
+                            this.$.maoDeObraHoraFim.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
+
+                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                            var myDataTimeMaoDeObra = new Date(this.$.maoDeObraDate.value + " " + this.$.maoDeObraHoraFim.value);
+
+                            if (myDataTimeMaoDeObra < myDataTimePartida) {
+                                this._showErrorMessage('O campo Hora de Fim tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataTimeMaoDeObra > myDataTimeChegada) {
+                                this._showErrorMessage('O campo Hora de Fim tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
                 _MaoDeObraProjecto: function () {
                     //debugger;
                 },
@@ -2329,18 +2492,23 @@
                                         if (this.$.presencaHora2Entrada.validate() & this.$.presencaHora2Entrada.value != "") {
                                             if (this.$.presencaHora2Saida.validate() & this.$.presencaHora2Saida.value != "") {
                                                 if (this.$.presencaObservacoes.validate() & this.$.presencaObservacoes.value != "") {
-                                                    this.$.page_createpresenca_ajax.body = JSON.stringify({
-                                                        folhaDeHorasNo: this.$.folhaDeHorasNo.value,
-                                                        data: this.$.presencaDataTexto.value,
-                                                        noEmpregado: this.$.empregadoNo.value,
-                                                        hora1Entrada: this.$.presencaHora1Entrada.value,
-                                                        hora1Saida: this.$.presencaHora1Saida.value,
-                                                        hora2Entrada: this.$.presencaHora2Entrada.value,
-                                                        hora2Saida: this.$.presencaHora2Saida.value,
-                                                        observacoes: this.$.presencaObservacoes.value
-                                                    });
-                                                    this.$.page_createpresenca_ajax.generateRequest();
-                                                    this.$.tabPresenca.clearCache();
+                                                    if (this._PresencaDataValidar() & this._presencaHora1EntradaValidar() & this._presencaHora1SaidaValidar() & this._presencaHora2EntradaValidar() & this._presencaHora2SaidaValidar()) {
+                                                        this.$.page_createpresenca_ajax.body = JSON.stringify({
+                                                            folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                                                            data: this.$.presencaDataTexto.value,
+                                                            noEmpregado: this.$.empregadoNo.value,
+                                                            hora1Entrada: this.$.presencaHora1Entrada.value,
+                                                            hora1Saida: this.$.presencaHora1Saida.value,
+                                                            hora2Entrada: this.$.presencaHora2Entrada.value,
+                                                            hora2Saida: this.$.presencaHora2Saida.value,
+                                                            observacoes: this.$.presencaObservacoes.value
+                                                        });
+                                                        this.$.page_createpresenca_ajax.generateRequest();
+                                                        this.$.tabPresenca.clearCache();
+                                                    }
+                                                    else {
+                                                        this._showErrorMessage('Os campos Data e Hora tem que estar contido no período de tempo do Cabeçalho.');
+                                                    }
                                                 }
                                                 else {
                                                     this._showErrorMessage('É obrigatório preencher o campo Observações.');
@@ -2470,7 +2638,157 @@
                     }
                 },
 
+                _PresencaDataValidar: function () {
+                    //debugger;
+                    if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "") {
+                        if (this.$.presencaDataTexto.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate()) {
+                            var myDataPartida = new Date(this.$.dataPartidaTexto.value);
+                            var myDataChegada = new Date(this.$.dataChegadaTexto.value);
+                            var myDataPresenca = new Date(this.$.presencaDataTexto.value);
 
+                            if (myDataPresenca < myDataPartida) {
+                                this._showErrorMessage('O campo Data tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataPresenca > myDataChegada) {
+                                this._showErrorMessage('O campo Data tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            if (this.$.presencaHora1Entrada.value = "") {
+                                this.$.presencaHora1Entrada.value = "00:00";
+                            }
+                            if (this.$.presencaHora1Saida.value = "") {
+                                this.$.presencaHora1Saida.value = "00:00";
+                            }
+                            if (this.$.presencaHora2Entrada.value = "") {
+                                this.$.presencaHora2Entrada.value = "00:00";
+                            }
+                            if (this.$.presencaHora2Saida.value = "") {
+                                this.$.presencaHora2Saida.value = "00:00";
+                            }
+                            if (this.$.presencaObservacoes.value = "") {
+                                this.$.presencaObservacoes.value = "";
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
+                _presencaHora1EntradaValidar: function () {
+                    debugger;
+                    if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
+                        this.$.presencaHora1Entrada.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
+
+                        if (this.$.presencaDataTexto.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
+                            this.$.presencaHora1Entrada.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
+
+                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                            var myDataTimePresenca = new Date(this.$.presencaDataTexto.value + " " + this.$.presencaHora1Entrada.value);
+
+                            if (myDataTimePresenca < myDataTimePartida) {
+                                this._showErrorMessage('O campo 1ª Entrada tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataTimePresenca > myDataTimeChegada) {
+                                this._showErrorMessage('O campo 1ª Entrada tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
+                _presencaHora1SaidaValidar: function () {
+                    debugger;
+                    if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
+                        this.$.presencaHora1Saida.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
+
+                        if (this.$.presencaDataTexto.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
+                            this.$.presencaHora1Saida.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
+
+                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                            var myDataTimePresenca = new Date(this.$.presencaDataTexto.value + " " + this.$.presencaHora1Saida.value);
+
+                            if (myDataTimePresenca < myDataTimePartida) {
+                                this._showErrorMessage('O campo 1ª Saída tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataTimePresenca > myDataTimeChegada) {
+                                this._showErrorMessage('O campo 1ª Saída tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
+                _presencaHora2EntradaValidar: function () {
+                    debugger;
+                    if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
+                        this.$.presencaHora2Entrada.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
+
+                        if (this.$.presencaDataTexto.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
+                            this.$.presencaHora2Entrada.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
+
+                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                            var myDataTimePresenca = new Date(this.$.presencaDataTexto.value + " " + this.$.presencaHora2Entrada.value);
+
+                            if (myDataTimePresenca < myDataTimePartida) {
+                                this._showErrorMessage('O campo 2ª Entrada tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataTimePresenca > myDataTimeChegada) {
+                                this._showErrorMessage('O campo 2ª Entrada tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
+
+                _presencaHora2SaidaValidar: function () {
+                    debugger;
+                    if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
+                        this.$.presencaHora2Saida.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
+
+                        if (this.$.presencaDataTexto.validate() & this.$.dataPartidaTexto.validate() & this.$.dataChegadaTexto.validate() &
+                            this.$.presencaHora2Saida.validate() & this.$.horaPartidaTexto.validate() & this.$.horaChegadaTexto.validate()) {
+
+                            var myDataTimePartida = new Date(this.$.dataPartidaTexto.value + " " + this.$.horaPartidaTexto.value);
+                            var myDataTimeChegada = new Date(this.$.dataChegadaTexto.value + " " + this.$.horaChegadaTexto.value);
+                            var myDataTimePresenca = new Date(this.$.presencaDataTexto.value + " " + this.$.presencaHora2Saida.value);
+
+                            if (myDataTimePresenca < myDataTimePartida) {
+                                this._showErrorMessage('O campo 2ª Saída tem que ser superior ou igual ao campo Data Inicio do Cabeçalho.');
+                                return false;
+                            }
+                            if (myDataTimePresenca > myDataTimeChegada) {
+                                this._showErrorMessage('O campo 2ª Saída tem que ser inferior ou igual ao campo Data Fim do Cabeçalho.');
+                                return false;
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                },
 
                 //RESPONSES PROCESSORS
                 _responseProcessor: function (data) {
