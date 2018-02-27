@@ -15,7 +15,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.ConfigUtilizadores.Where(x => x.IdUtilizador == id).FirstOrDefault();
+                    return ctx.ConfigUtilizadores.Where(x => x.IdUtilizador.ToLower() == id.ToLower()).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -31,7 +31,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.ConfigUtilizadores.Where(x => x.EmployeeNo == EmployeeNo).FirstOrDefault();
+                    return ctx.ConfigUtilizadores.Where(x => x.EmployeeNo.ToLower() == EmployeeNo.ToLower()).FirstOrDefault();
                 }
             }
             catch (Exception ex)

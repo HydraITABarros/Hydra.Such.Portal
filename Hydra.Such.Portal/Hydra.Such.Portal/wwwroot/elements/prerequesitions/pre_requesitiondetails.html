@@ -147,19 +147,15 @@
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProducts" last-response="{{CBItems}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" last-response="{{CBItems}}" id="filteredProducts_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto id="measuresunit_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
-
 
         <iron-ajax url="/PreRequisicoes/GetPurchaseHeader" last-response="{{CBPurchaseHeader}}" id="purchaseheader_ajax" on-response="_purchaseheaderresponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PreRequisicoes/GetPurchaseHeader" last-response="{{GridCBPurchaseHeader}}" id="gridpurchaseheader_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" auto id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
-
 
 
         <iron-ajax url="/PreRequisicoes/CreateNewForThisUser"
@@ -315,10 +311,10 @@
                                         <div class="col-md-2 ">
                                             <vaadin-text-field id="PreRequesitionsNo" name="PreRequesitionsNo" label="Nº Pré-Requisição" value="{{data.preRequesitionsNo}}" disabled></vaadin-text-field>
                                         </div>
-                                        <div class="col-md-2 ">
+                                        <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBRequesitionType]]" on-change="_onSearchTermChanged" id="requesitionType" item-value-path="id" item-label-path="value" value="{{data.requesitionType}}" label="Tipo Requisição">
                                                 <template>
-                                                    <table width="180px">
+                                                    <table width="350px">
                                                         <tr>
                                                             <td width="40%">[[item.id]]</td>
                                                             <td width="60%"> <b>[[item.value]]</b></td>
@@ -327,7 +323,7 @@
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
-                                        <div class="col-lg-2 alignPoga">
+                                        <div class="col-lg-1 alignPoga">
                                             <vaadin-checkbox checked="{{data.urgent}}">Urgente</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 alignPoga">
@@ -1347,7 +1343,7 @@
                     }
                 },
                 observers: [
-                    '_onCacheLoaded(data, CBPurchaseLineGrid, CBRequesitionType, LProjectFunctionalAreaCodes, LProjectResponsabilityCenterCodes, LProjectRegionCodes, CBVehicle, CBJobNo, CBVendor, CBLocal, CBItems, CBLocations, CBPurchaseHeader, CBPurchaseLine)'
+                    '_onCacheLoaded(data, CBPurchaseLineGrid, CBRequesitionType, LProjectFunctionalAreaCodes, LProjectResponsabilityCenterCodes, LProjectRegionCodes, CBVehicle, CBJobNo, CBVendor, CBLocal, CBLocations, CBPurchaseHeader, CBPurchaseLine)'
                 ],
                 ready: function () {
                     //GET CONTRACT DATA
@@ -1372,7 +1368,7 @@
                     }
                 },
 
-                _onCacheLoaded: function (data, CBPurchaseLineGrid, CBRequesitionType, LProjectFunctionalAreaCodes, LProjectResponsabilityCenterCodes, LProjectRegionCodes, CBVehicle, CBJobNo, CBVendor, CBLocal, CBItems, CBLocations, CBPurchaseHeader, CBPurchaseLine) {
+                _onCacheLoaded: function (data, CBPurchaseLineGrid, CBRequesitionType, LProjectFunctionalAreaCodes, LProjectResponsabilityCenterCodes, LProjectRegionCodes, CBVehicle, CBJobNo, CBVendor, CBLocal, CBLocations, CBPurchaseHeader, CBPurchaseLine) {
 
                     if (!this.Flag) {
                         this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
@@ -1415,6 +1411,8 @@
                     if (id != "" && id > 0) {
                         this.$.ajax_cbReqType.body = JSON.stringify(id);
                         this.$.ajax_cbReqType.generateRequest();
+
+                        this._loadProductsByAreaAndType(id);
                     }
                 },
                 _responseVehicleFleetBool: function (data) {
@@ -1491,6 +1489,7 @@
                 },
 
                 _update: function () {
+                    alert(this.data.preRequesitionsNo);
                     this.data.area = this._areaid;
                     this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
                 },
@@ -1545,6 +1544,12 @@
                         }
                     }
                 },
+                _loadProductsByAreaAndType: function (requisitionType) {
+                    if (this._areaid != null && requisitionType != null) {
+                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requisitionType });
+                        this.$.filteredProducts_ajax.generateRequest();
+                    }
+                },
                 _responseProcessor: function (data) {
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetPreRequesitionDetails") !== -1) {
@@ -1564,7 +1569,9 @@
                                 this.$.ajax_cbReqType.generateRequest();
 
                                 this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
-                                this.$.prereqLines_databound_ajax.generateRequest();
+                                this.$.prereqLines_databound_ajax.generateRequest(); 
+                                
+                                this._loadProductsByAreaAndType(this.data.requesitionType);
                             }
                         }
                         if (data.detail.url.indexOf("CreatePreRequesition") !== -1) {
@@ -1938,7 +1945,6 @@
                 },
 
                 _clResponseProcessor: function (data) {
-                    debugger;;
                     if (data.detail.status === 200) {
                         if (!(data.detail.url.indexOf("GetPreReqLines") !== -1)) {
                             if (this.dataLines.eReasonCode != 1) {

@@ -9,8 +9,9 @@ namespace Hydra.Such.Data.ViewModel.FH
         public string NoFolhaHoras { get; set; }
         public int NoLinha { get; set; }
         public int? TipoCusto { get; set; }
-        public string CodTipoCusto { get; set; }
         public string DescricaoTipoCusto { get; set; }
+        public string CodTipoCusto { get; set; }
+        public string DescricaoCodTipoCusto { get; set; }
         public decimal? Quantidade { get; set; }
         public decimal? CustoUnitario { get; set; }
         public decimal? CustoTotal { get; set; }

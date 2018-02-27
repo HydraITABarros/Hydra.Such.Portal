@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Configuração Autorização RH Folha de Horas";
+    ViewData["Title"] = "Configuração Autorização Empregado Folha de Horas";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -40,7 +40,7 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
-<h1 class="title">Configuração Autorização RH Folha de Horas</h1>
+<h1 class="title">Configuração Autorização Empregado Folha de Horas</h1>
 
 <x-group-cont-product></x-group-cont-product>
 
@@ -254,8 +254,8 @@
         <vaadin-grid id="gridAutorizacaoFHRH" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="noEmpregado">Empregado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noEmpregado" />
+                    <vaadin-grid-sorter path="nomeEmpregado">Empregado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeEmpregado" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.noEmpregado}}" disabled="true">
@@ -272,8 +272,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="noResponsavel1">Responsável Nº 1</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noResponsavel1" />
+                    <vaadin-grid-sorter path="nomeResponsavel1">Responsável Nº 1</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeResponsavel1" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.noResponsavel1}}" disabled="{{ _permissionsUpdate }}">
@@ -290,8 +290,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="noResponsavel2">Responsável Nº 2</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noResponsavel2" />
+                    <vaadin-grid-sorter path="nomeResponsavel2">Responsável Nº 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeResponsavel2" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.noResponsavel2}}" disabled="{{ _permissionsUpdate }}">
@@ -308,8 +308,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="noResponsavel3">Responsável Nº 3</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noResponsavel3" />
+                    <vaadin-grid-sorter path="nomeResponsavel3">Responsável Nº 3</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeResponsavel3" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.noResponsavel3}}" disabled="{{ _permissionsUpdate }}">
@@ -326,8 +326,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="validadorRH1">Validador RH Nº 1</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validadorRH1" />
+                    <vaadin-grid-sorter path="nomeValidadorRH1">Validador RH Nº 1</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeValidadorRH1" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.validadorRH1}}" disabled="{{ _permissionsUpdate }}">
@@ -344,8 +344,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="validadorRH2">Validador RH Nº 2</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validadorRH2" />
+                    <vaadin-grid-sorter path="nomeValidadorRH2">Validador RH Nº 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeValidadorRH2" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.validadorRH2}}" disabled="{{ _permissionsUpdate }}">
@@ -362,8 +362,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="validadorRH3">Validador RH Nº 3</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validadorRH3" />
+                    <vaadin-grid-sorter path="nomeValidadorRH3">Validador RH Nº 3</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeValidadorRH3" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.validadorRH3}}" disabled="{{ _permissionsUpdate }}">
@@ -380,8 +380,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="validadorRH1">Validador RH KM Nº 1</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validadorRH1" />
+                    <vaadin-grid-sorter path="nomeValidadorRHKM1">Validador RH KM Nº 1</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeValidadorRHKM1" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.validadorRHKM1}}" disabled="{{ _permissionsUpdate }}">
@@ -398,8 +398,8 @@
 
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="validadorRH2">Validador RH KM Nº 2</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="validadorRH2" />
+                    <vaadin-grid-sorter path="nomeValidadorRHKM2">Validador RH KM Nº 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeValidadorRHKM2" />
                 </template>
                 <template>
                     <vaadin-combo-box items="[[LUtilizador]]" item-value-path="id" item-label-path="value" value="{{item.validadorRHKM2}}" disabled="{{ _permissionsUpdate }}">
@@ -644,23 +644,29 @@
 
                 _createResponse: function (e) {
                     var self = this;
-                    if (e.detail.status === 200) {
 
-                        this.$.empregado.value = "";
-                        this.$.responsavel1.value = "";
-                        this.$.responsavel2.value = "";
-                        this.$.responsavel3.value = "";
-                        this.$.validador1.value = "";
-                        this.$.validador2.value = "";
-                        this.$.validador3.value = "";
-                        this.$.validadorkm1.value = "";
-                        this.$.validadorkm2.value = "";
-
-                        this.$.ajax_GetAll.generateRequest();
-                        this.openToast("Tabela atualizada.");
+                    if (this.createResult == 0) {
+                        this.openToast("Já existe este tipo de Registo na Tabela.");
                     }
                     else {
-                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        if (e.detail.status === 200) {
+
+                            this.$.empregado.value = "";
+                            this.$.responsavel1.value = "";
+                            this.$.responsavel2.value = "";
+                            this.$.responsavel3.value = "";
+                            this.$.validador1.value = "";
+                            this.$.validador2.value = "";
+                            this.$.validador3.value = "";
+                            this.$.validadorkm1.value = "";
+                            this.$.validadorkm2.value = "";
+
+                            this.$.ajax_GetAll.generateRequest();
+                            this.openToast("Tabela atualizada.");
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        }
                     }
                 },
 
