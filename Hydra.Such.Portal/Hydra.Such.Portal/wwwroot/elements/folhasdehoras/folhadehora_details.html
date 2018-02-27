@@ -611,7 +611,7 @@
                                 <vaadin-grid-filter path="dataDespesaTexto" />
                             </template>
                             <template>
-                                <vaadin-date-picker id="tabPercursoDataViagemTexto" name="dataViagemTexto" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" style="text-align:right;"></vaadin-date-picker>
+                                <vaadin-date-picker id="tabPercursoDataViagemTexto" name="dataViagemTexto" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaPercurso" disabled="true" style="text-align:right;"></vaadin-date-picker>
                             </template>
                         </vaadin-grid-column>
 
@@ -655,7 +655,7 @@
                                 <vaadin-grid-filter path="custoUnitario" />
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabPercursoCustoUnitario" name="tabPercursoCustoUnitario" value="{{item.custoUnitario}}" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                <vaadin-text-field id="GridtabPercursoCustoUnitario" name="tabPercursoCustoUnitario" value="{{item.custoUnitario}}" on-blur="_updateLinhaPercurso" disabled="true" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -667,7 +667,7 @@
                                 <vaadin-grid-filter path="custoTotal" />
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabPercursoCustoTotal" name="tabPercursoCustoTotal" value="{{item.custoTotal}}" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                <vaadin-text-field id="GridtabPercursoCustoTotal" name="tabPercursoCustoTotal" value="{{item.custoTotal}}" on-blur="_updateLinhaPercurso" disabled="true" on-value-changed="_ConvertDecimals" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                     <div slot="suffix">€</div>
                                 </vaadin-text-field>
                             </template>
@@ -860,7 +860,7 @@
                                 <vaadin-grid-filter path="dataDespesaTexto" />
                             </template>
                             <template>
-                                <vaadin-date-picker id="tabAjudaDataDespesa" name="tabAjudaDataDespesa" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" style="text-align:right;"></vaadin-date-picker>
+                                <vaadin-date-picker id="tabAjudaDataDespesa" name="tabAjudaDataDespesa" value="{{item.dataDespesaTexto}}" on-blur="_updateLinhaAjuda" disabled="true" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" style="text-align:right;"></vaadin-date-picker>
                             </template>
                         </vaadin-grid-column>
 
@@ -1188,8 +1188,10 @@
                                     <vaadin-text-field id="presencaHora2Saida" label="2ª Saída" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" on-blur="_presencaHora2SaidaValidar" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                 </div>
                                 <div class="col-sm-5" style="text-align:right;">
-                                    <vaadin-text-field id="presencaObservacoes" label="Observações" maxlength="200" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" style="text-align:left;"></vaadin-text-field>
+                                    <vaadin-text-field id="presencaObservacoes" label="Observações" maxlength="200" disabled="{{ !_permissions.update }}" style="text-align:left;"></vaadin-text-field>
                                 </div>
+
+
 
                                 <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                                 <div class="col-sm-1 alignPoga">
@@ -1273,6 +1275,8 @@
                             </template>
                         </vaadin-grid-column>
 
+
+
                         <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
                         <vaadin-grid-column width="100px">
                             <template class="header">
@@ -1281,6 +1285,8 @@
                                 <paper-button class="btnRemove" raised on-tap="_deletePresenca" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
                             </template>
                         </vaadin-grid-column>
+
+
 
                         <!--</template>-->
                         <!--<template is="dom-if" if="{{ _permissions.update }}">
@@ -1465,6 +1471,10 @@
                             <vaadin-text-field type="text" value="{{data.observacoes}}" id="observacoes" name="observacoes" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" label="Observações"></vaadin-text-field>
                         </div>
                     </div>
+
+
+
+
 
 
 
@@ -2211,7 +2221,7 @@
 
                 //MAODEOBRA
                 _createMaoDeObra: function () {
-                    debugger;
+                    //debugger;
                     if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
                         if (this.$.maoDeObraDate.validate() & this.$.maoDeObraDate.value != "") {
                             if (this.$.maoDeObraProjetoNo.value != "") {
@@ -2396,7 +2406,7 @@
                 },
 
                 _MaoDeObraHoraInicioValidar: function () {
-                    debugger;
+                    //debugger;
                     if (this.$.maoDeObraDate.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
                         this.$.maoDeObraHoraInicio.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
 
@@ -2424,7 +2434,7 @@
                 },
 
                 _MaoDeObraHoraFimValidar: function () {
-                    debugger;
+                    //debugger;
                     if (this.$.maoDeObraDate.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
                         this.$.maoDeObraHoraFim.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
 
@@ -2491,27 +2501,22 @@
                                     if (this.$.presencaHora1Saida.validate() & this.$.presencaHora1Saida.value != "") {
                                         if (this.$.presencaHora2Entrada.validate() & this.$.presencaHora2Entrada.value != "") {
                                             if (this.$.presencaHora2Saida.validate() & this.$.presencaHora2Saida.value != "") {
-                                                if (this.$.presencaObservacoes.validate() & this.$.presencaObservacoes.value != "") {
-                                                    if (this._PresencaDataValidar() & this._presencaHora1EntradaValidar() & this._presencaHora1SaidaValidar() & this._presencaHora2EntradaValidar() & this._presencaHora2SaidaValidar()) {
-                                                        this.$.page_createpresenca_ajax.body = JSON.stringify({
-                                                            folhaDeHorasNo: this.$.folhaDeHorasNo.value,
-                                                            data: this.$.presencaDataTexto.value,
-                                                            noEmpregado: this.$.empregadoNo.value,
-                                                            hora1Entrada: this.$.presencaHora1Entrada.value,
-                                                            hora1Saida: this.$.presencaHora1Saida.value,
-                                                            hora2Entrada: this.$.presencaHora2Entrada.value,
-                                                            hora2Saida: this.$.presencaHora2Saida.value,
-                                                            observacoes: this.$.presencaObservacoes.value
-                                                        });
-                                                        this.$.page_createpresenca_ajax.generateRequest();
-                                                        this.$.tabPresenca.clearCache();
-                                                    }
-                                                    else {
-                                                        this._showErrorMessage('Os campos Data e Hora tem que estar contido no período de tempo do Cabeçalho.');
-                                                    }
+                                                if (this._PresencaDataValidar() & this._presencaHora1EntradaValidar() & this._presencaHora1SaidaValidar() & this._presencaHora2EntradaValidar() & this._presencaHora2SaidaValidar()) {
+                                                    this.$.page_createpresenca_ajax.body = JSON.stringify({
+                                                        folhaDeHorasNo: this.$.folhaDeHorasNo.value,
+                                                        data: this.$.presencaDataTexto.value,
+                                                        noEmpregado: this.$.empregadoNo.value,
+                                                        hora1Entrada: this.$.presencaHora1Entrada.value,
+                                                        hora1Saida: this.$.presencaHora1Saida.value,
+                                                        hora2Entrada: this.$.presencaHora2Entrada.value,
+                                                        hora2Saida: this.$.presencaHora2Saida.value,
+                                                        observacoes: this.$.presencaObservacoes.value
+                                                    });
+                                                    this.$.page_createpresenca_ajax.generateRequest();
+                                                    this.$.tabPresenca.clearCache();
                                                 }
                                                 else {
-                                                    this._showErrorMessage('É obrigatório preencher o campo Observações.');
+                                                    this._showErrorMessage('Os campos Data e Hora tem que estar contido no período de tempo do Cabeçalho.');
                                                 }
                                             }
                                             else {
@@ -2655,19 +2660,19 @@
                                 return false;
                             }
 
-                            if (this.$.presencaHora1Entrada.value = "") {
+                            if (this.$.presencaHora1Entrada.value == "") {
                                 this.$.presencaHora1Entrada.value = "00:00";
                             }
-                            if (this.$.presencaHora1Saida.value = "") {
+                            if (this.$.presencaHora1Saida.value == "") {
                                 this.$.presencaHora1Saida.value = "00:00";
                             }
-                            if (this.$.presencaHora2Entrada.value = "") {
+                            if (this.$.presencaHora2Entrada.value == "") {
                                 this.$.presencaHora2Entrada.value = "00:00";
                             }
-                            if (this.$.presencaHora2Saida.value = "") {
+                            if (this.$.presencaHora2Saida.value == "") {
                                 this.$.presencaHora2Saida.value = "00:00";
                             }
-                            if (this.$.presencaObservacoes.value = "") {
+                            if (this.$.presencaObservacoes.value == "") {
                                 this.$.presencaObservacoes.value = "";
                             }
 
@@ -2679,7 +2684,7 @@
                 },
 
                 _presencaHora1EntradaValidar: function () {
-                    debugger;
+                    //debugger;
                     if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
                         this.$.presencaHora1Entrada.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
 
@@ -2707,7 +2712,7 @@
                 },
 
                 _presencaHora1SaidaValidar: function () {
-                    debugger;
+                    //debugger;
                     if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
                         this.$.presencaHora1Saida.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
 
@@ -2735,7 +2740,7 @@
                 },
 
                 _presencaHora2EntradaValidar: function () {
-                    debugger;
+                    //debugger;
                     if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
                         this.$.presencaHora2Entrada.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
 
@@ -2763,7 +2768,7 @@
                 },
 
                 _presencaHora2SaidaValidar: function () {
-                    debugger;
+                    //debugger;
                     if (this.$.presencaDataTexto.value != undefined & this.$.dataPartidaTexto.value != "" & this.$.dataChegadaTexto.value != "" &
                         this.$.presencaHora2Saida.value != "" & this.$.horaPartidaTexto.value != "" & this.$.horaChegadaTexto.value != "") {
 
@@ -3302,7 +3307,7 @@
                 //PRESENCA
                 _createPresencaResponse: function (e) {
                     //debugger;
-                    if (this.PresencaCreated) {
+                    if (this.PresencaCreated == 0) {
                         this._showMessage('Adicionada Presença com sucesso.');
                         this.$.page_databound_ajax.generateRequest();
 
@@ -3314,7 +3319,12 @@
                         this.$.presencaObservacoes.value = "";
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao adicionar.');
+                        if (this.PresencaCreated == 1) {
+                            this._showErrorMessage('Não pode ter mais que uma presença para o mesmo dia.');
+                        }
+                        if (this.PresencaCreated == 99) {
+                            this._showErrorMessage('Ocorreu um erro.');
+                        }
                     }
                 },
 
@@ -3590,7 +3600,7 @@
                 },
 
                 _printFH: function () {
-                    debugger;
+                    //debugger;
 
                     if (this._reportserverurl != undefined) {
                         this.$.rptContainer.src = this._reportserverurl + "FolhaHora&FH=" + this._folhadehoraid + "&Utilizador=" + this._userlogin;
