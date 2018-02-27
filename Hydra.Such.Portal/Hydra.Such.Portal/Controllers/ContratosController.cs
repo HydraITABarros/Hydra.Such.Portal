@@ -742,7 +742,56 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(data);
         }
-        
+
+        [HttpPost]
+        //public JsonResult UpdateProposalContract1([FromBody] ContractViewModel proposal)
+        //{
+
+        //    if (proposal != null)
+        //    {
+        //        Contratos contract = DBContracts.GetByIdLastVersion(proposal.RelatedContract);
+
+        //        if (contract != null)
+        //        {
+        //            try
+        //            {
+        //                ContractViewModel tmpContract = proposal;
+        //                tmpContract.ContractType = contract.TipoContrato;
+        //                tmpContract.ContractNo = contract.NºContrato;
+        //                tmpContract.UpdateUser = User.Identity.Name;
+
+        //                List<LinhasContratos> proposalLines = DBContractLines.GetAllByActiveContract(proposal.ContractNo, proposal.VersionNo);
+        //                List<LinhasContratos> contractLines = DBContractLines.GetAllByActiveContract(contract.NºContrato, contract.NºVersão);
+
+        //                if (DBContractLines.DeleteAllFromContract(proposal.RelatedContract))
+        //                {
+        //                    proposalLines.ForEach(x =>
+        //                    {
+        //                        x.TipoContrato = contract.TipoContrato;
+        //                        x.NºContrato = contract.NºContrato;
+        //                    });
+        //                    DBContractLines.Create(proposalLines);
+        //                }
+                        
+        //                proposal.eReasonCode = 1;
+        //                proposal.eMessage = "Contrato atualizado com sucesso.";
+        //                return Json(proposal);
+        //            }
+        //            catch (Exception)
+        //            {
+        //                proposal.eReasonCode = 2;
+        //                proposal.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        proposal.eReasonCode = 2;
+        //        proposal.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+        //    }
+        //    return Json(proposal);
+        //}
+
         [HttpPost]
         public JsonResult GetContractNavData([FromBody] ContractViewModel data)
         {

@@ -77,6 +77,28 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
+        public static List<LinhasContratos> Create(List<LinhasContratos> items)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    items.ForEach(item =>
+                    {
+                        item.DataHoraCriação = DateTime.Now;
+                        ctx.LinhasContratos.Add(item);
+                    });
+                    ctx.SaveChanges();
+                }
+                return items;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static LinhasContratos Update(LinhasContratos ObjectToUpdate)
         {
             try

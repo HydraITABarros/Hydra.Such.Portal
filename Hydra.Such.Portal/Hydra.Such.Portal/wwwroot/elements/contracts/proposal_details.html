@@ -331,7 +331,7 @@
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
                 <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
-                <paper-button class="tablinks" on-tap="_updateToContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
+                <paper-button class="tablinks" on-tap="_updateRelatedContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
                 <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ !_showContractLines }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
                 <div class="dropdownMenu">
                     <paper-button class="tablinks" on-tap="_showStatusDropDown" id="statusMenu"><i class="fa fa-chevron-down" aria-hidden="true"></i> Alterar Estado</paper-button>
@@ -431,7 +431,7 @@
                                             <vaadin-text-field value="{{data.ordOrderSource}}" id="mOrdOrderSource" name="mOrdOrderSource" label="Origem do Pedido Descrição" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.relatedContract}}" id="mProposalNo" name="proposalNo" label="Nº Contrato" disabled="true"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.relatedContract}}" id="txtRelatedContractNo" name="txtRelatedContractNo" label="Nº Contrato" disabled="true"> </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
@@ -1718,7 +1718,7 @@
                         this.$.mFunctionalArea.validate() &
                         this.$.mResponsabilityCenter.validate() &
                         this.$.mNotes.validate() &
-                        this.$.mProposalNo.validate() &
+                        this.$.txtRelatedContractNo.validate() &
                         this.$.mPaymentTerms.validate() &
                         //this.$.mStartDateFirstContract.validate() &
                         //this.$.mFirstContractReference.validate() &
@@ -1905,8 +1905,7 @@
                         this._isCreate = false;
                         this._oldStatus = this.data.status;
                     }
-
-                    debugger;;
+                    
                     if (this.data.filed) {
                         this._permissions.update = false;
                     }
@@ -2290,8 +2289,9 @@
 
                 //Parse To Contract
                 _parseToContract: function (param) {
+                    debugger;;
                     if (param != null) {
-                        if (this.$.mProposalNo.value != null && this.$.mProposalNo.value == "") {
+                        if (this.$.txtRelatedContractNo.value != null && this.$.txtRelatedContractNo.value == "") {
                             if (param.currentTarget.id == "parseContract") {
                                 this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3, "Parcial": false });
                                 this.$.parseToContract_ajax.generateRequest();
@@ -2299,7 +2299,7 @@
                                 this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3, "Parcial": true });
                                 this.$.parseToContract_ajax.generateRequest();
                             }
-                        } else if (this.$.mProposalNo.value != "" && this.$.mProposalNo.value == null) {
+                        } else if (this.$.txtRelatedContractNo.value != "" && this.$.txtRelatedContractNo.value == null) {
                             this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3 });
                             this.$.parseToContract_ajax.generateRequest();
                         } else {
@@ -2312,7 +2312,7 @@
                     var self = this;
                     if (e.detail.status === 200) {
                         this._openToast("Contrato " + this.numeration + " criado com sucesso");
-                        this.$.mProposalNo.value = this.numeration;
+                        this.$.txtRelatedContractNo.value = this.numeration;
                     }
                     else {
                         this._openToastError("Erro na criação da contrato.");
@@ -2320,13 +2320,16 @@
                 },
 
                 //Update Contract
-                _updateToContract: function (param) {
+                _updateRelatedContract: function (param) {
+
+                    
+
                     if (param != null) {
-                        if (this.data.contractNo != "" && this.data.contractNo != undefined) {
+                        if (this.data.relatedContract != "" && this.data.relatedContract != undefined) {
                             var _dataContract = this.data;
                             var ajax_request = this.$.page_databound_ajax;
                             bootbox.confirm({
-                                message: "Tem a certeza que pretende atualizar o contrato " + this.data.contractNo + "?",
+                                message: "Tem a certeza que pretende atualizar o contrato " + this.data.relatedContract + "?",
                                 buttons: {
                                     confirm: {
                                         label: 'Sim',
@@ -2354,7 +2357,7 @@
                     var self = this;
                     if (e.detail.status === 200) {
                         this._openToast("Contrato " + this.numeration + " criado com sucesso");
-                        this.$.mProposalNo.value = this.numeration;
+                        this.$.txtRelatedContractNo.value = this.numeration;
                     }
                     else {
                         this._openToastError("Erro na criação da contrato.");
