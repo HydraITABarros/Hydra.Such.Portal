@@ -4817,6 +4817,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºFolhaDeHoras)
                     .HasColumnName("Nº Folha de Horas")
+                    .HasColumnType("text")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.Data).HasColumnType("date");
