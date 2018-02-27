@@ -294,29 +294,39 @@ namespace Hydra.Such.Portal.Controllers
                     };
 
                     FH.Área = area;
-
                     FH.NºEmpregado = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+                    FH.NomeEmpregado = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).Nome;
+                    FH.TipoDeslocação = 0;
+                    FH.CódigoTipoKmS = "KM";
+                    FH.DeslocaçãoForaConcelho = false;
+                    FH.Terminada = false;
+                    FH.Estado = 0;
+                    FH.CriadoPor = User.Identity.Name;
+                    FH.DataHoraCriação = DateTime.Now;
                     FH.CódigoRegião = DBUserConfigurations.GetById(User.Identity.Name).RegiãoPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).RegiãoPorDefeito;
                     FH.CódigoÁreaFuncional = DBUserConfigurations.GetById(User.Identity.Name).AreaPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).AreaPorDefeito;
                     FH.CódigoCentroResponsabilidade = DBUserConfigurations.GetById(User.Identity.Name).CentroRespPorDefeito == null ? "" : DBUserConfigurations.GetById(User.Identity.Name).CentroRespPorDefeito;
+                    FH.Validado = false;
+                    FH.IntegradoEmRh = false;
+                    FH.IntegradoEmRhkm = false;
+                    FH.CustoTotalAjudaCusto = 0;
+                    FH.CustoTotalHoras = 0;
+                    FH.CustoTotalKm = 0;
+                    FH.NumTotalKm = 0;
 
                     AutorizacaoFhRh Autorizacao = DBAutorizacaoFHRH.GetAll().Where(x => x.NoEmpregado.ToLower() == User.Identity.Name.ToLower()).FirstOrDefault();
 
                     if (Autorizacao != null)
                     {
-                        FH.NºResponsável1 = Autorizacao.NoResponsavel1;
-                        FH.NºResponsável2 = Autorizacao.NoResponsavel2;
-                        FH.NºResponsável3 = Autorizacao.NoResponsavel3;
                         FH.Validadores = Autorizacao.NoResponsavel1 + " - " + Autorizacao.NoResponsavel2 + " - " + Autorizacao.NoResponsavel3;
                         FH.IntegradoresEmRh = Autorizacao.ValidadorRh1 + " - " + Autorizacao.ValidadorRh2 + " - " + Autorizacao.ValidadorRh3;
                         FH.IntegradoresEmRhkm = Autorizacao.ValidadorRhkm1 + " - " + Autorizacao.ValidadorRhkm2;
+
+                        FH.NºResponsável1 = Autorizacao.NoResponsavel1;
+                        FH.NºResponsável2 = Autorizacao.NoResponsavel2;
+                        FH.NºResponsável3 = Autorizacao.NoResponsavel3;
                     };
 
-                    FH.CódigoTipoKmS = "KM";
-                    FH.Estado = 0;
-                    FH.Validado = false;
-                    FH.CriadoPor = User.Identity.Name;
-                    FH.DataHoraCriação = DateTime.Now;
                     FH.UtilizadorModificação = User.Identity.Name;
                     FH.DataHoraModificação = DateTime.Now;
 
@@ -1991,7 +2001,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CreatePresenca([FromBody] PresencasFolhaDeHorasViewModel data)
         {
-            bool result = false;
+            int result = 0;
             try
             {
                 PresençasFolhaDeHoras Presenca = new PresençasFolhaDeHoras();
@@ -2015,13 +2025,13 @@ namespace Hydra.Such.Portal.Controllers
                 var dbCreateResult = DBPresencasFolhaDeHoras.Create(Presenca);
 
                 if (dbCreateResult != null)
-                    result = true;
+                    result = 0;
                 else
-                    result = false;
+                    result = 1;
             }
             catch (Exception ex)
             {
-                //log
+                result = 99;
             }
             return Json(result);
         }
@@ -2085,9 +2095,9 @@ namespace Hydra.Such.Portal.Controllers
                     Presenca.Hora2ªEntrada = TimeSpan.Parse(data.Hora2Entrada);
                     Presenca.Hora2ªSaída = TimeSpan.Parse(data.Hora2Saida);
                     Presenca.Observacoes = data.Observacoes;
-                    Presenca.Validado = data.Validado;
-                    Presenca.IntegradoTR = data.IntegradoTR;
-                    Presenca.DataIntTR = Convert.ToDateTime(data.DataIntTR);
+                    Presenca.Validado = Presenca.Validado;
+                    Presenca.IntegradoTR = Presenca.IntegradoTR;
+                    Presenca.DataIntTR = Presenca.DataIntTR;
                     Presenca.UtilizadorCriação = Presenca.UtilizadorCriação;
                     Presenca.DataHoraCriação = Presenca.DataHoraCriação;
                     Presenca.UtilizadorModificação = User.Identity.Name;

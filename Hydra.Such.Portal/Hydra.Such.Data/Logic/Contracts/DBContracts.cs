@@ -476,6 +476,5 @@ namespace Hydra.Such.Data.Logic.Contracts
             return result;
 
         }
-
     }
 }
