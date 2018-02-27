@@ -16,7 +16,7 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.CCP;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
-
+using Hydra.Such.Data.NAV;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -85,6 +85,15 @@ namespace Hydra.Such.Portal.Controllers
     [Authorize]
     public class ProcedimentosCcpsController : Controller
     {
+        private readonly NAVConfigurations _config;
+        private readonly NAVWSConfigurations _configws;
+
+        public ProcedimentosCcpsController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs)
+        {
+            _config = appSettings.Value;
+            _configws = NAVWSConfigs.Value;
+        }
+
         #region Views
         public IActionResult Index()
         {
@@ -150,6 +159,14 @@ namespace Hydra.Such.Portal.Controllers
                     if (proc != null)
                     {
                         ProcedimentoCCPView result = CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(proc);
+
+                        foreach (LinhasParaEncomendaCCPView Linha in result.LinhasPEncomendaProcedimentosCcp)
+                        {
+                            string Linha_DESC = string.Empty;
+
+                            Linha.CodLocalizacaoText = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.Code == Linha.CodLocalizacao).FirstOrDefault().Name;
+                        }
+
                         GetChecklists(result);
                         return Json(result);
                     }
@@ -401,7 +418,28 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+
+
+        [HttpPost]
+        public JsonResult DeleteLinhaProdutoServico([FromBody] LinhasPEncomendaProcedimentosCcp data)
+        {
+            bool result = false;
+            try
+            {
+                bool dbDeleteResult = DBProcedimentosCCP.__DeleteLinhaProdutoServico(data.NºProcedimento, data.NºLinha);
+
+                result = dbDeleteResult;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return Json(result);
+        }
+
         
+
+
 
         #region Get the FluxoTrabalhoListaControlo propertie according with the view where it should be displayed
         public void GetChecklists(ProcedimentoCCPView data)

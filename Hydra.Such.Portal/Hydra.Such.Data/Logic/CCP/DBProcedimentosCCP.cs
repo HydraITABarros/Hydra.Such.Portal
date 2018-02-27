@@ -792,6 +792,23 @@ namespace Hydra.Such.Data.Logic.CCP
             }
         }
 
+        //NR 20180227
+        public static bool __DeleteLinhaProdutoServico(string ProcedimentoID, int LineNo)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                _context.LinhasPEncomendaProcedimentosCcp.RemoveRange(_context.LinhasPEncomendaProcedimentosCcp.Where(le => le.NºProcedimento == ProcedimentoID && le.NºLinha == LineNo));
+                _context.SaveChanges();
+                
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
         #endregion
 
         #region CRUD Notas Procedimentos CCP
