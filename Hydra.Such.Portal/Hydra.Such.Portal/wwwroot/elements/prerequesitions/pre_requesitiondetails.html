@@ -315,10 +315,10 @@
                                         <div class="col-md-2 ">
                                             <vaadin-text-field id="PreRequesitionsNo" name="PreRequesitionsNo" label="Nº Pré-Requisição" value="{{data.preRequesitionsNo}}" disabled></vaadin-text-field>
                                         </div>
-                                        <div class="col-md-2 ">
+                                        <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBRequesitionType]]" on-change="_onSearchTermChanged" id="requesitionType" item-value-path="id" item-label-path="value" value="{{data.requesitionType}}" label="Tipo Requisição">
                                                 <template>
-                                                    <table width="180px">
+                                                    <table width="350px">
                                                         <tr>
                                                             <td width="40%">[[item.id]]</td>
                                                             <td width="60%"> <b>[[item.value]]</b></td>
@@ -327,7 +327,7 @@
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
-                                        <div class="col-lg-2 alignPoga">
+                                        <div class="col-lg-1 alignPoga">
                                             <vaadin-checkbox checked="{{data.urgent}}">Urgente</vaadin-checkbox>
                                         </div>
                                         <div class="col-lg-2 alignPoga">

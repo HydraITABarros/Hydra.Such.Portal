@@ -46,7 +46,7 @@ else if (ViewBag.Option == "resgitar")
 }
 else
 {
-    <h1 class="title">Requisição Simplificada </h1>
+    <h1 class="title">Requisição Simplificada</h1>
 }
 
 <x-simplifiedreqdetails _requestno="@ViewBag.RequestNo" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-simplifiedreqdetails>
