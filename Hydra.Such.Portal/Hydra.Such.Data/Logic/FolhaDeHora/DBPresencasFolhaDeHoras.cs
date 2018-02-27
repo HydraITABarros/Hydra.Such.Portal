@@ -106,16 +106,20 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.PresençasFolhaDeHoras.Where(Presenca => Presenca.NºFolhaDeHoras == FolhaHoraNo).Select(Presenca => new PresencasFolhaDeHorasViewModel()
+                    return ctx.PresençasFolhaDeHoras.Where(Presenca => Presenca.NºFolhaDeHoras.ToLower() == FolhaHoraNo.ToLower()).Select(Presenca => new PresencasFolhaDeHorasViewModel()
                     {
                         FolhaDeHorasNo = Presenca.NºFolhaDeHoras,
                         Data = Presenca.Data,
                         DataTexto = Presenca.Data.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        NoEmpregado = Presenca.NoEmpregado,
                         Hora1Entrada = Presenca.Hora1ªEntrada.Value.ToString(),
                         Hora1Saida = Presenca.Hora1ªSaída.Value.ToString(),
                         Hora2Entrada = Presenca.Hora2ªEntrada.Value.ToString(),
                         Hora2Saida = Presenca.Hora2ªSaída.Value.ToString(),
                         Observacoes = Presenca.Observacoes,
+                        Validado = Presenca.Validado,
+                        IntegradoTR = Presenca.IntegradoTR,
+                        DataIntTR = Presenca.DataIntTR,
                         UtilizadorCriacao = Presenca.UtilizadorCriação,
                         DataHoraCriacao = Presenca.DataHoraCriação,
                         DataHoraCriacaoTexto = Presenca.DataHoraCriação.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),

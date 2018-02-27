@@ -391,16 +391,23 @@
 
                 _createResponse: function (e) {
                     var self = this;
-                    if (e.detail.status === 200) {
+                    debugger;
 
-                        this.$.codigo.value = "";
-                        this.$.descricao.value = "";
-
-                        this.$.ajax_GetAll.generateRequest();
-                        this.openToast("Tabela atualizada.");
+                    if (this.createResult == 0) {
+                        this.openToast("Já existe este tipo de Registo na Tabela.");
                     }
                     else {
-                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        if (e.detail.status === 200) {
+
+                            this.$.codigo.value = "";
+                            this.$.descricao.value = "";
+
+                            this.$.ajax_GetAll.generateRequest();
+                            this.openToast("Tabela atualizada.");
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        }
                     }
                 },
 

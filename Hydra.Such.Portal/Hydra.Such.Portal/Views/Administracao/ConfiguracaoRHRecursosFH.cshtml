@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Configuração RH Recursos Folha de Horas";
+    ViewData["Title"] = "Configuração Empregado Recursos Folha de Horas";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -40,7 +40,7 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
-<h1 class="title">Configuração RH Recursos Folha de Horas</h1>
+<h1 class="title">Configuração Empregado Recursos Folha de Horas</h1>
 
 <x-group-cont-product></x-group-cont-product>
 
@@ -114,7 +114,7 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetEmployees"
+        <iron-ajax url="/PopulateDropdowns/GetEmployees_FH"
                    last-response="{{LEmployeeNo}}"
                    auto
                    method="post"
@@ -204,16 +204,7 @@
                     <vaadin-grid-filter path="nomeEmpregado" />
                 </template>
                 <template>
-                    @*<vaadin-text-field value="{{item.nomeEmpregado}}" disabled="{{ _permissionsCreate }}"></vaadin-text-field>*@
-                    <vaadin-combo-box items="[[LEmployeeNo]]" id="noEmpregado" item-value-path="id" item-label-path="value" value="{{item.noEmpregado}}" disabled="{{ _permissionsCreate }}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
+                    <vaadin-text-field value="{{item.nomeEmpregado}}" disabled="true"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -223,17 +214,7 @@
                     <vaadin-grid-filter path="recurso" />
                 </template>
                 <template>
-                    @*<vaadin-text-field value="{{item.recurso}}" disabled="{{ _permissionsCreate }}"></vaadin-text-field>*@
-                    <vaadin-combo-box items="[[LResourceCode]]" id="recurso" item-value-path="id" item-label-path="value" value="{{item.recurso}}" disabled="{{ _permissionsCreate }}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-
+                    <vaadin-text-field value="{{item.recurso}}" disabled="true"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -310,8 +291,8 @@
 
         <div class="marginSpace">
             <paper-button raised id="btnGoBack" class="btnDefault" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-            @*<paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>*@
-            @*<paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>*@
+            @*<paper-button raised id="btnAddNew" class="btnEdit" on-tap="_update" disabled="{{ _permissionsUpdate }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel" disabled="{{ _permissionsUpdate }}"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>*@
         </div>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
@@ -441,16 +422,22 @@
 
                 _createResponse: function (e) {
                     var self = this;
-                    if (e.detail.status === 200) {
 
-                        this.$.noEmpregado.value = "";
-                        this.$.recurso.value = "";
-
-                        this.$.ajax_GetAll.generateRequest();
-                        this.openToast("Tabela atualizada.");
+                    if (this.createResult == 0) {
+                        this.openToast("Já existe este tipo de Registo na Tabela.");
                     }
                     else {
-                        this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        if (e.detail.status === 200) {
+
+                            this.$.noEmpregado.value = "";
+                            this.$.recurso.value = "";
+
+                            this.$.ajax_GetAll.generateRequest();
+                            this.openToast("Tabela atualizada.");
+                        }
+                        else {
+                            this.openToast("Occorreu um erro ao atualizar a Tabela.");
+                        }
                     }
                 },
 

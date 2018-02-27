@@ -1827,6 +1827,24 @@ namespace Hydra.Such.Portal.Configurations
             }
         }
 
+
+
+        // NR 20180223 Procedimentos CCP
+        public static readonly List<EnumData> TipoLinhasProdutosCCP = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 0,
+                Value = ""
+            },
+
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Produto"
+            }
+        };
+
     }
 
     public class EnumDataString
