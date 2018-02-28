@@ -2015,8 +2015,8 @@ namespace Hydra.Such.Portal.Controllers
                 Presenca.Hora2ªSaída = TimeSpan.Parse(data.Hora2Saida);
                 Presenca.Observacoes = data.Observacoes;
                 Presenca.Validado = 0;
-                Presenca.IntegradoTR = 0;
-                Presenca.DataIntTR = null;
+                Presenca.IntegradoTr = 0;
+                Presenca.DataIntTr = null;
                 Presenca.UtilizadorCriação = User.Identity.Name;
                 Presenca.DataHoraCriação = DateTime.Now;
                 Presenca.UtilizadorModificação = User.Identity.Name;
@@ -2058,8 +2058,8 @@ namespace Hydra.Such.Portal.Controllers
                             Hora2ªSaída = TimeSpan.Parse(x.Hora2Saida),
                             Observacoes = x.Observacoes,
                             Validado = x.Validado,
-                            IntegradoTR = x.IntegradoTR,
-                            DataIntTR = Convert.ToDateTime(x.DataIntTR),
+                            IntegradoTr = x.IntegradoTR,
+                            DataIntTr = Convert.ToDateTime(x.DataIntTR),
                             UtilizadorCriação = x.UtilizadorCriacao,
                             DataHoraCriação = x.DataHoraCriacao,
                             UtilizadorModificação = User.Identity.Name,
@@ -2096,8 +2096,8 @@ namespace Hydra.Such.Portal.Controllers
                     Presenca.Hora2ªSaída = TimeSpan.Parse(data.Hora2Saida);
                     Presenca.Observacoes = data.Observacoes;
                     Presenca.Validado = Presenca.Validado;
-                    Presenca.IntegradoTR = Presenca.IntegradoTR;
-                    Presenca.DataIntTR = Presenca.DataIntTR;
+                    Presenca.IntegradoTr = Presenca.IntegradoTr;
+                    Presenca.DataIntTr = Presenca.DataIntTr;
                     Presenca.UtilizadorCriação = Presenca.UtilizadorCriação;
                     Presenca.DataHoraCriação = Presenca.DataHoraCriação;
                     Presenca.UtilizadorModificação = User.Identity.Name;
@@ -2281,8 +2281,8 @@ namespace Hydra.Such.Portal.Controllers
                                                     Hora2ªSaída = TimeSpan.Parse(x.Hora2Saida),
                                                     Observacoes = x.Observacoes,
                                                     Validado = 1,
-                                                    IntegradoTR = 1,
-                                                    DataIntTR = DateTime.Now,
+                                                    IntegradoTr = 1,
+                                                    DataIntTr = DateTime.Now,
                                                     UtilizadorCriação = x.UtilizadorCriacao,
                                                     DataHoraCriação = x.DataHoraCriacao,
                                                     UtilizadorModificação = User.Identity.Name,
