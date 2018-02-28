@@ -1450,12 +1450,12 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProductsForCurrentUser(string rootAreaId)
+        public JsonResult GetProductsForCurrentUser(string rootAreaId, string requisitionType)
         {
             //List<NAVDimValueViewModel> userDimensionValues = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name);
             //string allowedProductsFilter = userDimensionValues.GenerateNAVProductFilter(rootAreaId, true);
             string allowedProductsFilter = rootAreaId.GenerateNAVProductFilter();
-            List<NAVProductsViewModel> products = DBNAV2017Products.GetProductsForDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter).ToList();
+            List<NAVProductsViewModel> products = DBNAV2017Products.GetProductsForDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, allowedProductsFilter, requisitionType).ToList();
             return Json(products);
         }
 

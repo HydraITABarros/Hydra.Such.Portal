@@ -749,6 +749,66 @@ namespace Hydra.Such.Data.Logic.CCP
                 return false;
             }
         }
+
+        //NR 20180226
+        public static int GetMaxByLinhaParaEncomenda(string ProcedimentoID)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                int max = 0;
+
+                LinhasPEncomendaProcedimentosCcp Linha = _context.LinhasPEncomendaProcedimentosCcp.Where(linha => linha.NºProcedimento == ProcedimentoID).LastOrDefault();
+                if (Linha != null && Linha.NºLinha >= 0)
+                    max = Linha.NºLinha + 1;
+                else
+                    max = max + 1;
+
+                return max;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
+        //NR 20180226
+        public static LinhasPEncomendaProcedimentosCcp CreateLinhaProdutoServico(LinhasPEncomendaProcedimentosCcp ObjectToCreate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.LinhasPEncomendaProcedimentosCcp.Add(ObjectToCreate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToCreate;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        //NR 20180227
+        public static bool __DeleteLinhaProdutoServico(string ProcedimentoID, int LineNo)
+        {
+            SuchDBContext _context = new SuchDBContext();
+            try
+            {
+                _context.LinhasPEncomendaProcedimentosCcp.RemoveRange(_context.LinhasPEncomendaProcedimentosCcp.Where(le => le.NºProcedimento == ProcedimentoID && le.NºLinha == LineNo));
+                _context.SaveChanges();
+                
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
         #endregion
 
         #region CRUD Notas Procedimentos CCP

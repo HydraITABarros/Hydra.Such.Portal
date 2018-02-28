@@ -1835,7 +1835,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 0,
-                Value = ""
+                Value = "-"
             },
 
             new EnumData()

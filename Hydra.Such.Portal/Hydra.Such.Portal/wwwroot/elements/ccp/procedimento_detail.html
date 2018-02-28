@@ -7,6 +7,7 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
+
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
@@ -30,6 +31,9 @@
 <link rel="import" href="/lib/vaadin-item/vaadin-item.html" />
 <!--<link rel="import" href="/lib/paper-menu/paper-menu.html" />-->
 <!--<link rel="import" href="/lib/paper-item/paper-item.html" />-->
+
+<!-- NR 20180226 -->
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 
 <dom-module id="x-procedimentodetails">
     <template>
@@ -256,12 +260,11 @@
         </iron-ajax>
 
         <!-- NR 20180223 -->
-        <iron-ajax url="/PopulateDropdowns/GetTipoLinhasProdutosCCP"
-                   last-response="{{CBTipo}}"
-                   auto method="post"
-                   handle-as="json"
-                   content-type="application/json">
-        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetTipoLinhasProdutosCCP" last-response="{{CBTipo}}" auto method="post" handle-as="json" content-type="application/json"> </iron-ajax>
+        <!-- NR 20180226 -->
+        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProducts" last-response="{{CBItems}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto id="measuresunit_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
         <iron-ajax url="/ProcedimentosCcps/GetUsersWhoAreElementosJuri"
@@ -345,6 +348,31 @@
                    on-response="_imobReturnToAreaResponse"
                    content-type="application/json">
         </iron-ajax>
+
+        <!-- NR 20180226 -->
+
+        <iron-ajax url="/ProcedimentosCcps/CreateLinhaProdutoServico"
+                   last-response="{{LinhaProdutoServicoCreated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_createaLinhaProdutoServico_ajax"
+                   on-response="_createLinhaProdutoServicoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+
+        <!-- NR 20180227 -->
+        <iron-ajax url="/ProcedimentosCcps/DeleteLinhaProdutoServico"
+                   last-response="{{LinhaProdutoServicoDeleted}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deleteLinhaProdutoServico_ajax"
+                   on-response="_deleteLinhaProdutoServicoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+
+
 
         <!-- Controller actions.e -->
         <!-- Header section of the Procedimento details -->
@@ -756,7 +784,7 @@
                                         <div class="col-sm-6">
                                             <div class="row">
                                                 <div class="col-sm-4">
-                                                    <vaadin-combo-box value="{{data.abertoFechadoAoMercado}}" label="Aberto ou fechado ao mercado" items="[[LAbertoFechado]]" item-value-path="booleanValue" id="abertoFechadoAoMercado" item-label-path="value">
+                                                    <vaadin-combo-box value="{{data.abertoFechadoAoMercado}}" label="Aberto ou fechado ao mercado" items="[[LAbertoFechado]]" item-value-path="id" id="abertoFechadoAoMercado" item-label-path="value">
                                                         <template>
                                                             <paper-icon-item>
                                                                 <paper-item-body two-line>
@@ -858,13 +886,29 @@
                                                     </vaadin-combo-box>
                                                 </div>
                                                 <div class="col-sm-2">
-                                                    <vaadin-text-field type="text" value="{{ item.codigoLocalizacao }}" label="Cód. Localização"></vaadin-text-field>
+                                                    <vaadin-combo-box items="[[CBLocations]]" id="_CBLocations" item-value-path="id" item-label-path="value" required value="{{_LocalCode}}" label="Cód. Localização" disabled="{{ !_permissions.update }}">
+                                                        <template>
+                                                            <table width="200px">
+                                                                <tr>
+                                                                    <td width="40%">[[item.id]]</td>
+                                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                                </tr>
+                                                            </table>
+                                                        </template>
+                                                    </vaadin-combo-box>
                                                 </div>
                                                 <div class="col-sm-2">
-                                                    <vaadin-text-field type="text" value="{{ item.no }}" label="Nº"></vaadin-text-field>
+                                                    <such-selectbox id="_CBItems" value="{{_CBItems}}" label="Cód. Produto"
+                                                                    items="[[CBItems]]"
+                                                                    text-path="code"
+                                                                    value-path="code"
+                                                                    required
+                                                                    fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                                                    disabled="{{ !_permissions.update }}">
+                                                    </such-selectbox>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <vaadin-text-field type="text" value="{{ item.descricao }}" label="Descrição"></vaadin-text-field>
+                                                    <vaadin-text-field type="text" id="_DescricaoProduto" required value="{{ item.descricao }}" label="Descrição"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <vaadin-text-field type="text" value="{{ item.descricao2 }}" label="Descrição 2"></vaadin-text-field>
@@ -872,13 +916,22 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-2">
-                                                    <vaadin-text-field type="text" value="{{ item.codigoUnidade }}" label="Cod. Unidade"></vaadin-text-field>
+                                                    <vaadin-combo-box items="[[LCBMeasuresUnit]]" id="_UnitMeasureCode" name="_UnitMeasureCode" item-value-path="id" item-label-path="id" value="{{_UnitMeasureCode}}" label="Código Unid. Medida" disabled="{{ !_permissions.update }}">
+                                                        <template>
+                                                            <table width="200px">
+                                                                <tr>
+                                                                    <td width="40%">[[item.id]]</td>
+                                                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                                                </tr>
+                                                            </table>
+                                                        </template>
+                                                    </vaadin-combo-box>
                                                 </div>
                                                 <div class="col-sm-2">
-                                                    <vaadin-text-field id="linhaQuantidadeRequerer" label="Qtd. a Requerer" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
+                                                    <vaadin-text-field id="_linhaQuantidadeRequerer" label="Qtd. a Requerer" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-2">
-                                                    <vaadin-text-field id="linhaCustoUnitario" label="Custo Unitário" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                                    <vaadin-text-field id="_linhaCustoUnitario" label="Custo Unitário" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
                                                         <div slot="suffix">€</div>
                                                     </vaadin-text-field>
                                                 </div>
@@ -893,97 +946,215 @@
                                     <!-- Tab Unidade Produtiva - Linhas Produtos Servicos-->
                                     <div class="col-xs-12 mb-15">
                                         <div class="break_clear">
-                                            <vaadin-grid id="gridProdutosServicos" aria-label="gridProdutosServicos" items="{{data.produtosServicos}}" class="grid">
-                                                <vaadin-grid-column width="10%">
+
+                                            <!-- NR 20180226 -->
+                                            <vaadin-grid id="tabLinhaProdutos" aria-label="Tabela Linhas Produtos Serviços" items="{{ data.linhasPEncomendaProcedimentosCcp }}" class="editGrid">
+
+                                                <vaadin-grid-column width="50px" hidden>
                                                     <template class="header">
-                                                        Tipo
+                                                        <vaadin-grid-sorter path="noProcedimento" style="text-align:center;">Nº Procedimento</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="noProcedimento" />
                                                     </template>
                                                     <template>
-                                                        <vaadin-text-field type="text" value="{{ item.tipo }}"></vaadin-text-field>
+                                                        <vaadin-text-field name="tabLinhaProdutosNoProcedimento" id="tabLinhaProdutosNoProcedimento" value="{{item.noProcedimento}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="10%">
+
+                                                <vaadin-grid-column width="50px" hidden>
                                                     <template class="header">
-                                                        Cod. Localização
+                                                        <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="noLinha" />
                                                     </template>
                                                     <template>
-                                                        <vaadin-text-field type="text" value="{{ item.codigoLocalizacao }}"></vaadin-text-field>
+                                                        <vaadin-text-field name="tabLinhaProdutosNoLinha" id="tabLinhaProdutosNoLinha" value="{{item.noLinha}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="8%">
+
+
+
+
+                                                <vaadin-grid-column width="60px">
                                                     <template class="header">
-                                                        <center>
-                                                            Nº
-                                                        </center>
+                                                        <vaadin-grid-sorter path="tipoText" style="text-align:center;">Tipo</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="tipoText" />
                                                     </template>
                                                     <template>
-                                                        <center>
-                                                            <vaadin-checkbox checked="{{item.no}}"></vaadin-checkbox>
-                                                        </center>
+                                                        <vaadin-combo-box id="tabTipo" items="[[CBTipo]]" item-value-path="id" item-label-path="value" value="{{item.tipo}}" disabled="false" style="text-align:left;">
+                                                            <template>
+                                                                <paper-icon-item>
+                                                                    <paper-item-body two-line>
+                                                                        <div>[[item.value]]</div>
+                                                                    </paper-item-body>
+                                                                </paper-icon-item>
+                                                            </template>
+                                                        </vaadin-combo-box>
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="8%">
+
+                                                <vaadin-grid-column width="200px">
                                                     <template class="header">
-                                                        <center>
-                                                            Descrição
-                                                        </center>
+                                                        <vaadin-grid-sorter path="codLocalizacaoText" style="text-align:center;">Cód. Localização</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="codLocalizacaoText" />
                                                     </template>
                                                     <template>
-                                                        <center>
-                                                            <vaadin-checkbox checked="{{item.descricao}}"></vaadin-checkbox>
-                                                        </center>
+                                                        <vaadin-combo-box id="tabCodigoLocalizacao" items="[[CBLocations]]" item-value-path="id" item-label-path="value" value="{{item.codLocalizacao}}" disabled="false" style="text-align:left;">
+                                                            <template>
+                                                                <paper-icon-item>
+                                                                    <paper-item-body two-line>
+                                                                        <div>[[item.value]]</div>
+                                                                    </paper-item-body>
+                                                                </paper-icon-item>
+                                                            </template>
+                                                        </vaadin-combo-box>
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="6%">
+
+                                                <vaadin-grid-column width="60px">
                                                     <template class="header">
-                                                        <center>
-                                                            Descrição 2
-                                                        </center>
+                                                        <vaadin-grid-sorter path="codigo" style="text-align:center;">Cód. Produto</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="codigo" />
                                                     </template>
                                                     <template>
-                                                        <center>
-                                                            <vaadin-checkbox checked="{{item.descricao2}}"></vaadin-checkbox>
-                                                        </center>
+                                                        <vaadin-text-field name="tabCodProduto" id="tabCodProduto" value="{{item.codigo}}" disabled="true" style="text-align:left;"></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="8%">
+
+                                                <vaadin-grid-column width="200px">
                                                     <template class="header">
-                                                        <center>
-                                                            Cod. Unidade
-                                                        </center>
+                                                        <vaadin-grid-sorter path="descricao" style="text-align:center;">Descrição</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="descricao" />
                                                     </template>
                                                     <template>
-                                                        <center>
-                                                            <vaadin-checkbox checked="{{item.codigoUnidade}}"></vaadin-checkbox>
-                                                        </center>
+                                                        <vaadin-text-field name="tabDescricaoProduto" id="tabDescricaoProduto" value="{{item.descricao}}" disabled="false" style="text-align:left;"></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="20%">
+
+                                                <vaadin-grid-column width="80px">
                                                     <template class="header">
-                                                        Qtd. a Requerer
+                                                        <vaadin-grid-sorter path="quantARequerer" style="text-align:center;">Qtd. a Requerer</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="quantARequerer" />
                                                     </template>
                                                     <template>
-                                                        <vaadin-text-field type="text" value="{{ item.quantidadeRequerer }}"></vaadin-text-field>
+                                                        <vaadin-text-field name="tabQuantidade" value="{{item.quantARequerer}}" disabled="{{ !_permissions.update }}" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="20%">
+
+                                                <vaadin-grid-column width="80px">
                                                     <template class="header">
-                                                        Custo Unitário
+                                                        <vaadin-grid-sorter path="custoUnitario" style="text-align:center;">Custo Unitário</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="custoUnitario" />
                                                     </template>
                                                     <template>
-                                                        <vaadin-text-field type="text" value="{{ item.custoUnitario }}"></vaadin-text-field>
+                                                        <vaadin-text-field id="GridtabAjudaCustoUnitario" name="tabAjudaCustoUnitario" value="{{item.custoUnitario}}" disabled="{{ !_permissions.update }}" style="text-align:right;">
+                                                            <div slot="suffix">€</div>
+                                                        </vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="10%">
+
+                                                <vaadin-grid-column width="80px">
                                                     <template class="header">
                                                     </template>
                                                     <template>
-                                                        <!--<center>-->
-                                                        <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                                        <!--</center>-->
+                                                        <paper-button class="btnRemove" raised on-tap="_deleteLinha" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
                                                     </template>
                                                 </vaadin-grid-column>
                                             </vaadin-grid>
+
+
+
+
+
+                                            <!--<vaadin-grid id="gridProdutosServicos" aria-label="gridProdutosServicos" items="{{data.produtosServicos}}" class="grid">
+                                            <vaadin-grid-column width="10%">
+                                                <template class="header">
+                                                    Tipo
+                                                </template>
+                                                <template>
+                                                    <vaadin-text-field type="text" value="{{ item.tipo }}"></vaadin-text-field>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="10%">
+                                                <template class="header">
+                                                    Cod. Localização
+                                                </template>
+                                                <template>
+                                                    <vaadin-text-field type="text" value="{{ item.codigoLocalizacao }}"></vaadin-text-field>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="8%">
+                                                <template class="header">
+                                                    <center>
+                                                        Nº
+                                                    </center>
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <vaadin-checkbox checked="{{item.no}}"></vaadin-checkbox>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="8%">
+                                                <template class="header">
+                                                    <center>
+                                                        Descrição
+                                                    </center>
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <vaadin-checkbox checked="{{item.descricao}}"></vaadin-checkbox>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="6%">
+                                                <template class="header">
+                                                    <center>
+                                                        Descrição 2
+                                                    </center>
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <vaadin-checkbox checked="{{item.descricao2}}"></vaadin-checkbox>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="8%">
+                                                <template class="header">
+                                                    <center>
+                                                        Cod. Unidade
+                                                    </center>
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <vaadin-checkbox checked="{{item.codigoUnidade}}"></vaadin-checkbox>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="20%">
+                                                <template class="header">
+                                                    Qtd. a Requerer
+                                                </template>
+                                                <template>
+                                                    <vaadin-text-field type="text" value="{{ item.quantidadeRequerer }}"></vaadin-text-field>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="20%">
+                                                <template class="header">
+                                                    Custo Unitário
+                                                </template>
+                                                <template>
+                                                    <vaadin-text-field type="text" value="{{ item.custoUnitario }}"></vaadin-text-field>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="10%">
+                                                <template class="header">
+                                                </template>
+                                                <template>
+
+                                                    <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+
+                                                </template>
+                                            </vaadin-grid-column>
+                                        </vaadin-grid>-->
                                         </div>
                                         <div class="clearfix"></div>
                                     </div>
@@ -997,7 +1168,7 @@
 
 
 
-                                
+
                             </paper-collapse-item>
                         </paper-collapse-group>
                     </div>
@@ -2100,6 +2271,10 @@
             </div>
         </div>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
     </template>
 
     <script>
@@ -2213,6 +2388,11 @@
                         notify: true,
                         value: ""
                     },
+
+                    //NR 20180226
+                    _CBItems: {
+                        observer: '_setProductData'
+                    },
                 },
 
                 _testFunction: function () {
@@ -2247,14 +2427,33 @@
                 },
 
                 _openToast: function (message) {
-                    ////debugger;;
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
-                
+
+                _showMessage: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _showErrorMessage: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
                 //NR 20180223
                 _ConvertDecimals: function (e) {
                     e.target.value = e.target.value.replace(",", ".");
+                },
+
+
+                //NR 20180226
+                _setProductData: function (e) {
+                    var item = this.CBItems.find(x => x.code == e);
+                    if (item != null) {
+                        this.$._DescricaoProduto.value = item.name;
+                        this.$._UnitMeasureCode.value = item.measureUnit;
+                        //this.$._linhaCustoUnitario.value = item.lastCostDirect;
+                    }
                 },
 
                 _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
@@ -2284,7 +2483,7 @@
 
 
                 _validateData: function () {
-                    ////debugger;;
+                    ////debugger;
                     if (false) {
                         this._openToast(validate);
                         return false;
@@ -2294,7 +2493,7 @@
 
                 //CRUDS
                 _create: function () {
-                    ////debugger;;
+                    ////debugger;
                     this.data.tipoProcedimento = this._procedimentotypeid;
 
                     if (this._validateData()) {
@@ -2303,7 +2502,7 @@
                 },
 
                 _update: function () {
-                    debugger;;
+                    debugger;
                     if (this._onUpdateValidateElementoJuri()) {
                         //this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data)
                         this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
@@ -2312,10 +2511,10 @@
                 },
 
                 _delete: function () {
-                    debugger;;
+                    debugger;
                     var ajax_request = this.$.ajax_delete_procedimento;
-                    ajax_request.body = JSON.stringify({"No": this.data.no});
-                    
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
                     this._confirmAndExecuteActionToast(
                         "Tem a certeza que pretende remover o Procedimento " + this.data.no + "?",
                         ajax_request
@@ -2532,7 +2731,7 @@
                         });
 
                         this.$.ajax_createelementojuri.generateRequest();
-                        //this.$.gridElementosJuri.clearCache();
+                        this.$.gridElementosJuri.clearCache();
                     }
                 },
                 _createElementoJuriResponse: function (e) {
@@ -2540,6 +2739,9 @@
                     if (this.ElementoCreated.eReasonCode == 0) {
                         this._openToast('Elemento Júri adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
+
+                        this.$.gridElementosJuri.clearCache();
+
                         this.$.users.value = "";
                         this.chkPresidente = false;
                         this.chkVogal = false;
@@ -2564,14 +2766,14 @@
                         noLinha: e.model.item.noLinha
                     });
                     this.$.ajax_deleteelementojuri.generateRequest();
-                    //this.$.gridElementosJuri.clearCache();
+                    this.$.gridElementosJuri.clearCache();
 
                 },
                 _deleteElementoJuriResponse: function (e) {
                     debugger;;
                     if (this.ElementoDeleted) {
                         this._openToast('Elemento Juri eliminado com sucesso');
-
+                        this.$.gridElementosJuri.clearCache();
                     } else {
                         this._openToast('Não foi possível eliminar o Elemento do Juri!')
                     }
@@ -2737,13 +2939,61 @@
                     }
                 },
                 _createLinhaProdutosServicos: function () {
-                    debugger;;
+                    this.$.page_createaLinhaProdutoServico_ajax.body = JSON.stringify({
+                        nºProcedimento: this.$.no.value,
+                        tipo: this.$.linhaTipo.value,
+                        código: this.$._CBItems.value,
+                        códLocalização: this.$._CBLocations.value,
+                        descrição: this.$._DescricaoProduto.value,
+                        códUnidadeMedida: this.$._UnitMeasureCode.value,
+                        custoUnitário: this.$._linhaCustoUnitario.value,
+                        quantARequerer: this.$._linhaQuantidadeRequerer.value,
+                        códigoRegião: this.$.codigoRegiao.value,
+                        códigoÁreaFuncional: this.$.codigoAreaFuncional.value,
+                        códigoCentroResponsabilidade: this.$.codigoCentroResponsabilidade.value
+                    });
+                    this.$.page_createaLinhaProdutoServico_ajax.generateRequest();
+                    this.$.tabLinhaProdutos.clearCache();
+                },
+                _createLinhaProdutoServicoResponse: function (e) {
+                    if (this.LinhaProdutoServicoCreated) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Adicionada Linha com sucesso.');
+
+                        this.$.tabLinhaProdutos.clearCache();
+
+                        this.$.linhaTipo.value = "";
+                        this.$._CBItems.value = "";
+                        this.$._CBLocations.value = "";
+                        this.$._DescricaoProduto.value = "";
+                        this.$._UnitMeasureCode.value = "";
+                        this.$._linhaCustoUnitario.value = "";
+                        this.$._linhaQuantidadeRequerer.value = "";
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao adicionar a linha.');
+                    }
+                },
+
+
+                //NR 20180227
+                _deleteLinha: function (e) {
+                    var index = this.data.linhasPEncomendaProcedimentosCcp.indexOf(e.model.item);
+                    this.data.linhasPEncomendaProcedimentosCcp.splice(index, 1);
+                    this.$.page_deleteLinhaProdutoServico_ajax.body = JSON.stringify({ nºProcedimento: e.model.item.noProcedimento, nºLinha: e.model.item.noLinha });
+                    this.$.page_deleteLinhaProdutoServico_ajax.generateRequest();
+                    this.$.tabLinhaProdutos.clearCache();
 
                 },
-                _createLinhaProdutosServicosResponse: function (e) {
-                    debugger;;
-
+                _deleteLinhaProdutoServicoResponse: function (e) {
+                    if (this.LinhaProdutoServicoDeleted) {
+                        this._openToast('Linha eliminada com sucesso');
+                        this.$.tabLinhaProdutos.clearCache();
+                    } else {
+                        this._openToast('Não foi possível eliminar a Linha!')
+                    }
                 },
+
 
                 // Imobilizado return to area
                 _imobReturnToArea: function () {

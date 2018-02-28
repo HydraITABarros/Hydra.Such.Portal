@@ -50,7 +50,7 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static List<NAVProductsViewModel> GetProductsForDimensions(string NAVDatabaseName, string NAVCompanyName, string allowedDimensions)
+        public static List<NAVProductsViewModel> GetProductsForDimensions(string NAVDatabaseName, string NAVCompanyName, string allowedDimensions, string requisitionType)
         {
             try
             {
@@ -60,10 +60,11 @@ namespace Hydra.Such.Data.Logic
                     var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
-                        new SqlParameter("@AllowedDimensions", allowedDimensions)
+                        new SqlParameter("@AllowedDimensions", allowedDimensions),
+                        new SqlParameter("@RequisitionType", requisitionType)
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure(@"exec NAV2017ProdutosDaArea @DBName, @CompanyName, @AllowedDimensions", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure(@"exec NAV2017ProdutosDaArea @DBName, @CompanyName, @AllowedDimensions, @RequisitionType", parameters);
 
                     foreach (dynamic temp in data)
                     {
