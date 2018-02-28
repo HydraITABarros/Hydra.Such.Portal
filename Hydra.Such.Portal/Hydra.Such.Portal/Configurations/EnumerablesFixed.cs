@@ -1845,6 +1845,142 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        // NR 20180228 Procedimentos CCP
+        public static readonly List<EnumData> ObjectoDeContratoCCP = new List<EnumData>()
+        {
+            new EnumData()
+            {
+                Id = 0,
+                Value = "-"
+            },
+
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Equipamento Informático"
+            },
+
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Reparações"
+            },
+
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Renovação Contratos"
+            },
+
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Matéria Prima Alimentar"
+            },
+
+            new EnumData()
+            {
+                Id = 5,
+                Value = "Papel"
+            },
+
+            new EnumData()
+            {
+                Id = 6,
+                Value = "Serviços"
+            },
+
+            new EnumData()
+            {
+                Id = 7,
+                Value = "Detergentes"
+            },
+
+            new EnumData()
+            {
+                Id = 8,
+                Value = "Imobilizado"
+            },
+
+            new EnumData()
+            {
+                Id = 9,
+                Value = "Licenças"
+            },
+
+            new EnumData()
+            {
+                Id = 10,
+                Value = "Seguros"
+            },
+
+            new EnumData()
+            {
+                Id = 11,
+                Value = "Equipamento Proteção"
+            },
+
+            new EnumData()
+            {
+                Id = 12,
+                Value = "Sacos e Manga Plástico"
+            },
+
+            new EnumData()
+            {
+                Id = 13,
+                Value = "Descartáveis Nutrição"
+            },
+
+            new EnumData()
+            {
+                Id = 14,
+                Value = "Telecomunicações"
+            },
+
+            new EnumData()
+            {
+                Id = 15,
+                Value = "Combustiveis"
+            },
+
+            new EnumData()
+            {
+                Id = 16,
+                Value = "Frota"
+            },
+
+            new EnumData()
+            {
+                Id = 17,
+                Value = "Fardamento SUCH"
+            },
+
+            new EnumData()
+            {
+                Id = 18,
+                Value = "Roupa Hospitalar"
+            },
+
+            new EnumData()
+            {
+                Id = 19,
+                Value = "Transportes"
+            },
+
+            new EnumData()
+            {
+                Id = 20,
+                Value = "Obras"
+            },
+
+            new EnumData()
+            {
+                Id = 21,
+                Value = "Contentores Plástico"
+            }
+        };
+
     }
 
     public class EnumDataString

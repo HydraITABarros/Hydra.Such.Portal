@@ -265,6 +265,10 @@
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProducts" last-response="{{CBItems}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto id="measuresunit_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!-- NR 20180228 -->
+        <iron-ajax url="/PopulateDropdowns/GetObjectoDeContratoCCP" last-response="{{CBObjectoContrato}}" auto method="post" handle-as="json" content-type="application/json"> </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllGestorProcesso" last-response="{{CBGestorProcesso}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
 
 
         <iron-ajax url="/ProcedimentosCcps/GetUsersWhoAreElementosJuri"
@@ -911,7 +915,7 @@
                                                     <vaadin-text-field type="text" id="_DescricaoProduto" required value="{{ item.descricao }}" label="Descrição"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <vaadin-text-field type="text" value="{{ item.descricao2 }}" label="Descrição 2"></vaadin-text-field>
+                                                    <vaadin-text-field type="text" id="_DescricaoProduto2" value="{{ item.descricao2 }}" label="Descrição 2"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -970,16 +974,13 @@
                                                     </template>
                                                 </vaadin-grid-column>
 
-
-
-
                                                 <vaadin-grid-column width="60px">
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="tipoText" style="text-align:center;">Tipo</vaadin-grid-sorter>
                                                         <vaadin-grid-filter path="tipoText" />
                                                     </template>
                                                     <template>
-                                                        <vaadin-combo-box id="tabTipo" items="[[CBTipo]]" item-value-path="id" item-label-path="value" value="{{item.tipo}}" disabled="false" style="text-align:left;">
+                                                        <vaadin-combo-box id="tabTipo" items="[[CBTipo]]" item-value-path="id" item-label-path="value" value="{{item.tipo}}" disabled="true" style="text-align:left;">
                                                             <template>
                                                                 <paper-icon-item>
                                                                     <paper-item-body two-line>
@@ -997,7 +998,7 @@
                                                         <vaadin-grid-filter path="codLocalizacaoText" />
                                                     </template>
                                                     <template>
-                                                        <vaadin-combo-box id="tabCodigoLocalizacao" items="[[CBLocations]]" item-value-path="id" item-label-path="value" value="{{item.codLocalizacao}}" disabled="false" style="text-align:left;">
+                                                        <vaadin-combo-box id="tabCodigoLocalizacao" items="[[CBLocations]]" item-value-path="id" item-label-path="value" value="{{item.codLocalizacao}}" disabled="true" style="text-align:left;">
                                                             <template>
                                                                 <paper-icon-item>
                                                                     <paper-item-body two-line>
@@ -1025,7 +1026,7 @@
                                                         <vaadin-grid-filter path="descricao" />
                                                     </template>
                                                     <template>
-                                                        <vaadin-text-field name="tabDescricaoProduto" id="tabDescricaoProduto" value="{{item.descricao}}" disabled="false" style="text-align:left;"></vaadin-text-field>
+                                                        <vaadin-text-field name="tabDescricaoProduto" id="tabDescricaoProduto" value="{{item.descricao}}" disabled="true" style="text-align:left;"></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
 
@@ -1035,7 +1036,7 @@
                                                         <vaadin-grid-filter path="quantARequerer" />
                                                     </template>
                                                     <template>
-                                                        <vaadin-text-field name="tabQuantidade" value="{{item.quantARequerer}}" disabled="{{ !_permissions.update }}" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
+                                                        <vaadin-text-field name="tabQuantidade" value="{{item.quantARequerer}}" disabled="true" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
 
@@ -1045,7 +1046,7 @@
                                                         <vaadin-grid-filter path="custoUnitario" />
                                                     </template>
                                                     <template>
-                                                        <vaadin-text-field id="GridtabAjudaCustoUnitario" name="tabAjudaCustoUnitario" value="{{item.custoUnitario}}" disabled="{{ !_permissions.update }}" style="text-align:right;">
+                                                        <vaadin-text-field id="GridtabAjudaCustoUnitario" name="tabAjudaCustoUnitario" value="{{item.custoUnitario}}" disabled="true" style="text-align:right;">
                                                             <div slot="suffix">€</div>
                                                         </vaadin-text-field>
                                                     </template>
@@ -1055,7 +1056,7 @@
                                                     <template class="header">
                                                     </template>
                                                     <template>
-                                                        <paper-button class="btnRemove" raised on-tap="_deleteLinha" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                                                        <paper-button class="btnRemove" id="btnDeleteLinhaProdutoServico" raised on-tap="_deleteLinha" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
                                                     </template>
                                                 </vaadin-grid-column>
                                             </vaadin-grid>
@@ -1306,14 +1307,14 @@
                                         <div class="col-sm-12">
                                             <div class="row">
                                                 <div class="col-sm-3">
-                                                    <vaadin-text-field value="{{data.escolhaProcedimento}}" id="escolhaProcedimento" name="escolhaProcedimento" label="Escolha do Procedimento"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.criterioEscolhaProcedimento}}" id="criterioEscolhaProcedimento" name="criterioEscolhaProcedimento" label="Escolha do Procedimento"></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-sm-9">
-                                                    <paper-tooltip for="escolhaProcedimentoDescricao" position="bottom" offset="-10" animation-delay="1">
+                                                    <paper-tooltip for="descEscolhaProcedimento" position="bottom" offset="-10" animation-delay="1">
                                                         Em função do valor de acordo com os critérios formais, de acordo com o CCP.
                                                     </paper-tooltip>
-                                                    <such-textarea rows="5" value="{{data.escolhaProcedimentoDescricao}}" id="escolhaProcedimentoDescricao" name="escolhaProcedimentoDescricao" label="Descrição"> </such-textarea>
+                                                    <such-textarea rows="5" value="{{data.descEscolhaProcedimento}}" id="descEscolhaProcedimento" name="descEscolhaProcedimento" label="Descrição"> </such-textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -1422,29 +1423,30 @@
                                         <div class="col-sm-6">
                                             <vaadin-text-field value="{{data.nomeProcesso}}" id="nomeProcesso" name="nomeProcesso" label="Nome do Processo"> </vaadin-text-field>
                                         </div>
+
                                         <div class="col-sm-3">
-                                            <vaadin-combo-box value="{{data.objectoContrato}}" label="Objecto do Contrato" items="[[LBoolValues]]" item-value-path="booleanValue" id="objectoContrato" item-label-path="stringValue">
+                                            <vaadin-combo-box value="{{data.objetoDoContrato}}" label="Objecto do Contrato" items="[[CBObjectoContrato]]" item-value-path="id" id="objetoDoContrato" item-label-path="value">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
-                                                            <div>[[item.stringValue]]</div>
+                                                            <div>[[item.value]]</div>
                                                         </paper-item-body>
                                                     </paper-icon-item>
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-sm-3">
-                                            <vaadin-text-field value="{{data.condicoesPagamento}}" id="condicoesPagamento" name="condicoesPagamento" label="Condições Pagamento"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.condicoesDePagamento}}" id="condicoesDePagamento" name="condicoesDePagamento" label="Condições Pagamento"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
 
                                         <div class="col-sm-3">
-                                            <vaadin-combo-box value="{{data.gestorProcesso}}" label="Gestor Processo" items="[[LBoolValues]]" item-value-path="booleanValue" id="gestorProcesso" item-label-path="stringValue">
+                                            <vaadin-combo-box value="{{data.gestorProcesso}}" label="Gestor Processo" items="[[CBGestorProcesso]]" item-value-path="id" id="gestorProcesso" item-label-path="value">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
-                                                            <div>[[item.stringValue]]</div>
+                                                            <div>[[item.value]]</div>
                                                         </paper-item-body>
                                                     </paper-icon-item>
                                                 </template>
@@ -1454,7 +1456,7 @@
 
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <such-textarea rows="5" value="{{data.processoComentario}}" id="processoComentario" name="processoComentario" label="Comentário"> </such-textarea>
+                                            <such-textarea rows="5" value="{{data.comentario}}" id="comentario" name="comentario" label="Comentário"> </such-textarea>
                                         </div>
                                     </div>
 
@@ -1480,9 +1482,52 @@
                                             <vaadin-text-field value="{{data.emailDestinoCa}}" id="emailDestinoCa" name="emailDestinoCa" label="Email destino CA"> </vaadin-text-field>
                                         </div>
                                     </div>
+
+
+                                    <div class="col-lg-6">
+                                        <br />
+
+                                        <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
+                                            <template>
+                                                <style>
+                                                    .my-menu {
+                                                        padding: 8px 0;
+                                                        background: #fff;
+                                                    }
+
+                                                    .my-menu-item {
+                                                        display: block;
+                                                        padding: 8px 24px;
+                                                        text-decoration: none;
+                                                        color: #000;
+                                                    }
+
+                                                    .my-menu-item:hover {
+                                                        background: #FFD5D3;
+                                                    }
+                                                </style>
+                                                <vaadin-list-box>
+                                                    <vaadin-item class="my-menu-item" on-tap="_enviarParaFinanceiros">Enviar p/ Financeiros (5)</vaadin-item>
+                                                    <vaadin-item class="my-menu-item" on-tap="_enviarParaJuridicos">Enviar p/ Juridicos (6)</vaadin-item>
+                                                    <vaadin-item class="my-menu-item" on-tap="_enviarParaArea">Enviar p/ Área (7)</vaadin-item>
+                                                    <vaadin-item class="my-menu-item" on-tap="_devolverParaArea">Devolver à Área (2)</vaadin-item>
+                                                    <vaadin-item class="my-menu-item" on-tap="_enviarParaCAAbertura">Enviar p/CA Abertura (8)</vaadin-item>
+                                                    <vaadin-item class="my-menu-item" on-tap="_enviarParaCAAdjudicacao">Enviar p/CA Adjudicação (17)</vaadin-item>
+                                                </vaadin-list-box>
+                                            </template>
+
+                                            <paper-button raised id="actionButtonCompras" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
+                                            
+                                        </vaadin-context-menu>
+                                    </div>
+
+
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
+
+
+
                             </paper-collapse-item>
 
                             <paper-collapse-item header="A Preencher pelos Serviços Financeiros">
@@ -3002,7 +3047,7 @@
 
                 _imobReturnToAreaResponse: function (e) {
                 },
-
+                
                 _setFieldsEditability(data) {
                     //debugger;;
 
@@ -3019,6 +3064,12 @@
                         $(_self.$.submitProcedimento).addClass('disabled');
                         //$(_self.$.gridElementosJuri).addClass('disabled');
                         //$(_self.$.buttonCriarElementoJuri).addClass('disabled');
+
+                        //NR 20180228
+                        $(_self.$.btnCriarLinhaProdutosServicos).addClass('disabled');
+                        $(_self.$.btnDeleteLinhaProdutoServico).addClass('disabled');
+
+                        $(_self.$.tabLinhaProdutos).addClass('disabled');
                     }
 
 
@@ -3054,6 +3105,20 @@
                     _self.$.fornecedorExclusivo.disabled = (data.estado != 0);
                     _self.$.descFornecedorExclusivo.disabled = (data.estado != 0);
                     _self.$.interlocutor.disabled = (data.estado != 0);
+
+                    //NR 20180228
+                    _self.$.linhaTipo.disabled = (data.estado != 0);
+                    _self.$._CBLocations.disabled = (data.estado != 0);
+                    _self.$._CBItems.disabled = (data.estado != 0);
+                    _self.$._DescricaoProduto.disabled = (data.estado != 0);
+                    _self.$._DescricaoProduto2.disabled = (data.estado != 0);
+                    _self.$._UnitMeasureCode.disabled = (data.estado != 0);
+                    _self.$._linhaQuantidadeRequerer.disabled = (data.estado != 0);
+                    _self.$._linhaCustoUnitario.disabled = (data.estado != 0);
+                    _self.$.tabLinhaProdutos.disabled = (data.estado != 0);
+
+                    
+
                     // 1. Procedimento status != 0.e
 
                     // 2. Procedimento status != 1.b

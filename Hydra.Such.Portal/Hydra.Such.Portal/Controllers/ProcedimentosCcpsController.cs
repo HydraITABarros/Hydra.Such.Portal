@@ -160,13 +160,23 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         ProcedimentoCCPView result = CCPFunctions.CastProcedimentoCcpToProcedimentoCcpView(proc);
 
-                        foreach (LinhasParaEncomendaCCPView Linha in result.LinhasPEncomendaProcedimentosCcp)
+                        if (result.LinhasPEncomendaProcedimentosCcp != null)
                         {
-                            string Linha_DESC = string.Empty;
+                            foreach (LinhasParaEncomendaCCPView Linha in result.LinhasPEncomendaProcedimentosCcp)
+                            {
+                                string Linha_DESC = string.Empty;
 
-                            Linha.CodLocalizacaoText = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.Code == Linha.CodLocalizacao).FirstOrDefault().Name;
+                                try
+                                {
+                                    Linha.CodLocalizacaoText = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Where(x => x.Code == Linha.CodLocalizacao).FirstOrDefault().Name;
+                                }
+                                catch
+                                {
+                                    Linha.CodLocalizacaoText = "";
+                                }
+
+                            }
                         }
-
                         GetChecklists(result);
                         return Json(result);
                     }
