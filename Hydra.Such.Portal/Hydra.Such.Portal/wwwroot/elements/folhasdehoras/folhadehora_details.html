@@ -432,13 +432,13 @@
                             <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" name="horaPartidaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
                         </div>
                         <div class="col-sm-3">
                             <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" name="horaChegadaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
                         </div>
                     </div>
                     <div class="row break_clear">
@@ -876,7 +876,6 @@
 
                         <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
                         <vaadin-grid-column width="100px">
-                            he
                             <template class="header">
                             </template>
                             <template>
@@ -1135,8 +1134,6 @@
 
                         <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
                         <vaadin-grid-column width="100px">
-                            h=
-                            he
                             <template class="header">
                             </template>
                             <template>
@@ -1472,13 +1469,7 @@
                         </div>
                     </div>
 
-
-
-
-
-
-
-                      <!--<template is="dom-if" if="{{ _permissions.update }}">-->
+                    <!--<template is="dom-if" if="{{ _permissions.update }}">-->
                     <div class="col-sm-1 alignPoga">
                         <paper-button id="btn_updateFH2" class="btnSave" raised on-tap="_updateFH" disabled="{{ !_permissions.update }}">Gravar</paper-button>
                     </div>
@@ -1605,7 +1596,13 @@
                                                     if (this.$.codigoRegiao.validate() & this.$.codigoRegiao.value != "") {
                                                         if (this.$.codigoAreaFuncional.validate() & this.$.codigoAreaFuncional.value != "") {
                                                             if (this.$.codigoCentroResponsabilidade.validate() & this.$.codigoCentroResponsabilidade.value != "") {
-                                                                return true;
+                                                                if (this._validacaoHoraPartidaChegada()) {
+                                                                    return true;
+                                                                }
+                                                                else {
+                                                                    this._showErrorMessage('O campo Data-Hora Início tem que ser inferior ou igual ao campo Data-Hora Fim.');
+                                                                    return false;
+                                                                }
                                                             }
                                                             else {
                                                                 this._showErrorMessage("Falta preencher o campo Código Centro Respon..");
@@ -1836,6 +1833,30 @@
                             return false;
                         }
                         return true;
+                    }
+                    return false;
+                },
+
+                _validacaoHoraPartidaChegada: function () {
+                    debugger;
+                    if (this.$.dataPartidaTexto.value != "" & this.$.dataPartidaTexto.validate() &
+                        this.$.dataChegadaTexto.value != "" & this.$.dataChegadaTexto.validate()) {
+
+                        if (this.$.horaPartidaTexto.value != "" & this.$.horaPartidaTexto.validate() &
+                            this.$.horaChegadaTexto.value != "" & this.$.horaChegadaTexto.validate()) {
+
+                            var myDataPartida = new Date(this.$.dataPartidaTexto.value).toDateString();
+                            var myDataChegada = new Date(this.$.dataChegadaTexto.value).toDateString();
+
+                            var myDataHoraPartida = new Date(myDataPartida + ' ' + this.$.horaPartidaTexto.value);
+                            var myDataHoraChegada = new Date(myDataChegada + ' ' + this.$.horaChegadaTexto.value);
+
+                            if (myDataHoraPartida > myDataHoraChegada) {
+                                this._showErrorMessage('O campo Data-Hora Início tem que ser inferior ou igual ao campo Data-Hora Fim.');
+                                return false;
+                            }
+                            return true;
+                        }
                     }
                     return false;
                 },
@@ -3308,8 +3329,7 @@
                 _createPresencaResponse: function (e) {
                     //debugger;
                     if (this.PresencaCreated == 0) {
-                        this._showMessage('Adicionada Presença com sucesso.');
-                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Presença adicionada Presença com sucesso.');
 
                         this.$.presencaDataTexto.value = "";
                         this.$.presencaHora1Entrada.value = "";
@@ -3322,10 +3342,35 @@
                         if (this.PresencaCreated == 1) {
                             this._showErrorMessage('Não pode ter mais que uma presença para o mesmo dia.');
                         }
+                        if (this.PresencaCreated == 2) {
+                            this._showErrorMessage('A hora da 1ª Entrada tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.PresencaCreated == 3) {
+                            this._showErrorMessage('A hora da 1ª Saída tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.PresencaCreated == 4) {
+                            this._showErrorMessage('A hora da 2ª Entrada tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.PresencaCreated == 5) {
+                            this._showErrorMessage('A hora da 2ª Saída tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.PresencaCreated == 6) {
+                            this._showErrorMessage('A hora da 1ª Entrada não está correta em relação ás outras horas.');
+                        }
+                        if (this.PresencaCreated == 7) {
+                            this._showErrorMessage('A hora da 1ª Saída não está correta em relação ás outras horas.');
+                        }
+                        if (this.PresencaCreated == 8) {
+                            this._showErrorMessage('A hora da 2ª Entrada não está correta em relação ás outras horas.');
+                        }
+                        if (this.PresencaCreated == 9) {
+                            this._showErrorMessage('A hora da 2ª Saída não está correta em relação ás outras horas.');
+                        }
                         if (this.PresencaCreated == 99) {
-                            this._showErrorMessage('Ocorreu um erro.');
+                            this._showErrorMessage('Ocorreu um erro ao actualiazar a Presença.');
                         }
                     }
+                    this.$.page_databound_ajax.generateRequest();
                 },
 
                 _deletePresencaResponse: function (e) {
@@ -3358,11 +3403,40 @@
 
                 _updateLinhaPresencaResponse: function (e) {
                     //debugger;
-                    if (this.LinhaPresencaUpdated) {
+                    if (this.LinhaPresencaUpdated == 0) {
                         this._showMessage('Presença atualizada com sucesso.');
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao actualiazar a Presença.');
+                        if (this.LinhaPresencaUpdated == 1) {
+                            this._showErrorMessage('Não foi possivel atualizar a Presença.');
+                        }
+                        if (this.LinhaPresencaUpdated == 2) {
+                            this._showErrorMessage('A hora da 1ª Entrada tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.LinhaPresencaUpdated == 3) {
+                            this._showErrorMessage('A hora da 1ª Saída tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.LinhaPresencaUpdated == 4) {
+                            this._showErrorMessage('A hora da 2ª Entrada tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.LinhaPresencaUpdated == 5) {
+                            this._showErrorMessage('A hora da 2ª Saída tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.LinhaPresencaUpdated == 6) {
+                            this._showErrorMessage('A hora da 1ª Entrada não está correta em relação ás outras horas.');
+                        }
+                        if (this.LinhaPresencaUpdated == 7) {
+                            this._showErrorMessage('A hora da 1ª Saída não está correta em relação ás outras horas.');
+                        }
+                        if (this.LinhaPresencaUpdated == 8) {
+                            this._showErrorMessage('A hora da 2ª Entrada não está correta em relação ás outras horas.');
+                        }
+                        if (this.LinhaPresencaUpdated == 9) {
+                            this._showErrorMessage('A hora da 2ª Saída não está correta em relação ás outras horas.');
+                        }
+                        if (this.LinhaPresencaUpdated == 99) {
+                            this._showErrorMessage('Ocorreu um erro ao actualiazar a Presença.');
+                        }
                     }
                     this.$.page_databound_ajax.generateRequest();
                 },

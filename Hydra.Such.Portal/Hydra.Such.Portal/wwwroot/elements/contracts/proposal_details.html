@@ -97,6 +97,7 @@
                 position: relative;
                 display: inline-block;
             }
+
             .dropdownMenu-content {
                 display: none;
                 position: absolute;
@@ -106,12 +107,15 @@
                 box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
                 z-index: 1;
             }
+
             .dropbtnItem {
                 font-family: -apple-system, BlinkMacSystemFont, Roboto, Segoe UI, Ubuntu, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
             }
-            .dropbtnItem:hover {
-                background-color: #ddd;
-            }
+
+                .dropbtnItem:hover {
+                    background-color: #ddd;
+                }
+
             .showMenuItems {
                 display: block;
             }
@@ -329,18 +333,18 @@
 
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
-                <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
-                <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
-                <paper-button class="tablinks" on-tap="_updateRelatedContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
-                <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ !_showContractLines }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
-                <div class="dropdownMenu">
-                    <paper-button class="tablinks" on-tap="_showStatusDropDown" id="statusMenu"><i class="fa fa-chevron-down" aria-hidden="true"></i> Alterar Estado</paper-button>
-                    <div id="StatusDropDownContent" class="dropdownMenu-content">
-                        <template is="dom-repeat" items="[[CBProposalsStatus]]">
-                            <paper-button class="dropbtnItem" on-tap="_changeStatus" style="width: 250px;">[[ item.value ]]</paper-button>
-                        </template>
+                    <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
+                    <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
+                    <paper-button class="tablinks" on-tap="_updateRelatedContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
+                    <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ !_showContractLines }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
+                    <div class="dropdownMenu">
+                        <paper-button class="tablinks" on-tap="_showStatusDropDown" id="statusMenu"><i class="fa fa-chevron-down" aria-hidden="true"></i> Alterar Estado</paper-button>
+                        <div id="StatusDropDownContent" class="dropdownMenu-content">
+                            <template is="dom-repeat" items="[[CBProposalsStatus]]">
+                                <paper-button class="dropbtnItem" on-tap="_changeStatus" style="width: 250px;">[[ item.value ]]</paper-button>
+                            </template>
+                        </div>
                     </div>
-                </div>
             </div>
         </template>
         <div class="row">
@@ -1363,6 +1367,16 @@
             </div>
         </paper-dialog>
 
+        <!--<paper-dialog id="dlgUpdateContract" modal style="height:200px; width:300px">
+            <div>
+                <vaadin-date-picker label="Data de Envio" id="dtpCustomerShipmentDate" name="dtpCustomerShipmentDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_setProposalStatus">Guardar</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeCustomerShipDateDlg">Cancelar</paper-button>
+            </div>
+        </paper-dialog>-->
+
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -1582,10 +1596,20 @@
                     _openStatusMenuFlag: {
                         type: Number,
                         value: 0,
-                    }
+                    },
+                    _hasRelatedContract: {
+                        type: Boolean,
+                        value: false,
+                    },
                 },
                 listeners: {
                     'tap': 'onStatusChangeMenuTap'
+                },
+                observers: [
+                    'relatedContractChanged(data.relatedContract)'
+                ],
+                relatedContractChanged: function (relatedContract) {
+                    this._hasRelatedContract = relatedContract != null ? true : false;;
                 },
                 _showStatusDropDown: function () {
                     var statusDropDown = this.$$('#StatusDropDownContent');;
@@ -1593,10 +1617,6 @@
                         statusDropDown.classList.toggle("showMenuItems");
                         this._openStatusMenuFlag = 1;
                     }
-                },
-
-                _proposalStateChange: function () {
-
                 },
                 _proposalStateChangeResponse: function () {
                     if (this.StateChangedProposal.eReasonCode == 1) {
@@ -1777,16 +1797,16 @@
                 },
                 _update: function () {
                     if (this._validateData()) {
-
+                        /*
                         //Status Changed
                         if (this._oldStatus != this.data.status) {
                             switch (this.data.status) {
                                 case 2: //Alterada para enviada
-                                    /*
-                                        O Campo Origem do Pedido Descrição tem que estar preenchido
-                                        Tem que existir pelo menos uma linha preenchida
-                                        Preencher ‘Data Envio’ com data indicada pelo utilizador.Deve ser criado um mecanismo tipo ‘PopUp’ para indicação dessa data.
-                                    */
+                                    
+                                        //O Campo Origem do Pedido Descrição tem que estar preenchido
+                                        //Tem que existir pelo menos uma linha preenchida
+                                        //Preencher ‘Data Envio’ com data indicada pelo utilizador.Deve ser criado um mecanismo tipo ‘PopUp’ para indicação dessa data.
+                                    
                                     if (this.data.orderOrigin == "" || this.data.ordOrderSource == "") {
                                         this._openToastError("Para alterar a proposta para o estado aberta os campos Origem do Pedido e Origem do pedido descrição devem estar preenchidos.");
                                         return false;
@@ -1807,9 +1827,9 @@
                                 case 4: //Alterada para Perdida
                                 case 5: //Alterada para Cancelada
                                 case 10://Alterada para Não Respondida
-                                    /*
-                                        Preencher a razão do Arquivo
-                                    */
+                                    
+                                        //Preencher a razão do Arquivo
+                                    
                                     if (this.$.archiveReason.validate()) {
                                         this.data.archiveReason = this.$.archiveReason.value;
                                         this.$.dlgArchiveReason.close();
@@ -1821,6 +1841,7 @@
                                     break;
                             }
                         }
+                        */
                         this._executeRequest("/Contratos/UpdateContract", this.data);
                     }
                 },
@@ -2289,9 +2310,8 @@
 
                 //Parse To Contract
                 _parseToContract: function (param) {
-                    debugger;;
                     if (param != null) {
-                        if (this.$.txtRelatedContractNo.value != null && this.$.txtRelatedContractNo.value == "") {
+                        if (this.data.relatedContract == null || this.data.relatedContract == "") {
                             if (param.currentTarget.id == "parseContract") {
                                 this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3, "Parcial": false });
                                 this.$.parseToContract_ajax.generateRequest();
@@ -2299,11 +2319,13 @@
                                 this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3, "Parcial": true });
                                 this.$.parseToContract_ajax.generateRequest();
                             }
-                        } else if (this.$.txtRelatedContractNo.value != "" && this.$.txtRelatedContractNo.value == null) {
-                            this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3 });
-                            this.$.parseToContract_ajax.generateRequest();
-                        } else {
-                            this._openToastError("Esta versão de proposta já tem contrato associado");
+                        }
+                        //else if (this.data.contractNo == null && this.data.contractNo != "") {
+                        //    this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 2, "HeaderType": 3 });
+                        //    this.$.parseToContract_ajax.generateRequest();
+                        //}
+                        else {
+                            this._openToastError("Esta proposta já tem um contrato associado.");
                         }
 
                     }
