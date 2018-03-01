@@ -14,8 +14,8 @@ namespace Hydra.Such.Data.Database
         public TimeSpan? Hora2ªSaída { get; set; }
         public string Observacoes { get; set; }
         public int? Validado { get; set; }
-        public int? IntegradoTR { get; set; }
-        public DateTime? DataIntTR { get; set; }
+        public int? IntegradoTr { get; set; }
+        public DateTime? DataIntTr { get; set; }
         public string UtilizadorCriação { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public string UtilizadorModificação { get; set; }

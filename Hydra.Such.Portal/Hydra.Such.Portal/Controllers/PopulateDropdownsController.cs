@@ -687,6 +687,21 @@ namespace Hydra.Such.Portal.Controllers
             }).ToList();
             return Json(result);
         }
+
+        /// <summary>
+        /// NR 20180228
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult GetAllGestorProcesso()
+        {
+            List<DDMessageString> result = DBNAV2009Employees.GetAllGestorProcesso(_config.NAV2009DatabaseName, _config.NAV2009CompanyName).Select(x => new DDMessageString()
+            {
+                id = x.No,
+                value = x.Name
+            }).ToList();
+            return Json(result);
+        }
         #endregion
 
         #region TypeOptions
@@ -1567,6 +1582,15 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> Tipo = EnumerablesFixed.TipoLinhasProdutosCCP;
 
             return Json(Tipo);
+        }
+
+        // NR 20180228 Procedimentos CCP 
+        [HttpPost]
+        public JsonResult GetObjectoDeContratoCCP()
+        {
+            List<EnumData> ObjContrato = EnumerablesFixed.ObjectoDeContratoCCP;
+
+            return Json(ObjContrato);
         }
     }
 
