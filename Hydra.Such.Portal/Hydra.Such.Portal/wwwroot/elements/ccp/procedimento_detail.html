@@ -7,7 +7,6 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 
-
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
@@ -269,8 +268,6 @@
         <iron-ajax url="/PopulateDropdowns/GetObjectoDeContratoCCP" last-response="{{CBObjectoContrato}}" auto method="post" handle-as="json" content-type="application/json"> </iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllGestorProcesso" last-response="{{CBGestorProcesso}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-
-
         <iron-ajax url="/ProcedimentosCcps/GetUsersWhoAreElementosJuri"
                    last-response="{{LUsers}}"
                    auto method="post"
@@ -319,7 +316,6 @@
                    on-response="_createElementoJuriResponse"
                    content-type="application/json">
         </iron-ajax>
-
         <iron-ajax url="/ProcedimentosCcps/DeleteElementoJuri"
                    last-response="{{ElementoDeleted}}"
                    method="post"
@@ -354,7 +350,6 @@
         </iron-ajax>
 
         <!-- NR 20180226 -->
-
         <iron-ajax url="/ProcedimentosCcps/CreateLinhaProdutoServico"
                    last-response="{{LinhaProdutoServicoCreated}}"
                    method="post"
@@ -363,7 +358,6 @@
                    on-response="_createLinhaProdutoServicoResponse"
                    content-type="application/json">
         </iron-ajax>
-
 
         <!-- NR 20180227 -->
         <iron-ajax url="/ProcedimentosCcps/DeleteLinhaProdutoServico"
@@ -375,8 +369,23 @@
                    content-type="application/json">
         </iron-ajax>
 
-
-
+        <!--NR 20190301-->
+        <iron-ajax url="/ProcedimentosCcps/SubmitToAccounting"
+                   last-response="{{ EnviarParaFinanceiros }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_enviarParaFinanceiros"
+                   on-response="_enviarParaFinanceirosResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/SubmitToLegalDepartment"
+                   last-response="{{ EnviarParaJuridicos }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_enviarParaJuridicos"
+                   on-response="_enviarParaJuridicosResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <!-- Controller actions.e -->
         <!-- Header section of the Procedimento details -->
@@ -431,7 +440,6 @@
                                 </template>
                             </vaadin-combo-box>
                         </div>
-
                     </div>
                 </div>
                 <div>
@@ -479,7 +487,6 @@
 
                     </div>
                 </div>
-
 
                 <!-- Procedimentos section tabs-->
                 <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
@@ -535,7 +542,6 @@
                                         </div>
                                     </div>
                                     <div class="row break_clear">
-
                                         <div class="col-sm-3">
                                             <vaadin-combo-box items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue" required value="{{data.negociacao}}" id="negociacao" label="Negociação?">
                                                 <template>
@@ -696,7 +702,6 @@
                                         <br />
                                         <paper-button raised id="submitProcedimento" class="btn--confirm pull-left" on-tap="_submitProcedimento"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Submeter</paper-button>
                                     </div>
-
                                     <div class="clearfix"></div>
                                 </div>
                             </paper-collapse-item>
@@ -725,10 +730,7 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
-
-
                                     <div class="row break_clear">
                                         <div class="col-sm-12">
                                             <div class="row">
@@ -743,7 +745,6 @@
                                                         </template>
                                                     </vaadin-combo-box>
                                                 </div>
-
                                                 <div class="col-sm-8">
                                                     <paper-tooltip for="descPropostaEconMaisVantajosa" position="top" offset="-1" animation-delay="1">
                                                         Definição de subfactores: Preço; Características técnicas (parâmetros a avaliar e outros que sejam relevantes), etc. Todos os fatores e subfactores têm de ser parametrizados e quantificados. <br />
@@ -754,7 +755,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </paper-collapse-item>
                             <paper-collapse-item header="Outros">
@@ -774,7 +774,6 @@
                                                         </template>
                                                     </vaadin-combo-box>
                                                 </div>
-
                                                 <div class="col-sm-9">
                                                     <paper-tooltip for="descPropostaVariante" position="bottom" offset="-10" animation-delay="1">
                                                         Não aceitando propostas variantes o concorrente tem que apresentar exatamente o solicitado nas peças do procedimento, sendo um motivo de exclusão toda a proposta apresentada que não cumpra os requisitos. <br />
@@ -784,7 +783,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="col-sm-6">
                                             <div class="row">
                                                 <div class="col-sm-4">
@@ -798,7 +796,6 @@
                                                         </template>
                                                     </vaadin-combo-box>
                                                 </div>
-
                                                 <div class="col-sm-8">
                                                     <paper-tooltip for="descAbertoFechadoAoMercado" position="bottom" offset="-10" animation-delay="1">
                                                         Aberto ao mercado, todos os concorrentes registados na categoria visualizam o procedimento, contudo, permite em simultâneo um convite direcionado aos fornecedores identificados pelo SUCH a apresentar proposta. <br />
@@ -810,9 +807,7 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row break_clear">
-
                                         <div class="col-sm-6">
                                             <paper-tooltip for="prazoEntrega" position="top" offset="-1" animation-delay="1">
                                                 Caso exista imposição da U.P. para o Cliente.
@@ -822,11 +817,8 @@
                                         <div class="col-sm-6">
                                             <vaadin-text-field value="{{data.locaisEntrega}}" id="locaisEntrega" name="locaisEntrega" label="Locais de Entrega"> </vaadin-text-field>
                                         </div>
-
                                     </div>
-
                                     <div class="row break_clear">
-
                                         <div class="col-sm-6">
                                             <vaadin-text-field rows="5" value="{{data.observacoesAdicionais}}" id="observacoesAdicionais" name="observacoesAdicionais" label="Observações adicionais a fixar no caderno de encargos"> </vaadin-text-field>
                                         </div>
@@ -836,15 +828,11 @@
                                             </paper-tooltip>
                                             <vaadin-text-field rows="5" value="{{data.estimativaPreco}}" id="estimativaPreco" name="estimativaPreco" label="Estimativa de preço"> </vaadin-text-field>
                                         </div>
-
                                     </div>
-
                                     <div class="row break_clear">
-
                                         <div class="col-sm-6">
                                             <vaadin-text-field rows="5" value="{{data.fornecedoresSugeridos}}" id="fornecedoresSugeridos" name="fornecedoresSugeridos" label="Fornecedores Sugeridos"> </vaadin-text-field>
                                         </div>
-
                                         <div class="col-sm-6">
                                             <div class="row">
                                                 <div class="col-sm-4">
@@ -950,7 +938,6 @@
                                     <!-- Tab Unidade Produtiva - Linhas Produtos Servicos-->
                                     <div class="col-xs-12 mb-15">
                                         <div class="break_clear">
-
                                             <!-- NR 20180226 -->
                                             <vaadin-grid id="tabLinhaProdutos" aria-label="Tabela Linhas Produtos Serviços" items="{{ data.linhasPEncomendaProcedimentosCcp }}" class="editGrid">
 
@@ -963,7 +950,6 @@
                                                         <vaadin-text-field name="tabLinhaProdutosNoProcedimento" id="tabLinhaProdutosNoProcedimento" value="{{item.noProcedimento}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-
                                                 <vaadin-grid-column width="50px" hidden>
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
@@ -973,7 +959,6 @@
                                                         <vaadin-text-field name="tabLinhaProdutosNoLinha" id="tabLinhaProdutosNoLinha" value="{{item.noLinha}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-
                                                 <vaadin-grid-column width="60px">
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="tipoText" style="text-align:center;">Tipo</vaadin-grid-sorter>
@@ -991,7 +976,6 @@
                                                         </vaadin-combo-box>
                                                     </template>
                                                 </vaadin-grid-column>
-
                                                 <vaadin-grid-column width="200px">
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="codLocalizacaoText" style="text-align:center;">Cód. Localização</vaadin-grid-sorter>
@@ -1009,7 +993,6 @@
                                                         </vaadin-combo-box>
                                                     </template>
                                                 </vaadin-grid-column>
-
                                                 <vaadin-grid-column width="60px">
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="codigo" style="text-align:center;">Cód. Produto</vaadin-grid-sorter>
@@ -1029,7 +1012,6 @@
                                                         <vaadin-text-field name="tabDescricaoProduto" id="tabDescricaoProduto" value="{{item.descricao}}" disabled="true" style="text-align:left;"></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-
                                                 <vaadin-grid-column width="80px">
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="quantARequerer" style="text-align:center;">Qtd. a Requerer</vaadin-grid-sorter>
@@ -1039,7 +1021,6 @@
                                                         <vaadin-text-field name="tabQuantidade" value="{{item.quantARequerer}}" disabled="true" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-
                                                 <vaadin-grid-column width="80px">
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="custoUnitario" style="text-align:center;">Custo Unitário</vaadin-grid-sorter>
@@ -1051,7 +1032,6 @@
                                                         </vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-
                                                 <vaadin-grid-column width="80px">
                                                     <template class="header">
                                                     </template>
@@ -1060,116 +1040,10 @@
                                                     </template>
                                                 </vaadin-grid-column>
                                             </vaadin-grid>
-
-
-
-
-
-                                            <!--<vaadin-grid id="gridProdutosServicos" aria-label="gridProdutosServicos" items="{{data.produtosServicos}}" class="grid">
-                                            <vaadin-grid-column width="10%">
-                                                <template class="header">
-                                                    Tipo
-                                                </template>
-                                                <template>
-                                                    <vaadin-text-field type="text" value="{{ item.tipo }}"></vaadin-text-field>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="10%">
-                                                <template class="header">
-                                                    Cod. Localização
-                                                </template>
-                                                <template>
-                                                    <vaadin-text-field type="text" value="{{ item.codigoLocalizacao }}"></vaadin-text-field>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="8%">
-                                                <template class="header">
-                                                    <center>
-                                                        Nº
-                                                    </center>
-                                                </template>
-                                                <template>
-                                                    <center>
-                                                        <vaadin-checkbox checked="{{item.no}}"></vaadin-checkbox>
-                                                    </center>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="8%">
-                                                <template class="header">
-                                                    <center>
-                                                        Descrição
-                                                    </center>
-                                                </template>
-                                                <template>
-                                                    <center>
-                                                        <vaadin-checkbox checked="{{item.descricao}}"></vaadin-checkbox>
-                                                    </center>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="6%">
-                                                <template class="header">
-                                                    <center>
-                                                        Descrição 2
-                                                    </center>
-                                                </template>
-                                                <template>
-                                                    <center>
-                                                        <vaadin-checkbox checked="{{item.descricao2}}"></vaadin-checkbox>
-                                                    </center>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="8%">
-                                                <template class="header">
-                                                    <center>
-                                                        Cod. Unidade
-                                                    </center>
-                                                </template>
-                                                <template>
-                                                    <center>
-                                                        <vaadin-checkbox checked="{{item.codigoUnidade}}"></vaadin-checkbox>
-                                                    </center>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="20%">
-                                                <template class="header">
-                                                    Qtd. a Requerer
-                                                </template>
-                                                <template>
-                                                    <vaadin-text-field type="text" value="{{ item.quantidadeRequerer }}"></vaadin-text-field>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="20%">
-                                                <template class="header">
-                                                    Custo Unitário
-                                                </template>
-                                                <template>
-                                                    <vaadin-text-field type="text" value="{{ item.custoUnitario }}"></vaadin-text-field>
-                                                </template>
-                                            </vaadin-grid-column>
-                                            <vaadin-grid-column width="10%">
-                                                <template class="header">
-                                                </template>
-                                                <template>
-
-                                                    <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-
-                                                </template>
-                                            </vaadin-grid-column>
-                                        </vaadin-grid>-->
                                         </div>
                                         <div class="clearfix"></div>
                                     </div>
                                 </div>
-
-
-
-
-
-
-
-
-
-
                             </paper-collapse-item>
                         </paper-collapse-group>
                     </div>
@@ -1180,15 +1054,12 @@
                         <p></p>
                         <h2 class="title title--bgblue">A preencher pelos Serviços de Contabilidade - Avaliação Cabimentação Orçamental</h2>
                         <div class="row break_clear">
-
                             <div class="col-xs-12">
-
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Contabilidade</div>
+                                    <div class="panel-heading">Contabilidade (1)</div>
                                     <div class="panel-body">
                                         <div class="col-sm-6">
                                             <such-textarea rows="5" value="{{data.comentarioImobContabilidade}}" id="comentarioImobContabilidade" name="comentarioImobContabilidade" label="Comentário"> </such-textarea>
-
                                             <div class="row break_clear">
                                                 <div class="col-xs-12">
                                                     <label part="label" class="grey" id="vaadin-text-field-label-30">O responsável dos serviços de contabilidade</label>
@@ -1200,7 +1071,6 @@
                                                     <vaadin-text-field value="{{data.nomeResponsavelImobContabilidade}}" id="nomeResponsavelImobContabilidade" name="nomeResponsavelImobContabilidade" label=""> </vaadin-text-field>
                                                 </div>
                                             </div>
-
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
                                                     <vaadin-date-picker value="{{data.dataImobContabilidade}}" id="dataImobContabilidade" name="dataImobContabilidade" label="Data"> </vaadin-date-picker>
@@ -1221,11 +1091,9 @@
                                         </div>
                                         <div class="clearfix"></div>
                                         <div class="clearfix"></div>
-
                                         <div class="col-lg-6">
                                             <!--Context menu-->
                                             <br />
-
                                             <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
                                                 <template>
                                                     <style>
@@ -1255,19 +1123,15 @@
                                                 <!--<button>Show Context Menu</button>-->
                                             </vaadin-context-menu>
                                         </div>
-
                                     </div>
-
                                 </div>
                             </div>
                             <div class="col-xs-12">
-
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Área</div>
+                                    <div class="panel-heading">Área (2)</div>
                                     <div class="panel-body">
                                         <div class="col-sm-6">
                                             <such-textarea rows="5" value="{{data.areaComentario}}" id="areaComentario" name="areaComentario" label="Comentário"> </such-textarea>
-
                                             <div class="row break_clear">
                                                 <div class="col-xs-12">
                                                     <label part="label" class="grey" id="vaadin-text-field-label-30">O responsável da área pela adjudicação</label>
@@ -1279,29 +1143,24 @@
                                                     <vaadin-text-field value="{{data.responsavelArea2}}" id="responsavelArea2" name="responsavelArea2" label=""> </vaadin-text-field>
                                                 </div>
                                             </div>
-
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
                                                     <vaadin-date-picker value="{{data.contabilidadeData}}" id="responsavelServicosContabilidade" name="responsavelServicosContabilidade" label="Data"> </vaadin-date-picker>
                                                 </div>
-
                                             </div>
                                             <div class="row break_clear"></div>
                                         </div>
                                         <div class="clearfix"></div>
                                     </div>
-
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
 
                     <!-- Tab Fundamentos Decisão-->
                     <div class="panel panel-default">
                         <paper-collapse-group>
-                            <paper-collapse-item header="A Preencher pelas Compras" opened>
+                            <paper-collapse-item header="A Preencher pelas Compras (4)" opened>
                                 <div class="col-xs-12">
                                     <div class="break_clear row">
                                         <div class="col-sm-12">
@@ -1309,7 +1168,6 @@
                                                 <div class="col-sm-3">
                                                     <vaadin-text-field value="{{data.criterioEscolhaProcedimento}}" id="criterioEscolhaProcedimento" name="criterioEscolhaProcedimento" label="Escolha do Procedimento"></vaadin-text-field>
                                                 </div>
-
                                                 <div class="col-sm-9">
                                                     <paper-tooltip for="descEscolhaProcedimento" position="bottom" offset="-10" animation-delay="1">
                                                         Em função do valor de acordo com os critérios formais, de acordo com o CCP.
@@ -1419,11 +1277,9 @@
                                         </div>
                                     </div>
                                     <div class="row break_clear">
-
                                         <div class="col-sm-6">
                                             <vaadin-text-field value="{{data.nomeProcesso}}" id="nomeProcesso" name="nomeProcesso" label="Nome do Processo"> </vaadin-text-field>
                                         </div>
-
                                         <div class="col-sm-3">
                                             <vaadin-combo-box value="{{data.objetoDoContrato}}" label="Objecto do Contrato" items="[[CBObjectoContrato]]" item-value-path="id" id="objetoDoContrato" item-label-path="value">
                                                 <template>
@@ -1440,7 +1296,6 @@
                                         </div>
                                     </div>
                                     <div class="row break_clear">
-
                                         <div class="col-sm-3">
                                             <vaadin-combo-box value="{{data.gestorProcesso}}" label="Gestor Processo" items="[[CBGestorProcesso]]" item-value-path="id" id="gestorProcesso" item-label-path="value">
                                                 <template>
@@ -1453,40 +1308,36 @@
                                             </vaadin-combo-box>
                                         </div>
                                     </div>
-
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <such-textarea rows="5" value="{{data.comentario}}" id="comentario" name="comentario" label="Comentário"> </such-textarea>
+                                            <such-textarea rows="5" value="{{data.comentarioFundamentoCompras}}" id="comentarioFundamentoCompras" name="comentarioFundamentoCompras" label="Comentário"> </such-textarea>
                                         </div>
                                     </div>
-
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <div class="row">
                                                 <div class="col-xs-12">
-                                                    <label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável pelo envio para área</label>
+                                                    <label part="label" class="grey vaadin-text-field-label-30" id="lblresponsavelFundamentoCompras">O Responsável pelo envio para área</label>
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <vaadin-text-field value="{{data.responsavelEnvioArea}}" id="responsavelEnvioArea" name="responsavelEnvioArea"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.responsavelFundamentoCompras}}" id="responsavelFundamentoCompras" name="responsavelFundamentoCompras"></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-sm-8">
-                                                    <vaadin-text-field value="{{data.responsavelEnvioArea2}}" id="responsavelEnvioArea2" name="responsavelEnvioArea2"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.nomeResponsavelFundamentoCompras}}" id="nomeResponsavelFundamentoCompras" name="nomeResponsavelFundamentoCompras"> </vaadin-text-field>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
-                                            <vaadin-date-picker value="{{data.processoData}}" id="processoData" name="processoData" label="Data"></vaadin-date-picker>
+                                            <!--<vaadin-date-picker value="{{data.fundamentoComprasDataChecklist}}" id="fundamentoComprasDataChecklist" name="fundamentoComprasDataChecklist" label="Data"></vaadin-date-picker>-->
+                                            <vaadin-text-field value="{{data.fundamentoComprasDataChecklist}}" id="fundamentoComprasDataChecklist" name="fundamentoComprasDataChecklist" label="Data"> </vaadin-text-field>
                                         </div>
                                         <div class="col-sm-3">
                                             <vaadin-text-field value="{{data.emailDestinoCa}}" id="emailDestinoCa" name="emailDestinoCa" label="Email destino CA"> </vaadin-text-field>
                                         </div>
                                     </div>
-
-
                                     <div class="col-lg-6">
                                         <br />
-
                                         <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
                                             <template>
                                                 <style>
@@ -1502,9 +1353,9 @@
                                                         color: #000;
                                                     }
 
-                                                    .my-menu-item:hover {
-                                                        background: #FFD5D3;
-                                                    }
+                                                        .my-menu-item:hover {
+                                                            background: #FFD5D3;
+                                                        }
                                                 </style>
                                                 <vaadin-list-box>
                                                     <vaadin-item class="my-menu-item" on-tap="_enviarParaFinanceiros">Enviar p/ Financeiros (5)</vaadin-item>
@@ -1515,22 +1366,14 @@
                                                     <vaadin-item class="my-menu-item" on-tap="_enviarParaCAAdjudicacao">Enviar p/CA Adjudicação (17)</vaadin-item>
                                                 </vaadin-list-box>
                                             </template>
-
                                             <paper-button raised id="actionButtonCompras" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                                            
                                         </vaadin-context-menu>
                                     </div>
-
-
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
-
-
-
                             </paper-collapse-item>
-
-                            <paper-collapse-item header="A Preencher pelos Serviços Financeiros">
+                            <paper-collapse-item header="A Preencher pelos Serviços Financeiros (5)">
                                 <div class="col-xs-12">
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
@@ -1556,12 +1399,41 @@
                                             <vaadin-date-picker value="{{data.responsavelPelaAreaData}}" id="processoData" name="processoData" label="Data"></vaadin-date-picker>
                                         </div>
                                     </div>
+                                    <div class="col-lg-6">
+                                        <br />
+                                        <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
+                                            <template>
+                                                <style>
+                                                    .my-menu {
+                                                        padding: 8px 0;
+                                                        background: #fff;
+                                                    }
+
+                                                    .my-menu-item {
+                                                        display: block;
+                                                        padding: 8px 24px;
+                                                        text-decoration: none;
+                                                        color: #000;
+                                                    }
+
+                                                        .my-menu-item:hover {
+                                                            background: #FFD5D3;
+                                                        }
+                                                </style>
+                                                <vaadin-list-box>
+                                                    <vaadin-item class="my-menu-item" on-tap="_enviarParaArea">Enviar p/ Área (7)</vaadin-item>
+                                                    <vaadin-item class="my-menu-item" on-tap="_devolverACompras">Devolver a Compras (4)</vaadin-item>
+                                                </vaadin-list-box>
+                                            </template>
+                                            <paper-button raised id="actionButtonFinanceiros" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
+                                        </vaadin-context-menu>
+                                    </div>
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
 
-                            <paper-collapse-item header="A Preencher pela área - Pedido de Abertura de Procedimento">
+                            <paper-collapse-item header="A Preencher pela área - Pedido de Abertura de Procedimento (7)">
                                 <div class="col-xs-12">
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
@@ -1592,16 +1464,14 @@
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
                         </paper-collapse-group>
-
                     </div>
 
                     <!-- Tab CCP -->
                     <div>
                         <div class="row break_clear">
-
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Publicação na Plataforma</div>
+                                    <div class="panel-heading">Publicação na Plataforma (9)</div>
                                     <div class="panel-body">
                                         <div class="">
                                             <div class="row">
@@ -1615,7 +1485,6 @@
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
-
                                                 <div class="col-xs-6">
                                                     <vaadin-text-field value="{{data.publicacaoNaPlataformaUtilizador}}" id="publicacaoNaPlataformaUtilizador" name="publicacaoNaPlataformaUtilizador" label="Utilizador"> </vaadin-text-field>
                                                 </div>
@@ -1629,9 +1498,8 @@
                                 </div>
                             </div>
                             <div class="col-xs-6">
-
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Recolha da Plataforma</div>
+                                    <div class="panel-heading">Recolha da Plataforma (10)</div>
                                     <div class="panel-body">
                                         <div class="">
                                             <div class="row">
@@ -1660,7 +1528,7 @@
                             </div>
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Validação Relatório Preliminar Pelo Juri</div>
+                                    <div class="panel-heading">Validação Relatório Preliminar Pelo Juri (11)</div>
                                     <div class="panel-body">
                                         <div class="">
                                             <div class="row">
@@ -1674,7 +1542,6 @@
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
-
                                                 <div class="col-xs-6">
                                                     <vaadin-text-field value="{{data.validacaoRelatorioUtilizador}}" id="validacaoRelatorioUtilizador" name="validacaoRelatorioUtilizador" label="Utilizador"> </vaadin-text-field>
                                                 </div>
@@ -1689,7 +1556,7 @@
                             </div>
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Audiência Prévia</div>
+                                    <div class="panel-heading">Audiência Prévia (12)</div>
                                     <div class="panel-body">
                                         <div class="">
                                             <div class="row">
@@ -1703,7 +1570,6 @@
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
-
                                                 <div class="col-xs-6">
                                                     <vaadin-text-field value="{{data.audienciaPreviaUtilizador}}" id="audienciaPreviaUtilizador" name="audienciaPreviaUtilizador" label="Utilizador"> </vaadin-text-field>
                                                 </div>
@@ -1718,7 +1584,7 @@
                             </div>
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Relatório Final</div>
+                                    <div class="panel-heading">Relatório Final (13)</div>
                                     <div class="panel-body">
                                         <div class="">
                                             <div class="row">
@@ -1732,28 +1598,23 @@
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
-
                                                 <div class="col-xs-6">
                                                     <vaadin-text-field value="{{data.relatorioFinalUtilizador}}" id="relatorioFinalUtilizador" name="relatorioFinalUtilizador" label="Utilizador"> </vaadin-text-field>
                                                 </div>
-
                                                 <div class="col-sm-6">
                                                     <br />
                                                     <paper-button raised id="btnConfirmRelatorioFinal" class="btn--confirm pull-right" on-tap="_confirmRelatorioFinal"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Confirmar</paper-button>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="col-sm-6">
                                 <br />
                                 &nbsp;
                                 <paper-button raised id="btnSendToEvaluate" class="btn--sendtoevaluate" on-tap="_sendToEvaluate"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp; Envio para avaliação (Juri)</paper-button>
                             </div>
-
                         </div>
                     </div>
 
@@ -1763,14 +1624,12 @@
                         <div class="break_clear row">
                             <div class="col-sm-12">
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">1ª Fase - Avaliação das Peças do Procedimento (A preencher na abertura do procedimento)</div>
+                                    <div class="panel-heading">1ª Fase - Avaliação das Peças do Procedimento (A preencher na abertura do procedimento) (6)</div>
                                     <div class="panel-body row">
-
                                         <div class="col-sm-6">
                                             <such-textarea rows="5" value="{{data.avaliacaoPecasComentario}}" id="avaliacaoPecasComentario" name="avaliacaoPecasComentario" label="Comentário"> </such-textarea>
                                         </div>
                                         <div class="clearfix"></div>
-
                                         <div class="break_clear">
                                             <div class="col-sm-6">
                                                 <div class="row">
@@ -1780,7 +1639,6 @@
                                                     <div class="col-sm-4">
                                                         <vaadin-text-field value="{{data.avaliacaoPecasGabineteJuridico}}" id="avaliacaoPecasGabineteJuridico" name="avaliacaoPecasGabineteJuridico"></vaadin-text-field>
                                                     </div>
-
                                                     <div class="col-sm-8">
                                                         <vaadin-text-field value="{{data.avaliacaoPecasGabineteJuridico2}}" id="avaliacaoPecasGabineteJuridico2" name="avaliacaoPecasGabineteJuridico2"> </vaadin-text-field>
                                                     </div>
@@ -1795,18 +1653,15 @@
                             </div>
                             <div class="clearfix"></div>
                         </div>
-
                         <div class="break_clear row">
                             <div class="col-sm-12">
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">2ª Fase - Avaliação da minuta do Contrato (A preencher Após adjudicação)</div>
+                                    <div class="panel-heading">2ª Fase - Avaliação da minuta do Contrato (A preencher Após adjudicação) (14)</div>
                                     <div class="panel-body row">
-
                                         <div class="col-sm-6">
                                             <such-textarea rows="5" value="{{data.minutaComentario}}" id="minutaComentario" name="minutaComentario" label="Comentário"> </such-textarea>
                                         </div>
                                         <div class="clearfix"></div>
-
                                         <div class="break_clear">
                                             <div class="col-sm-6">
                                                 <div class="row">
@@ -1816,7 +1671,6 @@
                                                     <div class="col-sm-4">
                                                         <vaadin-text-field value="{{data.minutaGabineteJuridico}}" id="minutaGabineteJuridico" name="minutaGabineteJuridico"></vaadin-text-field>
                                                     </div>
-
                                                     <div class="col-sm-8">
                                                         <vaadin-text-field value="{{data.minutaGabineteJuridico2}}" id="minutaGabineteJuridico2" name="minutaGabineteJuridico2"> </vaadin-text-field>
                                                     </div>
@@ -1831,17 +1685,13 @@
                             </div>
                             <div class="clearfix"></div>
                         </div>
-
-
-
-
                         <div class="mb-15">&nbsp;</div>
                     </div>
 
                     <!-- Tab Valores Adjudicação-->
                     <div class="panel panel-default">
                         <paper-collapse-group>
-                            <paper-collapse-item header="A Preencher pelas Compras" opened>
+                            <paper-collapse-item header="A Preencher pelas Compras (15)" opened>
                                 <div class="col-xs-12">
                                     <div class="break_clear row">
                                         <div class="col-sm-12">
@@ -1858,12 +1708,9 @@
                                                     </paper-tooltip>
                                                     <vaadin-text-field value="{{data.valorAdjudicacaoAnterior}}" type="number" id="valorAdjudicacaoAnterior" name="valorAdjudicacaoAnterior" label="Valor da adjudicação anterior"></vaadin-text-field>
                                                 </div>
-
                                                 <div class="col-sm-3">
                                                     <vaadin-text-field value="{{data.valorAdjudicacao}}" type="number" id="valorAdjudicacao" name="valorAdjudicacao" label="Valor da Adjudicação"></vaadin-text-field>
                                                 </div>
-
-
                                                 <div class="col-sm-3">
                                                     <vaadin-text-field value="{{data.diferenca}}" type="number" id="diferenca" name="diferenca" label="Diferença (€)"></vaadin-text-field>
                                                 </div>
@@ -1873,7 +1720,6 @@
                                                     <vaadin-text-field value="{{data.diferencaPercent}}" type="number" id="diferencaPercent" name="diferencaPercent" label="Diferença (%)"></vaadin-text-field>
                                                 </div>
                                             </div>
-
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
                                                     <such-textarea rows="5" value="{{data.valorComentario}}" id="valorComentario" name="valorComentario" label="Comentário"> </such-textarea>
@@ -1905,13 +1751,11 @@
                                         </div>
                                         <div class="clearfix"></div>
                                     </div>
-
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
-
-                            <paper-collapse-item header="A Preencher pela Área - Pedido de Adjudicação">
+                            <paper-collapse-item header="A Preencher pela Área - Pedido de Adjudicação (16)">
                                 <div class="col-xs-12">
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
@@ -1919,20 +1763,16 @@
                                         </div>
                                     </div>
                                     <div class="row break_clear">
-
                                         <div class="col-sm-3">
                                             <vaadin-checkbox checked="{{data.autorizacaoAdjudicacao}}" required>Autorizacao Adjudicação</vaadin-checkbox>
                                         </div>
-
                                         <div class="col-sm-3">
                                             <vaadin-checkbox checked="{{data.naoAdjudicacaoEncerramento}}" required>Não Adjudicação e Encerramento</vaadin-checkbox>
                                         </div>
-
                                         <div class="col-sm-3">
                                             <vaadin-checkbox checked="{{data.naoAdjudicacaoSuspensao}}" required>Não Adjudicação e Suspensão</vaadin-checkbox>
                                         </div>
                                     </div>
-
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <div class="row">
@@ -1942,7 +1782,6 @@
                                                 <div class="col-sm-4">
                                                     <vaadin-text-field value="{{data.responsavelEnvioParaCA}}" id="responsavelEnvioParaCA" name="responsavelEnvioParaCA"></vaadin-text-field>
                                                 </div>
-
                                                 <div class="col-sm-8">
                                                     <vaadin-text-field value="{{data.responsavelEnvioParaCA2}}" id="responsavelEnvioParaCA2" name="responsavelEnvioParaCA2"> </vaadin-text-field>
                                                 </div>
@@ -1951,29 +1790,24 @@
                                         <div class="col-sm-3">
                                             <vaadin-date-picker value="{{data.responsavelEnvioParaCAData}}" id="responsavelEnvioParaCAData" name="responsavelEnvioParaCAData" label="Data"></vaadin-date-picker>
                                         </div>
-
                                     </div>
-
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
                         </paper-collapse-group>
-
                     </div>
 
                     <!-- Tab CA-->
                     <div class="panel panel-default">
                         <paper-collapse-group>
-                            <paper-collapse-item header="Autorizar Imobilizado" opened>
+                            <paper-collapse-item header="Autorizar Imobilizado (3)" opened>
                                 <div class="col-xs-12">
-
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <such-textarea rows="5" value="{{data.autorizarImobilizadoComentario}}" id="autorizarImobilizadoComentario" name="autorizarImobilizadoComentario" label="Comentário"> </such-textarea>
                                         </div>
                                     </div>
-
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <div class="row">
@@ -2004,16 +1838,13 @@
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
-
-                            <paper-collapse-item header="1º Fase - Autorização de abertura do Procedimento">
+                            <paper-collapse-item header="1º Fase - Autorização de abertura do Procedimento (8)">
                                 <div class="col-xs-12">
-
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <such-textarea rows="5" value="{{data.aberturaProcedimentoComentario}}" id="aberturaProcedimentoComentario" name="aberturaProcedimentoComentario" label="Comentário"> </such-textarea>
                                         </div>
                                     </div>
-
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <div class="row">
@@ -2023,7 +1854,6 @@
                                                 <div class="col-sm-4">
                                                     <vaadin-text-field value="{{data.aberturaProcedimentoCA}}" id="aberturaProcedimentoCA" name="aberturaProcedimentoCA"></vaadin-text-field>
                                                 </div>
-
                                                 <div class="col-sm-8">
                                                     <vaadin-text-field value="{{data.aberturaProcedimentoCA2}}" id="aberturaProcedimentoCA2" name="aberturaProcedimentoCA2"> </vaadin-text-field>
                                                 </div>
@@ -2036,8 +1866,6 @@
                                             <vaadin-date-picker value="{{data.aberturaProcedimentoDataRatificacao}}" id="aberturaProcedimentoDataRatificacao" name="aberturaProcedimentoDataRatificacao" label="Data Ratificação"></vaadin-date-picker>
                                         </div>
                                     </div>
-
-
                                     <div class="row break_clear">
                                         <div class="col-sm-12">
                                             <vaadin-checkbox checked="{{data.aberturaProcedimentoRatificar}}">Ratificar CA</vaadin-checkbox>
@@ -2045,7 +1873,6 @@
 
                                         </div>
                                     </div>
-
                                     <div class="row break_clear">
                                         <div class="col-sm-12">
                                             <paper-button raised id="btnAberturaProcedimentoConfirm" class="btn--confirm" on-tap="_confirmAberturaProcedimento"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Autorizar</paper-button>
@@ -2057,16 +1884,13 @@
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
-
-                            <paper-collapse-item header="2ª Fase - Autorização de Adjudicação">
+                            <paper-collapse-item header="2ª Fase - Autorização de Adjudicação (17)">
                                 <div class="col-xs-12">
-
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <such-textarea rows="5" value="{{data.autorizacaoAdjudicacaoComentario}}" id="autorizacaoAdjudicacaoComentario" name="autorizacaoAdjudicacaoComentario" label="Comentário"> </such-textarea>
                                         </div>
                                     </div>
-
                                     <div class="row break_clear">
                                         <div class="col-sm-12">
                                             <vaadin-checkbox checked="{{data.autorizacaoAdjudicacao}}">Autorização Adjudicação.</vaadin-checkbox>
@@ -2075,7 +1899,6 @@
 
                                         </div>
                                     </div>
-
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <div class="row">
@@ -2098,15 +1921,12 @@
                                             <vaadin-date-picker value="{{data.autorizacaoAdjudicacaoDataRatificacao}}" id="autorizacaoAdjudicacaoDataRatificacao" name="autorizacaoAdjudicacaoDataRatificacao" label="Data Ratificação"></vaadin-date-picker>
                                         </div>
                                     </div>
-
-
                                     <div class="row break_clear">
                                         <div class="col-sm-12">
                                             <vaadin-checkbox checked="{{data.autorizacaoAdjudicacaoRatificar}}">Ratificar CA</vaadin-checkbox>
                                             <vaadin-checkbox checked="{{data.autorizacaoAdjudicacaoCritico}}">Critico</vaadin-checkbox>
                                         </div>
                                     </div>
-
                                     <div class="row break_clear">
                                         <div class="col-sm-12">
                                             <paper-button raised id="btnAutorizacaoAdjudicacaoConfirm" class="btn--confirm" on-tap="_confirmAutorizacaoAdjudicacao"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Autorizar</paper-button>
@@ -2124,10 +1944,9 @@
                     <!-- Tab Adjudicação -->
                     <div>
                         <div class="row break_clear">
-
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Notificação Adjudicação</div>
+                                    <div class="panel-heading">Notificação Adjudicação (18)</div>
                                     <div class="panel-body">
                                         <div class="">
                                             <div class="row">
@@ -2143,13 +1962,11 @@
                                                     <vaadin-text-field value="{{data.adjudicacaoNotificacaoPrazo}}" id="adjudicacaoNotificacaoPrazo" name="adjudicacaoNotificacaoPrazo" label="Prazo Concedido"> </vaadin-text-field>
                                                 </div>
                                             </div>
-
                                             <div class="row break_clear">
 
                                                 <div class="col-xs-6">
                                                     <vaadin-text-field value="{{data.adjudicacaoNotificacaoUtilizador}}" id="adjudicacaoNotificacaoUtilizador" name="adjudicacaoNotificacaoUtilizador" label="Utilizador"> </vaadin-text-field>
                                                 </div>
-
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-12">
@@ -2160,7 +1977,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">Acordos c/ fornecedores</div>
@@ -2183,7 +1999,6 @@
                                                         </template>
                                                     </vaadin-combo-box>
                                                 </div>
-
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-12">
@@ -2224,7 +2039,6 @@
                                                         </template>
                                                     </vaadin-combo-box>
                                                 </div>
-
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-12">
@@ -2273,7 +2087,6 @@
                                                         </template>
                                                     </vaadin-combo-box>
                                                 </div>
-
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-12">
@@ -2283,11 +2096,9 @@
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
                                                     <vaadin-date-picker value="{{data.adjudicacaoEncomendasData}}" id="adjudicacaoEncomendasData" name="adjudicacaoEncomendasData" label="Data Rec. Esperada"> </vaadin-date-picker>
-
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
-
                                                 <div class="col-sm-12">
                                                     <br />
                                                     <paper-button raised id="btnNovaEncomendaAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novaEncomendaAdjudicacaoAcordos">Criar Encomenda</paper-button>
@@ -2297,7 +2108,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
@@ -2316,15 +2126,12 @@
             </div>
         </div>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
-
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
-
     </template>
 
     <script>
         document.addEventListener('WebComponentsReady', function () {
-            ////debugger;;
             Polymer({
                 is: 'x-procedimentodetails',
                 properties: {
@@ -2346,7 +2153,6 @@
                         type: Number,
                         value: 0
                     },
-
                     unidadeProdutivaSelected: {
                         type: Number,
                         value: 0
@@ -2427,7 +2233,6 @@
                         type: Boolean,
                         value: false
                     },
-
                     __comentarioArea: {
                         type: String,
                         notify: true,
@@ -2439,17 +2244,12 @@
                         observer: '_setProductData'
                     },
                 },
-
                 _testFunction: function () {
 
                 },
-
-
                 ready: function () {
-                    //debugger;;
                     this.$.ajax_userpermissions.body = this.data;
                     this.$.ajax_userpermissions.generateRequest();
-                    //debugger;;
 
                     //NR 20180223
                     this.$.precoMaisBaixo.addEventListener('value-changed', function () {
@@ -2470,12 +2270,10 @@
                         //}
                     });;
                 },
-
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
-
                 _showMessage: function (message) {
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
@@ -2490,7 +2288,6 @@
                     e.target.value = e.target.value.replace(",", ".");
                 },
 
-
                 //NR 20180226
                 _setProductData: function (e) {
                     var item = this.CBItems.find(x => x.code == e);
@@ -2500,10 +2297,7 @@
                         //this.$._linhaCustoUnitario.value = item.lastCostDirect;
                     }
                 },
-
                 _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
-                    debugger;;
-
                     bootbox.confirm({
                         message: _message,
                         buttons: {
@@ -2525,8 +2319,6 @@
                         }
                     });
                 },
-
-
                 _validateData: function () {
                     ////debugger;
                     if (false) {
@@ -3039,6 +2831,103 @@
                     }
                 },
 
+                //NR 20180301
+                _enviarParaFinanceiros: function () {
+                    if (this.data.estado < 4 || this.estado > 6) {
+                        this._openToast('Neste Estado, não pode Enviar à Área Financeira!');
+                        return;
+                    }
+
+                    if (this.data.tipo = 0) {
+                        this._openToast('Antes de prosseguir, tem que definir o tipo de procedimento!');
+                        return;
+                    }
+
+                    if (this.data.nomeProcesso = "") {
+                        this._openToast('Antes de prosseguir, tem que definir o Nome do procedimento!');
+                        return;
+                    }
+
+                    var ajax_request = this.$.ajax_enviarParaFinanceiros;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o Envio à Área Financeira?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_enviarParaFinanceiros.body = JSON.stringify( this.data );
+
+                },
+                _enviarParaFinanceirosResponse: function (e) {
+                    debugger;
+                    if (this.EnviarParaFinanceiros.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " enviado para Financeira!");
+                        setTimeout(
+                            function () {
+                                //
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.EnviarParaFinanceiros.eMessage);
+                    }
+                },
+
+                //NR 20180301
+                _enviarParaJuridicos: function () {
+                    if (this.data.estado < 4 || this.estado > 6) {
+                        this._openToast('Neste Estado, não pode Enviar à Área Jurídica!');
+                        return;
+                    }
+
+                    if (this.data.tipo = 0) {
+                        this._openToast('Antes de prosseguir, tem que definir o tipo de procedimento!');
+                        return;
+                    }
+
+                    if (this.data.nomeProcesso = "") {
+                        this._openToast('Antes de prosseguir, tem que definir o Nome do procedimento!');
+                        return;
+                    }
+
+
+                    var ajax_request = this.$.ajax_enviarParaJuridicos;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o Envio à Área Juridica?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_enviarParaJuridicos.body = JSON.stringify(this.data);
+                },
+                _enviarParaJuridicosResponse: function (e) {
+                    debugger;
+                    if (this.EnviarParaJuridicos.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " enviado para Juridicos!");
+                        setTimeout(
+                            function () {
+                                //
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.EnviarParaJuridicos.eMessage);
+                    }
+                    
+                },
+
 
                 // Imobilizado return to area
                 _imobReturnToArea: function () {
@@ -3117,7 +3006,31 @@
                     _self.$._linhaCustoUnitario.disabled = (data.estado != 0);
                     _self.$.tabLinhaProdutos.disabled = (data.estado != 0);
 
-                    
+
+                    //NR 20180301
+                    _self.$.lblresponsavelFundamentoCompras.hidden = (data.estado == 4);
+                    _self.$.responsavelFundamentoCompras.hidden = (data.estado == 4);
+                    _self.$.nomeResponsavelFundamentoCompras.hidden = (data.estado == 4);
+                    _self.$.fundamentoComprasDataChecklist.hidden = (data.estado == 4);
+                    _self.$.emailDestinoCa.hidden = (data.estado == 4);
+
+                    _self.$.criterioEscolhaProcedimento.disabled = (data.estado != 4);
+                    _self.$.descEscolhaProcedimento.disabled = (data.estado != 4);
+                    _self.$.juri.disabled = (data.estado != 4);
+                    _self.$.nomeProcesso.disabled = (data.estado != 4);
+                    _self.$.objetoDoContrato.disabled = (data.estado != 4);
+                    _self.$.condicoesDePagamento.disabled = (data.estado != 4);
+                    _self.$.gestorProcesso.disabled = (data.estado != 4);
+                    _self.$.comentarioFundamentoCompras.disabled = (data.estado != 4);
+                    _self.$.responsavelFundamentoCompras.disabled = (data.estado != 4);
+                    _self.$.nomeResponsavelFundamentoCompras.disabled = (data.estado != 4);
+                    _self.$.fundamentoComprasDataChecklist.disabled = (data.estado != 4);
+                    _self.$.emailDestinoCa.disabled = (data.estado != 4);
+
+                    if (data.estado != 4) {
+                        $(_self.$.fundamentoComprasDataChecklist).addClass('disabled');
+                        $(_self.$.actionButtonCompras).addClass('disabled');
+                    }
 
                     // 1. Procedimento status != 0.e
 
