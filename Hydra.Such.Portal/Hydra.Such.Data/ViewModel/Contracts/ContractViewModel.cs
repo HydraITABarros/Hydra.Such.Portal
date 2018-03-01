@@ -113,4 +113,10 @@ namespace Hydra.Such.Data.ViewModel.Contracts
 
         public int? ActionCode { get; set; }
     }
+
+    public class UpdateContractRequest
+    {
+        public ContractViewModel Contract;
+        public bool PartialUpdateOnly;
+    }
 }
