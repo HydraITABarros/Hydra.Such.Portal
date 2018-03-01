@@ -648,6 +648,143 @@ namespace Hydra.Such.Portal.Controllers
             return Json("");
         }
 
+        [HttpPost]
+        public JsonResult ValidarDataHoraInicio_DataHoraFim([FromBody] FolhaDeHorasViewModel data)
+        {
+            int result = 0;
+            try
+            {
+                DateTime FH_DataHoraInicio = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
+                DateTime FH_DataHoraFim = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
+
+                if (result == 0)
+                {
+                    if (FH_DataHoraFim < FH_DataHoraInicio)
+                        result = 1;
+                    if (FH_DataHoraInicio > DateTime.Now)
+                        result = 2;
+                    if (FH_DataHoraFim > DateTime.Now)
+                        result = 3;
+                }
+
+                //PERCURSOS
+                //result = 0;
+                if (result == 0)
+                {
+                    List<LinhasFolhaHorasViewModel> PERCURSOS = DBLinhasFolhaHoras.GetAllByPercursoToList(data.FolhaDeHorasNo);
+                    if (PERCURSOS.Count() > 0)
+                    {
+                        PERCURSOS.ForEach(percurso =>
+                        {
+                            if (result == 0)
+                            {
+                                if (percurso.DataDespesa < FH_DataHoraInicio)
+                                    result = 4;
+                                if (percurso.DataDespesa > FH_DataHoraFim)
+                                    result = 5;
+                            }
+                        });
+                    }
+                }
+
+                //AJUDAS
+                //result = 0;
+                if (result == 0)
+                {
+                    List<LinhasFolhaHorasViewModel> AJUDAS = DBLinhasFolhaHoras.GetAllByAjudaToList(data.FolhaDeHorasNo);
+                    if (AJUDAS.Count() > 0)
+                    {
+                        AJUDAS.ForEach(ajuda =>
+                        {
+                            if (result == 0)
+                            {
+                                if (ajuda.DataDespesa < FH_DataHoraInicio)
+                                    result = 6;
+                                if (ajuda.DataDespesa > FH_DataHoraFim)
+                                    result = 7;
+                            }
+                        });
+                    }
+                }
+
+                //MAODEOBRAS
+                //result = 0;
+                if (result == 0)
+                {
+                    List<MãoDeObraFolhaDeHoras> MAODEOBRAS = DBMaoDeObraFolhaDeHoras.GetByFolhaHoraNo(data.FolhaDeHorasNo);
+                    if (MAODEOBRAS.Count() > 0)
+                    {
+                        DateTime maodeobraInicio;
+                        DateTime maodeobraFim;
+                        MAODEOBRAS.ForEach(maodeobra =>
+                        {
+                            if (result == 0)
+                            {
+                                maodeobraInicio = DateTime.Parse(string.Concat(Convert.ToDateTime(maodeobra.Date).ToShortDateString(), " ", maodeobra.HoraInício.Value.ToString()));
+                                maodeobraFim = DateTime.Parse(string.Concat(Convert.ToDateTime(maodeobra.Date).ToShortDateString(), " ", maodeobra.HoraFim.Value.ToString()));
+
+                                if (maodeobraInicio < FH_DataHoraInicio)
+                                    result = 8;
+                                if (maodeobraInicio > FH_DataHoraFim)
+                                    result = 9;
+                                if (maodeobraFim < FH_DataHoraInicio)
+                                    result = 10;
+                                if (maodeobraFim > FH_DataHoraFim)
+                                    result = 11;
+                            }
+                        });
+                    }
+                }
+
+                //PRESENCAS
+                //result = 0;
+                if (result == 0)
+                {
+                    List<PresençasFolhaDeHoras> PRESENCAS = DBPresencasFolhaDeHoras.GetByFolhaHoraNo(data.FolhaDeHorasNo);
+                    if (PRESENCAS.Count() > 0)
+                    {
+                        DateTime presencaEntrada1;
+                        DateTime presencaSaida1;
+                        DateTime presencaEntrada2;
+                        DateTime presencaSaida2;
+                        PRESENCAS.ForEach(presenca =>
+                        {
+                            if (result == 0)
+                            {
+                                presencaEntrada1 = DateTime.Parse(string.Concat(presenca.Data.ToShortDateString(), " ", presenca.Hora1ªEntrada.ToString()));
+                                presencaSaida1 = DateTime.Parse(string.Concat(presenca.Data.ToShortDateString(), " ", presenca.Hora1ªSaída.ToString()));
+                                presencaEntrada2 = DateTime.Parse(string.Concat(presenca.Data.ToShortDateString(), " ", presenca.Hora2ªEntrada.ToString()));
+                                presencaSaida2 = DateTime.Parse(string.Concat(presenca.Data.ToShortDateString(), " ", presenca.Hora2ªSaída.ToString()));
+
+                                if (presencaEntrada1 < FH_DataHoraInicio)
+                                    result = 12;
+                                if (presencaEntrada1 > FH_DataHoraFim)
+                                    result = 13;
+                                if (presencaSaida1 < FH_DataHoraInicio)
+                                    result = 14;
+                                if (presencaSaida1 > FH_DataHoraFim)
+                                    result = 15;
+                                if (presencaEntrada2 < FH_DataHoraInicio)
+                                    result = 16;
+                                if (presencaEntrada2 > FH_DataHoraFim)
+                                    result = 17;
+                                if (presencaSaida2 < FH_DataHoraInicio)
+                                    result = 18;
+                                if (presencaSaida2 > FH_DataHoraFim)
+                                    result = 19;
+                            }
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result = 99;
+            }
+
+            return Json(result);
+        }
+
         //eReason = 1 -> Sucess
         //eReason = 2 -> Error creating Project on Databse 
         //eReason = 3 -> Error creating Project on NAV 
@@ -745,13 +882,25 @@ namespace Hydra.Such.Portal.Controllers
             int result = 1;
             try
             {
-                if (DBFolhasDeHoras.GetAll().Where(x =>
-                        x.NºFolhaDeHoras != data.FolhaDeHorasNo &&
-                        x.NºEmpregado == null ? "" == data.EmpregadoNo.ToLower() : x.NºEmpregado.ToLower() == data.EmpregadoNo.ToLower() && 
-                        DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)) >= x.DataHoraPartida &&
-                        DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)) <= x.DataHoraChegada).Count() > 1)
+                DateTime DataHoraInicio = Convert.ToDateTime(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
+                DateTime DataHoraFim = Convert.ToDateTime(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
+
+                List<FolhasDeHoras> FH = DBFolhasDeHoras.GetAll().ToList();
+                if (FH.Count() > 0)
                 {
-                    result = 0;
+                    FH.ForEach(x =>
+                    {
+                        if (result == 1)
+                        {
+                            if (x.NºFolhaDeHoras != null && x.NºEmpregado != null && x.DataHoraPartida != null && x.DataHoraChegada != null)
+                            {
+                                if (x.NºFolhaDeHoras != data.FolhaDeHorasNo && x.NºEmpregado == data.EmpregadoNo && DataHoraInicio >= x.DataHoraPartida && DataHoraFim <= x.DataHoraChegada)
+                                {
+                                    result = 0;
+                                }
+                            }
+                        }
+                    });
                 }
             }
             catch (Exception ex)
@@ -1580,15 +1729,19 @@ namespace Hydra.Such.Portal.Controllers
             int result = 0;
             try
             {
-                MãoDeObraFolhaDeHoras MaoDeObra = DBMaoDeObraFolhaDeHoras.GetByMaoDeObraNo(Convert.ToInt32(data.LinhaNo));
+                FolhasDeHoras FH = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
+                DateTime FHDataHoraInicio = Convert.ToDateTime(FH.DataHoraPartida);
+                DateTime FHDataHoraFIM = Convert.ToDateTime(FH.DataHoraChegada);
 
+                MãoDeObraFolhaDeHoras MaoDeObra = DBMaoDeObraFolhaDeHoras.GetByMaoDeObraNo(Convert.ToInt32(data.LinhaNo));
                 TimeSpan HoraInicio = TimeSpan.Parse(data.HoraInicio);
                 TimeSpan HoraFim = TimeSpan.Parse(data.HoraFim);
                 bool Almoco = Convert.ToBoolean(data.HorarioAlmoco);
                 bool Jantar = Convert.ToBoolean(data.HorarioJantar);
+                DateTime DataHoraInicio = Convert.ToDateTime(string.Concat(Convert.ToDateTime(data.Date).ToShortDateString(), " ", data.HoraInicio));
+                DateTime DataHoraFim = Convert.ToDateTime(string.Concat(Convert.ToDateTime(data.Date).ToShortDateString(), " ", data.HoraFim));
 
                 Configuração Configuracao = DBConfigurations.GetAll().Where(x => x.Id == 1).FirstOrDefault();
-
                 TimeSpan InicioHoraAlmoco = (TimeSpan)Configuracao.InicioHoraAlmoco;
                 TimeSpan FimHoraAlmoco = (TimeSpan)Configuracao.FimHoraAlmoco;
                 TimeSpan InicioHoraJantar = (TimeSpan)Configuracao.InicioHoraJantar;
@@ -1612,6 +1765,18 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (HoraInicio > HoraFim)
                     result = 5;
+
+                if (DataHoraInicio < FHDataHoraInicio)
+                    result = 6;
+
+                if (DataHoraInicio > FHDataHoraFIM)
+                    result = 7;
+
+                if (DataHoraFim < FHDataHoraInicio)
+                    result = 8;
+
+                if (DataHoraFim > FHDataHoraFIM)
+                    result = 9;
 
                 if (result == 0)
                 {
