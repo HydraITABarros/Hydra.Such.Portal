@@ -1289,20 +1289,24 @@ namespace Hydra.Such.Portal.Controllers
 
             if (showLevel == 1)
             {
-                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value == 4 || x.Estado.Value == 5 || x.Estado.Value == 9);
+                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value > 2);
             }
             else if (showLevel == 2)
             {
-                ContractsList.RemoveAll(x => !(x.Estado.HasValue && x.Estado.Value == 5) || x.Estado.Value == 9);
+                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value != 5);
+            }
+            else if (showLevel == 3)
+            {
+                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value != 4);
             }
             else if (showLevel == 4)
             {
-                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value != 9);
+                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value <= 2);
             }
-            else
-            {
-                ContractsList.RemoveAll(x => !(x.Estado.HasValue && x.Estado.Value == 4) || x.Estado.Value == 9);
-            }
+            //else
+            //{
+            //    ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value <= 2);
+            //}
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 

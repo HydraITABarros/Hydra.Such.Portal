@@ -183,6 +183,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/ValidarDataHoraInicio_DataHoraFim"
+                   last-response="{{validarDataHoraInicio_DataHoraFim}}"
+                   method="post"
+                   handle-as="json"
+                   id="validarDataHoraInicio_DataHoraFim_ajax"
+                   on-response="_validarDataHoraInicio_DataHoraFimResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/FolhasDeHoras/IntegrarEmRHFolhaDeHoras"
                    last-response="{{integrarEmRHFolhaDeHoras}}"
                    method="post"
@@ -430,15 +439,19 @@
                     <div class="row break_clear">
                         <div class="col-sm-3">
                             <vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>
+                            <!--<vaadin-date-picker label="Data Inicio" id="dataPartidaTexto" name="dataPartidaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataPartidaTexto}}"></vaadin-date-picker>-->
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" name="horaPartidaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>
+                            <!--<vaadin-text-field type="text" value="{{data.horaPartidaTexto}}" id="horaPartidaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Inicio"></vaadin-text-field>-->
                         </div>
                         <div class="col-sm-3">
                             <vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" on-blur="_validacaoDataPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>
+                            <!--<vaadin-date-picker label="Data Fim" id="dataChegadaTexto" name="dataChegadaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.dataChegadaTexto}}"></vaadin-date-picker>-->
                         </div>
                         <div class="col-sm-3">
-                            <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" name="horaChegadaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
+                            <vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" on-value-changed="_validacaoHoraPartidaChegada" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>
+                            <!--<vaadin-text-field type="text" value="{{data.horaChegadaTexto}}" id="horaChegadaTexto" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" label="Hora Fim"></vaadin-text-field>-->
                         </div>
                     </div>
                     <div class="row break_clear">
@@ -734,9 +747,9 @@
                                     <vaadin-date-picker id="ajudaDataDespesa" label="Data Despesa" on-blur="_AjudaDataValidar" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="10" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}"></vaadin-date-picker>
                                 </div>
                                 <div class="col-sm-2" style="text-align:right">
-                                    <vaadin-text-field id="ajudaJustificacao" label="Justificação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" maxlength="200" style="text-align:left;"></vaadin-text-field>
+                                    <vaadin-text-field id="ajudaJustificacao" label="Justificação" disabled="{{ !_permissions.update }}" style="text-align:left;"></vaadin-text-field>
                                 </div>
-                                <!--<template is="dom-if" if="{{ _permissions.create }}">-->
+                                  <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                                 <div class="col-sm-1 alignPoga">
                                     <paper-button id="btn_createAjuda" class="btnSave" raised on-tap="_createAjuda" disabled="{{ !_permissions.create }}">Criar</paper-button>
                                 </div>
@@ -874,9 +887,8 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
+                          <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
                         <vaadin-grid-column width="100px">
-                            he
                             <template class="header">
                             </template>
                             <template>
@@ -952,7 +964,7 @@
                                 <div class="col-sm-1 alignPoga">
                                     <vaadin-checkbox id="maoDeObraHorarioJantar" checked="{{chkJantar}}" disabled="{{ !_permissions.update }}">Jantar</vaadin-checkbox>
                                 </div>
-                                <!--<template is="dom-if" if="{{ _permissions.create }}">-->
+                                  <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                                 <div class="col-sm-1 alignPoga">
                                     <paper-button id="btn_createMaoDeObra" class="btnSave" raised on-tap="_createMaoDeObra" disabled="{{ !_permissions.create }}">Criar</paper-button>
                                 </div>
@@ -990,6 +1002,7 @@
                                 <vaadin-grid-filter path="projetoNo" />
                             </template>
                             <template>
+
                                 <!--<vaadin-text-field id="tabMaoDeObraProjetoNo" value="{{item.projetoNo}}" on-blur="_updateLinhaMaoDeObra" maxlength="200" disabled="true" style="text-align:left;"></vaadin-text-field>-->
                                 <vaadin-combo-box items="[[LFolhaDeHoraNavProjectNo]]" id="tabMaoDeObraProjetoNo" name="tabMaoDeObraProjetoNo" item-value-path="no" item-label-path="no" value="{{item.projetoNo}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
                                     <template>
@@ -1132,11 +1145,8 @@
                             </template>
                         </vaadin-grid-column>
 
-
-                        <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
+                          <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
                         <vaadin-grid-column width="100px">
-                            h=
-                            he
                             <template class="header">
                             </template>
                             <template>
@@ -1191,9 +1201,7 @@
                                     <vaadin-text-field id="presencaObservacoes" label="Observações" maxlength="200" disabled="{{ !_permissions.update }}" style="text-align:left;"></vaadin-text-field>
                                 </div>
 
-
-
-                                <!--<template is="dom-if" if="{{ _permissions.create }}">-->
+                                  <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                                 <div class="col-sm-1 alignPoga">
                                     <paper-button id="btn_createPresenca" class="btnSave" raised on-tap="_createPresenca" disabled="{{ !_permissions.create }}">Criar</paper-button>
                                 </div>
@@ -1275,9 +1283,7 @@
                             </template>
                         </vaadin-grid-column>
 
-
-
-                        <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
+                          <!--<template is="dom-if" if="{{ _permissions.delete }}">-->
                         <vaadin-grid-column width="100px">
                             <template class="header">
                             </template>
@@ -1472,12 +1478,6 @@
                         </div>
                     </div>
 
-
-
-
-
-
-
                       <!--<template is="dom-if" if="{{ _permissions.update }}">-->
                     <div class="col-sm-1 alignPoga">
                         <paper-button id="btn_updateFH2" class="btnSave" raised on-tap="_updateFH" disabled="{{ !_permissions.update }}">Gravar</paper-button>
@@ -1605,7 +1605,19 @@
                                                     if (this.$.codigoRegiao.validate() & this.$.codigoRegiao.value != "") {
                                                         if (this.$.codigoAreaFuncional.validate() & this.$.codigoAreaFuncional.value != "") {
                                                             if (this.$.codigoCentroResponsabilidade.validate() & this.$.codigoCentroResponsabilidade.value != "") {
-                                                                return true;
+                                                                if (this._validacaoDataPartidaChegada()) {
+                                                                    if (this._validacaoHoraPartidaChegada()) {
+                                                                        return true;
+                                                                    }
+                                                                    else {
+                                                                        this._showErrorMessage('O campo Data-Hora Início tem que ser inferior ou igual ao campo Data-Hora Fim.');
+                                                                        return false;
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    this._showErrorMessage('A data Início ou a data Fim no cabeçalho não está correta.');
+                                                                    return false;
+                                                                }
                                                             }
                                                             else {
                                                                 this._showErrorMessage("Falta preencher o campo Código Centro Respon..");
@@ -1798,6 +1810,7 @@
                 _updateFH: function () {
                     //debugger;
                     if (this._validateFolhaHoras()) {
+                        debugger;
                         if (this.$.tipoDeslocacao.value == 1) {
                             if (this.$.matricula.validate() & this.$.matricula.value != "") {
                                 this.$.page_updatefolhadehorasvalidacao_ajax.body = JSON.stringify(this.data);
@@ -1835,7 +1848,36 @@
                             this._showErrorMessage('O campo Data Fim tem que ser inferior ou igual á data hoje.');
                             return false;
                         }
+
+                        //this.$.validarDataHoraInicio_DataHoraFim_ajax.body = JSON.stringify(this.data);
+                        //this.$.validarDataHoraInicio_DataHoraFim_ajax.generateRequest();
+
+
                         return true;
+                    }
+                    return false;
+                },
+
+                _validacaoHoraPartidaChegada: function () {
+                    //debugger;
+                    if (this.$.dataPartidaTexto.value != "" & this.$.dataPartidaTexto.validate() &
+                        this.$.dataChegadaTexto.value != "" & this.$.dataChegadaTexto.validate()) {
+
+                        if (this.$.horaPartidaTexto.value != "" & this.$.horaPartidaTexto.validate() &
+                            this.$.horaChegadaTexto.value != "" & this.$.horaChegadaTexto.validate()) {
+
+                            var myDataPartida = new Date(this.$.dataPartidaTexto.value).toDateString();
+                            var myDataChegada = new Date(this.$.dataChegadaTexto.value).toDateString();
+
+                            var myDataHoraPartida = new Date(myDataPartida + ' ' + this.$.horaPartidaTexto.value);
+                            var myDataHoraChegada = new Date(myDataChegada + ' ' + this.$.horaChegadaTexto.value);
+
+                            if (myDataHoraPartida > myDataHoraChegada) {
+                                this._showErrorMessage('O campo Data-Hora Início tem que ser inferior ou igual ao campo Data-Hora Fim.');
+                                return false;
+                            }
+                            return true;
+                        }
                     }
                     return false;
                 },
@@ -2053,27 +2095,22 @@
                                         if (this.$.ajudaCustoUnitario.validate() & this.$.ajudaCustoUnitario.value != "") {
                                             if (this.$.ajudaPrecoUnitario.validate() & this.$.ajudaPrecoUnitario.value != "") {
                                                 if (this.$.ajudaDataDespesa.validate() & this.$.ajudaDataDespesa.value != "") {
-                                                    if (this.$.ajudaJustificacao.validate() & this.$.ajudaJustificacao.value != "") {
-                                                        if (this._AjudaDataValidar()) {
-                                                            this.$.page_createajuda_ajax.body = JSON.stringify({
-                                                                noFolhaHoras: this.$.folhaDeHorasNo.value,
-                                                                tipoCusto: parseInt(this.$.ajudaTipoCusto.value),
-                                                                codTipoCusto: this.$.ajudaCodigoTipoCusto.value,
-                                                                quantidade: parseFloat(this.$.ajudaQuantidade.value),
-                                                                custoUnitario: parseFloat(this.$.ajudaCustoUnitario.value),
-                                                                precoUnitario: parseFloat(this.$.ajudaPrecoUnitario.value),
-                                                                dataDespesa: this.$.ajudaDataDespesa.value,
-                                                                observacao: this.$.ajudaJustificacao.value
-                                                            });
-                                                            this.$.page_createajuda_ajax.generateRequest();
-                                                            this.$.tabAjuda.clearCache();
-                                                        }
-                                                        else {
-                                                            this._showErrorMessage('O campo Data Despesa tem que estar contido no período de tempo do Cabeçalho.');
-                                                        }
+                                                    if (this._AjudaDataValidar()) {
+                                                        this.$.page_createajuda_ajax.body = JSON.stringify({
+                                                            noFolhaHoras: this.$.folhaDeHorasNo.value,
+                                                            tipoCusto: parseInt(this.$.ajudaTipoCusto.value),
+                                                            codTipoCusto: this.$.ajudaCodigoTipoCusto.value,
+                                                            quantidade: parseFloat(this.$.ajudaQuantidade.value),
+                                                            custoUnitario: parseFloat(this.$.ajudaCustoUnitario.value),
+                                                            precoUnitario: parseFloat(this.$.ajudaPrecoUnitario.value),
+                                                            dataDespesa: this.$.ajudaDataDespesa.value,
+                                                            observacao: this.$.ajudaJustificacao.value
+                                                        });
+                                                        this.$.page_createajuda_ajax.generateRequest();
+                                                        this.$.tabAjuda.clearCache();
                                                     }
                                                     else {
-                                                        this._showErrorMessage('É obrigatório preencher o campo Justificação.');
+                                                        this._showErrorMessage('O campo Data Despesa tem que estar contido no período de tempo do Cabeçalho.');
                                                     }
                                                 }
                                                 else {
@@ -2857,7 +2894,7 @@
 
                 //FOLHA DE HORAS
                 _updatefolhadehorasvalidacaoResponse: function (e) {
-                    //debugger;
+                    debugger;
                     var ajax_request = this.$.page_updatefolhadehoras_ajax;
                     ajax_request.body = JSON.stringify(this.data);
 
@@ -2936,6 +2973,78 @@
                         //    function () {
                         //        window.location.replace("/");
                         //    }, 2500);
+                    }
+                },
+
+                _validarDataHoraInicio_DataHoraFimResponse: function (e) {
+                    debugger;
+                    if (this.validarDataHoraInicio_DataHoraFim == 0) {
+                        //this.$.page_databound_ajax.generateRequest();
+                        return true;
+                    }
+                    else {
+                        if (this.validarDataHoraInicio_DataHoraFim == 1) {
+                            this._showErrorMessage('O campo Data-Hora Fim não pode ser inferior ao campo Data-Hora Inicio no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 2) {
+                            this._showErrorMessage('O campo Data-Hora Inicio não pode ser superior á Data-Hora atual na cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 3) {
+                            this._showErrorMessage('O campo Data-Hora Fim não pode ser superior á Data-Hora atual no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 4) {
+                            this._showErrorMessage('Existe uma Data Viagem nos Percursos que é inferior á Data Início no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 5) {
+                            this._showErrorMessage('Existe uma Data Viagem nos Percursos que é superior á Data Fim no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 6) {
+                            this._showErrorMessage('Existe uma Data Despesa nas Ajudas de Custo que é inferior á Data Início no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 7) {
+                            this._showErrorMessage('Existe uma Data Despesa nas Ajudas de Custo que é superior á Data Fim no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 8) {
+                            this._showErrorMessage('Existe uma Data-Hora Início na Mão de Obra que é inferior á Data-Hora Início no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 9) {
+                            this._showErrorMessage('Existe uma Data-Hora Início na Mão de Obra que é superior á Data-Hora Fim no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 10) {
+                            this._showErrorMessage('Existe uma Data-Hora Fim na Mão de Obra que é inferior á Data-Hora Início no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 11) {
+                            this._showErrorMessage('Existe uma Data-Hora Fim na Mão de Obra que é superior á Data-Hora Fim no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 12) {
+                            this._showErrorMessage('Existe uma Data-Hora 1ª Entrada nas Presenças que é inferior á Data-Hora Início no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 13) {
+                            this._showErrorMessage('Existe uma Data-Hora 1ª Entrada nas Presenças que é superior á Data-Hora Fim no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 14) {
+                            this._showErrorMessage('Existe uma Data-Hora 1ª Saída nas Presenças que é inferior á Data-Hora Início no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 15) {
+                            this._showErrorMessage('Existe uma Data-Hora 1ª Saída nas Presenças que é superior á Data-Hora Fim no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 16) {
+                            this._showErrorMessage('Existe uma Data-Hora 2ª Entrada nas Presenças que é inferior á Data-Hora Início no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 17) {
+                            this._showErrorMessage('Existe uma Data-Hora 2ª Entrada nas Presenças que é superior á Data-Hora Fim no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 18) {
+                            this._showErrorMessage('Existe uma Data-Hora 2ª Saída nas Presenças que é inferior á Data-Hora Início no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 19) {
+                            this._showErrorMessage('Existe uma Data-Hora 2ª Saída nas Presenças que é superior á Data-Hora Fim no cabeçalho.');
+                        }
+                        if (this.validarDataHoraInicio_DataHoraFim == 99) {
+                            this._showErrorMessage('Ocorreu umerro.');
+                        }
+                        //this.$.page_databound_ajax.generateRequest();
+                        return false;
                     }
                 },
 
@@ -3273,6 +3382,18 @@
                         if (this.LinhaMaoDeObraUpdated == 5) {
                             this._showErrorMessage('A Hora de Início tem que ser inferior á Hora de Fim.');
                         }
+                        if (this.LinhaMaoDeObraUpdated == 6) {
+                            this._showErrorMessage('A Data-Hora de Início tem que ser superior ou igual á Data-Hora de Início do cabeçalho.');
+                        }
+                        if (this.LinhaMaoDeObraUpdated == 7) {
+                            this._showErrorMessage('A Data-Hora de Início tem que ser inferior ou igual á Data-Hora de Fim do cabeçalho.');
+                        }
+                        if (this.LinhaMaoDeObraUpdated == 8) {
+                            this._showErrorMessage('A Data-Hora de Fim tem que ser superior á Data-Hora de Início do cabeçalho.');
+                        }
+                        if (this.LinhaMaoDeObraUpdated == 9) {
+                            this._showErrorMessage('A Data-Hora de Fim tem que ser inferior ou igual á Data-Hora de Fim do cabeçalho.');
+                        }
                         if (this.LinhaMaoDeObraUpdated == 99) {
                             this._showErrorMessage('Ocorreu um erro ao actualizar a(s) Mão de Obra(s).');
                         }
@@ -3308,8 +3429,7 @@
                 _createPresencaResponse: function (e) {
                     //debugger;
                     if (this.PresencaCreated == 0) {
-                        this._showMessage('Adicionada Presença com sucesso.');
-                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Presença adicionada Presença com sucesso.');
 
                         this.$.presencaDataTexto.value = "";
                         this.$.presencaHora1Entrada.value = "";
@@ -3322,10 +3442,35 @@
                         if (this.PresencaCreated == 1) {
                             this._showErrorMessage('Não pode ter mais que uma presença para o mesmo dia.');
                         }
+                        if (this.PresencaCreated == 2) {
+                            this._showErrorMessage('A hora da 1ª Entrada tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.PresencaCreated == 3) {
+                            this._showErrorMessage('A hora da 1ª Saída tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.PresencaCreated == 4) {
+                            this._showErrorMessage('A hora da 2ª Entrada tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.PresencaCreated == 5) {
+                            this._showErrorMessage('A hora da 2ª Saída tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.PresencaCreated == 6) {
+                            this._showErrorMessage('A hora da 1ª Entrada não está correta em relação ás outras horas.');
+                        }
+                        if (this.PresencaCreated == 7) {
+                            this._showErrorMessage('A hora da 1ª Saída não está correta em relação ás outras horas.');
+                        }
+                        if (this.PresencaCreated == 8) {
+                            this._showErrorMessage('A hora da 2ª Entrada não está correta em relação ás outras horas.');
+                        }
+                        if (this.PresencaCreated == 9) {
+                            this._showErrorMessage('A hora da 2ª Saída não está correta em relação ás outras horas.');
+                        }
                         if (this.PresencaCreated == 99) {
-                            this._showErrorMessage('Ocorreu um erro.');
+                            this._showErrorMessage('Ocorreu um erro ao actualiazar a Presença.');
                         }
                     }
+                    this.$.page_databound_ajax.generateRequest();
                 },
 
                 _deletePresencaResponse: function (e) {
@@ -3358,11 +3503,40 @@
 
                 _updateLinhaPresencaResponse: function (e) {
                     //debugger;
-                    if (this.LinhaPresencaUpdated) {
+                    if (this.LinhaPresencaUpdated == 0) {
                         this._showMessage('Presença atualizada com sucesso.');
                     }
                     else {
-                        this._showErrorMessage('Ocorreu um erro ao actualiazar a Presença.');
+                        if (this.LinhaPresencaUpdated == 1) {
+                            this._showErrorMessage('Não foi possivel atualizar a Presença.');
+                        }
+                        if (this.LinhaPresencaUpdated == 2) {
+                            this._showErrorMessage('A hora da 1ª Entrada tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.LinhaPresencaUpdated == 3) {
+                            this._showErrorMessage('A hora da 1ª Saída tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.LinhaPresencaUpdated == 4) {
+                            this._showErrorMessage('A hora da 2ª Entrada tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.LinhaPresencaUpdated == 5) {
+                            this._showErrorMessage('A hora da 2ª Saída tem que ser superior à Hora de Inicio e inferior à Hora de Fim no Cabeçalho.');
+                        }
+                        if (this.LinhaPresencaUpdated == 6) {
+                            this._showErrorMessage('A hora da 1ª Entrada não está correta em relação ás outras horas.');
+                        }
+                        if (this.LinhaPresencaUpdated == 7) {
+                            this._showErrorMessage('A hora da 1ª Saída não está correta em relação ás outras horas.');
+                        }
+                        if (this.LinhaPresencaUpdated == 8) {
+                            this._showErrorMessage('A hora da 2ª Entrada não está correta em relação ás outras horas.');
+                        }
+                        if (this.LinhaPresencaUpdated == 9) {
+                            this._showErrorMessage('A hora da 2ª Saída não está correta em relação ás outras horas.');
+                        }
+                        if (this.LinhaPresencaUpdated == 99) {
+                            this._showErrorMessage('Ocorreu um erro ao actualiazar a Presença.');
+                        }
                     }
                     this.$.page_databound_ajax.generateRequest();
                 },
