@@ -333,18 +333,18 @@
 
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
-                    <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
-                    <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
-                    <paper-button class="tablinks" on-tap="_updateRelatedContract" id="parseParcialContract"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
-                    <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ !_showContractLines }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
-                    <div class="dropdownMenu">
-                        <paper-button class="tablinks" on-tap="_showStatusDropDown" id="statusMenu"><i class="fa fa-chevron-down" aria-hidden="true"></i> Alterar Estado</paper-button>
-                        <div id="StatusDropDownContent" class="dropdownMenu-content">
-                            <template is="dom-repeat" items="[[CBProposalsStatus]]">
-                                <paper-button class="dropbtnItem" on-tap="_changeStatus" style="width: 250px;">[[ item.value ]]</paper-button>
-                            </template>
-                        </div>
+                <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
+                <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
+                <paper-button class="tablinks" on-tap="_confirmContractUpdate" id="parseParcialContract" disabled="[[ !_permissions.update ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
+                <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ !_showContractLines }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
+                <div class="dropdownMenu">
+                    <paper-button class="tablinks" on-tap="_showStatusDropDown" id="statusMenu" hidden="[[ !_permissions.update ]]"><i class="fa fa-chevron-down" aria-hidden="true"></i> Alterar Estado</paper-button>
+                    <div id="StatusDropDownContent" class="dropdownMenu-content">
+                        <template is="dom-repeat" items="[[CBProposalsStatus]]">
+                            <paper-button class="dropbtnItem" on-tap="_changeStatus" style="width: 250px;">[[ item.value ]]</paper-button>
+                        </template>
                     </div>
+                </div>
             </div>
         </template>
         <div class="row">
@@ -1367,15 +1367,27 @@
             </div>
         </paper-dialog>
 
-        <!--<paper-dialog id="dlgUpdateContract" modal style="height:200px; width:300px">
-            <div>
-                <vaadin-date-picker label="Data de Envio" id="dtpCustomerShipmentDate" name="dtpCustomerShipmentDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+        <paper-dialog id="dlgUpdateContract" modal style="height:300px; width:500px">
+            <div style="height: 180px;">
+                Tem a certeza que pretende atualizar o contrato [[ data.relatedContract ]]?
+                <vaadin-combo-box items="[[ _contractUpdateType ]]" id="cmbContractUpdateType" item-value-path="value" item-label-path="description" label="Selecione o tipo de atualização" required error-message="Este campo é obrigatório">
+                    <template>
+                        <span><b>[[ item.description ]]</b></span>
+                    </template>
+                </vaadin-combo-box>
+                <template is="dom-if" if="[[ _mustSelectStatus ]]">
+                    <vaadin-combo-box items="[[ _statusForContractUpdate ]]" id="cmbStatusForContractUpdate" item-value-path="value" item-label-path="description" label="Selecione o estado da proposta" required error-message="Este campo é obrigatório">
+                        <template>
+                            <span><b>[[ item.description ]]</b></span>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
             </div>
             <div class="buttons">
-                <paper-button raised class="btnEdit" on-tap="_setProposalStatus">Guardar</paper-button>
-                <paper-button raised class="btnRemove" on-tap="_closeCustomerShipDateDlg">Cancelar</paper-button>
+                <paper-button raised class="btnEdit" on-tap="_updateRelatedContract">Sim</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeUpdateContractDlg">Não</paper-button>
             </div>
-        </paper-dialog>-->
+        </paper-dialog>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -1601,6 +1613,18 @@
                         type: Boolean,
                         value: false,
                     },
+                    _statusForContractUpdate: {
+                        type: Array,
+                        value: [{ value: 2, description: "Enviada" }, { value: 3, description: "Revista" }],
+                    },
+                    _contractUpdateType: {
+                        type: Array,
+                        value: [{ value: 1, description: "Atualização Parcial" }, { value: 2, description: "Atualização Integral" }],
+                    },
+                    _mustSelectStatus: {
+                        type: Boolean,
+                        value: true,
+                    }
                 },
                 listeners: {
                     'tap': 'onStatusChangeMenuTap'
@@ -1609,10 +1633,10 @@
                     'relatedContractChanged(data.relatedContract)'
                 ],
                 relatedContractChanged: function (relatedContract) {
-                    this._hasRelatedContract = relatedContract != null ? true : false;;
+                    this._hasRelatedContract = (relatedContract != null && relatedContract != "") ? true : false;
                 },
                 _showStatusDropDown: function () {
-                    var statusDropDown = this.$$('#StatusDropDownContent');;
+                    var statusDropDown = this.$$('#StatusDropDownContent');
                     if (statusDropDown != null) {
                         statusDropDown.classList.toggle("showMenuItems");
                         this._openStatusMenuFlag = 1;
@@ -1786,6 +1810,7 @@
                         hidden = items.indexOf(this.data.status) > -1 ? false : true;
                     this.$.txtArchiveReason.hidden = hidden;
                 },
+
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
@@ -2341,38 +2366,56 @@
                     }
                 },
 
+
+                _closeUpdateContractDlg: function (e) {
+                    var cmbStatus = this.$$('#cmbStatusForContractUpdate');
+                    if (cmbStatus != null)
+                        cmbStatus.value = "";
+
+                    var cmbType = this.$$('#cmbContractUpdateType');
+                    if (cmbType != null)
+                        cmbType.value = "";
+
+                    this.$.dlgUpdateContract.close();
+                },
+                _confirmContractUpdate: function () {
+                    if (this.data.relatedContract == null || this.data.relatedContract == "") {
+                        this._openToastError("Esta proposta ainda não foi convertida para contrato.");
+                        return false;
+                    }
+                    if (this.data.dueDate == null || this.data.dueDate == "") {
+                        this._openToastError("Selecione a Data de Expiração Prevista.");
+                        return false;
+                    }
+                    this._mustSelectStatus = this.data.status == 1;
+                    this.$.dlgUpdateContract.open();
+                },
+
                 //Update Contract
                 _updateRelatedContract: function (param) {
-
-                    
-
-                    if (param != null) {
-                        if (this.data.relatedContract != "" && this.data.relatedContract != undefined) {
-                            var _dataContract = this.data;
-                            var ajax_request = this.$.page_databound_ajax;
-                            bootbox.confirm({
-                                message: "Tem a certeza que pretende atualizar o contrato " + this.data.relatedContract + "?",
-                                buttons: {
-                                    confirm: {
-                                        label: 'Sim',
-                                        className: 'btn-success'
-                                    },
-                                    cancel: {
-                                        label: 'Não',
-                                        className: 'btn-danger'
-                                    }
-                                },
-                                callback: function (result) {
-                                    if (result) {
-                                        ajax_request.url = "/Contratos/UpdateProposalContract";
-                                        ajax_request.body = JSON.stringify(_dataContract);
-                                        ajax_request.generateRequest();
-                                    }
-                                }
-                            });
-                        } else {
-                            this._openToastError("Esta proposta ainda não foi convertida para contrato.");
+                    var cmbStatus = this.$$('#cmbStatusForContractUpdate');
+                    if (this._mustSelectStatus) {
+                        if (cmbStatus != null) {
+                            this.data.status = cmbStatus.value;
                         }
+                    }                    
+                    var cmbType = this.$$('#cmbContractUpdateType');
+                    if (cmbType != null) {
+                        var isPartialUpdate = cmbType.value == 1;
+
+                        this.$.dlgUpdateContract.close();
+
+                        cmbType.value = "";
+                        if (this._mustSelectStatus) {
+                            cmbStatus.value = "";
+                        }
+                        
+                        this.$.page_databound_ajax.url = "/Contratos/UpdateProposalContract";
+                        this.$.page_databound_ajax.body = JSON.stringify({ "proposal": this.data, "partialUpdate": isPartialUpdate});
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._openToastError("Não foi possivel atualizar o contrato.");
                     }
                 },
                 _responseUpdateToContract: function (e) {
