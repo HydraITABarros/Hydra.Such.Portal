@@ -680,117 +680,175 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
-        [HttpPost]
-        public JsonResult UpdateProposalContract([FromBody] ContractViewModel data)
-        {
-
-            if (data != null)
-            {
-                Contratos cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
-
-                if (cContract != null)
-                {
-                    try
-                    {
-                        
-                        //Create new contract and update old
-                        cContract.UtilizadorModificação = User.Identity.Name;
-                        cContract.Arquivado = true;
-                        DBContracts.Update(cContract);
-
-                        cContract.NºVersão = cContract.NºVersão + 1;
-                        cContract.UtilizadorCriação = User.Identity.Name;
-                        cContract.UtilizadorModificação = "";
-                        if (cContract.TipoContrato == 1)
-                        {
-                            cContract.NºProposta = "";
-                        }
-                        else if (cContract.TipoContrato == 2)
-                        {
-                            cContract.NºContrato = "";
-                        }
-
-                        cContract.DataHoraModificação = null;
-                        cContract.Arquivado = false;
-                        DBContracts.Create(cContract);
-
-                        //Duplicate Contract Lines
-                        List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContactNo, data.VersionNo);
-                        ContractLines.RemoveAll(x => !x.CriaContrato.HasValue || !x.CriaContrato.Value);
-                        ContractLines.ForEach(x =>
-                        {
-                            x.NºVersão = cContract.NºVersão;
-                            DBContractLines.Create(x);
-                        });
-
-                        data.VersionNo = cContract.NºVersão;
-                        data.eReasonCode = 1;
-                        data.eMessage = "Contrato atualizado com sucesso.";
-                        return Json(data);
-                    }
-                    catch (Exception)
-                    {
-                        data.eReasonCode = 2;
-                        data.eMessage = "Ocorreu um erro ao atualizar o contrato.";
-                    }
-                }
-            }
-            else
-            {
-                data.eReasonCode = 2;
-                data.eMessage = "Ocorreu um erro ao atualizar o contrato.";
-            }
-            return Json(data);
-        }
-
-        [HttpPost]
-        //public JsonResult UpdateProposalContract1([FromBody] ContractViewModel proposal)
+        //[HttpPost]
+        //public JsonResult UpdateProposalContract([FromBody] ContractViewModel data)
         //{
 
-        //    if (proposal != null)
+        //    if (data != null)
         //    {
-        //        Contratos contract = DBContracts.GetByIdLastVersion(proposal.RelatedContract);
+        //        Contratos cContract = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
 
-        //        if (contract != null)
+        //        if (cContract != null)
         //        {
         //            try
         //            {
-        //                ContractViewModel tmpContract = proposal;
-        //                tmpContract.ContractType = contract.TipoContrato;
-        //                tmpContract.ContractNo = contract.NºContrato;
-        //                tmpContract.UpdateUser = User.Identity.Name;
 
-        //                List<LinhasContratos> proposalLines = DBContractLines.GetAllByActiveContract(proposal.ContractNo, proposal.VersionNo);
-        //                List<LinhasContratos> contractLines = DBContractLines.GetAllByActiveContract(contract.NºContrato, contract.NºVersão);
+        //                //Create new contract and update old
+        //                cContract.UtilizadorModificação = User.Identity.Name;
+        //                cContract.Arquivado = true;
+        //                DBContracts.Update(cContract);
 
-        //                if (DBContractLines.DeleteAllFromContract(proposal.RelatedContract))
+        //                cContract.NºVersão = cContract.NºVersão + 1;
+        //                cContract.UtilizadorCriação = User.Identity.Name;
+        //                cContract.UtilizadorModificação = "";
+        //                if (cContract.TipoContrato == 1)
         //                {
-        //                    proposalLines.ForEach(x =>
-        //                    {
-        //                        x.TipoContrato = contract.TipoContrato;
-        //                        x.NºContrato = contract.NºContrato;
-        //                    });
-        //                    DBContractLines.Create(proposalLines);
+        //                    cContract.NºProposta = "";
         //                }
-                        
-        //                proposal.eReasonCode = 1;
-        //                proposal.eMessage = "Contrato atualizado com sucesso.";
-        //                return Json(proposal);
+        //                else if (cContract.TipoContrato == 2)
+        //                {
+        //                    cContract.NºContrato = "";
+        //                }
+
+        //                cContract.DataHoraModificação = null;
+        //                cContract.Arquivado = false;
+        //                DBContracts.Create(cContract);
+
+        //                //Duplicate Contract Lines
+        //                List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContactNo, data.VersionNo);
+        //                ContractLines.RemoveAll(x => !x.CriaContrato.HasValue || !x.CriaContrato.Value);
+        //                ContractLines.ForEach(x =>
+        //                {
+        //                    x.NºVersão = cContract.NºVersão;
+        //                    DBContractLines.Create(x);
+        //                });
+
+        //                data.VersionNo = cContract.NºVersão;
+        //                data.eReasonCode = 1;
+        //                data.eMessage = "Contrato atualizado com sucesso.";
+        //                return Json(data);
         //            }
         //            catch (Exception)
         //            {
-        //                proposal.eReasonCode = 2;
-        //                proposal.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+        //                data.eReasonCode = 2;
+        //                data.eMessage = "Ocorreu um erro ao atualizar o contrato.";
         //            }
         //        }
         //    }
         //    else
         //    {
-        //        proposal.eReasonCode = 2;
-        //        proposal.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+        //        data.eReasonCode = 2;
+        //        data.eMessage = "Ocorreu um erro ao atualizar o contrato.";
         //    }
-        //    return Json(proposal);
+        //    return Json(data);
         //}
+
+        [HttpPost]
+        public JsonResult UpdateProposalContract([FromBody] JObject requestParams)
+        {
+            ContractViewModel proposal = null;
+            bool partialUpdate = false;
+            if (requestParams != null)
+            {
+                proposal = requestParams["proposal"].ToObject<ContractViewModel>();
+                partialUpdate = requestParams["partialUpdate"].ToObject<bool>();
+            }
+
+            if (proposal != null)
+            {
+                Contratos contract = DBContracts.GetByIdLastVersion(proposal.RelatedContract);
+
+                if (contract != null)
+                {
+                    try
+                    {
+                        /*
+                        •	Se o estado da proposta estiver aberta, perguntar se quer mudar para Enviada ou para Revista (tem de mudar para um destes estados obrigatoriamente);
+                        •	Arquiva a proposta;
+                        •	Pergunta que linhas vai passar para o contrato, tal como faz no tornar em contrato parcial;
+                        •	Atualiza o contrato com os dados da proposta (as linhas do contrato atuais são eliminadas e criadas novamente com as linhas da proposta, passa apenas as linhas marcadas como sendo para passar);
+                        •	Muda o estado da proposta para Renovada se for total, ou para Parcialmente Aceite se for parcial (se selecionou todas as linhas ou não);
+                        */
+
+                        Contratos proposalToUpdate = DBContracts.GetByIdAndVersion(proposal.ContractNo, proposal.VersionNo);
+                        proposalToUpdate.Estado = proposal.Status;
+                        proposalToUpdate.DataExpiração = DateTime.Parse(proposal.DueDate);
+                        proposalToUpdate.UtilizadorModificação = User.Identity.Name;
+                        proposalToUpdate.Arquivado = true;
+                        proposalToUpdate = DBContracts.Update(proposalToUpdate);
+                        if (proposalToUpdate != null)
+                        {
+                            proposalToUpdate.NºVersão = proposal.VersionNo + 1;
+                            proposalToUpdate.UtilizadorCriação = User.Identity.Name;
+                            proposalToUpdate.UtilizadorModificação = "";
+
+                            proposalToUpdate.DataHoraModificação = null;
+                            proposalToUpdate.Arquivado = false;
+                            DBContracts.Create(proposalToUpdate);
+
+                            //Duplicate proposal Lines
+                            List<LinhasContratos> proposalLines = DBContractLines.GetAllByActiveContract(proposal.ContractNo, proposal.VersionNo);
+                            proposalLines.ForEach(x =>
+                            {
+                                x.NºVersão = proposalToUpdate.NºVersão;
+                                DBContractLines.Create(x);
+                            });
+
+                            if (DBContractLines.DeleteAllFromContract(proposal.RelatedContract))
+                            {
+                                if (partialUpdate)
+                                {
+                                    proposalLines.RemoveAll(x => !x.CriaContrato.HasValue || !x.CriaContrato.Value);
+                                    proposalToUpdate.Estado = 8;
+                                }
+                                else
+                                {
+                                    proposalToUpdate.Estado = 6;
+                                }
+                                DBContracts.Update(proposalToUpdate);
+                                proposalLines.ForEach(x =>
+                                {
+                                    LinhasContratos newline = ParseToNewModel(x);
+                                    newline.TipoContrato = contract.TipoContrato;
+                                    newline.NºContrato = contract.NºContrato;
+                                    newline.NºVersão = contract.NºVersão;
+                                    DBContractLines.Create(newline);
+                                });
+
+                                proposal = DBContracts.ParseToViewModel(proposalToUpdate, _config.NAVDatabaseName, _config.NAVCompanyName);
+
+                                proposal.eReasonCode = 1;
+                                proposal.eMessage = "Contrato atualizado com sucesso.";
+                                return Json(proposal);
+                            }
+                            else
+                            {
+                                proposal.eReasonCode = 2;
+                                proposal.eMessage = "Ocorreu um erro ao atualizar as linhas do contrato.";
+                            }
+                        }
+                        else
+                        {
+                            proposal.eReasonCode = 2;
+                            proposal.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+                        }
+                        
+                        return Json(proposal);
+                    }
+                    catch (Exception)
+                    {
+                        proposal.eReasonCode = 2;
+                        proposal.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+                    }
+                }
+            }
+            else
+            {
+                proposal.eReasonCode = 2;
+                proposal.eMessage = "Ocorreu um erro ao atualizar o contrato.";
+            }
+            return Json(proposal);
+        }
 
         [HttpPost]
         public JsonResult GetContractNavData([FromBody] ContractViewModel data)
@@ -1231,20 +1289,24 @@ namespace Hydra.Such.Portal.Controllers
 
             if (showLevel == 1)
             {
-                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value == 4 || x.Estado.Value == 5 || x.Estado.Value == 9);
+                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value > 2);
             }
             else if (showLevel == 2)
             {
-                ContractsList.RemoveAll(x => !(x.Estado.HasValue && x.Estado.Value == 5) || x.Estado.Value == 9);
+                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value != 5);
+            }
+            else if (showLevel == 3)
+            {
+                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value != 4);
             }
             else if (showLevel == 4)
             {
-                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value != 9);
+                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value <= 2);
             }
-            else
-            {
-                ContractsList.RemoveAll(x => !(x.Estado.HasValue && x.Estado.Value == 4) || x.Estado.Value == 9);
-            }
+            //else
+            //{
+            //    ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value <= 2);
+            //}
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 
@@ -1285,13 +1347,9 @@ namespace Hydra.Such.Portal.Controllers
             result.OportunityNo = "";
             return Json(result);
         }
-
-
-
+        
         #endregion
-
-
-
+        
         public JsonResult ParseContractType([FromBody] JObject requestParams)
         {
             // Parse Header

@@ -64,6 +64,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToCreate.DataHoraCriação = DateTime.Now;
+                    ObjectToCreate.NºLinha = 0;
                     ctx.LinhasContratos.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
@@ -86,6 +87,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                     items.ForEach(item =>
                     {
                         item.DataHoraCriação = DateTime.Now;
+                        item.NºLinha = 0;
                         ctx.LinhasContratos.Add(item);
                     });
                     ctx.SaveChanges();

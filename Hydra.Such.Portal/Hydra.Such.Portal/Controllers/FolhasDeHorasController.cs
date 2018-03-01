@@ -48,46 +48,47 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public FolhaDeHorasViewModel ParseDBtoViewModel(FolhasDeHoras FH)
-        {
-            FolhaDeHorasViewModel FHViewModel = new FolhaDeHorasViewModel();
+        //public FolhaDeHorasViewModel ParseDBtoViewModel(FolhasDeHoras FH)
+        //{
+        //    FolhaDeHorasViewModel FHViewModel = new FolhaDeHorasViewModel();
 
-            FHViewModel.Area = 1;
+        //    FHViewModel.Area = 1;
 
-            return FHViewModel;
-        }
+        //    return FHViewModel;
+        //}
 
+
+        //[HttpPost]
+        //public JsonResult GetListFolhasDeHorasByArea([FromBody] int id)
+        //{
+        //    UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
+
+        //    if (UPerm != null && UPerm.Read.Value)
+        //    {
+        //        bool teste = UPerm.Create.Value;
+        //        ViewBag.UPermissions = UPerm;
+
+        //        List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name, 0);
+        //        if (result != null)
+        //        {
+        //            result.ForEach(FH =>
+        //            {
+        //                FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
+        //                FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
+        //                FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity.Where(y => y.Id == Convert.ToInt32(FH.DeslocacaoForaConcelho)).FirstOrDefault().Value;
+        //                FH.Estadotexto = FH.Estado == null ? "" : EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == FH.Estado).FirstOrDefault().Value;
+        //                //FH.Validadores = FH.Validadores == "" ? "" : FH.Validadores;
+        //            });
+        //        }
+
+        //        return Json(result);
+        //    }
+
+        //    return Json(null);
+        //}
 
         [HttpPost]
-        public JsonResult GetListFolhasDeHorasByArea([FromBody] int id)
-        {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
-
-            if (UPerm != null && UPerm.Read.Value)
-            {
-                bool teste = UPerm.Create.Value;
-                ViewBag.UPermissions = UPerm;
-
-                List<FolhaDeHorasViewModel> result = DBFolhasDeHoras.GetAllByDimensions(_config.NAVDatabaseName, _config.NAVCompanyName, User.Identity.Name, 0);
-                if (result != null)
-                {
-                    result.ForEach(FH =>
-                    {
-                        FH.AreaTexto = FH.Area == null ? "" : EnumerablesFixed.Areas.Where(y => y.Id == FH.Area).FirstOrDefault().Value;
-                        FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                        FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : EnumerablesFixed.FolhaDeHoraDisplacementOutsideCity.Where(y => y.Id == Convert.ToInt32(FH.DeslocacaoForaConcelho)).FirstOrDefault().Value;
-                        FH.Estadotexto = FH.Estado == null ? "" : EnumerablesFixed.FolhaDeHoraStatus.Where(y => y.Id == FH.Estado).FirstOrDefault().Value;
-                        //FH.Validadores = FH.Validadores == "" ? "" : FH.Validadores;
-                    });
-                }
-
-                return Json(result);
-            }
-
-            return Json(null);
-        }
-
-        [HttpPost]
+        //Listagem das Folhas de Horas consoante o estado
         public JsonResult GetListFolhasDeHoras([FromBody] HTML_FHViewModel HTML)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
@@ -262,7 +263,7 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Details
-        //public IActionResult Detalhes(string id)
+        //Criação da Folha de Horas
         public ActionResult Detalhes([FromQuery] string FHNo, [FromQuery] int area)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
@@ -346,6 +347,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Carrega todos os dados de uma Folha de Horas
         public JsonResult GetFolhaDeHoraDetails([FromBody] FolhaDeHorasViewModel data)
         {
             try
@@ -587,6 +589,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpPost]
+        //Buscar o Nome de Empregado, Região, Área, CRESP, Responsáveis, Validadores e Integradores
         public JsonResult GetEmployeeNome([FromBody] string idEmployee)
         {
             FolhaDeHorasViewModel FH = new FolhaDeHorasViewModel();
@@ -620,138 +623,330 @@ namespace Hydra.Such.Portal.Controllers
                     };
                 }
                 FH.EmpregadoNome = DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
-                //DBNAV2009Employees.GetAll(idEmployee, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name;
             }
             return Json(FH);
         }
 
 
+        //[HttpPost]
+        //public JsonResult ValidateNumeration([FromBody] FolhaDeHorasViewModel data)
+        //{
+        //    //Get FolhaDeHora Numeration
+        //    Configuração Cfg = DBConfigurations.GetById(1);
+        //    int FolhaDeHoraNumerationConfigurationId = Cfg.NumeraçãoFolhasDeHoras.Value;
+
+        //    ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(FolhaDeHoraNumerationConfigurationId);
+
+        //    //Validate if FolhaDeHorasNo is valid
+        //    if (data.FolhaDeHorasNo != "" && !CfgNumeration.Manual.Value)
+        //    {
+        //        return Json("A numeração configurada para folha de horas não permite inserção manual.");
+        //    }
+        //    else if (data.FolhaDeHorasNo == "" && !CfgNumeration.Automático.Value)
+        //    {
+        //        return Json("É obrigatório inserir o Nº de Folha de Horas.");
+        //    }
+
+        //    return Json("");
+        //}
+
         [HttpPost]
-        public JsonResult ValidateNumeration([FromBody] FolhaDeHorasViewModel data)
+        //Validação da Data e Hora Inicial e Final em todas as tabelas
+        public JsonResult ValidarDataHoraInicio_DataHoraFim([FromBody] FolhaDeHorasViewModel data)
         {
-            //Get FolhaDeHora Numeration
-            Configuração Cfg = DBConfigurations.GetById(1);
-            int FolhaDeHoraNumerationConfigurationId = Cfg.NumeraçãoFolhasDeHoras.Value;
-
-            ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(FolhaDeHoraNumerationConfigurationId);
-
-            //Validate if FolhaDeHorasNo is valid
-            if (data.FolhaDeHorasNo != "" && !CfgNumeration.Manual.Value)
-            {
-                return Json("A numeração configurada para folha de horas não permite inserção manual.");
-            }
-            else if (data.FolhaDeHorasNo == "" && !CfgNumeration.Automático.Value)
-            {
-                return Json("É obrigatório inserir o Nº de Folha de Horas.");
-            }
-
-            return Json("");
-        }
-
-        //eReason = 1 -> Sucess
-        //eReason = 2 -> Error creating Project on Databse 
-        //eReason = 3 -> Error creating Project on NAV 
-        //eReason = 4 -> Unknow Error 
-        [HttpPost]
-        public JsonResult CreateFolhaDeHora([FromBody] FolhaDeHorasViewModel data)
-        {
+            int result = 0;
             try
             {
-                if (data != null)
+                DateTime FH_DataHoraInicio = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
+                DateTime FH_DataHoraFim = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
+
+                if (result == 0)
                 {
-                    //Get FolhaDeHora Numeration
-                    Configuração Configs = DBConfigurations.GetById(1);
-                    int FolhaDeHoraNumerationConfigurationId = Configs.NumeraçãoFolhasDeHoras.Value;
-                    data.FolhaDeHorasNo = DBNumerationConfigurations.GetNextNumeration(FolhaDeHoraNumerationConfigurationId, true);
+                    if (FH_DataHoraFim < FH_DataHoraInicio)
+                        result = 1;
+                    if (FH_DataHoraInicio > DateTime.Now)
+                        result = 2;
+                    if (FH_DataHoraFim > DateTime.Now)
+                        result = 3;
 
-                    FolhasDeHoras cFolhaDeHora = new FolhasDeHoras()
+                    if (string.IsNullOrEmpty(data.FolhaDeHorasNo))
+                        result = 20;
+                    if (string.IsNullOrEmpty(data.ProjetoNo))
+                        result = 21;
+                    if (string.IsNullOrEmpty(data.EmpregadoNo))
+                        result = 22;
+                    if (string.IsNullOrEmpty(data.DataPartidaTexto))
+                        result = 23;
+                    if (string.IsNullOrEmpty(data.HoraPartidaTexto))
+                        result = 24;
+                    if (string.IsNullOrEmpty(data.DataChegadaTexto))
+                        result = 25;
+                    if (string.IsNullOrEmpty(data.HoraChegadaTexto))
+                        result = 26;
+                    if (data.TipoDeslocacao == 0)
+                        result = 27;
+                    if (string.IsNullOrEmpty(data.CodigoTipoKms))
+                        result = 28;
+                    if (data.TipoDeslocacao == 1 && string.IsNullOrEmpty(data.Matricula))
+                        result = 29;
+                    if (string.IsNullOrEmpty(data.CodigoRegiao))
+                        result = 30;
+                    if (string.IsNullOrEmpty(data.CodigoAreaFuncional))
+                        result = 31;
+                    if (string.IsNullOrEmpty(data.CodigoCentroResponsabilidade))
+                        result = 32;
+                }
+
+                //PERCURSOS
+                //result = 0;
+                if (result == 0)
+                {
+                    List<LinhasFolhaHorasViewModel> PERCURSOS = DBLinhasFolhaHoras.GetAllByPercursoToList(data.FolhaDeHorasNo);
+                    if (PERCURSOS.Count() > 0)
                     {
-                        NºFolhaDeHoras = data.FolhaDeHorasNo,
-                        Área = data.Area,
-                        NºProjeto = data.ProjetoNo,
-                        ProjetoDescricao = data.ProjetoDescricao,
-                        NºEmpregado = data.EmpregadoNo,
-                        NomeEmpregado = data.EmpregadoNome,
-                        DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
-                        DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
-                        TipoDeslocação = data.TipoDeslocacao,
-                        CódigoTipoKmS = data.CodigoTipoKms,
-                        Matrícula = data.Matricula,
-                        DeslocaçãoForaConcelho = Convert.ToBoolean(data.DeslocacaoForaConcelhoTexto),
-                        DeslocaçãoPlaneada = Convert.ToBoolean(data.DeslocacaoPlaneadaTexto),
-                        Terminada = data.Terminada,
-                        Estado = 0, // 0 = Criado
-                        CriadoPor = User.Identity.Name,
-                        DataHoraCriação = DateTime.Now,
-                        CódigoRegião = data.CodigoRegiao,
-                        CódigoÁreaFuncional = data.CodigoAreaFuncional,
-                        CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade,
-                        TerminadoPor = User.Identity.Name,
-                        DataHoraTerminado = DateTime.Now,
-                        Validado = Convert.ToBoolean(data.ValidadoTexto),
-                        Validadores = User.Identity.Name,
-                        Validador = User.Identity.Name,
-                        DataHoraValidação = DateTime.Now,
-                        IntegradorEmRh = User.Identity.Name,
-                        IntegradoresEmRh = data.IntegradoresEmRH,
-                        DataIntegraçãoEmRh = DateTime.Now,
-                        IntegradorEmRhKm = User.Identity.Name,
-                        IntegradoresEmRhkm = data.IntegradoresEmRHKM,
-                        DataIntegraçãoEmRhKm = DateTime.Now,
-                        CustoTotalAjudaCusto = data.CustoTotalAjudaCusto,
-                        CustoTotalHoras = data.CustoTotalHoras,
-                        CustoTotalKm = data.CustoTotalKM,
-                        NumTotalKm = data.NumTotalKM,
-                        Observações = data.Observacoes,
-                        NºResponsável1 = User.Identity.Name,
-                        NºResponsável2 = User.Identity.Name,
-                        NºResponsável3 = User.Identity.Name,
-                        ValidadoresRhKm = User.Identity.Name,
-                        DataHoraÚltimoEstado = DateTime.Now,
-                        UtilizadorModificação = User.Identity.Name,
-                        DataHoraModificação = DateTime.Now
-                    };
-
-                    //Create FolhaDeHora On Database
-                    cFolhaDeHora = DBFolhasDeHoras.Create(cFolhaDeHora);
-
-                    if (cFolhaDeHora == null)
-                    {
-                        data.eReasonCode = 3;
-                        data.eMessage = "Ocorreu um erro ao criar a Folha de Hora no Portal.";
+                        PERCURSOS.ForEach(percurso =>
+                        {
+                            if (result == 0)
+                            {
+                                if (Convert.ToDateTime(Convert.ToDateTime(percurso.DataDespesa).ToShortDateString()) < Convert.ToDateTime(FH_DataHoraInicio.ToShortDateString()))
+                                    result = 4;
+                                if (Convert.ToDateTime(Convert.ToDateTime(percurso.DataDespesa).ToShortDateString()) > Convert.ToDateTime(FH_DataHoraFim.ToShortDateString()))
+                                    //if (percurso.DataDespesa > FH_DataHoraFim)
+                                    result = 5;
+                            }
+                        });
                     }
-                    else
-                    {
-                        //Update Last Numeration Used
-                        ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(FolhaDeHoraNumerationConfigurationId);
-                        ConfigNumerations.ÚltimoNºUsado = data.FolhaDeHorasNo;
-                        DBNumerationConfigurations.Update(ConfigNumerations);
+                }
 
-                        data.eReasonCode = 1;
+                //AJUDAS
+                //result = 0;
+                if (result == 0)
+                {
+                    List<LinhasFolhaHorasViewModel> AJUDAS = DBLinhasFolhaHoras.GetAllByAjudaToList(data.FolhaDeHorasNo);
+                    if (AJUDAS.Count() > 0)
+                    {
+                        AJUDAS.ForEach(ajuda =>
+                        {
+                            if (result == 0)
+                            {
+                                if (Convert.ToDateTime(Convert.ToDateTime(ajuda.DataDespesa).ToShortDateString()) < Convert.ToDateTime(FH_DataHoraInicio.ToShortDateString()))
+                                    result = 6;
+                                if (Convert.ToDateTime(Convert.ToDateTime(ajuda.DataDespesa).ToShortDateString()) > Convert.ToDateTime(FH_DataHoraFim.ToShortDateString()))
+                                    result = 7;
+                            }
+                        });
+                    }
+                }
+
+                //MAODEOBRAS
+                //result = 0;
+                if (result == 0)
+                {
+                    List<MãoDeObraFolhaDeHoras> MAODEOBRAS = DBMaoDeObraFolhaDeHoras.GetByFolhaHoraNo(data.FolhaDeHorasNo);
+                    if (MAODEOBRAS.Count() > 0)
+                    {
+                        DateTime maodeobraInicio;
+                        DateTime maodeobraFim;
+                        MAODEOBRAS.ForEach(maodeobra =>
+                        {
+                            if (result == 0)
+                            {
+                                maodeobraInicio = DateTime.Parse(string.Concat(Convert.ToDateTime(maodeobra.Date).ToShortDateString(), " ", maodeobra.HoraInício.Value.ToString()));
+                                maodeobraFim = DateTime.Parse(string.Concat(Convert.ToDateTime(maodeobra.Date).ToShortDateString(), " ", maodeobra.HoraFim.Value.ToString()));
+
+                                if (maodeobraInicio < FH_DataHoraInicio)
+                                    result = 8;
+                                if (maodeobraInicio > FH_DataHoraFim)
+                                    result = 9;
+                                if (maodeobraFim < FH_DataHoraInicio)
+                                    result = 10;
+                                if (maodeobraFim > FH_DataHoraFim)
+                                    result = 11;
+                            }
+                        });
+                    }
+                }
+
+                //PRESENCAS
+                //result = 0;
+                if (result == 0)
+                {
+                    List<PresençasFolhaDeHoras> PRESENCAS = DBPresencasFolhaDeHoras.GetByFolhaHoraNo(data.FolhaDeHorasNo);
+                    if (PRESENCAS.Count() > 0)
+                    {
+                        DateTime presencaEntrada1;
+                        DateTime presencaSaida1;
+                        DateTime presencaEntrada2;
+                        DateTime presencaSaida2;
+                        PRESENCAS.ForEach(presenca =>
+                        {
+                            if (result == 0)
+                            {
+                                presencaEntrada1 = DateTime.Parse(string.Concat(presenca.Data.ToShortDateString(), " ", presenca.Hora1ªEntrada.ToString()));
+                                presencaSaida1 = DateTime.Parse(string.Concat(presenca.Data.ToShortDateString(), " ", presenca.Hora1ªSaída.ToString()));
+                                presencaEntrada2 = DateTime.Parse(string.Concat(presenca.Data.ToShortDateString(), " ", presenca.Hora2ªEntrada.ToString()));
+                                presencaSaida2 = DateTime.Parse(string.Concat(presenca.Data.ToShortDateString(), " ", presenca.Hora2ªSaída.ToString()));
+
+                                if (presencaEntrada1 < FH_DataHoraInicio)
+                                    result = 12;
+                                if (presencaEntrada1 > FH_DataHoraFim)
+                                    result = 13;
+                                if (presencaSaida1 < FH_DataHoraInicio)
+                                    result = 14;
+                                if (presencaSaida1 > FH_DataHoraFim)
+                                    result = 15;
+                                if (presencaEntrada2 < FH_DataHoraInicio)
+                                    result = 16;
+                                if (presencaEntrada2 > FH_DataHoraFim)
+                                    result = 17;
+                                if (presencaSaida2 < FH_DataHoraInicio)
+                                    result = 18;
+                                if (presencaSaida2 > FH_DataHoraFim)
+                                    result = 19;
+                            }
+                        });
+                    }
+                }
+
+                if (result == 0)
+                {
+                    List<FolhasDeHoras> FH = DBFolhasDeHoras.GetAll().ToList();
+                    if (FH.Count() > 0)
+                    {
+                        FH.ForEach(x =>
+                        {
+                            if (x.NºFolhaDeHoras != null && x.NºEmpregado != null && x.DataHoraPartida != null && x.DataHoraChegada != null)
+                            {
+                                if (x.NºFolhaDeHoras != data.FolhaDeHorasNo && x.NºEmpregado == data.EmpregadoNo && FH_DataHoraInicio >= x.DataHoraPartida && FH_DataHoraFim <= x.DataHoraChegada)
+                                {
+                                    result = 88;
+                                }
+                            }
+                        });
                     }
                 }
             }
             catch (Exception ex)
             {
-                data.eReasonCode = 4;
-                data.eMessage = "Ocorreu um erro ao criar a Folha de Hora.";
+                result = 99;
             }
-            return Json(data);
+
+            return Json(result);
         }
 
+        //[HttpPost]
+        //public JsonResult CreateFolhaDeHora([FromBody] FolhaDeHorasViewModel data)
+        //{
+        //    try
+        //    {
+        //        if (data != null)
+        //        {
+        //            //Get FolhaDeHora Numeration
+        //            Configuração Configs = DBConfigurations.GetById(1);
+        //            int FolhaDeHoraNumerationConfigurationId = Configs.NumeraçãoFolhasDeHoras.Value;
+        //            data.FolhaDeHorasNo = DBNumerationConfigurations.GetNextNumeration(FolhaDeHoraNumerationConfigurationId, true);
+
+        //            FolhasDeHoras cFolhaDeHora = new FolhasDeHoras()
+        //            {
+        //                NºFolhaDeHoras = data.FolhaDeHorasNo,
+        //                Área = data.Area,
+        //                NºProjeto = data.ProjetoNo,
+        //                ProjetoDescricao = data.ProjetoDescricao,
+        //                NºEmpregado = data.EmpregadoNo,
+        //                NomeEmpregado = data.EmpregadoNome,
+        //                DataHoraPartida = DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)),
+        //                DataHoraChegada = DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)),
+        //                TipoDeslocação = data.TipoDeslocacao,
+        //                CódigoTipoKmS = data.CodigoTipoKms,
+        //                Matrícula = data.Matricula,
+        //                DeslocaçãoForaConcelho = Convert.ToBoolean(data.DeslocacaoForaConcelhoTexto),
+        //                DeslocaçãoPlaneada = Convert.ToBoolean(data.DeslocacaoPlaneadaTexto),
+        //                Terminada = data.Terminada,
+        //                Estado = 0, // 0 = Criado
+        //                CriadoPor = User.Identity.Name,
+        //                DataHoraCriação = DateTime.Now,
+        //                CódigoRegião = data.CodigoRegiao,
+        //                CódigoÁreaFuncional = data.CodigoAreaFuncional,
+        //                CódigoCentroResponsabilidade = data.CodigoCentroResponsabilidade,
+        //                TerminadoPor = User.Identity.Name,
+        //                DataHoraTerminado = DateTime.Now,
+        //                Validado = Convert.ToBoolean(data.ValidadoTexto),
+        //                Validadores = User.Identity.Name,
+        //                Validador = User.Identity.Name,
+        //                DataHoraValidação = DateTime.Now,
+        //                IntegradorEmRh = User.Identity.Name,
+        //                IntegradoresEmRh = data.IntegradoresEmRH,
+        //                DataIntegraçãoEmRh = DateTime.Now,
+        //                IntegradorEmRhKm = User.Identity.Name,
+        //                IntegradoresEmRhkm = data.IntegradoresEmRHKM,
+        //                DataIntegraçãoEmRhKm = DateTime.Now,
+        //                CustoTotalAjudaCusto = data.CustoTotalAjudaCusto,
+        //                CustoTotalHoras = data.CustoTotalHoras,
+        //                CustoTotalKm = data.CustoTotalKM,
+        //                NumTotalKm = data.NumTotalKM,
+        //                Observações = data.Observacoes,
+        //                NºResponsável1 = User.Identity.Name,
+        //                NºResponsável2 = User.Identity.Name,
+        //                NºResponsável3 = User.Identity.Name,
+        //                ValidadoresRhKm = User.Identity.Name,
+        //                DataHoraÚltimoEstado = DateTime.Now,
+        //                UtilizadorModificação = User.Identity.Name,
+        //                DataHoraModificação = DateTime.Now
+        //            };
+
+        //            //Create FolhaDeHora On Database
+        //            cFolhaDeHora = DBFolhasDeHoras.Create(cFolhaDeHora);
+
+        //            if (cFolhaDeHora == null)
+        //            {
+        //                data.eReasonCode = 3;
+        //                data.eMessage = "Ocorreu um erro ao criar a Folha de Hora no Portal.";
+        //            }
+        //            else
+        //            {
+        //                //Update Last Numeration Used
+        //                ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(FolhaDeHoraNumerationConfigurationId);
+        //                ConfigNumerations.ÚltimoNºUsado = data.FolhaDeHorasNo;
+        //                DBNumerationConfigurations.Update(ConfigNumerations);
+
+        //                data.eReasonCode = 1;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        data.eReasonCode = 4;
+        //        data.eMessage = "Ocorreu um erro ao criar a Folha de Hora.";
+        //    }
+        //    return Json(data);
+        //}
+
         [HttpPost]
+        //Verifica se já existe alguma Folha de Horas no mesmo períoda para o mesmo Empregado
         public JsonResult UpdateFolhaDeHorasValidacao([FromBody] FolhaDeHorasViewModel data)
         {
             int result = 1;
             try
             {
-                if (DBFolhasDeHoras.GetAll().Where(x =>
-                        x.NºFolhaDeHoras != data.FolhaDeHorasNo &&
-                        x.NºEmpregado == null ? "" == data.EmpregadoNo.ToLower() : x.NºEmpregado.ToLower() == data.EmpregadoNo.ToLower() && 
-                        DateTime.Parse(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto)) >= x.DataHoraPartida &&
-                        DateTime.Parse(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto)) <= x.DataHoraChegada).Count() > 1)
+                DateTime DataHoraInicio = Convert.ToDateTime(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
+                DateTime DataHoraFim = Convert.ToDateTime(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
+
+                List<FolhasDeHoras> FH = DBFolhasDeHoras.GetAll().ToList();
+                if (FH.Count() > 0)
                 {
-                    result = 0;
+                    FH.ForEach(x =>
+                    {
+                        if (result == 1)
+                        {
+                            if (x.NºFolhaDeHoras != null && x.NºEmpregado != null && x.DataHoraPartida != null && x.DataHoraChegada != null)
+                            {
+                                if (x.NºFolhaDeHoras != data.FolhaDeHorasNo && x.NºEmpregado == data.EmpregadoNo && DataHoraInicio >= x.DataHoraPartida && DataHoraFim <= x.DataHoraChegada)
+                                {
+                                    result = 0;
+                                }
+                            }
+                        }
+                    });
                 }
             }
             catch (Exception ex)
@@ -762,6 +957,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Atualiza a Folha de Horas na Base de Dados
         public JsonResult UpdateFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
             int result = 0;
@@ -859,47 +1055,48 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        [HttpPost]
-        public JsonResult DeleteFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
-        {
-            if (data != null)
-            {
-                ErrorHandler result = new ErrorHandler();
-                DBFolhasDeHoras.Delete(data.FolhaDeHorasNo);
-                result = new ErrorHandler()
-                {
-                    eReasonCode = 0,
-                    eMessage = "Folha de Horas removida com sucesso."
-                };
-                return Json(result);
-            }
-            return Json(false);
-        }
+        //[HttpPost]
+        //public JsonResult DeleteFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
+        //{
+        //    if (data != null)
+        //    {
+        //        ErrorHandler result = new ErrorHandler();
+        //        DBFolhasDeHoras.Delete(data.FolhaDeHorasNo);
+        //        result = new ErrorHandler()
+        //        {
+        //            eReasonCode = 0,
+        //            eMessage = "Folha de Horas removida com sucesso."
+        //        };
+        //        return Json(result);
+        //    }
+        //    return Json(false);
+        //}
         #endregion
 
         #region Job Ledger Entry
 
-        public IActionResult MovimentosDeFolhaDeHora(String FolhaDeHoraNo)
-        {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
+        //public IActionResult MovimentosDeFolhaDeHora(String FolhaDeHoraNo)
+        //{
+        //    UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 1, 6);
 
-            if (UPerm != null && UPerm.Read.Value)
-            {
-                ViewBag.UPermissions = UPerm;
-                ViewBag.FolhaDeHoraNo = FolhaDeHoraNo;
-                return View();
-            }
-            else
-            {
-                return RedirectToAction("AccessDenied", "Error");
-            }
-        }
+        //    if (UPerm != null && UPerm.Read.Value)
+        //    {
+        //        ViewBag.UPermissions = UPerm;
+        //        ViewBag.FolhaDeHoraNo = FolhaDeHoraNo;
+        //        return View();
+        //    }
+        //    else
+        //    {
+        //        return RedirectToAction("AccessDenied", "Error");
+        //    }
+        //}
 
         #endregion
 
         #region PERCURSO
 
         [HttpPost]
+        //Obtem todos os Percursos de uma Folha de Horas
         public JsonResult PercursoGetAllByFolhaHoraNoToList([FromBody] string FolhaHoraNo)
         {
             try
@@ -915,6 +1112,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Cria um novo Percurso
         public JsonResult CreatePercurso([FromBody] LinhasFolhaHorasViewModel data)
         {
             bool result = false;
@@ -1024,49 +1222,50 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        [HttpPost]
-        public JsonResult UpdatePercurso([FromBody] FolhaDeHorasViewModel data)
-        {
-            bool result = false;
-            try
-            {
-                if (data.FolhaDeHorasPercurso != null)
-                {
-                    data.FolhaDeHorasPercurso.ForEach(x =>
-                    {
-                        DBLinhasFolhaHoras.UpdatePercurso(new LinhasFolhaHoras()
-                        {
-                            NoFolhaHoras = x.NoFolhaHoras,
-                            NoLinha = x.NoLinha,
-                            TipoCusto = 1, //PERCURSO
-                            CodOrigem = x.CodOrigem,
-                            DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(x.CodOrigem),
-                            CodDestino = x.CodDestino,
-                            DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(x.CodDestino),
-                            DataDespesa = x.DataDespesa,
-                            Observacao = x.Observacao,
-                            Distancia = x.Distancia,
-                            DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(x.CodOrigem, x.CodDestino),
-                            CustoUnitario = x.CustoUnitario,
-                            CustoTotal = x.Distancia * x.CustoUnitario,
-                            UtilizadorCriacao = x.UtilizadorCriacao,
-                            DataHoraCriacao = x.DataHoraCriacao,
-                            UtilizadorModificacao = User.Identity.Name,
-                            DataHoraModificacao = DateTime.Now
-                        });
-                    });
-                }
+        //[HttpPost]
+        //public JsonResult UpdatePercurso([FromBody] FolhaDeHorasViewModel data)
+        //{
+        //    bool result = false;
+        //    try
+        //    {
+        //        if (data.FolhaDeHorasPercurso != null)
+        //        {
+        //            data.FolhaDeHorasPercurso.ForEach(x =>
+        //            {
+        //                DBLinhasFolhaHoras.UpdatePercurso(new LinhasFolhaHoras()
+        //                {
+        //                    NoFolhaHoras = x.NoFolhaHoras,
+        //                    NoLinha = x.NoLinha,
+        //                    TipoCusto = 1, //PERCURSO
+        //                    CodOrigem = x.CodOrigem,
+        //                    DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(x.CodOrigem),
+        //                    CodDestino = x.CodDestino,
+        //                    DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(x.CodDestino),
+        //                    DataDespesa = x.DataDespesa,
+        //                    Observacao = x.Observacao,
+        //                    Distancia = x.Distancia,
+        //                    DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(x.CodOrigem, x.CodDestino),
+        //                    CustoUnitario = x.CustoUnitario,
+        //                    CustoTotal = x.Distancia * x.CustoUnitario,
+        //                    UtilizadorCriacao = x.UtilizadorCriacao,
+        //                    DataHoraCriacao = x.DataHoraCriacao,
+        //                    UtilizadorModificacao = User.Identity.Name,
+        //                    DataHoraModificacao = DateTime.Now
+        //                });
+        //            });
+        //        }
 
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                //log
-            }
-            return Json(result);
-        }
+        //        result = true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //log
+        //    }
+        //    return Json(result);
+        //}
 
         [HttpPost]
+        //Atualiza um percurso
         public JsonResult UpdateLinhaPercurso([FromBody] LinhasFolhaHorasViewModel data)
         {
             bool result = false;
@@ -1104,6 +1303,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Apaga um Percurso
         public JsonResult DeletePercurso([FromBody] LinhasFolhaHorasViewModel data)
         {
             bool result = false;
@@ -1130,6 +1330,7 @@ namespace Hydra.Such.Portal.Controllers
         #region AJUDA
 
         [HttpPost]
+        //Obtem todas as Ajudas de uma Folha de Horas
         public JsonResult AjudaGetAllByFolhaHoraNoToList([FromBody] string FolhaHoraNo)
         {
             try
@@ -1153,6 +1354,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Cria uma Ajuda
         public JsonResult CreateAjuda([FromBody] LinhasFolhaHorasViewModel data)
         {
             bool result = false;
@@ -1200,49 +1402,50 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        [HttpPost]
-        public JsonResult UpdateAjuda([FromBody] FolhaDeHorasViewModel data)
-        {
-            bool result = false;
-            try
-            {
-                if (data.FolhaDeHorasAjuda != null)
-                {
-                    data.FolhaDeHorasAjuda.ForEach(x =>
-                    {
-                        DBLinhasFolhaHoras.UpdateAjuda(new LinhasFolhaHoras()
-                        {
-                            NoFolhaHoras = x.NoFolhaHoras,
-                            NoLinha = x.NoLinha,
-                            TipoCusto = x.TipoCusto,
-                            CodTipoCusto = x.CodTipoCusto,
-                            DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == x.TipoCusto).FirstOrDefault().Value,
-                            Quantidade = x.Quantidade,
-                            CustoUnitario = x.CustoUnitario,
-                            CustoTotal = x.Quantidade * x.CustoUnitario,
-                            PrecoUnitario = x.PrecoUnitario,
-                            PrecoVenda = x.Quantidade * x.PrecoUnitario,
-                            DataDespesa = x.DataDespesa,
-                            Observacao = x.Observacao,
-                            UtilizadorCriacao = x.UtilizadorCriacao,
-                            DataHoraCriacao = x.DataHoraCriacao,
-                            UtilizadorModificacao = User.Identity.Name,
-                            DataHoraModificacao = DateTime.Now,
-                            
-                        });
-                    });
-                }
+        //[HttpPost]
+        //public JsonResult UpdateAjuda([FromBody] FolhaDeHorasViewModel data)
+        //{
+        //    bool result = false;
+        //    try
+        //    {
+        //        if (data.FolhaDeHorasAjuda != null)
+        //        {
+        //            data.FolhaDeHorasAjuda.ForEach(x =>
+        //            {
+        //                DBLinhasFolhaHoras.UpdateAjuda(new LinhasFolhaHoras()
+        //                {
+        //                    NoFolhaHoras = x.NoFolhaHoras,
+        //                    NoLinha = x.NoLinha,
+        //                    TipoCusto = x.TipoCusto,
+        //                    CodTipoCusto = x.CodTipoCusto,
+        //                    DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == x.TipoCusto).FirstOrDefault().Value,
+        //                    Quantidade = x.Quantidade,
+        //                    CustoUnitario = x.CustoUnitario,
+        //                    CustoTotal = x.Quantidade * x.CustoUnitario,
+        //                    PrecoUnitario = x.PrecoUnitario,
+        //                    PrecoVenda = x.Quantidade * x.PrecoUnitario,
+        //                    DataDespesa = x.DataDespesa,
+        //                    Observacao = x.Observacao,
+        //                    UtilizadorCriacao = x.UtilizadorCriacao,
+        //                    DataHoraCriacao = x.DataHoraCriacao,
+        //                    UtilizadorModificacao = User.Identity.Name,
+        //                    DataHoraModificacao = DateTime.Now,
 
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                //log
-            }
-            return Json(result);
-        }
+        //                });
+        //            });
+        //        }
+
+        //        result = true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //log
+        //    }
+        //    return Json(result);
+        //}
 
         [HttpPost]
+        //Atualiza uma Ajuda
         public JsonResult UpdateLinhaAjuda([FromBody] LinhasFolhaHorasViewModel data)
         {
             bool result = false;
@@ -1280,6 +1483,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Apaga uma Ajuda
         public JsonResult DeleteAjuda([FromBody] LinhasFolhaHorasViewModel data)
         {
             bool result = false;
@@ -1306,6 +1510,7 @@ namespace Hydra.Such.Portal.Controllers
         #region MÃO-DE-OBRA
 
         [HttpPost]
+        //Obtem todas as Mão de Obras de uma Folha de Horas
         public JsonResult MaoDeObraGetAllByFolhaHoraNoToList([FromBody] string FolhaHoraNo)
         {
             try
@@ -1321,6 +1526,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Cria uma Mão de Obra
         public JsonResult CreateMaoDeObra([FromBody] MaoDeObraFolhaDeHorasViewModel data)
         {
             int result = 0;
@@ -1450,145 +1656,150 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        //[HttpPost]
+        //public JsonResult UpdateMaoDeObra([FromBody] FolhaDeHorasViewModel data)
+        //{
+        //    int result = 0;
+        //    try
+        //    {
+        //        if (data.FolhaDeHorasMaoDeObra != null)
+        //        {
+        //            data.FolhaDeHorasMaoDeObra.ForEach(x =>
+        //            {
+        //                TimeSpan HoraInicio = TimeSpan.Parse(x.HoraInicio);
+        //                TimeSpan HoraFim = TimeSpan.Parse(x.HoraFim);
+        //                bool Almoco = Convert.ToBoolean(x.HorarioAlmoco);
+        //                bool Jantar = Convert.ToBoolean(x.HorarioJantar);
+
+        //                Configuração Configuracao = DBConfigurations.GetAll().Where(y => y.Id == 1).FirstOrDefault();
+
+        //                TimeSpan InicioHoraAlmoco = (TimeSpan)Configuracao.InicioHoraAlmoco;
+        //                TimeSpan FimHoraAlmoco = (TimeSpan)Configuracao.FimHoraAlmoco;
+        //                TimeSpan InicioHoraJantar = (TimeSpan)Configuracao.InicioHoraJantar;
+        //                TimeSpan FimHoraJantar = (TimeSpan)Configuracao.FimHoraJantar;
+
+        //                if (Almoco)
+        //                    if (HoraFim > InicioHoraAlmoco && HoraFim < FimHoraAlmoco)
+        //                        result = 1;
+
+        //                if (Almoco)
+        //                    if (HoraInicio > InicioHoraAlmoco && HoraInicio <= FimHoraAlmoco)
+        //                        result = 2;
+
+        //                if (Jantar)
+        //                    if (HoraFim > InicioHoraJantar && HoraFim < FimHoraJantar)
+        //                        result = 3;
+
+        //                if (Jantar)
+        //                    if (HoraInicio > InicioHoraJantar && HoraInicio <= FimHoraJantar)
+        //                        result = 4;
+
+        //                if (HoraInicio > HoraFim)
+        //                    result = 5;
+
+        //                if (result == 0)
+        //                {
+        //                    //CALCULAR PRECO TOTAL
+        //                    TimeSpan H_Almoco = FimHoraAlmoco.Subtract(InicioHoraAlmoco);
+        //                    TimeSpan H_Jantar = FimHoraJantar.Subtract(InicioHoraJantar);
+
+        //                    double Num_Horas_Aux = (HoraFim - HoraInicio).TotalHours;
+        //                    TimeSpan HorasTotal = TimeSpan.Parse(x.HoraFim) - TimeSpan.Parse(x.HoraInicio);
+
+        //                    if (x.HorarioAlmoco == true)
+        //                    {
+        //                        if (HoraFim >= FimHoraAlmoco && HoraInicio < InicioHoraAlmoco)
+        //                        {
+        //                            Num_Horas_Aux = Num_Horas_Aux - H_Almoco.TotalHours;
+        //                            HorasTotal = HorasTotal.Subtract(H_Almoco);
+        //                        }
+        //                    }
+
+        //                    if (x.HorarioJantar == true)
+        //                    {
+        //                        if (HoraFim >= FimHoraJantar && HoraInicio < InicioHoraJantar)
+        //                        {
+        //                            Num_Horas_Aux = Num_Horas_Aux - H_Jantar.TotalHours;
+        //                            HorasTotal = HorasTotal.Subtract(H_Jantar);
+        //                        }
+        //                    }
+
+        //                    x.HorasNo = HorasTotal.ToString();
+
+        //                    decimal HorasMinutosDecimal = Convert.ToDecimal(HorasTotal.TotalMinutes / 60);
+        //                    x.PrecoTotal = HorasMinutosDecimal * Convert.ToDecimal(x.PrecoDeVenda);
+
+        //                    var dbUpdateResult = DBMaoDeObraFolhaDeHoras.Update(new MãoDeObraFolhaDeHoras()
+        //                    {
+        //                        NºFolhaDeHoras = x.FolhaDeHorasNo,
+        //                        NºLinha = Convert.ToInt32(x.LinhaNo),
+        //                        Date = x.Date,
+        //                        NºProjeto = x.ProjetoNo,
+        //                        NºEmpregado = x.EmpregadoNo,
+        //                        CódigoTipoTrabalho = x.CodigoTipoTrabalho,
+        //                        HoraInício = TimeSpan.Parse(x.HoraInicioTexto),
+        //                        HorárioAlmoço = x.HorarioAlmoco,
+        //                        HoraFim = TimeSpan.Parse(x.HoraFimTexto),
+        //                        HorárioJantar = x.HorarioJantar,
+        //                        CódigoFamíliaRecurso = x.CodigoFamiliaRecurso,
+        //                        CódigoTipoOm = x.CodigoTipoOM,
+        //                        NºDeHoras = TimeSpan.Parse(x.HorasNoTexto),
+        //                        CustoUnitárioDireto = x.CustoUnitarioDireto,
+        //                        CodigoRegiao = x.CodigoRegiao,
+        //                        CodigoArea = x.CodigoArea,
+        //                        CodigoCentroResponsabilidade = x.CodigoCentroResponsabilidade,
+        //                        PreçoTotal = x.PrecoTotal,
+        //                        Descricao = x.Descricao,
+        //                        NºRecurso = x.RecursoNo,
+        //                        CódUnidadeMedida = x.CodigoUnidadeMedida,
+        //                        PreçoDeCusto = x.PrecoDeCusto,
+        //                        PreçoDeVenda = x.PrecoDeVenda,
+        //                        UtilizadorCriação = x.UtilizadorCriacao,
+        //                        DataHoraCriação = x.DataHoraCriacao,
+        //                        UtilizadorModificação = User.Identity.Name,
+        //                        DataHoraModificação = DateTime.Now,
+        //                    });
+
+        //                    if (dbUpdateResult != null)
+        //                        result = 0;
+        //                    else
+        //                        result = 6;
+
+        //                    if (result == 0)
+        //                    {
+        //                        DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo);
+        //                    }
+        //                }
+        //            });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(99);
+        //    }
+        //    return Json(result);
+        //}
+
         [HttpPost]
-        public JsonResult UpdateMaoDeObra([FromBody] FolhaDeHorasViewModel data)
-        {
-            int result = 0;
-            try
-            {
-                if (data.FolhaDeHorasMaoDeObra != null)
-                {
-                    data.FolhaDeHorasMaoDeObra.ForEach(x =>
-                    {
-                        TimeSpan HoraInicio = TimeSpan.Parse(x.HoraInicio);
-                        TimeSpan HoraFim = TimeSpan.Parse(x.HoraFim);
-                        bool Almoco = Convert.ToBoolean(x.HorarioAlmoco);
-                        bool Jantar = Convert.ToBoolean(x.HorarioJantar);
-
-                        Configuração Configuracao = DBConfigurations.GetAll().Where(y => y.Id == 1).FirstOrDefault();
-
-                        TimeSpan InicioHoraAlmoco = (TimeSpan)Configuracao.InicioHoraAlmoco;
-                        TimeSpan FimHoraAlmoco = (TimeSpan)Configuracao.FimHoraAlmoco;
-                        TimeSpan InicioHoraJantar = (TimeSpan)Configuracao.InicioHoraJantar;
-                        TimeSpan FimHoraJantar = (TimeSpan)Configuracao.FimHoraJantar;
-
-                        if (Almoco)
-                            if (HoraFim > InicioHoraAlmoco && HoraFim < FimHoraAlmoco)
-                                result = 1;
-
-                        if (Almoco)
-                            if (HoraInicio > InicioHoraAlmoco && HoraInicio <= FimHoraAlmoco)
-                                result = 2;
-
-                        if (Jantar)
-                            if (HoraFim > InicioHoraJantar && HoraFim < FimHoraJantar)
-                                result = 3;
-
-                        if (Jantar)
-                            if (HoraInicio > InicioHoraJantar && HoraInicio <= FimHoraJantar)
-                                result = 4;
-
-                        if (HoraInicio > HoraFim)
-                            result = 5;
-
-                        if (result == 0)
-                        {
-                            //CALCULAR PRECO TOTAL
-                            TimeSpan H_Almoco = FimHoraAlmoco.Subtract(InicioHoraAlmoco);
-                            TimeSpan H_Jantar = FimHoraJantar.Subtract(InicioHoraJantar);
-
-                            double Num_Horas_Aux = (HoraFim - HoraInicio).TotalHours;
-                            TimeSpan HorasTotal = TimeSpan.Parse(x.HoraFim) - TimeSpan.Parse(x.HoraInicio);
-
-                            if (x.HorarioAlmoco == true)
-                            {
-                                if (HoraFim >= FimHoraAlmoco && HoraInicio < InicioHoraAlmoco)
-                                {
-                                    Num_Horas_Aux = Num_Horas_Aux - H_Almoco.TotalHours;
-                                    HorasTotal = HorasTotal.Subtract(H_Almoco);
-                                }
-                            }
-
-                            if (x.HorarioJantar == true)
-                            {
-                                if (HoraFim >= FimHoraJantar && HoraInicio < InicioHoraJantar)
-                                {
-                                    Num_Horas_Aux = Num_Horas_Aux - H_Jantar.TotalHours;
-                                    HorasTotal = HorasTotal.Subtract(H_Jantar);
-                                }
-                            }
-
-                            x.HorasNo = HorasTotal.ToString();
-
-                            decimal HorasMinutosDecimal = Convert.ToDecimal(HorasTotal.TotalMinutes / 60);
-                            x.PrecoTotal = HorasMinutosDecimal * Convert.ToDecimal(x.PrecoDeVenda);
-
-                            var dbUpdateResult = DBMaoDeObraFolhaDeHoras.Update(new MãoDeObraFolhaDeHoras()
-                            {
-                                NºFolhaDeHoras = x.FolhaDeHorasNo,
-                                NºLinha = Convert.ToInt32(x.LinhaNo),
-                                Date = x.Date,
-                                NºProjeto = x.ProjetoNo,
-                                NºEmpregado = x.EmpregadoNo,
-                                CódigoTipoTrabalho = x.CodigoTipoTrabalho,
-                                HoraInício = TimeSpan.Parse(x.HoraInicioTexto),
-                                HorárioAlmoço = x.HorarioAlmoco,
-                                HoraFim = TimeSpan.Parse(x.HoraFimTexto),
-                                HorárioJantar = x.HorarioJantar,
-                                CódigoFamíliaRecurso = x.CodigoFamiliaRecurso,
-                                CódigoTipoOm = x.CodigoTipoOM,
-                                NºDeHoras = TimeSpan.Parse(x.HorasNoTexto),
-                                CustoUnitárioDireto = x.CustoUnitarioDireto,
-                                CodigoRegiao = x.CodigoRegiao,
-                                CodigoArea = x.CodigoArea,
-                                CodigoCentroResponsabilidade = x.CodigoCentroResponsabilidade,
-                                PreçoTotal = x.PrecoTotal,
-                                Descricao = x.Descricao,
-                                NºRecurso = x.RecursoNo,
-                                CódUnidadeMedida = x.CodigoUnidadeMedida,
-                                PreçoDeCusto = x.PrecoDeCusto,
-                                PreçoDeVenda = x.PrecoDeVenda,
-                                UtilizadorCriação = x.UtilizadorCriacao,
-                                DataHoraCriação = x.DataHoraCriacao,
-                                UtilizadorModificação = User.Identity.Name,
-                                DataHoraModificação = DateTime.Now,
-                            });
-
-                            if (dbUpdateResult != null)
-                                result = 0;
-                            else
-                                result = 6;
-
-                            if (result == 0)
-                            {
-                                DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo);
-                            }
-                        }
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                return Json(99);
-            }
-            return Json(result);
-        }
-
-        [HttpPost]
+        //Atualiza uma Mão de Obra
         public JsonResult UpdateLinhaMaoDeObra([FromBody] MaoDeObraFolhaDeHorasViewModel data)
         {
             int result = 0;
             try
             {
-                MãoDeObraFolhaDeHoras MaoDeObra = DBMaoDeObraFolhaDeHoras.GetByMaoDeObraNo(Convert.ToInt32(data.LinhaNo));
+                FolhasDeHoras FH = DBFolhasDeHoras.GetById(data.FolhaDeHorasNo);
+                DateTime FHDataHoraInicio = Convert.ToDateTime(FH.DataHoraPartida);
+                DateTime FHDataHoraFIM = Convert.ToDateTime(FH.DataHoraChegada);
 
+                MãoDeObraFolhaDeHoras MaoDeObra = DBMaoDeObraFolhaDeHoras.GetByMaoDeObraNo(Convert.ToInt32(data.LinhaNo));
                 TimeSpan HoraInicio = TimeSpan.Parse(data.HoraInicio);
                 TimeSpan HoraFim = TimeSpan.Parse(data.HoraFim);
                 bool Almoco = Convert.ToBoolean(data.HorarioAlmoco);
                 bool Jantar = Convert.ToBoolean(data.HorarioJantar);
+                DateTime DataHoraInicio = Convert.ToDateTime(string.Concat(Convert.ToDateTime(data.Date).ToShortDateString(), " ", data.HoraInicio));
+                DateTime DataHoraFim = Convert.ToDateTime(string.Concat(Convert.ToDateTime(data.Date).ToShortDateString(), " ", data.HoraFim));
 
                 Configuração Configuracao = DBConfigurations.GetAll().Where(x => x.Id == 1).FirstOrDefault();
-
                 TimeSpan InicioHoraAlmoco = (TimeSpan)Configuracao.InicioHoraAlmoco;
                 TimeSpan FimHoraAlmoco = (TimeSpan)Configuracao.FimHoraAlmoco;
                 TimeSpan InicioHoraJantar = (TimeSpan)Configuracao.InicioHoraJantar;
@@ -1612,6 +1823,18 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (HoraInicio > HoraFim)
                     result = 5;
+
+                if (DataHoraInicio < FHDataHoraInicio)
+                    result = 6;
+
+                if (DataHoraInicio > FHDataHoraFIM)
+                    result = 7;
+
+                if (DataHoraFim < FHDataHoraInicio)
+                    result = 8;
+
+                if (DataHoraFim > FHDataHoraFIM)
+                    result = 9;
 
                 if (result == 0)
                 {
@@ -1706,6 +1929,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Apaga uma Mão de Obra
         public JsonResult DeleteMaoDeObra([FromBody] MaoDeObraFolhaDeHorasViewModel data)
         {
             bool result = false;
@@ -1728,6 +1952,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Verifica a Data e Hora de uma Mão de Obra
         public JsonResult MaoDeObraHoraInicioFim([FromBody] MaoDeObraFolhaDeHorasViewModel data)
         {
             int result = 0;
@@ -1787,6 +2012,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Presença
 
         [HttpPost]
+        //Obtem todas as Presenças de uma Folha de Horas
         public JsonResult PresencasGetAllByFolhaHoraNoToList([FromBody] string FolhaHoraNo)
         {
             try
@@ -1802,6 +2028,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Cria uma Presença
         public JsonResult CreatePresenca([FromBody] PresencasFolhaDeHorasViewModel data)
         {
             int result = 0;
@@ -1870,8 +2097,8 @@ namespace Hydra.Such.Portal.Controllers
                     Presenca.Hora2ªSaída = TimeSpan.Parse(data.Hora2Saida);
                     Presenca.Observacoes = data.Observacoes;
                     Presenca.Validado = 0;
-                    Presenca.IntegradoTR = 0;
-                    Presenca.DataIntTR = null;
+                    Presenca.IntegradoTr = 0;
+                    Presenca.DataIntTr = null;
                     Presenca.UtilizadorCriação = User.Identity.Name;
                     Presenca.DataHoraCriação = DateTime.Now;
                     Presenca.UtilizadorModificação = User.Identity.Name;
@@ -1892,48 +2119,49 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        //[HttpPost]
+        //public JsonResult UpdatePresenca([FromBody] FolhaDeHorasViewModel data)
+        //{
+        //    bool result = false;
+
+        //    try
+        //    {
+        //        if (data.FolhaDeHorasPresenca != null)
+        //        {
+        //            data.FolhaDeHorasPresenca.ForEach(x =>
+        //            {
+        //                DBPresencasFolhaDeHoras.Update(new PresençasFolhaDeHoras()
+        //                {
+        //                    NºFolhaDeHoras = x.FolhaDeHorasNo,
+        //                    Data = Convert.ToDateTime(x.Data),
+        //                    NoEmpregado = x.NoEmpregado,
+        //                    Hora1ªEntrada = TimeSpan.Parse(x.Hora1Entrada),
+        //                    Hora1ªSaída = TimeSpan.Parse(x.Hora1Saida),
+        //                    Hora2ªEntrada = TimeSpan.Parse(x.Hora2Entrada),
+        //                    Hora2ªSaída = TimeSpan.Parse(x.Hora2Saida),
+        //                    Observacoes = x.Observacoes,
+        //                    Validado = x.Validado,
+        //                    IntegradoTr = x.IntegradoTR,
+        //                    DataIntTr = Convert.ToDateTime(x.DataIntTR),
+        //                    UtilizadorCriação = x.UtilizadorCriacao,
+        //                    DataHoraCriação = x.DataHoraCriacao,
+        //                    UtilizadorModificação = User.Identity.Name,
+        //                    DataHoraModificação = DateTime.Now,
+        //                });
+        //            });
+        //        }
+
+        //        result = true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        //log
+        //    }
+        //    return Json(result);
+        //}
+
         [HttpPost]
-        public JsonResult UpdatePresenca([FromBody] FolhaDeHorasViewModel data)
-        {
-            bool result = false;
-
-            try
-            {
-                if (data.FolhaDeHorasPresenca != null)
-                {
-                    data.FolhaDeHorasPresenca.ForEach(x =>
-                    {
-                        DBPresencasFolhaDeHoras.Update(new PresençasFolhaDeHoras()
-                        {
-                            NºFolhaDeHoras = x.FolhaDeHorasNo,
-                            Data = Convert.ToDateTime(x.Data),
-                            NoEmpregado = x.NoEmpregado,
-                            Hora1ªEntrada = TimeSpan.Parse(x.Hora1Entrada),
-                            Hora1ªSaída = TimeSpan.Parse(x.Hora1Saida),
-                            Hora2ªEntrada = TimeSpan.Parse(x.Hora2Entrada),
-                            Hora2ªSaída = TimeSpan.Parse(x.Hora2Saida),
-                            Observacoes = x.Observacoes,
-                            Validado = x.Validado,
-                            IntegradoTR = x.IntegradoTR,
-                            DataIntTR = Convert.ToDateTime(x.DataIntTR),
-                            UtilizadorCriação = x.UtilizadorCriacao,
-                            DataHoraCriação = x.DataHoraCriacao,
-                            UtilizadorModificação = User.Identity.Name,
-                            DataHoraModificação = DateTime.Now,
-                        });
-                    });
-                }
-
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                //log
-            }
-            return Json(result);
-        }
-
-        [HttpPost]
+        //Atualiza uma Presença
         public JsonResult UpdateLinhaPresenca([FromBody] PresencasFolhaDeHorasViewModel data)
         {
             int result = 0;
@@ -2004,8 +2232,8 @@ namespace Hydra.Such.Portal.Controllers
                         Presenca.Hora2ªSaída = TimeSpan.Parse(data.Hora2Saida);
                         Presenca.Observacoes = data.Observacoes;
                         Presenca.Validado = Presenca.Validado;
-                        Presenca.IntegradoTR = Presenca.IntegradoTR;
-                        Presenca.DataIntTR = Presenca.DataIntTR;
+                        Presenca.IntegradoTr = Presenca.IntegradoTr;
+                        Presenca.DataIntTr = Presenca.DataIntTr;
                         Presenca.UtilizadorCriação = Presenca.UtilizadorCriação;
                         Presenca.DataHoraCriação = Presenca.DataHoraCriação;
                         Presenca.UtilizadorModificação = User.Identity.Name;
@@ -2028,6 +2256,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Apaga uma presença
         public JsonResult DeletePresenca([FromBody] PresencasFolhaDeHorasViewModel data)
         {
             bool result = false;
@@ -2048,6 +2277,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Botões
 
         [HttpPost]
+        //Calcula as Ajudas de Custo
         public JsonResult CalcularAjudasCusto([FromBody] FolhaDeHorasViewModel data)
         {
             bool result = false;
@@ -2057,7 +2287,6 @@ namespace Hydra.Such.Portal.Controllers
                 int noLinha;
 
                 //APAGAR TODOS OS REGISTOS DAS LINHAS DE FOLHAS DE HORAS ONDE Calculo_Automatico = true
-
                 List<LinhasFolhaHoras> LinhasFH = DBLinhasFolhaHoras.GetAjudaByFolhaHoraNo(data.FolhaDeHorasNo).Where(x => (x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower()) && (x.CalculoAutomatico == true)).ToList();
                 if (LinhasFH != null)
                 {
@@ -2075,9 +2304,6 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (AjudaCusto != null)
                 {
-                    //NoDias = Convert.ToInt32((Convert.ToDateTime(data.DataChegadaTexto) - Convert.ToDateTime(data.DataPartidaTexto)).TotalDays);
-                    //NoDias = NoDias + 1;
-
                     AjudaCusto.ForEach(x =>
                     {
                         NoDias = Convert.ToInt32((Convert.ToDateTime(data.DataChegadaTexto) - Convert.ToDateTime(data.DataPartidaTexto)).TotalDays);
@@ -2133,7 +2359,6 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (NoDias > 0)
                         {
-
                             noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.FolhaDeHorasNo);
 
                             LinhasFolhaHoras Ajuda = new LinhasFolhaHoras();
@@ -2180,6 +2405,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        //Calcula o Somatória das Distâncias
         public decimal GetSUMDistancia(string noFH)
         {
             decimal SUMDistancia = 0;
@@ -2203,28 +2429,29 @@ namespace Hydra.Such.Portal.Controllers
             return SUMDistancia;
         }
 
+        //[HttpPost]
+        //public JsonResult ValidarBotaoFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
+        //{
+        //    bool result = false;
+        //    try
+        //    {
+        //        string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
+
+        //        if (data.Estado == 0 && data.Validadores.ToLower().Contains(EmpregadoNome.ToLower()))
+        //        {
+        //            result = true;
+        //        }
+
+        //        return Json(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return null;
+        //    }
+        //}
+
         [HttpPost]
-        public JsonResult ValidarBotaoFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
-        {
-            bool result = false;
-            try
-            {
-                string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
-
-                if (data.Estado == 0 && data.Validadores.ToLower().Contains(EmpregadoNome.ToLower()))
-                {
-                    result = true;
-                }
-
-                return Json(result);
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
-        [HttpPost]
+        //Valida uma Folha de Horas
         public JsonResult ValidarFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
             int result = 0;
@@ -2348,8 +2575,8 @@ namespace Hydra.Such.Portal.Controllers
                                                     Hora2ªSaída = TimeSpan.Parse(x.Hora2Saida),
                                                     Observacoes = x.Observacoes,
                                                     Validado = 1,
-                                                    IntegradoTR = 1,
-                                                    DataIntTR = DateTime.Now,
+                                                    IntegradoTr = 1,
+                                                    DataIntTr = DateTime.Now,
                                                     UtilizadorCriação = x.UtilizadorCriacao,
                                                     DataHoraCriação = x.DataHoraCriacao,
                                                     UtilizadorModificação = User.Identity.Name,
@@ -2372,6 +2599,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Intregra as Ajudas de Custo de uma Folha de Horas
         public JsonResult IntegrarEmRHFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
             int result = 0;
@@ -2492,6 +2720,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Integra os KM's de uma Folha de Horas
         public JsonResult IntegrarEmRHKMFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
             int result = 0;
@@ -2612,7 +2841,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(result);
         }
-        
+
         #endregion
     }
 }
