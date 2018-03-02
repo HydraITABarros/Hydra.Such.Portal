@@ -40,7 +40,14 @@ namespace Hydra.Such.Data.NAV
                 WSContact = new WSContacts.WSContact()
                 {
                     No = contact.Id,
-                    Name = contact.Name
+                    gName = contact.Name,
+                    City = contact.City,
+                    E_Mail = contact.Email,
+                    gAddress = contact.Address,
+                    Mobile_Phone_No = contact.MobilePhoneContact,
+                    Phone_No = contact.Phone,
+                    Post_Code = contact.ZipCode,
+                    VAT_Registration_No = contact.VATNumber,
                 }
             };
 
@@ -60,6 +67,64 @@ namespace Hydra.Such.Data.NAV
             //{
             //    throw;
             //}
+
+        }
+
+        public static async Task<WSContacts.Update_Result> UpdateAsync(ContactViewModel contact, NAVWSConfigurations WSConfigurations)
+        {
+            if (contact == null)
+                throw new ArgumentNullException("contact");
+
+
+            WSContacts.Update navUpdate = new WSContacts.Update()
+            {
+                WSContact = new WSContacts.WSContact()
+                {
+                    No = contact.Id,
+                    gName = contact.Name,
+                    City = contact.City,
+                    E_Mail = contact.Email,
+                    gAddress = contact.Address,
+                    Mobile_Phone_No = contact.MobilePhoneContact,
+                    Phone_No = contact.Phone,
+                    Post_Code = contact.ZipCode,
+                    VAT_Registration_No = contact.VATNumber,
+                }
+            };
+
+
+            //Configure NAV Client
+            EndpointAddress ws_URL = new EndpointAddress(WSConfigurations.WS_Contacts_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSContacts.WSContact_PortClient ws_Client = new WSContacts.WSContact_PortClient(navWSBinding, ws_URL);
+            ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            WSContacts.Read_Result resultRead = await ws_Client.ReadAsync(navUpdate.WSContact.No);
+            navUpdate.WSContact.Key = resultRead.WSContact.Key;
+
+            WSContacts.Update_Result result = await ws_Client.UpdateAsync(navUpdate);
+            return result;
+
+        }
+
+        public static async Task<WSContacts.Delete_Result> DeleteAsync(ContactViewModel contact, NAVWSConfigurations WSConfigurations)
+        {
+            if (contact == null)
+                throw new ArgumentNullException("contact");
+            
+
+            //Configure NAV Client
+            EndpointAddress ws_URL = new EndpointAddress(WSConfigurations.WS_Contacts_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSContacts.WSContact_PortClient ws_Client = new WSContacts.WSContact_PortClient(navWSBinding, ws_URL);
+            ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            
+            WSContacts.Read_Result resultRead = await ws_Client.ReadAsync(contact.Id);
+            
+
+            WSContacts.Delete_Result result = await ws_Client.DeleteAsync(resultRead.WSContact.Key);
+            return result;
 
         }
     }

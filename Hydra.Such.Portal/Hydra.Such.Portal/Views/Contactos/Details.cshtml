@@ -34,8 +34,43 @@
                 <vaadin-text-field id="contactId" name="contactId" label="Nº" value="{{contact.id}}" disabled="{{ !_isCreate }}"></vaadin-text-field>
             </div>
             <div class="col-lg-3">
-                <vaadin-text-field id="contactName" name="contactName" label="Nome" value="{{contact.name}}" disabled="{{ !_permissions.update }}"
-                                   required error-message="Este campo é obrigatório"></vaadin-text-field>
+                <vaadin-text-field id="contactName" name="contactName" label="Nome" value="{{contact.name}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="address" name="address" label="Endereço" value="{{contact.address}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="zipcode" name="zipcode" label="Código Postal" value="{{contact.zipCode}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="city" name="city" label="Cidade" value="{{contact.city}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="phone" name="phone" label="Telefone" value="{{contact.phone}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="email" name="email" label="Email" value="{{contact.email}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="email" name="email" label="Email" value="{{contact.email}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="VATNumber" name="VATNumber" label="NIF" value="{{contact.vatNumber}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="PersonContact" name="PersonContact" label="Pessoa Contato" value="{{contact.personContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="PhoneContact" name="PhoneContact" label="Telefone Contato" value="{{contact.phoneContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="ContactFunction" name="ContactFunction" label="Função Contato" value="{{contact.contactFunction}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="MobilePhoneContact" name="MobilePhoneContact" label="Telemovel Contato" value="{{contact.mobilePhoneContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="EmailContact" name="EmailContact" label="Email Contato" value="{{contact.emailContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
             </div>
         </div>
         <div class="marginSpace">
@@ -107,6 +142,7 @@
                     return false;
                 },
                 _createContact: function () {
+                    
                     if (this._validateUserInput()) {
                         this.$.numValidation_contact_request.body = JSON.stringify(this.contact);
                         this.$.numValidation_contact_request.generateRequest();

@@ -176,6 +176,15 @@
                     {{item.codeResponsabilityCenter}}
                 </template>
             </vaadin-grid-column>
+            <vaadin-grid-column width="200px">
+                <template class="header">
+                    <vaadin-grid-sorter path="versionNo">Versão</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="versionNo" />
+                </template>
+                <template>
+                    {{item.versionNo}}
+                </template>
+            </vaadin-grid-column>
             <vaadin-grid-column width="10%" resizable>
                 <template class="header">
                 </template>

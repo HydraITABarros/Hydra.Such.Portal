@@ -176,10 +176,11 @@
         <div>
             <div class="row">
                 <div class="col-lg-2">
-                    <such-selectbox id="projectList" name="projectList" value="{{projectNumber}}" label="Nº Projeto" on-value-changed="_projectChange" disabled="{{disabledProjectNo}}"
+                    <such-selectbox id="projectList" name="projectList" value="{{projectNumber}}" label="Nº Projeto" disabled="{{disabledProjectNo}}"
                                     items="[[response]]"
                                     text-path="id"
                                     value-path="id"
+                                    on-value-changed="_projectChange"
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                     </such-selectbox>
                 </div>
@@ -839,7 +840,6 @@
         <!-- Paper Dialog -->
         <paper-dialog id="dialog" class="dialgoBox">
             <h2 class="dialogTitle">Movimentos de Projeto</h2>
-
             <vaadin-grid aria-label="Movimentos de Projeto" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="projectMovementTable" items="[[resultMovements]]">
                 <vaadin-grid-selection-column auto-select>
                 </vaadin-grid-selection-column>
@@ -1097,6 +1097,36 @@
 
         </paper-dialog>
 
+
+        <paper-dialog id="dialogGetProjetStart" class="dialgoBox">
+            <h2 class="dialogTitle">Movimentos de Projeto</h2>
+            <div class="row">
+                <div class="col-lg-3">
+                    <such-selectbox id="projectSourceDlg" name="projectSourceDlg" label="Nº Projeto Origem" disabled="{{disabledProjectNo}}"
+                                    items="[[response]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    on-value-changed="_projectChange"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+                <div class="col-lg-3">
+                    <such-selectbox id="projectTargetDlg" name="projectTargetDlg" value="{{projectNumber}}" label="Nº Projeto Destino" disabled="{{disabledProjectNo}}"
+                                    items="[[response]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    on-value-changed="_projectChange"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                    </such-selectbox>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <paper-button class="btnSave" raised on-tap="_dlgNext"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Seguinte</paper-button>
+                <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+            </div>
+
+        </paper-dialog>
     </template>
 
     <script>
@@ -1526,23 +1556,29 @@
                 },
 
                 _projectChange: function (e) {
-                    if (e.detail.value) {
-                        this.$.ajax_related.body = JSON.stringify(e.detail.value);
+                    debugger;;
+                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
+
+                        //Request Project Data
+                        this.$.ajax_related.body = JSON.stringify(this.$.projectTargetDlg.value);
                         this.$.ajax_related.generateRequest();
 
-                        this.$.grid_databound_ajax.body = JSON.stringify(e.detail.value);
-                        this.$.grid_databound_ajax.params = { "allProjs": false };    
+                        //Request Project Data
+                        this.$.grid_databound_ajax.params = { "allProjs": false };
+                        this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
 
+                        this.$.grid_databound_ajax.generateRequest();
+
+                    } else if (this.$.projectList.value != undefined && this.$.projectList.value != "") {
+                        this.$.ajax_related.body = JSON.stringify(this.$.projectList.value);
+                        this.$.ajax_related.generateRequest();
                     } else {
                         this.$.piDescription = "";
                         this.$.piCodeRegion = "";
                         this.$.piFuncArea = "";
                         this.$.piCodeResponsabilityCenter = "";
-
-                        this.$.grid_databound_ajax.body = JSON.stringify("");
-                        this.$.grid_databound_ajax.params = { "allProjs": true };
                     }
-                    this.$.grid_databound_ajax.generateRequest();
+                    
                 },
 
                 _projectTypeChange: function (e) {
@@ -1598,7 +1634,6 @@
                             this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
                         }
                     }
-
                 },
 
                 _registerDiary: function () {
@@ -1612,7 +1647,6 @@
                     if (this.$.projectList.value != null && this.$.projectList.value != "") {
                         this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
                         this.$.ajax_movementLines.generateRequest();
-                        //Update List
                     }
                     else {
                         this.openToastError("Precisa de selecionar um projeto.");
@@ -1620,9 +1654,19 @@
 
                 },
                 _getMovementsProject: function () {
-                    this.$.dialog.open();
-                    if (this.resultMovements == null || this.resultMovements == undefined || this.resultMovements.length == 0) {
+                    this.$.dialogGetProjetStart.open();
+
+                    /*if (this.resultMovements == null || this.resultMovements == undefined || this.resultMovements.length == 0) {
                         this.openToastError("Não existem movimentos associados a este projeto.");
+                    }*/
+
+                },
+                _dlgNext: function () {
+                    if (this.$.projectSourceDlg.value != undefined && this.$.projectSourceDlg.value != "" && this.$.projectTargetDlg.value != undefined && this.$.projectTargetDlg.value != "") {
+                        this.$.dialogGetProjetStart.close();
+                        this.$.dialog.open();
+                    } else {
+                        this.openToastError("É obrigatório escolher o projeto de origem e destino.");
                     }
 
                 },
@@ -1917,39 +1961,7 @@
                     }
                 }
             });
-
-            //Polymer.Base.async(function () {
-            //    // Set up the parser library for Finnish locale
-            //    Sugar.Date.setLocale('pt');
-            //    debugger;
-            //    var datepicker = Polymer.dom(this.root).querySelector('#dpDate');//document.querySelector('vaadin-date-picker#dpDate');
-            //    datepicker.i18n = {
-            //        week: 'Semana',
-            //        calendar: 'Calendário',
-            //        clear: 'Limpar',
-            //        today: 'Hoje',
-            //        cancel: 'Cancelar',
-            //        firstDayOfWeek: 1,
-            //        monthNames:
-            //        'janeiro_fevereiro_março_abril_maio_junho_julho_agosto_setembro_outubro_novembro_dezembro'.split('_'),
-            //        weekdays: 'domingo_segunda_terça_quarta_quinta_sexta_sabado'.split('_'),
-            //        weekdaysShort: 'su_ma_ti_ke_to_pe_la'.split('_'),
-            //        formatDate: function (date) {
-            //            return Sugar.Date.format(date, '{short}');
-            //        },
-            //        formatTitle: function (monthName, fullYear) {
-            //            return monthName + ' ' + fullYear;
-            //        },
-            //        parseDate: function (dateString) {
-            //            var matches = datepicker.i18n.monthNames.filter(function (monthName) {
-            //                return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
-            //            });
-            //            dateString = matches.length === 1 ? matches[0] : dateString;
-            //            // Parse the date
-            //            return Sugar.Date.create(dateString);
-            //        }
-            //    };
-            //});
+            
         });
     </script>
 </dom-module>

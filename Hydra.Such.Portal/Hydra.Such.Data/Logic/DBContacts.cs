@@ -154,7 +154,19 @@ namespace Hydra.Such.Data.Logic
                     CreateDate = item.DataHoraCriação.HasValue ? item.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
                     UpdateDate = item.DataHoraModificação.HasValue ? item.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
                     CreateUser = item.UtilizadorCriação,
-                    UpdateUser = item.UtilizadorModificação
+                    UpdateUser = item.UtilizadorModificação,
+                    City = item.Cidade,
+                    ZipCode = item.Cp,
+                    Email = item.Email,
+                    EmailContact = item.EmailContato,
+                    Address = item.Endereço,
+                    ContactFunction = item.FunçãoContato,
+                    VATNumber = item.Nif,
+                    Notes = item.Notas,
+                    PersonContact = item.PessoaContato,
+                    Phone = item.Telefone,
+                    PhoneContact = item.TelefoneContato,
+                    MobilePhoneContact = item.TelemovelContato
                 };
             }
             return null;
@@ -180,7 +192,19 @@ namespace Hydra.Such.Data.Logic
                     DataHoraCriação = string.IsNullOrEmpty(item.CreateDate) ? (DateTime?)null : DateTime.Parse(item.CreateDate),
                     DataHoraModificação = string.IsNullOrEmpty(item.UpdateDate) ? (DateTime?)null : DateTime.Parse(item.UpdateDate),
                     UtilizadorCriação = item.CreateUser,
-                    UtilizadorModificação = item.UpdateUser
+                    UtilizadorModificação = item.UpdateUser,
+                    Cidade = item.City,
+                    Cp = item.ZipCode,
+                    Email = item.Email,
+                    EmailContato = item.EmailContact,
+                    Endereço = item.Address,
+                    FunçãoContato = item.ContactFunction,
+                    Nif = item.VATNumber,
+                    Notas = item.Notes,
+                    PessoaContato = item.PersonContact,
+                    Telefone = item.Phone,
+                    TelefoneContato = item.PhoneContact,
+                    TelemovelContato = item.MobilePhoneContact
                 };
             }
             return null;

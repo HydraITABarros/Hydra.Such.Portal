@@ -20,6 +20,7 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
@@ -149,7 +150,7 @@
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRequestOrigin" last-response="{{CBRequestOrigin}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsStatus" last-response="{{CBProposalsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetContacts" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContactsByType" last-response="{{CBContacts}}" auto params='{ "type" : 0 }' method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnit" last-response="{{LFetchUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -333,18 +334,21 @@
 
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
-                <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
-                <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
-                <paper-button class="tablinks" on-tap="_confirmContractUpdate" id="parseParcialContract" disabled="[[ !_permissions.update ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
-                <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ !_showContractLines }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
-                <div class="dropdownMenu">
-                    <paper-button class="tablinks" on-tap="_showStatusDropDown" id="statusMenu" hidden="[[ !_permissions.update ]]"><i class="fa fa-chevron-down" aria-hidden="true"></i> Alterar Estado</paper-button>
-                    <div id="StatusDropDownContent" class="dropdownMenu-content">
-                        <template is="dom-repeat" items="[[CBProposalsStatus]]">
-                            <paper-button class="dropbtnItem" on-tap="_changeStatus" style="width: 250px;">[[ item.value ]]</paper-button>
-                        </template>
+                <template is="dom-if" if="{{ _permissions.update }}">
+                    <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
+                    <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
+                    <paper-button class="tablinks" on-tap="_confirmContractUpdate" id="parseParcialContract" disabled="[[ !_permissions.update ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
+                    <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ !_showContractLines }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
+                    <div class="dropdownMenu">
+                        <paper-button class="tablinks" on-tap="_showStatusDropDown" id="statusMenu" hidden="[[ !_permissions.update ]]"><i class="fa fa-chevron-down" aria-hidden="true"></i> Alterar Estado</paper-button>
+                        <div id="StatusDropDownContent" class="dropdownMenu-content">
+                            <template is="dom-repeat" items="[[_statusMenuItems]]">
+                                <paper-button class="dropbtnItem" on-tap="_changeStatus" style="width: 250px;">[[ item.value ]]</paper-button>
+                            </template>
+                        </div>
                     </div>
-                </div>
+                    <paper-button class="tablinks" on-tap="_archive" id="btnArchive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
+                </template>
             </div>
         </template>
         <div class="row">
@@ -746,7 +750,6 @@
                                     <template is="dom-if" if="{{ !_isCreate }}">
                                         <template is="dom-if" if="{{ _permissions.update }}">
                                             <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                            <paper-button raised id="btnArchive" class="btnSave" on-tap="_archive"><i class="fa fa-file-archive-o" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>
                                         </template>
                                     </template>
                                     <template is="dom-if" if="{{ _permissions.delete }}">
@@ -791,7 +794,17 @@
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-combo-box items="[[CBContractLineCodes]]" id="_CLCode" name="_CLCode" item-value-path="id" item-label-path="id" value="{{_CLCode}}" label="Código" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineCodeChange">
+                                        <such-selectbox id="_CLCode" value="{{_CLCode}}" label="Código"
+                                                        items="[[CBContractLineCodes]]"
+                                                        text-path="id"
+                                                        value-path="value"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                                        required error-message="Este campo é obrigatório"
+                                                        disabled="{{ !_permissions.update }}"
+                                                        on-value-changed="_clContractLineCodeChange">
+                                        </such-selectbox>
+
+                                        <!--<vaadin-combo-box items="[[CBContractLineCodes]]" id="_CLCode" name="_CLCode" item-value-path="id" item-label-path="id" value="{{_CLCode}}" label="Código" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineCodeChange">
                                             <template>
                                                 <paper-icon-item>
                                                     <paper-item-body two-line>
@@ -799,7 +812,7 @@
                                                     </paper-item-body>
                                                 </paper-icon-item>
                                             </template>
-                                        </vaadin-combo-box>
+                                        </vaadin-combo-box>-->
                                     </div>
 
                                     <div class="col-lg-2">
@@ -1613,6 +1626,10 @@
                         type: Boolean,
                         value: false,
                     },
+                    _statusMenuItems: {
+                        type: Array,
+                        value: [{ id: 1, value: "Aberta" }, { id: 2, value: "Enviada" }, { id: 3, value: "Revista" }, { id: 4, value: "Perdida" }, { id: 5, value: "Cancelada" }],
+                    },
                     _statusForContractUpdate: {
                         type: Array,
                         value: [{ value: 2, description: "Enviada" }, { value: 3, description: "Revista" }],
@@ -1754,9 +1771,10 @@
                     this.$.ToastError.open();
                 },
                 _validateData: function () {
-                    if (this.$.contractNo.validate() &
-                        this.$.Description.validate() &
-                        this.$.mClients.validate() &
+                    if (this.$.Description.validate() &
+                        //this.$.mClients.validate() &
+                        //this.$.contactNo.validate() &
+                        this.$.contractNo.validate() &
                         this.$.mFeeUnits.validate() &
                         this.$.mCodeRegion.validate() &
                         this.$.mFunctionalArea.validate() &
@@ -1779,7 +1797,6 @@
                         this.$.ShippingLocality.validate() &
                         this.$.ShippingName.validate() &
                         this.$.shippingZipCode.validate() &
-                        this.$.contactNo.validate() &
                         this.$.mBillingTypes.validate() &
                         this.$.mMaintenanceTypes.validate() &
                         this.$.mProvisioningFee.validate() &
@@ -1787,6 +1804,17 @@
                         this.$.mDisplacementFee.validate() &
                         this.$.mInvoicePeriods.validate() &
                         this.$.mTotalProposalValue.validate()) {
+
+                        if ((this.$.mClients.value != "" && this.$.mClients.value != undefined) &&
+                            (this.$.contactNo.value != "" && this.$.contactNo.value != undefined)) {
+                            this._openToastError("Selecionou cliente e contato. Apenas pode selecionar uma das opções.");
+                            return false;
+                        }
+                        if ((this.$.mClients.value == "" && this.$.mClients.value == undefined) &&
+                            (this.$.contactNo.value == "" && this.$.contactNo.value == undefined)) {
+                            this._openToastError("É obrigatória seleção de um cliente ou de um contato.");
+                            return false;
+                        }
                         return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");
