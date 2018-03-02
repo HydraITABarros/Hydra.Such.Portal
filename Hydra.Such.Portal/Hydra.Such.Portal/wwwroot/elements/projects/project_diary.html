@@ -839,7 +839,6 @@
         <!-- Paper Dialog -->
         <paper-dialog id="dialog" class="dialgoBox">
             <h2 class="dialogTitle">Movimentos de Projeto</h2>
-
             <vaadin-grid aria-label="Movimentos de Projeto" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="projectMovementTable" items="[[resultMovements]]">
                 <vaadin-grid-selection-column auto-select>
                 </vaadin-grid-selection-column>
@@ -1097,6 +1096,20 @@
 
         </paper-dialog>
 
+
+        <paper-dialog id="dialog" class="dialgoBox">
+            <h2 class="dialogTitle">Movimentos de Projeto</h2>
+            <div class="row">
+                <div class="col-lg-3"></div>
+                <div class="col-lg-3"></div>
+            </div>
+
+            <div class="buttons">
+                <paper-button class="btnSave" raised on-tap="_dlgNext" ><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Seguinte</paper-button>
+                <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
+            </div>
+
+        </paper-dialog>
     </template>
 
     <script>
@@ -1598,7 +1611,6 @@
                             this.openToastError("Occorreu um erro ao registar as linhas do Diário.");
                         }
                     }
-
                 },
 
                 _registerDiary: function () {
@@ -1612,7 +1624,6 @@
                     if (this.$.projectList.value != null && this.$.projectList.value != "") {
                         this.$.ajax_movementLines.body = JSON.stringify(this.$.projectList.value);
                         this.$.ajax_movementLines.generateRequest();
-                        //Update List
                     }
                     else {
                         this.openToastError("Precisa de selecionar um projeto.");

@@ -741,7 +741,7 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Code,
                 value = x.Name,
                 extra = ""
-            }).Take(5).ToList();
+            }).ToList();
             return Json(result);
         }
 
@@ -753,7 +753,7 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Code,
                 value = x.Name,
                 extra = x.MeasureUnit
-            }).Take(5).ToList();
+            }).ToList();
             return Json(result);
         }
 
@@ -1460,7 +1460,7 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Code,
                 value = x.Name,
                 extra = x.MeasureUnit
-            }).Take(5).ToList();
+            }).ToList();
             return Json(result);
         }
 

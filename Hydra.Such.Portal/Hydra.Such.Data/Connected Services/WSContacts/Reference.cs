@@ -72,7 +72,21 @@ namespace WSContacts
         
         private string noField;
         
-        private string nameField;
+        private string gNameField;
+        
+        private string gAddressField;
+        
+        private string post_CodeField;
+        
+        private string cityField;
+        
+        private string e_MailField;
+        
+        private string phone_NoField;
+        
+        private string mobile_Phone_NoField;
+        
+        private string vAT_Registration_NoField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
@@ -104,15 +118,113 @@ namespace WSContacts
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=2)]
-        public string Name
+        public string gName
         {
             get
             {
-                return this.nameField;
+                return this.gNameField;
             }
             set
             {
-                this.nameField = value;
+                this.gNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
+        public string gAddress
+        {
+            get
+            {
+                return this.gAddressField;
+            }
+            set
+            {
+                this.gAddressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
+        public string Post_Code
+        {
+            get
+            {
+                return this.post_CodeField;
+            }
+            set
+            {
+                this.post_CodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
+        public string City
+        {
+            get
+            {
+                return this.cityField;
+            }
+            set
+            {
+                this.cityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
+        public string E_Mail
+        {
+            get
+            {
+                return this.e_MailField;
+            }
+            set
+            {
+                this.e_MailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
+        public string Phone_No
+        {
+            get
+            {
+                return this.phone_NoField;
+            }
+            set
+            {
+                this.phone_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
+        public string Mobile_Phone_No
+        {
+            get
+            {
+                return this.mobile_Phone_NoField;
+            }
+            set
+            {
+                this.mobile_Phone_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
+        public string VAT_Registration_No
+        {
+            get
+            {
+                return this.vAT_Registration_NoField;
+            }
+            set
+            {
+                this.vAT_Registration_NoField = value;
             }
         }
     }
@@ -167,7 +279,28 @@ namespace WSContacts
         No,
         
         /// <remarks/>
-        Name,
+        gName,
+        
+        /// <remarks/>
+        gAddress,
+        
+        /// <remarks/>
+        Post_Code,
+        
+        /// <remarks/>
+        City,
+        
+        /// <remarks/>
+        E_Mail,
+        
+        /// <remarks/>
+        Phone_No,
+        
+        /// <remarks/>
+        Mobile_Phone_No,
+        
+        /// <remarks/>
+        VAT_Registration_No,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -754,8 +887,8 @@ namespace WSContacts
         {
             if ((endpointConfiguration == EndpointConfiguration.WSContact_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://such-navsql.such.local:8047/DynamicsNAV100_DEV/WS/CRONUS Portugal Ltd./Pag" +
-                        "e/WSContact?wsdl");
+                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:7057/DynamicsNAV100_QUAL/WS/SUCH - Qualidade/Page/WSContact?ws" +
+                        "dl");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }
