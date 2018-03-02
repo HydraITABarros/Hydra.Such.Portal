@@ -149,7 +149,7 @@
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRequestOrigin" last-response="{{CBRequestOrigin}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsStatus" last-response="{{CBProposalsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetContacts" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContactsByType" last-response="{{CBContacts}}" auto params='{ "type" : 0 }' method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnit" last-response="{{LFetchUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -1754,9 +1754,10 @@
                     this.$.ToastError.open();
                 },
                 _validateData: function () {
-                    if (this.$.contractNo.validate() &
-                        this.$.Description.validate() &
-                        this.$.mClients.validate() &
+                    if (this.$.Description.validate() &
+                        //this.$.mClients.validate() &
+                        //this.$.contactNo.validate() &
+                        this.$.contractNo.validate() &
                         this.$.mFeeUnits.validate() &
                         this.$.mCodeRegion.validate() &
                         this.$.mFunctionalArea.validate() &
@@ -1779,7 +1780,6 @@
                         this.$.ShippingLocality.validate() &
                         this.$.ShippingName.validate() &
                         this.$.shippingZipCode.validate() &
-                        this.$.contactNo.validate() &
                         this.$.mBillingTypes.validate() &
                         this.$.mMaintenanceTypes.validate() &
                         this.$.mProvisioningFee.validate() &
@@ -1787,6 +1787,17 @@
                         this.$.mDisplacementFee.validate() &
                         this.$.mInvoicePeriods.validate() &
                         this.$.mTotalProposalValue.validate()) {
+
+                        if ((this.$.mClients.value != "" && this.$.mClients.value != undefined) &&
+                            (this.$.contactNo.value != "" && this.$.contactNo.value != undefined)) {
+                            this._openToastError("Selecionou cliente e contato. Apenas pode selecionar uma das opções.");
+                            return false;
+                        }
+                        if ((this.$.mClients.value == "" && this.$.mClients.value == undefined) &&
+                            (this.$.contactNo.value == "" && this.$.contactNo.value == undefined)) {
+                            this._openToastError("É obrigatória seleção de um cliente ou de um contato.");
+                            return false;
+                        }
                         return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");

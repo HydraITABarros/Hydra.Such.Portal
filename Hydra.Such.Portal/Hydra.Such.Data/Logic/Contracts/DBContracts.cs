@@ -328,42 +328,48 @@ namespace Hydra.Such.Data.Logic.Contracts
             if (result.DataHoraLimiteEsclarecimentos != null)
             {
                 result.DataHoraLimiteEsclarecimentos = result.DataHoraLimiteEsclarecimentos.Value.Date;
-                result.DataHoraLimiteEsclarecimentos = result.DataHoraLimiteEsclarecimentos.Value.Add(TimeSpan.Parse(x.LimitClarificationTime));
+                if (!string.IsNullOrEmpty(x.LimitClarificationTime))
+                    result.DataHoraLimiteEsclarecimentos = result.DataHoraLimiteEsclarecimentos.Value.Add(TimeSpan.Parse(x.LimitClarificationTime));
                 Console.WriteLine(result.DataHoraLimiteEsclarecimentos.Value.ToString());
             }
 
             if (result.DataHoraErrosEOmissões != null)
             {
                 result.DataHoraErrosEOmissões = result.DataHoraErrosEOmissões.Value.Date;
-                result.DataHoraErrosEOmissões = result.DataHoraErrosEOmissões.Value.Add(TimeSpan.Parse(x.ErrorsOmissionsTime));
+                if (!string.IsNullOrEmpty(x.ErrorsOmissionsTime))
+                    result.DataHoraErrosEOmissões = result.DataHoraErrosEOmissões.Value.Add(TimeSpan.Parse(x.ErrorsOmissionsTime));
                 Console.WriteLine(result.DataHoraErrosEOmissões.Value.ToString());
             }
 
             if (result.DataHoraRelatórioFinal != null)
             {
                 result.DataHoraRelatórioFinal = result.DataHoraRelatórioFinal.Value.Date;
-                result.DataHoraRelatórioFinal = result.DataHoraRelatórioFinal.Value.Add(TimeSpan.Parse(x.FinalReportTime));
+                if (!string.IsNullOrEmpty(x.FinalReportTime))
+                    result.DataHoraRelatórioFinal = result.DataHoraRelatórioFinal.Value.Add(TimeSpan.Parse(x.FinalReportTime));
                 Console.WriteLine(result.DataHoraRelatórioFinal.Value.ToString());
             }
 
             if (result.DataHoraHabilitaçãoDocumental != null)
             {
                 result.DataHoraHabilitaçãoDocumental = result.DataHoraHabilitaçãoDocumental.Value.Date;
-                result.DataHoraHabilitaçãoDocumental = result.DataHoraHabilitaçãoDocumental.Value.Add(TimeSpan.Parse(x.PreviousHearingTime));
+                if(!string.IsNullOrEmpty(x.PreviousHearingTime))
+                    result.DataHoraHabilitaçãoDocumental = result.DataHoraHabilitaçãoDocumental.Value.Add(TimeSpan.Parse(x.PreviousHearingTime));
                 Console.WriteLine(result.DataHoraHabilitaçãoDocumental.Value.ToString());
             }
 
             if (result.AudiênciaPrévia != null)
             {
                 result.AudiênciaPrévia = result.AudiênciaPrévia.Value.Date;
-                result.AudiênciaPrévia = result.AudiênciaPrévia.Value.Add(TimeSpan.Parse(x.PreviousHearingTime));
+                if (!string.IsNullOrEmpty(x.PreviousHearingTime))
+                    result.AudiênciaPrévia = result.AudiênciaPrévia.Value.Add(TimeSpan.Parse(x.PreviousHearingTime));
                 Console.WriteLine(result.AudiênciaPrévia.Value.ToString());
             }
 
             if (result.DataHoraEntregaProposta != null)
             {
                 result.DataHoraEntregaProposta = result.DataHoraEntregaProposta.Value.Date;
-                result.DataHoraEntregaProposta = result.DataHoraEntregaProposta.Value.Add(TimeSpan.Parse(x.ProposalDeliveryTime));
+                if (!string.IsNullOrEmpty(x.ProposalDeliveryTime))
+                    result.DataHoraEntregaProposta = result.DataHoraEntregaProposta.Value.Add(TimeSpan.Parse(x.ProposalDeliveryTime));
             }
 
             return result;
