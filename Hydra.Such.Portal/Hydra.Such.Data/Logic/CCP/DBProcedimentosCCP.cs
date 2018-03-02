@@ -1247,7 +1247,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 return !isNonWorkingDay;
             };
 
-            return Enumerable.Range(0, (FinishDateExclusive - Current).Days).Count(isWorkingDay);
+            return Enumerable.Range(0, (Current - FinishDateExclusive).Days).Count(isWorkingDay);
         }
 
         // we can provide a list of dates to exclude from the range
@@ -1617,7 +1617,7 @@ namespace Hydra.Such.Data.Logic.CCP
             }
             else
             {
-                Procedimento.TemposPaCcp.Estado4Tg += GetWorkingDays(DateTime.Now, Procedimento.DataHoraEstado.Value);
+                Procedimento.TemposPaCcp.Estado4Tg = Procedimento.TemposPaCcp.Estado4Tg ?? 0 + GetWorkingDays(DateTime.Now, Procedimento.DataHoraEstado.Value);
                 Procedimento.TemposPaCcp.UtilizadorModificacao = UserDetails.IdUtilizador;
                 Procedimento.TemposPaCcp.DataHoraModificacao = DateTime.Now;
                 if (!__UpdateTemposPaCcp(CCPFunctions.CastTemposCCPViewToTemposPaCcp(Procedimento.TemposPaCcp)))
@@ -1668,7 +1668,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 Comentario = Procedimento.ComentarioFundamentoCompras,
                 User = UserDetails.IdUtilizador,
                 TipoEstado = 1,
-
+                NomeUser = UserDetails.Nome,
                 UtilizadorCriacao = UserDetails.IdUtilizador,
                 DataHoraCriacao = DateTime.Now
             };
@@ -1743,7 +1743,7 @@ namespace Hydra.Such.Data.Logic.CCP
                         break;
                 };
 
-                if(Procedimento.TemposPaCcp.Estado4Tg - Procedimento.TemposPaCcp.Estado4 != 0)
+                if(Procedimento.TemposPaCcp.Estado4Tg - (Procedimento.TemposPaCcp.Estado4 ?? 0) != 0)
                 {
                     Procedimento.No_DiasAtraso += (Procedimento.TemposPaCcp.Estado4Tg - Procedimento.TemposPaCcp.Estado4);
                     if (Procedimento.DataFechoPrevista.HasValue)
