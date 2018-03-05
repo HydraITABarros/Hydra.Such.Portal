@@ -315,155 +315,6 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (ContratoDB != null)
                         {
-                            #region old
-                            ////Update Fields
-                            //ContratoDB.UnidadePrestação = data.ProvisionUnit;
-                            //ContratoDB.CódigoCentroResponsabilidade = data.CodeResponsabilityCenter;
-                            //ContratoDB.CódTermosPagamento = data.CodePaymentTerms;
-                            //ContratoDB.Descrição = data.Description;
-                            //ContratoDB.NºCliente = data.ClientNo;
-                            //ContratoDB.CódigoRegião = data.CodeRegion;
-                            //ContratoDB.CódigoÁreaFuncional = data.CodeFunctionalArea;
-                            //ContratoDB.Notas = data.Notes;
-                            //ContratoDB.ObjetoServiço = data.ServiceObject;
-                            //ContratoDB.DataInício1ºContrato = data.StartDateFirstContract == ""
-                            //    ? null
-                            //    : (DateTime?)DateTime.Parse(data.StartDateFirstContract);
-                            //ContratoDB.NºRequisiçãoDoCliente = data.ClientRequisitionNo;
-                            //ContratoDB.NºCompromisso = data.PromiseNo;
-                            //ContratoDB.DataInicial = data.StartData == ""
-                            //    ? null
-                            //    : (DateTime?)DateTime.Parse(data.StartData);
-                            //ContratoDB.Estado = data.Status;
-                            //ContratoDB.DataReceçãoRequisição = data.ReceiptDateRequisition == ""
-                            //    ? null
-                            //    : (DateTime?)DateTime.Parse(data.ReceiptDateRequisition);
-                            //ContratoDB.NºVersão = data.VersionNo;
-                            //ContratoDB.DataExpiração = data.DueDate == ""
-                            //    ? null
-                            //    : (DateTime?)DateTime.Parse(data.DueDate);
-                            //ContratoDB.EstadoAlteração = data.ChangeStatus;
-                            //ContratoDB.CódEndereçoEnvio = data.CodeShippingAddress;
-                            //ContratoDB.EnvioAEndereço = data.ShippingAddress;
-                            //ContratoDB.EnvioALocalidade = data.ShippingLocality;
-                            //ContratoDB.EnvioACódPostal = data.ShippingZipCode;
-                            //ContratoDB.EnvioANome = data.ShippingName;
-                            //ContratoDB.TipoFaturação = data.BillingType;
-                            //ContratoDB.Mc = data.Mc;
-                            //ContratoDB.ContratoAvençaFixa = data.FixedVowsAgreement;
-                            //ContratoDB.JuntarFaturas = data.BatchInvoices;
-                            //ContratoDB.TipoContratoManut = data.MaintenanceContractType;
-                            //ContratoDB.TaxaDeslocação = data.DisplacementFee;
-                            //ContratoDB.ContratoAvençaVariável = data.VariableAvengeAgrement;
-                            //ContratoDB.LinhasContratoEmFact = data.ContractLinesInBilling;
-                            //ContratoDB.TaxaAprovisionamento = data.ProvisioningFee;
-                            //ContratoDB.PeríodoFatura = data.InvocePeriod;
-                            //ContratoDB.UtilizadorModificação = User.Identity.Name;
-                            //ContratoDB.OrigemDoPedido = data.OrderOrigin;
-                            //ContratoDB.DescOrigemDoPedido = data.OrdOrderSource;
-                            //ContratoDB.DataEnvioCliente = data.CustomerShipmentDate == ""
-                            //    ? null
-                            //    : (DateTime?)DateTime.Parse(data.CustomerShipmentDate);
-                            //ContratoDB.DataAlteraçãoProposta = data.ProposalChangeDate == ""
-                            //    ? null
-                            //    : (DateTime?)DateTime.Parse(data.ProposalChangeDate);
-                            //ContratoDB.NumeraçãoInterna = data.InternalNumeration;
-                            //ContratoDB.ValorTotalProposta = data.TotalProposalValue;
-                            //ContratoDB.DataHoraLimiteEsclarecimentos = data.LimitClarificationDate == ""
-                            //    ? null
-                            //    : (DateTime?)DateTime.Parse(data.LimitClarificationDate);
-
-                            //ContratoDB.DataHoraErrosEOmissões = data.ErrorsOmissionsDate == ""
-                            //    ? null
-                            //    : (DateTime?)DateTime.Parse(data.ErrorsOmissionsDate);
-
-                            //ContratoDB.DataHoraRelatórioFinal = data.FinalReportDate == ""
-                            //    ? null
-                            //    : (DateTime?)DateTime.Parse(data.FinalReportDate);
-                            //ContratoDB.DataHoraHabilitaçãoDocumental = data.DocumentationHabilitationDate == ""
-                            //    ? null
-                            //    : (DateTime?)DateTime.Parse(data.DocumentationHabilitationDate);
-                            //ContratoDB.PróximaDataFatura = data.NextInvoiceDate == ""
-                            //    ? null
-                            //    : (DateTime?)DateTime.Parse(data.NextInvoiceDate);
-                            //ContratoDB.PróximoPeríodoFact = data.NextBillingPeriod;
-                            //ContratoDB.NºContato = data.ContactNo;
-                            //ContratoDB.ValorBaseProcedimento = data.BaseValueProcedure;
-                            //ContratoDB.AudiênciaPrévia = data.PreviousHearing == ""
-                            //    ? null
-                            //    : (DateTime?)DateTime.Parse(data.PreviousHearing);
-                            //ContratoDB.DataHoraEntregaProposta = data.ProposalDelivery == ""
-                            //    ? null
-                            //    : (DateTime?)DateTime.Parse(data.ProposalDelivery);
-
-                            //if (ContratoDB.AudiênciaPrévia != null)
-                            //{
-                            //    ContratoDB.AudiênciaPrévia = ContratoDB.AudiênciaPrévia.Value.Date;
-                            //    if (data.PreviousHearingTime != null)
-                            //    {
-                            //        ContratoDB.AudiênciaPrévia = ContratoDB.AudiênciaPrévia.Value.Add(TimeSpan.Parse(data.PreviousHearingTime));
-                            //    }
-                            //}
-
-                            //if (ContratoDB.DataHoraLimiteEsclarecimentos != null)
-                            //{
-                            //    ContratoDB.DataHoraLimiteEsclarecimentos = ContratoDB.DataHoraLimiteEsclarecimentos.Value.Date;
-                            //    if (data.LimitClarificationTime != null)
-                            //    {
-                            //        ContratoDB.DataHoraLimiteEsclarecimentos = ContratoDB.DataHoraLimiteEsclarecimentos.Value.Add(TimeSpan.Parse(data.LimitClarificationTime));
-                            //    }
-                            //}
-
-                            //if (ContratoDB.DataHoraErrosEOmissões != null)
-                            //{
-                            //    ContratoDB.DataHoraErrosEOmissões = ContratoDB.DataHoraErrosEOmissões.Value.Date;
-                            //    if (data.ErrorsOmissionsTime != null)
-                            //    {
-                            //        ContratoDB.DataHoraErrosEOmissões = ContratoDB.DataHoraErrosEOmissões.Value.Add(TimeSpan.Parse(data.ErrorsOmissionsTime));
-                            //    }
-                            //}
-
-                            //if (ContratoDB.DataHoraRelatórioFinal != null)
-                            //{
-                            //    ContratoDB.DataHoraRelatórioFinal = ContratoDB.DataHoraRelatórioFinal.Value.Date;
-                            //    if (data.FinalReportTime != null)
-                            //    {
-                            //        ContratoDB.DataHoraRelatórioFinal = ContratoDB.DataHoraRelatórioFinal.Value.Add(TimeSpan.Parse(data.FinalReportTime));
-                            //    }
-                            //}
-
-                            //if (ContratoDB.DataHoraHabilitaçãoDocumental != null)
-                            //{
-                            //    ContratoDB.DataHoraHabilitaçãoDocumental = ContratoDB.DataHoraHabilitaçãoDocumental.Value.Date;
-                            //    if (data.DocumentationHabilitationTime != null)
-                            //    {
-                            //        ContratoDB.DataHoraHabilitaçãoDocumental = ContratoDB.DataHoraHabilitaçãoDocumental.Value.Add(TimeSpan.Parse(data.DocumentationHabilitationTime));
-                            //    }
-                            //}
-
-                            //if (ContratoDB.DataHoraEntregaProposta != null)
-                            //{
-                            //    ContratoDB.DataHoraEntregaProposta = ContratoDB.DataHoraEntregaProposta.Value.Date;
-                            //    if (data.ProposalDeliveryTime != null)
-                            //    {
-                            //        ContratoDB.DataHoraEntregaProposta = ContratoDB.DataHoraEntregaProposta.Value.Add(TimeSpan.Parse(data.ProposalDeliveryTime));
-                            //    }
-                            //}
-
-                            //ContratoDB.ReferênciaContrato = data.ContractReference;
-                            //ContratoDB.DataInícioContrato = data.ContractStartDate != "" && data.ContractStartDate != null ? DateTime.Parse(data.ContractStartDate) : (DateTime?)null;
-                            //ContratoDB.DataFimContrato = data.ContractEndDate != "" && data.ContractEndDate != null ? DateTime.Parse(data.ContractEndDate) : (DateTime?)null;
-                            //ContratoDB.DescriçãoDuraçãoContrato = data.ContractDurationDescription;
-                            //ContratoDB.RescisãoPrazoAviso = data.TerminationTermNotice;
-                            //ContratoDB.CondiçõesParaRenovação = data.RenovationConditions;
-                            //ContratoDB.CondiçõesRenovaçãoOutra = data.RenovationConditionsAnother;
-                            //ContratoDB.CondiçõesPagamento = data.PaymentTerms;
-                            //ContratoDB.CondiçõesPagamentoOutra = data.PaymentTermsAnother;
-                            //ContratoDB.AssinadoPeloCliente = data.CustomerSigned;
-                            //ContratoDB.Juros = data.Interests;
-                            //ContratoDB.DataDaAssinatura = data.SignatureDate != "" && data.SignatureDate != null ? DateTime.Parse(data.SignatureDate) : (DateTime?)null;
-                            //ContratoDB.DataEnvioCliente = data.CustomerShipmentDate !=  "" && data.CustomerShipmentDate != null ? DateTime.Parse(data.CustomerShipmentDate) : (DateTime?)null;
-                            #endregion
                             ContratoDB = DBContracts.ParseToDB(data);
                             ContratoDB = DBContracts.Update(ContratoDB);
 
@@ -1414,6 +1265,17 @@ namespace Hydra.Such.Portal.Controllers
                                         newline.NºVersão = int.Parse(versionNo);
                                         newline.NºLinha = 0;
                                         DBContractLines.Create(newline);
+                                    }
+                                    if (string.IsNullOrEmpty(thisHeader.NºCliente) && !string.IsNullOrEmpty(thisHeader.NºContato))
+                                    {
+                                        //convert contact to custumer
+                                        Task<WSGenericCodeUnit.FxContact2Customer_Result> convertToCustumerTask = WSGeneric.ConvertToCustomer(thisHeader.NºContato, _configws);
+                                        convertToCustumerTask.Wait();
+                                        if (convertToCustumerTask.IsCompletedSuccessfully)
+                                        {
+                                            thisHeader.NºCliente = convertToCustumerTask.Result.return_value;
+                                            DBContracts.Update(thisHeader);
+                                        }
                                     }
                                 }
                             }

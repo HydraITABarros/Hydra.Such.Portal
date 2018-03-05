@@ -374,9 +374,20 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetContacts()
+        public JsonResult GetContacts([FromBody] int type = -1)
         {
             List<DDMessageString> result = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.No_,
+                value = x.Name
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetContactsByType([FromBody] int type)
+        {
+            List<DDMessageString> result = DBNAV2017Contacts.GetContactsByType(_config.NAVDatabaseName, _config.NAVCompanyName, "", type).Select(x => new DDMessageString()
             {
                 id = x.No_,
                 value = x.Name
@@ -741,7 +752,7 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Code,
                 value = x.Name,
                 extra = ""
-            }).Take(5).ToList();
+            }).ToList();
             return Json(result);
         }
 
@@ -753,7 +764,7 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Code,
                 value = x.Name,
                 extra = x.MeasureUnit
-            }).Take(5).ToList();
+            }).ToList();
             return Json(result);
         }
 
@@ -1460,7 +1471,7 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Code,
                 value = x.Name,
                 extra = x.MeasureUnit
-            }).Take(5).ToList();
+            }).ToList();
             return Json(result);
         }
 

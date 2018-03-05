@@ -201,6 +201,18 @@ namespace Hydra.Such.Portal.Controllers
                     item.eReasonCode = 2;
                     item.eMessage = "Ocorreu um erro ao atualizar o contacto.";
                 }
+
+                Task<WSContacts.Update_Result> updateContactTask = NAVContactsService.UpdateAsync(item, _configws);
+
+                try
+                {
+                    updateContactTask.Wait();
+                }
+                catch (Exception ex)
+                {
+                    item.eReasonCode = 4;
+                    item.eMessage = "Ocorreu um erro ao atualizar o contacto no NAV.";
+                }
             }
             else
             {

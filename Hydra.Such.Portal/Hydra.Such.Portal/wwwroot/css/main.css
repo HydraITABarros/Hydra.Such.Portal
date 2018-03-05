@@ -6,6 +6,10 @@ html, body {
     background-color: whitesmoke !important;
 }
 
+.modal-backdrop {
+    display: none;
+}
+
 vaadin-combo-box {
     width: 100%;
 }
