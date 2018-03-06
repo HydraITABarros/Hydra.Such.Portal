@@ -110,15 +110,6 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas> Viaturas { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
 
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer(@"data source=10.101.1.10\SQLNAVDEV;initial catalog=PlataformaOperacionalSUCH;user id=such_portal_user;password=SuchPW.2K17;");
-//            }
-//        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -4818,7 +4809,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Responsável Validação")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.TipoRequisição).HasColumnName("Tipo Requisição");
+                entity.Property(e => e.TipoRequisição)
+                    .HasColumnName("Tipo Requisição")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.UnidadeProdutivaAlimentação)
                     .HasColumnName("Unidade Produtiva Alimentação")
@@ -6585,6 +6578,10 @@ namespace Hydra.Such.Data.Database
                 entity.HasKey(e => e.Código);
 
                 entity.ToTable("Tipos Requisições");
+
+                entity.Property(e => e.Código)
+                    .HasMaxLength(20)
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.DataHoraCriação)
                     .HasColumnName("Data/Hora Criação")

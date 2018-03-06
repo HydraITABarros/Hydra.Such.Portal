@@ -13,7 +13,7 @@ namespace Hydra.Such.Data.Database
 
         public string NºPréRequisição { get; set; }
         public int? Área { get; set; }
-        public int? TipoRequisição { get; set; }
+        public string TipoRequisição { get; set; }
         public string NºProjeto { get; set; }
         public string CódigoRegião { get; set; }
         public string CódigoÁreaFuncional { get; set; }
