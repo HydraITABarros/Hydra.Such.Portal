@@ -156,7 +156,8 @@
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRequestOrigin" last-response="{{CBRequestOrigin}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsStatus" last-response="{{CBProposalsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetCustomerContacts" last-response="{{CBContacts}}" id="contacts_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetCustomerContacts" last-response="{{CBContacts}}" id="contacts_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <iron-ajax url="/PopulateDropdowns/GetContactsByType" last-response="{{CBContacts}}" auto params='{ "type" : 0 }' method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddressesByClientNoAsVM" last-response="{{ClientShippingAddresses}}" method="post" handle-as="json" content-type="application/json" id="shippingAddresses_ajax"></iron-ajax>
@@ -639,14 +640,14 @@
 
 
                                         <!--<vaadin-combo-box items="[[CBContractLineCodes]]" id="_CLCode" name="_CLCode" item-value-path="id" item-label-path="id" value="{{_CLCode}}" label="Código" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineCodeChange">
-                                            <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.id]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                                        <template>
+                                            <paper-icon-item>
+                                                <paper-item-body two-line>
+                                                    <div>[[item.id]]</div>
+                                                </paper-item-body>
+                                            </paper-icon-item>
+                                        </template>
+                                    </vaadin-combo-box>-->
                                     </div>
 
                                     <div class="col-lg-2">
@@ -1415,8 +1416,8 @@
                 },
                 _validateData: function () {
                     //Validate function of such-element doesn't work. Ensure validation message
-                    this.$.mClients.validate();
-                    this.$.contactNo.validate();
+                    //this.$.mClients.validate();
+                    //this.$.contactNo.validate();
 
                     if (this.$.contractNo.validate() &
                         this.$.Description.validate() &
@@ -1454,10 +1455,21 @@
 
                     ) {
                         //Validate function of such-element doesn't work.
-                        if ((this.$.mClients.value != "" && this.$.mClients.value != undefined) &
+                        //if ((this.$.mClients.value != "" && this.$.mClients.value != undefined) &
+                        //    (this.$.contactNo.value != "" && this.$.contactNo.value != undefined)) {
+                        //    return true;
+                        //}
+                        if ((this.$.mClients.value != "" && this.$.mClients.value != undefined) &&
                             (this.$.contactNo.value != "" && this.$.contactNo.value != undefined)) {
-                            return true;
+                            this._openToastError("Selecionou cliente e contato. Apenas pode selecionar uma das opções.");
+                            return false;
                         }
+                        if ((this.$.mClients.value == "" && this.$.mClients.value == undefined) &&
+                            (this.$.contactNo.value == "" && this.$.contactNo.value == undefined)) {
+                            this._openToastError("É obrigatória seleção de um cliente ou de um contato.");
+                            return false;
+                        }
+                        return true;
                     }
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
@@ -1469,16 +1481,16 @@
                     this.$.shippingAddresses_ajax.body = JSON.stringify(e.detail.value);
                     this.$.shippingAddresses_ajax.generateRequest();
                     
-                    this.$.contacts_ajax.body = JSON.stringify(e.detail.value);
-                    this.$.contacts_ajax.generateRequest();
+                    //this.$.contacts_ajax.body = JSON.stringify(e.detail.value);
+                    //this.$.contacts_ajax.generateRequest();
 
                     this.data.shippingAddressCode = "";
                     this.$.sbClientShippingAddresses.value = "";
                     this.$.sbClientShippingAddresses.valueText = "";
 
-                    this.data.contactNo = "";
-                    this.$.contactNo.value = "";
-                    this.$.contactNo.valueText = "";
+                    //this.data.contactNo = "";
+                    //this.$.contactNo.value = "";
+                    //this.$.contactNo.valueText = "";
                 },
 
                 //CRUDS

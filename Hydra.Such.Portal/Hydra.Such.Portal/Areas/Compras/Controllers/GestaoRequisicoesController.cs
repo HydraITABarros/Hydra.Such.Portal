@@ -302,7 +302,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
         [Area("Compras")]
         public JsonResult GetApprovedRequisitions()
         {
-            List<RequisitionViewModel> result = DBRequest.GetByState(RequisitionStates.Approved).ParseToViewModel();
+            List<RequisitionViewModel> result = DBRequest.GetAll().ParseToViewModel();//.GetByState(RequisitionStates.Approved).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -520,18 +520,18 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             if (prodNotStockkeepUnit != "" && prodQuantityOverStock != "")
                             {
                                 item.eReasonCode = 6;
-                                item.eMessage = " O(s) Produto(s) " + prodNotStockkeepUnit + " não existe ou existem no Stockkeeping Unit do Nav" +
-                                " e o(s) Produto(s) " + prodQuantityOverStock + " tem ou têm Quantidade(s) a Disponibilizar superiore(s) ao Stock";
+                                item.eMessage = " Os seguintes produtos não  existem nas unidades de armazenamento do NAV: " + prodNotStockkeepUnit +
+                                ". Os seguintes têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
                             }
                             else if (prodNotStockkeepUnit != "" && prodQuantityOverStock == "")
                             {
                                 item.eReasonCode = 7;
-                                item.eMessage = " O(s) Produto(s) " + prodNotStockkeepUnit + " não existe ou existem no Stockkeeping Unit do Nav";
+                                item.eMessage = " Os seguintes produtos não existem nas unidades de armazenamento do NAV: " + prodNotStockkeepUnit + ".";
                             }
                             else if (prodNotStockkeepUnit == "" && prodQuantityOverStock != "")
                             {
                                 item.eReasonCode = 8;
-                                item.eMessage = "O(s) Produto(s) " + prodQuantityOverStock + " tem ou têm Quantidade(s) a Disponibilizar superiore(s) ao Stock";
+                                item.eMessage = " Os seguintes têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
                             }
                         }
                         else
@@ -633,7 +633,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                 {
                                     item.eReasonCode = 7;
                                     item.eMessage = " O(s) Produto(s) " + prodNotStockkeepUnit +
-                                                    " não existe ou existem no Stockkeeping Unit do Nav";
+                                                    " não existe ou existem nas unidades de armazenamento do NAV";
                                 }
                                 else
                                 {
@@ -1232,6 +1232,13 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
             {
                 return RedirectToAction("AccessDenied", "Error");
             }
+        }
+
+        [Area("Compras")]
+        public JsonResult GetStateDescription([FromBody] int id)
+        {
+            string stateDescription = EnumHelper.GetDescriptionFor(typeof(RequisitionStates), id);
+            return Json(stateDescription);
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿@{
-    ViewData["Title"] = "Detalhes Requisição Aprovada - Compras - Such";
+    ViewData["Title"] = "Detalhes Requisição a Validar - Compras - Such";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="import" href="~/elements/requisitions/requisitiondetails.html">
 
-<h1 class="title">Detalhes Requisição Aprovada</h1>
+<h1 class="title">Detalhes Requisição a Validar</h1>
 
 <x-requisitiondetails _requisitionid="@ViewBag.RequisitionId" 
                       _requisitionstatus="@ViewBag.ApprovedRequisitionEnumValue" 
