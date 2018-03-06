@@ -21,6 +21,7 @@
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
@@ -91,34 +92,6 @@
                     border-top-right-radius: 3px;
 
                 };
-            }
-
-
-            .dropdownMenu {
-                position: relative;
-                display: inline-block;
-            }
-
-            .dropdownMenu-content {
-                display: none;
-                position: absolute;
-                background-color: #f1f1f1;
-                min-width: 160px;
-                overflow: auto;
-                box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-                z-index: 1;
-            }
-
-            .dropbtnItem {
-                font-family: -apple-system, BlinkMacSystemFont, Roboto, Segoe UI, Ubuntu, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
-            }
-
-                .dropbtnItem:hover {
-                    background-color: #ddd;
-                }
-
-            .showMenuItems {
-                display: block;
             }
         </style>
 
@@ -339,14 +312,7 @@
                     <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract" hidden="[[ _hasRelatedContract ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
                     <paper-button class="tablinks" on-tap="_confirmContractUpdate" id="parseParcialContract" disabled="[[ !_permissions.update ]]"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
                     <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ !_showContractLines }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
-                    <div class="dropdownMenu">
-                        <paper-button class="tablinks" on-tap="_showStatusDropDown" id="statusMenu" hidden="[[ !_permissions.update ]]"><i class="fa fa-chevron-down" aria-hidden="true"></i> Alterar Estado</paper-button>
-                        <div id="StatusDropDownContent" class="dropdownMenu-content">
-                            <template is="dom-repeat" items="[[_statusMenuItems]]">
-                                <paper-button class="dropbtnItem" on-tap="_changeStatus" style="width: 250px;">[[ item.value ]]</paper-button>
-                            </template>
-                        </div>
-                    </div>
+                    <such-dropdown-menu id="mnuStatus" on-value-changed="_statusMenuItemSelected" title="Alterar Estado" items="[[ _statusMenuItems ]]"></such-dropdown-menu>
                     <paper-button class="tablinks" on-tap="_archive" id="btnArchive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
                 </template>
             </div>
@@ -409,8 +375,6 @@
                                     </div>-->
 
                                         <div class="col-md-3 ">
-
-
                                             <vaadin-combo-box items="[[CBClients]]" id="mClients" item-value-path="id" item-label-path="value" value="{{data.clientNo}}" label="Nº Cliente" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" on-value-changed="_clientChange">
                                                 <template>
                                                     <table width="180px">
@@ -1618,17 +1582,13 @@
                         type: Boolean,
                         value: false
                     },
-                    _openStatusMenuFlag: {
-                        type: Number,
-                        value: 0,
-                    },
                     _hasRelatedContract: {
                         type: Boolean,
                         value: false,
                     },
                     _statusMenuItems: {
                         type: Array,
-                        value: [{ id: 1, value: "Aberta" }, { id: 2, value: "Enviada" }, { id: 3, value: "Revista" }, { id: 4, value: "Perdida" }, { id: 5, value: "Cancelada" }],
+                        value: [{ value: 1, description: "Aberta" }, { value: 2, description: "Enviada" }, { value: 3, description: "Revista" }, { value: 4, description: "Perdida" }, { value: 5, description: "Cancelada" }],
                     },
                     _statusForContractUpdate: {
                         type: Array,
@@ -1643,22 +1603,24 @@
                         value: true,
                     }
                 },
-                listeners: {
-                    'tap': 'onStatusChangeMenuTap'
-                },
                 observers: [
                     'relatedContractChanged(data.relatedContract)'
                 ],
                 relatedContractChanged: function (relatedContract) {
                     this._hasRelatedContract = (relatedContract != null && relatedContract != "") ? true : false;
                 },
-                _showStatusDropDown: function () {
-                    var statusDropDown = this.$$('#StatusDropDownContent');
-                    if (statusDropDown != null) {
-                        statusDropDown.classList.toggle("showMenuItems");
-                        this._openStatusMenuFlag = 1;
-                    }
+
+                _statusMenuItemSelected: function (e) {
+
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+                    this._setProposalStatus();
                 },
+
                 _proposalStateChangeResponse: function () {
                     if (this.StateChangedProposal.eReasonCode == 1) {
                         this._openToast("Proposta atualizada com sucesso.");
@@ -1733,19 +1695,7 @@
                     else {
                         this._openToastError("A proposta já está no estado selecionado.");
                     }
-                },
-                _changeStatus: function (e) {
-                    this._newStatus = e.model.item.id;
-                    this._setProposalStatus();
-                },
-                onStatusChangeMenuTap: function (e) {
-                    var elem = e.srcElement;
-                    var statusDropDown = this.$$('#StatusDropDownContent');
-                    if (elem._openStatusMenuFlag > 1 && statusDropDown.classList.contains('showMenuItems')) {
-                        statusDropDown.classList.remove('showMenuItems');
-                    }
-                    elem._openStatusMenuFlag++;
-                },
+                },                
                 ready: function () {
                     //GET CONTRACT DATA
                     var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
