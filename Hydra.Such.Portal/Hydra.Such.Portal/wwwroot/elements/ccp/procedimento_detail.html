@@ -267,6 +267,8 @@
         <!-- NR 20180228 -->
         <iron-ajax url="/PopulateDropdowns/GetObjectoDeContratoCCP" last-response="{{CBObjectoContrato}}" auto method="post" handle-as="json" content-type="application/json"> </iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllGestorProcesso" last-response="{{CBGestorProcesso}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--NR 20180305-->
+        <iron-ajax url="/PopulateDropdowns/getSupplier" last-response="{{cboSupplier}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/ProcedimentosCcps/GetUsersWhoAreElementosJuri"
                    last-response="{{LUsers}}"
@@ -369,7 +371,7 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <!--NR 20190301-->
+        <!--NR 20180301-->
         <iron-ajax url="/ProcedimentosCcps/SubmitToAccounting"
                    last-response="{{ EnviarParaFinanceiros }}"
                    method="post"
@@ -392,6 +394,16 @@
                    handle-as="json"
                    id="ajax_enviarParaArea"
                    on-response="_enviarParaAreaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!--NR 20180306-->
+        <iron-ajax url="/ProcedimentosCcps/ReturnToAreaToJustifyProcess"
+                   last-response="{{ DevolverParaArea }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_devolverParaArea"
+                   on-response="_devolverParaAreaResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -692,17 +704,24 @@
                                         </div>
                                     </div>
                                     <div class="row break_clear">
-                                        <div class="col-sm-6">
-                                            <vaadin-text-field type="text" value="{{ data.responsavelArea }}" id="responsavelAreaApresentar" name="responsavelAreaApresentar" label="O Responsável da Área pela apresentação da informação " disabled="true"> </vaadin-text-field>
-                                        </div>
-                                        <br />
-                                        <div class="col-sm-6">
-                                            <vaadin-text-field type="text" value="{{ data.nomeResponsavelArea }}" id="nomeResponsavelAreaApresentar" name="nomeResponsavelAreaApresentar" disabled="true"> </vaadin-text-field>
-                                        </div>
-                                    </div>
-                                    <div class="row break_clear">
-                                        <div class="col-sm-3">
-                                            <vaadin-text-field type="text" value="{{ data.dataResponsavel}}" id="dataResponsavelApresentar" name="dataResponsavelApresentar" label="Data" disabled="true"> </vaadin-text-field>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-6">
+                                                <div class="row">
+                                                    <div class="col-xs-12">
+                                                        <label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável da Área pela apresentação da informação</label>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <vaadin-text-field value="{{data.responsavelArea}}" id="responsavelArea" name="responsavelArea" disabled="true"></vaadin-text-field>
+                                                    </div>
+
+                                                    <div class="col-sm-8">
+                                                        <vaadin-text-field value="{{data.nomeResponsavelArea}}" id="nomeResponsavelArea" name="nomeResponsavelArea" disabled="true"> </vaadin-text-field>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <vaadin-text-field value="{{data.dataResponsavel}}" id="dataResponsavel" name="dataResponsavel" label="Data" disabled="true"> </vaadin-text-field>
+                                            </div>
                                         </div>
                                     </div>
                                     <!--Elementos Checklist - Estado 0 - .e -->
@@ -1078,19 +1097,19 @@
                                                         <label part="label" class="grey" id="vaadin-text-field-label-30">O responsável dos serviços de contabilidade</label>
                                                     </div>
                                                     <div class="col-sm-4">
-                                                        <vaadin-text-field value="{{data.responsavelImobContabilidade}}" id="responsavelImobContabilidade" name="responsavelImobContabilidade" label=""></vaadin-text-field>
+                                                        <vaadin-text-field value="{{data.responsavelImobContabilidade}}" id="responsavelImobContabilidade" name="responsavelImobContabilidade" label="" disabled="true"></vaadin-text-field>
                                                     </div>
 
                                                     <div class="col-sm-8">
-                                                        <vaadin-text-field value="{{data.nomeResponsavelImobContabilidade}}" id="nomeResponsavelImobContabilidade" name="nomeResponsavelImobContabilidade" label=""> </vaadin-text-field>
+                                                        <vaadin-text-field value="{{data.nomeResponsavelImobContabilidade}}" id="nomeResponsavelImobContabilidade" name="nomeResponsavelImobContabilidade" label="" disabled="true"> </vaadin-text-field>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-sm-3">
-                                                <vaadin-date-picker value="{{data.dataImobContabilidade}}" id="dataImobContabilidade" name="dataImobContabilidade" label="Data"> </vaadin-date-picker>
+                                                <vaadin-text-field value="{{data.dataImobContabilidade}}" id="dataImobContabilidade" name="dataImobContabilidade" label="Data" disabled="true"> </vaadin-text-field>
                                             </div>
                                             <div class="col-sm-3">
-                                                <vaadin-combo-box value="{{data.imobilizadoSimNao}}" id="cabimentoOrcamental" label="Cabimento Orçamental?" items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue">
+                                                <vaadin-combo-box value="{{data.imobilizadoSimNao}}" id="ImobilizadoSimNao" label="Cabimento Orçamental?" items="[[LBoolValues]]" item-value-path="booleanValue" item-label-path="stringValue">
                                                     <template>
                                                         <paper-icon-item>
                                                             <paper-item-body two-line>
@@ -1146,7 +1165,7 @@
                                     <div class="col-xs-12">
                                         <div class="row break_clear">
                                             <div class="col-sm-6">
-                                                <such-textarea rows="5" value="{{data.areaComentario}}" id="areaComentario" name="areaComentario" label="Comentário"> </such-textarea>
+                                                <such-textarea rows="5" value="{{data.comentarioImobArea}}" id="comentarioImobArea" name="comentarioImobArea" label="Comentário"> </such-textarea>
                                             </div>
                                         </div>
                                         <div class="row break_clear">
@@ -1156,16 +1175,16 @@
                                                         <label part="label" class="grey" id="vaadin-text-field-label-30">O responsável da área pela adjudicação</label>
                                                     </div>
                                                     <div class="col-sm-4">
-                                                        <vaadin-text-field value="{{data.responsavelArea}}" id="responsavelArea" name="responsavelArea" label=""> </vaadin-text-field>
+                                                        <vaadin-text-field value="{{data.responsavelImobArea}}" id="responsavelImobArea" name="responsavelImobArea" label="" disabled="true"> </vaadin-text-field>
                                                     </div>
 
                                                     <div class="col-sm-8">
-                                                        <vaadin-text-field value="{{data.responsavelArea2}}" id="responsavelArea2" name="responsavelArea2" label=""> </vaadin-text-field>
+                                                        <vaadin-text-field value="{{data.nomeResponsavelImobArea}}" id="nomeResponsavelImobArea" name="nomeResponsavelImobArea" label="" disabled="true"> </vaadin-text-field>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-sm-3">
-                                                <vaadin-date-picker value="{{data.contabilidadeData}}" id="responsavelServicosContabilidade" name="responsavelServicosContabilidade" label="Data"> </vaadin-date-picker>
+                                                <vaadin-text-field value="{{data.DataImobArea}}" id="DataImobArea" name="DataImobArea" label="Data" disabled="true"> </vaadin-text-field>
                                             </div>
                                         </div>
                                         <div class="clearfix"></div>
@@ -1559,17 +1578,17 @@
                                         <div class="">
                                             <div class="row">
                                                 <div class="col-xs-12">
-                                                    <vaadin-text-field value="{{data.publicacaoNaPlataformaComentario}}" id="publicacaoNaPlataformaComentario" name="publicacaoNaPlataformaComentario" label="Comentário"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.comentarioPublicacao}}" id="comentarioPublicacao" name="comentarioPublicacao" label="Comentário"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
-                                                    <vaadin-date-picker value="{{data.publicacaoNaPlataformaData}}" id="publicacaoNaPlataformaData" name="publicacaoNaPlataformaData" label="Data"> </vaadin-date-picker>
+                                                    <vaadin-date-picker value="{{data.dataPublicacao}}" id="dataPublicacao" name="dataPublicacao" label="Data"> </vaadin-date-picker>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.publicacaoNaPlataformaUtilizador}}" id="publicacaoNaPlataformaUtilizador" name="publicacaoNaPlataformaUtilizador" label="Utilizador"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.utilizadorPublicacao}}" id="utilizadorPublicacao" name="utilizadorPublicacao" label="Utilizador"> </vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <br />
@@ -1587,18 +1606,18 @@
                                         <div class="">
                                             <div class="row">
                                                 <div class="col-xs-12">
-                                                    <vaadin-text-field value="{{data.recolhaPlataformaComentario}}" id="recolhaPlataformaComentario" name="recolhaPlataformaComentario" label="Comentário"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.recolhaComentario}}" id="recolhaComentario" name="recolhaComentario" label="Comentário"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
-                                                    <vaadin-date-picker value="{{data.recolhaPlataformaData}}" id="recolhaPlataformaData" name="recolhaPlataformaData" label="Data"> </vaadin-date-picker>
+                                                    <vaadin-date-picker value="{{data.dataRecolha}}" id="dataRecolha" name="dataRecolha" label="Data"> </vaadin-date-picker>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
 
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.recolhaPlataformaUtilizador}}" id="recolhaPlataformaUtilizador" name="recolhaPlataformaUtilizador" label="Utilizador"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.utilizadorRecolha}}" id="utilizadorRecolha" name="utilizadorRecolha" label="Utilizador"> </vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <br />
@@ -1616,17 +1635,17 @@
                                         <div class="">
                                             <div class="row">
                                                 <div class="col-xs-12">
-                                                    <vaadin-text-field value="{{data.validacaoRelatorioComentario}}" id="validacaoRelatorioComentario" name="validacaoRelatorioComentario" label="Comentário"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.comentarioRelatorioPreliminar}}" id="comentarioRelatorioPreliminar" name="comentarioRelatorioPreliminar" label="Comentário"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
-                                                    <vaadin-date-picker value="{{data.validacaoRelatorioData}}" id="validacaoRelatorioData" name="validacaoRelatorioData" label="Data"> </vaadin-date-picker>
+                                                    <vaadin-date-picker value="{{data.dataValidRelatorioPreliminar}}" id="dataValidRelatorioPreliminar" name="dataValidRelatorioPreliminar" label="Data"> </vaadin-date-picker>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.validacaoRelatorioUtilizador}}" id="validacaoRelatorioUtilizador" name="validacaoRelatorioUtilizador" label="Utilizador"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.utilizadorValidRelatorioPreliminar}}" id="utilizadorValidRelatorioPreliminar" name="utilizadorValidRelatorioPreliminar" label="Utilizador"> </vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <br />
@@ -1644,17 +1663,17 @@
                                         <div class="">
                                             <div class="row">
                                                 <div class="col-xs-12">
-                                                    <vaadin-text-field value="{{data.audienciaPreviaComentario}}" id="audienciaPreviaComentario" name="audienciaPreviaComentario" label="Comentário"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.comentarioAudienciaPrevia}}" id="comentarioAudienciaPrevia" name="comentarioAudienciaPrevia" label="Comentário"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
-                                                    <vaadin-date-picker value="{{data.audienciaPreviaData}}" id="audienciaPreviaData" name="audienciaPreviaData" label="Data"> </vaadin-date-picker>
+                                                    <vaadin-date-picker value="{{data.dataAudienciaPrevia}}" id="dataAudienciaPrevia" name="dataAudienciaPrevia" label="Data"> </vaadin-date-picker>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.audienciaPreviaUtilizador}}" id="audienciaPreviaUtilizador" name="audienciaPreviaUtilizador" label="Utilizador"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.utilizadorAudienciaPrevia}}" id="utilizadorAudienciaPrevia" name="utilizadorAudienciaPrevia" label="Utilizador"> </vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <br />
@@ -1672,21 +1691,50 @@
                                         <div class="">
                                             <div class="row">
                                                 <div class="col-xs-12">
-                                                    <vaadin-text-field value="{{data.relatorioFinalComentario}}" id="relatorioFinalComentario" name="relatorioFinalComentario" label="Comentário"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.comentarioRelatorioFinal}}" id="comentarioRelatorioFinal" name="comentarioRelatorioFinal" label="Comentário"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
-                                                    <vaadin-date-picker value="{{data.relatorioFinalData}}" id="relatorioFinalData" name="relatorioFinalData" label="Data"> </vaadin-date-picker>
+                                                    <vaadin-date-picker value="{{data.dataRelatorioFinal}}" id="dataRelatorioFinal" name="dataRelatorioFinal" label="Data"> </vaadin-date-picker>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.relatorioFinalUtilizador}}" id="relatorioFinalUtilizador" name="relatorioFinalUtilizador" label="Utilizador"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.utilizadorRelatorioFinal}}" id="utilizadorRelatorioFinal" name="utilizadorRelatorioFinal" label="Utilizador"> </vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <br />
-                                                    <paper-button raised id="btnConfirmRelatorioFinal" class="btn--confirm pull-right" on-tap="_confirmRelatorioFinal"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Confirmar</paper-button>
+                                                    <!--<paper-button raised id="btnConfirmRelatorioFinal" class="btn--confirm pull-right" on-tap="_confirmRelatorioFinal"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Confirmar</paper-button>-->
+
+                                                    <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
+                                                        <template>
+                                                            <style>
+                                                                .my-menu {
+                                                                    padding: 8px 0;
+                                                                    background: #fff;
+                                                                }
+
+                                                                .my-menu-item {
+                                                                    display: block;
+                                                                    padding: 8px 24px;
+                                                                    text-decoration: none;
+                                                                    color: #000;
+                                                                }
+
+                                                                    .my-menu-item:hover {
+                                                                        background: #FFD5D3;
+                                                                    }
+                                                            </style>
+                                                            <vaadin-list-box>
+                                                                <vaadin-item class="my-menu-item" on-tap="_enviarParaJuridicos">Enviar p/ Juridicos (14)</vaadin-item>
+                                                                <vaadin-item class="my-menu-item" on-tap="_enviarParaCompras">Enviar p/ Compras (15)</vaadin-item>
+                                                            </vaadin-list-box>
+                                                        </template>
+                                                        <paper-button raised id="btnConfirmRelatorioFinal" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
+                                                    </vaadin-context-menu>
+
+
                                                 </div>
                                             </div>
                                         </div>
@@ -1710,7 +1758,7 @@
                                     <div class="col-xs-12">
                                         <div class="row break_clear">
                                             <div class="col-sm-6">
-                                                <such-textarea rows="5" value="{{data.avaliacaoPecasComentario}}" id="avaliacaoPecasComentario" name="avaliacaoPecasComentario" label="Comentário"> </such-textarea>
+                                                <such-textarea rows="5" value="{{data.comentarioJuridico6}}" id="comentarioJuridico6" name="comentarioJuridico6" label="Comentário"> </such-textarea>
                                             </div>
                                         </div>
                                         <div class="row break_clear">
@@ -1720,16 +1768,16 @@
                                                         <label part="label" class="grey" id="vaadin-text-field-label-30">Pelo Gabinete Jurídico</label>
                                                     </div>
                                                     <div class="col-sm-4">
-                                                        <vaadin-text-field value="{{data.avaliacaoPecasGabineteJuridico}}" id="avaliacaoPecasGabineteJuridico" name="avaliacaoPecasGabineteJuridico"></vaadin-text-field>
+                                                        <vaadin-text-field value="{{data.responsavelJuridico6}}" id="responsavelJuridico6" name="responsavelJuridico6" disabled="true"></vaadin-text-field>
                                                     </div>
 
                                                     <div class="col-sm-8">
-                                                        <vaadin-text-field value="{{data.avaliacaoPecasGabineteJuridico2}}" id="avaliacaoPecasGabineteJuridico2" name="avaliacaoPecasGabineteJuridico2"> </vaadin-text-field>
+                                                        <vaadin-text-field value="{{data.nomeResponsavelJuridico6}}" id="nomeResponsavelJuridico6" name="nomeResponsavelJuridico6" disabled="true"> </vaadin-text-field>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-sm-3">
-                                                <vaadin-date-picker value="{{data.avaliacaoPecasData}}" id="avaliacaoPecasData" name="avaliacaoPecasData" label="Data"></vaadin-date-picker>
+                                                <vaadin-text-field value="{{data.dataJuridico6}}" id="dataJuridico6" name="dataJuridico6" label="Data" disabled="true"> </vaadin-text-field>
                                             </div>
                                         </div>
                                         <div class="clearfix"></div>
@@ -1744,7 +1792,7 @@
                                     <div class="col-xs-12">
                                         <div class="row break_clear">
                                             <div class="col-sm-6">
-                                                <such-textarea rows="5" value="{{data.minutaComentario}}" id="minutaComentario" name="minutaComentario" label="Comentário"> </such-textarea>
+                                                <such-textarea rows="5" value="{{data.comentarioJuridico14}}" id="comentarioJuridico14" name="comentarioJuridico14" label="Comentário"> </such-textarea>
                                             </div>
                                         </div>
                                         <div class="row break_clear">
@@ -1754,16 +1802,16 @@
                                                         <label part="label" class="grey" id="vaadin-text-field-label-30">Pelo Gabinete Jurídico</label>
                                                     </div>
                                                     <div class="col-sm-4">
-                                                        <vaadin-text-field value="{{data.minutaGabineteJuridico}}" id="minutaGabineteJuridico" name="minutaGabineteJuridico"></vaadin-text-field>
+                                                        <vaadin-text-field value="{{data.responsavelJuridico14}}" id="responsavelJuridico14" name="responsavelJuridico14" disabled="true"></vaadin-text-field>
                                                     </div>
 
                                                     <div class="col-sm-8">
-                                                        <vaadin-text-field value="{{data.minutaGabineteJuridico2}}" id="minutaGabineteJuridico2" name="minutaGabineteJuridico2"> </vaadin-text-field>
+                                                        <vaadin-text-field value="{{data.nomeResponsavelJuridico14}}" id="nomeResponsavelJuridico14" name="nomeResponsavelJuridico14" disabled="true"> </vaadin-text-field>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-sm-3">
-                                                <vaadin-date-picker value="{{data.minutaData}}" id="minutaData" name="minutaData" label="Data"></vaadin-date-picker>
+                                                <vaadin-text-field value="{{data.dataJuridico14}}" id="dataJuridico14" name="dataJuridico14" label="Data" disabled="true"> </vaadin-text-field>
                                             </div>
                                         </div>
                                         <div class="clearfix"></div>
@@ -1787,19 +1835,19 @@
                                                     <paper-tooltip for="valorMercado" position="bottom" offset="-10" animation-delay="1">
                                                         Só é preenchido se não existir procedimento anterior idêntico.
                                                     </paper-tooltip>
-                                                    <vaadin-text-field value="{{data.valorMercado}}" type="number" id="valorMercado" name="valorMercado" label="Valor de Mercado"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.valorDecisaoContratar}}" type="number" id="valorDecisaoContratar" name="valorDecisaoContratar" label="Valor de Mercado"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <paper-tooltip for="valorAdjudicacaoAnterior" position="bottom" offset="-10" animation-delay="1">
                                                         Procedimento anterior idêntico.
                                                     </paper-tooltip>
-                                                    <vaadin-text-field value="{{data.valorAdjudicacaoAnterior}}" type="number" id="valorAdjudicacaoAnterior" name="valorAdjudicacaoAnterior" label="Valor da adjudicação anterior"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.valorAdjudicacaoAnteriro}}" type="number" id="valorAdjudicacaoAnteriro" name="valorAdjudicacaoAnteriro" label="Valor da adjudicação anterior"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <vaadin-text-field value="{{data.valorAdjudicacao}}" type="number" id="valorAdjudicacao" name="valorAdjudicacao" label="Valor da Adjudicação"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.valorAdjudicacaoAtual}}" type="number" id="valorAdjudicacaoAtual" name="valorAdjudicacaoAtual" label="Valor da Adjudicação"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <vaadin-text-field value="{{data.diferenca}}" type="number" id="diferenca" name="diferenca" label="Diferença (€)"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.diferencaEuros}}" type="number" id="diferencaEuros" name="diferencaEuros" label="Diferença (€)"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
@@ -1809,7 +1857,7 @@
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
-                                                    <such-textarea rows="5" value="{{data.valorComentario}}" id="valorComentario" name="valorComentario" label="Comentário"> </such-textarea>
+                                                    <such-textarea rows="5" value="{{data.comentarioAdjudicacao15}}" id="comentarioAdjudicacao15" name="comentarioAdjudicacao15" label="Comentário"> </such-textarea>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
@@ -1819,16 +1867,16 @@
                                                             <label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável pela área</label>
                                                         </div>
                                                         <div class="col-sm-4">
-                                                            <vaadin-text-field value="{{data.responsavelEnvioParaArea}}" id="responsavelEnvioParaArea" name="responsavelEnvioParaArea"></vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.responsavelAdjudicacao15}}" id="responsavelAdjudicacao15" name="responsavelAdjudicacao15" disabled="true"></vaadin-text-field>
                                                         </div>
 
                                                         <div class="col-sm-8">
-                                                            <vaadin-text-field value="{{data.responsavelEnvioParaArea2}}" id="responsavelEnvioParaArea2" name="responsavelEnvioParaArea2"> </vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.nomeResponsavelAdjudicacao15}}" id="nomeResponsavelAdjudicacao15" name="nomeResponsavelAdjudicacao15" disabled="true"> </vaadin-text-field>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <vaadin-date-picker value="{{data.responsavelEnvioParaAreaData}}" id="responsavelEnvioParaAreaData" name="responsavelEnvioParaAreaData" label="Data"></vaadin-date-picker>
+                                                    <vaadin-text-field value="{{data.dataAdjudicacao15}}" id="dataAdjudicacao15" name="dataAdjudicacao15" label="Data" disabled="true"> </vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <br />
@@ -1846,18 +1894,18 @@
                                 <div class="col-xs-12">
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <such-textarea rows="5" value="{{data.propostaDecisao}}" id="propostaDecisao" name="propostaDecisao" label="Proposta de decisão"> </such-textarea>
+                                            <such-textarea rows="5" value="{{data.comentarioAdjudicacao16}}" id="comentarioAdjudicacao16" name="comentarioAdjudicacao16" label="Proposta de decisão"> </such-textarea>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-3">
-                                            <vaadin-checkbox checked="{{data.autorizacaoAdjudicacao}}" required>Autorizacao Adjudicação</vaadin-checkbox>
+                                            <vaadin-checkbox checked="{{data.autorizacaoAdjudicacao}}" disabled="true">Autorizacao Adjudicação</vaadin-checkbox>
                                         </div>
                                         <div class="col-sm-3">
-                                            <vaadin-checkbox checked="{{data.naoAdjudicacaoEncerramento}}" required>Não Adjudicação e Encerramento</vaadin-checkbox>
+                                            <vaadin-checkbox checked="{{data.naoAdjudicacaoEncerramento}}" disabled="true">Não Adjudicação e Encerramento</vaadin-checkbox>
                                         </div>
                                         <div class="col-sm-3">
-                                            <vaadin-checkbox checked="{{data.naoAdjudicacaoSuspensao}}" required>Não Adjudicação e Suspensão</vaadin-checkbox>
+                                            <vaadin-checkbox checked="{{data.naoAdjudicacaoSuspensao}}" disabled="true">Não Adjudicação e Suspensão</vaadin-checkbox>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -1867,15 +1915,15 @@
                                                     <label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável pela área pelo envio para CA</label>
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <vaadin-text-field value="{{data.responsavelEnvioParaCA}}" id="responsavelEnvioParaCA" name="responsavelEnvioParaCA"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.responsavelAdjudicacao16}}" id="responsavelAdjudicacao16" name="responsavelAdjudicacao16" disabled="true"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-8">
-                                                    <vaadin-text-field value="{{data.responsavelEnvioParaCA2}}" id="responsavelEnvioParaCA2" name="responsavelEnvioParaCA2"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.nomeResponsavelAdjudicacao16}}" id="nomeResponsavelAdjudicacao16" name="nomeResponsavelAdjudicacao16" disabled="true"> </vaadin-text-field>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
-                                            <vaadin-date-picker value="{{data.responsavelEnvioParaCAData}}" id="responsavelEnvioParaCAData" name="responsavelEnvioParaCAData" label="Data"></vaadin-date-picker>
+                                            <vaadin-text-field value="{{data.dataAdjudicacao16}}" id="dataAdjudicacao16" name="dataAdjudicacao16" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -1892,7 +1940,7 @@
                                 <div class="col-xs-12">
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <such-textarea rows="5" value="{{data.autorizarImobilizadoComentario}}" id="autorizarImobilizadoComentario" name="autorizarImobilizadoComentario" label="Comentário"> </such-textarea>
+                                            <such-textarea rows="5" value="{{data.comentarioImobCA}}" id="comentarioImobCA" name="comentarioImobCA" label="Comentário"> </such-textarea>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -1902,16 +1950,16 @@
                                                     <label part="label" class="grey" id="vaadin-text-field-label-30">Pelo CA</label>
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <vaadin-text-field value="{{data.autorizarImobilizadoCA}}" id="autorizarImobilizadoCA" name="autorizarImobilizadoCA"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.responsavelImobCA}}" id="responsavelImobCA" name="responsavelImobCA" disabled="true"></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-sm-8">
-                                                    <vaadin-text-field value="{{data.autorizarImobilizadoCA2}}" id="autorizarImobilizadoCA2" name="autorizarImobilizadoCA2"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.nomeResponsavelImobCA}}" id="nomeResponsavelImobCA" name="nomeResponsavelImobCA" disabled="true"> </vaadin-text-field>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
-                                            <vaadin-date-picker value="{{data.autorizarImobilizadoData}}" id="autorizarImobilizadoData" name="autorizarImobilizadoData" label="Data"></vaadin-date-picker>
+                                            <vaadin-text-field value="{{data.dataImobAprovisionamentoCA}}" id="dataImobAprovisionamentoCA" name="dataImobAprovisionamentoCA" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -1929,7 +1977,7 @@
                                 <div class="col-xs-12">
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <such-textarea rows="5" value="{{data.aberturaProcedimentoComentario}}" id="aberturaProcedimentoComentario" name="aberturaProcedimentoComentario" label="Comentário"> </such-textarea>
+                                            <such-textarea rows="5" value="{{data.comentarioCA8}}" id="comentarioCA8" name="comentarioCA8" label="Comentário"> </such-textarea>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -1939,24 +1987,24 @@
                                                     <label part="label" class="grey" id="vaadin-text-field-label-30">Pelo CA</label>
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <vaadin-text-field value="{{data.aberturaProcedimentoCA}}" id="aberturaProcedimentoCA" name="aberturaProcedimentoCA"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.responsavelCA8}}" id="responsavelCA8" name="responsavelCA8" disabled="true"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-8">
-                                                    <vaadin-text-field value="{{data.aberturaProcedimentoCA2}}" id="aberturaProcedimentoCA2" name="aberturaProcedimentoCA2"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.nomeResponsavelCA8}}" id="nomeResponsavelCA8" name="nomeResponsavelCA8" disabled="true"> </vaadin-text-field>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
-                                            <vaadin-date-picker value="{{data.aberturaProcedimentoData}}" id="aberturaProcedimentoData" name="aberturaProcedimentoData" label="Data"></vaadin-date-picker>
+                                            <vaadin-date-picker value="{{data.dataAberturaCA8}}" id="dataAberturaCA8" name="dataAberturaCA8" label="Data" disabled="true"></vaadin-date-picker>
                                         </div>
                                         <div class="col-sm-3">
-                                            <vaadin-date-picker value="{{data.aberturaProcedimentoDataRatificacao}}" id="aberturaProcedimentoDataRatificacao" name="aberturaProcedimentoDataRatificacao" label="Data Ratificação"></vaadin-date-picker>
+                                            <vaadin-date-picker value="{{data.caDataRatificacaoAbert}}" id="caDataRatificacaoAbert" name="caDataRatificacaoAbert" label="Data Ratificação" disabled="true"></vaadin-date-picker>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-12">
-                                            <vaadin-checkbox checked="{{data.aberturaProcedimentoRatificar}}">Ratificar CA</vaadin-checkbox>
-                                            <vaadin-checkbox checked="{{data.aberturaProcedimentoCritico}}">Critico</vaadin-checkbox>
+                                            <vaadin-checkbox checked="{{data.ratificarCaAbertura}}" id="ratificarCaAbertura">Ratificar CA</vaadin-checkbox>
+                                            <vaadin-checkbox checked="{{data.criticoAbertura}}" id="criticoAbertura">Critico</vaadin-checkbox>
 
                                         </div>
                                     </div>
@@ -1975,14 +2023,14 @@
                                 <div class="col-xs-12">
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <such-textarea rows="5" value="{{data.autorizacaoAdjudicacaoComentario}}" id="autorizacaoAdjudicacaoComentario" name="autorizacaoAdjudicacaoComentario" label="Comentário"> </such-textarea>
+                                            <such-textarea rows="5" value="{{data.comentarioCA17}}" id="comentarioCA17" name="comentarioCA17" label="Comentário"> </such-textarea>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-12">
-                                            <vaadin-checkbox checked="{{data.autorizacaoAdjudicacao}}">Autorização Adjudicação.</vaadin-checkbox>
-                                            <vaadin-checkbox checked="{{data.naoAdjudicacaoEncerramento}}">Não Adjudicação e Encerramento.</vaadin-checkbox>
-                                            <vaadin-checkbox checked="{{data.naoAdjudicacaoSuspensao}}">Não Adjudicação e Suspensão.</vaadin-checkbox>
+                                            <vaadin-checkbox checked="{{data.autorizacaoAdjudicacao}}" disabled="true">Autorização Adjudicação.</vaadin-checkbox>
+                                            <vaadin-checkbox checked="{{data.naoAdjudicacaoEncerramento}}" disabled="true">Não Adjudicação e Encerramento.</vaadin-checkbox>
+                                            <vaadin-checkbox checked="{{data.naoAdjudicacaoSuspensao}}" disabled="true">Não Adjudicação e Suspensão.</vaadin-checkbox>
 
                                         </div>
                                     </div>
@@ -1993,25 +2041,25 @@
                                                     <label part="label" class="grey" id="vaadin-text-field-label-30">Pelo CA</label>
                                                 </div>
                                                 <div class="col-sm-4">
-                                                    <vaadin-text-field value="{{data.autorizacaoAdjudicacaoCA}}" id="autorizacaoAdjudicacaoCA" name="autorizacaoAdjudicacaoCA"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.responsavelCA17}}" id="responsavelCA17" name="responsavelCA17" disabled="true"></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-sm-8">
-                                                    <vaadin-text-field value="{{data.autorizacaoAdjudicacaoCA2}}" id="autorizacaoAdjudicacaoCA2" name="autorizacaoAdjudicacaoCA2"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.nomeResponsavelCA17}}" id="nomeResponsavelCA17" name="nomeResponsavelCA17" disabled="true"> </vaadin-text-field>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
-                                            <vaadin-date-picker value="{{data.autorizacaoAdjudicacaoData}}" id="autorizacaoAdjudicacaoData" name="autorizacaoAdjudicacaoData" label="Data"></vaadin-date-picker>
+                                            <vaadin-date-picker value="{{data.dataAberturaCA17}}" id="dataAberturaCA17" name="dataAberturaCA17" label="Data" disabled="true"></vaadin-date-picker>
                                         </div>
                                         <div class="col-sm-3">
-                                            <vaadin-date-picker value="{{data.autorizacaoAdjudicacaoDataRatificacao}}" id="autorizacaoAdjudicacaoDataRatificacao" name="autorizacaoAdjudicacaoDataRatificacao" label="Data Ratificação"></vaadin-date-picker>
+                                            <vaadin-date-picker value="{{data.caDataRatificacaoAdjudic}}" id="caDataRatificacaoAdjudic" name="caDataRatificacaoAdjudic" label="Data Ratificação" disabled="true"></vaadin-date-picker>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-12">
-                                            <vaadin-checkbox checked="{{data.autorizacaoAdjudicacaoRatificar}}">Ratificar CA</vaadin-checkbox>
-                                            <vaadin-checkbox checked="{{data.autorizacaoAdjudicacaoCritico}}">Critico</vaadin-checkbox>
+                                            <vaadin-checkbox checked="{{data.ratificarCaAdjudicacao}}" id="ratificarCaAdjudicacao">Ratificar CA</vaadin-checkbox>
+                                            <vaadin-checkbox checked="{{data.criticoAdjudicacao}}" id="criticoAdjudicacao">Critico</vaadin-checkbox>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -2038,25 +2086,23 @@
                                         <div class="">
                                             <div class="row">
                                                 <div class="col-xs-12">
-                                                    <vaadin-text-field value="{{data.adjudicacaoNotificacaoComentario}}" id="adjudicacaoNotificacaoComentario" name="adjudicacaoNotificacaoComentario" label="Comentário"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.comentarioNotificacao}}" id="comentarioNotificacao" name="comentarioNotificacao" label="Comentário"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
-                                                    <vaadin-date-picker value="{{data.adjudicacaoNotificacaoData}}" id="adjudicacaoNotificacaoData" name="adjudicacaoNotificacaoData" label="Data"> </vaadin-date-picker>
+                                                    <vaadin-date-picker value="{{data.dataNotificacao}}" id="dataNotificacao" name="dataNotificacao" label="Data"> </vaadin-date-picker>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <vaadin-text-field value="{{data.adjudicacaoNotificacaoPrazo}}" id="adjudicacaoNotificacaoPrazo" name="adjudicacaoNotificacaoPrazo" label="Prazo Concedido"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.prazoNotificacaoDias}}" id="prazoNotificacaoDias" name="prazoNotificacaoDias" label="Prazo Concedido"> </vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
-
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.adjudicacaoNotificacaoUtilizador}}" id="adjudicacaoNotificacaoUtilizador" name="adjudicacaoNotificacaoUtilizador" label="Utilizador"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.utilizadorNotificacao}}" id="utilizadorNotificacao" name="utilizadorNotificacao" label="Utilizador"> </vaadin-text-field>
                                                 </div>
-                                            </div>
-                                            <div class="row break_clear">
-                                                <div class="col-sm-12">
+                                                <div class="col-sm-6">
+                                                    <br />
                                                     <paper-button raised id="btnConfirmAdjudicacaoNotificacao" class="btn--confirm pull-right" on-tap="_confirmAdjudicacaoNotificacao"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Confirmar</paper-button>
                                                 </div>
                                             </div>
@@ -2076,7 +2122,7 @@
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
-                                                    <vaadin-combo-box value="{{data.adjudicacaoAcordosFornecedor}}" label="Fornecedor" items="[[LFornecedores]]" item-value-path="id" id="adjudicacaoAcordosFornecedor" item-label-path="value">
+                                                    <vaadin-combo-box value="{{data.fornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoAcordosFornecedor" item-label-path="value">
                                                         <template>
                                                             <paper-icon-item>
                                                                 <paper-item-body two-line>
@@ -2088,12 +2134,6 @@
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
-                                                <div class="col-sm-12">
-                                                    <vaadin-text-field value="{{data.adjudicacaoAcordosFornecedorDescricao}}" id="adjudicacaoAcordosFornecedorDescricao" name="adjudicacaoAcordosFornecedorDescricao" label=""> </vaadin-text-field>
-                                                </div>
-                                            </div>
-                                            <div class="row break_clear">
-
                                                 <div class="col-sm-12">
                                                     <br />
                                                     <paper-button raised id="btnNovoAcordoAdjudicacaoAcordos" class="btn--confirm pull-right" on-tap="_novoAcordoAdjudicacaoAcordos">Criar Novo Contrato/Acordo</paper-button>
@@ -2106,7 +2146,7 @@
                             <div class="clearfix"></div>
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Contratos fornecedores</div>
+                                    <div class="panel-heading">Contratos Fornecedores</div>
                                     <div class="panel-body">
                                         <div class="">
                                             <div class="row">
@@ -2116,7 +2156,7 @@
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
-                                                    <vaadin-combo-box value="{{data.adjudicacaoContratosFornecedor}}" label="Fornecedor" items="[[LFornecedores]]" item-value-path="id" id="adjudicacaoContratosFornecedor" item-label-path="value">
+                                                    <vaadin-combo-box value="{{data.adjudicacaoContratosFornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoContratosFornecedor" item-label-path="value">
                                                         <template>
                                                             <paper-icon-item>
                                                                 <paper-item-body two-line>
@@ -2126,13 +2166,6 @@
                                                         </template>
                                                     </vaadin-combo-box>
                                                 </div>
-                                            </div>
-                                            <div class="row break_clear">
-                                                <div class="col-sm-12">
-                                                    <vaadin-text-field value="{{data.adjudicacaoContratosFornecedorDescricao}}" id="adjudicacaoContratosFornecedorDescricao" name="adjudicacaoContratosFornecedorDescricao" label=""> </vaadin-text-field>
-                                                </div>
-                                            </div>
-                                            <div class="row break_clear">
                                                 <div class="col-sm-6">
                                                     <vaadin-text-field type="number" value="{{data.adjudicacaoContratosValor}}" id="adjudicacaoContratosValor" name="adjudicacaoContratosValor" label="Valor Contrato"> </vaadin-text-field>
                                                 </div>
@@ -2151,7 +2184,7 @@
 
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
-                                    <div class="panel-heading">Encomendas a fornecedores</div>
+                                    <div class="panel-heading">Encomendas a Fornecedores</div>
                                     <div class="panel-body">
                                         <div class="">
                                             <div class="row">
@@ -2164,7 +2197,7 @@
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
-                                                    <vaadin-combo-box value="{{data.adjudicacaoEncomendasFornecedor}}" label="Fornecedor" items="[[LFornecedores]]" item-value-path="id" id="adjudicacaoEncomendasFornecedor" item-label-path="value">
+                                                    <vaadin-combo-box value="{{data.adjudicacaoEncomendasFornecedor}}" label="Fornecedor" items="[[cboSupplier]]" item-value-path="id" id="adjudicacaoEncomendasFornecedor" item-label-path="value">
                                                         <template>
                                                             <paper-icon-item>
                                                                 <paper-item-body two-line>
@@ -2174,13 +2207,6 @@
                                                         </template>
                                                     </vaadin-combo-box>
                                                 </div>
-                                            </div>
-                                            <div class="row break_clear">
-                                                <div class="col-sm-12">
-                                                    <vaadin-text-field value="{{data.adjudicacaoEncomendasFornecedorDescricao}}" id="adjudicacaoEncomendasFornecedorDescricao" name="adjudicacaoEncomendasFornecedorDescricao" label=""> </vaadin-text-field>
-                                                </div>
-                                            </div>
-                                            <div class="row break_clear">
                                                 <div class="col-sm-6">
                                                     <vaadin-date-picker value="{{data.adjudicacaoEncomendasData}}" id="adjudicacaoEncomendasData" name="adjudicacaoEncomendasData" label="Data Rec. Esperada"> </vaadin-date-picker>
                                                 </div>
@@ -2816,7 +2842,7 @@
 
                 // Contabilidade Confirm action
                 _confirmImobilizadoContab: function () {
-                    if (this.estado != 1) {
+                    if (this.data.estado != 1) {
                         this._openToast('Neste estado não pode submeter o workflow!');
                         return;
                     }
@@ -3017,6 +3043,7 @@
 
                 //NR 20180302
                 _enviarParaArea: function () {
+                    debugger;
                     if (this.data.estado != 4) {
                         this._openToast('Neste Estado, não pode Enviar à Área!');
                         return;
@@ -3061,16 +3088,74 @@
                     } else {
                         this._openToast(this.EnviarParaArea.eMessage);
                     }
+                },
 
+                //Nr 20180306
+                _devolverParaArea: function () {
+                    debugger;
+                    var ajax_request = this.$.ajax_devolverParaArea;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a Devolução do Processo à Área?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_devolverParaArea.body = JSON.stringify(this.data);
+                },
+                _devolverParaAreaResponse: function (e) {
+                    debugger;
+                    if (this.DevolverParaArea.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " devolvido à Área!");
+                        setTimeout(
+                            function () {
+                                //
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.EnviarParaArea.eMessage);
+                    }
                 },
 
 
                 // Imobilizado return to area
                 _imobReturnToArea: function () {
+                    debugger;
+                    var ajax_request = this.$.ajax_imobReturnToArea;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
 
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a Devolução do Processo?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_imobReturnToArea.body = JSON.stringify(this.data);
                 },
 
                 _imobReturnToAreaResponse: function (e) {
+                    debugger;
+                    if (this.ProcedimentoReturnedToArea.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " devolvido!");
+                        setTimeout(
+                            function () {
+                                //
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.EnviarParaArea.eMessage);
+                    }
                 },
                 
                 _setFieldsEditability(data) {
@@ -3137,6 +3222,25 @@
                     _self.$._linhaCustoUnitario.disabled = (data.estado != 0);
                     _self.$.tabLinhaProdutos.disabled = (data.estado != 0);
 
+                    //NR 20180305
+                    _self.$.comentarioImobContabilidade.disabled = (data.estado != 1);
+                    _self.$.ImobilizadoSimNao.disabled = (data.estado != 1);
+                    if (data.estado != 1) {
+                        $(_self.$.actionButtonContabilidade1).addClass('disabled');
+                    }
+
+                    _self.$.comentarioImobArea.disabled = (data.estado != 2);
+                    if (data.estado != 2) {
+                        $(_self.$.actionButtonArea2).addClass('disabled');
+                    }
+
+                    _self.$.comentarioImobCA.disabled = (data.estado != 3);
+                    if (data.estado != 3) {
+                        $(_self.$.btnAutorizarImobilizadoConfirm).addClass('disabled');
+                        $(_self.$.btnAutorizarImobilizadoSuspend).addClass('disabled');
+                        $(_self.$.btnAutorizarImobilizadoReject).addClass('disabled');
+                    }
+
                     //NR 20180301
                     _self.$.criterioEscolhaProcedimento.disabled = (data.estado != 4);
                     _self.$.descEscolhaProcedimento.disabled = (data.estado != 4);
@@ -3157,26 +3261,98 @@
                         $(_self.$.actionButtonFinanceiros).addClass('disabled');
                     }
 
+                    //NR 20180305
+                    _self.$.comentarioJuridico6.disabled = (data.estado != 6);
+
+                    //NR 20180302
                     _self.$.fundamentacaoAreaComentario.disabled = (data.estado != 7);
                     if (data.estado != 7) {
                         $(_self.$.actionButtonPedidoAberturaProc).addClass('disabled');
                     }
 
+                    //NR 20180305
+                    _self.$.comentarioCA8.disabled = (data.estado != 8);
+                    _self.$.ratificarCaAbertura.disabled = (data.estado != 8);
+                    _self.$.criticoAbertura.disabled = (data.estado != 8);
+                    if (data.estado != 8) {
+                        $(_self.$.btnAberturaProcedimentoReject).addClass('disabled');
+                        $(_self.$.btnAberturaProcedimentoConfirm).addClass('disabled');
+                        $(_self.$.btnAberturaProcedimentoSuspend).addClass('disabled');
+                    }
 
-
-
-
-
-
-
-
-
-
-
+                    //NR 20180305
+                    _self.$.comentarioPublicacao.disabled = (data.estado != 9);
+                    _self.$.utilizadorPublicacao.disabled = (data.estado != 9);
+                    _self.$.dataPublicacao.disabled = (data.estado != 9);
+                    if (data.estado != 10) {
+                        $(_self.$.btnConfirmPublicacaoNaPlataforma).addClass('disabled');
+                    }
                     
+                    _self.$.recolhaComentario.disabled = (data.estado != 10);
+                    _self.$.dataRecolha.disabled = (data.estado != 10);
+                    _self.$.utilizadorRecolha.disabled = (data.estado != 10);
+                    if (data.estado != 10) {
+                        $(_self.$.btnConfirmRecolhaPlataforma).addClass('disabled');
+                    }
 
+                    _self.$.comentarioRelatorioPreliminar.disabled = (data.estado != 11);
+                    _self.$.dataValidRelatorioPreliminar.disabled = (data.estado != 11);
+                    _self.$.utilizadorValidRelatorioPreliminar.disabled = (data.estado != 11);
+                    if (data.estado != 11) {
+                        $(_self.$.btnConfirmValidacaoRelatorio).addClass('disabled');
+                    }
 
+                    _self.$.comentarioAudienciaPrevia.disabled = (data.estado != 12);
+                    _self.$.dataAudienciaPrevia.disabled = (data.estado != 12);
+                    _self.$.utilizadorAudienciaPrevia.disabled = (data.estado != 12);
+                    if (data.estado != 12) {
+                        $(_self.$.btnConfirmAudienciaPrevia).addClass('disabled');
+                    }
 
+                    _self.$.comentarioRelatorioFinal.disabled = (data.estado != 13);
+                    _self.$.dataRelatorioFinal.disabled = (data.estado != 13);
+                    _self.$.utilizadorRelatorioFinal.disabled = (data.estado != 13);
+                    if (data.estado != 13) {
+                        $(_self.$.btnConfirmRelatorioFinal).addClass('disabled');
+                    }
+
+                    if ((data.estado != 9) &&
+                        (data.estado != 10) &&
+                        (data.estado != 11) &&
+                        (data.estado != 12) &&
+                        (data.estado != 13)) {
+                        $(_self.$.btnSendToEvaluate).addClass('disabled');
+                    }
+
+                    _self.$.comentarioJuridico14.disabled = (data.estado != 14);
+                    
+                    _self.$.comentarioAdjudicacao15.disabled = (data.estado != 15);
+                    _self.$.valorDecisaoContratar.disabled = (data.estado != 15);
+                    _self.$.valorAdjudicacaoAnteriro.disabled = (data.estado != 15);
+                    _self.$.valorAdjudicacaoAtual.disabled = (data.estado != 15);
+                    _self.$.diferencaEuros.disabled = (data.estado != 15);
+                    _self.$.diferencaPercent.disabled = (data.estado != 15);
+
+                    _self.$.comentarioAdjudicacao16.disabled = (data.estado != 16);
+
+                    _self.$.comentarioCA17.disabled = (data.estado != 17);
+                    _self.$.ratificarCaAdjudicacao.disabled = (data.estado != 17);
+                    _self.$.criticoAdjudicacao.disabled = (data.estado != 17);
+                    if (data.estado != 17) {
+                        $(_self.$.btnAutorizacaoAdjudicacaoConfirm).addClass('disabled');
+                        $(_self.$.btnAutorizacaoAdjudicacaoSuspend).addClass('disabled');
+                        $(_self.$.btnAutorizacaoAdjudicacaoReject).addClass('disabled');
+                    }
+
+                    _self.$.comentarioNotificacao.disabled = (data.estado != 18);
+                    _self.$.dataNotificacao.disabled = (data.estado != 18);
+                    _self.$.prazoNotificacaoDias.disabled = (data.estado != 18);
+                    _self.$.utilizadorNotificacao.disabled = (data.estado != 18);
+                    if (data.estado != 18) {
+                        $(_self.$.btnConfirmAdjudicacaoNotificacao).addClass('disabled');
+                    }
+
+                         
 
 
                     // 1. Procedimento status != 0.e

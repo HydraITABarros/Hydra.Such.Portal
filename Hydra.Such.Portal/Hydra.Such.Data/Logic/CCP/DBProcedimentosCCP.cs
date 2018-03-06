@@ -125,9 +125,51 @@ namespace Hydra.Such.Data.Logic.CCP
                 proc.TemposPaCcp = new TemposPaCcp()
                 {
                     NºProcedimento = proc.Nº,
-                    Estado0 = 1,
                     DataHoraCriação = proc.DataHoraCriação,
-                    UtilizadorCriação = proc.UtilizadorCriação
+                    UtilizadorCriação = proc.UtilizadorCriação,
+
+                    Estado0 = 1,
+                    Estado0Tg = 0,
+                    Estado1 = 0,
+                    Estado1Tg = 0,
+                    Estado2 = 0,
+                    Estado2Tg = 0,
+                    Estado3 = 0,
+                    Estado3Tg = 0,
+                    Estado4 = 0,
+                    Estado4Tg = 0,
+                    Estado5 = 0,
+                    Estado5Tg = 0,
+                    Estado6 = 0,
+                    Estado6Tg = 0,
+                    Estado7 = 0,
+                    Estado7Tg = 0,
+                    Estado8 = 0,
+                    Estado8Tg = 0,
+                    Estado9 = 0,
+                    Estado9Tg = 0,
+                    Estado10 = 0,
+                    Estado10Tg = 0,
+                    Estado11 = 0,
+                    Estado11Tg = 0,
+                    Estado12 = 0,
+                    Estado12Tg = 0,
+                    Estado13 = 0,
+                    Estado13Tg = 0,
+                    Estado14 = 0,
+                    Estado14Tg = 0,
+                    Estado15 = 0,
+                    Estado15Tg = 0,
+                    Estado16 = 0,
+                    Estado16Tg = 0,
+                    Estado17 = 0,
+                    Estado17Tg = 0,
+                    Estado18 = 0,
+                    Estado18Tg = 0,
+                    Estado19 = 0,
+                    Estado19Tg = 0,
+                    Estado20 = 0,
+                    Estado20Tg = 0
                 };
 
                 _context.Add(proc);
@@ -1379,6 +1421,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 ImobSimNao = Procedimento.ImobilizadoSimNao,
 
                 User = UserDetails.IdUtilizador,
+                NomeUser = UserDetails.Nome,
                 TipoEstado = Procedimento.Estado,
 
                 UtilizadorCriacao = UserDetails.IdUtilizador,
@@ -1415,7 +1458,7 @@ namespace Hydra.Such.Data.Logic.CCP
                     if (Procedimento.ImobilizadoSimNao.Value)
                         Procedimento.Estado = 4;
                     else
-                        Procedimento.Estado = 1;
+                        Procedimento.Estado = 2;
                     Procedimento.ComentarioEstado = "";
                 }
                 else
