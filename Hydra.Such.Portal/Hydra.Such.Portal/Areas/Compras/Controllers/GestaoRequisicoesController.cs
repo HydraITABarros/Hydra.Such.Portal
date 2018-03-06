@@ -624,16 +624,16 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                             if (quantityInvalid != "")
                             {
                                 item.eReasonCode = 12;
-                                item.eMessage = "O(s) produto(s)" + quantityInvalid +
-                                                "tem ou têm Quantidade a Receber a 0";
+                                item.eMessage = "Os produtos" + quantityInvalid +
+                                                "têm a quantidade a Receber a 0";
                             }
                             else
                             {
                                 if (prodNotStockkeepUnit != "")
                                 {
                                     item.eReasonCode = 7;
-                                    item.eMessage = " O(s) Produto(s) " + prodNotStockkeepUnit +
-                                                    " não existe ou existem nas unidades de armazenamento do NAV";
+                                    item.eMessage = " O produtos " + prodNotStockkeepUnit +
+                                                    " não existem nas unidades de armazenamento do NAV";
                                 }
                                 else
                                 {
@@ -705,7 +705,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                                             if (reqtoArchived == null)
                                             {
                                                 item.eReasonCode = 14;
-                                                item.eMessage = "Ocorreu Um erro ao mandar para o histórico";
+                                                item.eMessage = "Ocorreu um erro ao mandar para o histórico";
                                             }
                                         }
                                     }
