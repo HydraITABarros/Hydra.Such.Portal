@@ -33,7 +33,8 @@ namespace Hydra.Such.Portal.Controllers
 
             try
             {
-                AreaID = Convert.ToInt32(AreaFuncionalCode.Substring(0, 1));
+                AreaID = Convert.ToInt32(AreaFuncionalCode.Substring(0, 2));
+                //AreaID = Convert.ToInt32(AreaFuncionalCode);
                 AreaName = Areas.Find(a => a.Id == AreaID).Value ?? "";
                 switch (AreaID)
                 {
@@ -1229,141 +1230,184 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(ReturnHandlers.NoData);
             }
         }
-        //#endregion
+        #endregion
 
-        //#region "Acções" MenuItem in the "Area" section
-        //public JsonResult GetPermission([FromBody] ProcedimentoCCPView data)
-        //{
-        //    if(data != null)
-        //    {
-        //        bool IsElementArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoArea);
-        //        bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
+        #region "Acções" MenuItem in the "Area" section
+        public JsonResult GetPermission([FromBody] ProcedimentoCCPView data)
+        {
+            if (data != null)
+            {
+                bool IsElementArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoArea);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
 
-        //        if(!IsElementArea && !IsGestorProcesso)
-        //        {
-        //            return Json(ReturnHandlers.UserNotAllowed);
-        //        }
+                if (!IsElementArea && !IsGestorProcesso)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
 
-        //        if(data.Estado != 2)
-        //        {
-        //            return Json(ReturnHandlers.StateNotAllowed);
-        //        }
+                if (data.Estado != 2)
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
 
-        //        ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
-        //        string UserEmail = "";
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                string UserEmail = "";
 
-        //        if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
-        //        {
-        //            UserEmail = UserDetails.IdUtilizador;
-        //        }
-        //        else
-        //        {
-        //            return Json(ReturnHandlers.InvalidEmailAddres);
-        //        };
+                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                {
+                    UserEmail = UserDetails.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
 
-        //        // NAV Procedure ImobAreaConfirmar.b
-        //        ErrorHandler PermissionDenied = DBProcedimentosCCP.AreaConfirmsAssetPurchase(data, UserDetails, 1);
-        //        if (PermissionDenied.eReasonCode != 0)
-        //        {
-        //            return Json(PermissionDenied);
-        //        }
-        //        // NAV ImobAreaConfirmar.e
+                // NAV Procedure ImobAreaConfirmar.b
+                ErrorHandler PermissionDenied = DBProcedimentosCCP.AreaConfirmsAssetPurchase(data, UserDetails, 1);
+                if (PermissionDenied.eReasonCode != 0)
+                {
+                    return Json(PermissionDenied);
+                }
+                // NAV ImobAreaConfirmar.e
 
-        //        ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
-        //        if (EmailList == null)
-        //        {
-        //            return Json(ReturnHandlers.AddressListIsEmpty);
-        //        }
+                ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
+                if (EmailList == null)
+                {
+                    return Json(ReturnHandlers.AddressListIsEmpty);
+                }
 
-        //        if (!EmailAutomation.IsValidEmail(EmailList.EmailCa))
-        //        {
-        //            return Json(ReturnHandlers.InvalidEmailAddres);
-        //        };
+                if (!EmailAutomation.IsValidEmail(EmailList.EmailCa))
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
 
-        //        EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
-        //        {
-        //            NºProcedimento = data.No,
-        //            Assunto = data.No + " - Autorização de aquisição de Imobilizado",
-        //            UtilizadorEmail = UserEmail,
-        //            EmailDestinatário = EmailList.EmailCa,
-        //            TextoEmail = data.ElementosChecklist.ChecklistImobilizadoArea.ComentarioImobArea,
-        //            DataHoraEmail = DateTime.Now,
-        //            UtilizadorCriação = UserDetails.IdUtilizador,
-        //            DataHoraCriação = DateTime.Now
-        //        };
+                EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                {
+                    NºProcedimento = data.No,
+                    Assunto = data.No + " - Autorização de aquisição de Imobilizado",
+                    UtilizadorEmail = UserEmail,
+                    EmailDestinatário = EmailList.EmailCa,
+                    //TextoEmail = data.ElementosChecklist.ChecklistImobilizadoArea.ComentarioImobArea,
+                    TextoEmail = data.ComentarioImobArea,
+                    DataHoraEmail = DateTime.Now,
+                    UtilizadorCriação = UserDetails.IdUtilizador,
+                    DataHoraCriação = DateTime.Now
+                };
 
-        //        if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
-        //        {
-        //            return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
-        //        }
+                if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                {
+                    return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                }
 
-        //        data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+                data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
 
-        //        SendEmailsProcedimentos Email = new SendEmailsProcedimentos
-        //        {
-        //            DisplayName = UserDetails.Nome,
-        //            Subject = ProcedimentoEmail.Assunto,
-        //            From = DBProcedimentosCCP._EmailSender
-        //        };
+                SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                {
+                    DisplayName = UserDetails.Nome,
+                    Subject = ProcedimentoEmail.Assunto,
+                    From = DBProcedimentosCCP._EmailSender
+                };
 
-        //        Email.To.Add(EmailList.EmailCa);
-        //        Email.BCC.Add(UserEmail);
+                Email.To.Add(EmailList.EmailCa);
+                Email.BCC.Add(UserEmail);
 
-        //        Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
-        //        Email.IsBodyHtml = true;
+                Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+                Email.IsBodyHtml = true;
 
-        //        Email.EmailProcedimento = ProcedimentoEmail;
+                Email.EmailProcedimento = ProcedimentoEmail;
 
-        //        Email.SendEmail();
+                Email.SendEmail();
 
-        //        return Json(ReturnHandlers.Success);
-        //    }
-        //    else
-        //    {
-        //        return Json(ReturnHandlers.Success);
-        //    }
-        //}
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.Success);
+            }
+        }
 
-        //public JsonResult ReturnToAccounting([FromBody] ProcedimentoCCPView data)
-        //{
-        //    if(data != null)
-        //    {
-        //        bool IsElementArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoArea);
-        //        bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
+        public JsonResult ReturnToAccounting([FromBody] ProcedimentoCCPView data)
+        {
+            if (data != null)
+            {
+                bool IsElementArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoArea);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
 
-        //        if (!IsElementArea && !IsGestorProcesso)
-        //        {
-        //            return Json(ReturnHandlers.UserNotAllowed);
-        //        }
+                if (!IsElementArea && !IsGestorProcesso)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
 
-        //        if (data.Estado != 2)
-        //        {
-        //            return Json(ReturnHandlers.StateNotAllowed);
-        //        }
+                if (data.Estado != 2)
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
 
-        //        ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
 
-        //        // NAV Procedure ImobAreaConfirmar.b
-        //        ErrorHandler PermissionDenied = DBProcedimentosCCP.AreaConfirmsAssetPurchase(data, UserDetails, 0);
-        //        if (PermissionDenied.eReasonCode != 0)
-        //        {
-        //            return Json(PermissionDenied);
-        //        }
-        //        // NAV ImobAreaConfirmar.e
+                // NAV Procedure ImobAreaConfirmar.b
+                ErrorHandler PermissionDenied = DBProcedimentosCCP.AreaConfirmsAssetPurchase(data, UserDetails, 0);
+                if (PermissionDenied.eReasonCode != 0)
+                {
+                    return Json(PermissionDenied);
+                }
+                // NAV ImobAreaConfirmar.e
 
-        //        return Json(ReturnHandlers.Success);
-        //    }
-        //    else
-        //    {
-        //        return Json(ReturnHandlers.NoData);
-        //    }
-        //}
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
 
-        //public JsonResult CloseProcedimentoArea([FromBody] ProcedimentoCCPView data)
-        //{
-        //    // zpgm.28112017 - this action doens't have an implementation in NAV. Decide whether is relevant or not.
-        //    return Json(null);
-        //}
+        public JsonResult CloseProcedimentoArea([FromBody] ProcedimentoCCPView data)
+        {
+            //// zpgm.28112017 - this action doens't have an implementation in NAV. Decide whether is relevant or not.
+            //return Json(null);
+
+            if (data != null)
+            {
+                bool IsElementArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoArea);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
+
+                if (!IsElementArea && !IsGestorProcesso)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
+
+                if ((data.Estado != 7) || (data.Estado != 2))
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
+
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                string UserEmail = "";
+
+                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                {
+                    UserEmail = UserDetails.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+                
+
+
+
+
+
+
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
         #endregion
 
         #endregion

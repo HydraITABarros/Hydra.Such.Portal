@@ -28,7 +28,6 @@ namespace Hydra.Such.Data.Logic.CCP
         // email address to use as sender
         public const string _EmailSender = "CCP_NAV@such.pt";
 
-
         #region CRUD Procedimentos
         public static List<ProcedimentosCcp> GetAllProcedimentosByProcedimentoTypeToList(int type)
         {
@@ -1121,7 +1120,6 @@ namespace Hydra.Such.Data.Logic.CCP
             }
         }
         #endregion 
-        
 
         #region parse ProcedimentosCCPView
         public static List<ProcedimentoCCPView> GetAllProcedimentosViewByProcedimentoTypeToList(int type)
@@ -1408,30 +1406,26 @@ namespace Hydra.Such.Data.Logic.CCP
                 }
             }
 
+            Procedimento.ImobilizadoSimNao = Procedimento.ImobilizadoSimNao.HasValue ? Procedimento.ImobilizadoSimNao : false;
+
             FluxoTrabalhoListaControlo NewFluxo1 = new FluxoTrabalhoListaControlo
             {
                 No = Procedimento.No,
                 Estado = 1,
                 Data = DateTime.Now.Date,
                 Hora = DateTime.Now.TimeOfDay,
-
-                
                 Comentario = Procedimento.ComentarioImobContabilidade,
                 Comentario2 = Procedimento.ComentarioImobContabilidade2,
                 ImobSimNao = Procedimento.ImobilizadoSimNao,
-
                 User = UserDetails.IdUtilizador,
                 NomeUser = UserDetails.Nome,
                 TipoEstado = Procedimento.Estado,
-
                 UtilizadorCriacao = UserDetails.IdUtilizador,
                 DataHoraCriacao = DateTime.Now
             };
 
             if (StateToCheck == 1)
             {
-                Procedimento.ImobilizadoSimNao = Procedimento.ImobilizadoSimNao.HasValue ? Procedimento.ImobilizadoSimNao : false;
-
 
                 if (Procedimento.ImobilizadoSimNao.Value)
                     NewFluxo1.EstadoSeguinte = 4;
@@ -1559,6 +1553,8 @@ namespace Hydra.Such.Data.Logic.CCP
                 }
             }
 
+            Procedimento.Imobilizado = Procedimento.Imobilizado.HasValue ? Procedimento.Imobilizado : false;
+
             FluxoTrabalhoListaControlo NewFluxo2 = new FluxoTrabalhoListaControlo
             {
                 No = Procedimento.No,
@@ -1568,9 +1564,10 @@ namespace Hydra.Such.Data.Logic.CCP
                 Comentario = Procedimento.ComentarioImobArea,
                 User = UserDetails.IdUtilizador,
                 TipoEstado = Procedimento.Estado,
-
+                NomeUser = UserDetails.Nome,
                 UtilizadorCriacao = UserDetails.IdUtilizador,
-                DataHoraCriacao = DateTime.Now
+                DataHoraCriacao = DateTime.Now,
+                ImobSimNao = Procedimento.ImobilizadoSimNao
             };
 
             switch (StateToCheck)
@@ -1702,6 +1699,8 @@ namespace Hydra.Such.Data.Logic.CCP
                 }
             }
 
+            Procedimento.Imobilizado = Procedimento.Imobilizado.HasValue ? Procedimento.Imobilizado : false;
+
             FluxoTrabalhoListaControlo NewFluxo4 = new FluxoTrabalhoListaControlo
             {
                 No = Procedimento.No,
@@ -1713,10 +1712,9 @@ namespace Hydra.Such.Data.Logic.CCP
                 TipoEstado = 1,
                 NomeUser = UserDetails.Nome,
                 UtilizadorCriacao = UserDetails.IdUtilizador,
-                DataHoraCriacao = DateTime.Now
+                DataHoraCriacao = DateTime.Now,
+                ImobSimNao = Procedimento.ImobilizadoSimNao
             };
-
-            Procedimento.Imobilizado = Procedimento.Imobilizado.HasValue ? Procedimento.Imobilizado : false;
 
             switch (StateToCheck)
             {
@@ -1814,6 +1812,9 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return ReturnHandlers.Success;
         }
+
+
+
         #endregion
 
     }

@@ -407,6 +407,33 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!--NR 20180307-->
+        <iron-ajax url="/ProcedimentosCcps/GetPermission"
+                   last-response="{{ PedirAutorizacaoConfirmed }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_pedirAutorizacao"
+                   on-response="_pedirAutorizacaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/ReturnToAccounting"
+                   last-response="{{ DevolverContabilidadeConfirmed }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_devolverContabilidade"
+                   on-response="_devolverContabilidadeResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/CloseProcedimentoArea"
+                   last-response="{{ FecharProcessoConfirmed }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_fecharProcesso"
+                   on-response="_fecharProcessoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        
+
         <!-- Controller actions.e -->
         <!-- Header section of the Procedimento details -->
         <!--<iron-form id="formContract">-->
@@ -704,24 +731,22 @@
                                         </div>
                                     </div>
                                     <div class="row break_clear">
-                                        <div class="row break_clear">
-                                            <div class="col-sm-6">
-                                                <div class="row">
-                                                    <div class="col-xs-12">
-                                                        <label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável da Área pela apresentação da informação</label>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <vaadin-text-field value="{{data.responsavelArea}}" id="responsavelArea" name="responsavelArea" disabled="true"></vaadin-text-field>
-                                                    </div>
+                                        <div class="col-sm-6">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <label part="label" class="grey" id="vaadin-text-field-label-30">O Responsável da Área pela apresentação da informação</label>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <vaadin-text-field value="{{data.responsavelArea}}" id="responsavelArea" name="responsavelArea" disabled="true"></vaadin-text-field>
+                                                </div>
 
-                                                    <div class="col-sm-8">
-                                                        <vaadin-text-field value="{{data.nomeResponsavelArea}}" id="nomeResponsavelArea" name="nomeResponsavelArea" disabled="true"> </vaadin-text-field>
-                                                    </div>
+                                                <div class="col-sm-8">
+                                                    <vaadin-text-field value="{{data.nomeResponsavelArea}}" id="nomeResponsavelArea" name="nomeResponsavelArea" disabled="true"> </vaadin-text-field>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-3">
-                                                <vaadin-text-field value="{{data.dataResponsavel}}" id="dataResponsavel" name="dataResponsavel" label="Data" disabled="true"> </vaadin-text-field>
-                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field value="{{data.dataResponsavel}}" id="dataResponsavel" name="dataResponsavel" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <!--Elementos Checklist - Estado 0 - .e -->
@@ -2424,7 +2449,6 @@
                             }
                         },
                         callback: function (result) {
-                            debugger;;
                             if (result) {
                                 //_ajaxRequest.body = JSON.stringify(_Procedimento);
                                 _ajaxRequest.generateRequest();
@@ -2731,7 +2755,6 @@
 
                 // Action of submitting Procedimento
                 _onSubmitValidateProcedimento: function () {
-                    debugger;;
                     if (this.data.informacaoTecnica == "" || this.data.informacaoTecnica == null) {
                         this._openToast("A Informação Técnica tem que estar preenchida!")
                         return false;
@@ -2805,7 +2828,6 @@
                     return true;
                 },
                 _submitProcedimento: function () {
-                    debugger;;
                     if (this.data.estado != 0) {
                         this._openToast("Não permitido neste estado!");
                         return;
@@ -2847,8 +2869,17 @@
                         return;
                     }
 
-                    this.$.ajax_confirmImobContabilidade.body = this.data;
-                    this.$.ajax_confirmImobContabilidade.generateRequest();
+                    var ajax_request = this.$.ajax_confirmImobContabilidade;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o Envio à Área?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_confirmImobContabilidade.body = JSON.stringify(this.data);
                 },
                 _confirmImobilizadoContabResponse: function (e) {
                     if (this.ProcedimentoConfirmed.eReasonCode == 0) {
@@ -2863,10 +2894,105 @@
                         else
                             window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
                     } else {
-                        this._openToast(ProcedimentoConfirmed.eMessage);
+                        this._openToast(this.ProcedimentoConfirmed.eMessage);
                     }
                 },
 
+                //NR 20180307
+                _pedirAutorizacao: function () {
+                    var ajax_request = this.$.ajax_pedirAutorizacao;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o envio do processo para autorização do CA?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_pedirAutorizacao.body = JSON.stringify(this.data);
+                },
+                _pedirAutorizacaoResponse: function (e) {
+                    if (this.PedirAutorizacaoConfirmed.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " enviado!");
+                        setTimeout(
+                            function () {
+                                //
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.PedirAutorizacaoConfirmed.eMessage);
+                    }
+                },
+
+                _devolverContabilidade: function () {
+                    debugger;
+                    var ajax_request = this.$.ajax_devolverContabilidade;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a Devolução à Contabilidade?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_devolverContabilidade.body = JSON.stringify(this.data);
+                },
+                _devolverContabilidadeResponse: function (e) {
+                    debugger;
+                    if (this.DevolverContabilidadeConfirmed.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " devolvido!");
+                        setTimeout(
+                            function () {
+                                //
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.DevolverContabilidadeConfirmed.eMessage);
+                    }
+                },
+
+                _fecharProcesso: function () {
+                    debugger;
+                    var ajax_request = this.$.ajax_fecharProcesso;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o Fecho do Processo?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_fecharProcesso.body = JSON.stringify(this.data);
+                },
+                _fecharProcessoResponse: function (e) {
+                    debugger;
+                    if (this.FecharProcessoConfirmed.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " fechado!");
+                        setTimeout(
+                            function () {
+                                //
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.FecharProcessoConfirmed.eMessage);
+                    }
+                },
+                
                 //NR 20180223
                 _nrmudasimnao: function (e) {
                     //debugger;
