@@ -193,13 +193,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/ValidateNumeration"
-               last-response="{{validateResponse}}"
-               method="post"
-               handle-as="json"
-               id="page_validator_ajax"
-               on-response="_responseValidatorProcessor"
-               content-type="application/json">
-    </iron-ajax>-->
+                   last-response="{{validateResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_validator_ajax"
+                   on-response="_responseValidatorProcessor"
+                   content-type="application/json">
+        </iron-ajax>-->
         <!--PERCURSO-->
         <iron-ajax url="/FolhasDeHoras/CreatePercurso"
                    last-response="{{PercursoCreated}}"
@@ -220,13 +220,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdatePercurso"
-               last-response="{{PercursoUpdated}}"
-               method="post"
-               handle-as="json"
-               id="page_updatepercurso_ajax"
-               on-response="_updatePercursoResponse"
-               content-type="application/json">
-    </iron-ajax>-->
+                   last-response="{{PercursoUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatepercurso_ajax"
+                   on-response="_updatePercursoResponse"
+                   content-type="application/json">
+        </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaPercurso"
                    last-response="{{LinhaPercursoUpdated}}"
@@ -258,13 +258,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdateAjuda"
-               last-response="{{AjudaUpdated}}"
-               method="post"
-               handle-as="json"
-               id="page_updateajuda_ajax"
-               on-response="_updateAjudaResponse"
-               content-type="application/json">
-    </iron-ajax>-->
+                   last-response="{{AjudaUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updateajuda_ajax"
+                   on-response="_updateAjudaResponse"
+                   content-type="application/json">
+        </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaAjuda"
                    last-response="{{LinhaAjudaUpdated}}"
@@ -295,13 +295,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdateMaoDeObra"
-               last-response="{{MaoDeObraUpdated}}"
-               method="post"
-               handle-as="json"
-               id="page_updatemaodeobra_ajax"
-               on-response="_updateMaoDeObraResponse"
-               content-type="application/json">
-    </iron-ajax>-->
+                   last-response="{{MaoDeObraUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatemaodeobra_ajax"
+                   on-response="_updateMaoDeObraResponse"
+                   content-type="application/json">
+        </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaMaoDeObra"
                    last-response="{{LinhaMaoDeObraUpdated}}"
@@ -341,13 +341,13 @@
         </iron-ajax>
 
         <!--<iron-ajax url="/FolhasDeHoras/UpdatePresenca"
-               last-response="{{PresencaUpdated}}"
-               method="post"
-               handle-as="json"
-               id="page_updatepresenca_ajax"
-               on-response="_updatePresencaResponse"
-               content-type="application/json">
-    </iron-ajax>-->
+                   last-response="{{PresencaUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_updatepresenca_ajax"
+                   on-response="_updatePresencaResponse"
+                   content-type="application/json">
+        </iron-ajax>-->
 
         <iron-ajax url="/FolhasDeHoras/UpdateLinhaPresenca"
                    last-response="{{LinhaPresencaUpdated}}"
@@ -2835,7 +2835,7 @@
 
                 //FOLHA DE HORAS
                 _updatefolhadehorasvalidacaoResponse: function (e) {
-                    debugger;
+                    //debugger;
                     var ajax_request = this.$.page_updatefolhadehoras_ajax;
                     ajax_request.body = JSON.stringify(this.data);
 

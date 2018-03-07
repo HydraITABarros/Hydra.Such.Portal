@@ -8,7 +8,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
     {
         public string PreRequesitionsNo { get; set; }
         public int? Area { get; set; }
-        public int? RequesitionType { get; set; }
+        public string RequesitionType { get; set; }
         public string ProjectNo { get; set; }
         public string RegionCode { get; set; }
         public string FunctionalAreaCode { get; set; }
