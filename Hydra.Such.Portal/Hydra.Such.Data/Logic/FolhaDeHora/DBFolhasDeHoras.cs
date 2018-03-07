@@ -150,7 +150,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 return null;
             }
         }
-        
+
         #endregion
 
         public static List<FolhaDeHorasViewModel> GetAllByAreaToList(int AreaId)
@@ -364,9 +364,9 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.FolhasDeHoras.Where(x => 
+                    return ctx.FolhasDeHoras.Where(x =>
                         (regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) && 
+                        (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
                         (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
                         x.Estado == Estado
                     ).Select(FH => new FolhaDeHorasViewModel()
@@ -576,7 +576,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
                         (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
                         x.IntegradoresEmRh.ToLower().Contains(user.ToLower()) &&
-                        x.IntegradoEmRh == false &&
+                        (x.IntegradoEmRh == false || x.IntegradoEmRh == null) &&
                         x.Estado == Estado //1 = VALIDADO
                     ).Select(FH => new FolhaDeHorasViewModel()
                     {
@@ -681,7 +681,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         (area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
                         (cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
                         x.IntegradoresEmRhkm.ToLower().Contains(user.ToLower()) &&
-                        x.IntegradoEmRhkm == false &&
+                        (x.IntegradoEmRhkm == false || x.IntegradoEmRhkm == null) &&
                         x.Estado == Estado && // 1 == VALIDADO
                         x.TipoDeslocação == 2 // 2 == "Viatura Própria"
                     ).Select(FH => new FolhaDeHorasViewModel()
