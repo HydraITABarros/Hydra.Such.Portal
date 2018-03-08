@@ -257,7 +257,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public static ErrorHandler UnableToUpdateFluxo = new ErrorHandler
         {
             eReasonCode = 202,
-            eMessage = "Não foipossível actualizar o Fluxo"
+            eMessage = "Não foi possível actualizar o Fluxo"
         };
 
         public static ErrorHandler InvalidEmailAddres = new ErrorHandler
@@ -269,6 +269,12 @@ namespace Hydra.Such.Data.ViewModel.CCP
         {
             eReasonCode = 401,
             eMessage = "Lista de endereços inválida"
+        };
+        //NR 20180308
+        public static ErrorHandler EmptyCAEmailAddress = new ErrorHandler
+        {
+            eReasonCode = 402,
+            eMessage = "Tem que indicar o email do destinatário do CA!"
         };
 
         public static ErrorHandler UserNotAllowed = new ErrorHandler
@@ -299,7 +305,12 @@ namespace Hydra.Such.Data.ViewModel.CCP
             eMessage = "Tem que definir o Nome do Procedimento"
         };
 
-
+        //NR 20180308
+        public static ErrorHandler UnknownTipoProcedimento = new ErrorHandler
+        {
+            eReasonCode = 702,
+            eMessage = "Antes de prosseguir, tem que definir o tipo de procedimento"
+        };
 
     }
 

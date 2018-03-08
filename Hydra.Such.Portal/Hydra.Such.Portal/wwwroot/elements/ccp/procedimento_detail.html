@@ -407,6 +407,24 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!--NR 20180308-->
+        <iron-ajax url="/ProcedimentosCcps/SubmitToBoardForOpening"
+                   last-response="{{ EnviarParaCAAbertura }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_enviarParaCAAbertura"
+                   on-response="_enviarParaCAAberturaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/SubmitToBoardForGranting"
+                   last-response="{{ EnviarParaCAAdjudicacao }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_enviarParaCAAdjudicacao"
+                   on-response="_enviarParaCAAdjudicacaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!--NR 20180307-->
         <iron-ajax url="/ProcedimentosCcps/GetPermission"
                    last-response="{{ PedirAutorizacaoConfirmed }}"
@@ -432,7 +450,7 @@
                    on-response="_fecharProcessoResponse"
                    content-type="application/json">
         </iron-ajax>
-        
+
 
         <!-- Controller actions.e -->
         <!-- Header section of the Procedimento details -->
@@ -1430,7 +1448,7 @@
                                             <vaadin-text-field value="{{data.fundamentoComprasDataChecklist}}" id="fundamentoComprasDataChecklist" name="fundamentoComprasDataChecklist" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
                                         <div class="col-sm-3">
-                                            <vaadin-text-field value="{{data.emailDestinoCa}}" id="emailDestinoCa" name="emailDestinoCa" label="Email destino CA" disabled="true"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.emailDestinoCa}}" id="emailDestinoCa" name="emailDestinoCa" label="Email destino CA"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
@@ -3216,6 +3234,71 @@
                     }
                 },
 
+                //Nr 20180308
+                _enviarParaCAAbertura: function () {
+                    debugger;
+                    var ajax_request = this.$.ajax_enviarParaCAAbertura;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o Envio para CA Abertura?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_enviarParaCAAbertura.body = JSON.stringify(this.data);
+                },
+                _enviarParaCAAberturaResponse: function (e) {
+                    debugger;
+                    if (this.EnviarParaCAAbertura.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " enviado para CA Abertura!");
+                        setTimeout(
+                            function () {
+                                //
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.EnviarParaCAAbertura.eMessage);
+                    }
+                },
+                _enviarParaCAAdjudicacao: function () {
+                    debugger;
+                    var ajax_request = this.$.ajax_enviarParaCAAdjudicacao;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o envio a CA para autorização de abertura?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_enviarParaCAAdjudicacao.body = JSON.stringify(this.data);
+                },
+                _enviarParaCAAdjudicacaoResponse: function (e) {
+                    debugger;
+                    if (this.EnviarParaCAAdjudicacao.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " enviado para CA Abertura!");
+                        setTimeout(
+                            function () {
+                                //
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.EnviarParaCAAdjudicacao.eMessage);
+                    }
+                },
+
+
                 //Nr 20180306
                 _devolverParaArea: function () {
                     debugger;
@@ -3376,6 +3459,7 @@
                     _self.$.condicoesDePagamento.disabled = (data.estado != 4);
                     _self.$.gestorProcesso.disabled = (data.estado != 4);
                     _self.$.comentarioFundamentoCompras.disabled = (data.estado != 4);
+                    _self.$.emailDestinoCa.disabled = (data.estado != 4);
 
                     if (data.estado != 4) {
                         $(_self.$.actionButtonCompras).addClass('disabled');

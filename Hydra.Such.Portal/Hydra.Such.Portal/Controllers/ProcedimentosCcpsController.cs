@@ -996,8 +996,9 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        #region The following methods map the MenuButton actions, named "Acções" in the "Imobilizado" tab on the NAV form
-        #region "Acções" MenuItem in the "Contabilidade" section
+        #region The following methods map the MenuButton actions, named "Acções" in the "Imobilizado (1-2)" tab on the NAV form
+
+        #region "Acções" MenuItem in the "Contabilidade (1)" section
         [HttpPost]
         public JsonResult ConfirmProcedimento([FromBody] ProcedimentoCCPView data)
         {
@@ -1232,7 +1233,7 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
-        #region "Acções" MenuItem in the "Area" section
+        #region "Acções" MenuItem in the "Area (2)" section
         public JsonResult GetPermission([FromBody] ProcedimentoCCPView data)
         {
             if (data != null)
@@ -1363,57 +1364,16 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult CloseProcedimentoArea([FromBody] ProcedimentoCCPView data)
         {
-            //// zpgm.28112017 - this action doens't have an implementation in NAV. Decide whether is relevant or not.
-            //return Json(null);
-
-            if (data != null)
-            {
-                bool IsElementArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoArea);
-                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
-
-                if (!IsElementArea && !IsGestorProcesso)
-                {
-                    return Json(ReturnHandlers.UserNotAllowed);
-                }
-
-                if ((data.Estado != 7) || (data.Estado != 2))
-                {
-                    return Json(ReturnHandlers.StateNotAllowed);
-                }
-
-                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
-                string UserEmail = "";
-
-                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
-                {
-                    UserEmail = UserDetails.IdUtilizador;
-                }
-                else
-                {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
-                };
-
-                
-
-
-
-
-
-
-
-                return Json(ReturnHandlers.Success);
-            }
-            else
-            {
-                return Json(ReturnHandlers.NoData);
-            }
+            // zpgm.28112017 - this action doens't have an implementation in NAV. Decide whether is relevant or not.
+            return Json(null);
         }
         #endregion
 
         #endregion
 
-        #region The following methods map the MenuButtons, named "Acções" in the "Fundamentos Decisão" tab on the NAV form
-        #region MenuButton "Acções" in the "A preencher pelas compras" section
+        #region The following methods map the MenuButtons, named "Acções" in the "Fundamentos Decisão (4, 5 e 7)" tab on the NAV form
+
+        #region MenuButton "Acções" in the "A Preencher pelas Compras (4)" section
         [HttpPost]
         public JsonResult SubmitToAccounting([FromBody] ProcedimentoCCPView data)
         {
@@ -1866,13 +1826,231 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult SubmitToBoardForOpening([FromBody] ProcedimentoCCPView data)
         {
-            return Json(null);
+            if (data != null)
+            {
+                bool IsElementCompras = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoCompras);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
+
+                if (!IsElementCompras && !IsGestorProcesso)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
+
+                if (data.Estado < 4 || data.Estado > 6)
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
+
+                if (data.Tipo == 0)
+                {
+                    return Json(ReturnHandlers.UnknownTipoProcedimento);
+                }
+
+                if (string.IsNullOrEmpty(data.EmailDestinoCA))
+                {
+                    return Json(ReturnHandlers.EmptyCAEmailAddress);
+                }
+
+                if (string.IsNullOrEmpty(data.NomeProcesso))
+                {
+                    return Json(ReturnHandlers.ProcessNameNotSet);
+                }
+                
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                string UserEmail = "";
+
+                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                {
+                    UserEmail = UserDetails.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+                //Para substituir o email 'pdias@such.pt' que está martelado no NAV2009
+                ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
+                if (EmailList == null)
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                }
+
+                if (!EmailAutomation.IsValidEmail(EmailList.EmailCa))
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+
+                // NAV Procedure FDComprasConfirmar.b
+                ErrorHandler DecisionTaken = DBProcedimentosCCP.DecisionGroundsToBuy(data, DBProcedimentosCCP.GetUserDetails(User.Identity.Name), 4);
+                if (DecisionTaken.eReasonCode != 0)
+                {
+                    return Json(DecisionTaken);
+                }
+                // NAV FDComprasConfirmar.e
+
+                EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                {
+                    NºProcedimento = data.No,
+                    Assunto = data.No + " " + data.NomeProcesso + " - Autorização de abertura",
+                    UtilizadorEmail = UserEmail,
+                    EmailDestinatário = data.EmailDestinoCA,
+                    TextoEmail = data.ComentarioFundamentoCompras,
+                    DataHoraEmail = DateTime.Now,
+                    UtilizadorCriação = User.Identity.Name,
+                    DataHoraCriação = DateTime.Now
+                };
+
+                if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                {
+                    return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                }
+
+                data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
+                SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                {
+                    DisplayName = UserDetails.Nome,
+                    Subject = ProcedimentoEmail.Assunto,
+                    From = DBProcedimentosCCP._EmailSender
+                };
+
+                Email.To.Add(data.EmailDestinoCA);
+
+                if (EmailAutomation.IsValidEmail(UserDetails.ProcedimentosEmailEnvioParaCa))
+                    Email.CC.Add(UserDetails.ProcedimentosEmailEnvioParaCa);
+
+                Email.BCC.Add(UserEmail);
+                Email.BCC.Add(EmailList.EmailCa);
+
+                Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+                Email.IsBodyHtml = true;
+
+                Email.EmailProcedimento = ProcedimentoEmail;
+
+                Email.SendEmail();
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
         }
 
         [HttpPost]
         public JsonResult SubmitToBoardForGranting([FromBody] ProcedimentoCCPView data)
         {
-            return Json(null);
+            if (data != null)
+            {
+                bool IsElementCompras = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoCompras);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
+
+                if (!IsElementCompras && !IsGestorProcesso)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
+
+                if (data.Estado < 4 || data.Estado > 6)
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
+
+                if (data.Tipo == 0)
+                {
+                    return Json(ReturnHandlers.UnknownTipoProcedimento);
+                }
+
+                if (string.IsNullOrEmpty(data.EmailDestinoCA))
+                {
+                    return Json(ReturnHandlers.EmptyCAEmailAddress);
+                }
+
+                if (string.IsNullOrEmpty(data.NomeProcesso))
+                {
+                    return Json(ReturnHandlers.ProcessNameNotSet);
+                }
+
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                string UserEmail = "";
+
+                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                {
+                    UserEmail = UserDetails.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+                //Para substituir o email 'pdias@such.pt' que está martelado no NAV2009
+                ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
+                if (EmailList == null)
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                }
+
+                if (!EmailAutomation.IsValidEmail(EmailList.EmailCa))
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+
+                // NAV Procedure FDComprasConfirmar.b
+                ErrorHandler DecisionTaken = DBProcedimentosCCP.DecisionGroundsToBuy(data, DBProcedimentosCCP.GetUserDetails(User.Identity.Name), 5);
+                if (DecisionTaken.eReasonCode != 0)
+                {
+                    return Json(DecisionTaken);
+                }
+                // NAV FDComprasConfirmar.e
+
+                EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                {
+                    NºProcedimento = data.No,
+                    Assunto = data.No + " " + data.NomeProcesso + " - Autorização Adjudicação",
+                    UtilizadorEmail = UserEmail,
+                    EmailDestinatário = data.EmailDestinoCA,
+                    TextoEmail = data.ComentarioFundamentoCompras,
+                    DataHoraEmail = DateTime.Now,
+                    UtilizadorCriação = User.Identity.Name,
+                    DataHoraCriação = DateTime.Now
+                };
+
+                if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                {
+                    return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                }
+
+                data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
+                SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                {
+                    DisplayName = UserDetails.Nome,
+                    Subject = ProcedimentoEmail.Assunto,
+                    From = DBProcedimentosCCP._EmailSender
+                };
+
+                Email.To.Add(data.EmailDestinoCA);
+
+                if (EmailAutomation.IsValidEmail(UserDetails.ProcedimentosEmailEnvioParaCa))
+                    Email.CC.Add(UserDetails.ProcedimentosEmailEnvioParaCa);
+
+                Email.BCC.Add(UserEmail);
+                Email.BCC.Add(EmailList.EmailCa);
+
+                Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+                Email.IsBodyHtml = true;
+
+                Email.EmailProcedimento = ProcedimentoEmail;
+
+                Email.SendEmail();
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
         }
         #endregion
         #endregion
