@@ -2052,9 +2052,22 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(ReturnHandlers.NoData);
             }
         }
+
         #endregion
+
+        #region MenuButton "Acções" in the "A Preencher pelos Serviços Financeiros (5)" section
+
         #endregion
+
+        #region MenuButton "Acções" in the "A Preencher pela área - Pedido de Abertura de Procedimento (7)" section
+
+        #endregion
+
+
+        #endregion
+
+
     }
 
-    
+
 }
