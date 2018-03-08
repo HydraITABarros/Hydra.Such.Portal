@@ -1308,6 +1308,7 @@ namespace Hydra.Such.Data.Logic.CCP
         #endregion
 
         #region Processing Procedimentos
+        // The following method maps NAV2009 ImobContabConfirmar(pEstado : Integer) function
         public static ErrorHandler AccountingConfirmsAssetPurchase(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails, int StateToCheck)
         {
             if (Procedimento.TemposPaCcp == null)
@@ -1488,6 +1489,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return ReturnHandlers.Success;
         }
+        // The following method maps NAV2009 ImobAreaConfirmar(pEstado : Integer) function
         public static ErrorHandler AreaConfirmsAssetPurchase(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails, int StateToCheck)
         {
             if(Procedimento.TemposPaCcp == null)
@@ -1635,6 +1637,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return ReturnHandlers.Success;
         }
+        // The following method maps NAV2009 FDComprasConfirmar(pEstado : Integer) function
         public static ErrorHandler DecisionGroundsToBuy(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails, int StateToCheck)
         {
             if (Procedimento.TemposPaCcp == null)
@@ -1812,8 +1815,181 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return ReturnHandlers.Success;
         }
+        // The following method maps NAV2009 FDFinancConfirmar(pEstado : Integer) function 
+        public static ErrorHandler FinancialDecisionGroundsToBuy(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails, int StateToCheck)
+        {
+            if (Procedimento.TemposPaCcp == null)
+            {
+                TemposPaCcp TemposPA = GetTemposPaCcP(Procedimento.No);
+                if (TemposPA != null)
+                {
+                    // Holidays aren't excluded (see GetWorkingDays overload method thar uses a List<DateTime>)
+                    TemposPA.Estado5Tg += GetWorkingDays(DateTime.Now, Procedimento.DataHoraEstado.Value);
+                    TemposPA.UtilizadorModificação = UserDetails.IdUtilizador;
+                    TemposPA.DataHoraModificação = DateTime.Now;
 
+                    if (!__UpdateTemposPaCcp(TemposPA))
+                    {
+                        return ReturnHandlers.UnableToUpdateTemposPA;
+                    }
+                };
 
+                Procedimento.TemposPaCcp = CCPFunctions.CastTemposPaCcpToTemposCCPView(TemposPA);
+            }
+            else
+            {
+                Procedimento.TemposPaCcp.Estado5Tg = Procedimento.TemposPaCcp.Estado5Tg ?? 0 + GetWorkingDays(DateTime.Now, Procedimento.DataHoraEstado.Value);
+                Procedimento.TemposPaCcp.UtilizadorModificacao = UserDetails.IdUtilizador;
+                Procedimento.TemposPaCcp.DataHoraModificacao = DateTime.Now;
+                if (!__UpdateTemposPaCcp(CCPFunctions.CastTemposCCPViewToTemposPaCcp(Procedimento.TemposPaCcp)))
+                {
+                    return ReturnHandlers.UnableToUpdateTemposPA;
+                }
+            }
+            if (Procedimento.FluxoTrabalhoListaControlo == null)
+            {
+                FluxoTrabalhoListaControlo Fluxo4 = GetChecklistControloProcedimento(Procedimento.No, 4);
+                if (Fluxo4 != null)
+                {
+                    Fluxo4.Resposta = Procedimento.ComentarioFundamentoFinanceiros;
+                    Fluxo4.TipoResposta = StateToCheck;
+                    Fluxo4.UtilizadorModificacao = UserDetails.IdUtilizador;
+                    Fluxo4.DataHoraModificacao = DateTime.Now;
+
+                    if (!__UpdateFluxoTrabalho(Fluxo4))
+                    {
+                        return ReturnHandlers.UnableToUpdateFluxo;
+                    }
+                }
+            }
+            else
+            {
+                FluxoTrabalhoListaControlo Fluxo4 = Procedimento.FluxoTrabalhoListaControlo.Where(s => s.Estado == 4).LastOrDefault();
+                if (Fluxo4 != null)
+                {
+                    Fluxo4.Resposta = Procedimento.ComentarioFundamentoCompras;
+                    Fluxo4.TipoResposta = StateToCheck;
+                    Fluxo4.UtilizadorModificacao = UserDetails.IdUtilizador;
+                    Fluxo4.DataHoraModificacao = DateTime.Now;
+
+                    if (!__UpdateFluxoTrabalho(Fluxo4))
+                    {
+                        return ReturnHandlers.UnableToUpdateFluxo;
+                    }
+                }
+            }
+
+            Procedimento.Imobilizado = Procedimento.Imobilizado.HasValue ? Procedimento.Imobilizado : false;
+
+            FluxoTrabalhoListaControlo NewFluxo5 = new FluxoTrabalhoListaControlo
+            {
+                No = Procedimento.No,
+                Estado = 5,
+                Data = DateTime.Now.Date,
+                Hora = DateTime.Now.TimeOfDay,
+                Comentario = Procedimento.ComentarioFundamentoFinanceiros,
+                Comentario2 = Procedimento.ComentarioFundamentoFinanceiros2,
+                User = UserDetails.IdUtilizador,
+                EstadoAnterior = 3, // JPM.08032018.Originally this value is hard-coded. Could it be used the property Estado value?
+                TipoEstado = StateToCheck,
+                NomeUser = UserDetails.Nome,
+                UtilizadorCriacao = UserDetails.IdUtilizador,
+                DataHoraCriacao = DateTime.Now,
+                ImobSimNao = Procedimento.ImobilizadoSimNao
+            };
+
+            Procedimento.WorkflowJuridicosConfirm = Procedimento.WorkflowJuridicosConfirm.HasValue ? Procedimento.WorkflowJuridicosConfirm : false;
+            Procedimento.WorkflowJuridicos = Procedimento.WorkflowJuridicos.HasValue ? Procedimento.WorkflowJuridicos : false;
+
+            switch (StateToCheck)
+            {
+                case 1:
+                    if(Procedimento.WorkflowJuridicosConfirm.Value)
+                        NewFluxo5.EstadoSeguinte = 4;
+                    else
+                    {
+                        if (Procedimento.WorkflowJuridicos.Value)
+                            NewFluxo5.EstadoSeguinte = 6;
+                        else
+                            NewFluxo5.EstadoSeguinte = 4; 
+                    }
+                    break;
+                case 9:
+                    NewFluxo5.EstadoSeguinte = 0;
+                    NewFluxo5.TipoEstado = 1;
+                    break;
+            }
+
+            if (__CreateFluxoTrabalho(NewFluxo5) == null)
+            {
+                return ReturnHandlers.UnableToCreateFluxo;
+            }
+
+            if (Procedimento.Estado > 4 && Procedimento.Estado < 7)
+            {
+                if (StateToCheck == 1)
+                {
+                    if (Procedimento.WorkflowJuridicosConfirm.Value)
+                        Procedimento.Estado = 4;
+                    else
+                    {
+                        if (Procedimento.WorkflowJuridicos.Value)
+                            Procedimento.Estado = 6;
+                        else
+                            Procedimento.Estado = 4;
+                    }
+                    Procedimento.ComentarioEstado = "";
+                }
+            }
+            else
+            {
+                Procedimento.Estado = 4;
+                Procedimento.ComentarioEstado = Procedimento.ComentarioFundamentoFinanceiros;
+            }
+
+            //  JPM.The original NAV code is depicted here using the TemposPaCcp properties to update the Procedimento closure date
+            /* 
+             * 
+             * CalculaNDias();
+             * IF recTemposPA.GET("No.") THEN BEGIN
+             *      recTemposPA."Estado5 TG" += gNdias;
+             *      recTemposPA.MODIFY;
+             *      gDiferDias := recTemposPA."Estado5 TG" - recTemposPA."Estado5 TA";
+             * END;
+             * (...)
+             * 
+             * IF gDiferDias <> 0 THEN BEGIN
+             *      recCheckList.NoDiasAtraso += gDiferDias;
+             *      recCheckList.DataFechoPrev := recCheckList.DataFechoPrev + gDiferDias;
+             * END;
+             */
+            if (Procedimento.TemposPaCcp.Estado5Tg - (Procedimento.TemposPaCcp.Estado5 ?? 0) != 0)
+            {
+                Procedimento.No_DiasAtraso += (Procedimento.TemposPaCcp.Estado5Tg - Procedimento.TemposPaCcp.Estado5);
+                if (Procedimento.DataFechoPrevista.HasValue)
+                {
+                    DateTime DateAux = Procedimento.DataFechoPrevista.Value;
+                    Procedimento.DataFechoPrevista = DateAux.AddDays(Procedimento.No_DiasAtraso.Value);
+                }
+                else
+                {
+                    Procedimento.DataFechoPrevista = DateTime.Now.AddDays(Procedimento.No_DiasAtraso.Value);
+                }
+            }
+
+            Procedimento.DataHoraEstado = DateTime.Now;
+            Procedimento.UtilizadorEstado = UserDetails.IdUtilizador;
+
+            Procedimento.UtilizadorModificacao = UserDetails.IdUtilizador;
+            Procedimento.DataHoraModificacao = DateTime.Now;
+
+            if (__UpdateProcedimento(Procedimento) == null)
+            {
+                return ReturnHandlers.UnableToUpdateProcedimento;
+            };
+
+            return ReturnHandlers.Success;
+        }
 
         #endregion
 
