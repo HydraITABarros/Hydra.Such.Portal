@@ -2162,6 +2162,19 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public JsonResult ReturnToAcquisition([FromBody] ProcedimentoCCPView data)
+        {
+            if (data != null)
+            {
+                
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
+
         #endregion
 
         #region MenuButton "Acções" in the "A Preencher pela área - Pedido de Abertura de Procedimento (7)" section
