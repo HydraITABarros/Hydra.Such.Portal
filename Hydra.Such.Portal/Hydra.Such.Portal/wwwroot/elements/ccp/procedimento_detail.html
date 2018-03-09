@@ -259,53 +259,53 @@
         </iron-ajax>
 
         <!-- NR 20180223 -->
-        <iron-ajax url="/PopulateDropdowns/GetTipoLinhasProdutosCCP" 
-                   last-response="{{CBTipo}}" 
-                   auto method="post" 
-                   handle-as="json" 
+        <iron-ajax url="/PopulateDropdowns/GetTipoLinhasProdutosCCP"
+                   last-response="{{CBTipo}}"
+                   auto method="post"
+                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
 
         <!-- NR 20180226 -->
-        <iron-ajax url="/PopulateDropdowns/GetLocations" 
-                   last-response="{{CBLocations}}" 
-                   auto method="post" 
-                   handle-as="json" 
+        <iron-ajax url="/PopulateDropdowns/GetLocations"
+                   last-response="{{CBLocations}}"
+                   auto method="post"
+                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProducts" 
-                   last-response="{{CBItems}}" 
-                   auto method="post" 
-                   handle-as="json" 
+        <iron-ajax url="/PopulateDropdowns/GetProducts"
+                   last-response="{{CBItems}}"
+                   auto method="post"
+                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" 
-                   last-response="{{LCBMeasuresUnit}}" 
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode"
+                   last-response="{{LCBMeasuresUnit}}"
                    auto method="post"
                    id="measuresunit_ajax"
-                   handle-as="json" 
+                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
 
         <!-- NR 20180228 -->
-        <iron-ajax url="/PopulateDropdowns/GetObjectoDeContratoCCP" 
-                   last-response="{{CBObjectoContrato}}" 
-                   auto method="post" 
-                   handle-as="json" 
+        <iron-ajax url="/PopulateDropdowns/GetObjectoDeContratoCCP"
+                   last-response="{{CBObjectoContrato}}"
+                   auto method="post"
+                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetAllGestorProcesso" 
-                   last-response="{{CBGestorProcesso}}" 
-                   auto method="post" 
-                   handle-as="json" 
+        <iron-ajax url="/PopulateDropdowns/GetAllGestorProcesso"
+                   last-response="{{CBGestorProcesso}}"
+                   auto method="post"
+                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
 
         <!--NR 20180305-->
-        <iron-ajax url="/PopulateDropdowns/getSupplier" 
-                   last-response="{{cboSupplier}}" 
-                   auto method="post" 
-                   handle-as="json" 
+        <iron-ajax url="/PopulateDropdowns/getSupplier"
+                   last-response="{{cboSupplier}}"
+                   auto method="post"
+                   handle-as="json"
                    content-type="application/json">
         </iron-ajax>
         <iron-ajax url="/ProcedimentosCcps/GetUsersWhoAreElementosJuri"
@@ -315,7 +315,6 @@
                    content-type="application/json">
         </iron-ajax>
         <!-- Dropdowns populate.e -->
-
         <!-- Controller actions.b -->
         <iron-ajax url="/ProcedimentosCcps/GetUserFeatures"
                    last-response="{{UserAccesses}}"
@@ -481,6 +480,30 @@
                    on-response="_devolverACompras_5Response"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/SubmitForAuthorization"
+                   last-response="{{ SubmeterParaAutorizacao }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_submeterParaAutorizacao"
+                   on-response="_submeterParaAutorizacaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/ReturnPurchase"
+                   last-response="{{ DevolverCompras }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_devolverCompras"
+                   on-response="_devolverComprasResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/CloseProcess"
+                   last-response="{{ FecharProcesso_7 }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_fecharProcesso_7"
+                   on-response="_fecharProcesso_7Response"
+                   content-type="application/json">
+        </iron-ajax>
 
         <!--NR 20180307-->
         <iron-ajax url="/ProcedimentosCcps/GetPermission"
@@ -508,7 +531,6 @@
                    content-type="application/json">
         </iron-ajax>
         <!-- Controller actions.e -->
-        
         <!-- Header section of the Procedimento details -->
         <div class="panel panel-default">
             <div class="panel-heading">Cabeçalho</div>
@@ -1652,8 +1674,8 @@
                                                 </style>
                                                 <vaadin-list-box>
                                                     <vaadin-item class="my-menu-item" on-tap="_submeterParaAutorizacao">Submeter para Autorização</vaadin-item>
-                                                    <vaadin-item class="my-menu-item" on-tap="_devolverACompras">Devolver a Compras (4)</vaadin-item>
-                                                    <vaadin-item class="my-menu-item" on-tap="_fecharProcesso">Fechar Processo -> (19)</vaadin-item>
+                                                    <vaadin-item class="my-menu-item" on-tap="_devolverCompras">Devolver Compras</vaadin-item>
+                                                    <vaadin-item class="my-menu-item" on-tap="_fecharProcesso_7">Fechar Processo -> (19)</vaadin-item>
                                                 </vaadin-list-box>
                                             </template>
                                             <paper-button raised id="actionButtonPedidoAberturaProc" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
@@ -3308,7 +3330,6 @@
 
                 //NR 20180309
                 _devolverACompras_5: function () {
-                    debugger;
                     var ajax_request = this.$.ajax_devolverACompras_5;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -3322,7 +3343,6 @@
                     this.$.ajax_devolverACompras_5.body = JSON.stringify(this.data);
                 },
                 _devolverACompras_5Response: function (e) {
-                    debugger;
                     if (this.DevolverACompras_5.eReasonCode == 0) {
                         this._openToast("Procedimento " + this.data.no + " enviado para Área!");
                         setTimeout(
@@ -3338,6 +3358,92 @@
                     }
                 },
 
+                _submeterParaAutorizacao: function () {
+                    var ajax_request = this.$.ajax_submeterParaAutorizacao;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma Envio para Aprovação?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_submeterParaAutorizacao.body = JSON.stringify(this.data);
+                },
+                _submeterParaAutorizacaoResponse: function (e) {
+                    if (this.SubmeterParaAutorizacao.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " enviado para Aprovação!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.SubmeterParaAutorizacao.eMessage);
+                    }
+                },
+
+                _devolverCompras: function () {
+                    var ajax_request = this.$.ajax_devolverCompras;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a devolução a Compras?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_devolverCompras.body = JSON.stringify(this.data);
+                },
+                _devolverComprasResponse: function (e) {
+                    if (this.DevolverCompras.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " enviado para Área!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.DevolverCompras.eMessage);
+                    }
+                },
+
+                _fecharProcesso_7: function () {
+                    var ajax_request = this.$.ajax_fecharProcesso_7;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o fecho do processo?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_fecharProcesso_7.body = JSON.stringify(this.data);
+                },
+                _fecharProcesso_7Response: function (e) {
+                    if (this.FecharProcesso_7.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " Fechado!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.FecharProcesso_7.eMessage);
+                    }
+                },
 
                 //NR 20180306
                 _devolverParaArea: function () {
