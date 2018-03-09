@@ -424,6 +424,14 @@
                    on-response="_enviarParaCAAdjudicacaoResponse"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/SubmitToArea_5"
+                   last-response="{{ EnviarParaArea_5 }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_enviarParaArea_5"
+                   on-response="_enviarParaArea_5Response"
+                   content-type="application/json">
+        </iron-ajax>
 
         <!--NR 20180307-->
         <iron-ajax url="/ProcedimentosCcps/GetPermission"
@@ -1536,8 +1544,8 @@
                                                         }
                                                 </style>
                                                 <vaadin-list-box>
-                                                    <vaadin-item class="my-menu-item" on-tap="_enviarParaArea">Enviar p/ Área (7)</vaadin-item>
-                                                    <vaadin-item class="my-menu-item" on-tap="_devolverACompras">Devolver a Compras (4)</vaadin-item>
+                                                    <!--<vaadin-item class="my-menu-item" on-tap="_enviarParaArea_5">Enviar p/ Área (7)</vaadin-item>-->
+                                                    <vaadin-item class="my-menu-item" on-tap="_devolverACompras_5">Devolver a Compras (4)</vaadin-item>
                                                 </vaadin-list-box>
                                             </template>
                                             <paper-button raised id="actionButtonFinanceiros" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
@@ -1923,7 +1931,7 @@
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <br />
-                                                    <paper-button raised id="btnEnviarParaArea" class="btn--confirm pull-right" on-tap="_enviarParaArea"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp; Enviar para Área</paper-button>
+                                                    <paper-button raised id="btnEnviarParaArea" class="btn--confirm pull-right" on-tap="_enviarParaArea_15"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp; Enviar para Área</paper-button>
                                                 </div>
                                             </div>
                                         </div>
@@ -3295,6 +3303,38 @@
                             window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
                     } else {
                         this._openToast(this.EnviarParaCAAdjudicacao.eMessage);
+                    }
+                },
+                _enviarParaArea_5: function () {
+                    debugger;
+                    
+                    var ajax_request = this.$.ajax_enviarParaArea_5;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o Envio à Área?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_enviarParaArea_5.body = JSON.stringify(this.data);
+                },
+                _enviarParaArea_5Response: function (e) {
+                    debugger;
+                    if (this.EnviarParaArea_5.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " enviado para Área!");
+                        setTimeout(
+                            function () {
+                                //
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.EnviarParaArea_5.eMessage);
                     }
                 },
 
