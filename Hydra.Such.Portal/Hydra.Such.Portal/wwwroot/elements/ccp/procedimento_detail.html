@@ -259,17 +259,55 @@
         </iron-ajax>
 
         <!-- NR 20180223 -->
-        <iron-ajax url="/PopulateDropdowns/GetTipoLinhasProdutosCCP" last-response="{{CBTipo}}" auto method="post" handle-as="json" content-type="application/json"> </iron-ajax>
-        <!-- NR 20180226 -->
-        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProducts" last-response="{{CBItems}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{LCBMeasuresUnit}}" auto id="measuresunit_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <!-- NR 20180228 -->
-        <iron-ajax url="/PopulateDropdowns/GetObjectoDeContratoCCP" last-response="{{CBObjectoContrato}}" auto method="post" handle-as="json" content-type="application/json"> </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetAllGestorProcesso" last-response="{{CBGestorProcesso}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <!--NR 20180305-->
-        <iron-ajax url="/PopulateDropdowns/getSupplier" last-response="{{cboSupplier}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetTipoLinhasProdutosCCP" 
+                   last-response="{{CBTipo}}" 
+                   auto method="post" 
+                   handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
 
+        <!-- NR 20180226 -->
+        <iron-ajax url="/PopulateDropdowns/GetLocations" 
+                   last-response="{{CBLocations}}" 
+                   auto method="post" 
+                   handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProducts" 
+                   last-response="{{CBItems}}" 
+                   auto method="post" 
+                   handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" 
+                   last-response="{{LCBMeasuresUnit}}" 
+                   auto method="post"
+                   id="measuresunit_ajax"
+                   handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!-- NR 20180228 -->
+        <iron-ajax url="/PopulateDropdowns/GetObjectoDeContratoCCP" 
+                   last-response="{{CBObjectoContrato}}" 
+                   auto method="post" 
+                   handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllGestorProcesso" 
+                   last-response="{{CBGestorProcesso}}" 
+                   auto method="post" 
+                   handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!--NR 20180305-->
+        <iron-ajax url="/PopulateDropdowns/getSupplier" 
+                   last-response="{{cboSupplier}}" 
+                   auto method="post" 
+                   handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
         <iron-ajax url="/ProcedimentosCcps/GetUsersWhoAreElementosJuri"
                    last-response="{{LUsers}}"
                    auto method="post"
@@ -277,6 +315,7 @@
                    content-type="application/json">
         </iron-ajax>
         <!-- Dropdowns populate.e -->
+
         <!-- Controller actions.b -->
         <iron-ajax url="/ProcedimentosCcps/GetUserFeatures"
                    last-response="{{UserAccesses}}"
@@ -433,6 +472,16 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!--NR 20180309-->
+        <iron-ajax url="/ProcedimentosCcps/ReturnToAcquisition"
+                   last-response="{{ DevolverACompras_5 }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_devolverACompras_5"
+                   on-response="_devolverACompras_5Response"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!--NR 20180307-->
         <iron-ajax url="/ProcedimentosCcps/GetPermission"
                    last-response="{{ PedirAutorizacaoConfirmed }}"
@@ -458,11 +507,9 @@
                    on-response="_fecharProcessoResponse"
                    content-type="application/json">
         </iron-ajax>
-
-
         <!-- Controller actions.e -->
+        
         <!-- Header section of the Procedimento details -->
-        <!--<iron-form id="formContract">-->
         <div class="panel panel-default">
             <div class="panel-heading">Cabeçalho</div>
             <div class="panel-body">
@@ -2483,7 +2530,6 @@
                     });
                 },
                 _validateData: function () {
-                    ////debugger;
                     if (false) {
                         this._openToast(validate);
                         return false;
@@ -2493,7 +2539,6 @@
 
                 //CRUDS
                 _create: function () {
-                    ////debugger;
                     this.data.tipoProcedimento = this._procedimentotypeid;
 
                     if (this._validateData()) {
@@ -2502,7 +2547,6 @@
                 },
 
                 _update: function () {
-                    debugger;
                     if (this._onUpdateValidateElementoJuri()) {
                         //this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data)
                         this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
@@ -2511,7 +2555,6 @@
                 },
 
                 _delete: function () {
-                    debugger;
                     var ajax_request = this.$.ajax_delete_procedimento;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -2519,39 +2562,14 @@
                         "Tem a certeza que pretende remover o Procedimento " + this.data.no + "?",
                         ajax_request
                     );
-                    //var Procedimento = this.data;
-                    //var ajax_request = this.$.ajax_delete_procedimento;
-                    //bootbox.confirm({
-                    //    message: "Tem a certeza que pretende remover o Procedimento " + this.data.no + "?",
-                    //    buttons: {
-                    //        confirm: {
-                    //            label: 'Sim',
-                    //            className: 'btn-success'
-                    //        },
-                    //        cancel: {
-                    //            label: 'Não',
-                    //            className: 'btn-danger'
-                    //        }
-                    //    },
-                    //    callback: function (result) {
-                    //        if (result) {
-                    //            ajax_request.body = JSON.stringify({
-                    //                "No": Procedimento.no
-                    //            });
-                    //            ajax_request.generateRequest();
-                    //        }
-                    //    }
-                    //});
                 },
 
                 _updateProcedimentoResponse: function (e) {
-                    debugger;;
                     if (this.ProcedimentoUpdated.eReasonCode != 0) {
                         this._openToast(this.ProcedimentoUpdated.eMessage);
                     } else {
                         this._openToast("Procedimento actualizado com sucesso.")
                     }
-
                 },
 
                 //Responses Processors
@@ -2565,14 +2583,11 @@
                                 return;
                             }
 
-                            //debugger;;
                             self._setFieldsEditability(self.data);
 
-                            //debugger;;
                         } else if (data.detail.url.indexOf("Create") !== -1) {
                             self._createResponseProcessor();
                         } else if (data.detail.url.indexOf("Update") !== -1) {
-                            debugger;;
                             if (!this.isJuriElementAction)
                                 self._openToast("Procedimento atualizado com sucesso.")
                         }
@@ -2582,7 +2597,6 @@
                 },
 
                 _createResponseProcessor: function () {
-                    ////debugger;;
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
                         this._openToast("Procedimento criado com sucesso.");
@@ -2596,13 +2610,11 @@
                 },
 
                 _responseDeleteProcessor: function (data) {
-                    debugger;;
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.deletedData.eReasonCode != 0) {
                             this._openToast("Não é possivel eliminar o Procedimento.");
                         } else {
-                            debugger;;
                             this._openToast(this.deletedData.eMessage);
                             setTimeout(
                                 function () {
@@ -2619,16 +2631,13 @@
 
                         setTimeout(
                             function () {
-                                // window.location.replace("/");
                             }, 3000);
                     }
 
                     if (this.userAllowed) {
-                        //debugger;;
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
                         this.$.page_databound_ajax.generateRequest();
 
-                        //debugger;;
                         // set user permissions
                         for (var i in this.UserAccesses) {
                             switch (this.UserAccesses[i]) {
@@ -2671,7 +2680,6 @@
 
                 // Create Elemento Juri
                 _onUpdateValidateElementoJuri: function () {
-                    ////debugger;;
                     for (var i in this.data.elementosJuri) {
                         if (!this.data.elementosJuri[i].presidente && !this.data.elementosJuri[i].vogal && !this.data.elementosJuri[i].suplente) {
                             this._openToast("Não escolheu qual a responsabilidade do utilizador: " + this.data.elementosJuri[i].utilizador + ".");
@@ -2699,7 +2707,6 @@
                     return true;
                 },
                 _validateElementoJuriData: function () {
-                    ////debugger;;
                     if (this._userName == "") {
                         this._openToast("Não escolheu um utilizador!");
                         return false;
@@ -2716,7 +2723,6 @@
                         return true;
                 },
                 _createElementoJuri: function () {
-                    debugger;;
                     this.isJuriElementAction = true;
                     if (this._validateElementoJuriData()) {
                         this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data);
@@ -2735,7 +2741,6 @@
                     }
                 },
                 _createElementoJuriResponse: function (e) {
-                    debugger;;
                     if (this.ElementoCreated.eReasonCode == 0) {
                         this._openToast('Elemento Júri adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
@@ -2757,7 +2762,6 @@
                     }
                 },
                 _deleteElementoJuri: function (e) {
-                    debugger;;
                     this.isJuriElementAction = true;
                     var index = this.data.elementosJuri.indexOf(e.model.item);
                     this.data.elementosJuri.splice(index, 1);
@@ -2770,7 +2774,6 @@
 
                 },
                 _deleteElementoJuriResponse: function (e) {
-                    debugger;;
                     if (this.ElementoDeleted) {
                         this._openToast('Elemento Juri eliminado com sucesso');
                         this.$.gridElementosJuri.clearCache();
@@ -2867,8 +2870,6 @@
                             "Confirma a sumissão do Procedimento " + this.data.no,
                             ajax_request
                         );
-                        //this.$.ajax_submitprocedimento.body = this.data;
-                        //this.$.ajax_submitprocedimento.generateRequest();
                     }
                 },
                 _submitProcedimentoResponse: function (e) {
@@ -2876,7 +2877,6 @@
                         this._openToast("Procedimento " + this.data.no + " submetido com sucesso!");
                         setTimeout(
                             function () {
-                                //
                             }, 3000);
 
                         if (this._procedimentotypeid == 1)
@@ -2912,7 +2912,6 @@
                         this._openToast("Procedimento " + this.data.no + " confirmado!");
                         setTimeout(
                             function () {
-                                //
                             }, 3000);
 
                         if (this._procedimentotypeid == 1)
@@ -2943,7 +2942,6 @@
                         this._openToast("Procedimento " + this.data.no + " enviado!");
                         setTimeout(
                             function () {
-                                //
                             }, 3000);
 
                         if (this._procedimentotypeid == 1)
@@ -2956,7 +2954,6 @@
                 },
 
                 _devolverContabilidade: function () {
-                    debugger;
                     var ajax_request = this.$.ajax_devolverContabilidade;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -2970,12 +2967,10 @@
                     this.$.ajax_devolverContabilidade.body = JSON.stringify(this.data);
                 },
                 _devolverContabilidadeResponse: function (e) {
-                    debugger;
                     if (this.DevolverContabilidadeConfirmed.eReasonCode == 0) {
                         this._openToast("Procedimento " + this.data.no + " devolvido!");
                         setTimeout(
                             function () {
-                                //
                             }, 3000);
 
                         if (this._procedimentotypeid == 1)
@@ -2988,7 +2983,6 @@
                 },
 
                 _fecharProcesso: function () {
-                    debugger;
                     var ajax_request = this.$.ajax_fecharProcesso;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -3002,12 +2996,10 @@
                     this.$.ajax_fecharProcesso.body = JSON.stringify(this.data);
                 },
                 _fecharProcessoResponse: function (e) {
-                    debugger;
                     if (this.FecharProcessoConfirmed.eReasonCode == 0) {
                         this._openToast("Procedimento " + this.data.no + " fechado!");
                         setTimeout(
                             function () {
-                                //
                             }, 3000);
 
                         if (this._procedimentotypeid == 1)
@@ -3021,7 +3013,6 @@
                 
                 //NR 20180223
                 _nrmudasimnao: function (e) {
-                    //debugger;
                     if (this.$.precoMaisBaixo.value == true) {
                         this.$.propostaEconMaisVantajosa.value = false;
                     } else if (this.$.precoMaisBaixo.value == false) {
@@ -3031,7 +3022,6 @@
                     }
                 },
                 _nrmudasimnaoinvertida: function (e) {
-                    //debugger;
                     if (this.$.propostaEconMaisVantajosa.value == true) {
                         this.$.precoMaisBaixo.value = false;
                     } else if (this.$.propostaEconMaisVantajosa.value == false) {
@@ -3076,7 +3066,6 @@
                         this._showErrorMessage('Ocorreu um erro ao adicionar a linha.');
                     }
                 },
-
 
                 //NR 20180227
                 _deleteLinha: function (e) {
@@ -3124,15 +3113,12 @@
                     this.data.nomeProcesso = this.$.nomeProcesso.value;
 
                     this.$.ajax_enviarParaFinanceiros.body = JSON.stringify( this.data );
-
                 },
                 _enviarParaFinanceirosResponse: function (e) {
-                    debugger;
                     if (this.EnviarParaFinanceiros.eReasonCode == 0) {
                         this._openToast("Procedimento " + this.data.no + " enviado para Financeira!");
                         setTimeout(
                             function () {
-                                //
                             }, 3000);
 
                         if (this._procedimentotypeid == 1)
@@ -3161,7 +3147,6 @@
                         return;
                     }
 
-
                     var ajax_request = this.$.ajax_enviarParaJuridicos;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -3175,12 +3160,10 @@
                     this.$.ajax_enviarParaJuridicos.body = JSON.stringify(this.data);
                 },
                 _enviarParaJuridicosResponse: function (e) {
-                    debugger;
                     if (this.EnviarParaJuridicos.eReasonCode == 0) {
                         this._openToast("Procedimento " + this.data.no + " enviado para Juridicos!");
                         setTimeout(
                             function () {
-                                //
                             }, 3000);
 
                         if (this._procedimentotypeid == 1)
@@ -3190,12 +3173,10 @@
                     } else {
                         this._openToast(this.EnviarParaJuridicos.eMessage);
                     }
-                    
                 },
 
                 //NR 20180302
                 _enviarParaArea: function () {
-                    debugger;
                     if (this.data.estado != 4) {
                         this._openToast('Neste Estado, não pode Enviar à Área!');
                         return;
@@ -3211,7 +3192,6 @@
                         return;
                     }
 
-
                     var ajax_request = this.$.ajax_enviarParaArea;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -3225,12 +3205,10 @@
                     this.$.ajax_enviarParaArea.body = JSON.stringify(this.data);
                 },
                 _enviarParaAreaResponse: function (e) {
-                    debugger;
                     if (this.EnviarParaArea.eReasonCode == 0) {
                         this._openToast("Procedimento " + this.data.no + " enviado para Área!");
                         setTimeout(
                             function () {
-                                //
                             }, 3000);
 
                         if (this._procedimentotypeid == 1)
@@ -3244,7 +3222,6 @@
 
                 //Nr 20180308
                 _enviarParaCAAbertura: function () {
-                    debugger;
                     var ajax_request = this.$.ajax_enviarParaCAAbertura;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -3258,12 +3235,10 @@
                     this.$.ajax_enviarParaCAAbertura.body = JSON.stringify(this.data);
                 },
                 _enviarParaCAAberturaResponse: function (e) {
-                    debugger;
                     if (this.EnviarParaCAAbertura.eReasonCode == 0) {
                         this._openToast("Procedimento " + this.data.no + " enviado para CA Abertura!");
                         setTimeout(
                             function () {
-                                //
                             }, 3000);
 
                         if (this._procedimentotypeid == 1)
@@ -3275,7 +3250,6 @@
                     }
                 },
                 _enviarParaCAAdjudicacao: function () {
-                    debugger;
                     var ajax_request = this.$.ajax_enviarParaCAAdjudicacao;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -3289,12 +3263,10 @@
                     this.$.ajax_enviarParaCAAdjudicacao.body = JSON.stringify(this.data);
                 },
                 _enviarParaCAAdjudicacaoResponse: function (e) {
-                    debugger;
                     if (this.EnviarParaCAAdjudicacao.eReasonCode == 0) {
                         this._openToast("Procedimento " + this.data.no + " enviado para CA Abertura!");
                         setTimeout(
                             function () {
-                                //
                             }, 3000);
 
                         if (this._procedimentotypeid == 1)
@@ -3306,8 +3278,6 @@
                     }
                 },
                 _enviarParaArea_5: function () {
-                    debugger;
-                    
                     var ajax_request = this.$.ajax_enviarParaArea_5;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -3321,12 +3291,10 @@
                     this.$.ajax_enviarParaArea_5.body = JSON.stringify(this.data);
                 },
                 _enviarParaArea_5Response: function (e) {
-                    debugger;
                     if (this.EnviarParaArea_5.eReasonCode == 0) {
                         this._openToast("Procedimento " + this.data.no + " enviado para Área!");
                         setTimeout(
                             function () {
-                                //
                             }, 3000);
 
                         if (this._procedimentotypeid == 1)
@@ -3338,10 +3306,41 @@
                     }
                 },
 
-
-                //Nr 20180306
-                _devolverParaArea: function () {
+                //NR 20180309
+                _devolverACompras_5: function () {
                     debugger;
+                    var ajax_request = this.$.ajax_devolverACompras_5;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a devolução a Compras?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_devolverACompras_5.body = JSON.stringify(this.data);
+                },
+                _devolverACompras_5Response: function (e) {
+                    debugger;
+                    if (this.DevolverACompras_5.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " enviado para Área!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.DevolverACompras_5.eMessage);
+                    }
+                },
+
+
+                //NR 20180306
+                _devolverParaArea: function () {
                     var ajax_request = this.$.ajax_devolverParaArea;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -3355,12 +3354,10 @@
                     this.$.ajax_devolverParaArea.body = JSON.stringify(this.data);
                 },
                 _devolverParaAreaResponse: function (e) {
-                    debugger;
                     if (this.DevolverParaArea.eReasonCode == 0) {
                         this._openToast("Procedimento " + this.data.no + " devolvido à Área!");
                         setTimeout(
                             function () {
-                                //
                             }, 3000);
 
                         if (this._procedimentotypeid == 1)
@@ -3375,7 +3372,6 @@
 
                 // Imobilizado return to area
                 _imobReturnToArea: function () {
-                    debugger;
                     var ajax_request = this.$.ajax_imobReturnToArea;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -3390,12 +3386,10 @@
                 },
 
                 _imobReturnToAreaResponse: function (e) {
-                    debugger;
                     if (this.ProcedimentoReturnedToArea.eReasonCode == 0) {
                         this._openToast("Procedimento " + this.data.no + " devolvido!");
                         setTimeout(
                             function () {
-                                //
                             }, 3000);
 
                         if (this._procedimentotypeid == 1)
@@ -3408,8 +3402,6 @@
                 },
                 
                 _setFieldsEditability(data) {
-                    //debugger;;
-
                     var _self = this;
 
                     //if (data.estado == 0) {
@@ -3620,7 +3612,6 @@
                 },
                 //Helpers
                 _executeRequest: function (url, data) {
-                    //////debugger;;
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();

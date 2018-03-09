@@ -2166,7 +2166,107 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (data != null)
             {
-                
+                bool IsElementContabilidade = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoContabilidade);
+
+                if (!IsElementContabilidade)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
+
+                if (!(data.WorkflowFinanceiros.HasValue && data.WorkflowFinanceiros.Value))
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
+
+                if ((data.Estado != 5) && (data.Estado != 6))
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
+
+
+                FluxoTrabalhoListaControlo Fluxo4 = new FluxoTrabalhoListaControlo();
+
+                if (data.FluxoTrabalhoListaControlo != null)
+                {
+                    Fluxo4 = data.FluxoTrabalhoListaControlo.Where(f => f.Estado == 4).LastOrDefault();
+                }
+                else
+                {
+                    Fluxo4 = DBProcedimentosCCP.GetChecklistControloProcedimento(data.No, 4);
+                }
+
+                //É para enviar ao utilizador que mudou o último estado = 0
+                ConfigUtilizadores UserDetails_TO = DBProcedimentosCCP.GetUserDetails(Fluxo4.User);
+                string UserEmail_TO = "";
+
+                if (EmailAutomation.IsValidEmail(UserDetails_TO.IdUtilizador))
+                {
+                    UserEmail_TO = UserDetails_TO.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                string UserEmail = "";
+
+                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                {
+                    UserEmail = UserDetails.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+
+                // NAV Procedure FDFinancConfirmar.b
+                ErrorHandler DecisionTaken = DBProcedimentosCCP.FinancialDecisionGroundsToBuy(data, DBProcedimentosCCP.GetUserDetails(User.Identity.Name), 1);
+                if (DecisionTaken.eReasonCode != 0)
+                {
+                    return Json(DecisionTaken);
+                }
+                // NAV FDFinancConfirmar.e
+
+                EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                {
+                    NºProcedimento = data.No,
+                    Assunto = data.No + " " + data.NomeProcesso + " - Fundamento decisão financeira",
+                    UtilizadorEmail = UserEmail,
+                    EmailDestinatário = UserEmail_TO,
+                    TextoEmail = data.ComentarioFundamentoFinanceiros,
+                    DataHoraEmail = DateTime.Now,
+                    UtilizadorCriação = User.Identity.Name,
+                    DataHoraCriação = DateTime.Now
+                };
+
+                if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                {
+                    return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                }
+
+                data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
+                SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                {
+                    DisplayName = UserDetails.Nome,
+                    Subject = ProcedimentoEmail.Assunto,
+                    From = DBProcedimentosCCP._EmailSender
+                };
+
+                Email.To.Add(UserEmail_TO);
+                Email.CC.Add(UserEmail_TO);
+                Email.BCC.Add(UserEmail);
+
+                Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+                Email.IsBodyHtml = true;
+
+                Email.EmailProcedimento = ProcedimentoEmail;
+
+                Email.SendEmail();
+
                 return Json(ReturnHandlers.Success);
             }
             else
