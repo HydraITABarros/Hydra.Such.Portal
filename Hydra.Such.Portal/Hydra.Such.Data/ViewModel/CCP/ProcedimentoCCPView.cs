@@ -130,7 +130,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
         ///public ElementosChecklist ElementosChecklist { get; set; }
         //public ElementosChecklistArea ChecklistArea { get; set; }
 
-        
+        public string Nome_Utilizador_Logado { get; set; }
 
         public TemposPACCPView TemposPaCcp { get; set; }
         public ICollection<FluxoTrabalhoListaControlo> FluxoTrabalhoListaControlo { get; set; }

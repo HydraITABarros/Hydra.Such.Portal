@@ -33,6 +33,8 @@
 
 <!-- NR 20180226 -->
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/vaadin-dialog/vaadin-dialog.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
 
 <dom-module id="x-procedimentodetails">
     <template>
@@ -502,6 +504,24 @@
                    handle-as="json"
                    id="ajax_fecharProcesso_7"
                    on-response="_fecharProcesso_7Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!--NR 20180312-->
+        <iron-ajax url="/ProcedimentosCcps/ReturnPurchase_6"
+                   last-response="{{ DevolverACompras_6 }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_devolverACompras_6"
+                   on-response="_devolverACompras_6Response"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/SendToPurchase_14"
+                   last-response="{{ EnviaParaCompras_14 }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_enviaParaCompras_14"
+                   on-response="_enviaParaCompras_14Response"
                    content-type="application/json">
         </iron-ajax>
 
@@ -1521,6 +1541,9 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
+
+
+
                                             <!--<vaadin-date-picker value="{{data.fundamentoComprasDataChecklist}}" id="fundamentoComprasDataChecklist" name="fundamentoComprasDataChecklist" label="Data"></vaadin-date-picker>-->
                                             <vaadin-text-field value="{{data.fundamentoComprasDataChecklist}}" id="fundamentoComprasDataChecklist" name="fundamentoComprasDataChecklist" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
@@ -1863,8 +1886,43 @@
                             </div>
                             <div class="col-sm-6">
                                 <br />
-                                &nbsp;
+                                <!--&nbsp;-->
                                 <paper-button raised id="btnSendToEvaluate" class="btn--sendtoevaluate" on-tap="_sendToEvaluate"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp; Envio para avaliação (Juri)</paper-button>
+
+                                <div class="panel panel-default" id="sendToEval_Email" hidden="true">
+                                    <div class="panel-heading">Email</div>
+                                    <div class="panel-body">
+                                        <div class="row break_clear">
+                                            <div class="col-sm-3">
+                                                <vaadin-text-field value="{{data.nome_Utilizador_Logado}}" id="sendToEval_DE" name="sendToEval_DE" label="De"></vaadin-text-field>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <vaadin-text-field value="" id="sendToEval_Para" name="sendToEval_Para" label="Para"></vaadin-text-field>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <vaadin-text-field value="Avaliação Procedimento {{data.no}}" id="sendToEval_Assunto" name="sendToEval_Assunto" label="Assunto"></vaadin-text-field>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-12">
+                                                <vaadin-text-field value="" id="sendToEval_Coment" name="sendToEval_Coment" label="Comentário"></vaadin-text-field>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-12">
+                                                <vaadin-upload nodrop max-files="5" id="sendToEval_Anexos"></vaadin-upload>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-sm-12">
+                                                <paper-button raised id="btnEnviarsendToEval" class="btn--confirm pull-right" on-tap="_btnEnviarsendToEval"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Enviar</paper-button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                
+
                             </div>
                         </div>
                     </div>
@@ -1903,6 +1961,34 @@
                                         <div class="clearfix"></div>
                                         <div class="clearfix"></div>
                                     </div>
+                                    <div class="col-lg-6">
+                                        <br />
+                                        <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
+                                            <template>
+                                                <style>
+                                                    .my-menu {
+                                                        padding: 8px 0;
+                                                        background: #fff;
+                                                    }
+
+                                                    .my-menu-item {
+                                                        display: block;
+                                                        padding: 8px 24px;
+                                                        text-decoration: none;
+                                                        color: #000;
+                                                    }
+
+                                                        .my-menu-item:hover {
+                                                            background: #FFD5D3;
+                                                        }
+                                                </style>
+                                                <vaadin-list-box>
+                                                    <vaadin-item class="my-menu-item" on-tap="_devolverACompras_6">Devolver a Compras (4)</vaadin-item>
+                                                </vaadin-list-box>
+                                            </template>
+                                            <paper-button raised id="actionButtonPedidoAberturaProc6" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
+                                        </vaadin-context-menu>
+                                    </div>
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -1935,6 +2021,34 @@
                                             </div>
                                         </div>
                                         <div class="clearfix"></div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <br />
+                                        <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
+                                            <template>
+                                                <style>
+                                                    .my-menu {
+                                                        padding: 8px 0;
+                                                        background: #fff;
+                                                    }
+
+                                                    .my-menu-item {
+                                                        display: block;
+                                                        padding: 8px 24px;
+                                                        text-decoration: none;
+                                                        color: #000;
+                                                    }
+
+                                                        .my-menu-item:hover {
+                                                            background: #FFD5D3;
+                                                        }
+                                                </style>
+                                                <vaadin-list-box>
+                                                    <vaadin-item class="my-menu-item" on-tap="_enviaParaCompras_14">Enviar p/ Compras (15)</vaadin-item>
+                                                </vaadin-list-box>
+                                            </template>
+                                            <paper-button raised id="actionButtonPedidoAberturaProc14" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
+                                        </vaadin-context-menu>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -2301,7 +2415,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="col-xs-6">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">Encomendas a Fornecedores</div>
@@ -2343,7 +2456,7 @@
                             </div>
                         </div>
                     </div>
-
+                    
                 </iron-pages>
 
                 <!-- Save and Create Buttons -->
@@ -3032,7 +3145,21 @@
                         this._openToast(this.FecharProcessoConfirmed.eMessage);
                     }
                 },
-                
+
+
+
+
+
+                //NR 20180312
+                _sendToEvaluate: function (e) {
+                    if (this.$.sendToEval_Email.hidden == true)
+                        this.$.sendToEval_Email.hidden = false;
+                    else
+                        this.$.sendToEval_Email.hidden = true;
+                },
+
+
+
                 //NR 20180223
                 _nrmudasimnao: function (e) {
                     if (this.$.precoMaisBaixo.value == true) {
@@ -3344,7 +3471,7 @@
                 },
                 _devolverACompras_5Response: function (e) {
                     if (this.DevolverACompras_5.eReasonCode == 0) {
-                        this._openToast("Procedimento " + this.data.no + " enviado para Área!");
+                        this._openToast("Procedimento " + this.data.no + " devolvido!");
                         setTimeout(
                             function () {
                             }, 3000);
@@ -3402,7 +3529,7 @@
                 },
                 _devolverComprasResponse: function (e) {
                     if (this.DevolverCompras.eReasonCode == 0) {
-                        this._openToast("Procedimento " + this.data.no + " enviado para Área!");
+                        this._openToast("Procedimento " + this.data.no + " devolvido!");
                         setTimeout(
                             function () {
                             }, 3000);
@@ -3442,6 +3569,64 @@
                             window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
                     } else {
                         this._openToast(this.FecharProcesso_7.eMessage);
+                    }
+                },
+
+                //NR 20180312
+                _devolverACompras_6: function () {
+                    var ajax_request = this.$.ajax_devolverACompras_6;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a devolução a Compras?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_devolverACompras_6.body = JSON.stringify(this.data);
+                },
+                _devolverACompras_6Response: function (e) {
+                    if (this.DevolverACompras_6.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " devolvido!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.DevolverACompras_6.eMessage);
+                    }
+                },
+                _enviaParaCompras_14: function () {
+                    var ajax_request = this.$.ajax_enviaParaCompras_14;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o Envio para Compras?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_enviaParaCompras_14.body = JSON.stringify(this.data);
+                },
+                _enviaParaCompras_14Response: function (e) {
+                    if (this.EnviaParaCompras_14.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " enviado para Compras!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.EnviaParaCompras_14.eMessage);
                     }
                 },
 
@@ -3506,7 +3691,11 @@
                         this._openToast(this.EnviarParaArea.eMessage);
                     }
                 },
-                
+
+
+
+
+
                 _setFieldsEditability(data) {
                     var _self = this;
 
@@ -3611,6 +3800,9 @@
 
                     //NR 20180305
                     _self.$.comentarioJuridico6.disabled = (data.estado != 6);
+                    if (data.estado != 6) {
+                        $(_self.$.actionButtonPedidoAberturaProc6).addClass('disabled');
+                    }
 
                     //NR 20180302
                     _self.$.fundamentacaoAreaComentario.disabled = (data.estado != 7);
@@ -3673,6 +3865,9 @@
                     }
 
                     _self.$.comentarioJuridico14.disabled = (data.estado != 14);
+                    if (data.estado != 14) {
+                        $(_self.$.actionButtonPedidoAberturaProc14).addClass('disabled');
+                    }
                     
                     _self.$.comentarioAdjudicacao15.disabled = (data.estado != 15);
                     _self.$.valorDecisaoContratar.disabled = (data.estado != 15);
@@ -3680,6 +3875,9 @@
                     _self.$.valorAdjudicacaoAtual.disabled = (data.estado != 15);
                     _self.$.diferencaEuros.disabled = (data.estado != 15);
                     _self.$.diferencaPercent.disabled = (data.estado != 15);
+                    if (data.estado != 15) {
+                        $(_self.$.btnEnviarParaArea).addClass('disabled');
+                    }
 
                     _self.$.comentarioAdjudicacao16.disabled = (data.estado != 16);
 
@@ -3698,10 +3896,14 @@
                     _self.$.utilizadorNotificacao.disabled = (data.estado != 18);
                     if (data.estado != 18) {
                         $(_self.$.btnConfirmAdjudicacaoNotificacao).addClass('disabled');
+
+                        $(_self.$.btnNovoAcordoAdjudicacaoAcordos).addClass('disabled');
+                        $(_self.$.btnNovoContratoAdjudicacaoAcordos).addClass('disabled');
+                        $(_self.$.btnNovaEncomendaAdjudicacaoAcordos).addClass('disabled');
                     }
 
                          
-
+                    
 
                     // 1. Procedimento status != 0.e
 
