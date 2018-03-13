@@ -263,5 +263,14 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public DateTime? DataAdjudicacao16 { get; set; }
         #endregion
         #endregion
+
+        #region Used to map Send Email To Juri Aproval
+        public string EmailToJuriAproval_From { get; set; }
+        public string EmailToJuriAproval_To { get; set; }
+        public string EmailToJuriAproval_Subject { get; set; }
+        public string EmailToJuriAproval_Comment { get; set; }
+        
+
+        #endregion
     }
 }

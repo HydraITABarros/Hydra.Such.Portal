@@ -30,11 +30,11 @@
 <link rel="import" href="/lib/vaadin-item/vaadin-item.html" />
 <!--<link rel="import" href="/lib/paper-menu/paper-menu.html" />-->
 <!--<link rel="import" href="/lib/paper-item/paper-item.html" />-->
-
 <!-- NR 20180226 -->
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/vaadin-dialog/vaadin-dialog.html">
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 
 <dom-module id="x-procedimentodetails">
     <template>
@@ -195,6 +195,30 @@
                 margin-top: 7px;
                 color: white;
                 background: #FF7259;
+            }
+
+            /*NR20180313*/
+            .subMenu {
+                background-color: #D5662F !important;
+                padding: 0px !important;
+                min-width: 50px !important;
+                height: 30px !important;
+                cursor: pointer;
+                margin-top: 7px;
+                border-radius: 4px !important;
+            }
+
+            .tablinks {
+                text-transform: none;
+                border: none;
+                margin: 0 5px;
+                padding: 5px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 14px;
+                background-color: transparent;
+                color: black;
             }
 
             vaadin-grid.disabled:after {
@@ -550,6 +574,18 @@
                    on-response="_fecharProcessoResponse"
                    content-type="application/json">
         </iron-ajax>
+
+
+        <!-- NR 20180313 -->
+        <iron-ajax url="/ProcedimentosCcps/SendEmail_ToJuriAproval"
+                   last-response="{{SendEmail_ToJuriAproval}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_sendEmail_ToJuriAproval"
+                   on-response="_sendEmail_ToJuriAprovalResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!-- Controller actions.e -->
         <!-- Header section of the Procedimento details -->
         <div class="panel panel-default">
@@ -607,7 +643,7 @@
                 <div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LProcedimentoState]]" item-value-path="id" item-label-path="value" required value="{{data.estado}}" label="Estado" disabled="true">
+                            <vaadin-combo-box items="[[LProcedimentoState]]" id="id_Estado" item-value-path="id" item-label-path="value" required value="{{data.estado}}" label="Estado" disabled="true">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -1221,7 +1257,7 @@
                             <h2 class="title title--bgyellow">Aquisição de Imobilizado</h2>
                             <p></p>
                             <h2 class="title title--bgblue">A preencher pelos Serviços de Contabilidade - Avaliação Cabimentação Orçamental</h2>
-
+                            <p></p>
                             <paper-collapse-item header="Contabilidade (1)" opened>
                                 <div class="col-xs-12">
                                     <div class="col-xs-12">
@@ -1263,8 +1299,8 @@
 
                                         <div class="clearfix"></div>
                                         <div class="clearfix"></div>
-                                        <div class="col-lg-6">
-                                            <!--Context menu-->
+
+                                        <!--<div class="col-lg-6">
                                             <br />
                                             <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
                                                 <template>
@@ -1292,9 +1328,13 @@
                                                 </template>
 
                                                 <paper-button raised id="actionButtonContabilidade1" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                                                <!--<button>Show Context Menu</button>-->
                                             </vaadin-context-menu>
+                                        </div>-->
+
+                                        <div class="col-lg-6">
+                                            <such-dropdown-menu class="subMenu" id="actionButtonContabilidade1" on-value-changed="_mnuAccao1_ItemSelected" title=" Acções " items="[[ _mnuAccao1_MenuItems ]]"></such-dropdown-menu>
                                         </div>
+
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -1328,8 +1368,7 @@
                                             </div>
                                         </div>
                                         <div class="clearfix"></div>
-                                        <div class="col-lg-6">
-                                            <!--Context menu-->
+                                        <!--<div class="col-lg-6">
                                             <br />
                                             <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
                                                 <template>
@@ -1358,8 +1397,11 @@
                                                 </template>
 
                                                 <paper-button raised id="actionButtonArea2" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                                                <!--<button>Show Context Menu</button>-->
                                             </vaadin-context-menu>
+                                        </div>-->
+                                        
+                                        <div class="col-lg-6" id="idDivAccao2">
+                                            <such-dropdown-menu class="subMenu" id="actionButtonArea2" disabled="true" on-value-changed="_mnuAccao2_ItemSelected" title=" Acções " items="[[ _mnuAccao2_MenuItems ]]"></such-dropdown-menu>
                                         </div>
                                     </div>
                                 </div>
@@ -1480,9 +1522,7 @@
                                                     <template class="header">
                                                     </template>
                                                     <template>
-                                                        <!--<center>-->
                                                         <paper-button raised class="btnRemove" on-tap="_deleteElementoJuri"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                                        <!--</center>-->
                                                     </template>
                                                 </vaadin-grid-column>
                                             </vaadin-grid>
@@ -1551,7 +1591,8 @@
                                             <vaadin-text-field value="{{data.emailDestinoCa}}" id="emailDestinoCa" name="emailDestinoCa" label="Email destino CA"> </vaadin-text-field>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6">
+
+                                    <!--<div class="col-lg-6">
                                         <br />
                                         <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
                                             <template>
@@ -1583,7 +1624,16 @@
                                             </template>
                                             <paper-button raised id="actionButtonCompras" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
                                         </vaadin-context-menu>
+                                    </div>-->
+
+
+                                    
+                                    <div class="col-lg-6">
+                                        <such-dropdown-menu class="subMenu" id="actionButtonCompras" on-value-changed="_mnuAccao4_ItemSelected" title=" Acções " items="[[ _mnuAccao4_MenuItems ]]"></such-dropdown-menu>
                                     </div>
+
+
+
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -1614,7 +1664,8 @@
                                             <vaadin-text-field value="{{data.fundamentoFinDataChecklist}}" id="fundamentoFinDataChecklist" name="fundamentoFinDataChecklist" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6">
+
+                                    <!--<div class="col-lg-6">
                                         <br />
                                         <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
                                             <template>
@@ -1636,13 +1687,18 @@
                                                         }
                                                 </style>
                                                 <vaadin-list-box>
-                                                    <!--<vaadin-item class="my-menu-item" on-tap="_enviarParaArea_5">Enviar p/ Área (7)</vaadin-item>-->
                                                     <vaadin-item class="my-menu-item" on-tap="_devolverACompras_5">Devolver a Compras (4)</vaadin-item>
                                                 </vaadin-list-box>
                                             </template>
                                             <paper-button raised id="actionButtonFinanceiros" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
                                         </vaadin-context-menu>
+                                    </div>-->
+
+
+                                    <div class="col-lg-6">
+                                        <such-dropdown-menu class="subMenu" id="actionButtonFinanceiros" on-value-changed="_mnuAccao5_ItemSelected" title=" Acções " items="[[ _mnuAccao5_MenuItems ]]"></such-dropdown-menu>
                                     </div>
+
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -1674,7 +1730,7 @@
                                             <vaadin-date-picker value="{{data.responsavelServicosFinanceirosData}}" id="processoData" name="processoData" label="Data" disabled="true"></vaadin-date-picker>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6">
+                                    <!--<div class="col-lg-6">
                                         <br />
                                         <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
                                             <template>
@@ -1703,7 +1759,13 @@
                                             </template>
                                             <paper-button raised id="actionButtonPedidoAberturaProc" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
                                         </vaadin-context-menu>
+                                    </div>-->
+
+
+                                    <div class="col-lg-6">
+                                        <such-dropdown-menu class="subMenu" id="actionButtonPedidoAberturaProc" on-value-changed="_mnuAccao7_ItemSelected" title=" Acções " items="[[ _mnuAccao7_MenuItems ]]"></such-dropdown-menu>
                                     </div>
+
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -1846,10 +1908,8 @@
                                                 <div class="col-xs-6">
                                                     <vaadin-text-field value="{{data.utilizadorRelatorioFinal}}" id="utilizadorRelatorioFinal" name="utilizadorRelatorioFinal" label="Utilizador"> </vaadin-text-field>
                                                 </div>
-                                                <div class="col-sm-6">
+                                                <!--<div class="col-sm-6">
                                                     <br />
-                                                    <!--<paper-button raised id="btnConfirmRelatorioFinal" class="btn--confirm pull-right" on-tap="_confirmRelatorioFinal"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Confirmar</paper-button>-->
-
                                                     <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
                                                         <template>
                                                             <style>
@@ -1876,9 +1936,13 @@
                                                         </template>
                                                         <paper-button raised id="btnConfirmRelatorioFinal" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
                                                     </vaadin-context-menu>
+                                                </div>-->
 
-
+                                                <div class="col-lg-6">
+                                                    <such-dropdown-menu class="subMenu" id="btnConfirmRelatorioFinal" on-value-changed="_mnuAccao13_ItemSelected" title=" Acções " items="[[ _mnuAccao13_MenuItems ]]"></such-dropdown-menu>
                                                 </div>
+
+
                                             </div>
                                         </div>
                                     </div>
@@ -1918,11 +1982,8 @@
                                                 <paper-button raised id="btnEnviarsendToEval" class="btn--confirm pull-right" on-tap="_btnEnviarsendToEval"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Enviar</paper-button>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
-                                
-
                             </div>
                         </div>
                     </div>
@@ -1961,7 +2022,7 @@
                                         <div class="clearfix"></div>
                                         <div class="clearfix"></div>
                                     </div>
-                                    <div class="col-lg-6">
+                                    <!--<div class="col-lg-6">
                                         <br />
                                         <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
                                             <template>
@@ -1988,7 +2049,13 @@
                                             </template>
                                             <paper-button raised id="actionButtonPedidoAberturaProc6" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
                                         </vaadin-context-menu>
+                                    </div>-->
+
+
+                                    <div class="col-lg-6">
+                                        <such-dropdown-menu class="subMenu" id="actionButtonPedidoAberturaProc6" on-value-changed="_mnuAccao6_ItemSelected" title=" Acções " items="[[ _mnuAccao6_MenuItems ]]"></such-dropdown-menu>
                                     </div>
+
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -2022,7 +2089,7 @@
                                         </div>
                                         <div class="clearfix"></div>
                                     </div>
-                                    <div class="col-lg-6">
+                                    <!--<div class="col-lg-6">
                                         <br />
                                         <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
                                             <template>
@@ -2049,7 +2116,14 @@
                                             </template>
                                             <paper-button raised id="actionButtonPedidoAberturaProc14" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
                                         </vaadin-context-menu>
+                                    </div>-->
+
+
+                                    <div class="col-lg-6">
+                                        <such-dropdown-menu class="subMenu" id="actionButtonPedidoAberturaProc14" on-value-changed="_mnuAccao14_ItemSelected" title=" Acções " items="[[ _mnuAccao14_MenuItems ]]"></such-dropdown-menu>
                                     </div>
+
+
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -2456,7 +2530,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </iron-pages>
 
                 <!-- Save and Create Buttons -->
@@ -2481,6 +2555,42 @@
             Polymer({
                 is: 'x-procedimentodetails',
                 properties: {
+                    _mnuAccao1_MenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Pedir Autorização" }, { value: 2, description: "Devolver Contabilidade" }, { value: 3, description: "Fechar Processo -> (19)" }],
+                    },
+                    _mnuAccao2_MenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Confirmar" }, { value: 2, description: "Devolver à Área" }],
+                    },
+                    _mnuAccao4_MenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Enviar p/ Financeiros (5)" }, { value: 2, description: "Enviar p/ Juridicos (6)" }, { value: 3, description: "Enviar p/ Área (7)" }, { value: 4, description: "Devolver à Área (2)" }, { value: 5, description: "Enviar p/CA Abertura (8)" }, { value: 6, description: "Enviar p/CA Adjudicação (17)" }],
+                    },
+                    _mnuAccao5_MenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Devolver a Compras (4)" }],
+                    },
+                    _mnuAccao6_MenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Devolver a Compras (4)" }],
+                    },
+                    _mnuAccao7_MenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Submeter para Autorização" }, { value: 2, description: "Devolver Compras" }, { value: 3, description: "Fechar Processo -> (19)" }],
+                    },
+                    _mnuAccao13_MenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Enviar p/ Juridicos (14)" }, { value: 2, description: "Enviar p/ Compras (15)" }],
+                    },
+                    _mnuAccao14_MenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Enviar p/ Compras(15)" }],
+                    },
+
+
+                    
+
                     _procedimentoid: {
                         type: String,
                         notify: true,
@@ -3261,7 +3371,7 @@
                     //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
                     this.data.nomeProcesso = this.$.nomeProcesso.value;
 
-                    this.$.ajax_enviarParaFinanceiros.body = JSON.stringify( this.data );
+                    this.$.ajax_enviarParaFinanceiros.body = JSON.stringify(this.data);
                 },
                 _enviarParaFinanceirosResponse: function (e) {
                     if (this.EnviarParaFinanceiros.eReasonCode == 0) {
@@ -3693,12 +3803,224 @@
                 },
 
 
+                //NR 20180313
+                _btnEnviarsendToEval: function (e) {
+                    debugger;
+                    var ajax_request = this.$.ajax_sendEmail_ToJuriAproval;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o envio do Email?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_imobReturnToArea.body = JSON.stringify(this.data);
+                },
+                _sendEmail_ToJuriAprovalResponse: function (e) {
+                    if (this.SendEmail_ToJuriAproval.eReasonCode == 0) {
+                        this._openToast("Email Enviado");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+                    } else {
+                        this._openToast(this.SendEmail_ToJuriAproval.eMessage);
+                    }
+                },
 
 
+                //NR 20180313
+                _mnuAccao1_ItemSelected: function (e) {
+                    if (this.$.id_Estado.value != 1) {
+                        this._openToast("Opções desactivadas para o estado actual!")
+                        return;
+                    }
+
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+
+                    switch (this._newStatus) {
+                        case 1:
+                            this._confirmImobilizadoContab();
+                            break;
+                        case 2:
+                            this._imobReturnToArea();
+                            break;
+                    }
+                },
+                _mnuAccao2_ItemSelected: function (e) {
+                    if (this.$.id_Estado.value != 2) {
+                        this._openToast("Opções desactivadas para o estado actual!")
+                        return;
+                    }
+
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+
+                    switch (this._newStatus) {
+                        case 1:
+                            this._pedirAutorizacao();
+                            break;
+                        case 2:
+                            this._devolverContabilidade();
+                            break;
+                        case 3:
+                            this._fecharProcesso();
+                            break;
+                    }
+                },
+                _mnuAccao4_ItemSelected: function (e) {
+                    if (this.$.id_Estado.value != 4) {
+                        this._openToast("Opções desactivadas para o estado actual!")
+                        return;
+                    }
+
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+
+                    switch (this._newStatus) {
+                        case 1: 
+                            this._enviarParaFinanceiros();
+                            break;
+                        case 2:
+                            this._enviarParaJuridicos();
+                            break;
+                        case 3:
+                            this._enviarParaArea();
+                            break;
+                        case 4:
+                            this._devolverParaArea();
+                            break;
+                        case 5:
+                            this._enviarParaCAAbertura();
+                            break;
+                        case 6:
+                            this._enviarParaCAAdjudicacao();
+                            break;
+                    }
+                },
+                _mnuAccao5_ItemSelected: function (e) {
+                    if (this.$.id_Estado.value != 5) {
+                        this._openToast("Opções desactivadas para o estado actual!")
+                        return;
+                    }
+
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+
+                    switch (this._newStatus) {
+                        case 1:
+                            this._devolverACompras_5();
+                            break;
+                    }
+                },
+                _mnuAccao6_ItemSelected: function (e) {
+                    if (this.$.id_Estado.value != 6) {
+                        this._openToast("Opções desactivadas para o estado actual!")
+                        return;
+                    }
+
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+
+                    switch (this._newStatus) {
+                        case 1:
+                            this._devolverACompras_6();
+                            break;
+                    }
+                },
+                _mnuAccao7_ItemSelected: function (e) {
+                    if (this.$.id_Estado.value != 7) {
+                        this._openToast("Opções desactivadas para o estado actual!")
+                        return;
+                    }
+
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+
+                    switch (this._newStatus) {
+                        case 1:
+                            this._submeterParaAutorizacao();
+                            break;
+                        case 2:
+                            this._devolverCompras();
+                            break;
+                        case 3:
+                            this._fecharProcesso();
+                            break;
+                    }
+                },
+                _mnuAccao13_ItemSelected: function (e) {
+                    if (this.$.id_Estado.value != 13) {
+                        this._openToast("Opções desactivadas para o estado actual!")
+                        return;
+                    }
+
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+
+                    switch (this._newStatus) {
+                        case 1:
+                            this._enviarParaJuridicos();
+                            break;
+                        case 2:
+                            this._enviarParaCompras();
+                            break;
+                    }
+                },
+                _mnuAccao14_ItemSelected: function (e) {
+                    if (this.$.id_Estado.value != 14) {
+                        this._openToast("Opções desactivadas para o estado actual!")
+                        return;
+                    }
+
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    this._newStatus = item.value;
+
+                    switch (this._newStatus) {
+                        case 1:
+                            this._enviaParaCompras_14();
+                            break;
+                    }
+                },
+                
 
                 _setFieldsEditability(data) {
                     var _self = this;
-
+                    
                     //if (data.estado == 0) {
                     //    $(_self.$.actionButton1).addClass('disabled');
                     //}
@@ -3769,7 +4091,7 @@
                     if (data.estado != 2) {
                         $(_self.$.actionButtonArea2).addClass('disabled');
                     }
-
+                    
                     _self.$.comentarioImobCA.disabled = (data.estado != 3);
                     if (data.estado != 3) {
                         $(_self.$.btnAutorizarImobilizadoConfirm).addClass('disabled');
@@ -3827,7 +4149,7 @@
                     if (data.estado != 10) {
                         $(_self.$.btnConfirmPublicacaoNaPlataforma).addClass('disabled');
                     }
-                    
+
                     _self.$.recolhaComentario.disabled = (data.estado != 10);
                     _self.$.dataRecolha.disabled = (data.estado != 10);
                     _self.$.utilizadorRecolha.disabled = (data.estado != 10);
@@ -3868,7 +4190,7 @@
                     if (data.estado != 14) {
                         $(_self.$.actionButtonPedidoAberturaProc14).addClass('disabled');
                     }
-                    
+
                     _self.$.comentarioAdjudicacao15.disabled = (data.estado != 15);
                     _self.$.valorDecisaoContratar.disabled = (data.estado != 15);
                     _self.$.valorAdjudicacaoAnteriro.disabled = (data.estado != 15);
@@ -3902,8 +4224,8 @@
                         $(_self.$.btnNovaEncomendaAdjudicacaoAcordos).addClass('disabled');
                     }
 
-                         
-                    
+
+
 
                     // 1. Procedimento status != 0.e
 
