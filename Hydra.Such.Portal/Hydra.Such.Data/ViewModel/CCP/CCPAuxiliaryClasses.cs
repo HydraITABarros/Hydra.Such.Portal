@@ -312,6 +312,13 @@ namespace Hydra.Such.Data.ViewModel.CCP
             eMessage = "Antes de prosseguir, tem que definir o tipo de procedimento"
         };
 
+        //NR 20180314
+        public static ErrorHandler UnknownDatePublicacao = new ErrorHandler
+        {
+            eReasonCode = 703,
+            eMessage = "Antes de prosseguir, tem que indicar uma data!"
+        };
+
     }
 
 }

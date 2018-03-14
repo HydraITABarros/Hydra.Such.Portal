@@ -269,8 +269,9 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public string EmailToJuriAproval_To { get; set; }
         public string EmailToJuriAproval_Subject { get; set; }
         public string EmailToJuriAproval_Comment { get; set; }
-        
+
 
         #endregion
+        
     }
 }

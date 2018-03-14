@@ -2833,64 +2833,37 @@ namespace Hydra.Such.Portal.Controllers
 
         #endregion
 
+        #region The following methods map the Buttons, named "Confirmar", "Acções", "Enviar para Avaliação (Juri)" and "Enviar" in the "CCP" tab on the NAV form
 
-
-
-
-
-        public JsonResult SendEmail_ToJuriAproval([FromBody] ProcedimentoCCPView data)
+        public JsonResult Confirm_9([FromBody] ProcedimentoCCPView data)
         {
             if (data != null)
             {
-                
-                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
-                string UserEmail = "";
+                bool IsElementCompras = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoCompras);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
 
-                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                if (!IsElementCompras)
                 {
-                    UserEmail = UserDetails.IdUtilizador;
-                }
-                else
-                {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
-                };
-                
-
-                EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
-                {
-                    NºProcedimento = data.No,
-                    Assunto = data.No + " " + data.NomeProcesso + " -  Avaliação minuta contrato",
-                    UtilizadorEmail = UserEmail,
-                    //EmailDestinatário = UserEmail_TO,
-                    TextoEmail = data.ComentarioJuridico14,
-                    DataHoraEmail = DateTime.Now,
-                    UtilizadorCriação = User.Identity.Name,
-                    DataHoraCriação = DateTime.Now
-                };
-
-                if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
-                {
-                    return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                    return Json(ReturnHandlers.UserNotAllowed);
                 }
 
-                data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
-
-                SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                if (data.Estado != 9)
                 {
-                    DisplayName = UserDetails.Nome,
-                    Subject = ProcedimentoEmail.Assunto,
-                    From = DBProcedimentosCCP._EmailSender
-                };
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
 
-                //Email.To.Add(UserEmail_TO);
-                Email.BCC.Add(UserEmail);
+                if (!data.DataPublicacao.HasValue)
+                {
+                    return Json(ReturnHandlers.UnknownDatePublicacao);
+                }
 
-                Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
-                Email.IsBodyHtml = true;
-
-                Email.EmailProcedimento = ProcedimentoEmail;
-
-                Email.SendEmail();
+                // NAV Procedure CBPP_Confirmar.b
+                ErrorHandler DecisionTaken = DBProcedimentosCCP.CBPP_Confirmar(data, DBProcedimentosCCP.GetUserDetails(User.Identity.Name));
+                if (DecisionTaken.eReasonCode != 0)
+                {
+                    return Json(DecisionTaken);
+                }
+                // NAV CBPP_Confirmar.e
 
                 return Json(ReturnHandlers.Success);
             }
@@ -2899,6 +2872,88 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(ReturnHandlers.NoData);
             }
         }
+
+
+
+
+
+
+
+
+
+
+        public JsonResult SendEmail_ToJuriAproval([FromBody] ProcedimentoCCPView data)
+        {
+
+            //  DEIXAR PARA O FIM, POIS PODE NÃO ESTAR A SER USADA A FUNCIONALIDADE NO NAV2009
+
+
+            //if (data != null)
+            //{
+                
+            //    ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+            //    string UserEmail = "";
+
+            //    if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+            //    {
+            //        UserEmail = UserDetails.IdUtilizador;
+            //    }
+            //    else
+            //    {
+            //        return Json(ReturnHandlers.InvalidEmailAddres);
+            //    };
+                
+
+            //    EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+            //    {
+            //        NºProcedimento = data.No,
+            //        Assunto = data.No + " " + data.NomeProcesso + " -  Avaliação minuta contrato",
+            //        UtilizadorEmail = UserEmail,
+            //        //EmailDestinatário = UserEmail_TO,
+            //        TextoEmail = data.ComentarioJuridico14,
+            //        DataHoraEmail = DateTime.Now,
+            //        UtilizadorCriação = User.Identity.Name,
+            //        DataHoraCriação = DateTime.Now
+            //    };
+
+            //    if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+            //    {
+            //        return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+            //    }
+
+            //    data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
+            //    SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+            //    {
+            //        DisplayName = UserDetails.Nome,
+            //        Subject = ProcedimentoEmail.Assunto,
+            //        From = DBProcedimentosCCP._EmailSender
+            //    };
+
+            //    //Email.To.Add(UserEmail_TO);
+            //    Email.BCC.Add(UserEmail);
+
+            //    Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+            //    Email.IsBodyHtml = true;
+
+            //    Email.EmailProcedimento = ProcedimentoEmail;
+
+            //    Email.SendEmail();
+
+            //    return Json(ReturnHandlers.Success);
+            //}
+            //else
+            //{
+            //    return Json(ReturnHandlers.NoData);
+            //}
+
+            return Json(ReturnHandlers.NoData);
+        }
+
+        #endregion
+
+
+
 
     }
 

@@ -1305,6 +1305,19 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return Enumerable.Range(0, (FinishDateExclusive - Current).Days).Count(isWorkingDay);
         }
+
+        //NR 20180314 - Current is any date
+        public static int GetWorkingDays1(this DateTime Current, DateTime FinishDateExclusive)
+        {
+            Func<int, bool> isWorkingDay = days =>
+            {
+                var currentDate = Current.AddDays(days);
+                var isNonWorkingDay = currentDate.DayOfWeek == DayOfWeek.Saturday || currentDate.DayOfWeek == DayOfWeek.Sunday;
+                return !isNonWorkingDay;
+            };
+
+            return Enumerable.Range(0, (Current - FinishDateExclusive).Days).Count(isWorkingDay);
+        }
         #endregion
 
         #region Processing Procedimentos
@@ -2402,6 +2415,129 @@ namespace Hydra.Such.Data.Logic.CCP
                 if (Procedimento.TemposPaCcp.Estado14Tg - (Procedimento.TemposPaCcp.Estado14 ?? 0) != 0)
                 {
                     Procedimento.No_DiasAtraso += (Procedimento.TemposPaCcp.Estado14Tg - Procedimento.TemposPaCcp.Estado14);
+                    if (Procedimento.DataFechoPrevista.HasValue)
+                    {
+                        DateTime DateAux = Procedimento.DataFechoPrevista.Value;
+                        Procedimento.DataFechoPrevista = DateAux.AddDays(Procedimento.No_DiasAtraso.Value);
+                    }
+                    else
+                    {
+                        Procedimento.DataFechoPrevista = DateTime.Now.AddDays(Procedimento.No_DiasAtraso.Value);
+                    }
+                }
+
+                Procedimento.DataHoraEstado = DateTime.Now;
+                Procedimento.UtilizadorEstado = UserDetails.IdUtilizador;
+
+                Procedimento.UtilizadorModificacao = UserDetails.IdUtilizador;
+                Procedimento.DataHoraModificacao = DateTime.Now;
+
+                if (__UpdateProcedimento(Procedimento) == null)
+                {
+                    return ReturnHandlers.UnableToUpdateProcedimento;
+                };
+            }
+
+            return ReturnHandlers.Success;
+        }
+        // The following method maps NAV2009 CBPP_Confirmar OnPush event
+        public static ErrorHandler CBPP_Confirmar(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails)
+        {
+            if (Procedimento.TemposPaCcp == null)
+            {
+                TemposPaCcp TemposPA = GetTemposPaCcP(Procedimento.No);
+                if (TemposPA != null)
+                {
+                    // Holidays aren't excluded (see GetWorkingDays overload method thar uses a List<DateTime>)
+                    TemposPA.Estado9Tg += GetWorkingDays1(Procedimento.DataPublicacao.Value, Procedimento.DataHoraEstado.Value);
+                    TemposPA.UtilizadorModificação = UserDetails.IdUtilizador;
+                    TemposPA.DataHoraModificação = DateTime.Now;
+
+                    if (!__UpdateTemposPaCcp(TemposPA))
+                    {
+                        return ReturnHandlers.UnableToUpdateTemposPA;
+                    }
+                };
+
+                Procedimento.TemposPaCcp = CCPFunctions.CastTemposPaCcpToTemposCCPView(TemposPA);
+            }
+            else
+            {
+                Procedimento.TemposPaCcp.Estado9Tg = Procedimento.TemposPaCcp.Estado9Tg ?? 0 + GetWorkingDays1(Procedimento.DataPublicacao.Value, Procedimento.DataHoraEstado.Value);
+                Procedimento.TemposPaCcp.UtilizadorModificacao = UserDetails.IdUtilizador;
+                Procedimento.TemposPaCcp.DataHoraModificacao = DateTime.Now;
+                if (!__UpdateTemposPaCcp(CCPFunctions.CastTemposCCPViewToTemposPaCcp(Procedimento.TemposPaCcp)))
+                {
+                    return ReturnHandlers.UnableToUpdateTemposPA;
+                }
+            }
+
+            if (Procedimento.FluxoTrabalhoListaControlo == null)
+            {
+                FluxoTrabalhoListaControlo Fluxo9 = GetChecklistControloProcedimento(Procedimento.No, 9);
+                if (Fluxo9 != null)
+                {
+                    Fluxo9.Resposta = Procedimento.ComentarioPublicacao;
+                    //Fluxo9.TipoResposta = StateToCheck;
+                    Fluxo9.UtilizadorModificacao = UserDetails.IdUtilizador;
+                    Fluxo9.DataHoraModificacao = DateTime.Now;
+
+                    if (!__UpdateFluxoTrabalho(Fluxo9))
+                    {
+                        return ReturnHandlers.UnableToUpdateFluxo;
+                    }
+                }
+            }
+            else
+            {
+                FluxoTrabalhoListaControlo Fluxo9 = Procedimento.FluxoTrabalhoListaControlo.Where(s => s.Estado == 9).LastOrDefault();
+                if (Fluxo9 != null)
+                {
+                    Fluxo9.Resposta = Procedimento.ComentarioPublicacao;
+                    //Fluxo9.TipoResposta = StateToCheck;
+                    Fluxo9.UtilizadorModificacao = UserDetails.IdUtilizador;
+                    Fluxo9.DataHoraModificacao = DateTime.Now;
+
+                    if (!__UpdateFluxoTrabalho(Fluxo9))
+                    {
+                        return ReturnHandlers.UnableToUpdateFluxo;
+                    }
+                }
+            }
+
+            Procedimento.Imobilizado = Procedimento.Imobilizado.HasValue ? Procedimento.Imobilizado : false;
+
+            FluxoTrabalhoListaControlo NewFluxo10 = new FluxoTrabalhoListaControlo
+            {
+                No = Procedimento.No,
+                Estado = 9,
+                Data = DateTime.Now.Date,
+                Hora = DateTime.Now.TimeOfDay,
+                Comentario = Procedimento.ComentarioPublicacao,
+                User = UserDetails.IdUtilizador,
+                //TipoEstado = StateToCheck,
+                EstadoSeguinte = 10,
+                NomeUser = UserDetails.Nome,
+                UtilizadorCriacao = UserDetails.IdUtilizador,
+                DataHoraCriacao = DateTime.Now,
+                ImobSimNao = Procedimento.ImobilizadoSimNao
+            };
+
+            if (__CreateFluxoTrabalho(NewFluxo10) == null)
+            {
+                return ReturnHandlers.UnableToCreateFluxo;
+            }
+
+            Procedimento.FluxoTrabalhoListaControlo = GetAllCheklistControloProcedimento(Procedimento.No);
+
+            if (Procedimento.Estado == 9)
+            {
+                Procedimento.Estado = 10;
+                Procedimento.ComentarioEstado = Procedimento.ComentarioPublicacao;
+
+                if (Procedimento.TemposPaCcp.Estado9Tg - (Procedimento.TemposPaCcp.Estado9 ?? 0) != 0)
+                {
+                    Procedimento.No_DiasAtraso += (Procedimento.TemposPaCcp.Estado9Tg - Procedimento.TemposPaCcp.Estado9);
                     if (Procedimento.DataFechoPrevista.HasValue)
                     {
                         DateTime DateAux = Procedimento.DataFechoPrevista.Value;
