@@ -259,6 +259,30 @@ namespace Hydra.Such.Data.ViewModel.CCP
             eReasonCode = 202,
             eMessage = "Não foi possível actualizar o Fluxo"
         };
+        //NR 20180314
+        public static ErrorHandler ProcedimentoNotPublished = new ErrorHandler
+        {
+            eReasonCode = 203,
+            eMessage = "O Procedimento ainda não foi publicado"
+        };
+        //NR 20180315
+        public static ErrorHandler ProcedimentoPlatformNotGathering = new ErrorHandler
+        {
+            eReasonCode = 204,
+            eMessage = "Ainda não foi registada a recolha da plataforma"
+        };
+        //NR 20180315
+        public static ErrorHandler ProcedimentoPreliminaryReportNotValidated = new ErrorHandler
+        {
+            eReasonCode = 205,
+            eMessage = "Ainda não foi validado o relatório preliminar"
+        };
+        //NR 20180315
+        public static ErrorHandler ProcedimentoPriorHearingNotRegistered = new ErrorHandler
+        {
+            eReasonCode = 206,
+            eMessage = "Ainda não foi registada a Audiência Prévia"
+        };
 
         public static ErrorHandler InvalidEmailAddres = new ErrorHandler
         {

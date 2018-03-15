@@ -594,6 +594,49 @@
                    on-response="_confirmPublicacaoNaPlataformaResponse"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/Confirm_10"
+                   last-response="{{ ConfirmRecolhaPlataforma }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_confirmRecolhaPlataforma"
+                   on-response="_confirmRecolhaPlataformaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!-- NR 20180315 -->
+        <iron-ajax url="/ProcedimentosCcps/Confirm_11"
+                   last-response="{{ ConfirmValidacaoRelatorio }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_confirmValidacaoRelatorio"
+                   on-response="_confirmValidacaoRelatorioResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/Confirm_12"
+                   last-response="{{ ConfirmAudienciaPrevia }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_confirmAudienciaPrevia"
+                   on-response="_confirmAudienciaPreviaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/MIEnvJuridicos"
+                   last-response="{{ EnviarParaJuridicos_13 }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_enviarParaJuridicos_13"
+                   on-response="_enviarParaJuridicos_13Response"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/MIEnvCompras"
+                   last-response="{{ EnviarParaCompras_13 }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_enviarParaCompras_13"
+                   on-response="_enviarParaCompras_13Response"
+                   content-type="application/json">
+        </iron-ajax>
+
 
         <!-- Controller actions.e -->
         <!-- Header section of the Procedimento details -->
@@ -1375,43 +1418,12 @@
                                             <div class="col-sm-3">
                                                 <vaadin-text-field value="{{data.DataImobArea}}" id="DataImobArea" name="DataImobArea" label="Data" disabled="true"> </vaadin-text-field>
                                             </div>
+                                            <div class="col-sm-3" id="idDivAccao2">
+                                                <br />
+                                                <such-dropdown-menu class="subMenu" id="actionButtonArea2" disabled="true" on-value-changed="_mnuAccao2_ItemSelected" title=" Acções " items="[[ _mnuAccao2_MenuItems ]]"></such-dropdown-menu>
+                                            </div>
                                         </div>
                                         <div class="clearfix"></div>
-                                        <!--<div class="col-lg-6">
-                                        <br />
-                                        <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
-                                            <template>
-                                                <style>
-                                                    .my-menu {
-                                                        padding: 8px 0;
-                                                        background: #fff;
-                                                    }
-
-                                                    .my-menu-item {
-                                                        display: block;
-                                                        padding: 8px 24px;
-                                                        text-decoration: none;
-                                                        color: #000;
-                                                    }
-
-                                                        .my-menu-item:hover {
-                                                            background: #FFD5D3;
-                                                        }
-                                                </style>
-                                                <vaadin-list-box>
-                                                    <vaadin-item class="my-menu-item" on-tap="_pedirAutorizacao">Pedir Autorização</vaadin-item>
-                                                    <vaadin-item class="my-menu-item" on-tap="_devolverContabilidade">Devolver Contabilidade</vaadin-item>
-                                                    <vaadin-item class="my-menu-item" on-tap="_fecharProcesso">Fechar Processo -> (19)</vaadin-item>
-                                                </vaadin-list-box>
-                                            </template>
-
-                                            <paper-button raised id="actionButtonArea2" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                                        </vaadin-context-menu>
-                                    </div>-->
-
-                                        <div class="col-lg-6" id="idDivAccao2">
-                                            <such-dropdown-menu class="subMenu" id="actionButtonArea2" disabled="true" on-value-changed="_mnuAccao2_ItemSelected" title=" Acções " items="[[ _mnuAccao2_MenuItems ]]"></such-dropdown-menu>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -1590,9 +1602,6 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
-
-
-
                                             <!--<vaadin-date-picker value="{{data.fundamentoComprasDataChecklist}}" id="fundamentoComprasDataChecklist" name="fundamentoComprasDataChecklist" label="Data"></vaadin-date-picker>-->
                                             <vaadin-text-field value="{{data.fundamentoComprasDataChecklist}}" id="fundamentoComprasDataChecklist" name="fundamentoComprasDataChecklist" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
@@ -1600,48 +1609,9 @@
                                             <vaadin-text-field value="{{data.emailDestinoCa}}" id="emailDestinoCa" name="emailDestinoCa" label="Email destino CA"> </vaadin-text-field>
                                         </div>
                                     </div>
-
-                                    <!--<div class="col-lg-6">
-                                    <br />
-                                    <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
-                                        <template>
-                                            <style>
-                                                .my-menu {
-                                                    padding: 8px 0;
-                                                    background: #fff;
-                                                }
-
-                                                .my-menu-item {
-                                                    display: block;
-                                                    padding: 8px 24px;
-                                                    text-decoration: none;
-                                                    color: #000;
-                                                }
-
-                                                    .my-menu-item:hover {
-                                                        background: #FFD5D3;
-                                                    }
-                                            </style>
-                                            <vaadin-list-box>
-                                                <vaadin-item class="my-menu-item" on-tap="_enviarParaFinanceiros">Enviar p/ Financeiros (5)</vaadin-item>
-                                                <vaadin-item class="my-menu-item" on-tap="_enviarParaJuridicos">Enviar p/ Juridicos (6)</vaadin-item>
-                                                <vaadin-item class="my-menu-item" on-tap="_enviarParaArea">Enviar p/ Área (7)</vaadin-item>
-                                                <vaadin-item class="my-menu-item" on-tap="_devolverParaArea">Devolver à Área (2)</vaadin-item>
-                                                <vaadin-item class="my-menu-item" on-tap="_enviarParaCAAbertura">Enviar p/CA Abertura (8)</vaadin-item>
-                                                <vaadin-item class="my-menu-item" on-tap="_enviarParaCAAdjudicacao">Enviar p/CA Adjudicação (17)</vaadin-item>
-                                            </vaadin-list-box>
-                                        </template>
-                                        <paper-button raised id="actionButtonCompras" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                                    </vaadin-context-menu>
-                                </div>-->
-
-
-
                                     <div class="col-lg-6">
                                         <such-dropdown-menu class="subMenu" id="actionButtonCompras" on-value-changed="_mnuAccao4_ItemSelected" title=" Acções " items="[[ _mnuAccao4_MenuItems ]]"></such-dropdown-menu>
                                     </div>
-
-
 
                                 </div>
                                 <div class="clearfix"></div>
@@ -1672,42 +1642,11 @@
                                         <div class="col-sm-3">
                                             <vaadin-text-field value="{{data.fundamentoFinDataChecklist}}" id="fundamentoFinDataChecklist" name="fundamentoFinDataChecklist" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
+                                        <div class="col-sm-3">
+                                            <br />
+                                            <such-dropdown-menu class="subMenu" id="actionButtonFinanceiros" on-value-changed="_mnuAccao5_ItemSelected" title=" Acções " items="[[ _mnuAccao5_MenuItems ]]"></such-dropdown-menu>
+                                        </div>
                                     </div>
-
-                                    <!--<div class="col-lg-6">
-                                    <br />
-                                    <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
-                                        <template>
-                                            <style>
-                                                .my-menu {
-                                                    padding: 8px 0;
-                                                    background: #fff;
-                                                }
-
-                                                .my-menu-item {
-                                                    display: block;
-                                                    padding: 8px 24px;
-                                                    text-decoration: none;
-                                                    color: #000;
-                                                }
-
-                                                    .my-menu-item:hover {
-                                                        background: #FFD5D3;
-                                                    }
-                                            </style>
-                                            <vaadin-list-box>
-                                                <vaadin-item class="my-menu-item" on-tap="_devolverACompras_5">Devolver a Compras (4)</vaadin-item>
-                                            </vaadin-list-box>
-                                        </template>
-                                        <paper-button raised id="actionButtonFinanceiros" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                                    </vaadin-context-menu>
-                                </div>-->
-
-
-                                    <div class="col-lg-6">
-                                        <such-dropdown-menu class="subMenu" id="actionButtonFinanceiros" on-value-changed="_mnuAccao5_ItemSelected" title=" Acções " items="[[ _mnuAccao5_MenuItems ]]"></such-dropdown-menu>
-                                    </div>
-
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -1738,43 +1677,11 @@
                                         <div class="col-sm-3">
                                             <vaadin-date-picker value="{{data.responsavelServicosFinanceirosData}}" id="processoData" name="processoData" label="Data" disabled="true"></vaadin-date-picker>
                                         </div>
+                                        <div class="col-sm-3">
+                                            <br />
+                                            <such-dropdown-menu class="subMenu" id="actionButtonPedidoAberturaProc" on-value-changed="_mnuAccao7_ItemSelected" title=" Acções " items="[[ _mnuAccao7_MenuItems ]]"></such-dropdown-menu>
+                                        </div>
                                     </div>
-                                    <!--<div class="col-lg-6">
-                                    <br />
-                                    <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
-                                        <template>
-                                            <style>
-                                                .my-menu {
-                                                    padding: 8px 0;
-                                                    background: #fff;
-                                                }
-
-                                                .my-menu-item {
-                                                    display: block;
-                                                    padding: 8px 24px;
-                                                    text-decoration: none;
-                                                    color: #000;
-                                                }
-
-                                                    .my-menu-item:hover {
-                                                        background: #FFD5D3;
-                                                    }
-                                            </style>
-                                            <vaadin-list-box>
-                                                <vaadin-item class="my-menu-item" on-tap="_submeterParaAutorizacao">Submeter para Autorização</vaadin-item>
-                                                <vaadin-item class="my-menu-item" on-tap="_devolverCompras">Devolver Compras</vaadin-item>
-                                                <vaadin-item class="my-menu-item" on-tap="_fecharProcesso_7">Fechar Processo -> (19)</vaadin-item>
-                                            </vaadin-list-box>
-                                        </template>
-                                        <paper-button raised id="actionButtonPedidoAberturaProc" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                                    </vaadin-context-menu>
-                                </div>-->
-
-
-                                    <div class="col-lg-6">
-                                        <such-dropdown-menu class="subMenu" id="actionButtonPedidoAberturaProc" on-value-changed="_mnuAccao7_ItemSelected" title=" Acções " items="[[ _mnuAccao7_MenuItems ]]"></such-dropdown-menu>
-                                    </div>
-
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -1798,12 +1705,12 @@
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
                                                     <vaadin-date-picker value="{{data.dataPublicacao}}" id="dataPublicacao" name="dataPublicacao" label="Data"> </vaadin-date-picker>
-                                                    <vaadin-text-field value="{{data.dataPublicacao}}" id="dataPublicacao_Show" name="dataPublicacao_Show" label="Data" disabled="true"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.dataPublicacao_Show}}" id="dataPublicacao_Show" name="dataPublicacao_Show" label="Data" disabled="true"> </vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.utilizadorPublicacao}}" id="utilizadorPublicacao" name="utilizadorPublicacao" label="Utilizador"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.utilizadorPublicacao}}" id="utilizadorPublicacao" name="utilizadorPublicacao" label="Utilizador" disabled="true"> </vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <br />
@@ -1827,12 +1734,13 @@
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
                                                     <vaadin-date-picker value="{{data.dataRecolha}}" id="dataRecolha" name="dataRecolha" label="Data"> </vaadin-date-picker>
+                                                    <vaadin-text-field value="{{data.dataRecolha_Show}}" id="dataRecolha_Show" name="dataRecolha_Show" label="Data" disabled="true"> </vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
 
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.utilizadorRecolha}}" id="utilizadorRecolha" name="utilizadorRecolha" label="Utilizador"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.utilizadorRecolha}}" id="utilizadorRecolha" name="utilizadorRecolha" label="Utilizador" disabled="true"> </vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <br />
@@ -1850,17 +1758,18 @@
                                         <div class="">
                                             <div class="row">
                                                 <div class="col-xs-12">
-                                                    <vaadin-text-field value="{{data.comentarioRelatorioPreliminar}}" id="comentarioRelatorioPreliminar" name="comentarioRelatorioPreliminar" label="Comentário"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.comentarioRelatorioPreliminar}}" id="comentarioRelatorioPreliminar" name="comentarioRelatorioPreliminar" label="Comentário" maxlength="30"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
                                                     <vaadin-date-picker value="{{data.dataValidRelatorioPreliminar}}" id="dataValidRelatorioPreliminar" name="dataValidRelatorioPreliminar" label="Data"> </vaadin-date-picker>
+                                                    <vaadin-text-field value="{{data.dataValidRelatorioPreliminar_Show}}" id="dataValidRelatorioPreliminar_Show" name="dataValidRelatorioPreliminar_Show" label="Data" disabled="true"> </vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.utilizadorValidRelatorioPreliminar}}" id="utilizadorValidRelatorioPreliminar" name="utilizadorValidRelatorioPreliminar" label="Utilizador"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.utilizadorValidRelatorioPreliminar}}" id="utilizadorValidRelatorioPreliminar" name="utilizadorValidRelatorioPreliminar" label="Utilizador" disabled="true"> </vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <br />
@@ -1878,17 +1787,18 @@
                                         <div class="">
                                             <div class="row">
                                                 <div class="col-xs-12">
-                                                    <vaadin-text-field value="{{data.comentarioAudienciaPrevia}}" id="comentarioAudienciaPrevia" name="comentarioAudienciaPrevia" label="Comentário"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.comentarioAudienciaPrevia}}" id="comentarioAudienciaPrevia" name="comentarioAudienciaPrevia" label="Comentário" maxlength="30"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
                                                     <vaadin-date-picker value="{{data.dataAudienciaPrevia}}" id="dataAudienciaPrevia" name="dataAudienciaPrevia" label="Data"> </vaadin-date-picker>
+                                                    <vaadin-text-field value="{{data.dataAudienciaPrevia_Show}}" id="dataAudienciaPrevia_Show" name="dataAudienciaPrevia_Show" label="Data" disabled="true"> </vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.utilizadorAudienciaPrevia}}" id="utilizadorAudienciaPrevia" name="utilizadorAudienciaPrevia" label="Utilizador"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.utilizadorAudienciaPrevia}}" id="utilizadorAudienciaPrevia" name="utilizadorAudienciaPrevia" label="Utilizador" disabled="true"> </vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <br />
@@ -1906,53 +1816,23 @@
                                         <div class="">
                                             <div class="row">
                                                 <div class="col-xs-12">
-                                                    <vaadin-text-field value="{{data.comentarioRelatorioFinal}}" id="comentarioRelatorioFinal" name="comentarioRelatorioFinal" label="Comentário"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.comentarioRelatorioFinal}}" id="comentarioRelatorioFinal" name="comentarioRelatorioFinal" label="Comentário" maxlength="100"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
                                                     <vaadin-date-picker value="{{data.dataRelatorioFinal}}" id="dataRelatorioFinal" name="dataRelatorioFinal" label="Data"> </vaadin-date-picker>
+                                                    <vaadin-text-field value="{{data.dataRelatorioFinal_Show}}" id="dataRelatorioFinal_Show" name="dataRelatorioFinal_Show" label="Data" disabled="true"> </vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.utilizadorRelatorioFinal}}" id="utilizadorRelatorioFinal" name="utilizadorRelatorioFinal" label="Utilizador"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.utilizadorRelatorioFinal}}" id="utilizadorRelatorioFinal" name="utilizadorRelatorioFinal" label="Utilizador" disabled="true"> </vaadin-text-field>
                                                 </div>
-                                                <!--<div class="col-sm-6">
-                                                <br />
-                                                <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
-                                                    <template>
-                                                        <style>
-                                                            .my-menu {
-                                                                padding: 8px 0;
-                                                                background: #fff;
-                                                            }
-
-                                                            .my-menu-item {
-                                                                display: block;
-                                                                padding: 8px 24px;
-                                                                text-decoration: none;
-                                                                color: #000;
-                                                            }
-
-                                                                .my-menu-item:hover {
-                                                                    background: #FFD5D3;
-                                                                }
-                                                        </style>
-                                                        <vaadin-list-box>
-                                                            <vaadin-item class="my-menu-item" on-tap="_enviarParaJuridicos">Enviar p/ Juridicos (14)</vaadin-item>
-                                                            <vaadin-item class="my-menu-item" on-tap="_enviarParaCompras">Enviar p/ Compras (15)</vaadin-item>
-                                                        </vaadin-list-box>
-                                                    </template>
-                                                    <paper-button raised id="btnConfirmRelatorioFinal" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                                                </vaadin-context-menu>
-                                            </div>-->
-
                                                 <div class="col-lg-6">
-                                                    <such-dropdown-menu class="subMenu" id="btnConfirmRelatorioFinal" on-value-changed="_mnuAccao13_ItemSelected" title=" Acções " items="[[ _mnuAccao13_MenuItems ]]"></such-dropdown-menu>
+                                                    <br />
+                                                    <such-dropdown-menu class="subMenu pull-right" id="btnConfirmRelatorioFinal" on-value-changed="_mnuAccao13_ItemSelected" title=" Acções " items="[[ _mnuAccao13_MenuItems ]]"></such-dropdown-menu>
                                                 </div>
-
-
                                             </div>
                                         </div>
                                     </div>
@@ -2830,7 +2710,7 @@
                 //Responses Processors
                 _responseProcessor: function (data) {
                     var self = this;
-
+                    
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("GetProcedimento") !== -1) {
                             if (self.data.No == "") {
@@ -2892,7 +2772,7 @@
                     if (this.userAllowed) {
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._procedimentoid });
                         this.$.page_databound_ajax.generateRequest();
-
+                        
                         // set user permissions
                         for (var i in this.UserAccesses) {
                             switch (this.UserAccesses[i]) {
@@ -3872,6 +3752,148 @@
                     }
                 },
 
+                _confirmRecolhaPlataforma: function (e) {
+                    var ajax_request = this.$.ajax_confirmRecolhaPlataforma;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma Recolha da Plataforma?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_confirmRecolhaPlataforma.body = JSON.stringify(this.data);
+                },
+                _confirmRecolhaPlataformaResponse: function (e) {
+                    if (this.ConfirmRecolhaPlataforma.eReasonCode == 0) {
+                        this._openToast("Confirmada Recolha da Plataforma do Procedimento " + this.data.no + " !");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.ConfirmRecolhaPlataforma.eMessage);
+                    }
+                },
+
+                //NR 20180315
+                _confirmValidacaoRelatorio: function (e) {
+                    var ajax_request = this.$.ajax_confirmValidacaoRelatorio;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma Validação Relatório Preliminar Pelo Juri?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_confirmValidacaoRelatorio.body = JSON.stringify(this.data);
+                },
+                _confirmValidacaoRelatorioResponse: function (e) {
+                    if (this.ConfirmValidacaoRelatorio.eReasonCode == 0) {
+                        this._openToast("Confirmada Validação Relatório Preliminar Pelo Juri do Procedimento " + this.data.no + " !");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.ConfirmValidacaoRelatorio.eMessage);
+                    }
+                },
+                _confirmAudienciaPrevia: function (e) {
+                    var ajax_request = this.$.ajax_confirmAudienciaPrevia;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma Audiência Prévia?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_confirmAudienciaPrevia.body = JSON.stringify(this.data);
+                },
+                _confirmAudienciaPreviaResponse: function (e) {
+                    if (this.ConfirmAudienciaPrevia.eReasonCode == 0) {
+                        this._openToast("Confirmada Audiência Prévia do Procedimento " + this.data.no + " !");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.ConfirmAudienciaPrevia.eMessage);
+                    }
+                },
+                _enviarParaJuridicos_13: function () {
+                    var ajax_request = this.$.ajax_enviarParaJuridicos_13;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o Envio à Área Juridica?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_enviarParaJuridicos_13.body = JSON.stringify(this.data);
+                },
+                _enviarParaJuridicos_13Response: function (e) {
+                    if (this.EnviarParaJuridicos_13.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " enviado para Juridicos!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.EnviarParaJuridicos_13.eMessage);
+                    }
+                },
+                _enviarParaCompras_13: function () {
+                    var ajax_request = this.$.ajax_enviarParaCompras_13;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o Envio a Compras?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_enviarParaCompras_13.body = JSON.stringify(this.data);
+                },
+                _enviarParaCompras_13Response: function (e) {
+                    if (this.EnviarParaCompras_13.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " enviado para Compras!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.EnviarParaCompras_13.eMessage);
+                    }
+                },
 
                 //NR 20180313
                 _mnuAccao1_ItemSelected: function (e) {
@@ -4033,10 +4055,10 @@
 
                     switch (this._newStatus) {
                         case 1:
-                            this._enviarParaJuridicos();
+                            this._enviarParaJuridicos_13();
                             break;
                         case 2:
-                            this._enviarParaCompras();
+                            this._enviarParaCompras_13();
                             break;
                     }
                 },
@@ -4188,11 +4210,11 @@
                         $(_self.$.btnAberturaProcedimentoSuspend).addClass('disabled');
                     }
 
-                    debugger;
+                    
                     //NR 20180305
                     _self.$.comentarioPublicacao.disabled = (data.estado != 9);
-                    _self.$.utilizadorPublicacao.disabled = (data.estado != 9);
                     _self.$.dataPublicacao.disabled = (data.estado != 9);
+                    //_self.$.utilizadorPublicacao.disabled = (data.estado != 9);
                     if (data.estado != 9) {
                         $(_self.$.btnConfirmPublicacaoNaPlataforma).addClass('disabled');
 
@@ -4204,30 +4226,50 @@
 
                     _self.$.recolhaComentario.disabled = (data.estado != 10);
                     _self.$.dataRecolha.disabled = (data.estado != 10);
-                    _self.$.utilizadorRecolha.disabled = (data.estado != 10);
+                    //_self.$.utilizadorRecolha.disabled = (data.estado != 10);
                     if (data.estado != 10) {
                         $(_self.$.btnConfirmRecolhaPlataforma).addClass('disabled');
+
+                        $(_self.$.dataRecolha).addClass('hidden');
+                    } else {
+                        _self.$.dataRecolha_Show.disabled = (data.estado = 10);
+                        $(_self.$.dataRecolha_Show).addClass('hidden');
                     }
 
                     _self.$.comentarioRelatorioPreliminar.disabled = (data.estado != 11);
                     _self.$.dataValidRelatorioPreliminar.disabled = (data.estado != 11);
-                    _self.$.utilizadorValidRelatorioPreliminar.disabled = (data.estado != 11);
+                    //_self.$.utilizadorValidRelatorioPreliminar.disabled = (data.estado != 11);
                     if (data.estado != 11) {
                         $(_self.$.btnConfirmValidacaoRelatorio).addClass('disabled');
+
+                        $(_self.$.dataValidRelatorioPreliminar).addClass('hidden');
+                    } else {
+                        _self.$.dataValidRelatorioPreliminar_Show.disabled = (data.estado = 11);
+                        $(_self.$.dataValidRelatorioPreliminar_Show).addClass('hidden');
                     }
 
                     _self.$.comentarioAudienciaPrevia.disabled = (data.estado != 12);
                     _self.$.dataAudienciaPrevia.disabled = (data.estado != 12);
-                    _self.$.utilizadorAudienciaPrevia.disabled = (data.estado != 12);
+                    //_self.$.utilizadorAudienciaPrevia.disabled = (data.estado != 12);
                     if (data.estado != 12) {
                         $(_self.$.btnConfirmAudienciaPrevia).addClass('disabled');
+
+                        $(_self.$.dataAudienciaPrevia).addClass('hidden');
+                    } else {
+                        _self.$.dataAudienciaPrevia_Show.disabled = (data.estado = 12);
+                        $(_self.$.dataAudienciaPrevia_Show).addClass('hidden');
                     }
 
                     _self.$.comentarioRelatorioFinal.disabled = (data.estado != 13);
                     _self.$.dataRelatorioFinal.disabled = (data.estado != 13);
-                    _self.$.utilizadorRelatorioFinal.disabled = (data.estado != 13);
+                    //_self.$.utilizadorRelatorioFinal.disabled = (data.estado != 13);
                     if (data.estado != 13) {
                         $(_self.$.btnConfirmRelatorioFinal).addClass('disabled');
+
+                        $(_self.$.dataRelatorioFinal).addClass('hidden');
+                    } else {
+                        _self.$.dataRelatorioFinal_Show.disabled = (data.estado = 13);
+                        $(_self.$.dataRelatorioFinal_Show).addClass('hidden');
                     }
 
                     if ((data.estado != 9) &&

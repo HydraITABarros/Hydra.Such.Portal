@@ -272,6 +272,11 @@ namespace Hydra.Such.Data.ViewModel.CCP
 
 
         #endregion
-        
+
+        public string DataPublicacao_Show { get; set; }
+        public string DataRecolha_Show { get; set; }
+        public string DataValidRelatorioPreliminar_Show { get; set; }
+        public string DataAudienciaPrevia_Show { get; set; }
+        public string DataRelatorioFinal_Show { get; set; }
     }
 }

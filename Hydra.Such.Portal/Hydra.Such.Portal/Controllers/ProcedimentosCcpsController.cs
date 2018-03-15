@@ -2873,14 +2873,242 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public JsonResult Confirm_10([FromBody] ProcedimentoCCPView data)
+        {
+            if (data != null)
+            {
+                bool IsElementCompras = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoCompras);
+                bool IsGestorProcesso = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._GestorProcesso);
 
+                if (!IsElementCompras)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
 
+                if (data.Estado != 10)
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
 
+                if (data.UtilizadorPublicacao == "")
+                {
+                    return Json(ReturnHandlers.ProcedimentoNotPublished);
+                }
 
+                if (!data.DataRecolha.HasValue)
+                {
+                    return Json(ReturnHandlers.UnknownDatePublicacao);
+                }
 
+                // NAV Procedure CBRP_Confirmar.b
+                ErrorHandler DecisionTaken = DBProcedimentosCCP.CBRP_Confirmar(data, DBProcedimentosCCP.GetUserDetails(User.Identity.Name));
+                if (DecisionTaken.eReasonCode != 0)
+                {
+                    return Json(DecisionTaken);
+                }
+                // NAV CBRP_Confirmar.e
 
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
 
+        public JsonResult Confirm_11([FromBody] ProcedimentoCCPView data)
+        {
+            if (data != null)
+            {
+                if (data.Estado != 11)
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
 
+                if (data.UtilizadorRecolha == "")
+                {
+                    return Json(ReturnHandlers.ProcedimentoPlatformNotGathering);
+                }
+
+                if (!data.DataValidRelatorioPreliminar.HasValue)
+                {
+                    return Json(ReturnHandlers.UnknownDatePublicacao);
+                }
+
+                // NAV Procedure CBVR_Confirmar.b
+                ErrorHandler DecisionTaken = DBProcedimentosCCP.CBVR_Confirmar(data, DBProcedimentosCCP.GetUserDetails(User.Identity.Name));
+                if (DecisionTaken.eReasonCode != 0)
+                {
+                    return Json(DecisionTaken);
+                }
+                // NAV CBVR_Confirmar.e
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
+
+        public JsonResult Confirm_12([FromBody] ProcedimentoCCPView data)
+        {
+            if (data != null)
+            {
+                if (data.Estado != 12)
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
+
+                if (data.UtilizadorValidRelatorioPreliminar == "")
+                {
+                    return Json(ReturnHandlers.ProcedimentoPreliminaryReportNotValidated);
+                }
+
+                if (!data.DataAudienciaPrevia.HasValue)
+                {
+                    return Json(ReturnHandlers.UnknownDatePublicacao);
+                }
+
+                // NAV Procedure CBAP_Confirmar.b
+                ErrorHandler DecisionTaken = DBProcedimentosCCP.CBAP_Confirmar(data, DBProcedimentosCCP.GetUserDetails(User.Identity.Name));
+                if (DecisionTaken.eReasonCode != 0)
+                {
+                    return Json(DecisionTaken);
+                }
+                // NAV CBAP_Confirmar.e
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
+
+        public JsonResult MIEnvJuridicos([FromBody] ProcedimentoCCPView data)
+        {
+            if (data != null)
+            {
+                if (data.UtilizadorAudienciaPrevia == "")
+                {
+                    return Json(ReturnHandlers.ProcedimentoPriorHearingNotRegistered);
+                }
+
+                if (!data.DataRelatorioFinal.HasValue)
+                {
+                    return Json(ReturnHandlers.UnknownDatePublicacao);
+                }
+
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                string UserEmail = "";
+
+                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                {
+                    UserEmail = UserDetails.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
+
+                // NAV Procedure MIEnvJuridicos.b
+                ErrorHandler DecisionTaken = DBProcedimentosCCP.MIEnvJuridicos(data, DBProcedimentosCCP.GetUserDetails(User.Identity.Name));
+                if (DecisionTaken.eReasonCode != 0)
+                {
+                    return Json(DecisionTaken);
+                }
+                // NAV MIEnvJuridicos.e
+
+                ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
+                if (EmailList == null)
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                }
+
+                if (!EmailAutomation.IsValidEmail(EmailList.EmailJurididos))
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                }
+
+                EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                {
+                    NºProcedimento = data.No,
+                    Assunto = data.No + " " + data.NomeProcesso + " - Avaliação minuta contrato",
+                    UtilizadorEmail = UserEmail,
+                    EmailDestinatário = EmailList.EmailFinanceiros,
+                    //TextoEmail = data.ElementosChecklist.ChecklistFundamentoCompras.ComentarioFundamentoCompras,
+                    TextoEmail = data.ComentarioRelatorioFinal,
+                    DataHoraEmail = DateTime.Now,
+                    UtilizadorCriação = UserDetails.IdUtilizador,
+                    DataHoraCriação = DateTime.Now
+                };
+
+                if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                {
+                    return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                }
+
+                data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
+                SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                {
+                    DisplayName = UserDetails.Nome,
+                    Subject = ProcedimentoEmail.Assunto,
+                    From = DBProcedimentosCCP._EmailSender
+                };
+
+                Email.To.Add(EmailList.EmailFinanceiros);
+
+                if (EmailAutomation.IsValidEmail(EmailList.Email2Juridicos))
+                    Email.CC.Add(EmailList.Email2Juridicos);
+
+                Email.BCC.Add(UserEmail);
+
+                Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+                Email.IsBodyHtml = true;
+
+                Email.EmailProcedimento = ProcedimentoEmail;
+
+                Email.SendEmail();
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
+
+        public JsonResult MIEnvCompras([FromBody] ProcedimentoCCPView data)
+        {
+            if (data != null)
+            {
+                if (data.UtilizadorAudienciaPrevia == "")
+                {
+                    return Json(ReturnHandlers.ProcedimentoPriorHearingNotRegistered);
+                }
+
+                if (!data.DataRelatorioFinal.HasValue)
+                {
+                    return Json(ReturnHandlers.UnknownDatePublicacao);
+                }
+
+                // NAV Procedure MIEnvCompras.b
+                ErrorHandler DecisionTaken = DBProcedimentosCCP.MIEnvCompras(data, DBProcedimentosCCP.GetUserDetails(User.Identity.Name));
+                if (DecisionTaken.eReasonCode != 0)
+                {
+                    return Json(DecisionTaken);
+                }
+                // NAV MIEnvCompras.e
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
 
         public JsonResult SendEmail_ToJuriAproval([FromBody] ProcedimentoCCPView data)
         {
