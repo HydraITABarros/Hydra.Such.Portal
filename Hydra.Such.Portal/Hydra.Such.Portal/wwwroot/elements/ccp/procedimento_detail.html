@@ -788,7 +788,7 @@
                                             <paper-tooltip for="valorPrecoBase" position="top" offset="-1" animation-delay="1">
                                                 Segundo este preceito, o preço base do procedimento é o valor máximo que o SUCH está disposto a pagar. É um limite ao valor das propostas que, se o ultrapassarem, terão que ser excluídas. Se Sim, a area deve indicar o valor do preço base (1).
                                             </paper-tooltip>
-                                            <vaadin-text-field type="text" value="{{data.valorPrecoBase}}" id="valorPrecoBase" name="valorPrecoBase" label="Valor Preço Base"> </vaadin-text-field>
+                                            <vaadin-text-field type="text" value="{{data.valorPrecoBase}}" id="valorPrecoBase" name="valorPrecoBase" label="Valor Preço Base" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -1067,10 +1067,10 @@
                                             <paper-tooltip for="prazoEntrega" position="top" offset="-1" animation-delay="1">
                                                 Caso exista imposição da U.P. para o Cliente.
                                             </paper-tooltip>
-                                            <vaadin-text-field value="{{data.prazoEntrega}}" id="prazoEntrega" name="prazoEntrega" label="Prazo Entrega / Realização Serviço"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.prazoEntrega}}" id="prazoEntrega" name="prazoEntrega" label="Prazo Entrega / Realização Serviço" maxlength="30"> </vaadin-text-field>
                                         </div>
                                         <div class="col-sm-6">
-                                            <vaadin-text-field value="{{data.locaisEntrega}}" id="locaisEntrega" name="locaisEntrega" label="Locais de Entrega"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.locaisEntrega}}" id="locaisEntrega" name="locaisEntrega" label="Locais de Entrega" maxlength="30"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -1081,12 +1081,12 @@
                                             <paper-tooltip for="estimativaPreco" position="top" offset="-1" animation-delay="1">
                                                 Obrigatório indicar, mesmo quando não se pretenda estabelecer preço base.
                                             </paper-tooltip>
-                                            <vaadin-text-field rows="5" value="{{data.estimativaPreco}}" id="estimativaPreco" name="estimativaPreco" label="Estimativa de preço"> </vaadin-text-field>
+                                            <vaadin-text-field rows="5" value="{{data.estimativaPreco}}" id="estimativaPreco" name="estimativaPreco" label="Estimativa de preço" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <vaadin-text-field rows="5" value="{{data.fornecedoresSugeridos}}" id="fornecedoresSugeridos" name="fornecedoresSugeridos" label="Fornecedores Sugeridos"> </vaadin-text-field>
+                                            <vaadin-text-field rows="5" value="{{data.fornecedoresSugeridos}}" id="fornecedoresSugeridos" name="fornecedoresSugeridos" label="Fornecedores Sugeridos" maxlength="60"> </vaadin-text-field>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="row">
@@ -1110,7 +1110,7 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
-                                            <vaadin-text-field value="{{data.interlocutor}}" id="interlocutor" name="interlocutor" label="Interlocutor Preferêncial"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.interlocutor}}" id="interlocutor" name="interlocutor" label="Interlocutor Preferêncial" maxlength="100"> </vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -1154,12 +1154,12 @@
                                                                     disabled="{{ !_permissions.update }}">
                                                     </such-selectbox>
                                                 </div>
-                                                <div class="col-sm-3">
-                                                    <vaadin-text-field type="text" id="_DescricaoProduto" required value="{{ item.descricao }}" label="Descrição"></vaadin-text-field>
+                                                <div class="col-sm-6">
+                                                    <vaadin-text-field type="text" id="_DescricaoProduto" required value="{{ item.descricao }}" label="Descrição" maxlength="100"></vaadin-text-field>
                                                 </div>
-                                                <div class="col-sm-3">
+                                                <!--<div class="col-sm-3">
                                                     <vaadin-text-field type="text" id="_DescricaoProduto2" value="{{ item.descricao2 }}" label="Descrição 2"></vaadin-text-field>
-                                                </div>
+                                                </div>-->
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-2">
@@ -1441,7 +1441,7 @@
                                         <div class="col-sm-12">
                                             <div class="row">
                                                 <div class="col-sm-3">
-                                                    <vaadin-text-field value="{{data.criterioEscolhaProcedimento}}" id="criterioEscolhaProcedimento" name="criterioEscolhaProcedimento" label="Escolha do Procedimento"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.criterioEscolhaProcedimento}}" id="criterioEscolhaProcedimento" name="criterioEscolhaProcedimento" label="Escolha do Procedimento" maxlength="20"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-9">
                                                     <paper-tooltip for="descEscolhaProcedimento" position="bottom" offset="-10" animation-delay="1">
@@ -1466,7 +1466,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-xs-12">
-                                            <vaadin-grid id="gridElementosJuri" aria-label="gridElementosJuri" items="{{data.elementosJuri}}" class="grid" style="height:170px;">
+                                            <vaadin-grid id="gridElementosJuri_4" aria-label="gridElementosJuri_4" items="{{data.elementosJuri}}" class="grid" style="height:170px;">
                                                 <vaadin-grid-column width="20%">
                                                     <template class="header">
                                                         Utilizador
@@ -1551,7 +1551,7 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <vaadin-text-field value="{{data.nomeProcesso}}" id="nomeProcesso" name="nomeProcesso" label="Nome do Processo"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.nomeProcesso}}" id="nomeProcesso" name="nomeProcesso" label="Nome do Processo" maxlength="60"> </vaadin-text-field>
                                         </div>
                                         <div class="col-sm-3">
                                             <vaadin-combo-box value="{{data.objetoDoContrato}}" label="Objecto do Contrato" items="[[CBObjectoContrato]]" item-value-path="id" id="objetoDoContrato" item-label-path="value">
@@ -1565,7 +1565,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-sm-3">
-                                            <vaadin-text-field value="{{data.condicoesDePagamento}}" id="condicoesDePagamento" name="condicoesDePagamento" label="Condições Pagamento"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.condicoesDePagamento}}" id="condicoesDePagamento" name="condicoesDePagamento" label="Condições Pagamento" maxlength="30"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -1699,7 +1699,7 @@
                                         <div class="">
                                             <div class="row">
                                                 <div class="col-xs-12">
-                                                    <vaadin-text-field value="{{data.comentarioPublicacao}}" id="comentarioPublicacao" name="comentarioPublicacao" label="Comentário"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.comentarioPublicacao}}" id="comentarioPublicacao" name="comentarioPublicacao" label="Comentário" maxlength="30"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
@@ -1728,7 +1728,7 @@
                                         <div class="">
                                             <div class="row">
                                                 <div class="col-xs-12">
-                                                    <vaadin-text-field value="{{data.recolhaComentario}}" id="recolhaComentario" name="recolhaComentario" label="Comentário"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.recolhaComentario}}" id="recolhaComentario" name="recolhaComentario" label="Comentário" maxlength="30"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
@@ -2033,24 +2033,24 @@
                                                     <paper-tooltip for="valorMercado" position="bottom" offset="-10" animation-delay="1">
                                                         Só é preenchido se não existir procedimento anterior idêntico.
                                                     </paper-tooltip>
-                                                    <vaadin-text-field value="{{data.valorDecisaoContratar}}" type="number" id="valorDecisaoContratar" name="valorDecisaoContratar" label="Valor de Mercado"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.valorDecisaoContratar}}" type="text" id="valorDecisaoContratar" name="valorDecisaoContratar" label="Valor de Mercado" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <paper-tooltip for="valorAdjudicacaoAnterior" position="bottom" offset="-10" animation-delay="1">
                                                         Procedimento anterior idêntico.
                                                     </paper-tooltip>
-                                                    <vaadin-text-field value="{{data.valorAdjudicacaoAnteriro}}" type="number" id="valorAdjudicacaoAnteriro" name="valorAdjudicacaoAnteriro" label="Valor da adjudicação anterior"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.valorAdjudicacaoAnteriro}}" type="text" id="valorAdjudicacaoAnteriro" name="valorAdjudicacaoAnteriro" label="Valor da adjudicação anterior" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <vaadin-text-field value="{{data.valorAdjudicacaoAtual}}" type="number" id="valorAdjudicacaoAtual" name="valorAdjudicacaoAtual" label="Valor da Adjudicação"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.valorAdjudicacaoAtual}}" type="text" id="valorAdjudicacaoAtual" name="valorAdjudicacaoAtual" label="Valor da Adjudicação" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <vaadin-text-field value="{{data.diferencaEuros}}" type="number" id="diferencaEuros" name="diferencaEuros" label="Diferença (€)"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.diferencaEuros}}" type="text" id="diferencaEuros" name="diferencaEuros" label="Diferença (€)" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-sm-3">
-                                                    <vaadin-text-field value="{{data.diferencaPercent}}" type="number" id="diferencaPercent" name="diferencaPercent" label="Diferença (%)"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.diferencaPercent}}" type="text" id="diferencaPercent" name="diferencaPercent" label="Diferença (%)" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
@@ -2284,7 +2284,7 @@
                                         <div class="">
                                             <div class="row">
                                                 <div class="col-xs-12">
-                                                    <vaadin-text-field value="{{data.comentarioNotificacao}}" id="comentarioNotificacao" name="comentarioNotificacao" label="Comentário"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.comentarioNotificacao}}" id="comentarioNotificacao" name="comentarioNotificacao" label="Comentário" maxlength="30"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
@@ -2292,12 +2292,12 @@
                                                     <vaadin-date-picker value="{{data.dataNotificacao}}" id="dataNotificacao" name="dataNotificacao" label="Data"> </vaadin-date-picker>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <vaadin-text-field value="{{data.prazoNotificacaoDias}}" id="prazoNotificacaoDias" name="prazoNotificacaoDias" label="Prazo Concedido"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.prazoNotificacaoDias}}" id="prazoNotificacaoDias" name="prazoNotificacaoDias" label="Prazo Concedido" type="number"> </vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-xs-6">
-                                                    <vaadin-text-field value="{{data.utilizadorNotificacao}}" id="utilizadorNotificacao" name="utilizadorNotificacao" label="Utilizador"> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{data.utilizadorNotificacao}}" id="utilizadorNotificacao" name="utilizadorNotificacao" label="Utilizador" disabled="true"> </vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <br />
@@ -2365,7 +2365,7 @@
                                                     </vaadin-combo-box>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <vaadin-text-field type="number" value="{{data.adjudicacaoContratosValor}}" id="adjudicacaoContratosValor" name="adjudicacaoContratosValor" label="Valor Contrato"> </vaadin-text-field>
+                                                    <vaadin-text-field type="text" value="{{data.adjudicacaoContratosValor}}" id="adjudicacaoContratosValor" name="adjudicacaoContratosValor" label="Valor Contrato" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
@@ -2857,11 +2857,55 @@
                     } else
                         return true;
                 },
+                //_createElementoJuri: function () {
+                //    this.isJuriElementAction = true;
+                //    if (this._validateElementoJuriData()) {
+                //        this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data);
+
+                //        this.$.ajax_createelementojuri.body = JSON.stringify({
+                //            noProcedimento: this.data.no,
+                //            utilizador: this._userName,
+                //            presidente: this.chkPresidente,
+                //            vogal: this.chkVogal,
+                //            suplente: this.chkSuplente,
+                //            enviarEmail: this.chkSendMail
+                //        });
+
+                //        this.$.ajax_createelementojuri.generateRequest();
+                //        this.$.gridElementosJuri.clearCache();
+                //        this.$.gridElementosJuri_4.clearCache();
+                //    }
+                //},
+                //_createElementoJuriResponse: function (e) {
+                //    if (this.ElementoCreated.eReasonCode == 0) {
+                //        this._openToast('Elemento Júri adicionado com sucesso');
+                //        this.$.page_databound_ajax.generateRequest();
+
+                //        this.$.gridElementosJuri.clearCache();
+                //        this.$.gridElementosJuri_4.clearCache();
+
+                //        this.$.users.value = "";
+                //        this.chkPresidente = false;
+                //        this.chkVogal = false;
+                //        this.chkSuplente = false;
+                //        this.chkSendMail = false;
+                //    } else {
+                //        if (this.ElementoCreated.eReasonCode == 3 || this.ElementoCreated.eReasonCode == 4) {
+                //            this._openToast(this.ElementoCreated.eMessage);
+                //        }
+                //        else {
+                //            this._openToast('Não foi possível criar o Elemento do Juri');
+                //        }
+                //    }
+                //},
+
+
+                //NR 20180316
                 _createElementoJuri: function () {
+                    debugger;
                     this.isJuriElementAction = true;
                     if (this._validateElementoJuriData()) {
-                        this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data);
-
+                        
                         this.$.ajax_createelementojuri.body = JSON.stringify({
                             noProcedimento: this.data.no,
                             utilizador: this._userName,
@@ -2870,17 +2914,19 @@
                             suplente: this.chkSuplente,
                             enviarEmail: this.chkSendMail
                         });
-
+                        
                         this.$.ajax_createelementojuri.generateRequest();
                         this.$.gridElementosJuri.clearCache();
                     }
                 },
                 _createElementoJuriResponse: function (e) {
+                    debugger;
                     if (this.ElementoCreated.eReasonCode == 0) {
                         this._openToast('Elemento Júri adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
 
                         this.$.gridElementosJuri.clearCache();
+                        this.$.gridElementosJuri_4.clearCache();
 
                         this.$.users.value = "";
                         this.chkPresidente = false;
@@ -2896,6 +2942,8 @@
                         }
                     }
                 },
+
+
                 _deleteElementoJuri: function (e) {
                     this.isJuriElementAction = true;
                     var index = this.data.elementosJuri.indexOf(e.model.item);
@@ -2906,12 +2954,14 @@
                     });
                     this.$.ajax_deleteelementojuri.generateRequest();
                     this.$.gridElementosJuri.clearCache();
+                    this.$.gridElementosJuri_4.clearCache();
 
                 },
                 _deleteElementoJuriResponse: function (e) {
                     if (this.ElementoDeleted) {
                         this._openToast('Elemento Juri eliminado com sucesso');
                         this.$.gridElementosJuri.clearCache();
+                        this.$.gridElementosJuri_4.clearCache();
                     } else {
                         this._openToast('Não foi possível eliminar o Elemento do Juri!')
                     }
@@ -4088,7 +4138,6 @@
 
                 _setFieldsEditability(data) {
                     var _self = this;
-                    
                     //if (data.estado == 0) {
                     //    $(_self.$.actionButton1).addClass('disabled');
                     //}
@@ -4096,6 +4145,7 @@
                     // 1. Procedimento status != 0.b
                     if (data.estado != 0) {
                         $(_self.$.gridElementosJuri).addClass('disabled');
+                        $(_self.$.gridElementosJuri_4).addClass('disabled');
                         $(_self.$.buttonCriarElementoJuri).addClass('disabled');
                         $(_self.$.submitProcedimento).addClass('disabled');
                         //$(_self.$.gridElementosJuri).addClass('disabled');
@@ -4142,7 +4192,7 @@
                     _self.$._CBLocations.disabled = (data.estado != 0);
                     _self.$._CBItems.disabled = (data.estado != 0);
                     _self.$._DescricaoProduto.disabled = (data.estado != 0);
-                    _self.$._DescricaoProduto2.disabled = (data.estado != 0);
+                    //_self.$._DescricaoProduto2.disabled = (data.estado != 0);
                     _self.$._UnitMeasureCode.disabled = (data.estado != 0);
                     _self.$._linhaQuantidadeRequerer.disabled = (data.estado != 0);
                     _self.$._linhaCustoUnitario.disabled = (data.estado != 0);
@@ -4180,6 +4230,7 @@
 
                     if (data.estado != 4) {
                         $(_self.$.actionButtonCompras).addClass('disabled');
+                        $(_self.$.gridElementosJuri_4).addClass('disabled');
                     }
 
                     //NR 20180302
