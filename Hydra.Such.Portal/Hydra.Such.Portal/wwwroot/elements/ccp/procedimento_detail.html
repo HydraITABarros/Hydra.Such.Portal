@@ -461,6 +461,24 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!--NR 20180319-->
+        <iron-ajax url="/ProcedimentosCcps/CBVAEnviarArea"
+                   last-response="{{ EnviarParaArea_15 }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_enviarParaArea_15"
+                   on-response="_enviarParaArea_15Response"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/CBVASubmetAprov"
+                   last-response="{{ SubmeterProcesso_16 }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_submeterProcesso_16"
+                   on-response="_submeterProcesso_16Response"
+                   content-type="application/json">
+        </iron-ajax>
+        
         <!--NR 20180306-->
         <iron-ajax url="/ProcedimentosCcps/ReturnToAreaToJustifyProcess"
                    last-response="{{ DevolverParaArea }}"
@@ -1158,8 +1176,8 @@
                                                     <vaadin-text-field type="text" id="_DescricaoProduto" required value="{{ item.descricao }}" label="Descrição" maxlength="100"></vaadin-text-field>
                                                 </div>
                                                 <!--<div class="col-sm-3">
-                                                    <vaadin-text-field type="text" id="_DescricaoProduto2" value="{{ item.descricao2 }}" label="Descrição 2"></vaadin-text-field>
-                                                </div>-->
+                                                <vaadin-text-field type="text" id="_DescricaoProduto2" value="{{ item.descricao2 }}" label="Descrição 2"></vaadin-text-field>
+                                            </div>-->
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-2">
@@ -1606,7 +1624,7 @@
                                             <vaadin-text-field value="{{data.fundamentoComprasDataChecklist}}" id="fundamentoComprasDataChecklist" name="fundamentoComprasDataChecklist" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
                                         <div class="col-sm-3">
-                                            <vaadin-text-field value="{{data.emailDestinoCa}}" id="emailDestinoCa" name="emailDestinoCa" label="Email destino CA"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.emailDestinoCa}}" id="emailDestinoCa" name="emailDestinoCa" label="Email destino CA" disabled="true"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
@@ -2122,6 +2140,10 @@
                                         </div>
                                         <div class="col-sm-3">
                                             <vaadin-text-field value="{{data.dataAdjudicacao16}}" id="dataAdjudicacao16" name="dataAdjudicacao16" label="Data" disabled="true"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <br />
+                                            <paper-button raised id="btnSubmeterProcesso_16" class="btn--confirm pull-right" on-tap="_submeterProcesso_16"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp; Submeter o Processo</paper-button>
                                         </div>
                                     </div>
                                 </div>
@@ -3419,7 +3441,70 @@
                     }
                 },
 
-                //Nr 20180308
+                //NR 20180319
+                _enviarParaArea_15: function () {
+                    var ajax_request = this.$.ajax_enviarParaArea_15;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o Envio para a Área?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_enviarParaArea_15.body = JSON.stringify(this.data);
+                },
+                _enviarParaArea_15Response: function (e) {
+                    if (this.EnviarParaArea_15.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " enviado para a Área!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.EnviarParaArea_15.eMessage);
+                    }
+                },
+                
+                _submeterProcesso_16: function() {
+                    var ajax_request = this.$.ajax_submeterProcesso_16;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a Submissão do Processo?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_submeterProcesso_16.body = JSON.stringify(this.data);
+                },
+                _submeterProcesso_16Response: function (e) {
+                    if (this.SubmeterProcesso_16.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " submetido!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.SubmeterProcesso_16.eMessage);
+                    }
+                },
+
+
+
+
+
+                //NR 20180308
                 _enviarParaCAAbertura: function () {
                     var ajax_request = this.$.ajax_enviarParaCAAbertura;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
@@ -4226,7 +4311,7 @@
                     _self.$.condicoesDePagamento.disabled = (data.estado != 4);
                     _self.$.gestorProcesso.disabled = (data.estado != 4);
                     _self.$.comentarioFundamentoCompras.disabled = (data.estado != 4);
-                    _self.$.emailDestinoCa.disabled = (data.estado != 4);
+                    //_self.$.emailDestinoCa.disabled = (data.estado != 4);
 
                     if (data.estado != 4) {
                         $(_self.$.actionButtonCompras).addClass('disabled');
@@ -4347,6 +4432,10 @@
                     }
 
                     _self.$.comentarioAdjudicacao16.disabled = (data.estado != 16);
+                    if (data.estado != 16) {
+                        $(_self.$.btnSubmeterProcesso_16).addClass('disabled');
+                    }
+                    
 
                     _self.$.comentarioCA17.disabled = (data.estado != 17);
                     _self.$.ratificarCaAdjudicacao.disabled = (data.estado != 17);

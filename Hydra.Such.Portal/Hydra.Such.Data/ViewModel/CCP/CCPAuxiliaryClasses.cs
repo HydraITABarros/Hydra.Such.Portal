@@ -317,6 +317,12 @@ namespace Hydra.Such.Data.ViewModel.CCP
             eReasonCode = 601,
             eMessage = "Procedimento já submetido"
         };
+        //NR 20180319
+        public static ErrorHandler ProcedimentoAlreadyConfirmed = new ErrorHandler
+        {
+            eReasonCode = 602,
+            eMessage = "Procedimento já foi Confirmado"
+        };
 
         public static ErrorHandler UnknownArea = new ErrorHandler
         {
@@ -341,6 +347,13 @@ namespace Hydra.Such.Data.ViewModel.CCP
         {
             eReasonCode = 703,
             eMessage = "Antes de prosseguir, tem que indicar uma data!"
+        };
+
+        //NR 20180319
+        public static ErrorHandler UncompletedDecisionProposal = new ErrorHandler
+        {
+            eReasonCode = 704,
+            eMessage = "Proposta de decisão tem que estar preenchida"
         };
 
     }
