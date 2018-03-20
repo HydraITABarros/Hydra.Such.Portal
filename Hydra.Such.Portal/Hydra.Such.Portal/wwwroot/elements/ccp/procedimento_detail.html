@@ -478,7 +478,29 @@
                    on-response="_submeterProcesso_16Response"
                    content-type="application/json">
         </iron-ajax>
+
+        <!--NR 20180320-->
+        <iron-ajax url="/ProcedimentosCcps/CBRejeitar2CA"
+                   last-response="{{ RejectAutorizacaoAdjudicacao }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_rejectAutorizacaoAdjudicacao"
+                   on-response="_rejectAutorizacaoAdjudicacaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/CBDevolverAutorizacaoCA"
+                   last-response="{{ SuspendAutorizacaoAdjudicacao }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_suspendAutorizacaoAdjudicacao"
+                   on-response="_suspendAutorizacaoAdjudicacaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         
+
+
+
         <!--NR 20180306-->
         <iron-ajax url="/ProcedimentosCcps/ReturnToAreaToJustifyProcess"
                    last-response="{{ DevolverParaArea }}"
@@ -1624,7 +1646,7 @@
                                             <vaadin-text-field value="{{data.fundamentoComprasDataChecklist}}" id="fundamentoComprasDataChecklist" name="fundamentoComprasDataChecklist" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
                                         <div class="col-sm-3">
-                                            <vaadin-text-field value="{{data.emailDestinoCa}}" id="emailDestinoCa" name="emailDestinoCa" label="Email destino CA" disabled="true"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.emailDestinoCA}}" id="emailDestinoCA" name="emailDestinoCA" label="Email destino CA" disabled="true"> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
@@ -2184,6 +2206,12 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-12">
+                                            <paper-tooltip for="btnAutorizarImobilizadoConfirm" position="top" offset="-1" animation-delay="1">
+                                                Autorizar aquisição de Imobilizado
+                                            </paper-tooltip>
+                                            <paper-tooltip for="btnAutorizarImobilizadoSuspend" position="top" offset="-1" animation-delay="1">
+                                                Devolver à área que fez o pedido (passo 2)
+                                            </paper-tooltip>
                                             <paper-button raised id="btnAutorizarImobilizadoConfirm" class="btn--confirm" on-tap="_confirmAutorizarImobilizado"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Autorizar</paper-button>
                                             <paper-button raised id="btnAutorizarImobilizadoSuspend" class="btn--sendtoevaluate" on-tap="_suspendAutorizarImobilizado">Suspender Processo</paper-button>
                                             <paper-button raised id="btnAutorizarImobilizadoReject" class="btn--remove" on-tap="_rejectAutorizarImobilizado"><i class="fa fa-times" aria-hidden="true"></i>&nbsp; Não Autorizar</paper-button>
@@ -2230,6 +2258,9 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-12">
+                                            <paper-tooltip for="btnAberturaProcedimentoSuspend" position="top" offset="-1" animation-delay="1">
+                                                Devolver à área que fez o pedido (passo 7)
+                                            </paper-tooltip>
                                             <paper-button raised id="btnAberturaProcedimentoConfirm" class="btn--confirm" on-tap="_confirmAberturaProcedimento"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Autorizar</paper-button>
                                             <paper-button raised id="btnAberturaProcedimentoSuspend" class="btn--sendtoevaluate" on-tap="_suspendAberturaProcedimento">Suspender Processo</paper-button>
                                             <paper-button raised id="btnAberturaProcedimentoReject" class="btn--remove" on-tap="_rejectAberturaProcedimento"><i class="fa fa-times" aria-hidden="true"></i>&nbsp; Não Autorizar</paper-button>
@@ -2251,7 +2282,6 @@
                                             <vaadin-checkbox checked="{{data.autorizacaoAdjudicacao}}" disabled="true">Autorização Adjudicação.</vaadin-checkbox>
                                             <vaadin-checkbox checked="{{data.naoAdjudicacaoEncerramento}}" disabled="true">Não Adjudicação e Encerramento.</vaadin-checkbox>
                                             <vaadin-checkbox checked="{{data.naoAdjudicacaoSuspensao}}" disabled="true">Não Adjudicação e Suspensão.</vaadin-checkbox>
-
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -2284,6 +2314,9 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-12">
+                                            <paper-tooltip for="btnAutorizacaoAdjudicacaoSuspend" position="top" offset="-1" animation-delay="1">
+                                                Devolver à área que fez o pedido (passo 16)
+                                            </paper-tooltip>
                                             <paper-button raised id="btnAutorizacaoAdjudicacaoConfirm" class="btn--confirm" on-tap="_confirmAutorizacaoAdjudicacao"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Autorizar</paper-button>
                                             <paper-button raised id="btnAutorizacaoAdjudicacaoSuspend" class="btn--sendtoevaluate" on-tap="_suspendAutorizacaoAdjudicacao">Suspender Processo</paper-button>
                                             <paper-button raised id="btnAutorizacaoAdjudicacaoReject" class="btn--remove" on-tap="_rejectAutorizacaoAdjudicacao"><i class="fa fa-times" aria-hidden="true"></i>&nbsp; Não Autorizar</paper-button>
@@ -3500,7 +3533,69 @@
                     }
                 },
 
+                //NR 20180320
+                _rejectAutorizacaoAdjudicacao: function() {
+                    var ajax_request = this.$.ajax_rejectAutorizacaoAdjudicacao;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
 
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a Rejeição do Processo?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_rejectAutorizacaoAdjudicacao.body = JSON.stringify(this.data);
+                },
+                _rejectAutorizacaoAdjudicacaoResponse: function (e) {
+                    if (this.RejectAutorizacaoAdjudicacao.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " rejeitado com sucesso!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.RejectAutorizacaoAdjudicacao.eMessage);
+                    }
+                },
+                _suspendAutorizacaoAdjudicacao: function () {
+                    var ajax_request = this.$.ajax_suspendAutorizacaoAdjudicacao;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a Suspensão do processo?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_suspendAutorizacaoAdjudicacao.body = JSON.stringify(this.data);
+                },
+                _suspendAutorizacaoAdjudicacaoResponse: function (e) {
+                    if (this.SuspendAutorizacaoAdjudicacao.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " suspenso com sucesso!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.SuspendAutorizacaoAdjudicacao.eMessage);
+                    }
+                },
+
+
+
+
+
+                  
 
 
 
@@ -4311,7 +4406,7 @@
                     _self.$.condicoesDePagamento.disabled = (data.estado != 4);
                     _self.$.gestorProcesso.disabled = (data.estado != 4);
                     _self.$.comentarioFundamentoCompras.disabled = (data.estado != 4);
-                    //_self.$.emailDestinoCa.disabled = (data.estado != 4);
+                    //_self.$.emailDestinoCA.disabled = (data.estado != 4);
 
                     if (data.estado != 4) {
                         $(_self.$.actionButtonCompras).addClass('disabled');

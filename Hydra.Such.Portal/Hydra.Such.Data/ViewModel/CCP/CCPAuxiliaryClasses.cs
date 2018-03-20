@@ -323,6 +323,12 @@ namespace Hydra.Such.Data.ViewModel.CCP
             eReasonCode = 602,
             eMessage = "Procedimento já foi Confirmado"
         };
+        //NR 20180320
+        public static ErrorHandler ProcedimentoAlreadyTreated = new ErrorHandler
+        {
+            eReasonCode = 603,
+            eMessage = "Este Procedimento já foi tratado. Verifique o WorkFlow"
+        };
 
         public static ErrorHandler UnknownArea = new ErrorHandler
         {
