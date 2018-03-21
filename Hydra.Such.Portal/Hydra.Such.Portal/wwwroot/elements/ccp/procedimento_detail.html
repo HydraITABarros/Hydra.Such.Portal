@@ -497,7 +497,33 @@
                    content-type="application/json">
         </iron-ajax>
 
-        
+        <!--NR 20180321-->
+        <iron-ajax url="/ProcedimentosCcps/CBAutorizar2CA"
+                   last-response="{{ ConfirmAutorizacaoAdjudicacao }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_confirmAutorizacaoAdjudicacao"
+                   on-response="_confirmAutorizacaoAdjudicacaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/Dummy"
+                   last-response="{{ ConfirmAutorizacaoAdjudicacao_Confirmar }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_confirmAutorizacaoAdjudicacao_Confirmar"
+                   on-response="_confirmAutorizacaoAdjudicacao_ConfirmarResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-aja<!--x url="/ProcedimentosCcps/Dummy"
+                   last-response="{{ ConfirmAutorizacaoAdjudicacao_20000 }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_confirmAutorizacaoAdjudicacao_20000"
+                   on-response="_confirmAutorizacaoAdjudicacao_20000Response"
+                   content-type="application/json">
+        </iron-ajax>-->
+
+
 
 
 
@@ -2317,7 +2343,7 @@
                                             <paper-tooltip for="btnAutorizacaoAdjudicacaoSuspend" position="top" offset="-1" animation-delay="1">
                                                 Devolver à área que fez o pedido (passo 16)
                                             </paper-tooltip>
-                                            <paper-button raised id="btnAutorizacaoAdjudicacaoConfirm" class="btn--confirm" on-tap="_confirmAutorizacaoAdjudicacao"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Autorizar</paper-button>
+                                            <paper-button raised id="btnAutorizacaoAdjudicacaoConfirm" class="btn--confirm" on-tap="_confirmAutorizacaoAdjudicacao_Confirmar"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Autorizar</paper-button>
                                             <paper-button raised id="btnAutorizacaoAdjudicacaoSuspend" class="btn--sendtoevaluate" on-tap="_suspendAutorizacaoAdjudicacao">Suspender Processo</paper-button>
                                             <paper-button raised id="btnAutorizacaoAdjudicacaoReject" class="btn--remove" on-tap="_rejectAutorizacaoAdjudicacao"><i class="fa fa-times" aria-hidden="true"></i>&nbsp; Não Autorizar</paper-button>
                                         </div>
@@ -2533,9 +2559,6 @@
                         value: [{ value: 1, description: "Enviar p/ Compras(15)" }],
                     },
 
-
-                    
-
                     _procedimentoid: {
                         type: String,
                         notify: true,
@@ -2719,6 +2742,100 @@
                         }
                     });
                 },
+
+                //NR 20180321
+                _confirmAndReturnUpdatedAnswerToast: function (_message1, _message2, _message3, _ajaxRequest) {
+                    bootbox.confirm({
+                        message: _message1,
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                debugger;
+
+                                new bootbox.confirm({
+                                    message: _message2,
+                                    buttons: {
+                                        confirm: {
+                                            label: 'Sim',
+                                            className: 'btn-success'
+                                        },
+                                        cancel: {
+                                            label: 'Não',
+                                            className: 'btn-danger'
+                                        }
+                                    },
+                                    callback: function (result) {
+                                        if (result) {
+                                            debugger;
+                                            this.data.ratificarCaAdjudicacao = true;
+
+                                            bootbox.confirm({
+                                                message: _message3,
+                                                buttons: {
+                                                    confirm: {
+                                                        label: 'Sim',
+                                                        className: 'btn-success'
+                                                    },
+                                                    cancel: {
+                                                        label: 'Não',
+                                                        className: 'btn-danger'
+                                                    }
+                                                },
+                                                callback: function (result) {
+                                                    if (result) {
+                                                        debugger;
+                                                        this.data.ratificarCaAdjudicacao = true;
+                                                        
+                                                    }
+                                                }
+                                            });
+
+                                            
+                                        }
+                                    }
+                                });
+
+                                _ajaxRequest.generateRequest();
+                            }
+                        }
+                    });
+                },
+
+
+                _confirmAndExecuteActionToast_NR: function (_message, _ajaxRequest) {
+                    var _this = this;
+
+                    bootbox.confirm({
+                        message: _message,
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                debugger;
+                                _this.data.ratificarCaAdjudicacao = true
+                            }
+                            _ajaxRequest.generateRequest();
+                        }
+                    });
+                },
+
                 _validateData: function () {
                     if (false) {
                         this._openToast(validate);
@@ -2957,7 +3074,6 @@
 
                 //NR 20180316
                 _createElementoJuri: function () {
-                    debugger;
                     this.isJuriElementAction = true;
                     if (this._validateElementoJuriData()) {
                         
@@ -2975,7 +3091,6 @@
                     }
                 },
                 _createElementoJuriResponse: function (e) {
-                    debugger;
                     if (this.ElementoCreated.eReasonCode == 0) {
                         this._openToast('Elemento Júri adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
@@ -2997,7 +3112,6 @@
                         }
                     }
                 },
-
 
                 _deleteElementoJuri: function (e) {
                     this.isJuriElementAction = true;
@@ -3251,10 +3365,6 @@
                     }
                 },
 
-
-
-
-
                 //NR 20180312
                 _sendToEvaluate: function (e) {
                     if (this.$.sendToEval_Email.hidden == true)
@@ -3262,8 +3372,6 @@
                     else
                         this.$.sendToEval_Email.hidden = true;
                 },
-
-
 
                 //NR 20180223
                 _nrmudasimnao: function (e) {
@@ -3591,13 +3699,60 @@
                     }
                 },
 
+                //NR 20180321
+                _confirmAutorizacaoAdjudicacao: function () {
+                    var ajax_request = this.$.ajax_confirmAutorizacaoAdjudicacao;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
 
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a Autorização de Adjudicação?", ajax_request
+                    );
 
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
 
+                    this.$.ajax_confirmAutorizacaoAdjudicacao.body = JSON.stringify(this.data);
+                },
+                _confirmAutorizacaoAdjudicacaoResponse: function (e) {
+                    if (this.ConfirmAutorizacaoAdjudicacao.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " autorizado!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
 
-                  
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.ConfirmAutorizacaoAdjudicacao.eMessage);
+                    }
+                },
+                _confirmAutorizacaoAdjudicacao_Confirmar: function () {
+                    var ajax_request = this.$.ajax_confirmAutorizacaoAdjudicacao_Confirmar;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+                    debugger
+                    if ((this.data.imobilizado) && (this.data.valorAdjudicacaoAtual > 5000) && (this.data.nome_Utilizador != "CASUCH")) {
+                        this._confirmAndExecuteActionToast_NR(
+                            "O Valor do procedimento é superior a 5.000, pretende ratificar em CA?",
+                            ajax_request
+                        );
+                    } else if (!(this.data.imobilizado) && (this.data.valorAdjudicacaoAtual > 20000) && (this.data.nome_Utilizador != "CASUCH")) {
+                        this._confirmAndExecuteActionToast_NR(
+                            "O Valor do procedimento é superior a 20.000, pretende ratificar em CA?",
+                            ajax_request
+                        );
+                    }
 
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
 
+                    this.$.ajax_confirmAutorizacaoAdjudicacao_Confirmar.body = JSON.stringify(this.data);
+                },
+                _confirmAutorizacaoAdjudicacao_ConfirmarResponse: function (e) {
+                    
+                    this._confirmAutorizacaoAdjudicacao();
+                },
 
                 //NR 20180308
                 _enviarParaCAAbertura: function () {
@@ -3890,7 +4045,6 @@
                     }
                 },
 
-
                 // Imobilizado return to area
                 _imobReturnToArea: function () {
                     var ajax_request = this.$.ajax_imobReturnToArea;
@@ -3905,7 +4059,6 @@
 
                     this.$.ajax_imobReturnToArea.body = JSON.stringify(this.data);
                 },
-
                 _imobReturnToAreaResponse: function (e) {
                     if (this.ProcedimentoReturnedToArea.eReasonCode == 0) {
                         this._openToast("Procedimento " + this.data.no + " devolvido!");
@@ -3921,7 +4074,6 @@
                         this._openToast(this.EnviarParaArea.eMessage);
                     }
                 },
-
 
                 //NR 20180313
                 _btnEnviarsendToEval: function (e) {
@@ -3948,8 +4100,6 @@
                         this._openToast(this.SendEmail_ToJuriAproval.eMessage);
                     }
                 },
-
-
 
                 //NR 20180314
                 _confirmPublicacaoNaPlataforma: function (e) {
@@ -4311,10 +4461,6 @@
                             break;
                     }
                 },
-                
-
-
-
 
                 _setFieldsEditability(data) {
                     var _self = this;
@@ -4440,7 +4586,6 @@
                         $(_self.$.btnAberturaProcedimentoConfirm).addClass('disabled');
                         $(_self.$.btnAberturaProcedimentoSuspend).addClass('disabled');
                     }
-
                     
                     //NR 20180305
                     _self.$.comentarioPublicacao.disabled = (data.estado != 9);
@@ -4552,9 +4697,6 @@
                         $(_self.$.btnNovoContratoAdjudicacaoAcordos).addClass('disabled');
                         $(_self.$.btnNovaEncomendaAdjudicacaoAcordos).addClass('disabled');
                     }
-
-
-
 
                     // 1. Procedimento status != 0.e
 

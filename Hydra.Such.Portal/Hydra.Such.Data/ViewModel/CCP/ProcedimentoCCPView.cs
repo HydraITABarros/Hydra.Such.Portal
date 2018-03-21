@@ -131,6 +131,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
         //public ElementosChecklistArea ChecklistArea { get; set; }
 
         public string Nome_Utilizador_Logado { get; set; }
+        public string Nome_Utilizador { get; set; }
 
         public TemposPACCPView TemposPaCcp { get; set; }
         public ICollection<FluxoTrabalhoListaControlo> FluxoTrabalhoListaControlo { get; set; }
