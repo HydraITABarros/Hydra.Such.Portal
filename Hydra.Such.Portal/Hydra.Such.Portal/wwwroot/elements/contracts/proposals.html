@@ -294,8 +294,10 @@
                 _showAborted: function (item) {
                     if (item != null) {
                         if (this._showLevel == 2) {
+                            this._archived = 0;
                             this._showLevel = 1;
                         } else {
+                            this._archived = 1;
                             this._showLevel = 2;
                         }
                         this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
@@ -306,8 +308,10 @@
                 _showLosts: function (item) {
                     if (item != null) {
                         if (this._showLevel == 3) {
+                            this._archived = 0;
                             this._showLevel = 1;
                         } else {
+                            this._archived = 1;
                             this._showLevel =3;
                         }
                         this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
@@ -318,8 +322,10 @@
                 _showHistory: function (item) {
                     if (item != null) {
                         if (this._showLevel == 4) {
+                            this._archived = 0;
                             this._showLevel = 1;
                         } else {
+                            this._archived = 1;
                             this._showLevel = 4;
                         }
                         this.$.grid_databound_ajax.body = JSON.stringify({ "AreaId": this._areaid, "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel });
