@@ -163,5 +163,35 @@ namespace Hydra.Such.Data.Logic.Project
                 return null;
             }
         }
+
+        public static List<ProjectListItemViewModel> GetByContract(string contractId)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Projetos.Where(x => x.NºContrato == contractId).Select(x => new ProjectListItemViewModel()
+                    {
+                        ProjectNo = x.NºProjeto,
+                        Date = x.Data,
+                        DateText = x.Data.HasValue ? x.Data.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) : "",
+                        Status = x.Estado,
+                        Description = x.Descrição,
+                        ClientNo = x.NºCliente,
+                        RegionCode = x.CódigoRegião,
+                        FunctionalAreaCode = x.CódigoÁreaFuncional,
+                        ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
+                        ContractoNo = x.NºContrato,
+                        ProjectTypeCode = x.CódTipoProjeto,
+                        ProjectTypeDescription = x.CódTipoProjetoNavigation.Descrição
+                    }).ToList(); ;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
     }
 }

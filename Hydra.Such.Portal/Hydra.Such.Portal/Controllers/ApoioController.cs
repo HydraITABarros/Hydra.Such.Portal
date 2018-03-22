@@ -48,6 +48,21 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+
+        public IActionResult ProjetosContrato(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 5, 1);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                ViewBag.ContractId = string.IsNullOrEmpty(id) ? string.Empty : id;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
         #endregion
 
         #region Contratos

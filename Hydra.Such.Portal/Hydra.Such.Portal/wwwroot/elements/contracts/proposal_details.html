@@ -780,8 +780,8 @@
                                     <div class="col-lg-2">
                                         <such-selectbox id="_CLCode" value="{{_CLCode}}" label="Código"
                                                         items="[[CBContractLineCodes]]"
-                                                        text-path="id"
-                                                        value-path="value"
+                                                        text-path="value"
+                                                        value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
                                                         required error-message="Este campo é obrigatório"
                                                         disabled="{{ !_permissions.update }}"
@@ -949,6 +949,17 @@
 
                         <div class="row">
                             <vaadin-grid aria-label="ContractLines" id="grid_contractlines" name="grid_contractlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
+                                <vaadin-grid-column width="100px">
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="createContract">Incluir em Contrato</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="createContract" />
+                                    </template>
+                                    <template>
+                                        <center>
+                                            <vaadin-checkbox checked="{{item.createContract}}" disabled="{{ !item.selected}}"></vaadin-checkbox>
+                                        </center>
+                                    </template>
+                                </vaadin-grid-column>
                                 <vaadin-grid-column width="130px">
                                     <template class="header">
                                         <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
@@ -1309,17 +1320,6 @@
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
-                                <vaadin-grid-column width="100px">
-                                    <template class="header">
-                                        <vaadin-grid-sorter path="createContract">Cria Contrato</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="createContract" />
-                                    </template>
-                                    <template>
-                                        <center>
-                                            <vaadin-checkbox checked="{{item.createContract}}" disabled="{{ !item.selected}}"></vaadin-checkbox>
-                                        </center>
-                                    </template>
-                                </vaadin-grid-column>
                                 <vaadin-grid-column>
                                     <template class="header">
                                     </template>
@@ -1631,7 +1631,7 @@
                 },
 
                 _statusMenuItemSelected: function (e) {
-
+                    debugger;;
                     var item = e.detail.value;
 
                     if (item == null)
@@ -1685,6 +1685,15 @@
                                 }
                                 else {
                                     this.$.dlgCustomerShipmentDate.open();
+                                    return false;
+                                }
+                                break;
+                            case 3: //Alterada para revista
+                                /*
+                                    Se a proposta não estiver com o estado ‘Enviada’, não permite prosseguir. Informar o utilizador que a proposta tem que estar com o estado ‘Enviada’
+                                */
+                                if (this._oldStatus != 2) {
+                                    this._openToastError("Apenas propostas com o estado Enviada podem ser alteradas para o estado Revista.");
                                     return false;
                                 }
                                 break;

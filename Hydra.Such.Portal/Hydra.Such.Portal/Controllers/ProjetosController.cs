@@ -67,6 +67,38 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetByContract([FromBody] JObject requestParams)
+        {
+            string contractId = requestParams["contractId"].ToString();
+
+            List<ProjectListItemViewModel> result = string.IsNullOrEmpty(contractId) ? new List<ProjectListItemViewModel>() : DBProjects.GetByContract(contractId);
+
+            result.ForEach(x =>
+            {
+                if (x.Status.HasValue)
+                {
+                    x.StatusDescription = EnumerablesFixed.ProjectStatus.Where(y => y.Id == x.Status).FirstOrDefault().Value;
+                }
+                x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+            });
+
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (CUserDimensions.Where(y => y.Dimensão == 1).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 1 && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (CUserDimensions.Where(y => y.Dimensão == 2).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (CUserDimensions.Where(y => y.Dimensão == 3).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == 3 && y.ValorDimensão == x.ResponsabilityCenterCode));
+
+            return Json(result);
+        }
         #endregion
 
         #region Details
@@ -567,6 +599,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UpdateProjectDiary([FromBody] List<ProjectDiaryViewModel> dp, string projectNo)
         {
             List<DiárioDeProjeto> previousList;
+
             if (projectNo == null || projectNo == "")
             {
                 // Get All

@@ -178,7 +178,7 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="200px">
                 <template class="header">
-                    <vaadin-grid-sorter path="versionNo">Versão</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="versionNo">Nº Versão</vaadin-grid-sorter>
                     <vaadin-grid-filter path="versionNo" />
                 </template>
                 <template>
@@ -339,16 +339,16 @@
                         this._showLostMessage = "Exibir Perdidas";
                         this._showHistoryMessage = "Exibir Histórico";
                     } else if (this._showLevel == 2) {
-                        this._showAbortedMessage = "Vista Normal";
+                        this._showAbortedMessage = "Exibir Ativas";
                         this._showLostMessage = "Exibir Perdidas";
                         this._showHistoryMessage = "Exibir Histórico";
                     } else if (this._showLevel == 4) {
                         this._showAbortedMessage = "Exibir Canceladas";
                         this._showLostMessage = "Exibir Perdidas";
-                        this._showHistoryMessage = "Vista Normal";
+                        this._showHistoryMessage = "Exibir Ativas";
                     } else {
                         this._showAbortedMessage = "Exibir Canceladas";
-                        this._showLostMessage = "Vista Normal";
+                        this._showLostMessage = "Exibir Ativas";
                         this._showHistoryMessage = "Exibir Histórico";
                     }
                 },
