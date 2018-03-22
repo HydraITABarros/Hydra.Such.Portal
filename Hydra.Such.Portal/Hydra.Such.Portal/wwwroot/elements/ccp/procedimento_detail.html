@@ -514,17 +514,26 @@
                    on-response="_confirmAutorizacaoAdjudicacao_ConfirmarResponse"
                    content-type="application/json">
         </iron-ajax>
-        <iron-aja<!--x url="/ProcedimentosCcps/Dummy"
-                   last-response="{{ ConfirmAutorizacaoAdjudicacao_20000 }}"
+
+
+        <!--NR 20180322-->
+        <iron-ajax url="/ProcedimentosCcps/CBRejeitar1CA"
+                   last-response="{{ RejectAberturaProcedimento }}"
                    method="post"
                    handle-as="json"
-                   id="ajax_confirmAutorizacaoAdjudicacao_20000"
-                   on-response="_confirmAutorizacaoAdjudicacao_20000Response"
+                   id="ajax_rejectAberturaProcedimento"
+                   on-response="_rejectAberturaProcedimentoResponse"
                    content-type="application/json">
-        </iron-ajax>-->
-
-
-
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/CBDevolverAberturaCA"
+                   last-response="{{ SuspendAberturaProcedimento }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_suspendAberturaProcedimento"
+                   on-response="_suspendAberturaProcedimentoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        
 
 
         <!--NR 20180306-->
@@ -3753,6 +3762,71 @@
                     
                     this._confirmAutorizacaoAdjudicacao();
                 },
+
+                //NR 20180322
+                _rejectAberturaProcedimento: function () {
+                    debugger;
+                    var ajax_request = this.$.ajax_rejectAberturaProcedimento;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a Rejeição do Processo?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_rejectAberturaProcedimento.body = JSON.stringify(this.data);
+                },
+                _rejectAberturaProcedimentoResponse: function (e) {
+                    if (this.RejectAberturaProcedimento.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " rejeitado com sucesso!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.RejectAberturaProcedimento.eMessage);
+                    }
+                },
+                //  
+                _suspendAberturaProcedimento: function () {
+                    debugger;
+                    var ajax_request = this.$.ajax_suspendAberturaProcedimento;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a suspensão do processo?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_suspendAberturaProcedimento.body = JSON.stringify(this.data);
+                },
+                _suspendAberturaProcedimentoResponse: function (e) {
+                    if (this.SuspendAberturaProcedimento.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " suspenso com sucesso!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.SuspendAberturaProcedimento.eMessage);
+                    }
+                },
+
+
+
+
 
                 //NR 20180308
                 _enviarParaCAAbertura: function () {
