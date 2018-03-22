@@ -630,8 +630,8 @@
 
                                         <such-selectbox id="_CLCode" value="{{_CLCode}}" label="Código"
                                                         items="[[CBContractLineCodes]]"
-                                                        text-path="id"
-                                                        value-path="value"
+                                                        text-path="value"
+                                                        value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
                                                         required error-message="Este campo é obrigatório"
                                                         disabled="{{ !_permissions.update }}"
@@ -1566,8 +1566,8 @@
                         this.$.shippingAddresses_ajax.body = JSON.stringify(this.data.codeShippingAddress);
                         this.$.shippingAddresses_ajax.generateRequest();
 
-                        this.$.contacts_ajax.body = JSON.stringify(this.data.clientNo);
-                        this.$.contacts_ajax.generateRequest();
+                        //this.$.contacts_ajax.body = JSON.stringify(this.data.clientNo);
+                        //this.$.contacts_ajax.generateRequest();
 
                         this._showContractLines = "";
                         this._CLRegion = this.data.codeRegion;

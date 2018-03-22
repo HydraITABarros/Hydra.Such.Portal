@@ -17,6 +17,7 @@
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
 <!--Datepicker com correção de bug que impede visualização nas grids -->
@@ -900,8 +901,8 @@
                                     <div class="col-lg-2">
                                         <such-selectbox id="_CLCode" value="{{_CLCode}}" label="Código"
                                                         items="[[CBContractLineCodes]]"
-                                                        text-path="id"
-                                                        value-path="value"
+                                                        text-path="value"
+                                                        value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
                                                         required error-message="Este campo é obrigatório"
                                                         disabled="{{ !_permissions.update }}"

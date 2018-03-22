@@ -40,14 +40,14 @@ namespace Hydra.Such.Portal.Services
                                          * Fazer arquivo
                                          * Preencher estado com ‘Aberta’
                                          */
-                                case 2: //Alterada para enviada
-                                        /*
-                                         * Fazer arquivo
-                                         * Preencher estado com ‘Enviada’
-                                         * Preencher ‘Data Envio’ com data indicada pelo utilizador.Deve ser criado um mecanismo tipo ‘PopUp’ para indicação dessa data.
-                                         */
                                     contractToUpdate = ArchiveContract(contractToUpdate);
                                     break;
+                                //case 2: //Alterada para enviada
+                                //        /*
+                                //         * Fazer arquivo
+                                //         * Preencher estado com ‘Enviada’
+                                //         * Preencher ‘Data Envio’ com data indicada pelo utilizador.Deve ser criado um mecanismo tipo ‘PopUp’ para indicação dessa data.
+                                //         */
                                 case 3: //Alterada para Revista
                                         /*
                                          * Preencher estado com ‘Revista’
