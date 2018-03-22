@@ -187,6 +187,7 @@ namespace Hydra.Such.Portal.Controllers
                         result.EmailDestinoCA = UserDetails.ProcedimentosEmailEnvioParaCa == null ? string.Empty : UserDetails.ProcedimentosEmailEnvioParaCa;
 
                         result.Nome_Utilizador_Logado = User.Identity.Name;
+                        result.Nome_Utilizador = UserDetails.Nome;
 
                         //ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
                         //result.Nome_Utilizador_Logado = UserDetails.Nome;
@@ -3689,10 +3690,158 @@ namespace Hydra.Such.Portal.Controllers
                     return Json(ReturnHandlers.InvalidEmailAddres);
                 };
 
+                string gComent2CA = data.ComentarioCA17 == "" ? "Autorizado" : data.ComentarioCA17;
+
+                if ((data.AutorizacaoAdjudicacao.HasValue) && (data.AutorizacaoAdjudicacao.Value))
+                {
+                    // NAV Procedure CAConfirmarAutorizacao.b
+                    ErrorHandler DecisionTaken = DBProcedimentosCCP.BoardOfManagementConfirmAuthorization(data, DBProcedimentosCCP.GetUserDetails(User.Identity.Name), 1);
+                    if (DecisionTaken.eReasonCode != 0)
+                    {
+                        return Json(DecisionTaken);
+                    }
+                    // NAV CAConfirmarAutorizacao.e
+
+                }
+
+                if ((data.NaoAdjudicacaoEEncerramento.HasValue) && (data.NaoAdjudicacaoEEncerramento.Value))
+                {
+                    gComent2CA = "Não Autorizado";
+
+                    // NAV Procedure CAConfirmarAutorizacao.b
+                    ErrorHandler DecisionTaken = DBProcedimentosCCP.BoardOfManagementConfirmAuthorization(data, DBProcedimentosCCP.GetUserDetails(User.Identity.Name), 2);
+                    if (DecisionTaken.eReasonCode != 0)
+                    {
+                        return Json(DecisionTaken);
+                    }
+                    // NAV CAConfirmarAutorizacao.e
+                }
+
+                if ((data.NaoAdjudicacaoESuspensao.HasValue) && (data.NaoAdjudicacaoESuspensao.Value))
+                {
+                    //Colocar o Procedimento como suspenso!
+                    data.CaSuspenso = true;
+
+                    if (DBProcedimentosCCP.__UpdateProcedimento(data) == null)
+                    {
+                        return Json(ReturnHandlers.UnableToUpdateProcedimento);
+                    }
+
+                    ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
+                    if (EmailList == null)
+                    {
+                        return Json(ReturnHandlers.AddressListIsEmpty);
+                    }
+
+                    if (!EmailAutomation.IsValidEmail(EmailList.EmailCompras))
+                    {
+                        return Json(ReturnHandlers.InvalidEmailAddres);
+                    };
+
+                    //string UserEmail_TO = "pdias@such.pt";
+                    string UserEmail_TO = EmailList.EmailCompras;
+
+                    EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                    {
+                        NºProcedimento = data.No,
+                        Assunto = data.No + " " + data.NomeProcesso + " - Suspensão abertura procedimento",
+                        UtilizadorEmail = UserEmail,
+                        EmailDestinatário = UserEmail_TO,
+                        TextoEmail = (data.ComentarioCA17 == "" || data.ComentarioCA17 == null) ? "O processo está suspenso a pedido da área." : data.ComentarioCA17,
+                        DataHoraEmail = DateTime.Now,
+                        UtilizadorCriação = User.Identity.Name,
+                        DataHoraCriação = DateTime.Now
+                    };
+
+                    if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                    {
+                        return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                    }
+
+                    data.EmailsProcedimentosCcp.Add(CCPFunctions.CastEmailProcedimentoToEmailProcedimentoView(ProcedimentoEmail));
+
+                    SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                    {
+                        DisplayName = UserDetails.Nome == "" ? "Conselho de Administração" : UserDetails.Nome,
+                        Subject = ProcedimentoEmail.Assunto,
+                        From = DBProcedimentosCCP._EmailSender
+                    };
+
+                    Email.To.Add(UserEmail_TO);
+                    Email.BCC.Add(UserEmail);
+
+                    Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+                    Email.IsBodyHtml = true;
+
+                    Email.EmailProcedimento = ProcedimentoEmail;
+
+                    Email.SendEmail();
+
+                    return Json(ReturnHandlers.Success);
+                }
+
+                // email para Compras e Área
+
+                FluxoTrabalhoListaControlo Fluxo4 = new FluxoTrabalhoListaControlo();
+
+                if (data.FluxoTrabalhoListaControlo != null)
+                {
+                    Fluxo4 = data.FluxoTrabalhoListaControlo.Where(f => f.Estado == 4).LastOrDefault();
+                }
+                else
+                {
+                    Fluxo4 = DBProcedimentosCCP.GetChecklistControloProcedimento(data.No, 4);
+                }
+
+                ConfigUtilizadores UserDetails_TO_Compras = DBProcedimentosCCP.GetUserDetails(Fluxo4.User);
+                string UserEmail_TO_Compras = "";
+
+                if (EmailAutomation.IsValidEmail(UserDetails_TO_Compras.IdUtilizador))
+                {
+                    UserEmail_TO_Compras = UserDetails_TO_Compras.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddres);
+                };
 
 
+                ConfiguracaoCcp EmailList_2 = DBProcedimentosCCP.GetConfiguracaoCCP();
+                if (EmailList_2 == null)
+                {
+                    return Json(ReturnHandlers.AddressListIsEmpty);
+                }
+                
+                string gEmailPara = string.Empty;
+                string gEmailCC1 = string.Empty;
 
+                if (data.CodigoRegiao.StartsWith("1"))  // Engenharia
+                {
+                    if (!EmailAutomation.IsValidEmail(EmailList_2.Email5Compras))
+                    {
+                        return Json(ReturnHandlers.InvalidEmailAddres);
+                    };
+                    if (!EmailAutomation.IsValidEmail(EmailList_2.Email6Compras))
+                    {
+                        return Json(ReturnHandlers.InvalidEmailAddres);
+                    };
+                }
+                else if (data.CodigoRegiao.StartsWith("0")) // Apoio
+                {
 
+                }
+                else if (data.CodigoRegiao.StartsWith("5")) // Nutrição
+                {
+
+                }
+                else if (data.CodigoRegiao.StartsWith("2")) // Ambiente
+                {
+
+                }
+                else if (data.CodigoRegiao.StartsWith("72"))    // Gestão de Parques de Estacionamento
+                {
+
+                }
 
 
 
@@ -3709,8 +3858,15 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-
-
+        /// <summary>
+        /// Necessário por causa de um procedimento que necessitava de efectuar várias perguntas ao user. Precisei de criar um iron-ajax com referência a este procedimento
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public JsonResult Dummy([FromBody] ProcedimentoCCPView data)
+        {
+            return Json(ReturnHandlers.Success);
+        }
 
 
         #endregion
