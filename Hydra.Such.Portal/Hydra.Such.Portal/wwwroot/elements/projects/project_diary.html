@@ -1519,7 +1519,9 @@
                         this.ddServiceClientCode = "";
                         this.unitValueToInvoice = "";
                         this.openToastSuccess("Diário de Projeto atualizado.");
-
+                        
+                        this.$.piCode.value = "";
+                        this.$.piCode.valueText = "";
                         this.$.piCodeLocation.value = "";
                         this.$.piCodeRegion.value = "";
                         this.$.piFuncArea.value = "";
@@ -1532,6 +1534,7 @@
                         this.$.piCoin.value = "";
                         this.$.pcInvoice.value = true;
                         this.$.MealTypesCode.value = "";
+                        this.$.MealTypesCode.valueText = "";
                         this.$.ServiceGroupCod.value = "";
                         this.$.piResidueGuideNo.value = "";
                         this.$.piExternalGuideNo.value = "";

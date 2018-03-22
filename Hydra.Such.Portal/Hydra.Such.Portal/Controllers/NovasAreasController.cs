@@ -49,6 +49,21 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult ProjetosContrato(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 1);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                ViewBag.ContractId = string.IsNullOrEmpty(id) ? string.Empty : id;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         public IActionResult DiarioProjeto(string id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, 7, 19);
