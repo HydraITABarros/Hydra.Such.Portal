@@ -329,6 +329,17 @@ namespace Hydra.Such.Data.ViewModel.CCP
             eReasonCode = 603,
             eMessage = "Este Procedimento já foi tratado. Verifique o WorkFlow"
         };
+        //NR 20180323
+        public static ErrorHandler ProcedimentoNotImmobilized = new ErrorHandler
+        {
+            eReasonCode = 604,
+            eMessage = "Este Procedimento não é de imobilizado!"
+        };
+        public static ErrorHandler ProcedimentoAlreadyAuthorized = new ErrorHandler
+        {
+            eReasonCode = 605,
+            eMessage = "Este Procedimento já foi Autorizado!"
+        };
 
         public static ErrorHandler UnknownArea = new ErrorHandler
         {
