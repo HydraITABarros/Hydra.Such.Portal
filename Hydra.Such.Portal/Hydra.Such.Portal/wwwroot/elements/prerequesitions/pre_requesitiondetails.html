@@ -648,7 +648,7 @@
                             </div>
                             <div class="row break_clear">
                                 <div class="col-sm-2">
-                                    <such-selectbox id="_ProjectNo" value="{{_ProjectNo}}" label="Nº Ordem/Projecto"
+                                    <such-selectbox id="_ProjectNo" value="[[data.projectNo]]" label="Nº Ordem/Projecto" 
                                                     items="[[CBJobNo]]"
                                                     text-path="no"
                                                     value-path="no"
@@ -1868,7 +1868,7 @@
                         unitMeasureCode: this._UnitMeasureCode,
                         quantityToRequire: this._QuantityToRequire,
                         unitCost: this._UnitCost,
-                        projectNo: this._ProjectNo,
+                        projectNo: this.$._ProjectNo.value,
                         maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
                         vehicle: this.data.vehicle,
                         supplierNo: this._CBVendor,
@@ -1962,8 +1962,8 @@
                                 this.$._CBPurchaseLine.value = "";
                                 this.$._CBItems.value = "";
                                 this.$._CBItems.valueText = "";
-                                this.$._ProjectNo.value = "";
-                                this.$._ProjectNo.valueText = "";
+                                this.$._ProjectNo.value = this.data.projectNo;
+                                this.$._ProjectNo.valueText = this.data.projectNo;
                                 this.$._CBVendor.value = "";
                                 this.$._CBVendor.valueText = "";
                                 if (this.data != null) {
@@ -2020,12 +2020,24 @@
                 _createRequesitionResponse: function (e) {
                     if (this.CreateReqResponse.eReasonCode == "1") {
                         this._openToast(this.CreateReqResponse.eMessage);
-                        this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
-                        this.$.prereqLines_databound_ajax.generateRequest();
+                        if (this.CreateReqResponse.eMessages.length > 0) {
+                            var errors = this.CreateReqResponse.eMessages[0].message;
+                            for (var i = 1; i < this.CreateReqResponse.eMessages.length; i++) {
+                                errors += this.CreateReqResponse.eMessages[i].message + ";";
+                            }
+                            var thisCtx = this;
+                            setTimeout(
+                                function () {
+                                    thisCtx._openToastError(errors);
+                                }, 2000);
+                        }
                     }
                     else {
-                        this._openToastError(this.AddReqTemplateLineResponse.eMessage);
+                        this._openToastError(this.CreateReqResponse.eMessage);
                     }
+                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
+                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
+                    this.$.prereqLines_databound_ajax.generateRequest();
                 },
             });
         });

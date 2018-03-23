@@ -20,7 +20,7 @@ namespace Hydra.Such.Portal.Extensions
             {
                 ErrorHandler result = new ErrorHandler() {
                     eReasonCode = 100,
-                    eMessage = "Fluxo Iniciado com suceso"
+                    eMessage = "Fluxo Iniciado com sucesso"
                 };
 
                 //Get Compatible ApprovalConfigurations

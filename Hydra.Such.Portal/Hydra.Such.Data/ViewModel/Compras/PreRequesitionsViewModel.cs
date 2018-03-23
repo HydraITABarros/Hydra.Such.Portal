@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Compras
 {
-    public class PreRequesitionsViewModel
+    public class PreRequesitionsViewModel : ErrorHandler
     {
         public string PreRequesitionsNo { get; set; }
         public int? Area { get; set; }
@@ -68,7 +68,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string DeliveryContact { get; set; }
         public string ReceptionReceptionResponsible { get; set; }
         public string InvoiceNo { get; set; }
-        public int eReasonCode { get; set; }
-        public string eMessage { get; set; }
+        //public int eReasonCode { get; set; }
+        //public string eMessage { get; set; }
     }
 }
