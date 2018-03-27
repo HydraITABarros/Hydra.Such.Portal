@@ -910,6 +910,22 @@ namespace Hydra.Such.Data.Logic.CCP
         }
         #endregion
 
+        #region Lista Fluxo - NR 20180327
+
+        public static List<FluxoTrabalhoListaControloCCPView> GetAllFluxoTrabalhoListaControloCCPView(ProcedimentosCcp Procedimento)
+        {
+            List<FluxoTrabalhoListaControloCCPView> WorkflowsView = new List<FluxoTrabalhoListaControloCCPView>();
+            
+            foreach (var w in Procedimento.FluxoTrabalhoListaControlo)
+            {
+                WorkflowsView.Add(CCPFunctions.CastFluxoTrabalhoListaControloToFluxoTrabalhoListaControlo_Show(w));
+            }
+
+            return WorkflowsView;
+        }
+
+        #endregion
+
         #region CRUD Workflow Procedimentos CCP
         public static List<WorkflowProcedimentosCcp> GetAllWorkflowsProcedimento(string ProcedimentoID)
         {
@@ -3981,7 +3997,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 if (TemposPA != null)
                 {
                     // Holidays aren't excluded (see GetWorkingDays overload method thar uses a List<DateTime>)
-                    TemposPA.Estado18Tg += GetWorkingDays1(Procedimento.DataRelatorioFinal.Value, Procedimento.DataHoraEstado.Value);
+                    TemposPA.Estado18Tg += GetWorkingDays1(Procedimento.DataNotificacao.Value, Procedimento.DataHoraEstado.Value);
                     TemposPA.UtilizadorModificação = UserDetails.IdUtilizador;
                     TemposPA.DataHoraModificação = DateTime.Now;
 
@@ -3995,7 +4011,7 @@ namespace Hydra.Such.Data.Logic.CCP
             }
             else
             {
-                Procedimento.TemposPaCcp.Estado18Tg = Procedimento.TemposPaCcp.Estado18Tg ?? 0 + GetWorkingDays1(Procedimento.DataRelatorioFinal.Value, Procedimento.DataHoraEstado.Value);
+                Procedimento.TemposPaCcp.Estado18Tg = Procedimento.TemposPaCcp.Estado18Tg ?? 0 + GetWorkingDays1(Procedimento.DataNotificacao.Value, Procedimento.DataHoraEstado.Value);
                 Procedimento.TemposPaCcp.UtilizadorModificacao = UserDetails.IdUtilizador;
                 Procedimento.TemposPaCcp.DataHoraModificacao = DateTime.Now;
                 if (!__UpdateTemposPaCcp(CCPFunctions.CastTemposCCPViewToTemposPaCcp(Procedimento.TemposPaCcp)))
@@ -4079,8 +4095,8 @@ namespace Hydra.Such.Data.Logic.CCP
                     }
                 }
 
-                Procedimento.UtilizadorRelatorioFinal = UserDetails.Nome;
-                Procedimento.DataRelatorioFinal = DateTime.Now;
+                Procedimento.UtilizadorNotificacao = UserDetails.Nome;
+                Procedimento.DataNotificacao = DateTime.Now;
 
                 Procedimento.DataHoraEstado = DateTime.Now;
                 Procedimento.UtilizadorEstado = UserDetails.IdUtilizador;

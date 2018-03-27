@@ -44,6 +44,14 @@
         <link rel="stylesheet" href="/css/main.css" />
 
         <style>
+            .Alerta {
+                background-color: red !important;
+            }
+
+            .Sucesso {
+                background-color: greenyellow !important;
+            }
+
             .mb-15 {
                 margin-bottom: 15px;
             }
@@ -2435,6 +2443,7 @@
                                             <div class="row break_clear">
                                                 <div class="col-sm-6">
                                                     <vaadin-date-picker value="{{data.dataNotificacao}}" id="dataNotificacao" name="dataNotificacao" label="Data"> </vaadin-date-picker>
+                                                    <vaadin-text-field value="{{data.dataNotificacao_Show}}" id="dataNotificacao_Show" name="dataNotificacao_Show" label="Data" disabled="true"> </vaadin-text-field>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <vaadin-text-field value="{{data.prazoNotificacaoDias}}" id="prazoNotificacaoDias" name="prazoNotificacaoDias" label="Prazo Concedido" type="number"> </vaadin-text-field>
@@ -2566,6 +2575,125 @@
                         </div>
                     </div>
 
+                    <!--Tab Workflow-->
+                    <div class="panel panel-default">
+                        <paper-collapse-group>
+                            <paper-collapse-item header="Fluxo de Trabalho" opened>
+
+                                <div class="col-xs-12">
+                                    <vaadin-grid id="gridfluxoTrabalhoListaControlo" aria-label="gridWorkflow" items="{{data.fluxoTrabalhoListaControlo_Show}}" class="grid">
+                                        <vaadin-grid-column width="6%" disabled="true" resizable>
+                                            <template class="header">
+                                                <center>
+                                                    WorkFlow
+                                                </center>
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <vaadin-text-field id="workflow_nr" type="text" class$="{{item.nr_Workflow}}" readonly>&nbsp;</vaadin-text-field>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="6%" disabled="true" resizable>
+                                            <template class="header">
+                                                <center>
+                                                    Estado
+                                                </center>
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <vaadin-text-field type="text" value="{{ item.estado }}" readonly></vaadin-text-field>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="8%" resizable>
+                                            <template class="header">
+                                                <center>
+                                                    Data
+                                                </center>
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <vaadin-text-field type="text" value="{{ item.data_Show }}" readonly></vaadin-text-field>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="6%" resizable>
+                                            <template class="header">
+                                                <center>
+                                                    Hora
+                                                </center>
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <vaadin-text-field type="text" value="{{ item.hora_Show }}" readonly></vaadin-text-field>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="8%" resizable>
+                                            <template class="header">
+                                                <center>
+                                                    Estado Seguinte
+                                                </center>
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <vaadin-text-field type="text" value="{{ item.estadoSeguinte }}" readonly></vaadin-text-field>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="20%" resizable>
+                                            <template class="header">
+                                                Comentário
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field type="text" value="{{ item.comentario }}" readonly></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="20%" resizable>
+                                            <template class="header">
+                                                Resposta
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field type="text" value="{{ item.resposta }}" readonly></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="10%" resizable>
+                                            <template class="header">
+                                                Utilizador
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field type="text" value="{{ item.user }}" readonly></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="15%" resizable>
+                                            <template class="header">
+                                                Nome Utilizador
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field type="text" value="{{ item.nomeUser }}" readonly></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </div>
+
+                            </paper-collapse-item>
+                            <paper-collapse-item header="Email's Enviados">
+                                <div class="col-xs-12">
+                                    
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="mb-15"></div>
+                            </paper-collapse-item>
+                            <paper-collapse-item header="Alteração de Estado">
+                                <div class="col-xs-12">
+                                    
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="mb-15"></div>
+                            </paper-collapse-item>
+                        </paper-collapse-group>
+                    </div>
                 </iron-pages>
 
                 <!-- Save and Create Buttons -->
@@ -4949,6 +5077,11 @@
                         $(_self.$.btnNovoAcordoAdjudicacaoAcordos).addClass('disabled');
                         $(_self.$.btnNovoContratoAdjudicacaoAcordos).addClass('disabled');
                         $(_self.$.btnNovaEncomendaAdjudicacaoAcordos).addClass('disabled');
+
+                        $(_self.$.dataNotificacao).addClass('hidden');
+                    } else {
+                        _self.$.dataNotificacao_Show.disabled = (data.estado = 18);
+                        $(_self.$.dataNotificacao_Show).addClass('hidden');
                     }
 
                     // 1. Procedimento status != 0.e

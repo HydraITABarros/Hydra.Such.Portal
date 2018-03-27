@@ -141,6 +141,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public ICollection<LinhasParaEncomendaCCPView> LinhasPEncomendaProcedimentosCcp { get; set; }
         public ICollection<NotasProcedimentoCCPView> NotasProcedimentosCcp { get; set; }
         public ICollection<WorkflowProcedimentosCCPView> WorkflowProcedimentosCcp { get; set; }
+        public ICollection<FluxoTrabalhoListaControloCCPView> FluxoTrabalhoListaControlo_Show { get; set; }
 
         #region used to map flow control checklist
         #region AreaChecklist
@@ -279,5 +280,6 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public string DataValidRelatorioPreliminar_Show { get; set; }
         public string DataAudienciaPrevia_Show { get; set; }
         public string DataRelatorioFinal_Show { get; set; }
+        public string DataNotificacao_Show { get; set; }
     }
 }

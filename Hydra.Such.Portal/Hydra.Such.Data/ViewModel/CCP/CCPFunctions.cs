@@ -22,7 +22,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
             DateTime? Data_Valid_Relatorio_Preliminar_Show = ProcedimentoView.DataValidRelatorioPreliminar;
             DateTime? Data_Audiencia_Previa_Show = ProcedimentoView.DataAudienciaPrevia;
             DateTime? Data_Relatorio_Final_Show = ProcedimentoView.DataRelatorioFinal;
-            
+            DateTime? Data_Notificacao_Show = ProcedimentoView.DataNotificacao;
+
             if (ProcedimentoView.DataPublicacao.ToString() == "")
             {
                 Data_Publicacao_Show = ProcedimentoView.DataPublicacao_Show == "" ? ProcedimentoView.DataPublicacao : Convert.ToDateTime(ProcedimentoView.DataPublicacao_Show);
@@ -42,6 +43,10 @@ namespace Hydra.Such.Data.ViewModel.CCP
             if (ProcedimentoView.DataRelatorioFinal.ToString() == "")
             {
                 Data_Relatorio_Final_Show = ProcedimentoView.DataRelatorioFinal_Show == "" ? ProcedimentoView.DataRelatorioFinal : Convert.ToDateTime(ProcedimentoView.DataRelatorioFinal_Show);
+            }
+            if (ProcedimentoView.DataNotificacao.ToString() == "")
+            {
+                Data_Notificacao_Show = ProcedimentoView.DataNotificacao_Show == "" ? ProcedimentoView.DataNotificacao : Convert.ToDateTime(ProcedimentoView.DataNotificacao_Show);
             }
 
             ProcedimentosCcp Procedimento = new ProcedimentosCcp
@@ -159,7 +164,11 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 UtilizadorRelatórioFinal = ProcedimentoView.UtilizadorRelatorioFinal,
                 DataSistemaRelatórioFinal = ProcedimentoView.DataSistemaRelatorioFinal,
                 ComentárioNotificação = ProcedimentoView.ComentarioNotificacao,
-                DataNotificação = ProcedimentoView.DataNotificacao,
+
+                //NR 20180327
+                //DataNotificação = ProcedimentoView.DataNotificacao,
+                DataNotificação = Data_Notificacao_Show,
+
                 UtilizadorNotificação = ProcedimentoView.UtilizadorNotificacao,
                 DataSistemaNotificação = ProcedimentoView.DataSistemaNotificacao,
                 PrazoNotificaçãoDias = ProcedimentoView.PrazoNotificacaoDias,
@@ -385,6 +394,10 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataSistemaRelatorioFinal = Procedimento.DataSistemaRelatórioFinal,
                 ComentarioNotificacao = Procedimento.ComentárioNotificação,
                 DataNotificacao = Procedimento.DataNotificação,
+
+                //NR 20180327
+                DataNotificacao_Show = Procedimento.DataNotificação.ToString(),
+
                 UtilizadorNotificacao = Procedimento.UtilizadorNotificação,
                 DataSistemaNotificacao = Procedimento.DataSistemaNotificação,
                 PrazoNotificacaoDias = Procedimento.PrazoNotificaçãoDias,
@@ -462,6 +475,14 @@ namespace Hydra.Such.Data.ViewModel.CCP
             if(Procedimento.FluxoTrabalhoListaControlo != null && Procedimento.FluxoTrabalhoListaControlo.Count > 0)
             {
                 ProcedimentoView.FluxoTrabalhoListaControlo = Procedimento.FluxoTrabalhoListaControlo;
+
+                ProcedimentoView.FluxoTrabalhoListaControlo_Show = DBProcedimentosCCP.GetAllFluxoTrabalhoListaControloCCPView(Procedimento);
+
+                //foreach (FluxoTrabalhoListaControlo f in ProcedimentoView.FluxoTrabalhoListaControlo)
+                //{
+
+                //}
+
             }
             return ProcedimentoView;
         }
@@ -718,6 +739,37 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 UtilizadorCriacao = Workflow.UtilizadorCriação,
                 DataHoraModificacao = Workflow.DataHoraModificação,
                 UtilizadorModificacao = Workflow.UtilizadorModificação
+            });
+        }
+
+        //NR 20180327
+        public static FluxoTrabalhoListaControloCCPView CastFluxoTrabalhoListaControloToFluxoTrabalhoListaControlo_Show(FluxoTrabalhoListaControlo Fluxo)
+        {
+            return (new FluxoTrabalhoListaControloCCPView()
+            {
+                No = Fluxo.No,
+                Estado = Fluxo.Estado,
+                Data = Fluxo.Data,
+                Hora = Fluxo.Hora,
+                Data_Show = Fluxo.Data.ToShortDateString(),
+                //Hora_Show = Fluxo.Hora.Hours.ToString() + ":" + Fluxo.Hora.Minutes.ToString() + ":" + Fluxo.Hora.Seconds.ToString(),
+                Hora_Show = Fluxo.Hora.ToString(@"hh\:mm\:ss"),
+                TipoEstado = Fluxo.TipoEstado,
+                Comentario = Fluxo.Comentario,
+                Resposta = Fluxo.Resposta,
+                TipoResposta = Fluxo.TipoResposta,
+                DataResposta = Fluxo.DataResposta,
+                User = Fluxo.User,
+                NomeUser = Fluxo.NomeUser,
+                ImobSimNao = Fluxo.ImobSimNao,
+                EstadoAnterior = Fluxo.EstadoAnterior,
+                EstadoSeguinte = Fluxo.EstadoSeguinte,
+                Comentario2 = Fluxo.Comentario2,
+                UtilizadorCriacao = Fluxo.UtilizadorCriacao,
+                DataHoraCriacao = Fluxo.DataHoraCriacao,
+                UtilizadorModificacao = Fluxo.UtilizadorModificacao,
+                DataHoraModificacao = Fluxo.DataHoraModificacao,
+                Nr_Workflow = Fluxo.Estado > Fluxo.EstadoSeguinte ? "Alerta" : "Sucesso"
             });
         }
 
