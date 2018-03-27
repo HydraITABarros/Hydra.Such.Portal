@@ -340,6 +340,12 @@ namespace Hydra.Such.Data.ViewModel.CCP
             eReasonCode = 605,
             eMessage = "Este Procedimento já foi Autorizado!"
         };
+        //NR 20180326
+        public static ErrorHandler ProcedimentoNotPossibleAuth = new ErrorHandler
+        {
+            eReasonCode = 606,
+            eMessage = "Neste estado não pode autorizar o processo!"
+        };
 
         public static ErrorHandler UnknownArea = new ErrorHandler
         {

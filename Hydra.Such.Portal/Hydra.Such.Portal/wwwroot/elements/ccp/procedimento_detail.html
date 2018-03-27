@@ -552,7 +552,37 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!--NR 20180326-->
+        <iron-ajax url="/ProcedimentosCcps/CBDevolverImobCA"
+                   last-response="{{ SuspendAutorizarImobilizado }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_suspendAutorizarImobilizado"
+                   on-response="_suspendAutorizarImobilizadoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/CBAutorizarImobCA"
+                   last-response="{{ ConfirmAutorizarImobilizado }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_confirmAutorizarImobilizado"
+                   on-response="_confirmAutorizarImobilizadoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/Confirm_18"
+                   last-response="{{ ConfirmAdjudicacaoNotificacao }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_confirmAdjudicacaoNotificacao"
+                   on-response="_confirmAdjudicacaoNotificacaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         
+
+
+
+
 
 
 
@@ -1697,6 +1727,7 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
+
                                             <!--<vaadin-date-picker value="{{data.fundamentoComprasDataChecklist}}" id="fundamentoComprasDataChecklist" name="fundamentoComprasDataChecklist" label="Data"></vaadin-date-picker>-->
                                             <vaadin-text-field value="{{data.fundamentoComprasDataChecklist}}" id="fundamentoComprasDataChecklist" name="fundamentoComprasDataChecklist" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
@@ -2298,10 +2329,12 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
+
                                             <!--<vaadin-date-picker value="{{data.dataAberturaCA8}}" id="dataAberturaCA8" name="dataAberturaCA8" label="Data" disabled="true"></vaadin-date-picker>-->
                                             <vaadin-text-field value="{{data.dataAberturaCA8}}" id="dataAberturaCA8" name="dataAberturaCA8" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
                                         <div class="col-sm-3">
+
                                             <!--<vaadin-date-picker value="{{data.caDataRatificacaoAbert}}" id="caDataRatificacaoAbert" name="caDataRatificacaoAbert" label="Data Ratificação" disabled="true"></vaadin-date-picker>-->
                                             <vaadin-text-field value="{{data.caDataRatificacaoAbert}}" id="caDataRatificacaoAbert" name="caDataRatificacaoAbert" label="Data Ratificação" disabled="true"> </vaadin-text-field>
                                         </div>
@@ -3877,9 +3910,6 @@
                     }
                 },
 
-
-                //  
-
                 _rejectAutorizarImobilizado: function () {
                     debugger;
                     var ajax_request = this.$.ajax_rejectAutorizarImobilizado;
@@ -3910,10 +3940,66 @@
                     }
                 },
 
+                //NR 20180326
+                _suspendAutorizarImobilizado: function () {
+                    debugger;
+                    var ajax_request = this.$.ajax_suspendAutorizarImobilizado;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
 
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a suspensão do processo?", ajax_request
+                    );
 
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
 
+                    this.$.ajax_suspendAutorizarImobilizado.body = JSON.stringify(this.data);
+                },
+                _suspendAutorizarImobilizadoResponse: function (e) {
+                    if (this.SuspendAutorizarImobilizado.eReasonCode == 0) {
+                        this._openToast("Procedimento " + this.data.no + " suspenso com sucesso!");
+                        setTimeout(
+                            function () {
+                            }, 3000);
 
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.SuspendAutorizarImobilizado.eMessage);
+                    }
+                },
+                _confirmAdjudicacaoNotificacao: function (e) {
+                    var ajax_request = this.$.ajax_confirmAdjudicacaoNotificacao;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma Validação?", ajax_request
+                    );
+
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_confirmAdjudicacaoNotificacao.body = JSON.stringify(this.data);
+                },
+                _confirmAdjudicacaoNotificacaoResponse: function (e) {
+                    if (this.ConfirmAdjudicacaoNotificacao.eReasonCode == 0) {
+                        this._openToast("Confirmada Validação do Procedimento " + this.data.no + " !");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.ConfirmAdjudicacaoNotificacao.eMessage);
+                    }
+                },
+
+                //  
 
 
 
