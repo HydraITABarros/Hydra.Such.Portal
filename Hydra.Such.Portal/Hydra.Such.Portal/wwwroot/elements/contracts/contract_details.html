@@ -104,18 +104,14 @@
         <iron-ajax url="/PopulateDropdowns/GetContractLineCodes" last-response="{{CBContractLineCodes}}" id="contractlinecodes_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{CBEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractLineCodes" last-response="{{CBContractLineCodesGrid}}" id="contractlinecodesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
         <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
         <iron-ajax url="/PopulateDropdowns/GetContractPaymentTerms" last-response="{{CBContractPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractTerminationTerms" last-response="{{CBContractTerminationTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractTerminationDeadlineNotice" last-response="{{LTerminationDeadlineNotice}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
         <iron-ajax url="/Contratos/GetContractNavData" last-response="{{dataNav}}" id="navData_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
-
 
         <!-- PROJECT CRUDS -->
         <iron-ajax url="/Contratos/GetContractDetails"
@@ -132,6 +128,14 @@
                    handle-as="json"
                    id="ajax_delete_contract"
                    on-response="_responseDeleteProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/GetContractLines"
+                   last-response="{{dataLines}}"
+                   method="post"
+                   handle-as="json"
+                   id="contractLines_databound_ajax"
+                   on-response="_clResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
         <!-- PROJECT Valitador -->
@@ -153,10 +157,9 @@
                    content-type="application/json"></iron-ajax>
 
 
-
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
-                <paper-button class="tablinks" on-tap="_archive" id="_archive" ><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
+                <paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>
             </div>
         </template>
 
@@ -856,36 +859,9 @@
                                 <!--</template>-->
                             </div>
                         </div>
-                    </div>
-                </iron-form>
-            </div>
-        </div>
-
-        <hr />
-
-        <!-- ############################ ############################ -->
-        <!-- ####### Contract Lines ##### ####### Contract Lines ##### -->
-        <!-- ############################ ############################-->
-
-        <iron-ajax url="/Contratos/GetContractLines"
-                   last-response="{{dataLines}}"
-                   method="post"
-                   handle-as="json"
-                   id="contractLines_databound_ajax"
-                   on-response="_clResponseProcessor"
-                   content-type="application/json"></iron-ajax>
-
-        <div class="row" style="display: {{ _showContractLines }};">
-            <div class="col-md-12 col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Linhas</div>
-                    <div class="panel-body">
-
-
-
-                        <paper-collapse-group>
+                        <paper-collapse-group style="display: {{ _showContractLines }};">
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
-                                <div class="row" style="display: {{ _showContractLinesForm }};">
+                                <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="{{_CLContractLineType}}" label="Tipo" disabled="{{ _lockFields }}" on-value-changed="_clContractLineTypeChange">
                                             <template>
@@ -897,7 +873,6 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-
                                     <div class="col-lg-2">
                                         <such-selectbox id="_CLCode" value="{{_CLCode}}" label="Código"
                                                         items="[[CBContractLineCodes]]"
@@ -909,15 +884,12 @@
                                                         on-value-changed="_clContractLineCodeChange">
                                         </such-selectbox>
                                     </div>
-
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_CLDescription}}" id="_CLDescription" name="_CLDescription" label="Descrição" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                     </div>
-
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_CLQuantity}}" id="_CLQuantity" name="_CLQuantity" on-value-changed="_ConvertDecimals" label="Quantidade" disabled="{{ _lockFields }}" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                                     </div>
-
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBMeasureUnits]]" id="_CLMeasureUnit" name="_CLMeasureUnit" item-value-path="id" item-label-path="value" value="{{_CLMeasureUnit}}" label="Cód. Unidade Medida" disabled="{{ _lockFields }}">
                                             <template>
@@ -929,21 +901,17 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
                                     </div>
                                 </div>
-
-                                <div class="row" style="display: {{ _showContractLinesForm }};">
+                                <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                                     </div>
-
                                     <div class="col-lg-2 alignPoga">
                                         <vaadin-checkbox checked="{{_CLBillable}}" disabled="{{ _lockFields }}">Fáturavel</vaadin-checkbox>
                                     </div>
-
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBRegions]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="{{_CLRegion}}" label="Cód. Região" disabled="{{ _lockFields }}">
                                             <template>
@@ -956,7 +924,6 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBFunctionalAreas]]" id="_CLFunctionalArea" name="_CLFunctionalArea" item-value-path="id" item-label-path="value" value="{{_CLFunctionalArea}}" label="Cód. Área Funcional" disabled="{{ _lockFields }}">
                                             <template>
@@ -969,7 +936,6 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBResponsabilityCenterCodes]]" id="_CLResponsabilityCenter" name="_CLResponsabilityCenter" item-value-path="id" item-label-path="value" value="{{_CLResponsabilityCenter}}" label="Cód. Centro Responsabilidade" disabled="{{ _lockFields }}">
                                             <template>
@@ -982,29 +948,23 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_CLFrequency}}" id="_CLFrequency" name="_CLFrequency" label="Periocidade" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                                     </div>
                                 </div>
-
-                                <div class="row" style="display: {{ _showContractLinesForm }};">
+                                <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_CLInterventionHours}}" id="_CLInterventionHours" name="_CLInterventionHours" label="Nº Horas Intervenção" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
                                     </div>
-
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
                                     </div>
-
                                     <div class="col-lg-2">
                                         <vaadin-date-picker label="Data Inicio Versão" id="_CLVersionStartDate" name="_CLVersionStartDate" value="{{_CLVersionStartDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                     </div>
-
                                     <div class="col-lg-2">
                                         <vaadin-date-picker label="Data Fim Versão" id="_CLVersionEndDate" name="_CLVersionEndDate" value="{{_CLVersionEndDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                     </div>
-
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBEmployees]]" id="_CLResponsible" name="_CLResponsible" item-value-path="id" item-label-path="value" value="{{_CLResponsible}}" label="Responsável" disabled="{{ _lockFields }}">
                                             <template>
@@ -1016,7 +976,6 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBServiceClients]]" id="_CLServiceClient" name="_CLServiceClient" item-value-path="id" item-label-path="value" value="{{_CLServiceClient}}" label="Cód. Serviço Cliente" disabled="{{ _lockFields }}">
                                             <template>
@@ -1029,8 +988,7 @@
                                         </vaadin-combo-box>
                                     </div>
                                 </div>
-
-                                <div class="row" style="display: {{ _showContractLinesForm }};">
+                                <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CLInvoiceGroup" name="_CLInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CLInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}">
                                             <template>
@@ -1042,19 +1000,16 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-
                                     <div class="col-lg-2 alignPoga">
                                         <vaadin-checkbox checked="{{_CLCreateContract}}" disabled="{{ _lockFields }}">Cria Contrato</vaadin-checkbox>
                                     </div>
-
                                     <div class="col-lg-2">
                                         <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                     </div>
                                 </div>
                             </paper-collapse-item>
                         </paper-collapse-group>
-
-                        <div class="row">
+                        <div class="row break_clear" style="display: {{ _showContractLines }};">
                             <vaadin-grid aria-label="ContractLines" id="grid_contractlines" name="grid_contractlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
                                 <vaadin-grid-column width="130px">
                                     <template class="header">
@@ -1423,27 +1378,19 @@
                                 </vaadin-grid-column>
                             </vaadin-grid>
                         </div>
-
-                        <div class="marginSpace">
+                        <div class="marginSpace" style="display: {{ _showContractLines }};">
                             <template is="dom-if" if="{{ _lockFields }}">
                                 <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                             </template>
                         </div>
                     </div>
-                </div>
+                </iron-form>
             </div>
         </div>
-
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
-
-
     </template>
-
-
     <script>
-
-
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-contractdetails',

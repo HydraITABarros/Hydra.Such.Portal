@@ -22,7 +22,6 @@
 <!--Datepicker com correção de bug que impede visualização nas grids -->
 <link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
 <!--<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">-->
-
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
@@ -166,7 +165,8 @@
         <iron-ajax url="/Contratos/ParseContractType" id="parseToContract_ajax" last-response="{{numeration}}" on-response="_responseParseToContract" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
-        <!-- PROJECT CRUDS -->
+        ">
+          <!-- PROJECT CRUDS -->
         <iron-ajax url="/Contratos/GetContractDetails"
                    last-response="{{data}}"
                    method="post"
@@ -181,6 +181,14 @@
                    handle-as="json"
                    id="ajax_delete_contract"
                    on-response="_responseDeleteProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/GetContractLines"
+                   last-response="{{dataLines}}"
+                   method="post"
+                   handle-as="json"
+                   id="contractLines_databound_ajax"
+                   on-response="_clResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
         <!-- PROJECT Valitador -->
@@ -200,7 +208,6 @@
                    id="address_ajax"
                    on-response="_addressResponseProcessor"
                    content-type="application/json"></iron-ajax>
-
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Proposta</paper-button>
@@ -590,30 +597,11 @@
                                 </template>
                             </div>
                         </div>
-                    </div>
-                </iron-form>
-            </div>
-        </div>
-        <hr />
 
-        <!-- Contract Lines -->
-        <iron-ajax url="/Contratos/GetContractLines"
-                   last-response="{{dataLines}}"
-                   method="post"
-                   handle-as="json"
-                   id="contractLines_databound_ajax"
-                   on-response="_clResponseProcessor"
-                   content-type="application/json"></iron-ajax>
-
-        <div class="row" style="display: {{ _showContractLines }};">
-            <div class="col-md-12 col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Linhas</div>
-                    <div class="panel-body">
-
-                        <paper-collapse-group>
+                        <!-- Contract Lines -->
+                        <paper-collapse-group style="display: {{ _showContractLines }};">
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
-                                <div class="row">
+                                <div class="row break_clear">
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBContractLineTypes]]" id="_CLContractLineType" name="_CLContractLineType" item-value-path="id" item-label-path="value" value="{{_CLContractLineType}}" label="Tipo" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineTypeChange">
                                             <template>
@@ -625,7 +613,6 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-
                                     <div class="col-lg-2">
 
                                         <such-selectbox id="_CLCode" value="{{_CLCode}}" label="Código"
@@ -637,17 +624,6 @@
                                                         disabled="{{ !_permissions.update }}"
                                                         on-value-changed="_clContractLineCodeChange">
                                         </such-selectbox>
-
-
-                                        <!--<vaadin-combo-box items="[[CBContractLineCodes]]" id="_CLCode" name="_CLCode" item-value-path="id" item-label-path="id" value="{{_CLCode}}" label="Código" disabled="{{ !_permissions.update }}" on-value-changed="_clContractLineCodeChange">
-                                        <template>
-                                            <paper-icon-item>
-                                                <paper-item-body two-line>
-                                                    <div>[[item.id]]</div>
-                                                </paper-item-body>
-                                            </paper-icon-item>
-                                        </template>
-                                    </vaadin-combo-box>-->
                                     </div>
 
                                     <div class="col-lg-2">
@@ -675,9 +651,7 @@
                                         <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals" />
                                     </div>
                                 </div>
-
-
-                                <div class="row">
+                                <div class="row break_clear">
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
                                     </div>
@@ -730,8 +704,7 @@
                                     </div>
 
                                 </div>
-
-                                <div class="row">
+                                <div class="row break_clear">
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_CLInterventionHours}}" id="_CLInterventionHours" name="_CLInterventionHours" label="Nº Horas Intervenção" disabled="{{ !_permissions.update }}" pattern="[0-9]+([\.][0-9]+)?" on-value-changed="_ConvertDecimals" />
                                     </div>
@@ -772,9 +745,7 @@
                                         </vaadin-combo-box>
                                     </div>
                                 </div>
-
-
-                                <div class="row">
+                                <div class="row break_clear">
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CLInvoiceGroup" name="_CLInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CLInvoiceGroup}}" label="Grupo Fatura" disabled="{{ !_permissions.update }}">
                                             <template>
@@ -795,10 +766,9 @@
                                         <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                     </div>
                                 </div>
-
                             </paper-collapse-item>
                         </paper-collapse-group>
-                        <div class="row">
+                        <div class="row break_clear" style="display: {{ _showContractLines }};">
                             <vaadin-grid aria-label="ContractLines" id="grid_contractlines" name="grid_contractlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
                                 <vaadin-grid-column width="130px">
                                     <template class="header">
@@ -838,10 +808,10 @@
                                                         </tr>
                                                     </table>
                                                     <!--<paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.id]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>-->
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.id]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>-->
                                                 </template>
                                             </vaadin-combo-box>
                                         </template>
@@ -1167,32 +1137,26 @@
                                             <template is="dom-if" if="{{ _permissions.delete }}">
                                                 <paper-button class="btnRemove" raised disabled="{{ !_permissions.delete }}" on-tap="_deleteContractLine">Eliminar</paper-button>
 
-                                                <!--<paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>-->
+                                                <paper-button class="btnRemove" raised on-tap="_deleteContractLine">Eliminar</paper-button>
                                             </template>
                                         </center>
                                     </template>
                                 </vaadin-grid-column>
                             </vaadin-grid>
                         </div>
-                        <div class="marginSpace">
+                        <div class="marginSpace" style="display: {{ _showContractLines }};">
                             <template is="dom-if" if="{{ _permissions.update }}">
                                 <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                             </template>
                         </div>
                     </div>
-                </div>
+                </iron-form>
             </div>
         </div>
-
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
-
     </template>
-
-
     <script>
-
-
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-oportunitydetails',
@@ -1480,7 +1444,7 @@
                 _clientChanged: function (e) {
                     this.$.shippingAddresses_ajax.body = JSON.stringify(e.detail.value);
                     this.$.shippingAddresses_ajax.generateRequest();
-                    
+
                     //this.$.contacts_ajax.body = JSON.stringify(e.detail.value);
                     //this.$.contacts_ajax.generateRequest();
 
