@@ -157,21 +157,6 @@
                 --datetime-color: #eeeeee;
             }
 
-            paper-collapse-item {
-                --paper-item: {
-                padding: 0 0;
-            };
-                --paper-collapse-item-header: {
-                 padding: 0 15px;
-                 color: #333;
-                 background-color: #f5f5f5;
-                 border-bottom: solid #ddd 1px;
-                 border-top-left-radius: 3px;
-                 border-top-right-radius: 3px;
-
-             };
-            }
-
             .panel-body {
                 padding-top: 0px !important;
             }
@@ -188,1140 +173,1066 @@
                     border-bottom: solid #ddd 1px;
                     border-top-left-radius: 3px;
                     border-top-right-radius: 3px;
-
                 };
             }
         </style>
-        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
-            <paper-tab>Geral</paper-tab>
-            <paper-tab>Classificação</paper-tab>
-            <paper-tab>Observações</paper-tab>
-            <paper-tab>Confeção</paper-tab>
-            <paper-tab>Alergénios</paper-tab>
-            <paper-tab hidden="{{ _NotCreateOnly }}">Imagem</paper-tab>
-        </paper-tabs>
-        <iron-pages selected="{{selected}}">
-            <!--Geral-->
-            <div>
-                <div class="row break_clear">
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{RecTecPlatValue}}" maxlength="20" id="plateNoid" name="plateNoName" label="Nº" disabled> </vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{recTecNameValue}}" maxlength="20" id="recordTechnicalNameid" name="recTecName" label="Nome Ficha Técnica"> </vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <such-selectbox id="piCodeMeasurementUnit" value="{{CodMeasureUnitValue}}" label="Cód. Unidade Medida"
-                                        items="[[CBOMeasureUnitheader]]"
-                                        text-path="value"
-                                        value-path="id"
-                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-3">
-                        <such-selectbox id="_CBLocalizations" value="{{LocalizationsValue}}" label="Cod. Localização"
-                                        items="[[CBLocationsheader]]"
-                                        text-path="value"
-                                        value-path="id"
-                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                        </such-selectbox>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{TPreparationValue}}" on-value-changed="_ConvertDecimals" maxlength="20" id="TimePreparationid" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="TimePreparationName" label="Tempo Preparação">  <div slot="suffix">min.</div></vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <such-selectbox id="_CookingTechnique" value="{{CookingTechniqueValue}}" label="Técnica Culinária"
-                                        items="[[CBOCookingTechnique]]"
-                                        text-path="value"
-                                        value-path="id"
-                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{GroupValue}}" maxlength="20" id="Groupid" name="GroupName" label="Grupo"> </vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{EpochValue}}" maxlength="20" id="Epochid" name="EpochName" label="Época"> </vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{DosesNoValue}}" maxlength="20" on-value-changed="_ConvertDecimals" id="DosesNoId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="DosesNoName" label="Número de doses"> </vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{PreparTempValue}}" maxlength="20" on-value-changed="_ConvertDecimals" id="PreparationTemperatureId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="PreparationTemperatureName" label="Temperatura Preparação"> <div slot="suffix">°C</div> </vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{FinalTempConfectValue}}" maxlength="20" on-value-changed="_ConvertDecimals" id="FinalTemperatureConfectionId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="FinalTemperatureConfectionName" label="Temperatura final Confeção"><div slot="suffix">°C</div> </vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{ServeTempValue}}" maxlength="20" on-value-changed="_ConvertDecimals" id="ServeTemperatureId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="ServeTemperatureName" label="Temperatura a Servir"><div slot="suffix">°C</div> </vaadin-text-field>
-                    </div>
-                </div>
-            </div>
-            <!--Classificação-->
-            <div>
-                <div class="row break_clear">
-                    <div class="col-lg-3">
-                        <such-selectbox id="_ClassFilesTec1" value="{{ClassFt1Value}}" label="Class.FT.1"
-                                        items="[[CboClassificationFilesTechniques]]"
-                                        text-path="value"
-                                        value-path="id"
-                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-3">
-                        <such-selectbox id="_ClassFilesTec2" value="{{ClassFt2Value}}" label="Class.FT.2"
-                                        items="[[CboClassificationFilesTechniques]]"
-                                        text-path="value"
-                                        value-path="id"
-                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                        </such-selectbox>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{ClassFt3Value}}" maxlength="20" id="ClassFt3id" name="ClassFt3Name" label="Class.FT.3"> </vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{ClassFt4Value}}" maxlength="20" id="ClassFt4id" name="ClassFt4Name" label="Class.FT.4"> </vaadin-text-field>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{ClassFt5Value}}" maxlength="20" id="ClassFt5id" name="ClassFt5Name" label="Class.FT.5"> </vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{ClassFt6Value}}" maxlength="20" id="ClassFt6id" name="ClassFt6Name" label="Class.FT.6"> </vaadin-text-field>
-                    </div>
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{ClassFt7Value}}" maxlength="20" id="ClassFt7id" name="ClassFt7Name" label="Class.FT.7"> </vaadin-text-field>
-                    </div>
-                </div>
-            </div>
-            <!--Observações-->
-            <div>
-                <div class="row break_clear">
-                    <div class="col-lg-12">
-                        <such-textarea value="{{NotesValue}}" rows="6" id="Notes" name="Notes" label="Observações"> </such-textarea>
-                    </div>
-                </div>
-            </div>
-            <!--Confeção-->
-            <div>
-                <paper-collapse-group>
-                    <paper-collapse-item class="panel-heading" header="Criar" closed>
-                        <div class="row break_clear" hidden="{{ _NotCreateOnly }}">
-                            <div class="col-lg-4">
-                                <such-selectbox id="_CboAction" value="" label="Ação"
-                                                items="[[CboAction]]"
-                                                text-path="value"
-                                                value-path="id"
-                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                                </such-selectbox>
-                            </div>
-                            <div class="col-lg-4">
-                                <vaadin-text-field value="{{recTecNameValue}}" maxlength="20" id="descconfid" name="decconfName" label="Descrição"> </vaadin-text-field>
-                            </div>
-                            <div class="col-lg-4">
-                                <vaadin-text-field id="OrderNoid" name="OrderName" pattern="^[0-9]+$" label="No. Ordem" class="alignRight" value=""></vaadin-text-field>
-                            </div>
-                            <div class="col-lg-12  " hidden="{{ !_permissionsVal.create }}">
-                                <paper-button class="btnSave" on-tap="_addConfection"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                            </div>
-                        </div>
-                    </paper-collapse-item>
-                </paper-collapse-group>
-
-                <div class="row break_clear">
-                    <div class="col-lg-12">
-                        <vaadin-grid id="gridConfection_request" aria-label="ProfileModelsTabel" items="[[GridProceduresConfection]]" class="grid" active-item="{{_SelectedConfectionLine}}">
-                            <vaadin-grid-column width="160px" resizable hidden>
-                                <template class="header">
-                                    <vaadin-grid-sorter path="TechnicalSheetNo">No. Ficha Técnica </vaadin-grid-sorter>
-                                    <vaadin-grid-filter path="TechnicalSheetNo" />
-                                </template>
-                                <template>
-                                    {{item.TechnicalSheetNo}}
-                                </template>
-                            </vaadin-grid-column>
-                            <vaadin-grid-column width="200px" resizable>
-                                <template class="header">
-                                    <vaadin-grid-sorter path="actionNo">Ação</vaadin-grid-sorter>
-                                    <vaadin-grid-filter path="actionNo" />
-                                </template>
-                                <template>
-                                    <template is="dom-if" if="{{ item.selected }}">
-                                        <vaadin-combo-box items="[[CboActionGrid]]" id="CboActionGridid" item-value-path="id" item-label-path="value" value="{{item.actionNo}}">
-                                            <template>
-                                                <table width="200px">
-                                                    <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </template>
-                                    <template is="dom-if" if="{{ !item.selected }}">
-                                        [[_parseActionCode(item.actionNo)]]
-                                    </template>
-                                </template>
-                            </vaadin-grid-column>
-                            <vaadin-grid-column width="200px" resizable>
-                                <template class="header">
-                                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-                                    <vaadin-grid-filter path="description" />
-                                </template>
-                                <template>
-                                    <template is="dom-if" if="{{ item.selected }}">
-                                        <vaadin-text-field value="{{item.description}}" maxlength="20" id="Griddescconfid" name="DescriptionName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                    </template>
-                                    <template is="dom-if" if="{{ !item.selected }}">
-                                        {{item.description}}
-                                    </template>
-                                </template>
-                            </vaadin-grid-column>
-                            <vaadin-grid-column width="200px" resizable>
-                                <template class="header">
-                                    <vaadin-grid-sorter path="orderNo">No. Ordem</vaadin-grid-sorter>
-                                    <vaadin-grid-filter path="orderNo" />
-                                </template>
-                                <template>
-                                    <template is="dom-if" if="{{ item.selected }}">
-                                        <vaadin-text-field id="GridOrderNoid" name="OrderName" pattern="^[0-9]+$" class="alignRight" value="{{item.orderNo}}"></vaadin-text-field>
-                                    </template>
-                                    <template is="dom-if" if="{{ !item.selected }}">
-                                        {{item.orderNo}}
-                                    </template>
-                                </template>
-                            </vaadin-grid-column>
-                            <vaadin-grid-column with="100px" hidden="{{ !_permissionsVal.delete }}">
-                                <template class="header">
-                                </template>
-                                <template>
-                                    <center>
-                                        <paper-button class="btnRemove" raised on-tap="_deleteConf">Eliminar</paper-button>
-                                    </center>
-                                </template>
-                            </vaadin-grid-column>
-                        </vaadin-grid>
-                    </div>
-                </div>
-                <div class="row break_clear">
-                    <div class="col-lg-12" hidden="{{ !_permissionsVal.update }}">
-                        <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_updateconfLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_confcancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
-                    </div>
-                </div>
-            </div>
-            <!--Alergénios-->
-            <div>
-                <div>
-                    <div class="row break_clear">
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{WithGlutenChecked}}" id="WithGlutenId">Cereais que contêm glúten</vaadin-checkbox>
-                        </div>
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{BasedCrustaceansChecked}}" id="BasedCrustaceansId">Prod. à base de crustáceos</vaadin-checkbox>
-                        </div>
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{BasedEggsChecked}}" id="BasedEggsId">Prod. à base de ovos</vaadin-checkbox>
-                        </div>
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{BasedFishChecked}}" id="BasedFishId">Prod. à base de peixes</vaadin-checkbox>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{BasedPeanutsChecked}}" id="BasedPeanutsId">Prod. à base de amendoins</vaadin-checkbox>
-                        </div>
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{BasedSoyChecked}}" id="BasedSoyId">Prod. à base de soja</vaadin-checkbox>
-                        </div>
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{BasedMilkChecked}}" id="BasedMilkId">Prod. à base de leite</vaadin-checkbox>
-                        </div>
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{BasedFruitShardShellChecked}}" id="BasedFruitShardShellId">Prod. à base de frutos de casca rija</vaadin-checkbox>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{BasedCeleryChecked}}" id="BasedCeleryId">Prod. à base de aipo</vaadin-checkbox>
-                        </div>
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{BasedMustardChecked}}" id="BasedMustardId">Prod. à base de mostarda</vaadin-checkbox>
-                        </div>
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{BasedSesameSeedsChecked}}" id="BasedSesameSeedsId">Prod. à base de sementes de sésamo</vaadin-checkbox>
-                        </div>
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{BasedLupineChecked}}" id="BasedLupineId">Prod. à base de tremoço</vaadin-checkbox>
-                        </div>
-                    </div>
-                    <div class="row break_clear">
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{BasedMolluscsChecked}}" id="BasedMolluscsId">Prod. à base de moluscos</vaadin-checkbox>
-                        </div>
-                        <div class="col-lg-5 alignPoga">
-                            <vaadin-checkbox checked="{{BasedSulfSulphChecked}}" id="BasedSulfurDioxideAndSulphitesId">Dióxido de enxofre e sulfitos em concentração superior a 10 mg/kg ou 10 mg/l</vaadin-checkbox>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--Imagem-->
-            <div hidden="{{ _NotCreateOnly }}">
-                <div class="row">
-                    <div class="col-md-12 col-lg-12">
-                        <img class="roundrect" id="my_image" src="" alt="" width="300" height="200">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12 col-lg-12">
-
-                        <form method="post" enctype="multipart/form-data">
-                            <input type="file" id="files" name="files" />
-                            <button class="btn btn-primary start" type="button" id="upload" value="Upload Selected Files" on-tap="_Upload">
-                                <i class="glyphicon glyphicon-upload"></i>
-                                <span>Start upload</span>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </iron-pages>
-        <div class="row  break_clear" hidden="{{ !_NotCreateOnly }}">
-            <div class="col-lg-2 alignPoga" hidden="{{ !_permissionsVal.create }}">
-                <paper-button class="btnSave" on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-            </div>
-        </div>
-        <div class="row break_clear" hidden="{{ _NotCreateOnly }}">
-            <div class="col-lg-12" hidden="{{ !_permissionsVal.update }}">
-                <paper-button raised id="btnLocalMarketValidation" style="width: 250px !important;" on-tap="_update" hidden="{{ !_permissionsVal.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar Cabeçalho</paper-button>
-            </div>
-        </div>
-        <br />
-        <div id="PreRequiLinesPanel" class="panel panel-default" hidden="{{ _NotCreateOnly }}">
-            <div class="row">
-                <div class="col-md-12 col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">Linhas Fichas Técnicas</div>
-                        <div class="panel-body">
-
-                            <paper-collapse-group>
-                                <paper-collapse-item class="panel-heading" header="Linhas" closed>
-                                    <div class="row">
-                                        @*<div class="col-lg-3">
-                        <vaadin-combo-box items="[[CbotLinesRecTecPlatesType]]" id="LineTypeid" on-value-changed="_LineTypeChange" item-value-path="id" item-label-path="value" value="{{LineType}}" label="Tipo">
-                            <template>
-                                <table width="200px">
-                                    <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>*@
-                                        @*<div class="col-lg-3">
-                        <vaadin-combo-box items="[[CboCode]]" id="Codeid" on-value-changed="_CodeChange" item-value-path="id" item-label-path="id" value="{{LineCode}}" label="Código">
-                            <template>
-                                <table width="200px">
-                                    <tr>
-                                        <td width="40%">[[item.id]]</td>
-                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </div>*@
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineDescription}}" maxlength="20" id="Descriptionid" name="DescriptionName" label="Descrição"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Quantityid" name="QuantityName" label="Quantidade"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <such-selectbox id="UnitMeasureCodeid" value="{{LineMeasureUnit}}" label="Cód. Unidade Medida"
-                                                            items="[[CBOMeasureUnit]]"
-                                                            text-path="value"
-                                                            value-path="id"
-                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                                            </such-selectbox>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineQuantityOfProduction}}" on-value-changed="_ConvertDecimals" maxlength="20" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="QuantityOfProductionid" name="QuantityOfProductionName" label="Quantidade de Produto"> </vaadin-text-field>
-                                        </div>
+        
+        <div class="row break_frm">
+            <div class="col-md-12 col-md-12 col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Cabeçalho</div>
+                    <div class="panel-body">
+                        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                            <paper-tab>Geral</paper-tab>
+                            <paper-tab>Classificação</paper-tab>
+                            <paper-tab>Observações</paper-tab>
+                            <paper-tab>Confeção</paper-tab>
+                            <paper-tab>Alergénios</paper-tab>
+                            <paper-tab hidden="{{ _NotCreateOnly }}">Imagem</paper-tab>
+                        </paper-tabs>
+                        <iron-pages selected="{{selected}}">
+                            <!--Geral-->
+                            <div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{RecTecPlatValue}}" maxlength="20" id="plateNoid" name="plateNoName" label="Nº" disabled> </vaadin-text-field>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineEnergetic}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValueid" name="EnergeticValueName" label="Valor Energético"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineProteins}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Proteinsid" name="ProteinsName" label="Proteínas"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineHydratesOfCarbont}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="HydratesOfCarbontid" name="HydratesOfCarbontName" label="Hidratos de Carbono"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineLipids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Lipidsid" name="LipidsName" label="Lípidos"> </vaadin-text-field>
-                                        </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{recTecNameValue}}" maxlength="20" id="recordTechnicalNameid" name="recTecName" label="Nome Ficha Técnica"> </vaadin-text-field>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineFibers}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Fibersid" name="FibersName" label="Fibras"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ExpectedCostPriceid" name="ExpectedCostPriceName" label="Preço Custo Esperado"> <div slot="suffix">€</div></vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CurrentCostPriceid" name="CurrentCostPriceName" label="Preço Custo Atual"> <div slot="suffix">€</div></vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineTimeExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeExpectedCostPriceid" name="TimeExpectedCostPriceName" label="TPreço Custo Esperado"> </vaadin-text-field>
-                                        </div>
+                                    <div class="col-lg-3">
+                                        <such-selectbox id="piCodeMeasurementUnit" value="{{CodMeasureUnitValue}}" label="Cód. Unidade Medida"
+                                                        items="[[CBOMeasureUnitheader]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                        </such-selectbox>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineTimeCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeCurrentCostPriceid" name="TimeCurrentCostPriceName" label="TPreço Custo Atual"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <such-selectbox id="LocalizationCodeid" value="{{LineLocalizationCode}}" label="Cod. Localização"
-                                                            items="[[CBLocations]]"
-                                                            text-path="value"
-                                                            value-path="id"
-                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                                            </such-selectbox>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineProteinsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ProteinsByQuantityid" name="ProteinsByQuantityName" label="Proteínas por Quantidade"> </vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineGlicansByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GlicansByQuantityid" name="GlicansByQuantityName" label="Glícidos por Quantidade"> </vaadin-text-field>
-                                        </div>
+                                    <div class="col-lg-3">
+                                        <such-selectbox id="_CBLocalizations" value="{{LocalizationsValue}}" label="Cod. Localização"
+                                                        items="[[CBLocationsheader]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                        </such-selectbox>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineLipidsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="LipidsByQuantityid" name="LipidsByQuantityName" label="Lípidos por Quantidade"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineFibersByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="FibersByQuantityid" name="FibersByQuantityName" label="Fibras por Quantidade"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineEnergeticValue2}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValue2id" name="EnergeticValue2Name" label="Valor Energético 2"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineVitaminA}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAid" name="VitaminAName" label="Vitamina A"> </vaadin-text-field>
-                                        </div>
+                                </div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{TPreparationValue}}" on-value-changed="_ConvertDecimals" maxlength="20" id="TimePreparationid" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="TimePreparationName" label="Tempo Preparação">  <div slot="suffix">min.</div></vaadin-text-field>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineVitaminD}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDid" name="VitaminDName" label="Vitamina D"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineCholesterol}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Cholesterolid" name="CholesterolName" label="Colesterol"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineSodium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sodiumid" name="SodiumName" label="Sódio"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LinePotassium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Potassiumid" name="PotassiumName" label="Potássio"> </vaadin-text-field>
-                                        </div>
+                                    <div class="col-lg-3">
+                                        <such-selectbox id="_CookingTechnique" value="{{CookingTechniqueValue}}" label="Técnica Culinária"
+                                                        items="[[CBOCookingTechnique]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                        </such-selectbox>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineCalcium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Calciumid" name="CalciumName" label="Cálcio"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineIron}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Ironid" name="IronName" label="Ferro"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineEdivel}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Edivelid" name="EdivelName" label="Edivel"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineVitaminAByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAByQuantityid" name="VitaminAByQuantityName" label="Vitamina A por Quantidade"> </vaadin-text-field>
-                                        </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{GroupValue}}" maxlength="20" id="Groupid" name="GroupName" label="Grupo"> </vaadin-text-field>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineVitaminDByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDByQuantityid" name="VitaminDByQuantityName" label="Vitamina D por Quantidade"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineCholesterolByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CholesterolByQuantityid" name="CholesterolByQuantityName" label="Colesterol por Quantidade"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineSodiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SodiumByQuantityid" name="SodiumByQuantityName" label="Sódio por Quantidade"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LinePotassiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="PotassiumByQuantityid" name="PotassiumByQuantityName" label="Potásio por Quantidade"> </vaadin-text-field>
-                                        </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{EpochValue}}" maxlength="20" id="Epochid" name="EpochName" label="Época"> </vaadin-text-field>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineIronByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="IronByQuantityid" name="IronByQuantityName" label="Ferro por Quantidade"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineCalciumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CalciumByQuantityid" name="CalciumByQuantityName" label="Cálcio por Quantidade"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineSaturatedFattyAcids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SaturatedFattyAcidsid" name="SaturatedFattyAcidsName" label="Ácidos Gordos Saturados"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineSugarcane}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sugarcaneid" name="TSugarcaneName" label="Açucares"> </vaadin-text-field>
-                                        </div>
+                                </div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{DosesNoValue}}" maxlength="20" on-value-changed="_ConvertDecimals" id="DosesNoId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="DosesNoName" label="Número de doses"> </vaadin-text-field>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{Linesalt}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="saltid" name="saltName" label="Sal"> </vaadin-text-field>
-                                        </div>
-                                        <div class="col-lg-3">
-                                            <vaadin-text-field value="{{LineQuantityPlates}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="QuantityPlatesid" name="QuantityPlatesName" label="Quantidade Prato"> </vaadin-text-field>
-                                        </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{PreparTempValue}}" maxlength="20" on-value-changed="_ConvertDecimals" id="PreparationTemperatureId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="PreparationTemperatureName" label="Temperatura Preparação"> <div slot="suffix">°C</div> </vaadin-text-field>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <such-textarea rows="5" value="{{LinePreparation}}" id="Preparationid" name="PreparationName" label="Preparação"> </such-textarea>
-                                        </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{FinalTempConfectValue}}" maxlength="20" on-value-changed="_ConvertDecimals" id="FinalTemperatureConfectionId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="FinalTemperatureConfectionName" label="Temperatura final Confeção"><div slot="suffix">°C</div> </vaadin-text-field>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-2 alignPoga" hidden="{{ !_permissionsVal.create }}">
-                                            <paper-button class="btnSave" on-tap="_addlines"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                        </div>
-                                    </div><br />
-                                </paper-collapse-item>
-                            </paper-collapse-group>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <vaadin-grid id="GridRecTecOfPlatesLines" aria-label="ProfileModelsTabel" items="[[data]]" class="grid" active-item="{{_SelectedLine}}">
-                                        @*<vaadin-grid-column width="160px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="type">Tipo </vaadin-grid-sorter>
-                            <vaadin-grid-filter path="type" />
-                        </template>
-                        <template>
-                            <template is="dom-if" if="{{ item.selected }}">
-                                <vaadin-combo-box items="[[CbotLinesRecTecPlatesType]]" id="LineTypeid" item-value-path="id" item-label-path="value" value="{{item.type}}">
-                                    <template>
-                                        <table width="200px">
-                                            <tr>
-                                                <td width="40%">[[item.id]]</td>
-                                                <td width="60%"> <b>[[item.value]]</b></td>
-                                            </tr>
-                                        </table>
-                                    </template>
-                                </vaadin-combo-box>
-                            </template>
-                            <template is="dom-if" if="{{ !item.selected }}">
-                                {{item.type}}
-                            </template>
-                        </template>
-                    </vaadin-grid-column>*@
-                                        @*<vaadin-grid-column width="160px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="code">Código </vaadin-grid-sorter>
-                            <vaadin-grid-filter path="code" />
-                        </template>
-                        <template>
-                            <template is="dom-if" if="{{ item.selected }}">
-                                <vaadin-combo-box items="[[CboCode]]" id="Codeid" item-value-path="id" item-label-path="id" value="{{item.code}}">
-                                    <template>
-                                        <table width="200px">
-                                            <tr>
-                                                <td width="40%">[[item.id]]</td>
-                                                <td width="60%"> <b>[[item.value]]</b></td>
-                                            </tr>
-                                        </table>
-                                    </template>
-                                </vaadin-combo-box>
-                            </template>
-                            <template is="dom-if" if="{{ !item.selected }}">
-                                {{item.code}}
-                            </template>
-                        </template>
-                    </vaadin-grid-column>*@
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="description">Descrição </vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="description" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.description}}" maxlength="20" id="Descriptionid" name="DescriptionName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.description}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="quantity">Quantidade </vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="quantity" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.quantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridQuantityid" name="QuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.quantity}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="unitMeasureCode">Cód. Unidade Medida </vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="unitMeasureCode" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-combo-box id="UnitMeasureCodeid" name="UnitMeasureCodeid" items="[[CBOMeasureUnit]]" item-value-path="id" value="{{item.unitMeasureCode}}" item-label-path="value" disabled="{{ !_permissionsVal.update }}">
-                                                        <template>
-                                                            <table width="200px">
-                                                                <tr>
-                                                                    <td width="40%">[[item.id]]</td>
-                                                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                                                </tr>
-                                                            </table>
-                                                        </template>
-                                                    </vaadin-combo-box>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    [[_parseMeasure(item.unitMeasureCode)]]
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="quantityOfProduction">Quantidade de Produto </vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="quantityOfProduction" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.quantityOfProduction}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridQuantityOfProductionid" name="QuantityOfProductionName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.quantityOfProduction}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="energeticValue">Valor Energético </vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="energeticValue" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.energeticValue}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridEnergeticValueid" name="EnergeticValueName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.energeticValue}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="proteins">Proteínas </vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="proteins" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.proteins}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridProteinsid" name="ProteinsName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.proteins}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="hydratesOfCarbon">Hidratos de Carbono </vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="hydratesOfCarbon" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.hydratesOfCarbon}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridHydratesOfCarbontid" name="HydratesOfCarbontName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.hydratesOfCarbon}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="lipids">Lípidos</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="lipids" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.lipids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridLipidsid" name="LipidsName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.lipids}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="fibers">Fibras</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="fibers" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.fibers}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridFibersid" name="FibersName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.fibers}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="expectedCostPrice">Preço Custo Esperado</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="expectedCostPrice" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.expectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridExpectedCostPriceid" name="ExpectedCostPriceName" disabled="{{ !_permissionsVal.update }}"> <div slot="suffix">€</div></vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.expectedCostPrice}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="currentCostPrice">Preço Custo Atual</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="currentCostPrice" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.currentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridCurrentCostPriceid" name="CurrentCostPriceName" disabled="{{ !_permissionsVal.update }}"> <div slot="suffix">€</div></vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.currentCostPrice}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="timeExpectedCostPrice">TPreço Custo Esperado</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="timeExpectedCostPrice" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.timeExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridTimeExpectedCostPriceid" name="TimeExpectedCostPriceName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.timeExpectedCostPrice}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="timeCurrentCostPrice">TPreço Custo Atual</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="timeCurrentCostPrice" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.timeCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridTimeCurrentCostPriceid" name="TimeCurrentCostPriceName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.timeCurrentCostPrice}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="localizationCode">Cod. Localização</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="localizationCode" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-combo-box items="[[CBLocations]]" id="LocalizationCodeid" item-value-path="id" item-label-path="value" value="{{item.localizationCode}}" disabled="{{ !_permissionsVal.update }}">
-                                                        <template>
-                                                            <table width="200px">
-                                                                <tr>
-                                                                    <td width="40%">[[item.id]]</td>
-                                                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                                                </tr>
-                                                            </table>
-                                                        </template>
-                                                    </vaadin-combo-box>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    [[_parselocalization(item.localizationCode)]]
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="proteinsByQuantity">Proteínas por Quantidade</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="proteinsByQuantity" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.proteinsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridProteinsByQuantityid" name="ProteinsByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.proteinsByQuantity}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="glicansByQuantity">Glícidos por Quantidade</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="glicansByQuantity" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.glicansByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridGlicansByQuantityid" name="GlicansByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.glicansByQuantity}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="lipidsByQuantity">Lípidos por Quantidade</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="lipidsByQuantity" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.lipidsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridLipidsByQuantityid" name="LipidsByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.lipidsByQuantity}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="fibersByQuantity">Fibras por Quantidade</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="fibersByQuantity" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.fibersByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridFibersByQuantityid" name="FibersByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.fibersByQuantity}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="energeticValue2">Valor Energético 2</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="energeticValue2" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.energeticValue2}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridEnergeticValue2id" name="EnergeticValue2Name" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.energeticValue2}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="vitaminA">Vitamina A</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="vitaminA" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.vitaminA}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridVitaminAid" name="VitaminAName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.vitaminA}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="vitaminD">Vitamina D</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="vitaminD" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.vitaminD}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridVitaminDid" name="VitaminDName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.vitaminD}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="cholesterol">Colesterol</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="cholesterol" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.cholesterol}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridCholesterolid" name="CholesterolName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.cholesterol}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="sodium">Sódio</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="sodium" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.sodium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridSodiumid" name="SodiumName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.sodium}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="potassium">Potássio</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="potassium" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.potassium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridPotassiumid" name="PotassiumName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.potassium}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="calcium">Cálcio</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="calcium" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.calcium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridCalciumid" name="CalciumName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.calcium}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="iron">Ferro</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="iron" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.iron}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridIronid" name="IronName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.iron}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="edivel">Edivel</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="edivel" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.edivel}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridEdivelid" name="EdivelName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.edivel}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="vitaminAByQuantity">Vitamina A por Quantidade</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="vitaminAByQuantity" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.vitaminAByQuantity}}" on-value-changed="_ConvertDecimals" maxlength="20" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridVitaminAByQuantityid" name="VitaminAByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.vitaminAByQuantity}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="vitaminDByQuantity">Vitamina D por Quantidade</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="vitaminDByQuantity" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.vitaminDByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridVitaminDByQuantityid" name="VitaminDByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.vitaminDByQuantity}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="cholesterolByQuantity">Colesterol por Quantidade</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="cholesterolByQuantity" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.cholesterolByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridCholesterolByQuantityid" name="CholesterolByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.cholesterolByQuantity}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="sodiumByQuantity">Sódio por Quantidade</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="sodiumByQuantity" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.sodiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridSodiumByQuantityid" name="SodiumByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.sodiumByQuantity}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="potassiumByQuantity">Potásio por Quantidade</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="potassiumByQuantity" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.potassiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridPotassiumByQuantityid" name="PotassiumByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.potassiumByQuantity}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="ironByQuantity">Ferro por Quantidade</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="ironByQuantity" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.ironByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridIronByQuantityid" name="IronByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.ironByQuantity}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="calciumByQuantity">Cálcio por Quantidade</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="calciumByQuantity" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.calciumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridCalciumByQuantityid" name="CalciumByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.calciumByQuantity}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="saturatedFattyAcids">Ácidos Gordos Saturados</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="saturatedFattyAcids" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.saturatedFattyAcids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridSaturatedFattyAcidsid" name="SaturatedFattyAcidsName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.saturatedFattyAcids}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="sugarCane">Açucares</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="sugarCane" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.sugarCane}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridSugarcaneid" name="TSugarcaneName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.sugarCane}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="salt">Sal</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="salt" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.salt}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Gridsaltid" name="saltName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.salt}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="quantityPlates">Quantidade Prato</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="quantityPlates" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.quantityPlates}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridQuantityPlatesid" name="QuantityPlatesName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.quantityPlates}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column width="160px" resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="preparation">Preparação</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="preparation" />
-                                            </template>
-                                            <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <such-textarea rows="5" value="{{item.preparation}}" id="Preparationid" name="PreparationName" disabled="{{ !_permissionsVal.update }}"> </such-textarea>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.preparation}}
-                                                </template>
-                                            </template>
-                                        </vaadin-grid-column>
-                                        <vaadin-grid-column with="10%" hidden="{{ !_permissionsVal.delete }}">
-                                            <template class="header">
-                                            </template>
-                                            <template>
-                                                <center>
-                                                    <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
-                                                </center>
-                                            </template>
-                                        </vaadin-grid-column>
-                                    </vaadin-grid>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{ServeTempValue}}" maxlength="20" on-value-changed="_ConvertDecimals" id="ServeTemperatureId" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" name="ServeTemperatureName" label="Temperatura a Servir"><div slot="suffix">°C</div> </vaadin-text-field>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="marginSpace" hidden="{{ !_permissionsVal.update }}">
-                                <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_updateLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+                            <!--Classificação-->
+                            <div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-3">
+                                        <such-selectbox id="_ClassFilesTec1" value="{{ClassFt1Value}}" label="Class.FT.1"
+                                                        items="[[CboClassificationFilesTechniques]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                        </such-selectbox>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <such-selectbox id="_ClassFilesTec2" value="{{ClassFt2Value}}" label="Class.FT.2"
+                                                        items="[[CboClassificationFilesTechniques]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                        </such-selectbox>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{ClassFt3Value}}" maxlength="20" id="ClassFt3id" name="ClassFt3Name" label="Class.FT.3"> </vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{ClassFt4Value}}" maxlength="20" id="ClassFt4id" name="ClassFt4Name" label="Class.FT.4"> </vaadin-text-field>
+                                    </div>
+                                </div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{ClassFt5Value}}" maxlength="20" id="ClassFt5id" name="ClassFt5Name" label="Class.FT.5"> </vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{ClassFt6Value}}" maxlength="20" id="ClassFt6id" name="ClassFt6Name" label="Class.FT.6"> </vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <vaadin-text-field value="{{ClassFt7Value}}" maxlength="20" id="ClassFt7id" name="ClassFt7Name" label="Class.FT.7"> </vaadin-text-field>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Observações-->
+                            <div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-12">
+                                        <such-textarea value="{{NotesValue}}" rows="6" id="Notes" name="Notes" label="Observações"> </such-textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Confeção-->
+                            <div>
+                                <paper-collapse-group>
+                                    <paper-collapse-item class="panel-heading" header="Criar" closed>
+                                        <div class="row break_clear" hidden="{{ _NotCreateOnly }}">
+                                            <div class="col-lg-4">
+                                                <such-selectbox id="_CboAction" value="" label="Ação"
+                                                                items="[[CboAction]]"
+                                                                text-path="value"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                </such-selectbox>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <vaadin-text-field value="{{recTecNameValue}}" maxlength="20" id="descconfid" name="decconfName" label="Descrição"> </vaadin-text-field>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <vaadin-text-field id="OrderNoid" name="OrderName" pattern="^[0-9]+$" label="No. Ordem" class="alignRight" value=""></vaadin-text-field>
+                                            </div>
+                                            <div class="col-lg-12  " hidden="{{ !_permissionsVal.create }}">
+                                                <paper-button class="btnSave" on-tap="_addConfection"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                            </div>
+                                        </div>
+                                    </paper-collapse-item>
+                                </paper-collapse-group>
+
+                                <div class="row break_clear">
+                                    <div class="col-lg-12">
+                                        <vaadin-grid id="gridConfection_request" aria-label="ProfileModelsTabel" items="[[GridProceduresConfection]]" class="grid" active-item="{{_SelectedConfectionLine}}">
+                                            <vaadin-grid-column width="160px" resizable hidden>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="TechnicalSheetNo">No. Ficha Técnica </vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="TechnicalSheetNo" />
+                                                </template>
+                                                <template>
+                                                    {{item.TechnicalSheetNo}}
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="200px" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="actionNo">Ação</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="actionNo" />
+                                                </template>
+                                                <template>
+                                                    <template is="dom-if" if="{{ item.selected }}">
+                                                        <vaadin-combo-box items="[[CboActionGrid]]" id="CboActionGridid" item-value-path="id" item-label-path="value" value="{{item.actionNo}}">
+                                                            <template>
+                                                                <table width="200px">
+                                                                    <tr>
+                                                                        <td width="40%">[[item.id]]</td>
+                                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                                    </tr>
+                                                                </table>
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </template>
+                                                    <template is="dom-if" if="{{ !item.selected }}">
+                                                        [[_parseActionCode(item.actionNo)]]
+                                                    </template>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="200px" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="description" />
+                                                </template>
+                                                <template>
+                                                    <template is="dom-if" if="{{ item.selected }}">
+                                                        <vaadin-text-field value="{{item.description}}" maxlength="20" id="Griddescconfid" name="DescriptionName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                                    </template>
+                                                    <template is="dom-if" if="{{ !item.selected }}">
+                                                        {{item.description}}
+                                                    </template>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="200px" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="orderNo">No. Ordem</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="orderNo" />
+                                                </template>
+                                                <template>
+                                                    <template is="dom-if" if="{{ item.selected }}">
+                                                        <vaadin-text-field id="GridOrderNoid" name="OrderName" pattern="^[0-9]+$" class="alignRight" value="{{item.orderNo}}"></vaadin-text-field>
+                                                    </template>
+                                                    <template is="dom-if" if="{{ !item.selected }}">
+                                                        {{item.orderNo}}
+                                                    </template>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column with="100px" hidden="{{ !_permissionsVal.delete }}">
+                                                <template class="header">
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <paper-button class="btnRemove" raised on-tap="_deleteConf">Eliminar</paper-button>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                        </vaadin-grid>
+                                    </div>
+                                </div>
+                                <div class="row break_clear">
+                                    <div class="col-lg-12" hidden="{{ !_permissionsVal.update }}">
+                                        <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_updateconfLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_confcancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Alergénios-->
+                            <div>
+                                <div>
+                                    <div class="row break_clear">
+                                        <div class="col-lg-3 alignPoga">
+                                            <vaadin-checkbox checked="{{WithGlutenChecked}}" id="WithGlutenId">Cereais que contêm glúten</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-3 alignPoga">
+                                            <vaadin-checkbox checked="{{BasedCrustaceansChecked}}" id="BasedCrustaceansId">Prod. à base de crustáceos</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-3 alignPoga">
+                                            <vaadin-checkbox checked="{{BasedEggsChecked}}" id="BasedEggsId">Prod. à base de ovos</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-3 alignPoga">
+                                            <vaadin-checkbox checked="{{BasedFishChecked}}" id="BasedFishId">Prod. à base de peixes</vaadin-checkbox>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-lg-3 alignPoga">
+                                            <vaadin-checkbox checked="{{BasedPeanutsChecked}}" id="BasedPeanutsId">Prod. à base de amendoins</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-3 alignPoga">
+                                            <vaadin-checkbox checked="{{BasedSoyChecked}}" id="BasedSoyId">Prod. à base de soja</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-3 alignPoga">
+                                            <vaadin-checkbox checked="{{BasedMilkChecked}}" id="BasedMilkId">Prod. à base de leite</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-3 alignPoga">
+                                            <vaadin-checkbox checked="{{BasedFruitShardShellChecked}}" id="BasedFruitShardShellId">Prod. à base de frutos de casca rija</vaadin-checkbox>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-lg-3 alignPoga">
+                                            <vaadin-checkbox checked="{{BasedCeleryChecked}}" id="BasedCeleryId">Prod. à base de aipo</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-3 alignPoga">
+                                            <vaadin-checkbox checked="{{BasedMustardChecked}}" id="BasedMustardId">Prod. à base de mostarda</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-3 alignPoga">
+                                            <vaadin-checkbox checked="{{BasedSesameSeedsChecked}}" id="BasedSesameSeedsId">Prod. à base de sementes de sésamo</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-3 alignPoga">
+                                            <vaadin-checkbox checked="{{BasedLupineChecked}}" id="BasedLupineId">Prod. à base de tremoço</vaadin-checkbox>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-lg-3 alignPoga">
+                                            <vaadin-checkbox checked="{{BasedMolluscsChecked}}" id="BasedMolluscsId">Prod. à base de moluscos</vaadin-checkbox>
+                                        </div>
+                                        <div class="col-lg-5 alignPoga">
+                                            <vaadin-checkbox checked="{{BasedSulfSulphChecked}}" id="BasedSulfurDioxideAndSulphitesId">Dióxido de enxofre e sulfitos em concentração superior a 10 mg/kg ou 10 mg/l</vaadin-checkbox>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Imagem-->
+                            <div hidden="{{ _NotCreateOnly }}">
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-12">
+                                        <img class="roundrect" id="my_image" src="" alt="" width="300" height="200">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-12">
+
+                                        <form method="post" enctype="multipart/form-data">
+                                            <input type="file" id="files" name="files" />
+                                            <button class="btn btn-primary start" type="button" id="upload" value="Upload Selected Files" on-tap="_Upload">
+                                                <i class="glyphicon glyphicon-upload"></i>
+                                                <span>Start upload</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </iron-pages>
+                        <div class="row  break_clear" hidden="{{ !_NotCreateOnly }}">
+                            <div class="col-lg-2 alignPoga" hidden="{{ !_permissionsVal.create }}">
+                                <paper-button class="btnSave" on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                             </div>
                         </div>
+                        <div class="row break_clear" hidden="{{ _NotCreateOnly }}">
+                            <div class="col-lg-12" hidden="{{ !_permissionsVal.update }}">
+                                <paper-button raised id="btnLocalMarketValidation" style="width: 250px !important;" on-tap="_update" hidden="{{ !_permissionsVal.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar Cabeçalho</paper-button>
+                            </div>
+                        </div>
+                    </div>
+                    <paper-collapse-group style="display: {{ _NotCreateOnly }};">
+                        <paper-collapse-item class="panel-heading" header="Linhas" closed>
+                            <div class="row break_clear">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineDescription}}" maxlength="20" id="Descriptionid" name="DescriptionName" label="Descrição"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Quantityid" name="QuantityName" label="Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <such-selectbox id="UnitMeasureCodeid" value="{{LineMeasureUnit}}" label="Cód. Unidade Medida"
+                                                    items="[[CBOMeasureUnit]]"
+                                                    text-path="value"
+                                                    value-path="id"
+                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                    </such-selectbox>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineQuantityOfProduction}}" on-value-changed="_ConvertDecimals" maxlength="20" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="QuantityOfProductionid" name="QuantityOfProductionName" label="Quantidade de Produto"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineEnergetic}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValueid" name="EnergeticValueName" label="Valor Energético"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineProteins}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Proteinsid" name="ProteinsName" label="Proteínas"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineHydratesOfCarbont}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="HydratesOfCarbontid" name="HydratesOfCarbontName" label="Hidratos de Carbono"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineLipids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Lipidsid" name="LipidsName" label="Lípidos"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineFibers}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Fibersid" name="FibersName" label="Fibras"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ExpectedCostPriceid" name="ExpectedCostPriceName" label="Preço Custo Esperado"> <div slot="suffix">€</div></vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CurrentCostPriceid" name="CurrentCostPriceName" label="Preço Custo Atual"> <div slot="suffix">€</div></vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineTimeExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeExpectedCostPriceid" name="TimeExpectedCostPriceName" label="TPreço Custo Esperado"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineTimeCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="TimeCurrentCostPriceid" name="TimeCurrentCostPriceName" label="TPreço Custo Atual"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <such-selectbox id="LocalizationCodeid" value="{{LineLocalizationCode}}" label="Cod. Localização"
+                                                    items="[[CBLocations]]"
+                                                    text-path="value"
+                                                    value-path="id"
+                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                    </such-selectbox>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineProteinsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="ProteinsByQuantityid" name="ProteinsByQuantityName" label="Proteínas por Quantidade"> </vaadin-text-field>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineGlicansByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GlicansByQuantityid" name="GlicansByQuantityName" label="Glícidos por Quantidade"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineLipidsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="LipidsByQuantityid" name="LipidsByQuantityName" label="Lípidos por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineFibersByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="FibersByQuantityid" name="FibersByQuantityName" label="Fibras por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineEnergeticValue2}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="EnergeticValue2id" name="EnergeticValue2Name" label="Valor Energético 2"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineVitaminA}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAid" name="VitaminAName" label="Vitamina A"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineVitaminD}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDid" name="VitaminDName" label="Vitamina D"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineCholesterol}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Cholesterolid" name="CholesterolName" label="Colesterol"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineSodium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sodiumid" name="SodiumName" label="Sódio"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LinePotassium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Potassiumid" name="PotassiumName" label="Potássio"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineCalcium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Calciumid" name="CalciumName" label="Cálcio"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineIron}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Ironid" name="IronName" label="Ferro"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineEdivel}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Edivelid" name="EdivelName" label="Edivel"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineVitaminAByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminAByQuantityid" name="VitaminAByQuantityName" label="Vitamina A por Quantidade"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineVitaminDByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="VitaminDByQuantityid" name="VitaminDByQuantityName" label="Vitamina D por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineCholesterolByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CholesterolByQuantityid" name="CholesterolByQuantityName" label="Colesterol por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineSodiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SodiumByQuantityid" name="SodiumByQuantityName" label="Sódio por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LinePotassiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="PotassiumByQuantityid" name="PotassiumByQuantityName" label="Potásio por Quantidade"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineIronByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="IronByQuantityid" name="IronByQuantityName" label="Ferro por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineCalciumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="CalciumByQuantityid" name="CalciumByQuantityName" label="Cálcio por Quantidade"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineSaturatedFattyAcids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="SaturatedFattyAcidsid" name="SaturatedFattyAcidsName" label="Ácidos Gordos Saturados"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineSugarcane}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Sugarcaneid" name="TSugarcaneName" label="Açucares"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{Linesalt}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="saltid" name="saltName" label="Sal"> </vaadin-text-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <vaadin-text-field value="{{LineQuantityPlates}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="QuantityPlatesid" name="QuantityPlatesName" label="Quantidade Prato"> </vaadin-text-field>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-lg-12">
+                                    <such-textarea rows="5" value="{{LinePreparation}}" id="Preparationid" name="PreparationName" label="Preparação"> </such-textarea>
+                                </div>
+                            </div>
+                            <div class="row break_clear">
+                                <div class="col-lg-2 alignPoga" hidden="{{ !_permissionsVal.create }}">
+                                    <paper-button class="btnSave" on-tap="_addlines"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                </div>
+                            </div><br />
+                        </paper-collapse-item>
+                    </paper-collapse-group>
+                    <div class="row break_clear">
+                        <div class="col-lg-12">
+                            <vaadin-grid id="GridRecTecOfPlatesLines" aria-label="ProfileModelsTabel" items="[[data]]" class="grid" active-item="{{_SelectedLine}}">
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="description">Descrição </vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="description" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.description}}" maxlength="20" id="Descriptionid" name="DescriptionName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.description}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="quantity">Quantidade </vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantity" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.quantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridQuantityid" name="QuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.quantity}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="unitMeasureCode">Cód. Unidade Medida </vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="unitMeasureCode" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-combo-box id="UnitMeasureCodeid" name="UnitMeasureCodeid" items="[[CBOMeasureUnit]]" item-value-path="id" value="{{item.unitMeasureCode}}" item-label-path="value" disabled="{{ !_permissionsVal.update }}">
+                                                <template>
+                                                    <table width="200px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            [[_parseMeasure(item.unitMeasureCode)]]
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="quantityOfProduction">Quantidade de Produto </vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantityOfProduction" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.quantityOfProduction}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridQuantityOfProductionid" name="QuantityOfProductionName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.quantityOfProduction}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="energeticValue">Valor Energético </vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="energeticValue" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.energeticValue}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridEnergeticValueid" name="EnergeticValueName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.energeticValue}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="proteins">Proteínas </vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="proteins" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.proteins}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridProteinsid" name="ProteinsName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.proteins}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="hydratesOfCarbon">Hidratos de Carbono </vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="hydratesOfCarbon" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.hydratesOfCarbon}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridHydratesOfCarbontid" name="HydratesOfCarbontName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.hydratesOfCarbon}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="lipids">Lípidos</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="lipids" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.lipids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridLipidsid" name="LipidsName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.lipids}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="fibers">Fibras</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="fibers" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.fibers}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridFibersid" name="FibersName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.fibers}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="expectedCostPrice">Preço Custo Esperado</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="expectedCostPrice" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.expectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridExpectedCostPriceid" name="ExpectedCostPriceName" disabled="{{ !_permissionsVal.update }}"> <div slot="suffix">€</div></vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.expectedCostPrice}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="currentCostPrice">Preço Custo Atual</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="currentCostPrice" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.currentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridCurrentCostPriceid" name="CurrentCostPriceName" disabled="{{ !_permissionsVal.update }}"> <div slot="suffix">€</div></vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.currentCostPrice}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="timeExpectedCostPrice">TPreço Custo Esperado</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="timeExpectedCostPrice" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.timeExpectedCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridTimeExpectedCostPriceid" name="TimeExpectedCostPriceName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.timeExpectedCostPrice}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="timeCurrentCostPrice">TPreço Custo Atual</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="timeCurrentCostPrice" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.timeCurrentCostPrice}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridTimeCurrentCostPriceid" name="TimeCurrentCostPriceName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.timeCurrentCostPrice}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="localizationCode">Cod. Localização</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="localizationCode" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-combo-box items="[[CBLocations]]" id="LocalizationCodeid" item-value-path="id" item-label-path="value" value="{{item.localizationCode}}" disabled="{{ !_permissionsVal.update }}">
+                                                <template>
+                                                    <table width="200px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            [[_parselocalization(item.localizationCode)]]
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="proteinsByQuantity">Proteínas por Quantidade</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="proteinsByQuantity" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.proteinsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridProteinsByQuantityid" name="ProteinsByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.proteinsByQuantity}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="glicansByQuantity">Glícidos por Quantidade</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="glicansByQuantity" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.glicansByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridGlicansByQuantityid" name="GlicansByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.glicansByQuantity}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="lipidsByQuantity">Lípidos por Quantidade</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="lipidsByQuantity" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.lipidsByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridLipidsByQuantityid" name="LipidsByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.lipidsByQuantity}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="fibersByQuantity">Fibras por Quantidade</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="fibersByQuantity" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.fibersByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridFibersByQuantityid" name="FibersByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.fibersByQuantity}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="energeticValue2">Valor Energético 2</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="energeticValue2" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.energeticValue2}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridEnergeticValue2id" name="EnergeticValue2Name" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.energeticValue2}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="vitaminA">Vitamina A</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="vitaminA" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.vitaminA}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridVitaminAid" name="VitaminAName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.vitaminA}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="vitaminD">Vitamina D</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="vitaminD" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.vitaminD}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridVitaminDid" name="VitaminDName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.vitaminD}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="cholesterol">Colesterol</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="cholesterol" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.cholesterol}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridCholesterolid" name="CholesterolName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.cholesterol}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="sodium">Sódio</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="sodium" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.sodium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridSodiumid" name="SodiumName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.sodium}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="potassium">Potássio</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="potassium" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.potassium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridPotassiumid" name="PotassiumName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.potassium}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="calcium">Cálcio</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="calcium" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.calcium}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridCalciumid" name="CalciumName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.calcium}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="iron">Ferro</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="iron" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.iron}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridIronid" name="IronName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.iron}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="edivel">Edivel</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="edivel" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.edivel}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridEdivelid" name="EdivelName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.edivel}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="vitaminAByQuantity">Vitamina A por Quantidade</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="vitaminAByQuantity" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.vitaminAByQuantity}}" on-value-changed="_ConvertDecimals" maxlength="20" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridVitaminAByQuantityid" name="VitaminAByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.vitaminAByQuantity}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="vitaminDByQuantity">Vitamina D por Quantidade</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="vitaminDByQuantity" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.vitaminDByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridVitaminDByQuantityid" name="VitaminDByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.vitaminDByQuantity}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="cholesterolByQuantity">Colesterol por Quantidade</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="cholesterolByQuantity" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.cholesterolByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridCholesterolByQuantityid" name="CholesterolByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.cholesterolByQuantity}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="sodiumByQuantity">Sódio por Quantidade</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="sodiumByQuantity" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.sodiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridSodiumByQuantityid" name="SodiumByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.sodiumByQuantity}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="potassiumByQuantity">Potásio por Quantidade</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="potassiumByQuantity" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.potassiumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridPotassiumByQuantityid" name="PotassiumByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.potassiumByQuantity}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="ironByQuantity">Ferro por Quantidade</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="ironByQuantity" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.ironByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridIronByQuantityid" name="IronByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.ironByQuantity}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="calciumByQuantity">Cálcio por Quantidade</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="calciumByQuantity" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.calciumByQuantity}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridCalciumByQuantityid" name="CalciumByQuantityName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.calciumByQuantity}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="saturatedFattyAcids">Ácidos Gordos Saturados</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="saturatedFattyAcids" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.saturatedFattyAcids}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridSaturatedFattyAcidsid" name="SaturatedFattyAcidsName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.saturatedFattyAcids}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="sugarCane">Açucares</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="sugarCane" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.sugarCane}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridSugarcaneid" name="TSugarcaneName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.sugarCane}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="salt">Sal</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="salt" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.salt}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="Gridsaltid" name="saltName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.salt}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="quantityPlates">Quantidade Prato</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="quantityPlates" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-text-field value="{{item.quantityPlates}}" maxlength="20" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight" id="GridQuantityPlatesid" name="QuantityPlatesName" disabled="{{ !_permissionsVal.update }}"> </vaadin-text-field>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.quantityPlates}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="preparation">Preparação</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="preparation" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <such-textarea rows="5" value="{{item.preparation}}" id="Preparationid" name="PreparationName" disabled="{{ !_permissionsVal.update }}"> </such-textarea>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.preparation}}
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+                                <vaadin-grid-column with="10%" hidden="{{ !_permissionsVal.delete }}">
+                                    <template class="header">
+                                    </template>
+                                    <template>
+                                        <center>
+                                            <paper-button class="btnRemove" raised on-tap="_delete">Eliminar</paper-button>
+                                        </center>
+                                    </template>
+                                </vaadin-grid-column>
+                            </vaadin-grid>
+                        </div>
+                    </div>
+                    <div class="marginSpace" hidden="{{ !_permissionsVal.update }}">
+                        <paper-button raised id="btnAddNew" class="btnEdit" on-tap="_updateLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                        <paper-button raised id="btnCancel" class="btnRemove" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
                     </div>
                 </div>
             </div>
