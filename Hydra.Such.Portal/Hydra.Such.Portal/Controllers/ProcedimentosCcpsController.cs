@@ -5004,7 +5004,6 @@ namespace Hydra.Such.Portal.Controllers
 
         #region The following methods map the Buttons, named "Confirmar", "Criar Novo Contrato/Acordo", "Criar Contrato" and "Criar Encomenda" in the "Adjudicação" tab on the NAV form
 
-
         public JsonResult Confirm_18([FromBody] ProcedimentoCCPView data)
         {
             if (data != null)
@@ -5042,9 +5041,50 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-
         #endregion
 
+
+        #region The following methods map the Buttons, named "Confirmar" in the "Workflow" tab on the NAV form
+
+        public JsonResult MudarEstado([FromBody] ProcedimentoCCPView data)
+        {
+            if (data != null)
+            {
+                if (data.NovoEstado.Value >= data.Estado.Value)
+                {
+                    return Json(ReturnHandlers.ProcedimentoNotPossibleChangeToUpper);
+                }
+
+                if ((data.NovoEstado.Value == 1 || data.NovoEstado.Value == 2) && (data.Imobilizado.HasValue && data.Imobilizado.Value))
+                {
+                    return Json(ReturnHandlers.ProcedimentoNotPossibleChangeToImob);
+                }
+
+                if (data.NovoEstado.Value < data.Estado.Value)
+                {
+                    // NAV Procedure <Control1000000484> - OnPush()
+                    ErrorHandler DecisionTaken = DBProcedimentosCCP.MudarEstado(data, DBProcedimentosCCP.GetUserDetails(User.Identity.Name));
+                    if (DecisionTaken.eReasonCode != 0)
+                    {
+                        return Json(DecisionTaken);
+                    }
+                    // NAV <Control1000000484> - OnPush()
+                }
+
+
+
+
+
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
+
+        #endregion
 
     }
 

@@ -281,5 +281,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public string DataAudienciaPrevia_Show { get; set; }
         public string DataRelatorioFinal_Show { get; set; }
         public string DataNotificacao_Show { get; set; }
+
+        public int? NovoEstado { get; set; }
+        public string NovoEstadoComentario { get; set; }
     }
 }

@@ -512,7 +512,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataHoraCriacao = Acta.DataHoraCriação,
                 UtilizadorCriacao = Acta.UtilizadorCriação,
                 DataHoraModificacao = Acta.DataHoraModificação,
-                UtilizadorModificacao = Acta.UtilizadorModificação
+                UtilizadorModificacao = Acta.UtilizadorModificação,
+                DataDaActa_Show = Acta.DataDaAta.HasValue ? Acta.DataDaAta.Value.ToShortDateString() : string.Empty
             });
         }
 
@@ -769,7 +770,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataHoraCriacao = Fluxo.DataHoraCriacao,
                 UtilizadorModificacao = Fluxo.UtilizadorModificacao,
                 DataHoraModificacao = Fluxo.DataHoraModificacao,
-                Nr_Workflow = Fluxo.Estado > Fluxo.EstadoSeguinte ? "Alerta" : "Sucesso"
+                Nr_Workflow = Fluxo.Estado > Fluxo.EstadoSeguinte ? "Vermelho" : "Verde"
             });
         }
 
@@ -803,6 +804,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
         }
         public static EmailsProcedimentoCCPView CastEmailProcedimentoToEmailProcedimentoView(EmailsProcedimentosCcp Email)
         {
+            TimeSpan _datahoraemail = Email.DataHoraEmail.HasValue ? new TimeSpan(0, Email.DataHoraEmail.Value.Hour, Email.DataHoraEmail.Value.Minute, Email.DataHoraEmail.Value.Second, Email.DataHoraEmail.Value.Millisecond) : TimeSpan.Zero;
+
             return (new EmailsProcedimentoCCPView()
             {
                 NoProcedimento = Email.NºProcedimento,
@@ -825,7 +828,9 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataHoraCriacao = Email.DataHoraCriação,
                 DataHoraModificacao = Email.DataHoraModificação,
                 UtilizadorCriacao = Email.UtilizadorCriação,
-                UtilizadorModificacao = Email.UtilizadorModificação
+                UtilizadorModificacao = Email.UtilizadorModificação,
+                DataEmail = Email.DataHoraEmail.HasValue ? Email.DataHoraEmail.Value.ToShortDateString() : string.Empty,
+                HoraEmail = Email.DataHoraEmail.HasValue ? _datahoraemail.ToString(@"hh\:mm\:ss") : string.Empty
             });
         }
 

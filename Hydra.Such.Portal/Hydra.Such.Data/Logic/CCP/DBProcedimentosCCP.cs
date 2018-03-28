@@ -4113,6 +4113,48 @@ namespace Hydra.Such.Data.Logic.CCP
             return ReturnHandlers.Success;
         }
 
+        // The following method maps NAV2009  < Control1000000484 > OnPush event --> Confirmar Mudança de Estado
+        public static ErrorHandler MudarEstado(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails)
+        {
+            FluxoTrabalhoListaControlo NewFluxo = new FluxoTrabalhoListaControlo
+            {
+                No = Procedimento.No,
+                Estado = Procedimento.Estado.Value,
+                Data = DateTime.Now.Date,
+                Hora = DateTime.Now.TimeOfDay,
+                Comentario = Procedimento.NovoEstadoComentario,
+                User = UserDetails.IdUtilizador,
+                TipoEstado = 0,
+                EstadoSeguinte = Procedimento.NovoEstado.Value,
+                NomeUser = UserDetails.Nome,
+                UtilizadorCriacao = UserDetails.IdUtilizador,
+                DataHoraCriacao = DateTime.Now,
+                ImobSimNao = Procedimento.ImobilizadoSimNao
+            };
+
+            if (__CreateFluxoTrabalho(NewFluxo) == null)
+            {
+                return ReturnHandlers.UnableToCreateFluxo;
+            }
+
+            Procedimento.FluxoTrabalhoListaControlo = GetAllCheklistControloProcedimento(Procedimento.No);
+
+            Procedimento.Estado = Procedimento.NovoEstado.Value;
+            Procedimento.ComentarioEstado = Procedimento.NovoEstadoComentario;
+
+            Procedimento.DataHoraEstado = DateTime.Now;
+            Procedimento.UtilizadorEstado = UserDetails.IdUtilizador;
+
+            Procedimento.UtilizadorModificacao = UserDetails.IdUtilizador;
+            Procedimento.DataHoraModificacao = DateTime.Now;
+
+            if (__UpdateProcedimento(Procedimento) == null)
+            {
+                return ReturnHandlers.UnableToUpdateProcedimento;
+            };
+
+            return ReturnHandlers.Success;
+        }
 
 
 

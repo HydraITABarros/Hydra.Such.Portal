@@ -44,13 +44,37 @@
         <link rel="stylesheet" href="/css/main.css" />
 
         <style>
-            .Alerta {
+            .Vermelho {
                 background-color: red !important;
             }
 
-            .Sucesso {
+            .Verde {
                 background-color: greenyellow !important;
             }
+
+            .Branco {
+                background-color: white !important;
+                border: 1px solid white;
+                outline-style: solid;
+                outline-color: white;
+                outline-width: 8px;
+            }
+
+
+
+            /*.vaadin-grid-table-header .vaadin-grid-cell-content .vaadin-grid-row .vaadin-grid-cell:not([detailscell]) ::slotted(vaadin-grid-cell-content) {
+                font-weight: 500;
+                height: var(--vaadin-grid-header-cell_-_height);
+                color: var(--vaadin-grid-header-cell_-_color);
+                font-size: var(--vaadin-grid-header-cell_-_font-size);
+                border-bottom: var(--vaadin-grid-header-cell_-_border-bottom);
+                background-color: white !important;
+            }*/
+
+
+
+
+
 
             .mb-15 {
                 margin-bottom: 15px;
@@ -73,10 +97,6 @@
             vaadin-text-field {
                 margin-top: 0px !important;
                 width: 100%;
-            }
-
-            input[readonly] {
-                border: 2px solid transparent;
             }
 
             input {
@@ -586,11 +606,18 @@
                    content-type="application/json">
         </iron-ajax>
 
+
+
+        <!--NR 20180328-->
+        <iron-ajax url="/ProcedimentosCcps/MudarEstado"
+                   last-response="{{ MudarEstado }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_mudarEstado"
+                   on-response="_mudarEstadoResponse"
+                   content-type="application/json">
+        </iron-ajax>
         
-
-
-
-
 
 
 
@@ -1291,8 +1318,8 @@
                                                     <vaadin-text-field type="text" id="_DescricaoProduto" required value="{{ item.descricao }}" label="Descrição" maxlength="100"></vaadin-text-field>
                                                 </div>
                                                 <!--<div class="col-sm-3">
-                                                <vaadin-text-field type="text" id="_DescricaoProduto2" value="{{ item.descricao2 }}" label="Descrição 2"></vaadin-text-field>
-                                            </div>-->
+                                    <vaadin-text-field type="text" id="_DescricaoProduto2" value="{{ item.descricao2 }}" label="Descrição 2"></vaadin-text-field>
+                                </div>-->
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-2">
@@ -1486,35 +1513,35 @@
                                         <div class="clearfix"></div>
 
                                         <!--<div class="col-lg-6">
-                                        <br />
-                                        <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
-                                            <template>
-                                                <style>
-                                                    .my-menu {
-                                                        padding: 8px 0;
-                                                        background: #fff;
-                                                    }
+                            <br />
+                            <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
+                                <template>
+                                    <style>
+                                        .my-menu {
+                                            padding: 8px 0;
+                                            background: #fff;
+                                        }
 
-                                                    .my-menu-item {
-                                                        display: block;
-                                                        padding: 8px 24px;
-                                                        text-decoration: none;
-                                                        color: #000;
-                                                    }
+                                        .my-menu-item {
+                                            display: block;
+                                            padding: 8px 24px;
+                                            text-decoration: none;
+                                            color: #000;
+                                        }
 
-                                                        .my-menu-item:hover {
-                                                            background: #FFD5D3;
-                                                        }
-                                                </style>
-                                                <vaadin-list-box>
-                                                    <vaadin-item class="my-menu-item" on-tap="_confirmImobilizadoContab">Confirmar</vaadin-item>
-                                                    <vaadin-item class="my-menu-item" on-tap="_imobReturnToArea">Devolver à Área</vaadin-item>
-                                                </vaadin-list-box>
-                                            </template>
+                                            .my-menu-item:hover {
+                                                background: #FFD5D3;
+                                            }
+                                    </style>
+                                    <vaadin-list-box>
+                                        <vaadin-item class="my-menu-item" on-tap="_confirmImobilizadoContab">Confirmar</vaadin-item>
+                                        <vaadin-item class="my-menu-item" on-tap="_imobReturnToArea">Devolver à Área</vaadin-item>
+                                    </vaadin-list-box>
+                                </template>
 
-                                            <paper-button raised id="actionButtonContabilidade1" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                                        </vaadin-context-menu>
-                                    </div>-->
+                                <paper-button raised id="actionButtonContabilidade1" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
+                            </vaadin-context-menu>
+                        </div>-->
 
                                         <div class="col-lg-6">
                                             <such-dropdown-menu class="subMenu" id="actionButtonContabilidade1" on-value-changed="_mnuAccao1_ItemSelected" title=" Acções " items="[[ _mnuAccao1_MenuItems ]]"></such-dropdown-menu>
@@ -2047,33 +2074,33 @@
                                         <div class="clearfix"></div>
                                     </div>
                                     <!--<div class="col-lg-6">
-                                    <br />
-                                    <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
-                                        <template>
-                                            <style>
-                                                .my-menu {
-                                                    padding: 8px 0;
-                                                    background: #fff;
-                                                }
+                        <br />
+                        <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
+                            <template>
+                                <style>
+                                    .my-menu {
+                                        padding: 8px 0;
+                                        background: #fff;
+                                    }
 
-                                                .my-menu-item {
-                                                    display: block;
-                                                    padding: 8px 24px;
-                                                    text-decoration: none;
-                                                    color: #000;
-                                                }
+                                    .my-menu-item {
+                                        display: block;
+                                        padding: 8px 24px;
+                                        text-decoration: none;
+                                        color: #000;
+                                    }
 
-                                                    .my-menu-item:hover {
-                                                        background: #FFD5D3;
-                                                    }
-                                            </style>
-                                            <vaadin-list-box>
-                                                <vaadin-item class="my-menu-item" on-tap="_devolverACompras_6">Devolver a Compras (4)</vaadin-item>
-                                            </vaadin-list-box>
-                                        </template>
-                                        <paper-button raised id="actionButtonPedidoAberturaProc6" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                                    </vaadin-context-menu>
-                                </div>-->
+                                        .my-menu-item:hover {
+                                            background: #FFD5D3;
+                                        }
+                                </style>
+                                <vaadin-list-box>
+                                    <vaadin-item class="my-menu-item" on-tap="_devolverACompras_6">Devolver a Compras (4)</vaadin-item>
+                                </vaadin-list-box>
+                            </template>
+                            <paper-button raised id="actionButtonPedidoAberturaProc6" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
+                        </vaadin-context-menu>
+                    </div>-->
 
 
                                     <div class="col-lg-6">
@@ -2114,33 +2141,33 @@
                                         <div class="clearfix"></div>
                                     </div>
                                     <!--<div class="col-lg-6">
-                                    <br />
-                                    <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
-                                        <template>
-                                            <style>
-                                                .my-menu {
-                                                    padding: 8px 0;
-                                                    background: #fff;
-                                                }
+                        <br />
+                        <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
+                            <template>
+                                <style>
+                                    .my-menu {
+                                        padding: 8px 0;
+                                        background: #fff;
+                                    }
 
-                                                .my-menu-item {
-                                                    display: block;
-                                                    padding: 8px 24px;
-                                                    text-decoration: none;
-                                                    color: #000;
-                                                }
+                                    .my-menu-item {
+                                        display: block;
+                                        padding: 8px 24px;
+                                        text-decoration: none;
+                                        color: #000;
+                                    }
 
-                                                    .my-menu-item:hover {
-                                                        background: #FFD5D3;
-                                                    }
-                                            </style>
-                                            <vaadin-list-box>
-                                                <vaadin-item class="my-menu-item" on-tap="_enviaParaCompras_14">Enviar p/ Compras (15)</vaadin-item>
-                                            </vaadin-list-box>
-                                        </template>
-                                        <paper-button raised id="actionButtonPedidoAberturaProc14" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                                    </vaadin-context-menu>
-                                </div>-->
+                                        .my-menu-item:hover {
+                                            background: #FFD5D3;
+                                        }
+                                </style>
+                                <vaadin-list-box>
+                                    <vaadin-item class="my-menu-item" on-tap="_enviaParaCompras_14">Enviar p/ Compras (15)</vaadin-item>
+                                </vaadin-list-box>
+                            </template>
+                            <paper-button raised id="actionButtonPedidoAberturaProc14" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
+                        </vaadin-context-menu>
+                    </div>-->
 
 
                                     <div class="col-lg-6">
@@ -2579,14 +2606,15 @@
                     <div class="panel panel-default">
                         <paper-collapse-group>
                             <paper-collapse-item header="Fluxo de Trabalho" opened>
-
                                 <div class="col-xs-12">
                                     <vaadin-grid id="gridfluxoTrabalhoListaControlo" aria-label="gridWorkflow" items="{{data.fluxoTrabalhoListaControlo_Show}}" class="grid">
-                                        <vaadin-grid-column width="6%" disabled="true" resizable>
+                                        <vaadin-grid-column width="6%" resizable>
                                             <template class="header">
-                                                <center>
-                                                    WorkFlow
-                                                </center>
+                                                <div class="Branco">
+                                                    <center>
+                                                        WorkFlow
+                                                    </center>
+                                                </div>
                                             </template>
                                             <template>
                                                 <center>
@@ -2594,11 +2622,13 @@
                                                 </center>
                                             </template>
                                         </vaadin-grid-column>
-                                        <vaadin-grid-column width="6%" disabled="true" resizable>
+                                        <vaadin-grid-column width="6%" resizable>
                                             <template class="header">
-                                                <center>
-                                                    Estado
-                                                </center>
+                                                <div class="Branco">
+                                                    <center>
+                                                        Estado
+                                                    </center>
+                                                </div>
                                             </template>
                                             <template>
                                                 <center>
@@ -2608,9 +2638,11 @@
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="8%" resizable>
                                             <template class="header">
-                                                <center>
-                                                    Data
-                                                </center>
+                                                <div class="Branco">
+                                                    <center>
+                                                        Data
+                                                    </center>
+                                                </div>
                                             </template>
                                             <template>
                                                 <center>
@@ -2620,9 +2652,11 @@
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="6%" resizable>
                                             <template class="header">
-                                                <center>
-                                                    Hora
-                                                </center>
+                                                <div class="Branco">
+                                                    <center>
+                                                        Hora
+                                                    </center>
+                                                </div>
                                             </template>
                                             <template>
                                                 <center>
@@ -2632,9 +2666,11 @@
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="8%" resizable>
                                             <template class="header">
-                                                <center>
-                                                    Estado Seguinte
-                                                </center>
+                                                <div class="Branco">
+                                                    <center>
+                                                        Estado Seguinte
+                                                    </center>
+                                                </div>
                                             </template>
                                             <template>
                                                 <center>
@@ -2644,7 +2680,9 @@
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="20%" resizable>
                                             <template class="header">
-                                                Comentário
+                                                <div class="Branco">
+                                                    Comentário
+                                                </div>
                                             </template>
                                             <template>
                                                 <vaadin-text-field type="text" value="{{ item.comentario }}" readonly></vaadin-text-field>
@@ -2652,7 +2690,9 @@
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="20%" resizable>
                                             <template class="header">
-                                                Resposta
+                                                <div class="Branco">
+                                                    Resposta
+                                                </div>
                                             </template>
                                             <template>
                                                 <vaadin-text-field type="text" value="{{ item.resposta }}" readonly></vaadin-text-field>
@@ -2660,7 +2700,9 @@
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="10%" resizable>
                                             <template class="header">
-                                                Utilizador
+                                                <div class="Branco">
+                                                    Utilizador
+                                                </div>
                                             </template>
                                             <template>
                                                 <vaadin-text-field type="text" value="{{ item.user }}" readonly></vaadin-text-field>
@@ -2668,7 +2710,9 @@
                                         </vaadin-grid-column>
                                         <vaadin-grid-column width="15%" resizable>
                                             <template class="header">
-                                                Nome Utilizador
+                                                <div class="Branco">
+                                                    Nome Utilizador
+                                                </div>
                                             </template>
                                             <template>
                                                 <vaadin-text-field type="text" value="{{ item.nomeUser }}" readonly></vaadin-text-field>
@@ -2676,24 +2720,163 @@
                                         </vaadin-grid-column>
                                     </vaadin-grid>
                                 </div>
-
                             </paper-collapse-item>
                             <paper-collapse-item header="Email's Enviados">
                                 <div class="col-xs-12">
-                                    
+                                    <vaadin-grid id="gridEmailsProcedimentosCcp" aria-label="gridEmailsProcedimentosCcp" items="{{data.emailsProcedimentosCcp}}" class="grid">
+                                        <vaadin-grid-column width="8%" resizable>
+                                            <template class="header">
+                                                <div class="Branco">
+                                                    <center>
+                                                        Data Email
+                                                    </center>
+                                                </div>
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <vaadin-text-field type="text" value="{{ item.dataEmail }}" readonly></vaadin-text-field>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="8%" resizable>
+                                            <template class="header">
+                                                <div class="Branco">
+                                                    <center>
+                                                        Hora Email
+                                                    </center>
+                                                </div>
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <vaadin-text-field type="text" value="{{ item.horaEmail }}" readonly></vaadin-text-field>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="20%" resizable>
+                                            <template class="header">
+                                                <div class="Branco">
+                                                    Assunto
+                                                </div>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field type="text" value="{{ item.assunto }}" readonly></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="24%" resizable>
+                                            <template class="header">
+                                                <div class="Branco">
+                                                    Texto Email
+                                                </div>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field type="text" value="{{ item.textoEmail }}" readonly></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="20%" resizable>
+                                            <template class="header">
+                                                <div class="Branco">
+                                                    Email Destinatário
+                                                </div>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field type="text" value="{{ item.emailDestinatario }}" readonly></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                        <vaadin-grid-column width="20%" resizable>
+                                            <template class="header">
+                                                <div class="Branco">
+                                                    User Email
+                                                </div>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field type="text" value="{{ item.utilizadorEmail }}" readonly></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
                             <paper-collapse-item header="Alteração de Estado">
                                 <div class="col-xs-12">
-                                    
+                                    <div class="break_clear row">
+                                        <div class="col-sm-3">
+                                            <vaadin-combo-box items="[[LProcedimentoState]]" id="id_Estado_actual" item-value-path="id" item-label-path="value" required value="{{data.estado}}" label="Estado Actual" disabled="true">
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.value]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <vaadin-combo-box items="[[LProcedimentoState]]" id="id_Novo_Estado" item-value-path="id" item-label-path="value" required value="{{data.novoEstado}}" label="Novo Estado">
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.value]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <vaadin-text-field type="text" id="gDescNovoEstado" name="gDescNovoEstado" value="{{data.novoEstadoComentario}}" label="Comentário"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <br />
+                                            <paper-button raised id="btnMudarEstado" class="btn--confirm pull-right" on-tap="_mudarEstado"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp; Confirmar</paper-button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
                         </paper-collapse-group>
                     </div>
+
+                    <!--Tab Notas-->
+                    <div class="panel panel-default">
+                        <paper-collapse-group>
+                            <paper-collapse-item header="Notas" opened>
+                                <div class="col-xs-12">
+
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="mb-15"></div>
+                            </paper-collapse-item>
+                            <paper-collapse-item header="Registo de Atas">
+                                <div class="col-xs-12">
+
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="mb-15"></div>
+                            </paper-collapse-item>
+                        </paper-collapse-group>
+                    </div>
+
+                    <!--Tab Tempos-->
+                    <div class="panel panel-default">
+                        <paper-collapse-group>
+                            <paper-collapse-item header="Estados - Análise de tempos" opened>
+                                <div class="col-xs-12">
+
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="mb-15"></div>
+                            </paper-collapse-item>
+                            <paper-collapse-item header="Total Dias">
+                                <div class="col-xs-12">
+
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="mb-15"></div>
+                            </paper-collapse-item>
+                        </paper-collapse-group>
+                    </div>
+
                 </iron-pages>
 
                 <!-- Save and Create Buttons -->
@@ -4127,9 +4310,35 @@
                     }
                 },
 
-                //  
+                //NR 20180328
+                _mudarEstado: function (e) {
+                    var ajax_request = this.$.ajax_mudarEstado;
+                    ajax_request.body = JSON.stringify({ "No": this.data.no });
 
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a alteração de estado?", ajax_request
+                    );
 
+                    //NR 20180301 - Se não fizer isto, o this.data.nomeProcesso não leva o valor que têm!!!
+                    this.data.nomeProcesso = this.$.nomeProcesso.value;
+
+                    this.$.ajax_mudarEstado.body = JSON.stringify(this.data);
+                },
+                _mudarEstadoResponse: function (e) {
+                    if (this.MudarEstado.eReasonCode == 0) {
+                        this._openToast("Confirmada a alteração de estado do Procedimento " + this.data.no + " !");
+                        setTimeout(
+                            function () {
+                            }, 3000);
+
+                        if (this._procedimentotypeid == 1)
+                            window.location.replace("/ProcedimentosCcps/PedidoAquisicao/");
+                        else
+                            window.location.replace("/ProcedimentosCcps/PedidoSimplificado/");
+                    } else {
+                        this._openToast(this.MudarEstado.eMessage);
+                    }
+                },
 
 
 

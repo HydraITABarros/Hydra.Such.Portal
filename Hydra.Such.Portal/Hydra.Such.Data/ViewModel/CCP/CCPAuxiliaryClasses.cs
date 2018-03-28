@@ -346,6 +346,17 @@ namespace Hydra.Such.Data.ViewModel.CCP
             eReasonCode = 606,
             eMessage = "Neste estado não pode autorizar o processo!"
         };
+        //NR 20180328
+        public static ErrorHandler ProcedimentoNotPossibleChangeToUpper = new ErrorHandler
+        {
+            eReasonCode = 607,
+            eMessage = "Não pode Avançar para um estado seguinte ou igual!"
+        };
+        public static ErrorHandler ProcedimentoNotPossibleChangeToImob = new ErrorHandler
+        {
+            eReasonCode = 608,
+            eMessage = "Não pode alterar para este estado! A Aquisição não é de Imobilizado"
+        };
 
         public static ErrorHandler UnknownArea = new ErrorHandler
         {
