@@ -477,12 +477,6 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 ProcedimentoView.FluxoTrabalhoListaControlo = Procedimento.FluxoTrabalhoListaControlo;
 
                 ProcedimentoView.FluxoTrabalhoListaControlo_Show = DBProcedimentosCCP.GetAllFluxoTrabalhoListaControloCCPView(Procedimento);
-
-                //foreach (FluxoTrabalhoListaControlo f in ProcedimentoView.FluxoTrabalhoListaControlo)
-                //{
-
-                //}
-
             }
             return ProcedimentoView;
         }
@@ -694,7 +688,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataHoraCriacao = Nota.DataHoraCriação,
                 UtilizadorCriação = Nota.UtilizadorCriação,
                 DataHoraModificacao = Nota.DataHoraModificação,
-                UtilizadorModificacao = Nota.UtilizadorModificação
+                UtilizadorModificacao = Nota.UtilizadorModificação,
+                DataHora_Show = Nota.DataHora.HasValue ? Nota.DataHora.Value.ToShortDateString() : string.Empty
             });
         }
 

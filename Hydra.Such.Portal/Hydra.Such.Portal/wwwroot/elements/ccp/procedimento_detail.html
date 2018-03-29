@@ -60,8 +60,6 @@
                 outline-width: 8px;
             }
 
-
-
             /*.vaadin-grid-table-header .vaadin-grid-cell-content .vaadin-grid-row .vaadin-grid-cell:not([detailscell]) ::slotted(vaadin-grid-cell-content) {
                 font-weight: 500;
                 height: var(--vaadin-grid-header-cell_-_height);
@@ -70,12 +68,7 @@
                 border-bottom: var(--vaadin-grid-header-cell_-_border-bottom);
                 background-color: white !important;
             }*/
-
-
-
-
-
-
+            
             .mb-15 {
                 margin-bottom: 15px;
             }
@@ -543,7 +536,6 @@
                    content-type="application/json">
         </iron-ajax>
 
-
         <!--NR 20180322-->
         <iron-ajax url="/ProcedimentosCcps/CBRejeitar1CA"
                    last-response="{{ RejectAberturaProcedimento }}"
@@ -606,8 +598,6 @@
                    content-type="application/json">
         </iron-ajax>
 
-
-
         <!--NR 20180328-->
         <iron-ajax url="/ProcedimentosCcps/MudarEstado"
                    last-response="{{ MudarEstado }}"
@@ -617,9 +607,32 @@
                    on-response="_mudarEstadoResponse"
                    content-type="application/json">
         </iron-ajax>
-        
 
-
+        <!-- NR 20180229 -->
+        <iron-ajax url="/ProcedimentosCcps/CreateNota"
+                   last-response="{{ CreateNota }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_createNota_ajax"
+                   on-response="_createNotaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/DeleteNota"
+                   last-response="{{ DeleteNota }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deleteNota_ajax"
+                   on-response="_deleteNotaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/CreateAta"
+                   last-response="{{ CreateAta }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_createAta_ajax"
+                   on-response="_createAtaResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <!--NR 20180306-->
         <iron-ajax url="/ProcedimentosCcps/ReturnToAreaToJustifyProcess"
@@ -796,7 +809,6 @@
                    on-response="_enviarParaCompras_13Response"
                    content-type="application/json">
         </iron-ajax>
-
 
         <!-- Controller actions.e -->
         <!-- Header section of the Procedimento details -->
@@ -1317,9 +1329,6 @@
                                                 <div class="col-sm-6">
                                                     <vaadin-text-field type="text" id="_DescricaoProduto" required value="{{ item.descricao }}" label="Descrição" maxlength="100"></vaadin-text-field>
                                                 </div>
-                                                <!--<div class="col-sm-3">
-                                    <vaadin-text-field type="text" id="_DescricaoProduto2" value="{{ item.descricao2 }}" label="Descrição 2"></vaadin-text-field>
-                                </div>-->
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-2">
@@ -1355,7 +1364,6 @@
                                         <div class="break_clear">
                                             <!-- NR 20180226 -->
                                             <vaadin-grid id="tabLinhaProdutos" aria-label="Tabela Linhas Produtos Serviços" items="{{ data.linhasPEncomendaProcedimentosCcp }}" class="editGrid">
-
                                                 <vaadin-grid-column width="50px" hidden>
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="noProcedimento" style="text-align:center;">Nº Procedimento</vaadin-grid-sorter>
@@ -1417,7 +1425,6 @@
                                                         <vaadin-text-field name="tabCodProduto" id="tabCodProduto" value="{{item.codigo}}" disabled="true" style="text-align:left;"></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-
                                                 <vaadin-grid-column width="200px">
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="descricao" style="text-align:center;">Descrição</vaadin-grid-sorter>
@@ -1511,42 +1518,9 @@
 
                                         <div class="clearfix"></div>
                                         <div class="clearfix"></div>
-
-                                        <!--<div class="col-lg-6">
-                            <br />
-                            <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
-                                <template>
-                                    <style>
-                                        .my-menu {
-                                            padding: 8px 0;
-                                            background: #fff;
-                                        }
-
-                                        .my-menu-item {
-                                            display: block;
-                                            padding: 8px 24px;
-                                            text-decoration: none;
-                                            color: #000;
-                                        }
-
-                                            .my-menu-item:hover {
-                                                background: #FFD5D3;
-                                            }
-                                    </style>
-                                    <vaadin-list-box>
-                                        <vaadin-item class="my-menu-item" on-tap="_confirmImobilizadoContab">Confirmar</vaadin-item>
-                                        <vaadin-item class="my-menu-item" on-tap="_imobReturnToArea">Devolver à Área</vaadin-item>
-                                    </vaadin-list-box>
-                                </template>
-
-                                <paper-button raised id="actionButtonContabilidade1" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                            </vaadin-context-menu>
-                        </div>-->
-
                                         <div class="col-lg-6">
                                             <such-dropdown-menu class="subMenu" id="actionButtonContabilidade1" on-value-changed="_mnuAccao1_ItemSelected" title=" Acções " items="[[ _mnuAccao1_MenuItems ]]"></such-dropdown-menu>
                                         </div>
-
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -1762,8 +1736,6 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
-
-                                            <!--<vaadin-date-picker value="{{data.fundamentoComprasDataChecklist}}" id="fundamentoComprasDataChecklist" name="fundamentoComprasDataChecklist" label="Data"></vaadin-date-picker>-->
                                             <vaadin-text-field value="{{data.fundamentoComprasDataChecklist}}" id="fundamentoComprasDataChecklist" name="fundamentoComprasDataChecklist" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
                                         <div class="col-sm-3">
@@ -1773,7 +1745,6 @@
                                     <div class="col-lg-6">
                                         <such-dropdown-menu class="subMenu" id="actionButtonCompras" on-value-changed="_mnuAccao4_ItemSelected" title=" Acções " items="[[ _mnuAccao4_MenuItems ]]"></such-dropdown-menu>
                                     </div>
-
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -1812,7 +1783,6 @@
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
-
                             <paper-collapse-item header="A Preencher pela área - Pedido de Abertura de Procedimento (7)">
                                 <div class="col-xs-12">
                                     <div class="row break_clear">
@@ -2001,9 +1971,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <br />
-                                <!--&nbsp;-->
                                 <paper-button raised id="btnSendToEvaluate" class="btn--sendtoevaluate" on-tap="_sendToEvaluate"><i class="fa fa-paper-plane" aria-hidden="true"></i>&nbsp; Envio para avaliação (Juri)</paper-button>
-
                                 <div class="panel panel-default" id="sendToEval_Email" hidden="true">
                                     <div class="panel-heading">Email</div>
                                     <div class="panel-body">
@@ -2073,40 +2041,9 @@
                                         <div class="clearfix"></div>
                                         <div class="clearfix"></div>
                                     </div>
-                                    <!--<div class="col-lg-6">
-                        <br />
-                        <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
-                            <template>
-                                <style>
-                                    .my-menu {
-                                        padding: 8px 0;
-                                        background: #fff;
-                                    }
-
-                                    .my-menu-item {
-                                        display: block;
-                                        padding: 8px 24px;
-                                        text-decoration: none;
-                                        color: #000;
-                                    }
-
-                                        .my-menu-item:hover {
-                                            background: #FFD5D3;
-                                        }
-                                </style>
-                                <vaadin-list-box>
-                                    <vaadin-item class="my-menu-item" on-tap="_devolverACompras_6">Devolver a Compras (4)</vaadin-item>
-                                </vaadin-list-box>
-                            </template>
-                            <paper-button raised id="actionButtonPedidoAberturaProc6" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                        </vaadin-context-menu>
-                    </div>-->
-
-
                                     <div class="col-lg-6">
                                         <such-dropdown-menu class="subMenu" id="actionButtonPedidoAberturaProc6" on-value-changed="_mnuAccao6_ItemSelected" title=" Acções " items="[[ _mnuAccao6_MenuItems ]]"></such-dropdown-menu>
                                     </div>
-
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -2140,41 +2077,9 @@
                                         </div>
                                         <div class="clearfix"></div>
                                     </div>
-                                    <!--<div class="col-lg-6">
-                        <br />
-                        <vaadin-context-menu selector="paper-button" open-on="click" close-on="click">
-                            <template>
-                                <style>
-                                    .my-menu {
-                                        padding: 8px 0;
-                                        background: #fff;
-                                    }
-
-                                    .my-menu-item {
-                                        display: block;
-                                        padding: 8px 24px;
-                                        text-decoration: none;
-                                        color: #000;
-                                    }
-
-                                        .my-menu-item:hover {
-                                            background: #FFD5D3;
-                                        }
-                                </style>
-                                <vaadin-list-box>
-                                    <vaadin-item class="my-menu-item" on-tap="_enviaParaCompras_14">Enviar p/ Compras (15)</vaadin-item>
-                                </vaadin-list-box>
-                            </template>
-                            <paper-button raised id="actionButtonPedidoAberturaProc14" class="btn--cntxt-menu pull-left"><i class="fa fa-check" aria-hidden="true"></i>&nbsp;&nbsp;Acções&nbsp;&nbsp;</paper-button>
-                        </vaadin-context-menu>
-                    </div>-->
-
-
                                     <div class="col-lg-6">
                                         <such-dropdown-menu class="subMenu" id="actionButtonPedidoAberturaProc14" on-value-changed="_mnuAccao14_ItemSelected" title=" Acções " items="[[ _mnuAccao14_MenuItems ]]"></such-dropdown-menu>
                                     </div>
-
-
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -2364,13 +2269,9 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
-
-                                            <!--<vaadin-date-picker value="{{data.dataAberturaCA8}}" id="dataAberturaCA8" name="dataAberturaCA8" label="Data" disabled="true"></vaadin-date-picker>-->
                                             <vaadin-text-field value="{{data.dataAberturaCA8}}" id="dataAberturaCA8" name="dataAberturaCA8" label="Data" disabled="true"> </vaadin-text-field>
                                         </div>
                                         <div class="col-sm-3">
-
-                                            <!--<vaadin-date-picker value="{{data.caDataRatificacaoAbert}}" id="caDataRatificacaoAbert" name="caDataRatificacaoAbert" label="Data Ratificação" disabled="true"></vaadin-date-picker>-->
                                             <vaadin-text-field value="{{data.caDataRatificacaoAbert}}" id="caDataRatificacaoAbert" name="caDataRatificacaoAbert" label="Data Ratificação" disabled="true"> </vaadin-text-field>
                                         </div>
                                     </div>
@@ -2378,7 +2279,6 @@
                                         <div class="col-sm-12">
                                             <vaadin-checkbox checked="{{data.ratificarCaAbertura}}" id="ratificarCaAbertura">Ratificar CA</vaadin-checkbox>
                                             <vaadin-checkbox checked="{{data.criticoAbertura}}" id="criticoAbertura">Critico</vaadin-checkbox>
-
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -2841,15 +2741,154 @@
                     <div class="panel panel-default">
                         <paper-collapse-group>
                             <paper-collapse-item header="Notas" opened>
-                                <div class="col-xs-12">
-
+                                <div class="panel-body">
+                                    <div class="row break_clear">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-10">
+                                                    <such-textarea rows="2" id="_NovaNota" name="_NovaNota" label="Nota"> </such-textarea>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <br />
+                                                    <paper-button class="btnSave" id="btnCriarNota" raised on-tap="_createNota"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 mb-15">
+                                        <div class="break_clear">
+                                            <vaadin-grid id="tabNotas" aria-label="Tabela Notas" items="{{ data.notasProcedimentosCcp }}" class="editGrid">
+                                                <vaadin-grid-column width="50px" hidden>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="noProcedimento" style="text-align:center;">Nº Procedimento</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="noProcedimento" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabNotasNoProcedimento" id="tabNotasNoProcedimento" value="{{item.noProcedimento}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="50px" hidden>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="noLinha" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabNotasNoLinha" id="tabNotasNoLinha" value="{{item.noLinha}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="50px" hidden>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="utilizador" style="text-align:left;">Utilizador</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="utilizador" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabNotasutilizador" id="tabNotasutilizador" value="{{item.utilizador}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="15%" flex-grow="0" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="dataHora_Show" style="text-align:center;">Data</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="dataHora_Show" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabNotasdataHora_Show" id="tabNotasdataHora_Show" value="{{item.dataHora_Show}}" readonly style="text-align:center;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="70%" flex-grow="0" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="nota" style="text-align:left;">Nota</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="nota" />
+                                                    </template>
+                                                    <template>
+                                                        <!--<vaadin-text-field name="tabNotasnota" id="tabNotasnota" value="{{item.nota}}" disabled="true" style="text-align:left;"></vaadin-text-field>-->
+                                                        <such-textarea rows="2" id="tabNotasnota" name="tabNotasnota" value="{{item.nota}}" readonly style="text-align:left;"> </such-textarea>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="15%" flex-grow="0">
+                                                    <template class="header">
+                                                    </template>
+                                                    <template>
+                                                        <paper-button class="btnRemove" id="btnDeleteNota" raised on-tap="_deleteNota" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
                             <paper-collapse-item header="Registo de Atas">
-                                <div class="col-xs-12">
-
+                                <div class="panel-body">
+                                    <div class="row break_clear">
+                                        <div class="col-sm-2">
+                                            <vaadin-text-field value="{{data.registoDeAtas.length}}" id="numActa" name="numActa" label="Nº Atas" disabled="true"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-text-field id="gNumActa" name="gNumActa" label="Ata Nº"> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-date-picker id="gDataActa" name="gDataAta" label="Data da Ata"></vaadin-date-picker>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <vaadin-text-field id="gObsData" name="gObsData" label="Obs."> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <br />
+                                            <paper-button class="btnSave" id="btnCriarAta" raised on-tap="_createAta"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 mb-15">
+                                        <div class="break_clear">
+                                            <vaadin-grid id="tabActas" aria-label="Tabela Actas" items="{{ data.registoDeAtas }}" class="editGrid">
+                                                <vaadin-grid-column width="50px" hidden>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="numProcedimento" style="text-align:center;">Nº Procedimento</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="numProcedimento" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabActasnumProcedimento" id="tabActasnumProcedimento" value="{{item.numProcedimento}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="50px" hidden>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="utilizadorCriacao" style="text-align:left;">Criada por</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="utilizadorCriacao" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabActasutilizador" id="tabActasutilizador" value="{{item.utilizadorCriacao}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="15%" flex-grow="0" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="numActa" style="text-align:center;">Nº ata</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="numActa" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabActasnumActa" id="tabActasnumActa" value="{{item.numActa}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="15%" flex-grow="0" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="dataDaActa_Show" style="text-align:center;">Data</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="dataDaActa_Show" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabActasdataDaActa_Show" id="tabActasdataDaActa_Show" value="{{item.dataDaActa_Show}}" readonly style="text-align:center;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="70%" flex-grow="0" resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="observacoes" style="text-align:left;">Observações</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="observacoes" />
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field name="tabActasobservacoes" id="tabActasobservacoes" value="{{item.observacoes}}" readonly style="text-align:left;"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
@@ -3093,7 +3132,6 @@
                     if (item != null) {
                         this.$._DescricaoProduto.value = item.name;
                         this.$._UnitMeasureCode.value = item.measureUnit;
-                        //this.$._linhaCustoUnitario.value = item.lastCostDirect;
                     }
                 },
                 _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
@@ -3111,7 +3149,6 @@
                         },
                         callback: function (result) {
                             if (result) {
-                                //_ajaxRequest.body = JSON.stringify(_Procedimento);
                                 _ajaxRequest.generateRequest();
                             }
                         }
@@ -3134,8 +3171,6 @@
                         },
                         callback: function (result) {
                             if (result) {
-                                debugger;
-
                                 new bootbox.confirm({
                                     message: _message2,
                                     buttons: {
@@ -3150,7 +3185,6 @@
                                     },
                                     callback: function (result) {
                                         if (result) {
-                                            debugger;
                                             this.data.ratificarCaAdjudicacao = true;
 
                                             bootbox.confirm({
@@ -3167,24 +3201,18 @@
                                                 },
                                                 callback: function (result) {
                                                     if (result) {
-                                                        debugger;
                                                         this.data.ratificarCaAdjudicacao = true;
-                                                        
                                                     }
                                                 }
                                             });
-
-                                            
                                         }
                                     }
                                 });
-
                                 _ajaxRequest.generateRequest();
                             }
                         }
                     });
                 },
-
 
                 _confirmAndExecuteActionToast_NR: function (_message, _ajaxRequest) {
                     var _this = this;
@@ -3230,7 +3258,6 @@
 
                 _update: function () {
                     if (this._onUpdateValidateElementoJuri()) {
-                        //this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data)
                         this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
                         this.$.ajax_update_procedimento.generateRequest();
                     }
@@ -3404,48 +3431,6 @@
                     } else
                         return true;
                 },
-                //_createElementoJuri: function () {
-                //    this.isJuriElementAction = true;
-                //    if (this._validateElementoJuriData()) {
-                //        this._executeRequest("/ProcedimentosCcps/UpdateProcedimento", this.data);
-
-                //        this.$.ajax_createelementojuri.body = JSON.stringify({
-                //            noProcedimento: this.data.no,
-                //            utilizador: this._userName,
-                //            presidente: this.chkPresidente,
-                //            vogal: this.chkVogal,
-                //            suplente: this.chkSuplente,
-                //            enviarEmail: this.chkSendMail
-                //        });
-
-                //        this.$.ajax_createelementojuri.generateRequest();
-                //        this.$.gridElementosJuri.clearCache();
-                //        this.$.gridElementosJuri_4.clearCache();
-                //    }
-                //},
-                //_createElementoJuriResponse: function (e) {
-                //    if (this.ElementoCreated.eReasonCode == 0) {
-                //        this._openToast('Elemento Júri adicionado com sucesso');
-                //        this.$.page_databound_ajax.generateRequest();
-
-                //        this.$.gridElementosJuri.clearCache();
-                //        this.$.gridElementosJuri_4.clearCache();
-
-                //        this.$.users.value = "";
-                //        this.chkPresidente = false;
-                //        this.chkVogal = false;
-                //        this.chkSuplente = false;
-                //        this.chkSendMail = false;
-                //    } else {
-                //        if (this.ElementoCreated.eReasonCode == 3 || this.ElementoCreated.eReasonCode == 4) {
-                //            this._openToast(this.ElementoCreated.eMessage);
-                //        }
-                //        else {
-                //            this._openToast('Não foi possível criar o Elemento do Juri');
-                //        }
-                //    }
-                //},
-
 
                 //NR 20180316
                 _createElementoJuri: function () {
@@ -4340,9 +4325,79 @@
                     }
                 },
 
+                //NR 20180329
+                _createNota: function () {
+                    this.$.page_createNota_ajax.body = JSON.stringify({
+                        nºProcedimento: this.$.no.value,
+                        nota: this.$._NovaNota.value
+                    });
+                    this.$.page_createNota_ajax.generateRequest();
+                    this.$.tabNotas.clearCache();
+                },
+                _createNotaResponse: function (e) {
+                    if (this.CreateNota) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Adicionada Nota com sucesso.');
 
+                        this.$.tabNotas.clearCache();
 
+                        this.$._NovaNota.value = "";
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao adicionar a Nota.');
+                    }
+                },
+                _deleteNota: function (e) {
+                    var index = this.data.notasProcedimentosCcp.indexOf(e.model.item);
+                    this.data.notasProcedimentosCcp.splice(index, 1);
+                    this.$.page_deleteNota_ajax.body = JSON.stringify({ nºProcedimento: e.model.item.noProcedimento, nºLinha: e.model.item.noLinha });
+                    this.$.page_deleteNota_ajax.generateRequest();
+                    this.$.tabNotas.clearCache();
 
+                },
+                _deleteNotaResponse: function (e) {
+                    if (this.DeleteNota) {
+                        this._openToast('Nota eliminada com sucesso');
+                        this.$.tabNotas.clearCache();
+                    } else {
+                        this._openToast('Não foi possível eliminar a Nota!')
+                    }
+                },
+                _createAta: function () {
+                    if (this.$.gNumActa.value == '' ) {
+                        this._openToast('Tem que indicar um Nº de ata');
+                        return;
+                    }
+
+                    var ajax_request = this.$.page_createAta_ajax;
+                    ajax_request.body = JSON.stringify({
+                        nºProcedimento: this.$.no.value,
+                        nºAta: this.$.gNumActa.value,
+                        dataDaAta: this.$.gDataActa.value,
+                        observações: this.$.gObsData.value
+                    });
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma o registo da Ata?", ajax_request
+                    );
+                    
+                    this.$.tabActas.clearCache();
+                },
+                _createAtaResponse: function (e) {
+                    if (this.CreateAta.eReasonCode == 0) {
+                        this.$.page_databound_ajax.generateRequest();
+                        this._showMessage('Adicionada Ata com sucesso.');
+
+                        this.$.tabActas.clearCache();
+
+                        this.$.gNumActa.value = "";
+                        this.$.gDataActa.value = "";
+                        this.$.gObsData.value = "";
+                    }
+                    else {
+                        this._openToast(this.CreateAta.eMessage);
+                    }
+                },
 
                 //NR 20180308
                 _enviarParaCAAbertura: function () {

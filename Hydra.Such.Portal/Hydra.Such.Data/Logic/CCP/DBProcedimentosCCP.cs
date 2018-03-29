@@ -482,6 +482,39 @@ namespace Hydra.Such.Data.Logic.CCP
                 return false;
             }
         }
+
+        //NR 20180329
+        public static RegistoDeAtas CreateAta(RegistoDeAtas ObjectToCreate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.RegistoDeAtas.Add(ObjectToCreate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToCreate;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        //NR 20180329
+        public static bool CheckAtaNumber(string ProcedimentoID, string NoActa)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            int num = _context.RegistoDeAtas.Where(a => a.NºProcedimento == ProcedimentoID && a.NºAta == NoActa).Count();
+
+            if (num > 0)
+                return true;
+
+            return false;
+        }
+
         #endregion
 
         #region CRUD ElementosJuri
@@ -908,6 +941,29 @@ namespace Hydra.Such.Data.Logic.CCP
                 return false;
             }
         }
+
+        //NR 20180329
+        public static NotasProcedimentosCcp CreateNota(NotasProcedimentosCcp ObjectToCreate)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.NotasProcedimentosCcp.Add(ObjectToCreate);
+                    ctx.SaveChanges();
+                }
+
+                return ObjectToCreate;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        
+
+
+
         #endregion
 
         #region Lista Fluxo - NR 20180327
@@ -4112,7 +4168,6 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return ReturnHandlers.Success;
         }
-
         // The following method maps NAV2009  < Control1000000484 > OnPush event --> Confirmar Mudança de Estado
         public static ErrorHandler MudarEstado(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails)
         {
@@ -4155,10 +4210,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return ReturnHandlers.Success;
         }
-
-
-
-
+        
         #endregion
 
     }
