@@ -63,9 +63,6 @@
 
 
 
-
-
-
             /*.vaadin-grid-table-header .vaadin-grid-cell-content .vaadin-grid-row .vaadin-grid-cell:not([detailscell]) ::slotted(vaadin-grid-cell-content) {
                 font-weight: 500;
                 height: var(--vaadin-grid-header-cell_-_height);
@@ -2909,96 +2906,465 @@
                                 <div class="panel-body">
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-4">
                                                 <label part="label" class="grey" id="vaadin-text-field-label-30">1 - Cabimento</label>
                                             </div>
-                                            <div class="col-sm-9">
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault1" value="20" min="10" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar class="foreground_RED" theme="error" id="CBVermelho1" value="90" min="10" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar class="foreground_GREEN" theme="success"  id="CBVerde1" value="80" min="10" max="100"></vaadin-progress-bar>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault1" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado1}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho1" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado1Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde1" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado1Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault1" value="{{data.temposPaCcp.estado1}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho1" value="{{data.temposPaCcp.estado1Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde1" value="{{data.temposPaCcp.estado1Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-4">
                                                 <label part="label" class="grey" id="vaadin-text-field-label-30">11 - Relat. Preliminar</label>
                                             </div>
-                                            <div class="col-sm-9">
-                                                <vaadin-progress-bar theme="contrast" id="CBDefault11" value="20" min="10" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="error" id="CBVermelho11" value="40" min="10" max="100"></vaadin-progress-bar>
-                                                <vaadin-progress-bar theme="success" id="CBVerde11" value="50" min="10" max="100"></vaadin-progress-bar>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault11" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado11}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho11" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado11Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde11" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado11Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault11" value="{{data.temposPaCcp.estado11}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho11" value="{{data.temposPaCcp.estado11Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde11" value="{{data.temposPaCcp.estado11Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                     </div>
-
-
-
-
-
-
-
-
-
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-4">
                                                 <label part="label" class="grey" id="vaadin-text-field-label-30">2 - Aval. Imobilizado</label>
                                             </div>
-                                            <div class="col-sm-9">
-                                                <vaadin-progress-bar id="CBDefault2" value="20" min="10" max="100" theme="contrast"></vaadin-progress-bar>
-                                                <vaadin-progress-bar id="CBVermelho2" value="0" min="10" max="100" theme="error"></vaadin-progress-bar>
-                                                <vaadin-progress-bar id="CBVerde2" value="0" min="10" max="100" theme="success"></vaadin-progress-bar>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault2" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado2}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho2" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado2Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde2" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado2Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault2" value="{{data.temposPaCcp.estado2}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho2" value="{{data.temposPaCcp.estado2Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde2" value="{{data.temposPaCcp.estado2Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-4">
                                                 <label part="label" class="grey" id="vaadin-text-field-label-30">12 - Aud. Prévia</label>
                                             </div>
-                                            <div class="col-sm-9">
-                                                <vaadin-progress-bar id="CBDefault12" value="20" min="10" max="100" theme="contrast"></vaadin-progress-bar>
-                                                <vaadin-progress-bar id="CBVermelho12" value="0" min="10" max="100" theme="error"></vaadin-progress-bar>
-                                                <vaadin-progress-bar id="CBVerde12" value="0" min="10" max="100" theme="success"></vaadin-progress-bar>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault12" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado12}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho12" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado12Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde12" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado12Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault12" value="{{data.temposPaCcp.estado12}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho12" value="{{data.temposPaCcp.estado12Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde12" value="{{data.temposPaCcp.estado12Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-4">
                                                 <label part="label" class="grey" id="vaadin-text-field-label-30">3 - Autoriz. CA Imob.</label>
                                             </div>
-                                            <div class="col-sm-9">
-                                                <vaadin-progress-bar id="CBDefault3" value="20" min="10" max="100" theme="contrast"></vaadin-progress-bar>
-                                                <vaadin-progress-bar id="CBVermelho3" value="0" min="10" max="100" theme="error"></vaadin-progress-bar>
-                                                <vaadin-progress-bar id="CBVerde3" value="0" min="10" max="100" theme="success"></vaadin-progress-bar>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault3" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado3}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho3" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado3Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde3" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado3Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault3" value="{{data.temposPaCcp.estado3}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho3" value="{{data.temposPaCcp.estado3}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde3" value="{{data.temposPaCcp.estado3}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
-                                            <div class="col-sm-3">
+                                            <div class="col-sm-4">
                                                 <label part="label" class="grey" id="vaadin-text-field-label-30">13 - Relat. Final</label>
                                             </div>
-                                            <div class="col-sm-9">
-                                                <vaadin-progress-bar id="CBDefault13" value="20" min="10" max="100" theme="contrast"></vaadin-progress-bar>
-                                                <vaadin-progress-bar id="CBVermelho13" value="30" min="10" max="100" theme="error"></vaadin-progress-bar>
-                                                <vaadin-progress-bar id="CBVerde13" value="70" min="10" max="100" theme="success"></vaadin-progress-bar>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault13" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado13}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho13" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado13Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde13" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado13Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault13" value="{{data.temposPaCcp.estado13}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho13" value="{{data.temposPaCcp.estado13Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde13" value="{{data.temposPaCcp.estado13Tg}}" min="0" max="100"></vaadin-progress-bar>
                                             </div>
                                         </div>
                                     </div>
-
-
-
-
-
-
-
-
-
-
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">4 - Fund. Processual</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault4" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado4}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho4" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado4Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde4" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado4Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault4" value="{{data.temposPaCcp.estado4}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho4" value="{{data.temposPaCcp.estado4Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde4" value="{{data.temposPaCcp.estado4Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">14 - Aval. Juríd. Contrato</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault14" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado14}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho14" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado14Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde14" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado14Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault14" value="{{data.temposPaCcp.estado14}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho14" value="{{data.temposPaCcp.estado14Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde14" value="{{data.temposPaCcp.estado14Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">5 - Fund. Financeiro</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault5" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado5}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho5" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado5Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde5" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado5Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault5" value="{{data.temposPaCcp.estado5}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho5" value="{{data.temposPaCcp.estado5Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde5" value="{{data.temposPaCcp.estado5Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">15 - Valor Adjudicação</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault15" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado15}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho15" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado15Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde15" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado15Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault15" value="{{data.temposPaCcp.estado15}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho15" value="{{data.temposPaCcp.estado15Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde15" value="{{data.temposPaCcp.estado15Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">6 - Fund. Jurídico</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault6" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado6}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho6" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado6Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde6" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado6Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault6" value="{{data.temposPaCcp.estado6}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho6" value="{{data.temposPaCcp.estado6Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde6" value="{{data.temposPaCcp.estado6Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">16 - Pedido Adjudicação</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault16" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado16}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho16" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado16Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde16" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado16Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault16" value="{{data.temposPaCcp.estado16}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho16" value="{{data.temposPaCcp.estado16Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde16" value="{{data.temposPaCcp.estado16Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">7 - Pedido Abertura</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault7" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado7}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho7" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado7Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde7" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado7Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault7" value="{{data.temposPaCcp.estado7}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho7" value="{{data.temposPaCcp.estado7Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde7" value="{{data.temposPaCcp.estado7Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">17 - Autoriz. Adjudicação</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault17" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado17}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho17" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado17Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde17" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado17Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault17" value="{{data.temposPaCcp.estado17}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho17" value="{{data.temposPaCcp.estado17Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde17" value="{{data.temposPaCcp.estado17Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">8 - Autorização Abertura</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault8" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado8}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho8" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado8Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde8" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado8Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault8" value="{{data.temposPaCcp.estado8}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho8" value="{{data.temposPaCcp.estado8Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde8" value="{{data.temposPaCcp.estado8Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">18 - Adjudic. Fornecedor</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault18" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado18}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho18" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado18Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde18" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado18Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault18" value="{{data.temposPaCcp.estado18}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho18" value="{{data.temposPaCcp.estado18Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde18" value="{{data.temposPaCcp.estado18Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">9 - Publicação</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault9" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado9}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho9" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado9Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde9" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado9Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault9" value="{{data.temposPaCcp.estado9}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho9" value="{{data.temposPaCcp.estado9Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde9" value="{{data.temposPaCcp.estado9Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">19 - Final Processo</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault19" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado19}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho19" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado19Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde19" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado19Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault19" value="{{data.temposPaCcp.estado19}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho19" value="{{data.temposPaCcp.estado19Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde19" value="{{data.temposPaCcp.estado19Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">10 - Recolha Proposta</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault10" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado10}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho10" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado10Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde10" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado10Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault10" value="{{data.temposPaCcp.estado10}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho10" value="{{data.temposPaCcp.estado10Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde10" value="{{data.temposPaCcp.estado10Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <label part="label" class="grey" id="vaadin-text-field-label-30">20 - Fecho</label>
+                                            </div>
+                                            <div class="col-sm-8">
+                                                <paper-tooltip for="CBDefault20" position="top" offset="-1" animation-delay="1">
+                                                    Dias atribuidos - [ {{data.temposPaCcp.estado20}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVermelho20" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos fora do prazo - [ {{data.temposPaCcp.estado20Tg}} ]
+                                                </paper-tooltip>
+                                                <paper-tooltip for="CBVerde20" position="top" offset="-1" animation-delay="1">
+                                                    Dias gastos no prazo - [ {{data.temposPaCcp.estado20Tg}} ]
+                                                </paper-tooltip>
+                                                <vaadin-progress-bar theme="contrast" id="CBDefault20" value="{{data.temposPaCcp.estado20}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="error" id="CBVermelho20" value="{{data.temposPaCcp.estado20Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                                <vaadin-progress-bar theme="success" id="CBVerde20" value="{{data.temposPaCcp.estado20Tg}}" min="0" max="100"></vaadin-progress-bar>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
                             </paper-collapse-item>
                             <paper-collapse-item header="Total Dias">
-                                <div class="col-xs-12">
+                                <div class="panel-body">
+                                    <div class="row break_clear">
+                                        <div class="col-sm-1">
+                                            <label part="label" class="grey" id="vaadin-text-field-label-30">Atríbuidos</label>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <vaadin-text-field type="number" name="diasAtribuidos_total" id="diasAtribuidos_total" value="{{data.temposPaCcp.estado0 + data.temposPaCcp.estado1 + data.temposPaCcp.estado2 + data.temposPaCcp.estado3 + data.temposPaCcp.estado4 + data.temposPaCcp.estado5 + data.temposPaCcp.estado6 + data.temposPaCcp.estado7 + data.temposPaCcp.estado8 + data.temposPaCcp.estado9 + data.temposPaCcp.estado10 + data.temposPaCcp.estado11 + data.temposPaCcp.estado12 + data.temposPaCcp.estado13 + data.temposPaCcp.estado14 + data.temposPaCcp.estado15 + data.temposPaCcp.estado16 + data.temposPaCcp.estado17 + data.temposPaCcp.estado18 + data.temposPaCcp.estado19 + data.temposPaCcp.estado20}}" readonly style="text-align:right;"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <paper-tooltip for="CBDefault_diasAtribuidos" position="top" offset="-1" animation-delay="1">
+                                                Dias atribuidos - [ {{data.temposPaCcp.estado0}} + {{data.temposPaCcp.estado1}} ]
+                                            </paper-tooltip>
+                                            <vaadin-progress-bar theme="contrast" id="CBDefault_diasAtribuidos" value="{{data.temposPaCcp.estado0 + data.temposPaCcp.estado1 + data.temposPaCcp.estado2 + data.temposPaCcp.estado3 + data.temposPaCcp.estado4 + data.temposPaCcp.estado5 + data.temposPaCcp.estado6 + data.temposPaCcp.estado7 + data.temposPaCcp.estado8 + data.temposPaCcp.estado9 + data.temposPaCcp.estado10 + data.temposPaCcp.estado11 + data.temposPaCcp.estado12 + data.temposPaCcp.estado13 + data.temposPaCcp.estado14 + data.temposPaCcp.estado15 + data.temposPaCcp.estado16 + data.temposPaCcp.estado17 + data.temposPaCcp.estado18 + data.temposPaCcp.estado19 + data.temposPaCcp.estado20}}" min="0" max="100"></vaadin-progress-bar>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-text-field name="diasAtribuidos_data" id="diasAtribuidos_data" readonly style="text-align:center;"></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-1">
+                                            <label part="label" class="grey" id="vaadin-text-field-label-30">Gastos</label>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <vaadin-text-field name="diasGastos_total" id="diasGastos_total" readonly style="text-align:right;"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <vaadin-progress-bar theme="error" id="CBDefault_diasGastos_vermelho" value="0" min="0" max="100"></vaadin-progress-bar>
+                                            <vaadin-progress-bar theme="success" id="CBDefault_diasGastos_verde" value="0" min="0" max="100" visible="false"></vaadin-progress-bar>
+                                        </div>
+                                        <div class="col-sm-2">
 
+                                        </div>
+                                    </div>
+
+                                    <h2 class="separator" style="border-bottom:1px dotted; padding:0;"></h2>
+
+                                    <div class="row break_clear">
+                                        <div class="col-sm-2">
+                                            <vaadin-progress-bar theme="contrast" id="CBDefault_Legenda" value="0" min="0" max="100"></vaadin-progress-bar>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label part="label" class="grey" id="vaadin-text-field-label-30">Dias atribuidos</label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-progress-bar theme="error" id="CBVermelho_Legenda" value="0" min="0" max="100"></vaadin-progress-bar>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label part="label" class="grey" id="vaadin-text-field-label-30">Dias gastos no prazo</label>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-progress-bar theme="success" id="CBVerde_Legenda" value="0" min="0" max="100"></vaadin-progress-bar>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label part="label" class="grey" id="vaadin-text-field-label-30">Dias gastos fora do prazo</label>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>

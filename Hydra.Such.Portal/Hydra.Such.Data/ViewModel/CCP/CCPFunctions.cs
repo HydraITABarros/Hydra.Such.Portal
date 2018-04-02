@@ -614,7 +614,10 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataHoraCriacao = Tempos.DataHoraCriação,
                 UtilizadorCriacao = Tempos.UtilizadorCriação,
                 DataHoraModificacao = Tempos.DataHoraModificação,
-                UtilizadorModificacao = Tempos.UtilizadorModificação
+                UtilizadorModificacao = Tempos.UtilizadorModificação,
+
+                SomaEstadosAtribuidos = (Tempos.Estado0.HasValue ? Tempos.Estado0.Value : 0) + (Tempos.Estado1.HasValue ? Tempos.Estado1.Value : 0) + (Tempos.Estado2.HasValue ? Tempos.Estado2.Value : 0) + (Tempos.Estado3.HasValue ? Tempos.Estado3.Value : 0) + (Tempos.Estado4.HasValue ? Tempos.Estado4.Value : 0) + (Tempos.Estado5.HasValue ? Tempos.Estado5.Value : 0) + (Tempos.Estado6.HasValue ? Tempos.Estado6.Value : 0) + (Tempos.Estado7.HasValue ? Tempos.Estado7.Value : 0) + (Tempos.Estado8.HasValue ? Tempos.Estado8.Value : 0) + (Tempos.Estado9.HasValue ? Tempos.Estado9.Value : 0) + (Tempos.Estado10.HasValue ? Tempos.Estado10.Value : 0) + (Tempos.Estado11.HasValue ? Tempos.Estado11.Value : 0) + (Tempos.Estado12.HasValue ? Tempos.Estado12.Value : 0) + (Tempos.Estado13.HasValue ? Tempos.Estado13.Value : 0) + (Tempos.Estado14.HasValue ? Tempos.Estado14.Value : 0) + (Tempos.Estado15.HasValue ? Tempos.Estado15.Value : 0) + (Tempos.Estado16.HasValue ? Tempos.Estado16.Value : 0) + (Tempos.Estado17.HasValue ? Tempos.Estado17.Value : 0) + (Tempos.Estado18.HasValue ? Tempos.Estado18.Value : 0) + (Tempos.Estado19.HasValue ? Tempos.Estado19.Value : 0) + (Tempos.Estado20.HasValue ? Tempos.Estado20.Value : 0)
+
             });
         }
 
