@@ -14,6 +14,7 @@ using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using Hydra.Such.Data.Logic.Project;
+using Hydra.Such.Portal.Extensions;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -691,13 +692,13 @@ namespace Hydra.Such.Portal.Controllers
                         ProjectNumerationConfigurationId = Configs.NumeraçãoRequisições.Value;
 
                         string RequisitionNo = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, true);
-                        if (RequisitionNo != null)
+                        if (!string.IsNullOrEmpty(RequisitionNo))
                         {
                             req.RequisitionNo = RequisitionNo;
                             Requisição createReq = DBRequest.ParseToDB(req);
 
-                            DBRequest.Create(createReq);
-                            if(createReq.NºRequisição != null)
+                            createReq = DBRequest.Create(createReq);
+                            if(createReq != null)
                             {
                                 //copy files
                                 var preReq = data.PreRequesitionsNo;
@@ -743,6 +744,12 @@ namespace Hydra.Such.Portal.Controllers
                                 totalItems++;
                                 createdReqIds += RequisitionNo + "; ";
 
+                                //Start Approval
+                                ErrorHandler result = ApprovalMovementsManager.StartApprovalMovement(1, 1, createReq.CódigoÁreaFuncional, createReq.CódigoCentroResponsabilidade, createReq.CódigoRegião, 0, createReq.NºRequisição, User.Identity.Name);
+                                if (result.eReasonCode != 100)
+                                {
+                                    data.eMessages.Add(new TraceInformation(TraceType.Error, createReq.NºRequisição));
+                                }
 
                                 data.eReasonCode = 1;
                                 data.eMessage = "Requisições criadas com sucesso";
@@ -750,9 +757,8 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             else
                             {
-                                DBRequest.Delete(createReq);
                                 data.eReasonCode = 0;
-                                data.eMessage = "Ocorreu um erro ao criar o requisição.";
+                                data.eMessage = "Ocorreu um erro ao criar a requisição.";
                             }
                         }
                         else
@@ -766,13 +772,22 @@ namespace Hydra.Such.Portal.Controllers
                         //if all items have been created delete pre-requisition lines
                         DBPreRequesitionLines.DeleteAllFromPreReqNo(data.PreRequesitionsNo);
                         data.eMessage += createdReqIds;
+                        if (data.eMessages.Count > 0)
+                        {
+                            data.eMessages.Insert(0, new TraceInformation(TraceType.Error, "Não foi possivel iniciar o processo de aprovação para as seguintes requisições: "));
+                        }
+                    }
+                    else
+                    {
+                        data.eReasonCode = 0;
+                        data.eMessage = "Ocorreu um erro ao criar a requisição.";
                     }
                 }
             }
             catch (Exception ex)
             {
                 data.eReasonCode = 0;
-                data.eMessage = "Ocorreu um erro ao criar o requisição.";
+                data.eMessage = "Ocorreu um erro ao criar a requisição.";
             }
 
             return Json(data);

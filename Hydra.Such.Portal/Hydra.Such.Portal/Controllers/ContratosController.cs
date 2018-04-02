@@ -1118,18 +1118,17 @@ namespace Hydra.Such.Portal.Controllers
 
             List<Contratos> ContractsList = null;
 
-            if (Archived == 0 || ContractNo == "")
+            if (ContractNo == "")
             {
                 if (AreaId == 4)
-                {
                     ContractsList = DBContracts.GetAllByContractType(2);
-                    ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
-                }
                 else
-                {
                     ContractsList = DBContracts.GetAllByAreaIdAndType(AreaId, 2);
-                    ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
-                }
+
+                if(Archived == 0)
+                    ContractsList.RemoveAll(x => x.Arquivado.Value);
+                else
+                    ContractsList.RemoveAll(x => x.Arquivado.HasValue && !x.Arquivado.Value);
             }
             else
             {
@@ -1138,26 +1137,14 @@ namespace Hydra.Such.Portal.Controllers
 
             List<ContractViewModel> result = new List<ContractViewModel>();
 
-            if (showLevel == 1)
-            {
-                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value > 2);
-            }
-            else if (showLevel == 2)
+            if (showLevel == 2) //Canceladas
             {
                 ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value != 5);
             }
-            else if (showLevel == 3)
+            else if (showLevel == 3) //Perdidas
             {
                 ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value != 4);
             }
-            else if (showLevel == 4)
-            {
-                ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value <= 2);
-            }
-            //else
-            //{
-            //    ContractsList.RemoveAll(x => !x.Estado.HasValue || x.Estado.Value <= 2);
-            //}
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
 

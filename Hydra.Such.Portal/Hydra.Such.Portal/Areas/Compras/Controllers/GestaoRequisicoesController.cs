@@ -1052,7 +1052,7 @@ namespace Hydra.Such.Portal.Areas.Compras.Controllers
                 Requisição CReq = DBRequest.GetById(requisitionId);
                 if (CReq != null)
                 {
-                    result = ApprovalMovementsManager.StartApprovalMovement(1, 1,CReq.CódigoÁreaFuncional,CReq.CódigoCentroResponsabilidade,CReq.CódigoRegião, 1000, requisitionId, User.Identity.Name);
+                    result = ApprovalMovementsManager.StartApprovalMovement(1, 1,CReq.CódigoÁreaFuncional,CReq.CódigoCentroResponsabilidade,CReq.CódigoRegião, 0, requisitionId, User.Identity.Name);
                 }
             }
             else

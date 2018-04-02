@@ -17,6 +17,38 @@ namespace Hydra.Such.Data.ViewModel.CCP
         // this function receives an ProcedimentosCcpView object and maps it to a ProcedimentosCcp object
         public static ProcedimentosCcp CastProcedimentoCcpViewToProcedimentoCcp(ProcedimentoCCPView ProcedimentoView)
         {
+            DateTime? Data_Publicacao_Show = ProcedimentoView.DataPublicacao;
+            DateTime? Data_Recolha_Show = ProcedimentoView.DataRecolha;
+            DateTime? Data_Valid_Relatorio_Preliminar_Show = ProcedimentoView.DataValidRelatorioPreliminar;
+            DateTime? Data_Audiencia_Previa_Show = ProcedimentoView.DataAudienciaPrevia;
+            DateTime? Data_Relatorio_Final_Show = ProcedimentoView.DataRelatorioFinal;
+            DateTime? Data_Notificacao_Show = ProcedimentoView.DataNotificacao;
+
+            if (ProcedimentoView.DataPublicacao.ToString() == "")
+            {
+                Data_Publicacao_Show = ProcedimentoView.DataPublicacao_Show == "" ? ProcedimentoView.DataPublicacao : Convert.ToDateTime(ProcedimentoView.DataPublicacao_Show);
+            }
+            if (ProcedimentoView.DataRecolha.ToString() == "")
+            {
+                Data_Recolha_Show = ProcedimentoView.DataRecolha_Show == "" ? ProcedimentoView.DataRecolha : Convert.ToDateTime(ProcedimentoView.DataRecolha_Show);
+            }
+            if (ProcedimentoView.DataValidRelatorioPreliminar.ToString() == "")
+            {
+                Data_Valid_Relatorio_Preliminar_Show = ProcedimentoView.DataValidRelatorioPreliminar_Show == "" ? ProcedimentoView.DataValidRelatorioPreliminar : Convert.ToDateTime(ProcedimentoView.DataValidRelatorioPreliminar_Show);
+            }
+            if (ProcedimentoView.DataAudienciaPrevia.ToString() == "")
+            {
+                Data_Audiencia_Previa_Show = ProcedimentoView.DataAudienciaPrevia_Show == "" ? ProcedimentoView.DataAudienciaPrevia : Convert.ToDateTime(ProcedimentoView.DataAudienciaPrevia_Show);
+            }
+            if (ProcedimentoView.DataRelatorioFinal.ToString() == "")
+            {
+                Data_Relatorio_Final_Show = ProcedimentoView.DataRelatorioFinal_Show == "" ? ProcedimentoView.DataRelatorioFinal : Convert.ToDateTime(ProcedimentoView.DataRelatorioFinal_Show);
+            }
+            if (ProcedimentoView.DataNotificacao.ToString() == "")
+            {
+                Data_Notificacao_Show = ProcedimentoView.DataNotificacao_Show == "" ? ProcedimentoView.DataNotificacao : Convert.ToDateTime(ProcedimentoView.DataNotificacao_Show);
+            }
+
             ProcedimentosCcp Procedimento = new ProcedimentosCcp
             {
                 Nº = ProcedimentoView.No,
@@ -66,11 +98,11 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 ObjetoDoContrato = ProcedimentoView.ObjetoDoContrato,
                 PréÁrea = ProcedimentoView.PreArea,
                 SubmeterPréÁrea = ProcedimentoView.SubmeterPreArea,
-                ValorDecisãoContratar = ProcedimentoView.ValorDecisaoContratar,
-                ValorAdjudicaçãoAnteriro = ProcedimentoView.ValorAdjudicacaoAnteriro,
-                ValorAdjudicaçãoAtual = ProcedimentoView.ValorAdjudicacaoAtual,
-                DiferençaEuros = ProcedimentoView.DiferencaEuros,
-                DiferençaPercent = ProcedimentoView.DiferencaPercent,
+                ValorDecisãoContratar = ProcedimentoView.ValorDecisaoContratar == null ? 0 : ProcedimentoView.ValorDecisaoContratar,
+                ValorAdjudicaçãoAnteriro = ProcedimentoView.ValorAdjudicacaoAnteriro == null ? 0 : ProcedimentoView.ValorAdjudicacaoAnteriro,
+                ValorAdjudicaçãoAtual = ProcedimentoView.ValorAdjudicacaoAtual == null ? 0 : ProcedimentoView.ValorAdjudicacaoAtual,
+                DiferençaEuros = ProcedimentoView.DiferencaEuros == null ? 0 : ProcedimentoView.DiferencaEuros,
+                DiferençaPercent = ProcedimentoView.DiferencaPercent == null ? 0 : ProcedimentoView.DiferencaPercent,
                 WorkflowFinanceiros = ProcedimentoView.WorkflowFinanceiros,
                 WorkflowJurídicos = ProcedimentoView.WorkflowJuridicos,
                 WorkflowFinanceirosConfirm = ProcedimentoView.WorkflowFinanceirosConfirm,
@@ -92,27 +124,51 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 NºAta = ProcedimentoView.No_Ata,
                 DataAta = ProcedimentoView.DataAta,
                 ComentárioPublicação = ProcedimentoView.ComentarioPublicacao,
-                DataPublicação = ProcedimentoView.DataPublicacao,
+
+                //NR 20180314
+                //DataPublicação = ProcedimentoView.DataPublicacao,
+                DataPublicação = Data_Publicacao_Show,
+
                 UtilizadorPublicação = ProcedimentoView.UtilizadorPublicacao,
                 DataSistemaPublicação = ProcedimentoView.DataSistemaPublicacao,
                 RecolhaComentário = ProcedimentoView.RecolhaComentario,
-                DataRecolha = ProcedimentoView.DataRecolha,
+
+                //NR 20180314
+                //DataRecolha = ProcedimentoView.DataRecolha,
+                DataRecolha = Data_Recolha_Show,
+
                 UtilizadorRecolha = ProcedimentoView.UtilizadorRecolha,
                 DataSistemaRecolha = ProcedimentoView.DataSistemaRecolha,
                 ComentárioRelatórioPreliminar = ProcedimentoView.ComentarioRelatorioPreliminar,
-                DataValidRelatórioPreliminar = ProcedimentoView.DataValidRelatorioPreliminar,
+
+                //NR 20180315
+                //DataValidRelatórioPreliminar = ProcedimentoView.DataValidRelatorioPreliminar,
+                DataValidRelatórioPreliminar = Data_Valid_Relatorio_Preliminar_Show,
+
                 UtilizadorValidRelatórioPreliminar = ProcedimentoView.UtilizadorValidRelatorioPreliminar,
                 DataSistemaValidRelatórioPreliminar = ProcedimentoView.DataSistemaValidRelatorioPreliminar,
                 ComentárioAudiênciaPrévia = ProcedimentoView.ComentarioAudienciaPrevia,
-                DataAudiênciaPrévia = ProcedimentoView.DataAudienciaPrevia,
+
+                //NR 20180315
+                //DataAudiênciaPrévia = ProcedimentoView.DataAudienciaPrevia,
+                DataAudiênciaPrévia = Data_Audiencia_Previa_Show,
+
                 UtilizadorAudiênciaPrévia = ProcedimentoView.UtilizadorAudienciaPrevia,
                 DataSistemaAudiênciaPrévia = ProcedimentoView.DataSistemaAudienciaPrevia,
                 ComentárioRelatórioFinal = ProcedimentoView.ComentarioRelatorioFinal,
-                DataRelatórioFinal = ProcedimentoView.DataRelatorioFinal,
+
+                //NR 20180315
+                //DataRelatórioFinal = ProcedimentoView.DataRelatorioFinal,
+                DataRelatórioFinal = Data_Relatorio_Final_Show,
+
                 UtilizadorRelatórioFinal = ProcedimentoView.UtilizadorRelatorioFinal,
                 DataSistemaRelatórioFinal = ProcedimentoView.DataSistemaRelatorioFinal,
                 ComentárioNotificação = ProcedimentoView.ComentarioNotificacao,
-                DataNotificação = ProcedimentoView.DataNotificacao,
+
+                //NR 20180327
+                //DataNotificação = ProcedimentoView.DataNotificacao,
+                DataNotificação = Data_Notificacao_Show,
+
                 UtilizadorNotificação = ProcedimentoView.UtilizadorNotificacao,
                 DataSistemaNotificação = ProcedimentoView.DataSistemaNotificacao,
                 PrazoNotificaçãoDias = ProcedimentoView.PrazoNotificacaoDias,
@@ -271,11 +327,11 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 ObjetoDoContrato = Procedimento.ObjetoDoContrato,
                 PreArea = Procedimento.PréÁrea,
                 SubmeterPreArea = Procedimento.SubmeterPréÁrea,
-                ValorDecisaoContratar = Procedimento.ValorDecisãoContratar,
-                ValorAdjudicacaoAnteriro = Procedimento.ValorAdjudicaçãoAnteriro,
-                ValorAdjudicacaoAtual = Procedimento.ValorAdjudicaçãoAtual,
-                DiferencaEuros = Procedimento.DiferençaEuros,
-                DiferencaPercent = Procedimento.DiferençaPercent,
+                ValorDecisaoContratar = Procedimento.ValorDecisãoContratar == null ? 0 : Procedimento.ValorDecisãoContratar,
+                ValorAdjudicacaoAnteriro = Procedimento.ValorAdjudicaçãoAnteriro == null ? 0 : Procedimento.ValorAdjudicaçãoAnteriro,
+                ValorAdjudicacaoAtual = Procedimento.ValorAdjudicaçãoAtual == null ? 0 : Procedimento.ValorAdjudicaçãoAtual,
+                DiferencaEuros = Procedimento.DiferençaEuros == null ? 0 : Procedimento.DiferençaEuros,
+                DiferencaPercent = Procedimento.DiferençaPercent == null ? 0 : Procedimento.DiferençaPercent,
                 WorkflowFinanceiros = Procedimento.WorkflowFinanceiros,
                 WorkflowJuridicos = Procedimento.WorkflowJurídicos,
                 WorkflowFinanceirosConfirm = Procedimento.WorkflowFinanceirosConfirm,
@@ -298,26 +354,50 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataAta = Procedimento.DataAta,
                 ComentarioPublicacao = Procedimento.ComentárioPublicação,
                 DataPublicacao = Procedimento.DataPublicação,
+
+                //NR 20180314
+                DataPublicacao_Show = Procedimento.DataPublicação.ToString(),
+
                 UtilizadorPublicacao = Procedimento.UtilizadorPublicação,
                 DataSistemaPublicacao = Procedimento.DataSistemaPublicação,
                 RecolhaComentario = Procedimento.RecolhaComentário,
                 DataRecolha = Procedimento.DataRecolha,
+
+                //NR 20180314
+                DataRecolha_Show = Procedimento.DataRecolha.ToString(),
+
                 UtilizadorRecolha = Procedimento.UtilizadorRecolha,
                 DataSistemaRecolha = Procedimento.DataSistemaRecolha,
                 ComentarioRelatorioPreliminar = Procedimento.ComentárioRelatórioPreliminar,
                 DataValidRelatorioPreliminar = Procedimento.DataValidRelatórioPreliminar,
+
+                //NR 20180315
+                DataValidRelatorioPreliminar_Show = Procedimento.DataValidRelatórioPreliminar.ToString(),
+                
                 UtilizadorValidRelatorioPreliminar = Procedimento.UtilizadorValidRelatórioPreliminar,
                 DataSistemaValidRelatorioPreliminar = Procedimento.DataSistemaValidRelatórioPreliminar,
                 ComentarioAudienciaPrevia = Procedimento.ComentárioAudiênciaPrévia,
                 DataAudienciaPrevia = Procedimento.DataAudiênciaPrévia,
+
+                //NR 20180315
+                DataAudienciaPrevia_Show = Procedimento.DataAudiênciaPrévia.ToString(),
+
                 UtilizadorAudienciaPrevia = Procedimento.UtilizadorAudiênciaPrévia,
                 DataSistemaAudienciaPrevia = Procedimento.DataSistemaAudiênciaPrévia,
                 ComentarioRelatorioFinal = Procedimento.ComentárioRelatórioFinal,
                 DataRelatorioFinal = Procedimento.DataRelatórioFinal,
+
+                //NR 20180315
+                DataRelatorioFinal_Show = Procedimento.DataRelatórioFinal.ToString(),
+
                 UtilizadorRelatorioFinal = Procedimento.UtilizadorRelatórioFinal,
                 DataSistemaRelatorioFinal = Procedimento.DataSistemaRelatórioFinal,
                 ComentarioNotificacao = Procedimento.ComentárioNotificação,
                 DataNotificacao = Procedimento.DataNotificação,
+
+                //NR 20180327
+                DataNotificacao_Show = Procedimento.DataNotificação.ToString(),
+
                 UtilizadorNotificacao = Procedimento.UtilizadorNotificação,
                 DataSistemaNotificacao = Procedimento.DataSistemaNotificação,
                 PrazoNotificacaoDias = Procedimento.PrazoNotificaçãoDias,
@@ -345,7 +425,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 UtilizadorModificacao = Procedimento.UtilizadorModificação
             };
 
-            if(Procedimento.TemposPaCcp != null)
+            if (Procedimento.TemposPaCcp != null)
             {
                 ProcedimentoView.TemposPaCcp = CCPFunctions.CastTemposPaCcpToTemposCCPView(Procedimento.TemposPaCcp);
             }
@@ -395,6 +475,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
             if(Procedimento.FluxoTrabalhoListaControlo != null && Procedimento.FluxoTrabalhoListaControlo.Count > 0)
             {
                 ProcedimentoView.FluxoTrabalhoListaControlo = Procedimento.FluxoTrabalhoListaControlo;
+
+                ProcedimentoView.FluxoTrabalhoListaControlo_Show = DBProcedimentosCCP.GetAllFluxoTrabalhoListaControloCCPView(Procedimento);
             }
             return ProcedimentoView;
         }
@@ -424,7 +506,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataHoraCriacao = Acta.DataHoraCriação,
                 UtilizadorCriacao = Acta.UtilizadorCriação,
                 DataHoraModificacao = Acta.DataHoraModificação,
-                UtilizadorModificacao = Acta.UtilizadorModificação
+                UtilizadorModificacao = Acta.UtilizadorModificação,
+                DataDaActa_Show = Acta.DataDaAta.HasValue ? Acta.DataDaAta.Value.ToShortDateString() : string.Empty
             });
         }
 
@@ -605,7 +688,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataHoraCriacao = Nota.DataHoraCriação,
                 UtilizadorCriação = Nota.UtilizadorCriação,
                 DataHoraModificacao = Nota.DataHoraModificação,
-                UtilizadorModificacao = Nota.UtilizadorModificação
+                UtilizadorModificacao = Nota.UtilizadorModificação,
+                DataHora_Show = Nota.DataHora.HasValue ? Nota.DataHora.Value.ToShortDateString() : string.Empty
             });
         }
 
@@ -654,6 +738,37 @@ namespace Hydra.Such.Data.ViewModel.CCP
             });
         }
 
+        //NR 20180327
+        public static FluxoTrabalhoListaControloCCPView CastFluxoTrabalhoListaControloToFluxoTrabalhoListaControlo_Show(FluxoTrabalhoListaControlo Fluxo)
+        {
+            return (new FluxoTrabalhoListaControloCCPView()
+            {
+                No = Fluxo.No,
+                Estado = Fluxo.Estado,
+                Data = Fluxo.Data,
+                Hora = Fluxo.Hora,
+                Data_Show = Fluxo.Data.ToShortDateString(),
+                //Hora_Show = Fluxo.Hora.Hours.ToString() + ":" + Fluxo.Hora.Minutes.ToString() + ":" + Fluxo.Hora.Seconds.ToString(),
+                Hora_Show = Fluxo.Hora.ToString(@"hh\:mm\:ss"),
+                TipoEstado = Fluxo.TipoEstado,
+                Comentario = Fluxo.Comentario,
+                Resposta = Fluxo.Resposta,
+                TipoResposta = Fluxo.TipoResposta,
+                DataResposta = Fluxo.DataResposta,
+                User = Fluxo.User,
+                NomeUser = Fluxo.NomeUser,
+                ImobSimNao = Fluxo.ImobSimNao,
+                EstadoAnterior = Fluxo.EstadoAnterior,
+                EstadoSeguinte = Fluxo.EstadoSeguinte,
+                Comentario2 = Fluxo.Comentario2,
+                UtilizadorCriacao = Fluxo.UtilizadorCriacao,
+                DataHoraCriacao = Fluxo.DataHoraCriacao,
+                UtilizadorModificacao = Fluxo.UtilizadorModificacao,
+                DataHoraModificacao = Fluxo.DataHoraModificacao,
+                Nr_Workflow = Fluxo.Estado > Fluxo.EstadoSeguinte ? "Vermelho" : "Verde"
+            });
+        }
+
         public static EmailsProcedimentosCcp CastEmailProcedimentoViewToEmailProcedimento(EmailsProcedimentoCCPView EmailView)
         {
             return (new EmailsProcedimentosCcp()
@@ -684,6 +799,8 @@ namespace Hydra.Such.Data.ViewModel.CCP
         }
         public static EmailsProcedimentoCCPView CastEmailProcedimentoToEmailProcedimentoView(EmailsProcedimentosCcp Email)
         {
+            TimeSpan _datahoraemail = Email.DataHoraEmail.HasValue ? new TimeSpan(0, Email.DataHoraEmail.Value.Hour, Email.DataHoraEmail.Value.Minute, Email.DataHoraEmail.Value.Second, Email.DataHoraEmail.Value.Millisecond) : TimeSpan.Zero;
+
             return (new EmailsProcedimentoCCPView()
             {
                 NoProcedimento = Email.NºProcedimento,
@@ -706,7 +823,9 @@ namespace Hydra.Such.Data.ViewModel.CCP
                 DataHoraCriacao = Email.DataHoraCriação,
                 DataHoraModificacao = Email.DataHoraModificação,
                 UtilizadorCriacao = Email.UtilizadorCriação,
-                UtilizadorModificacao = Email.UtilizadorModificação
+                UtilizadorModificacao = Email.UtilizadorModificação,
+                DataEmail = Email.DataHoraEmail.HasValue ? Email.DataHoraEmail.Value.ToShortDateString() : string.Empty,
+                HoraEmail = Email.DataHoraEmail.HasValue ? _datahoraemail.ToString(@"hh\:mm\:ss") : string.Empty
             });
         }
 
